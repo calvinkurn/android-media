@@ -6,15 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
-
-import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE;
 
 /**
  * @author Irfan Khoirul on 05/02/18
@@ -139,7 +137,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 Intent intent = ((ICheckoutModuleRouter) getApplication()).getAddAddressIntent(
                         this, null, token, false, true);
                 startActivityForResult(intent,
-                        REQUEST_CODE_PARAM_CREATE);
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 break;
 
             default:
@@ -164,7 +162,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PARAM_CREATE) {
+        if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE) {
             if (resultCode == Activity.RESULT_OK) setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
             finish();
         }
@@ -224,13 +222,16 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
+        RecipientAddressModel currentAddress = (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
-                return ShipmentAddressListFragment.newInstance(
-                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                return ShipmentAddressListFragment.newInstance(currentAddress);
+            case TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT :
+            case TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
+                return ShipmentAddressListFragment.newInstance(currentAddress, true);
             default:
                 defaultFragment = ShipmentAddressListFragment.newInstance(
-                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                        currentAddress);
                 return defaultFragment;
         }
     }

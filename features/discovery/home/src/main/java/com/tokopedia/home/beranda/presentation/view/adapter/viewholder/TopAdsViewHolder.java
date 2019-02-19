@@ -51,7 +51,10 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         if(context instanceof Activity) {
             Activity activity = (Activity) context;
             Intent intent = ((IHomeRouter) activity.getApplication()).getTopAdsProductDetailIntentForHome(context,
-                    product);
+                    product.getId(),
+                    product.getName(),
+                    product.getPriceFormat(),
+                    product.getImage().getM_ecs());
 
             activity.startActivity(intent);
         }
@@ -73,8 +76,4 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         topAdsWidgetView.notifyDataChange();
     }
 
-    @Override
-    public void onAddWishList(int position, Data data) {
-        //TODO: next implement wishlist action
-    }
 }

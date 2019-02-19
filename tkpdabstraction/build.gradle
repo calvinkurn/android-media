@@ -30,8 +30,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.serviceDependencies.hockeyApp
-
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

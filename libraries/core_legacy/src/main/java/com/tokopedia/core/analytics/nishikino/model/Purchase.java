@@ -20,6 +20,7 @@ public class Purchase {
     public static final String USER_ID = "userId";
     public static final String PURCHASE = "purchase";
     public static final String DEFAULT_CURRENCY_VALUE = "IDR";
+    public static final String CURRENT_SITE = "currentSite";
 
     public static final String ID = "id";
 
@@ -42,6 +43,7 @@ public class Purchase {
     private String eventLabel;
     private String shopType;
     private String coupon;
+    private String currentSite;
 
     public String getItemPrice() {
         return itemPrice;
@@ -51,6 +53,14 @@ public class Purchase {
 
     public Purchase() {
 
+    }
+
+    public String getCurrentSite() {
+        return currentSite;
+    }
+
+    public void setCurrentSite(String currentSite) {
+        this.currentSite = currentSite;
     }
 
     public String getShopId() {
@@ -133,6 +143,10 @@ public class Purchase {
         ActionField.put("affiliation", aff);
     }
 
+    public void setTax(Object tax) {
+        ActionField.put("tax", tax);
+    }
+
     public void setRevenue(Object revenue) {
         ActionField.put(REVENUE_KEY, revenue);
     }
@@ -180,7 +194,6 @@ public class Purchase {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
             Purchase.put("currencyCode", currency);
-//            Purchase.put(KEY_COUPON, coupon);
         }catch (Exception e) {
             e.printStackTrace();
         }

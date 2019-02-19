@@ -788,8 +788,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         };
     }
 
-    public void downloadBitmap(final ProductManageViewModel productManageViewModel) {
-        ProductShare productShare = new ProductShare(getActivity());
+    public void downloadBitmap(final ProductManageViewModel productManageViewModel){
+        ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_IMAGE);
 
         String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
         ProductData data = new ProductData();

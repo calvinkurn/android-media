@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -9,9 +10,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/layout_departure_detail"
-            layout="@layout/view_train_summary_departure" />
+        <com.tokopedia.common.travel.widget.DepartureTripLabelView
+            android:id="@+id/departure_trip_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:dlv_icon="@drawable/ic_train_trip" />
 
         <com.tokopedia.train.search.presentation.TrainSearchRecyclerView
             android:id="@+id/recycler_view"

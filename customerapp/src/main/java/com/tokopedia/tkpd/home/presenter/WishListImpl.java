@@ -26,10 +26,7 @@ import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.network.entity.wishlist.WishlistPaging;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -43,6 +40,9 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.transaction.common.TransactionRouter;
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -102,6 +102,7 @@ public class WishListImpl implements WishList {
     RemoveWishListUseCase removeWishListUseCase;
     UserSession userSession;
     Context context;
+    private String query = "";
 
     public WishListImpl(Context context, WishListView wishListView) {
         this.wishListView = wishListView;
@@ -336,7 +337,7 @@ public class WishListImpl implements WishList {
         if (mPaging.getPage() == 1) {
             data.clear();
             if (wishlistData.getWishlistDataList().size() == 0)
-                wishListView.setSearchNotFound();
+                wishListView.setSearchNotFound(query);
         }
         wishListView.displayPull(false);
 
@@ -344,7 +345,7 @@ public class WishListImpl implements WishList {
 
         dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList(),
-                gqlWishListDataResponse.getTopAdsModel()));
+                gqlWishListDataResponse.getTopAdsModel(), query));
         mPaging.setPagination(wishlistData.getPagination());
 
         if (mPaging.CheckNextPage() && wishlistData.isHasNextPage()) {
@@ -437,10 +438,10 @@ public class WishListImpl implements WishList {
 
     @Override
     public void searchWishlist(String query) {
+        this.query = query;
         mPaging.resetPage();
         params.putString(QUERY, query);
         params.putInt(PAGE_NO, mPaging.getPage());
-
         getWishListDataSearch(context, new SearchWishlistSubscriber());
 
     }
@@ -486,7 +487,7 @@ public class WishListImpl implements WishList {
                     data.clear();
                     dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                     data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                            gqlWishListDataResponse.getTopAdsModel()));
+                            gqlWishListDataResponse.getTopAdsModel(), query));
                     mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                     wishListView.loadDataChange();
                     wishListView.displayContentList(true);
@@ -500,7 +501,7 @@ public class WishListImpl implements WishList {
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                         wishListView.setEmptyState();
                     } else {
-                        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
+                        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel(), query));
                     }
                 } else {
                     setData();
@@ -558,7 +559,7 @@ public class WishListImpl implements WishList {
         return pagination != null;
     }
 
-    public List<RecyclerViewItem> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel) {
+    public List<RecyclerViewItem> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query) {
         List<RecyclerViewItem> products = new ArrayList<>();
         for (int i = 0; i < wishlists.size(); i++) {
             ProductItem product = new ProductItem();
@@ -582,7 +583,7 @@ public class WishListImpl implements WishList {
             products.add(product);
         }
         if (products.size() >= TOPADS_INDEX) {
-            products.add(TOPADS_INDEX, new TopAdsWishlistItem(adsModel));
+            products.add(TOPADS_INDEX, new TopAdsWishlistItem(adsModel, query));
         }
         return products;
     }
@@ -611,7 +612,7 @@ public class WishListImpl implements WishList {
                     data.clear();
                     dataWishlist.clear();
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0)
-                        wishListView.setSearchNotFound();
+                        wishListView.setSearchNotFound(query);
                 }
                 gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
 
@@ -620,7 +621,7 @@ public class WishListImpl implements WishList {
 
                 dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                        gqlWishListDataResponse.getTopAdsModel()));
+                        gqlWishListDataResponse.getTopAdsModel(), query));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                 if (gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
                     wishListView.displayLoadMore(true);

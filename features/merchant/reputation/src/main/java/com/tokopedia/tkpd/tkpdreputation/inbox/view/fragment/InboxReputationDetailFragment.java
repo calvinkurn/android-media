@@ -530,7 +530,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if(callbackManager!= null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);

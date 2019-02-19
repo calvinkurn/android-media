@@ -20,7 +20,6 @@ import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
-import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.network.ErrorCode;
@@ -56,7 +55,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.tkpd.Utils.matchToolbarTitle;
-import static com.tokopedia.tkpd.Utils.mockGoogleActivityResult;
 import static com.tokopedia.tkpd.Utils.nthChildOf;
 import static com.tokopedia.tkpd.Utils.snackbarAnyMatcher;
 import static com.tokopedia.tkpd.Utils.snackbarMatcher;
@@ -675,9 +673,6 @@ public class LoginActivityTest {
     }
 
     private void defaultMockGoogle() {
-        intending(hasComponent(GoogleSignInActivity.class.getName())).respondWith(
-                mockGoogleActivityResult("test123@gmailcom", null, "12345")
-        );
     }
 
     /**
@@ -717,8 +712,6 @@ public class LoginActivityTest {
     public void testCancelGoogleLogin() throws Exception {
         Instrumentation.ActivityResult result =
                 new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null);
-
-        intending(hasComponent(GoogleSignInActivity.class.getName())).respondWith(result);
 
         mIntentsRule.getIndexMockWebServer(0).enqueue(mIntentsRule.getBaseJsonFactory().createSuccess200Response("api_discover.json"));
 

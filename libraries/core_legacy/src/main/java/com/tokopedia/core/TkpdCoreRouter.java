@@ -9,6 +9,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.iris.Iris;
 
 public interface TkpdCoreRouter {
     String CART_ACTIVITY_OLD
@@ -134,4 +135,12 @@ public interface TkpdCoreRouter {
     SessionHandler legacySessionHandler();
 
     GCMHandler legacyGCMHandler();
+
+    void refreshFCMTokenFromBackgroundToCM(String token, boolean force);
+
+    void refreshFCMFromInstantIdService(String token);
+
+    void refreshFCMTokenFromForegroundToCM();
+
+    Iris getIris();
 }

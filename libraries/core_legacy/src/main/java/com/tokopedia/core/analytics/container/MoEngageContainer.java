@@ -24,7 +24,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Herdi_WORK on 21.02.17.
  */
-
+@Deprecated
 public class MoEngageContainer implements IMoengageContainer {
     private static final String DATE_FORMAT_1 = "yyyy-MM-dd";
 
@@ -69,6 +69,7 @@ public class MoEngageContainer implements IMoengageContainer {
                         context.getResources().getString(R.string.key_moengage))
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
+                        .optOutTokenRegistration()
                         .build();
         MoEngage.initialise(moEngage);
 
@@ -240,7 +241,9 @@ public class MoEngageContainer implements IMoengageContainer {
 
     @Override
     public void logoutEvent() {
-        MoEHelper.getInstance(context).logoutUser();
+        if(context != null) {
+            MoEHelper.getInstance(context.getApplicationContext()).logoutUser();
+        }
     }
 
     private void executor(Single single, SingleSubscriber subscriber) {

@@ -1,36 +1,49 @@
 package com.tokopedia.topads.sdk.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
+import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by errysuprayogi on 2/20/18.
  */
 
-public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListener {
+public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsWidgetView.class.getSimpleName();
     private RecyclerView recyclerView;
@@ -39,25 +52,46 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private static final int GRID_SPAN = 2;
     private List<Data> data = new ArrayList<>();
     private TopAdsItemClickListener itemClickListener;
+    private TopAdsListener adsListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode mode = DisplayMode.GRID;
     private TypedArray styledAttributes;
+    private TopAdsItemImpressionListener impressionListener;
+
+    @Inject
+    TopAdsPresenter presenter;
 
     public TopAdsWidgetView(Context context) {
         super(context);
         inflateView(context, null, 0);
+        initInjector();
+        initPresenter();
+    }
+
+    @Override
+    public void initInjector() {
+        BaseMainApplication application = ((BaseMainApplication) getContext().getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
     }
 
     public TopAdsWidgetView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         inflateView(context, attrs, 0);
+        initInjector();
+        initPresenter();
     }
 
     public TopAdsWidgetView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflateView(context, attrs, defStyleAttr);
+        initInjector();
+        initPresenter();
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
@@ -66,6 +100,14 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem(position, product);
+                }
+            }
+        });
         try {
             adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
         } finally {
@@ -91,19 +133,30 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         List<Item> visitables = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
-            if (d.getProduct() != null) {
+            if (d.getProduct() != null && !TextUtils.isEmpty(d.getProduct().getId())) {
                 visitables.add(ModelConverter.convertProductData(d, mode));
-            } else if (d.getShop() != null) {
+            } else if (d.getShop() != null && !TextUtils.isEmpty(d.getShop().getId())) {
                 visitables.add(ModelConverter.convertShopData(d, mode));
             }
         }
         adapter.setList(visitables);
     }
 
+    public void setAdsListener(TopAdsListener adsListener) {
+        this.adsListener = adsListener;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         openTopAdsUseCase.unsubscribe();
+        presenter.detachView();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        presenter.attachView(this);
     }
 
     @Override
@@ -131,13 +184,19 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     @Override
     public void onAddWishLish(int position, Data data) {
-        if(data.getProductWishlistUrl()!=null && itemClickListener!=null) {
-            itemClickListener.onAddWishList(position, data);
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
     }
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setImpressionListener(TopAdsItemImpressionListener impressionListener) {
+        this.impressionListener = impressionListener;
     }
 
     public void notifyDataChange() {
@@ -171,5 +230,88 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
                 break;
         }
         adapter.switchDisplayMode(mode);
+    }
+
+    @Override
+    public void initPresenter() {
+        presenter.attachView(this);
+    }
+
+    @Override
+    public void displayAds(List<Item> list, int position) {
+
+    }
+
+    @Override
+    public void notifyAdsErrorLoaded(int errorCode, String message) {
+        if (adsListener != null) {
+            adsListener.onTopAdsFailToLoad(errorCode, message);
+        }
+    }
+
+    @Override
+    public void notifyProductClickListener(int position, Product product) {
+        if (itemClickListener != null) {
+            itemClickListener.onProductItemClicked(position, product);
+        }
+    }
+
+    @Override
+    public void notifyShopClickListener(int position, Shop shop) {
+        if (itemClickListener != null) {
+            itemClickListener.onShopItemClicked(position, shop);
+        }
+    }
+
+    @Override
+    public String getString(int resId) {
+        return getContext().getString(resId);
+    }
+
+    @Override
+    public void doLogin() {
+        Intent intent = ((TopAdsRouter) getContext().getApplicationContext()).getLoginIntent(getContext());
+        getContext().startActivity(intent);
+    }
+
+    @Override
+    public void notifyAdapter() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showSuccessAddWishlist() {
+        if(getView()!=null) {
+            SnackbarManager.makeGreen(getView(), getString(R.string.msg_success_add_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void showErrorAddWishlist() {
+        if(getView()!=null) {
+            SnackbarManager.makeRed(getView(), getString(R.string.msg_error_add_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void showSuccessRemoveWishlist() {
+        if(getView()!=null) {
+            SnackbarManager.makeGreen(getView(), getString(R.string.msg_success_remove_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void showErrorRemoveWishlist() {
+        if(getView()!=null) {
+            SnackbarManager.makeRed(getView(), getString(R.string.msg_error_remove_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private View getView() {
+        return getRootView().findViewById(android.R.id.content);
     }
 }

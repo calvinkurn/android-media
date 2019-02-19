@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.HockeyAppHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
@@ -43,8 +42,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
-        HockeyAppHelper.handleLogin(this);
-        HockeyAppHelper.checkForUpdate(this);
         initShake();
     }
 
@@ -52,7 +49,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         unregisterForceLogoutReceiver();
-        HockeyAppHelper.unregisterManager();
         unregisterShake();
 
     }
@@ -100,7 +96,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        HockeyAppHelper.unregisterManager();
         cache = null;
     }
 

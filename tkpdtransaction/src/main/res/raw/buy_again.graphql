@@ -1,0 +1,16 @@
+mutation add_to_cart_multi($param: [AddToCartMultiParam]) {
+  add_to_cart_multi(param: $param) {
+    error_message
+    status
+    data{
+      success
+      messages
+      data {
+        product_id
+        quantity
+        notes
+        shop_id
+      }
+    }
+  }
+}

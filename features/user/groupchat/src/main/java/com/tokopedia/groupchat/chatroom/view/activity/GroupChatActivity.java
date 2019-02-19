@@ -42,7 +42,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.facebook.CallbackManager;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -54,7 +53,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.card.ToolTipUtils;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
@@ -89,6 +91,9 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewMo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
@@ -119,6 +124,19 @@ public class GroupChatActivity extends BaseSimpleActivity
         , ToolTipUtils.ToolTipListener {
 
     private static final String TOKOPEDIA_APPLINK = "tokopedia://";
+    private static final String TOKOPEDIA_GROUPCHAT_APPLINK = "groupchat";
+
+    private static final String APPLINK_DATA = "APPLINK_DATA";
+    private static final String APPLINK_CHAT = "?tab=chat";
+    private static final String APPLINK_VOTE = "?tab=vote";
+    private static final String APPLINK_INFO = "?tab=info";
+    private static final String PARAM_CHAT = "chat";
+    private static final String PARAM_VOTE = "vote";
+    private static final String PARAM_INFO = "info";
+    private static final int TAB_CHAT = 1;
+    private static final int TAB_VOTE = 2;
+    private static final int TAB_INFO = 3;
+    private static final int OVERLAY_STATUS_INACTIVE = 0;
 
     Dialog exitDialog;
     private static final float ELEVATION = 10;
@@ -128,6 +146,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private List<Visitable> listMessage;
     private Handler youtubeRunnable;
     private long enterTimeStamp;
+    private boolean isTraceStopped = false;
 
     public GroupChatActivity() {
     }
@@ -135,14 +154,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
-
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
-        Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
-                .getInboxChannelsIntent(context);
-
+        if (extras.get(ApplinkConstant.PARAM_TAB) != null) {
+            detailsIntent = GroupChatActivity.getCallingIntent(context, id, extras.getString(ApplinkConstant.PARAM_TAB));
+        }
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(detailsIntent);
@@ -183,6 +200,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     public static final long PAUSE_RESUME_TRESHOLD_TIME = TimeUnit.SECONDS.toMillis(2);
+    private static final String PLAY_TRACE = "mp_play_detail";
 
     private static final long TOOLTIP_DELAY = 1500L;
 
@@ -216,6 +234,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private RecyclerView tabs;
     private GroupChatTabAdapter tabAdapter;
     private CloseableBottomSheetDialog channelInfoDialog;
+    private CloseableBottomSheetDialog overlayDialog;
     private View sponsorLayout;
     private ImageView sponsorImage;
     private GroupChatVideoFragment videoFragment;
@@ -224,7 +243,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private int initialFragment;
     private GroupChatViewModel viewModel;
 
-    private CallbackManager callbackManager;
     private Snackbar snackbarError;
 
     @Inject
@@ -240,10 +258,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private UserSession userSession;
 
+    private PerformanceMonitoring performanceMonitoring;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        performanceMonitoring = PerformanceMonitoring.start(PLAY_TRACE);
         if (savedInstanceState != null) {
             initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
         } else if (getIntent().getExtras() != null) {
@@ -263,6 +283,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
             viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
+            if (getIntent().getExtras().get(APPLINK_DATA) != null) {
+                int tabNumber = getIntent().getExtras().getString(APPLINK_DATA).equals(PARAM_CHAT) ?
+                        TAB_CHAT :
+                        getIntent().getExtras().getString(APPLINK_DATA).equals(PARAM_VOTE) ?
+                                TAB_VOTE:
+                                TAB_INFO;
+                initialFragment = tabNumber - 1;
+            }
         } else {
             Intent intent = new Intent();
             intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(R.string.default_request_error_unknown));
@@ -274,7 +302,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             finish();
         }
 
-        callbackManager = CallbackManager.Factory.create();
         userSession = ((AbstractionRouter) getApplication()).getSession();
 
         initView();
@@ -443,7 +470,14 @@ public class GroupChatActivity extends BaseSimpleActivity
         loading = findViewById(R.id.loading);
         main = findViewById(R.id.main_content);
 
-        channelInfoDialog = CloseableBottomSheetDialog.createInstance(this);
+        channelInfoDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
+            showOverlayDialogOnScreen();
+        }, new CloseableBottomSheetDialog.BackHardwareClickedListener() {
+            @Override
+            public void onBackHardwareClicked() {
+
+            }
+        });
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -813,7 +847,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             super.onBackPressed();
         } else {
             if (!currentFragmentIsChat()) {
-                showFragment(CHATROOM_FRAGMENT);
+                transitionToTabChat();
             } else {
                 showDialogConfirmToExit();
             }
@@ -941,10 +975,25 @@ public class GroupChatActivity extends BaseSimpleActivity
         return intent;
     }
 
+    /**
+     * @param context   activity context
+     * @param channelId can also be substitued by channelUrl
+     * @param applinkData if applink contains tab id for access chat/vote/info fragment
+     * @return Intent
+     */
+    public static Intent getCallingIntent(Context context, String channelId, String applinkData) {
+        Intent intent = new Intent(context, GroupChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_CHANNEL_UUID, channelId);
+        bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, true);
+        bundle.putString(APPLINK_DATA, applinkData);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -974,6 +1023,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         try {
             setChannelInfoView(channelInfoViewModel);
             hideLoading();
+            stopTrace();
             if (!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
                 trackAdsEE(channelInfoViewModel);
             }
@@ -999,6 +1049,13 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
+    public void stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
+    }
+
     @Override
     public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         hideLoading();
@@ -1016,7 +1073,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             refreshVote(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
         } else if (currentFragmentIsVote()) {
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
-            showFragment(CHATROOM_FRAGMENT);
+            transitionToTabChat();
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
@@ -1101,12 +1158,16 @@ public class GroupChatActivity extends BaseSimpleActivity
                     createBottomSheetView(
                             checkPollValid(),
                             viewModel.getChannelInfoViewModel()));
-
             if (getIntent() != null
                     && getIntent().getExtras() != null
                     && getIntent().getExtras().getBoolean(GroupChatActivity.EXTRA_SHOW_BOTTOM_DIALOG, false)) {
                 channelInfoDialog.show();
                 canShowDialog = false;
+            }
+            if (viewModel.getChannelInfoViewModel().getOverlayViewModel() != null
+                    && viewModel.getChannelInfoViewModel().getOverlayViewModel().getStatus() != OVERLAY_STATUS_INACTIVE) {
+                showOverlayDialog(viewModel.getChannelInfoViewModel().getOverlayViewModel());
+                viewModel.getChannelInfoViewModel().getOverlayViewModel().setStatus(0);
             }
         }
     }
@@ -1610,6 +1671,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             handleEvent((EventGroupChatViewModel) map);
         } else if (map instanceof ParticipantViewModel) {
             handleParticipant((ParticipantViewModel) map);
+        } else if (map instanceof OverlayViewModel) {
+            showOverlayDialog((OverlayViewModel)map);
+        } else if (map instanceof OverlayCloseViewModel) {
+            closeOverlayDialog();
         }
 
         if (currentFragmentIsChat()) {
@@ -1620,6 +1685,158 @@ public class GroupChatActivity extends BaseSimpleActivity
                 listMessage.add(map);
             }
         }
+    }
+
+    private void showOverlayDialog(OverlayViewModel model) {
+        //1. stack overlay if channel info is shown
+        //2. check pinned message on group chat fragment if shown or not
+        //3. close earlier overlay if overlay is already shown, then show new overlay
+        //4. show overlay if no other bottom dialog is shown
+
+        if (channelInfoDialog != null && channelInfoDialog.isShowing())
+            createOverlayDialog(model, false);
+        else if(isPinnedMessageShowing()) {
+            createOverlayDialog(model, false);
+        } else if (overlayDialog != null && overlayDialog.isShowing()) {
+            closeOverlayDialog();
+            createOverlayDialog(model, true);
+        } else
+            createOverlayDialog(model, true);
+    }
+
+    private boolean isPinnedMessageShowing() {
+        return currentFragmentIsChat() && ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName())).isPinnedMessageShowing();
+    }
+
+    private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
+        overlayDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
+            analytics.eventClickCloseOverlayCloseButton(model.getChannelId());
+        }, () -> {
+            analytics.eventClickCloseOverlayBackButton(model.getChannelId());
+        });
+        View view = createOverlayView(model);
+        overlayDialog.setCustomContentView(view, "", model.isCloseable());
+        overlayDialog.setCanceledOnTouchOutside(model.isCloseable());
+        overlayDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+            FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet)
+                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+        if (showDialogDirectly) {
+            showOverlayDialogOnScreen();
+        }
+        analytics.eventViewOverlay(model.getChannelId());
+    }
+
+    @Override
+    public void showOverlayDialogOnScreen() {
+        if (overlayDialog != null) {
+            overlayDialog.show();
+        }
+    }
+
+    private View createOverlayView(final OverlayViewModel model) {
+        View view = getLayoutInflater().inflate(R.layout.layout_interupt_page, null);
+        InteruptViewModel interuptViewModel = model.getInteruptViewModel();
+        if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
+            ImageHandler.loadImage2((ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl(), R.drawable.loading_page);
+            view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
+                if (!TextUtils.isEmpty(interuptViewModel.getImageLink())) {
+                    startApplink(interuptViewModel.getImageLink());
+                    closeOverlayDialog();
+                }
+                ArrayList<EEPromotion> list = new ArrayList<>();
+                list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
+                        EEPromotion.NAME_GROUPCHAT,
+                        GroupChatAnalytics.DEFAULT_EE_POSITION,
+                        viewModel.getChannelInfoViewModel().getAdsName(),
+                        viewModel.getChannelInfoViewModel().getAdsImageUrl(),
+                        getAttributionTracking(GroupChatAnalytics
+                                .ATTRIBUTE_BANNER)
+                ));
+                analytics.eventClickOverlayImage(
+                        model.getChannelId(),GroupChatAnalytics.COMPONENT_BANNER,
+                        viewModel.getChannelInfoViewModel().getAdsName(),
+                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+                        list);
+            });
+        } else
+            ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(interuptViewModel.getTitle()))
+            ((TextView) view.findViewById(R.id.tvTitle)).setText(MethodChecker.fromHtml(interuptViewModel.getTitle()));
+        else
+            ((TextView) view.findViewById(R.id.tvTitle)).setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(interuptViewModel.getDescription()))
+            ((TextView) view.findViewById(R.id.tvDesc)).setText(MethodChecker.fromHtml(interuptViewModel.getDescription()));
+        else
+            ((TextView) view.findViewById(R.id.tvDesc)).setVisibility(View.GONE);
+
+        ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
+        ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
+            ArrayList<EEPromotion> list = new ArrayList<>();
+            list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
+                    EEPromotion.NAME_GROUPCHAT,
+                    GroupChatAnalytics.DEFAULT_EE_POSITION,
+                    viewModel.getChannelInfoViewModel().getAdsName(),
+                    viewModel.getChannelInfoViewModel().getAdsImageUrl(),
+                    getAttributionTracking(GroupChatAnalytics
+                            .ATTRIBUTE_BANNER)
+            ));
+            analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle(),
+                    GroupChatAnalytics.COMPONENT_BANNER,
+                    viewModel.getChannelInfoViewModel().getAdsName(),
+                    GroupChatAnalytics.ATTRIBUTE_BANNER,
+                    list );
+            if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
+                startApplink(interuptViewModel.getBtnLink());
+            }
+            closeOverlayDialog();
+        });
+        return view;
+    }
+
+    @Override
+    public void startApplink(String applink) {
+        if (isTokopediaGroupChatApplink(applink)) {
+            if (applink.contains(APPLINK_CHAT)) transitionToTabChat();
+            else if (applink.contains(APPLINK_VOTE)) transitionToTabVote();
+            else if (applink.contains(APPLINK_INFO)) transitionToTabInfo();
+        } else
+            RouteManager.route(this, applink);
+    }
+
+    private boolean isTokopediaGroupChatApplink(String applink) {
+        return applink.contains(TOKOPEDIA_APPLINK) && applink.contains(TOKOPEDIA_GROUPCHAT_APPLINK);
+    }
+
+    private void closeOverlayDialog() {
+        if (overlayDialog != null && overlayDialog.isShowing()) overlayDialog.dismiss();
+    }
+
+    @Override
+    public void transitionToTabChat() {
+        showFragment(CHATROOM_FRAGMENT);
+    }
+
+    @Override
+    public void transitionToTabVote() {
+        if (hasVoteTab()) {
+            showFragment(CHANNEL_VOTE_FRAGMENT);
+        }
+    }
+
+    @Override
+    public void transitionToTabInfo() {
+        showFragment(CHANNEL_INFO_FRAGMENT);
+
     }
 
     private void handleParticipant(ParticipantViewModel map) {
@@ -1803,7 +2020,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
             tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
             tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
-            showFragment(CHATROOM_FRAGMENT);
+            transitionToTabChat();
         }
 
         setTooltip(voteInfoViewModel);
@@ -1828,12 +2045,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             } else {
                 tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
             }
-        }
-    }
-
-    public void moveToVoteFragment() {
-        if (hasVoteTab()) {
-            showFragment(CHANNEL_VOTE_FRAGMENT);
         }
     }
 

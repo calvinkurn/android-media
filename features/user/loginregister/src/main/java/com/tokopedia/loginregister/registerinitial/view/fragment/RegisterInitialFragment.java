@@ -30,7 +30,12 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -41,11 +46,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TextDrawable;
-import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
-import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
-import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
-import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
+import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
@@ -54,7 +55,6 @@ import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
-import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
 import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity;
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent;
@@ -64,6 +64,8 @@ import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitia
 import com.tokopedia.loginregister.welcomepage.WelcomePageActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
@@ -76,9 +78,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
+import static com.tokopedia.sessioncommon.data.Token.GOOGLE_API_KEY;
 
 /**
  * @author by nisie on 10/24/18.
@@ -101,6 +101,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_CHOOSE_ACCOUNT = 109;
     private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 110;
     private static final int REQUEST_ADD_NAME = 111;
+    private static final int REQUEST_LOGIN_GOOGLE = 112;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
@@ -127,7 +128,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     LoginRegisterAnalytics analytics;
 
     CallbackManager callbackManager;
-
+    GoogleSignInClient mGoogleSignInClient;
 
     public static RegisterInitialFragment createInstance() {
         return new RegisterInitialFragment();
@@ -160,6 +161,17 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
 
         callbackManager = CallbackManager.Factory.create();
+
+        if (getActivity() != null) {
+            GoogleSignInOptions gso =
+                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(GOOGLE_API_KEY)
+                            .requestEmail()
+                            .requestProfile()
+                            .build();
+            mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        }
+
         if (savedInstanceState != null && savedInstanceState.containsKey(PHONE_NUMBER)) {
             phoneNumber = savedInstanceState.getString(PHONE_NUMBER);
         }
@@ -279,8 +291,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             registerPhoneNumberButton.setImageResource(R.drawable.ic_phone);
             registerPhoneNumberButton.setOnClickListener(v -> {
                 showProgressBar();
-                Intent intent = CheckRegisterPhoneNumberActivity.getCallingIntent(getActivity());
-                startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
+
+                if (getActivity() != null && getActivity().getApplicationContext() != null) {
+                    Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                            .getCheckRegisterPhoneNumberIntent(getActivity());
+                    startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
+                }
             });
             String sourceString = getActivity().getResources().getString(R.string
                     .span_already_have_tokopedia_account);
@@ -359,11 +375,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         if (getActivity() != null) {
             if (requestCode == REQUEST_REGISTER_WEBVIEW) {
                 handleRegisterWebview(resultCode, data);
-            } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
-                String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
-                GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
-                String email = googleSignInAccount.getEmail();
-                presenter.registerGoogle(accessToken, email);
+            } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                if (task != null) {
+                    handleGoogleSignInResult(task);
+                }
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
@@ -433,6 +449,32 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         }
     }
 
+    /**
+     * Please refer to the
+     * {@link com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes class reference for
+     * status code
+     */
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        if (getContext() != null) {
+            try {
+                GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+                String accessToken = account.getIdToken();
+                String email = account.getEmail();
+                presenter.registerGoogle(accessToken, email);
+            } catch (NullPointerException e) {
+                onErrorRegisterSosmed(LoginRegisterAnalytics.GOOGLE,
+                        ErrorHandlerSession.getDefaultErrorCodeMessage(
+                                ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
+                                getContext()));
+            } catch (ApiException e) {
+                onErrorRegisterSosmed(LoginRegisterAnalytics.GOOGLE,
+                        String.format(getString(R.string.loginregister_failed_login_google),
+                                String.valueOf(e.getStatusCode())));
+            }
+        }
+    }
+
+
     private void goToAddName() {
         if (getActivity() != null) {
             String applink = ApplinkConst.ADD_NAME_REGISTER;
@@ -459,7 +501,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onRegisterClick(String id) {
+    public void onActionPartialClick(String id) {
         presenter.validateRegister(id);
     }
 
@@ -545,8 +587,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             ((LoginRegisterRouter) getActivity().getApplicationContext())
                     .eventMoRegistrationStart(LoginRegisterAnalytics.LABEL_GMAIL);
 
-            Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-            startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+            Intent intent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(intent, REQUEST_LOGIN_GOOGLE);
         }
 
     }
@@ -744,31 +786,41 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(TokoCashOtpActivity.getCallingIntent(
-                getActivity(),
-                phoneNumber,
-                true,
-                RequestOtpUseCase.MODE_SMS),
-                REQUEST_VERIFY_PHONE_TOKOCASH);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+
+            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                    .getTokoCashOtpIntent(getActivity(),
+                            phoneNumber,
+                            true,
+                            RequestOtpUseCase.MODE_SMS);
+
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH);
+        }
     }
 
 
     private void goToNoTokocashAccountPage(String phoneNumber) {
-        startActivityForResult(NotConnectedTokocashActivity.getNoTokocashAccountIntent(
-                getActivity(),
-                phoneNumber),
-                REQUEST_NO_TOKOCASH_ACCOUNT);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                    .getNoTokocashAccountIntent(
+                            getActivity(),
+                            phoneNumber);
+            startActivityForResult(intent, REQUEST_NO_TOKOCASH_ACCOUNT);
+        }
     }
 
     private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
-        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
-                getActivity(),
-                data),
-                REQUEST_CHOOSE_ACCOUNT);
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
+
+            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
+                    .getChooseTokocashAccountIntent(getActivity(), data);
+
+            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT);
+        }
     }
 
     private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
-        return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
+        return data.getParcelableExtra(ChooseTokoCashAccountViewModel.ARGS_DATA);
     }
 
 

@@ -45,76 +45,76 @@ public class Product implements Parcelable {
 
     @SerializedName(KEY_ID)
     @Expose
-    private String id;
-    private String adRefKey;
-    private String adId;
+    private String id = "";
+    private String adRefKey = "";
+    private String adId = "";
     @SerializedName(KEY_NAME)
     @Expose
-    private String name;
+    private String name = "";
 
     @SerializedName(KEY_WISHLIST)
     @Expose
-    private boolean wishlist;
+    private boolean wishlist = false;
 
     @SerializedName(KEY_IMAGE)
     @Expose
-    private ProductImage image;
+    private ProductImage image = new ProductImage();
 
     @SerializedName(KEY_URI)
     @Expose
-    private String uri;
+    private String uri = "";
 
     @SerializedName(KEY_RELATIVE_URI)
     @Expose
-    private String relativeUri;
+    private String relativeUri = "";
 
     @SerializedName(KEY_PRICE_FORMAT)
     @Expose
-    private String priceFormat;
+    private String priceFormat = "";
 
     @SerializedName(KEY_COUNT_TALK_FORMAT)
     @Expose
-    private String countTalkFormat;
+    private String countTalkFormat = "";
 
     @SerializedName(KEY_COUNT_REVIEW_FORMAT)
     @Expose
-    private String countReviewFormat;
+    private String countReviewFormat = "";
 
     @SerializedName(KEY_CATEGORY)
     @Expose
-    private Category category;
+    private Category category = new Category();
 
     @SerializedName(KEY_PRODUCT_PREORDER)
     @Expose
-    private boolean productPreorder;
+    private boolean productPreorder = false;
 
     @SerializedName(KEY_PRODUCT_WHOLESALE)
     @Expose
-    private boolean productWholesale;
+    private boolean productWholesale = false;
 
     @SerializedName(KEY_FREERETURN)
     @Expose
-    private String freeReturn;
+    private String freeReturn = "";
 
     @SerializedName(KEY_PRODUCT_CASHBACK)
     @Expose
-    private boolean productCashback;
+    private boolean productCashback = false;
 
     @SerializedName(KEY_PRODUCT_CASHBACK_RATE)
     @Expose
-    private String productCashbackRate;
+    private String productCashbackRate = "";
 
     @SerializedName(KEY_PRODUCT_NEW_LABEL)
     @Expose
-    private boolean productNewLabel;
+    private boolean productNewLabel = false;
 
     @SerializedName(KEY_PRODUCT_RATE)
     @Expose
-    private int productRating;
+    private int productRating = 0;
 
     @SerializedName(KEY_APPLINKS)
     @Expose
-    private String applinks;
+    private String applinks = "";
 
     @SerializedName(KEY_WHOLESALE_PRICE)
     @Expose
@@ -135,7 +135,7 @@ public class Product implements Parcelable {
     @SerializedName(KEY_IMAGE_PRODUCT)
     @Expose
     private ImageProduct imageProduct;
-    private boolean loaded;
+    private boolean loaded = false;
 
     public Product() {
     }

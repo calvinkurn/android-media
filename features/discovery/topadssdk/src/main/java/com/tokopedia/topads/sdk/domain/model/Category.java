@@ -18,7 +18,10 @@ public class Category implements Parcelable {
 
     @SerializedName(KEY_ID)
     @Expose
-    private String id;
+    private String id = "";
+
+    public Category() {
+    }
 
     public Category(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){

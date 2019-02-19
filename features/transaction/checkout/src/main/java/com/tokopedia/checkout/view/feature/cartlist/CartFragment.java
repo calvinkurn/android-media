@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -56,7 +55,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -71,11 +70,11 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -95,11 +94,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
+    private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
+
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
-    private static final String CART_TRACE = "cart_trace";
+    private static final String CART_TRACE = "mp_cart";
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
+    private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -116,7 +118,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
     private LinearLayout emptyCartContainer;
-    private TopAdsCarouselView topAdsCarouselView;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -172,17 +173,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDestroy() {
-        cartAdapter.unsubscribeSubscription();
-        super.onDestroy();
-    }
-
-    @Override
     public void onStop() {
         boolean hasChanges = dPresenter.dataHasChanged();
 
         try {
-            if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
+            if (hasChanges && getActivity() != null && getSelectedCartDataList() != null
+                    && getSelectedCartDataList().size() > 0 && !FLAG_BEGIN_SHIPMENT_PROCESS) {
                 Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
                 service.putParcelableArrayListExtra(
                         UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
@@ -194,6 +190,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
 
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        cartAdapter.unsubscribeSubscription();
+        super.onDestroy();
     }
 
     @Override
@@ -287,7 +289,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         emptyCartContainer = view.findViewById(R.id.container_empty_cart);
-        topAdsCarouselView = view.findViewById(R.id.topads);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -437,6 +438,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 refreshHandler.startRefresh();
             } else {
                 renderInitialGetCartListDataSuccess(cartListData);
+                stopTrace();
             }
         }
     }
@@ -530,6 +532,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.notifyDataSetChanged();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
+    }
+
+    @Override
+    public void onTopAdsItemClicked(Product product) {
+        if (getActivity() != null) {
+            Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
+            getActivity().startActivity(intent);
+        }
     }
 
     @Override
@@ -628,7 +638,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position) {
+    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
 
     }
 
@@ -786,11 +796,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
-        }
-
         sendAnalyticsScreenName(getScreenName());
         if (refreshHandler != null) {
             refreshHandler.finishRefresh();
@@ -846,6 +851,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 mIsMenuVisible = true;
                 getActivity().invalidateOptionsMenu();
             }
+        }
+
+        cartPageAnalytics.eventViewCartListFinishRender();
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
         }
     }
 
@@ -988,22 +1003,44 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData, int checklistCondition) {
+    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData,
+                                            boolean checkoutProductEligibleForCashOnDelivery,
+                                            int checklistCondition) {
         switch (checklistCondition) {
             case CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES:
-                sendAnalyticsOnSuccessToCheckoutDefault(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutDefault(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES:
-                sendAnalyticsOnSuccessToCheckoutCheckAll(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutCheckAll(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP:
-                sendAnalyticsOnSuccessToCheckoutPartialShop(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialShop(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM:
-                sendAnalyticsOnSuccessToCheckoutPartialProduct(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialProduct(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM:
-                sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
+                }
                 break;
         }
         renderToAddressChoice();
@@ -1011,6 +1048,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderToAddressChoice() {
+        FLAG_BEGIN_SHIPMENT_PROCESS = true;
         boolean isAutoApplyPromoCodeApplied = dPresenter.getCartListData() != null &&
                 dPresenter.getCartListData().getAutoApplyData() != null &&
                 dPresenter.getCartListData().getAutoApplyData().isSuccess();
@@ -1140,6 +1178,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         dPresenter.setCartListData(cartListData);
                         renderLoadGetCartDataFinish();
                         renderInitialGetCartListDataSuccess(cartListData);
+                        stopTrace();
                     }
                 }
             }
@@ -1322,11 +1361,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        //TODO: next implement wishlist action
-    }
-
-    @Override
     public void onRefresh(View view) {
         if (dPresenter.dataHasChanged()) {
             showMainContainer();
@@ -1449,6 +1483,31 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefaultEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAllEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProductEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProductEligibleCod(eeData);
     }
 
     @Override

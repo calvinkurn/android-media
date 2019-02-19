@@ -51,7 +51,10 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showGetListError(e);
+                        if (isViewAttached()) {
+                            getView().showGetListError(e);
+                            getView().stopTrace();
+                        }
                     }
 
                     @Override
@@ -59,6 +62,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                         if (availabilityKeySchedules.isEmpty()) {
                             getView().clearAdapterData();
                             getView().showEmptyResult();
+                            getView().stopTrace();
                         } else {
                             getAvailabilitySchedule(availabilityKeySchedules);
                         }
@@ -80,6 +84,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                 if (isViewAttached()) {
                     getView().clearAdapterData();
                     getView().showGetListError(e);
+                    getView().stopTrace();
                 }
             }
 
@@ -102,7 +107,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
         getView().showLoadingPage();
         getView().hideFilterAndSortButtonAction();
         RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(
-                getView().getFilterParam(), getView().getSortOptionSelected());
+                getView().getFilterParam(), getView().getSortOptionSelected(), getView().getScheduleVariantSelected());
 
         getFilteredAndSortedScheduleUseCase.execute(requestParams, new Subscriber<List<TrainScheduleViewModel>>() {
             @Override
@@ -112,8 +117,10 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached())
+                if (isViewAttached()) {
                     getView().showGetListError(e);
+                    getView().stopTrace();
+                }
             }
 
             @Override
@@ -126,6 +133,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                         getView().showFilterAndSortButtonAction();
                     }
                     getView().markSortOption();
+                    getView().stopTrace();
                 }
             }
         });

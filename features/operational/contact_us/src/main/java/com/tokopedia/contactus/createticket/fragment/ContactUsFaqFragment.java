@@ -29,8 +29,8 @@ import com.tokopedia.core.util.TkpdWebViewClient;
 
 import butterknife.BindView;
 
+import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 import static android.app.Activity.RESULT_OK;
-import static com.tokopedia.contactus.createticket.ContactUsConstant.PARAM_URL;
 
 /**
  * Created by nisie on 8/12/16.
@@ -79,10 +79,10 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     @Override
     protected void onFirstTimeLaunched() {
         String url;
-        if (getArguments().getString(PARAM_URL, "").equals("")) {
+        if (getArguments().getString(EXTRAS_PARAM_URL, "").equals("")) {
             url = TkpdBaseURL.ContactUs.URL_HELP;
         } else
-            url = getArguments().getString(PARAM_URL);
+            url = getArguments().getString(EXTRAS_PARAM_URL);
 
         webView.loadAuthUrlWithFlags(url);
 

@@ -13,7 +13,7 @@ import org.json.JSONObject;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class ImageProduct implements Parcelable {
+public class ImageProduct extends ImpressHolder implements Parcelable {
 
     private static final String KEY_PRODUCT_ID = "product_id";
     private static final String KEY_PRODUCT_NAME = "product_name";
@@ -22,19 +22,19 @@ public class ImageProduct implements Parcelable {
 
     @SerializedName(KEY_PRODUCT_ID)
     @Expose
-    private String productId;
+    private String productId = "";
 
     @SerializedName(KEY_PRODUCT_NAME)
     @Expose
-    private String productName;
+    private String productName = "";
 
     @SerializedName(KEY_IMAGE_URL)
     @Expose
-    private String imageUrl;
+    private String imageUrl = "";
 
     @SerializedName(KEY_IMAGE_CLICK_URL)
     @Expose
-    private String imageClickUrl;
+    private String imageClickUrl = "";
     private boolean loaded;
 
     public ImageProduct(JSONObject object) throws JSONException {
@@ -116,11 +116,4 @@ public class ImageProduct implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public boolean isLoaded() {
-        return loaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        this.loaded = loaded;
-    }
 }

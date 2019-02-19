@@ -20,15 +20,15 @@ public class WholesalePrice implements Parcelable {
 
     @SerializedName(KEY_QUANTITY_MIN)
     @Expose
-    private String quantityMinFormat;
+    private String quantityMinFormat = "";
 
     @SerializedName(KEY_QUANTITY_MAX)
     @Expose
-    private String quantityMaxFormat;
+    private String quantityMaxFormat = "";
 
     @SerializedName(KEY_PRICE)
     @Expose
-    private String priceFormat;
+    private String priceFormat = "";
 
     public WholesalePrice(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_QUANTITY_MIN)){

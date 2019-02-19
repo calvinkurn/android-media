@@ -6,33 +6,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.constant.TravelSortOption;
+import com.tokopedia.common.travel.presentation.dialog.TravelSearchSortBottomSheet;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
-import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
 import com.tokopedia.train.search.domain.FilterParam;
@@ -54,7 +49,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * A simple {@link Fragment} subclass.
+ * This is base class for TrainSearchDepartureFragment.java and
+ * TrainSearchReturnFragment.java
  */
 public abstract class TrainSearchFragment extends BaseListFragment<TrainScheduleViewModel,
         TrainSearchAdapterTypeFactory> implements TrainSearchContract.View,
@@ -67,6 +63,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     private static final String TAG = TrainSearchFragment.class.getSimpleName();
 
     private static final String SELECTED_SORT = "selected_sort";
+    private static final String TRAIN_SEARCH_TRACE = "tr_train_search";
     private static final int EMPTY_MARGIN = 0;
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
@@ -84,7 +81,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected String destinationCode;
     protected String destinationCity;
     protected TrainSearchComponent trainSearchComponent;
-    private int selectedSortOption;
+    private int selectedSortOption = 0;
     private FilterSearchData filterSearchData;
     private TrainScheduleBookingPassData trainScheduleBookingPassData;
     private ActionListener listener;
@@ -93,6 +90,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     private List<String> trains;
     private List<String> trainClass;
     private List<String> departureTrains;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean traceStop;
 
     //this is for save departure trip - arrival timestamp schedule
     protected String arrivalScheduleSelected;
@@ -110,6 +109,12 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     public TrainSearchFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(TRAIN_SEARCH_TRACE);
     }
 
     @Override
@@ -132,7 +137,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
         if (savedInstanceState == null) {
             filterSearchData = new FilterSearchData();
-            selectedSortOption = TrainSortOption.CHEAPEST;
+            selectedSortOption = TravelSortOption.CHEAPEST;
             resetFilterParam();
         } else {
             selectedSortOption = savedInstanceState.getInt(SELECTED_SORT);
@@ -193,7 +198,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 trainAnalytics.eventClickFilterOnBottomBar();
                 startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
                         arrivalScheduleSelected, getScheduleVariant(), filterSearchData), FILTER_SEARCH_REQUEST_CODE);
-                getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+                getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
@@ -208,7 +213,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     }
 
     private void markUiSortAndFilterOption() {
-        if (selectedSortOption == TrainSortOption.NO_PREFERENCE) {
+        if (selectedSortOption == TravelSortOption.NO_PREFERENCE) {
             filterAndSortBottomAction.setMarkRight(false);
         } else {
             filterAndSortBottomAction.setMarkRight(true);
@@ -459,7 +464,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     public void resetFilterAndSortParam() {
         filterSearchData = new FilterSearchData();
-        selectedSortOption = TrainSortOption.CHEAPEST;
+        selectedSortOption = TravelSortOption.CHEAPEST;
     }
 
     @Override
@@ -503,35 +508,17 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     }
 
     public void showSortBottomSheets() {
-        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
-                .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(getString(R.string.train_search_sort));
-
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_DEPARTURE, R.string.train_sorting_earliest_departure, null, isSortSelected(TrainSortOption.EARLIEST_DEPARTURE));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_DEPARTURE, R.string.train_sorting_latest_departure, null, isSortSelected(TrainSortOption.LATEST_DEPARTURE));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.SHORTEST_DURATION, R.string.train_sorting_shortest_duration, null, isSortSelected(TrainSortOption.SHORTEST_DURATION));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LONGEST_DURATION, R.string.train_sorting_longest_duration, null, isSortSelected(TrainSortOption.LONGEST_DURATION));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_ARRIVAL, R.string.train_sorting_earliest_arrival, null, isSortSelected(TrainSortOption.EARLIEST_ARRIVAL));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_ARRIVAL, R.string.train_sorting_latest_arrival, null, isSortSelected(TrainSortOption.LATEST_ARRIVAL));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.CHEAPEST, R.string.train_sorting_cheapest, null, isSortSelected(TrainSortOption.CHEAPEST));
-        ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.MOST_EXPENSIVE, R.string.train_sorting_most_expensive, null, isSortSelected(TrainSortOption.MOST_EXPENSIVE));
-
-        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-                .setItemClickListener(new BottomSheetItemClickListener() {
-                    @SuppressWarnings("WrongConstant")
-                    @Override
-                    public void onBottomSheetItemClick(MenuItem item) {
-                        getAdapter().showLoading();
-                        selectedSortOption = item.getItemId();
-                        presenter.getFilteredAndSortedSchedules();
-                    }
-                })
-                .createDialog();
-        bottomSheetDialog.show();
-    }
-
-    private boolean isSortSelected(int sortOption) {
-        return selectedSortOption == sortOption;
+        TravelSearchSortBottomSheet bottomSheet = new TravelSearchSortBottomSheet();
+        bottomSheet.setIdSortSelected(selectedSortOption);
+        bottomSheet.setListener(new TravelSearchSortBottomSheet.ActionListener() {
+            @Override
+            public void onClickSortLabel(int idSort) {
+                getAdapter().showLoading();
+                selectedSortOption = idSort;
+                presenter.getFilteredAndSortedSchedules();
+            }
+        });
+        bottomSheet.show(getChildFragmentManager(), getString(R.string.train_bottom_sheet_tag));
     }
 
     @Override
@@ -569,6 +556,14 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = (ActionListener) activity;
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     public interface ActionListener {

@@ -2,7 +2,7 @@ package com.tokopedia.flight.search.domain.usecase
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.flight.search.constant.FlightSortOption
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.search.data.api.single.response.Amenity
 import com.tokopedia.flight.search.data.api.single.response.Info
 import com.tokopedia.flight.search.data.api.single.response.Route
@@ -27,11 +27,11 @@ class FlightSortAndFilterUseCase @Inject constructor(
     private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"
 
     override fun createObservable(requestParams: RequestParams): Observable<List<@JvmSuppressWildcards FlightJourneyViewModel>> {
-        val sortOption = requestParams.getInt(PARAM_SORT, FlightSortOption.CHEAPEST)
+        val sortOption = requestParams.getInt(PARAM_SORT, TravelSortOption.CHEAPEST)
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
         return flightSearchRepository.getSearchFilter(sortOption, filterModel)
-                    .map { mapToFlightJourneyViewModel(it) }
+                .map { mapToFlightJourneyViewModel(it) }
     }
 
     private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>): List<FlightJourneyViewModel> {
@@ -121,7 +121,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
         }
     }
 
-    fun createRequestParams(@FlightSortOption flightSortOption: Int,
+    fun createRequestParams(@TravelSortOption flightSortOption: Int,
                             flightFilterModel: FlightFilterModel): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_SORT, flightSortOption)

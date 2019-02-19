@@ -85,8 +85,10 @@ public class FlightFilterTransitFragment extends BaseFlightFilterFragment<Transi
 
     @Override
     public void loadData(int page) {
-        List<TransitStat> airlineStatList = listener.getFlightSearchStatisticModel().getTransitTypeStatList();
-        renderList(airlineStatList);
+        if (listener != null && listener.getFlightSearchStatisticModel() != null) {
+            List<TransitStat> airlineStatList = listener.getFlightSearchStatisticModel().getTransitTypeStatList();
+            renderList(airlineStatList);
+        }
     }
 
     @Override

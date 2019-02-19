@@ -2,10 +2,7 @@ package com.tokopedia.inbox.rescenter.shipping.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +11,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,13 +19,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core2.R2;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
@@ -38,6 +35,8 @@ import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.shipping.customadapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.shipping.customadapter.ShippingSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.shipping.customdialog.UploadImageShippingResCenterDialog;
+import com.tokopedia.inbox.rescenter.shipping.di.DaggerResolutionShippingComponent;
+import com.tokopedia.inbox.rescenter.shipping.di.ResolutionShippingComponent;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentImpl;
@@ -50,12 +49,14 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import retrofit2.Retrofit;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
@@ -94,6 +95,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     private InputShippingParamsGetModel paramsModel;
     private UploadImageShippingResCenterDialog uploadImageDialog;
     private ArrayList<AttachmentResCenterVersion2DB> attachmentData;
+    private ResolutionShippingComponent daggerShippingComponent;
 
     private boolean isConfirmButtonEnabled = false;
 
@@ -119,6 +121,11 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     @Override
     public void dropKeyBoard() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
+    }
+
+    @Override
+    public Retrofit getRetrofit() {
+        return daggerShippingComponent.uploadWsV4Retrofit();
     }
 
     @Override
@@ -527,5 +534,13 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        daggerShippingComponent = DaggerResolutionShippingComponent.builder()
+                .appComponent(((MainApplication) (getActivity().getApplication())).getAppComponent())
+                .build();
     }
 }

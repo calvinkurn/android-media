@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -32,6 +34,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
@@ -50,6 +53,7 @@ import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -71,11 +75,15 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public static final String KEY_QUERY_LD = "ld";
     public static final String CHARSET_UTF_8 = "UTF-8";
     private static final String LOGIN_URL = "login.pl";
+    private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
+    private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
+    private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
 
     public static final int PAYMENT_SUCCESS = 5;
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
+    public static final int HCI_CAMERA_REQUEST_CODE = 978;
     public static final long FORCE_TIMEOUT = 90000L;
 
     @Inject
@@ -95,6 +103,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
     private CommonWebViewClient webChromeWebviewClient;
+
+    private String mJsHciCallbackFuncName;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -407,6 +417,16 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 view.stopLoading();
                 showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
+            } else if (url.contains(HCI_CAMERA_KTP)) {
+                view.stopLoading();
+                mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_KTP), HCI_CAMERA_REQUEST_CODE);
+                return true;
+            } else if (url.contains(HCI_CAMERA_SELFIE)) {
+                view.stopLoading();
+                mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_SELFIE), HCI_CAMERA_REQUEST_CODE);
+                return true;
             } else {
                 if (ApplinkConst.PAYMENT_BACK_TO_DEFAULT.equalsIgnoreCase(url)) {
                     if (isEndThanksPage()) callbackPaymentSucceed();
@@ -642,6 +662,30 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
+            String base64 = encodeToBase64(imagePath);
+            if (imagePath != null) {
+                StringBuilder jsCallbackBuilder = new StringBuilder();
+                jsCallbackBuilder.append("javascript:")
+                        .append(mJsHciCallbackFuncName)
+                        .append("('")
+                        .append(imagePath)
+                        .append("'")
+                        .append(", ")
+                        .append("'")
+                        .append(base64)
+                        .append("')");
+                scroogeWebView.loadUrl(jsCallbackBuilder.toString());
+            }
         }
+    }
+
+    public static String encodeToBase64(String imagePath) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 }

@@ -4,7 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.TKPDMapParam;
 import com.tokopedia.topads.sdk.domain.mapper.MerlinCategoryMapper;
 import com.tokopedia.topads.sdk.domain.mapper.PreferedCategoryMapper;
 import com.tokopedia.topads.sdk.domain.mapper.TopAdsBannerMapper;
@@ -18,7 +20,6 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
 import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
-import com.tokopedia.topads.sdk.base.TKPDMapParam;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,9 +36,9 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     public static final String MOJITO_URL = "mojito.tokopedia.com";
     public static final String V1_USERS = "v1/users";
     public static final String WISHLIST_CHECK = "wishlist/check";
-    private static final String URL_DISPLAY_ADS = "v1.1/display/ads";
-    private static final String URL_DISPLAY_ADS_V1_3 = "v1.3/display/ads";
-    private static final String URL_INFO_USER = "v1/info/user";
+    private static final String URL_DISPLAY_ADS = "promo/v1.1/display/ads";
+    private static final String URL_DISPLAY_ADS_V1_3 = "promo/v1.3/display/ads";
+    private static final String URL_INFO_USER = "promo/v1/info/user";
     private static final String URL_MERLIN = "https://merlin.tokopedia.com/v4/product/category/recommendation";
     private static final String TKPD_SESSION_ID = "Tkpd-SessionId";
     private static final String TKPD_USER_ID = "Tkpd-UserId";
@@ -60,6 +61,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS_V1_3)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .setMethod(HttpMethod.GET)
                 .addParameters(params)
                 .build();
@@ -72,6 +74,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .setMethod(HttpMethod.GET)
                 .addParameters(params)
                 .build();
@@ -86,7 +89,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
                 .setMethod(HttpMethod.GET)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
                 .addHeader(TKPD_USER_ID, config.getUserId())
-                .addHeader(X_DEVICE, DEFAULT_X_DEVICE)
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .addParameter("pub_id", "14")
                 .build();
         RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
@@ -98,6 +101,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(URL_MERLIN)
                 .setMethod(HttpMethod.POST_RAW)
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Accept", "application/json")
                 .addJsonBodyParameter(String.format("{\"parcel\":[{\"data\":{\"product_title\":\"%s\"}}],\"size\":1,\"expect\":1}", query))
@@ -110,6 +114,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     public String clickTopAdsUrl(String url) {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(url)
+                .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
                 .setMethod(HttpMethod.GET)
                 .build();
         RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
@@ -125,7 +130,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     public TopAdsModel checkWishlist(TopAdsModel model) {
         List<String> ids = new ArrayList<>();
         for (Data data : model.getData()) {
-            if (data.getProduct() != null) {
+            if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
                 ids.add(data.getProduct().getId());
             }
         }

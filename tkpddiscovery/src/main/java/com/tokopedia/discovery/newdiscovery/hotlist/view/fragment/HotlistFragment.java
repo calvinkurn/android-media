@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -62,6 +64,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.item
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -70,6 +74,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -95,6 +100,7 @@ public class HotlistFragment extends BrowseSectionFragment
         HotlistListener, TopAdsListener, TopAdsItemClickListener,
         HotlistActivity.FragmentListener {
 
+    private static final String TAG = HotlistFragment.class.getSimpleName();
     private static final String HOTLIST_DETAIL_ENHANCE_ANALYTIC = "HOTLIST_DETAIL_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
 
@@ -110,6 +116,7 @@ public class HotlistFragment extends BrowseSectionFragment
     private static final int REQUEST_ACTIVITY_SORT_HOTLIST = 2021;
     private static final int REQUEST_ACTIVITY_FILTER_HOTLIST = 1202;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 1111;
+    private static final String PERFORMANCE_TRACE_HOTLIST = "mp_hotlist";
 
     protected BottomNavigationListener bottomNavigationListener;
     protected RefreshHandler refreshHandler;
@@ -133,7 +140,10 @@ public class HotlistFragment extends BrowseSectionFragment
     HotlistFragmentPresenter presenter;
     @Inject
     UserSessionInterface userSession;
+
     private String trackerAttribution;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStopped;
 
 
     public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
@@ -251,6 +261,7 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_HOTLIST);
         trackerProductCache = new LocalCacheHandler(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         if (getArguments() != null) {
             setTrackerAttribution(getArguments().getString(EXTRA_TRACKER_ATTRIBUTION, ""));
@@ -370,6 +381,13 @@ public class HotlistFragment extends BrowseSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
+        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
+                        product, position);
+            }
+        });
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnScrollListener() {
             @Override
             public void onLoad(int page, int totalCount) {
@@ -462,15 +480,15 @@ public class HotlistFragment extends BrowseSectionFragment
             return;
         }
 
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.DISCOVERY_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
                 .setId(aliasHotlist)
                 .build();
 
-        shareData.setType(ShareData.HOTLIST_TYPE);
+        shareData.setType(LinkerData.HOTLIST_TYPE);
         new DefaultShare(getActivity(), shareData).show();
     }
 
@@ -485,8 +503,8 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     protected void setupAdapter() {
-        String searchQuery = getArguments().getString(EXTRA_SEARCH_QUERY, "");
-        HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this, searchQuery);
+        String searchQuery = getArguments().getString(EXTRA_SEARCH_QUERY, getHotlistAlias());
+        HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this, searchQuery, getHotlistAlias());
         hotlistAdapter = new HotlistAdapter(this, typeFactory);
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), hotlistAdapter);
@@ -529,6 +547,8 @@ public class HotlistFragment extends BrowseSectionFragment
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         startActivity(intent);
+        TopAdsGtmTracker.eventHotlistProductClick(getContext(), getQueryModel().getQueryKey(),
+                product, position);
     }
 
     @Override
@@ -598,11 +618,6 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void onAddFavorite(int position, Data data) {
 
-    }
-
-    @Override
-    public void onAddWishList(int position, Data data) {
-        presenter.addWishlist(data.getProduct().getId());
     }
 
     @Override
@@ -901,6 +916,10 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void hideRefresh() {
         refreshHandler.setRefreshing(false);
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     @Override

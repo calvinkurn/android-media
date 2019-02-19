@@ -3,8 +3,8 @@ package com.tokopedia.kol.feature.post.view.subscriber;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.kol.R;
-import com.tokopedia.kol.common.util.ExtensionsKt;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kotlin.extensions.view.UtilExtKt;
 
 import rx.Subscriber;
 
@@ -29,7 +29,7 @@ public class DeletePostSubscriber extends Subscriber<Boolean> {
 
     @Override
     public void onError(Throwable e) {
-        ExtensionsKt.debugTrace(e);
+        UtilExtKt.debugTrace(e);
         view.onErrorDeletePost(ErrorHandler.getErrorMessage(view.getContext(), e), rowNumber, id);
     }
 

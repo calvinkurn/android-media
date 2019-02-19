@@ -22,6 +22,7 @@
     <color name="medium_green_50">#8042b549</color>
     <color name="strong_green">#7cb211</color>
     <color name="yellow_green">#ecf7be</color>
+    <color name="tkpd_main_light_green">#d3f0d4</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
@@ -109,5 +110,11 @@
     <color name="tkpd_status_red">#b94a48</color>
     <color name="label_buyer">#2AB4C2</color>
     <color name="label_user">#5eba46</color>
+
+    <color name="tkpd_light_green">#008000</color>
+    <color name="tkpd_prod_price">#B44141</color>
+
+    <color name="yellow_1">#ffb03b</color>
+    <color name="medium_green_70">#b242b549</color>
 
 </resources>

@@ -8,15 +8,17 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
+import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeOnlyBestPairingViewHolder;
-import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchShimmeringViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchViewHolder;
 import com.tokopedia.flight.search.presentation.model.EmptyResultViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
+import com.tokopedia.flight.searchV3.presentation.adapter.viewholder.FlightSearchTitleRouteViewHolder;
+import com.tokopedia.flight.searchV3.presentation.model.FlightSearchTitleRouteViewModel;
 
 /**
  * @author by furqan on 02/10/18.
@@ -39,12 +41,14 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
             return new FlightSearchSeeAllViewHolder(parent, onFlightSearchListener);
         } else if (type == FlightSearchSeeOnlyBestPairingViewHolder.LAYOUT) {
             return new FlightSearchSeeOnlyBestPairingViewHolder(parent, onFlightSearchListener);
+        } else if (type == FlightSearchTitleRouteViewHolder.Companion.getLAYOUT()) {
+            return new FlightSearchTitleRouteViewHolder(parent);
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             return new ErrorNetworkViewHolder(parent);
-        } else if (type == FlightSearchShimmeringViewHolder.LAYOUT) {
-            return new FlightSearchShimmeringViewHolder(parent);
+        } else if (type == TravelSearchShimmeringViewHolder.LAYOUT) {
+            return new TravelSearchShimmeringViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -60,7 +64,7 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
     }
 
     public int type(LoadingModel loadingModel) {
-        return FlightSearchShimmeringViewHolder.LAYOUT;
+        return TravelSearchShimmeringViewHolder.LAYOUT;
     }
 
     public int type(EmptyResultViewModel viewModel) {
@@ -77,6 +81,10 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
 
     public int type(FlightSearchSeeOnlyBestPairingViewModel viewModel) {
         return FlightSearchSeeOnlyBestPairingViewHolder.LAYOUT;
+    }
+
+    public int type(FlightSearchTitleRouteViewModel viewModel) {
+        return FlightSearchTitleRouteViewHolder.Companion.getLAYOUT();
     }
 
     public interface OnFlightSearchListener {

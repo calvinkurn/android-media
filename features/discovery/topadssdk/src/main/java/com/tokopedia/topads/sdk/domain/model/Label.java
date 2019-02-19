@@ -19,11 +19,11 @@ public class Label implements Parcelable {
 
     @SerializedName(KEY_TITLE)
     @Expose
-    private String title;
+    private String title = "";
 
     @SerializedName(KEY_COLOR)
     @Expose
-    private String color;
+    private String color = "";
 
     public Label(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_TITLE)) {
