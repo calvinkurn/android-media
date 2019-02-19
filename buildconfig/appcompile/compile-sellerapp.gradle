@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:resources_common"
 
 include "features:communication:broadcast_message"
 //include "features:communication:broadcast_message_no_op"
