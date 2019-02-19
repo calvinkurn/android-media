@@ -1,6 +1,7 @@
 // Sort alphabetically by name
-include "features:common:nps"
 include "features:common:developer_options"
+include "features:common:nps"
+include "features:common:resources_common"
 
 include "features:communication:broadcast_message_common"
 
@@ -29,12 +30,13 @@ include "features:digital:train"
 include "features:digital:common_travel"
 include "features:digital:common_digital"
 
-include "features:discovery:wishlist_common"
+include "features:discovery:category_common"
 include "features:discovery:home"
 //include "features:discovery:home_no_op"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"
 //include "features:discovery:recentview_no_op"
+include "features:discovery:wishlist_common"
 
 include "features:fintech:home_credit"
 include "features:fintech:mitra_toppers"
@@ -53,6 +55,7 @@ include "features:home:account-home"
 
 include "features:im:challenges"
 //include "features:im:challenges_no_op"
+include "features:im:common_promo"
 include "features:im:referral"
 
 include "features:logistic:tracking"
@@ -121,6 +124,9 @@ include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
 
+include "features:transaction:express_checkout"
+//include "features:transaction:express_checkout_no_op"
+include "features:transaction:express_checkout_common"
 include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"

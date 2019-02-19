@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.view.Gravity;
@@ -47,6 +48,34 @@ import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
+import com.tokopedia.design.component.TextViewCompat;
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener;
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry;
+import com.tokopedia.gallery.ImageReviewGalleryActivity;
+import com.tokopedia.gallery.domain.GetImageReviewUseCase;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.product.share.ProductData;
+import com.tokopedia.product.share.ProductShare;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.tkpdpdp.DescriptionActivityNew;
+import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
+import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
+import com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView;
+import com.tokopedia.tkpdpdp.customview.ProductInfoShortView;
+import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
+import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
+import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
+import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -194,7 +223,6 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsProductDetailPage;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -242,6 +270,13 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
 import static com.tokopedia.tkpdpdp.constant.ConstantKey.ARGS_STATE_RESULT_PDP_MODAL;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_EXPRESS;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_DEFAULT;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_OCS;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.EXTRA_MESSAGES_ERROR;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_ERROR;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_NCF;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_NAVIGATE_TO_OCS;
 
 
 /**
@@ -251,7 +286,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener,
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener,
         ITransactionAnalyticsProductDetailPage, WishListActionListener, MerchantVoucherListView {
 
     private static final int FROM_COLLAPSED = 0;
@@ -267,6 +302,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final int REQUEST_CODE_LOGIN_USE_VOUCHER = 562;
     public static final int REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563;
     public static final int REQUEST_CODE_MERCHANT_VOUCHER = 564;
+    public static final int REQUEST_CODE_ATC_EXPRESS = 565;
 
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
@@ -307,6 +343,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private VarianCourierSimulationView varianCourierSimulationView;
     private PromoWidgetView promoWidgetView;
     private ImageFromBuyerView imageFromBuyerView;
+    private ErrorBottomsheets errorBottomsheets;
 
     MerchantVoucherListPresenter voucherListPresenter;
     private MerchantVoucherListWidget merchantVoucherListWidget;
@@ -606,6 +643,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
         }
+
+        errorBottomsheets = new ErrorBottomsheets();
     }
 
     private void showUseMerchantVoucherLoading() {
@@ -658,7 +697,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
-        labelCod.setVisibility(isCodShown ? View.INVISIBLE : View.GONE);
+        labelCod.setVisibility(isCodShown? View.INVISIBLE : View.GONE);
     }
 
     private void expandedAppBar() {
@@ -667,7 +706,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
             fabWishlist.show();
         }
-        labelCod.setVisibility(isCodShown ? View.VISIBLE : View.GONE);
+        labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -799,6 +838,53 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onBuyClick(String source) {
+        if (source.equals(SOURCE_BUTTON_BUY_PDP)) {
+            switch (productData.getCheckoutType()) {
+                case CHECKOUT_TYPE_DEFAULT:
+                    checkVariant(source);
+                    break;
+                case CHECKOUT_TYPE_OCS:
+                    checkVariant(source);
+                    break;
+                case CHECKOUT_TYPE_EXPRESS:
+                    goToAtcExpress();
+                    break;
+                default:
+                    checkVariant(source);
+                    break;
+            }
+        } else {
+            checkVariant(source);
+        }
+    }
+
+    private void goToAtcExpress() {
+        try {
+            if (getActivity() != null) {
+                AtcRequestParam atcRequestParam = new AtcRequestParam();
+                atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
+                atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
+                atcRequestParam.setNotes("");
+                int qty = 0;
+                try {
+                    qty = Integer.parseInt(productData.getInfo().getProductMinOrder());
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                atcRequestParam.setQuantity(qty);
+                Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                        .getExpressCheckoutIntent(getActivity(), atcRequestParam);
+                if (intent != null) {
+                    startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
+                    getActivity().overridePendingTransition(R.anim.pull_up, 0);
+                }
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkVariant(String source) {
         if (productData.getInfo().getHasVariant()) {
             if (!onClickBuyWhileRequestingVariant && productVariant != null) {
                 openVariantPage(generateStateVariant(source));
@@ -978,35 +1064,36 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         productData.setProductUrl(data.getInfo().getProductUrl());
         productData.setProductImageUrl(data.getProductImages().get(0).getImageSrc());
         productData.setShopUrl(data.getShopInfo().getShopUrl());
-        productData.setShopName(data.getShopInfo().getShopName());
+        productData.setShopName(Html.fromHtml(data.getShopInfo().getShopName()).toString());
 
         checkAndExecuteReferralAction(productData);
 
     }
 
-    private void checkAndExecuteReferralAction(ProductData productData) {
+    private void checkAndExecuteReferralAction(ProductData productData){
         UserSession userSession = new UserSession(getActivity());
         String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
-        if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest))
-            productData.setProductShareDescription(fireBaseRemoteMsgGuest);
+        if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
 
-        if (userSession.isLoggedIn() && userSession.isMsisdnVerified()) {
+        if(userSession.isLoggedIn() && userSession.isMsisdnVerified()) {
             String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
-                doReferralShareAction(productData, fireBaseRemoteMsg);
-            } else {
+                    doReferralShareAction(productData, fireBaseRemoteMsg);
+            }
+            else {
                 executeProductShare(productData);
             }
-        } else {
+        }
+        else {
             executeProductShare(productData);
         }
     }
 
-    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg) {
-        ActionCreator actionCreator = new ActionCreator<String, Integer>() {
+    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
+        ActionCreator actionCreator = new ActionCreator<String, Integer>(){
             @Override
             public void actionSuccess(int actionId, String dataObj) {
-                if (!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
+                if(!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
                     productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
                     TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
@@ -1021,15 +1108,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             }
         };
 
-        ((PdpRouter) (getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
+        ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
                 (ActionUIDelegate<String, String>) getActivity());
 
     }
 
 
-    private void executeProductShare(ProductData productData) {
+    private void executeProductShare(ProductData productData){
         ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
-        productShare.share(productData, () -> {
+        productShare.share(productData, ()->{
             showProgressLoading();
             return Unit.INSTANCE;
         }, () -> {
@@ -1040,7 +1127,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void shareProduct(ShareData data) {
+    public void shareProduct(LinkerData data) {
         interactionListener.shareProductInfo(data);
     }
 
@@ -1123,7 +1210,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductInfoShortClicked(Intent intent) {
+    public void onProductInfoShortClicked(Intent intent){
         intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
         startActivity(intent);
         getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
@@ -1485,12 +1572,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onNullData() {
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.logException(new ProductNotFoundException());
-            }
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
+            String uri = pass != null ? pass.getProductUri() : "";
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.logException(new ProductNotFoundException(uri));
+            }
             if (webViewHandleListener != null) {
-                webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+                webViewHandleListener.catchToWebView(uri);
             }
         } else {
             showToastMessage("Produk tidak ditemukan!");
@@ -1827,6 +1915,42 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }
             }
             break;
+            case REQUEST_CODE_ATC_EXPRESS:
+                if (resultCode == RESULT_CODE_ERROR) {
+                    String message = data.getStringExtra(EXTRA_MESSAGES_ERROR);
+                    if (message != null && message.length() > 0) {
+                        ToasterError.make(getView(), data.getStringExtra(EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        if (getActivity() != null && errorBottomsheets != null) {
+                            errorBottomsheets.setData(
+                                    getActivity().getString(R.string.bottomsheet_title_global_error),
+                                    getActivity().getString(R.string.bottomsheet_message_global_error),
+                                    getActivity().getString(R.string.bottomsheet_action_global_error),
+                                    true
+                            );
+                            errorBottomsheets.setActionListener(new ErrorBottomsheetsActionListenerWithRetry() {
+                                @Override
+                                public void onActionButtonClicked() {
+                                    errorBottomsheets.dismiss();
+                                    checkVariant(SOURCE_BUTTON_BUY_PDP);
+                                }
+
+                                @Override
+                                public void onRetryClicked() {
+                                    errorBottomsheets.dismiss();
+                                    goToAtcExpress();
+                                }
+                            });
+                            errorBottomsheets.show(getFragmentManager(), "");
+                        }
+                    }
+                } else if (resultCode == RESULT_CODE_NAVIGATE_TO_OCS) {
+                    checkVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                } else if (resultCode == RESULT_CODE_NAVIGATE_TO_NCF) {
+                    checkVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                }
+                break;
             default:
                 break;
         }
@@ -2144,7 +2268,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
-                    labelCod.setVisibility(isCodShown ? View.VISIBLE : View.GONE);
+                    labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
                     stateCollapsing = FROM_EXPANDED;
                 }
             }
@@ -2492,7 +2616,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : categoryLevelStr);
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setQty(productData.getInfo().getProductMinOrder());
+        enhancedECommerceProductCartMapData.setQty(Integer.parseInt(productData.getInfo().getProductMinOrder()));
         enhancedECommerceProductCartMapData.setShopId(productData.getShopInfo().getShopId());
         enhancedECommerceProductCartMapData.setShopType(generateShopType(productData.getShopInfo()));
         enhancedECommerceProductCartMapData.setShopName(productData.getShopInfo().getShopName());
@@ -2692,7 +2816,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
             topAds.setAdsItemClickListener(this);
             topAds.setAdsListener(this);
-            topAds.setAdsItemImpressionListener(this);
+            topAds.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+                @Override
+                public void onImpressionProductAdsItem(int position, Product product) {
+                    TopAdsGtmTracker.eventProductDetailProductView(getContext(), product, position);
+                }
+            });
             topAds.setConfig(config);
             topAds.loadTopAds();
         } catch (Exception e) {
@@ -2722,12 +2851,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        ProductPageTracking.eventTopAdsClicked(getActivity(), position, product);
-    }
-
-    @Override
-    public void onImpressionProductAdsItem(int position, Product product) {
-        ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
+        TopAdsGtmTracker.eventProductDetailProductClick(getContext(), product, position);
     }
 
     @Override
@@ -2742,13 +2866,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onImageFromBuyerClick(int viewType, String reviewId) {
-        if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE) {
+        if(viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE){
             ProductPageTracking.eventClickReviewOnBuyersImage(
                     getActivity(),
                     String.valueOf(productData.getInfo().getProductId()),
                     reviewId
             );
-        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
+        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER){
             ProductPageTracking.eventClickReviewOnSeeAllImage(
                     getActivity(),
                     String.valueOf(productData.getInfo().getProductId())
@@ -2795,7 +2919,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    private String getUserId() {
+    private String getUserId(){
         return userSession.getUserId();
     }
 }

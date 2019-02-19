@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewHolder;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
@@ -48,11 +49,15 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     private static final int DEFAULT_SORT_ID = 1;
     private static final String DEFAULT_QUERY_VALUE = "";
 
+    private static final String FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST = "mp_address_list";
+
     private boolean IS_EMPTY_ADDRESS = false;
     private MPAddressActivityListener mActivityListener;
 
     @Inject
     ManageAddressContract.Presenter mPresenter;
+    @Inject
+    PerformanceMonitoring performanceMonitoring;
 
     public static ManageAddressFragment newInstance() {
         Bundle args = new Bundle();
@@ -94,6 +99,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mActivityListener = (MPAddressActivityListener) getActivity();
+        performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST);
     }
 
     @Override
@@ -136,10 +142,10 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_CODE_PARAM_CREATE || requestCode == REQUEST_CODE_PARAM_EDIT) {
-            if(resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_PARAM_CREATE || requestCode == REQUEST_CODE_PARAM_EDIT) {
+            if (resultCode == Activity.RESULT_OK) {
                 loadInitialData();
-            } else if(resultCode == AddAddressFragment.ERROR_RESULT_CODE) {
+            } else if (resultCode == AddAddressFragment.ERROR_RESULT_CODE) {
                 showErrorSnackbar(getString(R.string.logistic_result_error_message));
             }
         }
@@ -240,6 +246,11 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void setIsEmptyAddress(boolean isEmpty) {
         IS_EMPTY_ADDRESS = isEmpty;
+    }
+
+    @Override
+    public void stopPerformanceMonitoring() {
+        performanceMonitoring.stopTrace();
     }
 
 }

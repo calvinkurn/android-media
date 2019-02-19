@@ -49,11 +49,20 @@ public class Product implements Parcelable {
     private int productCatId;
     private int productCatalogId;
     private PurchaseProtectionPlanData purchaseProtectionPlanData;
+    private String productPreOrderInfo;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
     public AnalyticsProductCheckoutData getAnalyticsProductCheckoutData() {
         return analyticsProductCheckoutData;
+    }
+
+    public String getProductPreOrderInfo() {
+        return productPreOrderInfo;
+    }
+
+    public void setProductPreOrderInfo(String productPreOrderInfo) {
+        this.productPreOrderInfo = productPreOrderInfo;
     }
 
     public void setAnalyticsProductCheckoutData(AnalyticsProductCheckoutData analyticsProductCheckoutData) {
@@ -385,6 +394,7 @@ public class Product implements Parcelable {
         dest.writeInt(this.productCatId);
         dest.writeInt(this.productCatalogId);
         dest.writeParcelable(this.purchaseProtectionPlanData, flags);
+        dest.writeString(this.productPreOrderInfo);
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
     }
 
@@ -424,6 +434,7 @@ public class Product implements Parcelable {
         this.productCatId = in.readInt();
         this.productCatalogId = in.readInt();
         this.purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());
+        this.productPreOrderInfo = in.readString();
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
     }
 

@@ -361,6 +361,10 @@
 -keep class com.tokopedia.track.interfaces.** { *; }
 -keep class * extends com.tokopedia.track.interfaces.ContextAnalytics { *; }
 
+#Tracking crash non fatal shop and product not found
+-keep class com.tokopedia.tkpdpdp.util.ProductNotFoundException
+-keep class com.tokopedia.tkpd.utils.ShopNotFoundException
+
 # -- Coroutines --
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
@@ -368,3 +372,6 @@
 
 -keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}
+
+# -- App indexing
+-dontwarn com.google.firebase.appindexing.**

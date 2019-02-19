@@ -131,6 +131,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     userAddressResult.setProvinceId(groupAddress.getUserAddress().getProvinceId());
                     userAddressResult.setProvinceName(groupAddress.getUserAddress().getProvinceName());
                     userAddressResult.setReceiverName(groupAddress.getUserAddress().getReceiverName());
+                    userAddressResult.setCornerId(groupAddress.getUserAddress().getCornerId());
 
                     groupAddressResult.setUserAddress(userAddressResult);
                 }
@@ -239,7 +240,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductShopType(generateShopType(groupShop.getShop()));
                                 analyticsProductCheckoutData.setProductVariant("");
                                 analyticsProductCheckoutData.setProductBrand("");
-                                analyticsProductCheckoutData.setProductQuantity(String.valueOf(product.getProductQuantity()));
+                                analyticsProductCheckoutData.setProductQuantity(product.getProductQuantity());
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
                                 if (product.getErrors() != null) {
@@ -263,6 +264,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductIsPreorder(product.getProductIsPreorder() == 1);
                                 productResult.setPreOrderDurationDay(product.getProductPreorder() != null ?
                                         product.getProductPreorder().getDurationDay() : 0);
+                                if (product.getProductPreorder() != null
+                                        && product.getProductPreorder().getDurationText() != null) {
+                                    productResult.setProductPreOrderInfo("PO " + product.getProductPreorder().getDurationText());
+                                }
                                 productResult.setProductCashback(product.getProductCashback());
                                 productResult.setProductMinOrder(product.getProductMinOrder());
                                 productResult.setProductInvenageValue(product.getProductInvenageValue());

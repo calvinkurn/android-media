@@ -70,7 +70,6 @@ import rx.Subscriber;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
- * modified by Alvarisi
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
@@ -526,7 +525,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.startActivity(intent);
                 } else {
                     if (!GlobalConfig.DEBUG) {
-                        Crashlytics.logException(new ShopNotFoundException());
+                        Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                     }
                     prepareOpenWebView(uriData);
                 }

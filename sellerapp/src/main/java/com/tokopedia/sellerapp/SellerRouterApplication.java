@@ -73,7 +73,11 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
-import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.UserData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -87,7 +91,6 @@ import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -227,7 +230,7 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -657,7 +660,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToProductDetail(Context context, ShareData shareData) {
+    public void goToProductDetail(Context context, LinkerData shareData) {
         Intent intent = ProductInfoActivity.createInstance(context, shareData);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ProductInfoActivity.SHARE_DATA, shareData);
@@ -1261,8 +1264,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.SHOP_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
                 .setTextContent(shareLabel)
                 .setUri(shopUrl)
@@ -1355,11 +1358,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         intent.putExtra(ContactUsActivity.EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
-    }
-
-    @Override
-    public void showForceHockeyAppDialog() {
-        ServerErrorHandler.showForceHockeyAppDialog();
     }
 
     @Override
@@ -1808,8 +1806,11 @@ public abstract class SellerRouterApplication extends MainApplication
         TrackingUtils.eventPushUserID(applicationContext, userId);
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
-        BranchSdkUtils.sendIdentityEvent(userId);
-        BranchSdkUtils.sendLoginEvent(applicationContext);
+        UserData userData = new UserData();
+        userData.setUserId(userId);
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                userId));
+
     }
 
     @Override
@@ -1840,8 +1841,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendBranchRegisterEvent(String email, String phone) {
-        BranchSdkUtils.sendRegisterEvent(getAppContext(), email, phone);
-
+        UserData userData = new UserData();
+        userData.setEmail(email);
+        userData.setPhoneNumber(phone);
+        LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData));
     }
 
     @Override

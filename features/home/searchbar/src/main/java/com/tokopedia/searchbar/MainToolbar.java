@@ -58,6 +58,18 @@ public class MainToolbar extends Toolbar {
         }
     }
 
+    public void setInboxNumber(int badgeNumber) {
+        if (btnWishlist != null && btnWishlist.getTag() != null
+                && btnWishlist.getTag().toString().equalsIgnoreCase(TAG_INBOX)) {
+            if (badgeView == null)
+                badgeView = new BadgeView(getContext());
+
+            badgeView.bindTarget(btnWishlist);
+            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeView.setBadgeNumber(badgeNumber);
+        }
+    }
+
     public void showInboxIconForAbTest(boolean shouldShowInbox) {
         if (shouldShowInbox) {
             btnWishlist.setTag(TAG_INBOX);
@@ -118,6 +130,7 @@ public class MainToolbar extends Toolbar {
         });
 
         editTextSearch.setOnClickListener(v -> {
+            searchBarAnalytics.eventTrackingSearchBar();
             getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                     .gotoSearchPage(getContext()));
         });

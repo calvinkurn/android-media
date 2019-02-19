@@ -20,10 +20,14 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromo
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 import java.text.DecimalFormat;
@@ -40,6 +44,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     public static final int LAYOUT = R.layout.recyclerview_hotlist_banner;
     public static final String DEFAULT_ITEM_VALUE = "1";
     public static final String HOTLIST_ADS_SRC = "hotlist";
+    public static final String SHOP = "shop";
     private DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
     private final Context context;
     private final HotlistListener mHotlistListener;
@@ -50,12 +55,15 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
     private final String searchQuery;
+    private final String hotlistAlias;
 
-    public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery) {
+    public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery,
+                                   String hotlistAlias) {
         super(parent);
         context = parent.getContext();
         this.mHotlistListener = mHotlistListener;
         this.searchQuery = searchQuery;
+        this.hotlistAlias = hotlistAlias;
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
         this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
         this.hastagList = parent.findViewById(R.id.hastag_list);
@@ -82,8 +90,19 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 mHotlistListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventHotlistShopPromoClick(context, searchQuery, hotlistAlias, data, position);
+                } else {
+                    TopAdsGtmTracker.eventHotlistProductPromoClick(context, searchQuery, hotlistAlias, data, position);
+                }
+            }
+        });
+        this.topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventHotlistPromoView(context, hotlistAlias, data, position);
             }
         });
         if (!searchQuery.isEmpty()) {

@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.discovery.catalog.model.CatalogImage;
 import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface ICatalogDetailPresenter {
      * @param activity  digunakan untuk get resource string
      * @param shareData data yang ingin di lempar ke share activity
      */
-    void processShareCatalog(Activity activity, ShareData shareData);
+    void processShareCatalog(Activity activity, LinkerData shareData);
 
     /**
      * proses tampilkan gambar fullscreen

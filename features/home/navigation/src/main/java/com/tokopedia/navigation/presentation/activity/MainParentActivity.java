@@ -37,6 +37,7 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
+import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -240,7 +241,6 @@ public class MainParentActivity extends BaseActivity implements
         checkAppUpdate();
         checkApplinkCouponCode(getIntent());
 
-        initHockeyBroadcastReceiver();
         initNewFeedClickReceiver();
     }
 
@@ -272,7 +272,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterBroadcastHockeyApp();
         unRegisterNewFeedClickedReceiver();
     }
 
@@ -409,7 +408,6 @@ public class MainParentActivity extends BaseActivity implements
         addShortcuts();
         abTestBottomNavforOs();
 
-        registerBroadcastHockeyApp();
         registerNewFeedClickedReceiver();
 
         if(!((BaseMainApplication)getApplication()).checkAppSignature()){
@@ -515,8 +513,12 @@ public class MainParentActivity extends BaseActivity implements
 
         if (fragment instanceof NotificationListener && notification != null) {
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
-            invalidateOptionsMenu();
         }
+
+        if (fragment instanceof InboxNotificationListener && notification != null) {
+            ((InboxNotificationListener) fragment).onNotifyBadgeInboxNotification(notification.getTotalInbox());
+        }
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -659,34 +661,6 @@ public class MainParentActivity extends BaseActivity implements
 
             presenter.setIsRecurringApplink(true);
         }
-    }
-
-    private void initHockeyBroadcastReceiver() {
-        hockeyBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent != null && intent.getAction() != null) {
-                    if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
-                        showHockeyAppDialog();
-                    }
-                }
-            }
-        };
-    }
-
-    private void registerBroadcastHockeyApp() {
-        if (!GlobalConfig.isAllowDebuggingTools()) {
-            IntentFilter intentFilter = new IntentFilter(FORCE_HOCKEYAPP);
-            LocalBroadcastManager.getInstance(this).registerReceiver(hockeyBroadcastReceiver, new IntentFilter(intentFilter));
-        }
-    }
-
-    private void unregisterBroadcastHockeyApp() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(hockeyBroadcastReceiver);
-    }
-
-    private void showHockeyAppDialog() {
-        ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
     private void initNewFeedClickReceiver() {

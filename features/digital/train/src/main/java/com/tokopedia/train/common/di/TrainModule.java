@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -19,25 +18,27 @@ import com.tokopedia.train.common.data.TrainDataStoreFactory;
 import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.data.interceptor.TrainInterceptor;
 import com.tokopedia.train.common.data.interceptor.model.TrainErrorResponse;
+import com.tokopedia.train.common.database.TrainRoomDb;
 import com.tokopedia.train.common.domain.TrainProvider;
 import com.tokopedia.train.common.domain.TrainRepository;
-import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.domain.TrainScheduler;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.data.TrainPromoCloudDataStore;
 import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
 import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherCloudDataStore;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
-import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
 import com.tokopedia.train.search.data.TrainScheduleCloudDataStore;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
-import com.tokopedia.train.search.data.TrainScheduleDbDataStore;
+import com.tokopedia.train.search.data.database.TrainScheduleDao;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
+import com.tokopedia.train.search.domain.mapper.TrainScheduleMapper;
 import com.tokopedia.train.seat.data.TrainSeatCloudDataStore;
 import com.tokopedia.train.station.data.TrainStationCacheDataStore;
 import com.tokopedia.train.station.data.TrainStationCloudDataStore;
-import com.tokopedia.train.station.data.TrainStationDataStoreFactory;
-import com.tokopedia.train.station.data.TrainStationDbDataStore;
+import com.tokopedia.train.station.data.TrainStationDataStoreNewFactory;
+import com.tokopedia.train.station.data.database.TrainStationDao;
+import com.tokopedia.train.station.domain.model.mapper.TrainStationMapper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -120,12 +121,6 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainStationDbDataStore provideTrainStationDbDataStore() {
-        return new TrainStationDbDataStore();
-    }
-
-    @TrainScope
-    @Provides
     public TrainStationCloudDataStore provideTrainStationCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
         return new TrainStationCloudDataStore(trainApi, context);
     }
@@ -162,16 +157,17 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainStationDataStoreFactory provideTrainStationDataStoreFactory(TrainStationDbDataStore trainStationDbDataStore,
-                                                                            TrainStationCloudDataStore trainStationCloudDataStore,
-                                                                            TrainStationCacheDataStore trainStationCacheDataStore) {
-        return new TrainStationDataStoreFactory(trainStationDbDataStore, trainStationCloudDataStore, trainStationCacheDataStore);
+    public TrainStationDataStoreNewFactory provideTrainStationDataStoreNewFactory(TrainStationDao trainStationDao,
+                                                                                  TrainStationCloudDataStore trainStationCloudDataStore,
+                                                                                  TrainStationCacheDataStore trainStationCacheDataStore,
+                                                                                  TrainStationMapper trainStationMapper) {
+        return new TrainStationDataStoreNewFactory(trainStationCloudDataStore, trainStationCacheDataStore, trainStationDao, trainStationMapper);
     }
 
     @TrainScope
     @Provides
     public TrainRepository provideTrainRepository(TrainSeatCloudDataStore trainSeatCloudDataStore,
-                                                  TrainStationDataStoreFactory trainStationDataStoreFactory,
+                                                  TrainStationDataStoreNewFactory trainStationDataStoreFactory,
                                                   TrainScheduleDataStoreFactory scheduleDataStoreFactory,
                                                   TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore,
                                                   TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore,
@@ -180,6 +176,24 @@ public class TrainModule {
         return new TrainRepositoryImpl(trainSeatCloudDataStore, trainStationDataStoreFactory, scheduleDataStoreFactory,
                 trainSoftBookingCloudDataStore, trainCheckVoucherCloudDataStore, trainCheckoutCloudDataStore,
                 trainPromoCloudDataStore);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainRoomDb provideTrainRoomDb(@ApplicationContext Context context) {
+        return TrainRoomDb.getDatabase(context);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainStationDao provideTrainStationDao(TrainRoomDb trainRoomDb) {
+        return trainRoomDb.trainStationDao();
+    }
+
+    @TrainScope
+    @Provides
+    public TrainScheduleDao provideTrainScheduleDao(TrainRoomDb trainRoomDb) {
+        return trainRoomDb.trainScheduleDao();
     }
 
     @TrainScope
@@ -202,12 +216,6 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainScheduleDbDataStore provideTrainScheduleDbDataStore() {
-        return new TrainScheduleDbDataStore();
-    }
-
-    @TrainScope
-    @Provides
     public TrainScheduleCloudDataStore provideTrainScheduleCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
         return new TrainScheduleCloudDataStore(trainApi, context);
     }
@@ -226,16 +234,10 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public TrainScheduleCacheDataStore provideTrainScheduleCacheDataStore(@ApplicationContext Context context) {
-        return new TrainScheduleCacheDataStore(context);
-    }
-
-    @TrainScope
-    @Provides
-    public TrainScheduleDataStoreFactory provideTrainScheduleDataStoreFactory(TrainScheduleDbDataStore trainScheduleDbDataStore,
+    public TrainScheduleDataStoreFactory provideTrainScheduleDataStoreFactory(TrainScheduleDao trainScheduleDao,
                                                                               TrainScheduleCloudDataStore trainScheduleCloudDataStore,
-                                                                              TrainScheduleCacheDataStore trainScheduleCacheDataStore) {
-        return new TrainScheduleDataStoreFactory(trainScheduleDbDataStore, trainScheduleCacheDataStore, trainScheduleCloudDataStore);
+                                                                              TrainScheduleMapper scheduleMapper) {
+        return new TrainScheduleDataStoreFactory(trainScheduleDao, trainScheduleCloudDataStore, scheduleMapper);
     }
 
     @TrainScope

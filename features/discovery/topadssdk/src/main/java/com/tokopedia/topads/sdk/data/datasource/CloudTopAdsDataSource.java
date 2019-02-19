@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.TKPDMapParam;
 import com.tokopedia.topads.sdk.domain.mapper.MerlinCategoryMapper;
 import com.tokopedia.topads.sdk.domain.mapper.PreferedCategoryMapper;
 import com.tokopedia.topads.sdk.domain.mapper.TopAdsBannerMapper;
@@ -19,8 +20,6 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
 import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
-import com.tokopedia.topads.sdk.base.TKPDMapParam;
-import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -131,7 +130,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     public TopAdsModel checkWishlist(TopAdsModel model) {
         List<String> ids = new ArrayList<>();
         for (Data data : model.getData()) {
-            if (data.getProduct() != null) {
+            if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
                 ids.add(data.getProduct().getId());
             }
         }

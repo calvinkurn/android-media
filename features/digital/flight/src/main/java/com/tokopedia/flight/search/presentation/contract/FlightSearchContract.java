@@ -95,6 +95,8 @@ public interface FlightSearchContract {
         void onSuccessDeleteFlightCache();
 
         FlightFilterModel getFilterModel();
+
+        void traceStop();
     }
 
     interface Presenter {
