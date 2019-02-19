@@ -121,7 +121,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
             departureTerminal.setText(getString(R.string.flight_terminal_info, route.getDepartureTerminal()));
             departureTerminal.setVisibility(View.VISIBLE);
         } else {
-            departureTerminal.setVisibility(View.INVISIBLE);
+            departureTerminal.setVisibility(View.GONE);
         }
 
         if (route.getArrivalTerminal() != null && route.getArrivalTerminal().length() > 0) {
