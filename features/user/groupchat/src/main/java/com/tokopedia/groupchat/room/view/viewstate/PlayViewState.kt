@@ -33,4 +33,6 @@ interface PlayViewState {
     fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel)
     fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?)
     fun afterSendMessage()
+    fun onInfoMenuClicked()
+    fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
 }

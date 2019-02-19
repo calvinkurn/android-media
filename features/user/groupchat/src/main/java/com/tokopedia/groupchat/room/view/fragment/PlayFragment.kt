@@ -1,6 +1,7 @@
 package com.tokopedia.groupchat.room.view.fragment
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -18,10 +19,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -75,8 +78,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     @Inject
     lateinit var analytics : GroupChatAnalytics
 
-    open lateinit var viewState: PlayViewState
+    private lateinit var viewState: PlayViewState
     private lateinit var rootView : View
+    private lateinit var notifReceiver : BroadcastReceiver
 
     private lateinit var channelInfoViewModel : ChannelInfoViewModel
 
@@ -86,6 +90,20 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         val channelUUID = getParamString(PlayActivity.EXTRA_CHANNEL_UUID, arguments,
                 savedInstanceState, "")
         channelInfoViewModel = ChannelInfoViewModel(channelUUID)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::notifReceiver.isInitialized) {
+            notifReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    if (intent.extras != null) {
+                        onGetNotif(intent.extras!!)
+                    }
+                }
+            }
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -111,6 +129,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     onBackPressed()
                     true
                 }
+                it.itemId == R.id.action_info -> {
+                    onInfoClicked()
+                    true
+                }
                 it.itemId == R.id.action_share -> {
                     shareChannel()
                     true
@@ -120,6 +142,24 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun onGetNotif(data: Bundle) {
+        val model = GroupChatPointsViewModel(
+                data.getString("desc", ""),
+                data.getString("applinks", ""),
+                data.getString("tkp_code", "")
+        )
+
+        if(::viewState.isInitialized){
+            viewState.onReceiveGamificationNotif(model)
+        }
+    }
+
+    private fun onInfoClicked() {
+        if(::viewState.isInitialized) {
+            viewState.onInfoMenuClicked()
+        }
     }
 
     private fun shareChannel() {
@@ -177,65 +217,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun setToolbarView(view: View) {
 
-//        if (isLollipopOrNewer()) {
-//            TransparentStatusBarHelper.assistActivity(activity)
-//        }
-//        removePaddingStatusBar()
+        val toolbar = viewState.getToolbar()
 
-        var toolbar = viewState.getToolbar()
-
-//        if (isLollipopOrNewer()) {
-//            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-//            toolbar?.setPadding(0, getStatusBarHeight(), 0, 0)
-//        }
         activity?.let {
             (it as AppCompatActivity).let {
                 it.setSupportActionBar(toolbar)
                 it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            }
-        }
-    }
-
-    private fun removePaddingStatusBar() {
-        val KEYBOARD_THRESHOLD = 100
-
-        view?.let{
-            rootView = it.findViewById<View>(R.id.root_view)
-            rootView.viewTreeObserver?.addOnGlobalLayoutListener {
-                val heightDiff = rootView.rootView.height - rootView.height
-
-                if (heightDiff > KEYBOARD_THRESHOLD) {
-                    removePaddingIfKeyboardIsShowing()
-                } else {
-                    addPaddingIfKeyboardIsClosed()
-                }
-            }
-        }
-
-    }
-
-    private fun addPaddingIfKeyboardIsClosed() {
-        activity?.run{
-            if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
-                val container = rootView.findViewById<View>(R.id.container)
-                val params = container
-                        .layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(this))
-                container.layoutParams = params
-            }
-        }
-
-    }
-
-    private fun removePaddingIfKeyboardIsShowing() {
-        activity?.run{
-            if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
-                val container = rootView.findViewById<View>(R.id.container)
-                val params = container.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(0, 0, 0, 0)
-                container.layoutParams = params
             }
         }
     }
@@ -254,19 +241,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 0
         }
         return 0
-    }
-
-    fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
-    }
-
-    private fun isLollipopOrNewer(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
@@ -340,7 +314,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onPointsClicked(url: String?) {
+        url?.let {
+            openRedirectUrl(it)
+            analytics.eventClickLoyaltyWidget(channelInfoViewModel.channelId)
 
+        }
+    }
+
+    private fun openRedirectUrl(it: String) {
+        (context as GroupChatModuleRouter).openRedirectUrl(activity, it)
     }
 
     override fun onOpenWebSocket() {

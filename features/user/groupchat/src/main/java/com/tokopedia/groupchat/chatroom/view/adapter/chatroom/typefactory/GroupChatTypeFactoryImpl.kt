@@ -17,7 +17,7 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
                                voteAnnouncementListen: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
                                sprintSaleViewHolderListen: ChatroomContract.ChatItem.SprintSaleViewHolderListener,
                                groupChatPointsViewHolderListen: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener
-                               ) : BaseAdapterTypeFactory(), GroupChatTypeFactory {
+) : BaseAdapterTypeFactory(), GroupChatTypeFactory {
 
     internal var imageListener: ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener
     internal var voteAnnouncementViewHolderListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener
@@ -62,7 +62,7 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
     }
 
     override fun type(groupChatPointsViewModel: GroupChatPointsViewModel): Int {
-        return GroupChatPointsViewHolder.LAYOUT
+        return GamificationViewHolder.LAYOUT
     }
 
     override fun type(vibrateViewModel: VibrateViewModel): Int {
@@ -100,9 +100,13 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
             viewHolder = SprintSaleViewHolder(parent, sprintSaleViewHolderListener)
         } else if (type == GeneratedMessageViewHolder.LAYOUT) {
             viewHolder = GeneratedMessageViewHolder(parent)
-        } else if (type == GroupChatPointsViewHolder.LAYOUT) {
-            viewHolder = GroupChatPointsViewHolder(parent, groupChatPointsViewHolderListener)
-        } else if (type == PlayChatViewHolder.LAYOUT){
+        }
+//        else if (type == GroupChatPointsViewHolder.LAYOUT) {
+//            viewHolder = GroupChatPointsViewHolder(parent, groupChatPointsViewHolderListener)
+//        }
+        else if (type == GamificationViewHolder.LAYOUT) {
+            viewHolder = GamificationViewHolder(parent, groupChatPointsViewHolderListener)
+        } else if (type == PlayChatViewHolder.LAYOUT) {
             viewHolder = PlayChatViewHolder(parent)
         } else {
             viewHolder = super.createViewHolder(parent, type)

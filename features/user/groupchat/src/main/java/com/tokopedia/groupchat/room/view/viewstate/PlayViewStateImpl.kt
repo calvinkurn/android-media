@@ -295,6 +295,10 @@ class PlayViewStateImpl(
 
         showLoginButton(!userSession.isLoggedIn)
 
+        //
+        onReceiveGamificationNotif(GroupChatPointsViewModel(
+                "Selamat, anda mendapatkan 3 point", "tokopedia://groupchat", "1401"
+        ))
     }
 
     private fun showWidgetAboveInput(isUserLoggedIn: Boolean) {
@@ -790,6 +794,20 @@ class PlayViewStateImpl(
     override fun afterSendMessage() {
         KeyboardHandler.DropKeyboard(view.context, view)
         replyEditText.text.clear()
+    }
+
+    override fun onInfoMenuClicked() {
+        showInfoBottomSheet()
+    }
+
+    override fun onReceiveGamificationNotif(model: GroupChatPointsViewModel) {
+        adapter.addIncomingMessage(model)
+        adapter.notifyItemInserted(0)
+        scrollToBottom()
+    }
+
+    private fun showInfoBottomSheet() {
+
     }
 
     override fun destroy() {
