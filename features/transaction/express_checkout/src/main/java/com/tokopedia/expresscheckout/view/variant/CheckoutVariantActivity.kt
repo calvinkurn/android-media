@@ -13,7 +13,7 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
+open class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

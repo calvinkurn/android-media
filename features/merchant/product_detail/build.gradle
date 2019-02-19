@@ -38,6 +38,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.expressCheckout)
+    implementation project(rootProject.ext.features.transactiondata)
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex
