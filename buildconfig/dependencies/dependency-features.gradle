@@ -242,7 +242,7 @@ ext {
             logisticinsurance             : ":features:logistic:logisticinsurance",
 //            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
             logisticCod             : ":features:logistic:cod",
-
+            shippingRecommendation  : ":features:logistic:shipping_recommendation",
 
             goldMerchant                  : ":features:merchant:gold_merchant",
             goldMerchantCommon            : ":features:merchant:gold_merchant_common",
@@ -301,7 +301,9 @@ ext {
             transactionInvoice            : ":features:transaction:transactioninvoice",
             loyalty                       : ":features:promo:loyalty",
             loyaltyCommon                 : ":features:promo:loyalty_common",
-            shippingRecommendation      : ":features:logistic:shipping_recommendation",
+            expressCheckout               : ":features:transaction:express_checkout",
+//            expressCheckout               : ":features:transaction:express_checkout_no_op",
+            expressCheckoutCommon         : ":features:transaction:express_checkout_common",
 
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",

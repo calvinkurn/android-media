@@ -67,7 +67,7 @@ public class OrderDetailAnalytics {
 
     public void sendAnalyticBuyAgain(OrderDetailData data) {
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
-        for(OrderDetailItemData orderDetailItemData : data.getItemList()) {
+        for (OrderDetailItemData orderDetailItemData : data.getItemList()) {
             EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                     new EnhancedECommerceProductCartMapData();
             enhancedECommerceProductCartMapData.setProductName(orderDetailItemData.getItemName());
@@ -81,7 +81,13 @@ public class OrderDetailAnalytics {
                     ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     : categoryLevelStr);
             enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-            enhancedECommerceProductCartMapData.setQty(orderDetailItemData.getItemQuantity());
+            int qty = 0;
+            try {
+                qty = Integer.parseInt(orderDetailItemData.getItemQuantity());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            enhancedECommerceProductCartMapData.setQty(qty);
             enhancedECommerceProductCartMapData.setShopId(data.getShopId());
             enhancedECommerceProductCartMapData.setShopType(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
             enhancedECommerceProductCartMapData.setShopName(data.getShopName());

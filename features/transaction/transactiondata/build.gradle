@@ -37,3 +37,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 apply from: "$rootProject.projectDir/publish_local.gradle"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
