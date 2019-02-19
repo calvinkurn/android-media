@@ -102,6 +102,12 @@ public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
                 EventCategory.CART_MULTIPLE_ADDRESS,
                 EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT
         );
+
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT
+        );
     }
 
     public void eventClickAtcCartMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat() {
