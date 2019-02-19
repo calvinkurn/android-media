@@ -13,9 +13,7 @@ import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -23,17 +21,20 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
+import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -71,9 +72,21 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var analytics : GroupChatAnalytics
+
     open lateinit var viewState: PlayViewState
     private lateinit var rootView : View
 
+    private lateinit var channelInfoViewModel : ChannelInfoViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+        val channelUUID = getParamString(PlayActivity.EXTRA_CHANNEL_UUID, arguments,
+                savedInstanceState, "")
+        channelInfoViewModel = ChannelInfoViewModel(channelUUID)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.play_fragment, container, false)
@@ -83,7 +96,62 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        presenter.getPlayInfo(arguments?.getString(PlayActivity.EXTRA_CHANNEL_UUID), onSuccessGetInfo())
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo())
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.run{inflate(R.menu.group_chat_room_menu, menu)}
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        item?.let{
+            return when {
+                it.itemId == android.R.id.home -> {
+                    onBackPressed()
+                    true
+                }
+                it.itemId == R.id.action_share -> {
+                    shareChannel()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun shareChannel() {
+        activity?.let{
+
+        val TAG_CHANNEL = "{channel_url}"
+
+        analytics.eventClickShare(channelInfoViewModel.channelId)
+
+        val link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, channelInfoViewModel.channelUrl)
+
+        val description = String.format("%s %s",
+                String.format(getString(R.string.lets_join_channel),
+                        channelInfoViewModel.title), "")
+
+        var userId = "0"
+        if (userSession.isLoggedIn) {
+            userId = userSession.userId
+        }
+
+            (it.applicationContext as GroupChatModuleRouter).shareGroupChat(
+                    it,
+                    channelInfoViewModel.channelId,
+                    channelInfoViewModel.title,
+                    description,
+                    channelInfoViewModel.bannerUrl,
+                    channelInfoViewModel.channelUrl,
+                    userId,
+                    "sharing"
+            )
+        }
+
     }
 
     override fun loadData(page: Int) {
@@ -387,7 +455,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_LOGIN) {
             viewState.onSuccessLogin()
-            presenter.getPlayInfo(arguments?.getString(PlayActivity.EXTRA_CHANNEL_UUID), onSuccessGetInfo())
+            presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo())
         }
     }
 

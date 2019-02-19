@@ -7,7 +7,6 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.tokopedia.design.R
@@ -44,18 +43,23 @@ open class RoundedCornerBottomSheetDialog : BottomSheetDialog {
         this.context = context
     }
 
-    /**
-     * Do not use this function. This is to set default view.
-     */
-    override fun setContentView(layoutResId: Int) {
-        val contentView = (context as Activity).layoutInflater.inflate(R.layout
+    fun initView(bottomSheetWebviewFragment: Fragment) {
+        val contentView = (context as FragmentActivity).layoutInflater.inflate(R.layout
                 .bottom_sheet_rounded_header, null)
 
         val closeButton = contentView.findViewById<ImageView>(R.id.close_button)
         closeButton.setOnClickListener {
             dismiss()
-            closeListener!!.onCloseDialog()
+            closeListener?.run{
+                onCloseDialog()
+            }
         }
+
+        (context as FragmentActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.bottom_sheet_fragment_container,
+                        bottomSheetWebviewFragment,
+                        bottomSheetWebviewFragment.javaClass.simpleName)
+                .commit()
 
         super.setContentView(contentView)
     }
@@ -107,7 +111,7 @@ open class RoundedCornerBottomSheetDialog : BottomSheetDialog {
             val closeableBottomSheetDialog = RoundedCornerBottomSheetDialog(context)
             closeableBottomSheetDialog.setListener(object : CloseClickedListener {
                 override fun onCloseDialog() {
-                    closeableBottomSheetDialog.dismiss()
+
                 }
             })
             return closeableBottomSheetDialog

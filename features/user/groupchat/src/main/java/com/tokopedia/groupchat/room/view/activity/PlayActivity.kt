@@ -19,6 +19,7 @@ import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
+import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
@@ -92,15 +93,16 @@ open class PlayActivity : BaseSimpleActivity() {
 //        if (isLollipopOrNewer()) {
 //            TransparentStatusBarHelper.assistActivity(this)
 //        }
-        removePaddingStatusBar()
+
+//        removePaddingStatusBar()
 
 //        toolbar = findViewById(R.id.toolbar)
 
 //        if (isLollipopOrNewer()) {
-//            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-////            toolbar.setPadding(0, getStatusBarHeight(), 0, 0)
+////            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+////                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+////                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+//            toolbar.setPadding(0, getStatusBarHeight(), 0, 0)
 //        }
 //        setSupportActionBar(toolbar)
 

@@ -14,6 +14,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewMo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +63,37 @@ public class ChannelInfoViewModel implements Parcelable {
 
     @Nullable
     private List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel;
+
+    public ChannelInfoViewModel(String channelId) {
+        this.channelId = channelId;
+        this.title = "";
+        this.channelUrl = "";
+        this.bannerUrl = "";
+        this.blurredBannerUrl = "";
+        this.adsImageUrl = "";
+        this.adsLink = "";
+        this.adsName = "";
+        this.adsId = "";
+        this.bannerName = "";
+        this.groupChatToken = "";
+        this.adminName = "";
+        this.image = "";
+        this.adminPicture = "";
+        this.description = "";
+        this.totalView = "";
+        this.channelPartnerViewModels = new ArrayList<>();
+        this.voteInfoViewModel = null;
+        this.sprintSaleViewModel = null;
+        this.bannedMessage = "";
+        this.kickedMessage = "";
+        this.isFreeze = false;
+        this.pinnedMessageViewModel = null;
+        this.exitMessage = null;
+        this.quickRepliesViewModel = null;
+        this.videoId = "";
+        this.settingGroupChat = null;
+        this.overlayViewModel = null;
+    }
 
     public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
                                 String blurredBannerUrl,
