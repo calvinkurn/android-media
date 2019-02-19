@@ -91,12 +91,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }*/
 
             //if fail, will not interrupt the product info
-            val variantJob = async {
+            /*val variantJob = async {
                 val paramsVariant = mapOf(PARAM_PRODUCT_ID to productParams.productId)
                 val graphqlVariantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT], ProductDetailVariantResponse::class.java, paramsVariant)
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy).getSuccessData<ProductDetailVariantResponse>()
-            }
+            }*/
 
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID, productInfoP1.productInfo.basic.id, resources)
             productInfoP2resp.value = productInfoP2
@@ -104,11 +104,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             ?: return@launchCatchError
             productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, resources)
 
-            try {
+            /*try {
                 productVariantResp.value = Success(variantJob.await().data)
             } catch (e: Exception) {
                 productVariantResp.value = Fail(e)
-            }
+            }*/
         }) {
             productInfoP1Resp.value = Fail(it)
             // for testing
