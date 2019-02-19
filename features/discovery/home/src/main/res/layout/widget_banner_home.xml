@@ -8,7 +8,7 @@
     <ImageView
         android:id="@+id/img_banner_background"
         android:layout_width="match_parent"
-        android:src="@drawable/ic_icon_toped_announce"
+        tools:src="@drawable/ic_icon_toped_announce"
         android:scaleType="centerCrop"
         android:layout_height="@dimen/dp_300"
         tools:background="@color/tkpd_main_green"

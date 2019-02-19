@@ -788,17 +788,7 @@ public class ImageHandler {
                     .asBitmap()
                     .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
                     .centerCrop()
-                    .listener(new RequestListener<String, Bitmap>() {
-                        @Override public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-                            return false;
-                        }
-                        @Override public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            ImageViewTarget imTarget = (ImageViewTarget)target;
-                            return new DrawableCrossFadeFactory<Drawable>()
-                                    .build(isFromMemoryCache, isFirstResource)
-                                    .animate(new BitmapDrawable(imTarget.getView().getResources(), resource), imTarget);
-                        }
-                    })
+                    .animate(R.anim.abc_fade_in)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation
