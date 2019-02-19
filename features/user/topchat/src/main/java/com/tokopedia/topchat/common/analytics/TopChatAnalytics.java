@@ -188,12 +188,12 @@ public class TopChatAnalytics {
                 "");
     }
 
-    public void trackClickUnblockChat() {
+    public void trackClickUnblockChat(int shopId) {
         analyticTracker.sendEventTracking(
                 ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
-                ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
+                String.valueOf(shopId));
     }
 
     public void eventClickProductThumbnailEE(int blastId, String productId, String productName,

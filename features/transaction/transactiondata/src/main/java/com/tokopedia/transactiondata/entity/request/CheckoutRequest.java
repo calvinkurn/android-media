@@ -25,6 +25,9 @@ public class CheckoutRequest {
     @Expose
     public TokopediaCornerData cornerData;
 
+    public CheckoutRequest() {
+    }
+
     public boolean isHavingPurchaseProtectionEnabled() {
         for (DataCheckoutRequest datum : data) {
             for (ShopProductCheckoutRequest shopProduct : datum.shopProducts) {

@@ -244,6 +244,7 @@ public interface ApplinkConst {
     interface Chat {
         String MESSAGE_ID = "message_id";
         String OPPONENT_ID = "opponent_id";
+        String SHOP_ID = "shop_id";
         String OPPONENT_NAME = "opponent_name";
         String OPPONENT_ROLE = "opponent_role";
         String SOURCE = "source";
