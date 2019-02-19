@@ -28,6 +28,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
+    implementation rootProject.ext.miscDependencies.chips
+
+
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
