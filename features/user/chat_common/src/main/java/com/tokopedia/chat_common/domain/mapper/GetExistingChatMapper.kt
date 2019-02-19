@@ -191,7 +191,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.productProfile.category,
                 pojoAttribute.productProfile.variant.toString(),
                 pojoAttribute.productProfile.dropPercentage,
-                pojoAttribute.productProfile.priceBefore
+                pojoAttribute.productProfile.priceBefore,
+                pojoAttribute.productProfile.shopId
         )
     }
 
