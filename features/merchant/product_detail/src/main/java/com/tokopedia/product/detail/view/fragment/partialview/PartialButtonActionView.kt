@@ -12,7 +12,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRD_STATE_WA
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 class PartialButtonActionView private constructor(private val view: View){
-    var productManagePromoteClick: (() -> Unit)? = null
     var promoTopAdsClick: (() -> Unit)? = null
     var visibility: Boolean = false
     set(value) {
@@ -49,7 +48,6 @@ class PartialButtonActionView private constructor(private val view: View){
     private fun showNewCheckoutButton(preOrder: PreOrder?) {
         with(view) {
             btn_buy.visibility = View.GONE
-            btn_promo_hour.visibility = View.GONE
             btn_promote_topads.visibility = View.GONE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
@@ -63,11 +61,8 @@ class PartialButtonActionView private constructor(private val view: View){
 
     private fun showShopManageButton() {
         with(view){
-            btn_promo_hour.setTextColor(ContextCompat.getColor(context, R.color.grey_500))
-            btn_promo_hour.setOnClickListener { productManagePromoteClick?.invoke() }
             btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
             btn_buy.visibility = View.GONE
-            btn_promo_hour.visibility = View.VISIBLE
             btn_promote_topads.visibility = View.VISIBLE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.GONE
@@ -83,7 +78,6 @@ class PartialButtonActionView private constructor(private val view: View){
             tv_buy.text = context.getString(R.string.no_stock)
             btn_buy.isEnabled = false
             btn_buy.visibility = View.VISIBLE
-            btn_promo_hour.visibility = View.GONE
             btn_promote_topads.visibility = View.GONE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.GONE
