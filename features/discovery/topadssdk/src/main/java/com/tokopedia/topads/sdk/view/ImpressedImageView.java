@@ -175,7 +175,7 @@ public class ImpressedImageView extends AppCompatImageView {
 
     public void setImage(ProductImage image) {
         this.holder = image;
-        ImageHandler.loadImageThumbs(getContext(), this, image.getM_url());
+        ImageHandler.loadImageThumbs(getContext(), this, image.getM_ecs());
     }
 
     public void setImage(ImageProduct image) {
