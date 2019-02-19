@@ -16,6 +16,7 @@ import com.tokopedia.navigation_common.model.TokopointsModel;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.user_identification_common.pojo.KycStatusPojo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public class AccountModel {
     private NotificationsModel notifications;
     @SerializedName("reputation_shops")
     @Expose
-    private List<ReputationShop> reputationShops;
+    private List<ReputationShop> reputationShops = new ArrayList<>();
     @SerializedName("tokopointsSumCoupon")
     @Expose
     private TokopointsSumCoupon tokopointsSumCoupon;
@@ -54,10 +55,10 @@ public class AccountModel {
     private LePreapproveModel lePreapprove = new LePreapproveModel();
 
     @SerializedName("vcc_user_status")
-    private VccUserStatus vccUserStatus;
+    private VccUserStatus vccUserStatus = new VccUserStatus();
 
     @SerializedName("vcc_user_balance")
-    private VccUserBalance vccUserBalance;
+    private VccUserBalance vccUserBalance = new VccUserBalance();
 
     @SerializedName("kycStatus")
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
