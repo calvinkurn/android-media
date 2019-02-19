@@ -12,25 +12,26 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.linker.model.LinkerData;
 
 public class ShareActivity extends TActivity {
-    private ShareData data;
-    public static Intent createIntent(Context context, ShareData shareData) {
+    private LinkerData data;
+    public static Intent createIntent(Context context, LinkerData shareData) {
         Intent intent = new Intent(context, ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
+        intent.putExtra(LinkerData.TAG, shareData);
         return intent;
     }
 
-    public static Intent createIntent(Context context, ShareData shareData,boolean isAddingProduct) {
+    public static Intent createIntent(Context context, LinkerData shareData,boolean isAddingProduct) {
         Intent intent = new Intent(context, ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
+        intent.putExtra(LinkerData.TAG, shareData);
         intent.putExtra(ProductDetailRouter.IS_ADDING_PRODUCT,isAddingProduct);
         return intent;
     }
 
-    public static Intent getCallingRideIntent(Context activity, ShareData shareData) {
+    public static Intent getCallingRideIntent(Context activity, LinkerData shareData) {
         Intent intent = new Intent(activity, ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
+        intent.putExtra(LinkerData.TAG, shareData);
         return intent;
     }
 
@@ -46,7 +47,7 @@ public class ShareActivity extends TActivity {
         boolean isAddingProduct=false;
         if (getIntent() != null) {
             Intent intent = getIntent();
-            data = intent.getParcelableExtra(ShareData.TAG);
+            data = intent.getParcelableExtra(LinkerData.TAG);
             isAddingProduct = intent.getBooleanExtra(ProductDetailRouter.IS_ADDING_PRODUCT,false);
         }
 

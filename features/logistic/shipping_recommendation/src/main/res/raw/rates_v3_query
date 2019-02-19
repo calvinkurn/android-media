@@ -15,6 +15,7 @@
       cat_id:"$cat_id"
       lang:"$lang"
       user_history:$user_history
+      corner_id:$corner_id
   }) {
   ratesv3 {
     id

@@ -35,10 +35,11 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.topads.sdk.view.ImpressedImageView
             android:id="@+id/ivImageRight"
             android:layout_width="@dimen/dp_72"
             android:layout_height="0dp"
+            app:corner_radius="@dimen/dp_0"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintLeft_toRightOf="@+id/ivImageMiddle"
             app:layout_constraintRight_toRightOf="parent"

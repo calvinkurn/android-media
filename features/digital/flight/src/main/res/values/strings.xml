@@ -55,9 +55,9 @@
     <string name="flight_dashboard_arrival_empty_error">Anda belum memilih airport kedatangan</string>
     <string name="flight_dashboard_arrival_departure_same_error">Airport kedatangan dan keberangkatan tidak boleh sama</string>
     <string name="flight_dashboard_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
-    <string name="flight_dashboard_departure_max_two_years_from_today_error">Tanggal keberangkatan maksimal dua tahun dari hari ini</string>
+    <string name="flight_dashboard_departure_max_one_years_from_today_error">Tanggal keberangkatan maksimal satu tahun dari hari ini</string>
     <string name="flight_dashboard_return_should_greater_equal_error">Tanggal keberangkatan pulang harus lebih besar sama dengan tanggal keberangkatan</string>
-    <string name="flight_dashboard_return_max_two_years_from_today_error">Tanggal keberangkatan pulang maksimal dua tahun dari hari ini</string>
+    <string name="flight_dashboard_return_max_one_years_from_today_error">Tanggal keberangkatan pulang maksimal satu tahun dari hari ini</string>
     <string name="flight_dashboard_at_least_one_adult_error">Harus ada penumpang dewasa</string>
     <string name="flight_dashboard_fligh_class_is_empty">Jenis Kelas penerbangan tidak boleh kosong</string>
     <string name="flight_label_refundable_info">Refundable</string>
@@ -252,7 +252,7 @@
     <string name="flight_label_eticket">KIRIM E-TICKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
-    <string name="flight_label_cek_t_and_c">* Harap cek syarat dan ketentuan pada e-tiket Anda</string>
+    <string name="flight_label_cek_t_and_c">* Harap diingat bahwa terminal dapat berubah sewaktu-waktu</string>
     <string name="flight_order_failed_title">Transaksi Tidak Berhasil</string>
     <string name="flight_order_expire_title">Transaksi kadaluarsa</string>
     <string name="flight_order_order_id_prefix">Invoice :</string>
@@ -482,4 +482,5 @@
     <string name="flight_bottom_sheet_tag">Flight Sort</string>
     <string name="flight_search_choose_departure_flight">Pilih Penerbangan Pergi</string>
     <string name="flight_search_choose_return_flight">Pilih Penerbangan Pulang</string>
+    <string name="flight_terminal_info">Terminal %s*</string>
 </resources>
