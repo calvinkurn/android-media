@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -147,7 +148,30 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                 .getProductImage());
         setUIValue(productContainer, R.id.attach_product_chat_name, element.getProductName());
         setUIValue(productContainer, R.id.attach_product_chat_price, element.getProductPrice());
+        setUIDiscount(productContainer, element);
         setFooter(productContainer, element);
+    }
+
+    private void setUIDiscount(View productContainer, ProductAttachmentViewModel element) {
+        setUIVisibility(productContainer, R.id.discount, element.getPriceBefore());
+        setUIValue(productContainer, R.id.attach_product_chat_price_old, element.getPriceBefore());
+        setUIValue(productContainer, R.id.discount_nominal, element.getDropPercentage()+"%");
+        setUIVisibility(productContainer, R.id.drop_price, element.getDropPercentage());
+        setUIVisibility(productContainer, R.id.attach_product_chat_price_old, element.getPriceBefore());
+        setStrikeThrough(productContainer, R.id.attach_product_chat_price_old);
+        ImageHandler.loadImage2(productContainer.findViewById(R.id.drop_price),
+                "", R.drawable.ic_arrow_drop_price);
+    }
+
+    private void setUIVisibility(View productContainer, int resourceId, String content) {
+        View destination = productContainer.findViewById(resourceId);
+
+        if (!TextUtils.isEmpty(content)) {
+            destination.setVisibility(View.VISIBLE);
+        } else {
+            destination.setVisibility(View.GONE);
+
+        }
     }
 
     private void setFooter(View productContainer, ProductAttachmentViewModel element) {
@@ -184,6 +208,13 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             this.thumbnailsImage = (ImageView) destination;
 
         }
+    }
+
+    private void setStrikeThrough(View productContainer, int id) {
+        View destination = productContainer.findViewById(id);
+        if (destination instanceof TextView)
+            ((TextView) destination).setPaintFlags(((TextView) destination).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
     }
 
     @Override

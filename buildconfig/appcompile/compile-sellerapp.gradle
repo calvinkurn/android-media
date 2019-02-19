@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:resources_common"
 
 include "features:communication:broadcast_message"
 //include "features:communication:broadcast_message_no_op"
@@ -14,6 +15,7 @@ include "features:content:profile"
 include "features:digital:common_digital"
 include "features:digital:digitalproduct"
 
+include "features:discovery:category_common"
 include "features:discovery:flashsale_management"
 //include "features:discovery:flashsale_management_no_op"
 include 'features:discovery:flashsale_management_common'

@@ -1,0 +1,14 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.logisticdata)
+}
