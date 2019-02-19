@@ -30,7 +30,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -86,9 +85,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     /**
-     *
-     *
-     *
      * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean, boolean, boolean)}
      * ()}
      * instead.
@@ -117,15 +113,15 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = getArguments().getString(EXTRA_URL);
             needLogin = getArguments().getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = getArguments().getBoolean(EXTRA_SHOW_TOOLBAR, true);
-        }else if (savedInstanceState!= null){
+        } else if (savedInstanceState != null) {
             url = savedInstanceState.getString(EXTRA_URL);
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
 
         UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
-        if(needLogin && !userSession.isLoggedIn()){
-            startActivityForResult(((TkpdCoreRouter)getActivity().getApplicationContext()).getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
+        if (needLogin && !userSession.isLoggedIn()) {
+            startActivityForResult(((TkpdCoreRouter) getActivity().getApplicationContext()).getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
         }
     }
 
@@ -449,7 +445,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             }
         }
 
-        if (requestCode == LOGIN_GPLUS || requestCode == REQUEST_CODE_LOGIN) {
+        if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = WebViewGeneral.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
@@ -463,6 +459,13 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             else {
                 WebViewGeneral.loadAuthUrl(historyUrl);
             }
+        } else if (requestCode == REQUEST_CODE_LOGIN
+                && resultCode == Activity.RESULT_OK
+                && WebViewGeneral != null
+                && !TextUtils.isEmpty(url)
+                && getActivity()!= null) {
+            WebViewGeneral.loadAuthUrl(!url.contains(SEAMLESS)
+                    ? URLGenerator.generateURLSessionLogin(url, getActivity()) : url);
         }
     }
 
