@@ -4,10 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.domain.interactor.FlightAirportPreloadUseCase;
-import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
@@ -41,15 +38,11 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         implements FlightOrderListContract.Presenter {
 
     private static final int MINIMUM_HOURS_CANCELLATION_DURATION = 6;
-    private static final String FLIGHT_AIRPORT = "flight_airport";
 
     private UserSession userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
-    private FlightAirportPreloadUseCase flightAirportPreloadUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
-    private FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase;
-    private FlightModuleRouter flightModuleRouter;
     private CompositeSubscription compositeSubscription;
 
     private String userResendEmail = "";
@@ -57,18 +50,12 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     @Inject
     public FlightOrderListPresenter(UserSession userSession,
                                     FlightGetOrdersUseCase flightGetOrdersUseCase,
-                                    FlightAirportPreloadUseCase flightAirportPreloadUseCase,
                                     FlightOrderViewModelMapper flightOrderViewModelMapper,
-                                    FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
-                                    FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase,
-                                    FlightModuleRouter flightModuleRouter) {
+                                    FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper) {
         this.userSession = userSession;
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
-        this.flightAirportPreloadUseCase = flightAirportPreloadUseCase;
         this.flightOrderViewModelMapper = flightOrderViewModelMapper;
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
-        this.flightAirportVersionCheckUseCase = flightAirportVersionCheckUseCase;
-        this.flightModuleRouter = flightModuleRouter;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -100,37 +87,9 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     }
 
     @Override
-    public void onInitialize(boolean isShouldCheckPreload, int page) {
-        if (isShouldCheckPreload) {
-            flightAirportPreloadUseCase.execute(flightAirportPreloadUseCase.getEmptyParams(),
-                    new Subscriber<Boolean>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                            if (isViewAttached()) {
-                                getView().showGetListError(e);
-                            }
-                        }
-
-                        @Override
-                        public void onNext(Boolean aBoolean) {
-                            getView().loadPageData(page);
-                            actionAirportSync();
-                        }
-                    });
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         detachView();
         flightGetOrdersUseCase.unsubscribe();
-        flightAirportPreloadUseCase.unsubscribe();
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
@@ -245,30 +204,6 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             getView().goToCancellationPage(invoiceId, items);
         } else {
             getView().showLessThan6HoursDialog();
-        }
-    }
-
-    private void actionAirportSync() {
-        if (isViewAttached()){
-            flightAirportVersionCheckUseCase.execute(flightAirportVersionCheckUseCase.createRequestParams(flightModuleRouter.getLongConfig(FLIGHT_AIRPORT)),
-                    new Subscriber<Boolean>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(Boolean aBoolean) {
-                            if (aBoolean){
-                                getView().startAirportSyncInBackground(flightModuleRouter.getLongConfig(FLIGHT_AIRPORT));
-                            }
-                        }
-                    });
         }
     }
 

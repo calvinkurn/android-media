@@ -113,11 +113,6 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<Boolean> checkPreloadAirport() {
-        return flightAirportDataListSource.checkPreloadAirport();
-    }
-
-    @Override
     public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
         return flightAirportDataListSource.getPhoneCodeList(query);
     }
