@@ -38,7 +38,7 @@ class ApiService(private val context: Context) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
 
-        builder.connectionSpecs(listO˚f(legacyChiper()))
+        builder.connectionSpecs(listOf(legacyChiper()))
         builder.addInterceptor {
                     val original = it.request()
                     val request = original.newBuilder()
