@@ -92,6 +92,7 @@ public class AnalyticsTrackerUtil {
         String COPY_CODE = "salin kode swipe";
         String CLICK_MEM_BOTTOM = "click footer status membership";
         String CLICK_SELL_ALL_COUPON = "click kupon milik saya";
+        String VIEW_REDEEM_SUCCESS = "view redeem success";
     }
 
     public static void sendEvent(Context context, String event, String category,
