@@ -117,6 +117,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = getArguments().getString(EXTRA_URL);
             needLogin = getArguments().getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = getArguments().getBoolean(EXTRA_SHOW_TOOLBAR, true);
+        }else if (savedInstanceState!= null){
+            url = savedInstanceState.getString(EXTRA_URL);
+            needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
+            showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
 
         UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
@@ -561,4 +565,19 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_URL, url);
+        outState.putBoolean(EXTRA_NEED_LOGIN, needLogin);
+        outState.putBoolean(EXTRA_SHOW_TOOLBAR, showToolbar);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        url = savedInstanceState.getString(EXTRA_URL);
+        needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
+        showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
+    }
 }
