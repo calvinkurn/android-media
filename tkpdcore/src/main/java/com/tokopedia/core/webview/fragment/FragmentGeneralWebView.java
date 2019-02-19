@@ -151,7 +151,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             getActivity().getActionBar().hide();
         }
 
-        if(getActivity()!= null) {
+        if (getActivity() != null) {
             UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
             if (needLogin && !userSession.isLoggedIn()) {
                 startActivityForResult(((TkpdCoreRouter) getActivity().getApplicationContext())
@@ -466,9 +466,15 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 && resultCode == Activity.RESULT_OK
                 && WebViewGeneral != null
                 && !TextUtils.isEmpty(url)
-                && getActivity()!= null) {
+                && getActivity() != null) {
             WebViewGeneral.loadAuthUrl(!url.contains(SEAMLESS)
                     ? URLGenerator.generateURLSessionLogin(url, getActivity()) : url);
+        } else if (requestCode == REQUEST_CODE_LOGIN
+                && getActivity() != null
+                && !getActivity().isTaskRoot()) {
+            getActivity().finish();
+        } else if (requestCode == REQUEST_CODE_LOGIN) {
+            openHomePage();
         }
     }
 
@@ -582,7 +588,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState!= null) {
+        if (savedInstanceState != null) {
             url = savedInstanceState.getString(EXTRA_URL);
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
