@@ -3,6 +3,7 @@ package com.tokopedia.graphql.data.repository;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.graphql.BuildConfig;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.GraphqlConstant;
 import com.tokopedia.graphql.data.model.CacheType;
@@ -106,7 +107,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
         NullCheckerKt.isContainNull(object, errorMessage -> {
             String message = String.format("Found %s in %s", errorMessage, GraphqlUseCase.class.getSimpleName());
             ContainNullException exception = new ContainNullException(message);
-            Crashlytics.logException(exception);
+            if (!BuildConfig.DEBUG) {
+                Crashlytics.logException(exception);
+            }
             throw exception;
         });
     }
