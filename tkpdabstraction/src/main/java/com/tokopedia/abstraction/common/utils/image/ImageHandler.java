@@ -788,7 +788,7 @@ public class ImageHandler {
                     .asBitmap()
                     .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
                     .centerCrop()
-                    .animate(R.anim.abc_fade_in)
+                    .animate(android.R.anim.fade_in)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation
