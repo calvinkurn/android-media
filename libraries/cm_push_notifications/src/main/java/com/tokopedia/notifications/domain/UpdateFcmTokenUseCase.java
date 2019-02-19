@@ -32,7 +32,8 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
     public UpdateFcmTokenUseCase() {
     }
 
-    public RequestParams createRequestParams(String userId, String token, int sdkVersion, String appId, int appVersion, String loginStatus) {
+    public RequestParams createRequestParams(String userId, String token, int sdkVersion, String appId, String appVersionName,
+                                             String loginStatus, long timeStamp) {
         RequestParams requestParams = RequestParams.create();
 
         if (userId != null && userId.length() > 0)
@@ -41,9 +42,9 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
         requestParams.putString(FCM_TOKEN, token);
         requestParams.putString(APP_ID, appId);
         requestParams.putString(SDK_VERSION, String.valueOf(sdkVersion));
-        requestParams.putString(APP_VERSION, String.valueOf(appVersion));
+        requestParams.putString(APP_VERSION, appVersionName);
         requestParams.putString(USER_STATE, loginStatus);
-        requestParams.putLong(REQUEST_TIMESTAMP, CMNotificationUtils.getCurrentLocalTimeStamp());
+        requestParams.putLong(REQUEST_TIMESTAMP, timeStamp);
         return requestParams;
     }
 

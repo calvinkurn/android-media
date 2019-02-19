@@ -309,8 +309,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void setSearchNotFound() {
-        adapter.setSearchNotFound();
+    public void setSearchNotFound(String query) {
+        adapter.setSearchNotFound(query);
     }
 
     @Override

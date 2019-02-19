@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -23,9 +24,10 @@ public class DepartureTripLabelView extends BaseCustomView {
     private static final String PNG_EXTENSION = "png";
     private static final String SVG_EXTENSION = "xml";
 
-    private TextView title;
-    private TextView nameLabel;
-    private TextView departureTime;
+    private TextView tvDestination;
+    private TextView tvName;
+    private TextView tvTime;
+    private TextView tvPrice;
     private AppCompatImageView imageDeparture;
     private Drawable icon;
 
@@ -46,9 +48,10 @@ public class DepartureTripLabelView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_departure_trip_label, this);
-        title = view.findViewById(R.id.title_departure_header);
-        nameLabel = view.findViewById(R.id.name_departure_header);
-        departureTime = view.findViewById(R.id.time_departure_header);
+        tvDestination = view.findViewById(R.id.tv_destination_departure_header);
+        tvName = view.findViewById(R.id.tv_name_departure_header);
+        tvTime = view.findViewById(R.id.tv_time_departure_header);
+        tvPrice = view.findViewById(R.id.tv_price_departure_header);
         imageDeparture = view.findViewById(R.id.image_departure_header);
     }
 
@@ -79,15 +82,20 @@ public class DepartureTripLabelView extends BaseCustomView {
         }
     }
 
+    public void setValueDestination(String destination) {
+        tvDestination.setText(destination);
+    }
+
     public void setValueName(String name) {
-        nameLabel.setText(name);
+        tvName.setText(name);
     }
 
-    public void setValueTitle(String dateDeparture) {
-        title.setText(dateDeparture);
+    public void setValueTime(String time) {
+        tvTime.setText(time);
     }
 
-    public void setValueDepartureTime(String timeDeparture) {
-        departureTime.setText(timeDeparture);
+    public void setValuePrice(String price) {
+        tvPrice.setText(Html.fromHtml(String.format(getResources().getString(
+                R.string.travel_departure_trip_price_value), price)));
     }
 }

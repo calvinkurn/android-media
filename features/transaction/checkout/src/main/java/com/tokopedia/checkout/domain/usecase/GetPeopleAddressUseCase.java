@@ -2,8 +2,11 @@ package com.tokopedia.checkout.domain.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.checkout.data.mapper.PeopleAddressWithCornerMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
+import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
@@ -16,6 +19,7 @@ import rx.Observable;
 
 /**
  * @author Aghny A. Putra on 21/02/18
+ * Refactored by fajarnuha
  */
 
 public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
@@ -31,25 +35,16 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
                                    UserSessionInterface userSessionInterface) {
         this.peopleAddressRepository = peopleAddressRepository;
         this.userSessionInterface = userSessionInterface;
-
     }
 
     @Override
     public Observable<PeopleAddressModel> createObservable(RequestParams requestParams) {
-        return peopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString());
+        Observable<GetPeopleAddress> oldAddressRx = peopleAddressRepository.getAllAddress(requestParams.getParamsAllValueInString());
+        Observable<AddressCornerResponse> addressWithCornerRx = peopleAddressRepository.getCornerData();
+        return Observable.zip(oldAddressRx, addressWithCornerRx, new PeopleAddressWithCornerMapper());
     }
 
-    /**
-     * @param context
-     * @param order
-     * @param query
-     * @param page
-     * @return
-     */
-    public RequestParams getRequestParams(final Context context,
-                                          final int order,
-                                          final String query,
-                                          final int page) {
+    public RequestParams getRequestParams(final int order, final String query, final int page) {
 
         // Get people address list from api requires parameter of order, keyword, and page
         final HashMap<String, String> params = new HashMap<String, String>() {{

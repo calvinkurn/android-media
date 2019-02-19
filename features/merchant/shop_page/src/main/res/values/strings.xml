@@ -22,7 +22,7 @@
     <string name="shop_page_header_shop_not_active_title">Toko Anda dalam status Tidak Aktif.</string>
     <string name="shop_page_header_shop_not_active_title_buyer">Toko dalam status Tidak Aktif.</string>
     <string name="shop_page_header_shop_not_active_description_buyer">Demi kenyamanan bertransaksi, kami menyarankan pembeli untuk memastikan terlebih dahulu bahwa toko yang dipilih berada dalam keadaan aktif.</string>
-    <string name="shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 7 hari.</string>
+    <string name="shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari.</string>
 
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>

@@ -62,12 +62,6 @@ public class ServerErrorHandler {
         LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
-    public static void showForceHockeyAppDialog() {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_FORCE_HOCKEYAPP);
-        LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
-    }
-
     public static void sendForceLogoutTokenAnalytics(String url) {
         Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logForceLogoutToken(appContext,

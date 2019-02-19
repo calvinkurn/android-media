@@ -1,7 +1,8 @@
 package com.tokopedia.topchat.chattemplate.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -10,9 +11,9 @@ import rx.Observable;
  */
 
 public interface EditTemplateRepository {
-    Observable<EditTemplateViewModel> editTemplate(int index, TKPDMapParam<String, Object> object);
+    Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object> object);
 
-    Observable<EditTemplateViewModel> createTemplate(TKPDMapParam<String, Object> object);
+    Observable<EditTemplateViewModel> createTemplate(HashMap<String, Object> object);
 
     Observable<EditTemplateViewModel> deleteTemplate(int index);
 }

@@ -19,7 +19,7 @@ public class ReactNativeBrandListOsActivity extends ReactFragmentActivity<Genera
 
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
 
-    private static final String MP_BRAND_LIST = "MP_BRAND_LIST";
+    private static final String MP_BRAND_LIST = "mp_brand_list";
     
     @DeepLink({ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH})
     public static Intent getBrandlistApplinkCallingIntent(Context context, Bundle bundle){

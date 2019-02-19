@@ -20,6 +20,8 @@ import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +73,8 @@ public class DynamicFeedShopAdapter
 
     public class DynamicFeedShopViewHolder extends RecyclerView.ViewHolder {
         private View itemView;
-        private ImageView ivImageLeft, ivImageMiddle, ivImageRight, ivProfile, ivBadge;
+        private ImageView ivImageLeft, ivImageMiddle, ivProfile, ivBadge;
+        private ImpressedImageView ivImageRight;
         private TextView tvDescription, tvName;
         private ButtonCompat btnFollow;
         private ImageLoader imageLoader;
@@ -92,6 +95,10 @@ public class DynamicFeedShopAdapter
         }
 
         private void bind(Data data) {
+            if (data == null) {
+                return;
+            }
+
             initView(data);
             initListener(data);
         }
@@ -104,33 +111,48 @@ public class DynamicFeedShopAdapter
         }
 
         private void initView(Data data) {
-            List<ImageProduct> imageProductList = data.getShop().getImageProduct();
-            if (imageProductList.size() > 0) {
-                loadImageOrDefault(ivImageLeft, imageProductList.get(0).getImageUrl());
-            }
-            if (imageProductList.size() > 1) {
-                loadImageOrDefault(ivImageMiddle, imageProductList.get(1).getImageUrl());
-            }
-            if (imageProductList.size() > 2) {
-                loadImageOrDefault(ivImageRight, imageProductList.get(2).getImageUrl());
-            }
-
             Shop shop = data.getShop();
-            imageLoader.loadCircle(shop, ivProfile);
-            tvName.setText(fromHtml(shop.getName()));
-            tvDescription.setText(fromHtml(shop.getTagline()));
+            if (data.getShop() != null) {
+                List<ImageProduct> imageProductList = shop.getImageProduct();
+                if (imageProductList.size() > 0) {
+                    loadImageOrDefault(ivImageLeft, imageProductList.get(0).getImageUrl());
+                }
+                if (imageProductList.size() > 1) {
+                    loadImageOrDefault(ivImageMiddle, imageProductList.get(1).getImageUrl());
+                }
+                if (imageProductList.size() > 2) {
+                    ivImageRight.setImage(imageProductList.get(2));
+                    ivImageRight.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+                        @Override
+                        public void onViewHint() {
+                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                        }
+                    });
+                }
+                shop.setLoaded(true);
+                imageLoader.loadCircle(shop, ivProfile);
+                tvName.setText(fromHtml(shop.getName()));
+                tvDescription.setText(fromHtml(shop.getTagline()));
+                bindBadge(shop);
+            }
 
             bindFavorite(data);
-            bindBadge(shop);
         }
 
         private void initListener(Data data) {
             itemView.setOnClickListener(v ->
                     itemClickListener.onShopItemClicked(getAdapterPosition(), data)
             );
-            btnFollow.setOnClickListener(v ->
-                    itemClickListener.onAddFavorite(getAdapterPosition(), data)
-            );
+            btnFollow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(data.isFavorit()){
+                        itemClickListener.onShopItemClicked(getAdapterPosition(), data);
+                    } else {
+                        itemClickListener.onAddFavorite(getAdapterPosition(), data);
+                    }
+                }
+            });
         }
 
         private void loadImageOrDefault(ImageView imageView, String imageUrl) {
@@ -161,7 +183,7 @@ public class DynamicFeedShopAdapter
         private void bindFavorite(Data data) {
             if (data.isFavorit()) {
                 btnFollow.setButtonCompatType(ButtonCompat.SECONDARY);
-                btnFollow.setText(btnFollow.getContext().getString(R.string.topads_following));
+                btnFollow.setText(btnFollow.getContext().getString(R.string.topads_visit_shop));
             } else {
                 btnFollow.setButtonCompatType(ButtonCompat.PRIMARY);
                 btnFollow.setText(btnFollow.getContext().getString(R.string.topads_follow));

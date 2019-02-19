@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
 
@@ -19,7 +19,7 @@ public class ChatSettingsAnalytics {
     public static final String CHAT_UNBLOCK_ACTION = "chat toggle receive";
     public static final String CHAT_PERSONAL_LABEL = "personal chat";
     public static final String CHAT_PROMOTION_LABEL = "promotion chat";
-    public static final String CHAT_ENABLE_TEXT_LINK_ACTION = "click on text link";
+    public static final String CHAT_ENABLE_TEXT_LINK_ACTION = "click on text link (kembali menerima pesan)";
     public static final String CHAT_ENABLE_TEXT_LABEL = "kembali menerima pesan";
 
 
@@ -38,24 +38,24 @@ public class ChatSettingsAnalytics {
 
     }
 
-    public void sendTrackingUnblockPromotion() {
-        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_UNBLOCK_ACTION, CHAT_PROMOTION_LABEL);
+    public void sendTrackingUnblockPromotion(String shopId) {
+        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_UNBLOCK_ACTION, String.format("%s - %s", shopId, CHAT_PROMOTION_LABEL));
 
     }
 
-    public void sendTrackingBlockPromotion() {
-        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_BLOCK_ACTION, CHAT_PROMOTION_LABEL);
+    public void sendTrackingBlockPromotion(String shopId) {
+        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_BLOCK_ACTION, String.format("%s - %s", shopId, CHAT_PROMOTION_LABEL));
 
     }
 
 
-    public void sendTrackingUnblockPersonal() {
-        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_UNBLOCK_ACTION, CHAT_PERSONAL_LABEL);
+    public void sendTrackingUnblockPersonal(String shopId) {
+        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_UNBLOCK_ACTION, String.format("%s - %s", shopId, CHAT_PERSONAL_LABEL));
 
     }
 
-    public void sendTrackingBlockPersonal() {
-        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_BLOCK_ACTION, CHAT_PERSONAL_LABEL);
+    public void sendTrackingBlockPersonal(String shopId) {
+        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_BLOCK_ACTION, String.format("%s - %s", shopId, CHAT_PERSONAL_LABEL));
 
     }
 

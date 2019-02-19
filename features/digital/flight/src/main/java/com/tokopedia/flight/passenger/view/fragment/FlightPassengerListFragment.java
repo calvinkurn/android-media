@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
@@ -42,6 +43,7 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
     public static final String EXTRA_IS_DOMESTIC = "EXTRA_IS_DOMESTIC";
+    private static final String PASSENGER_IDENTITY_TRACE = "tr_flight_fill_passenger_identity";
     public static final int IS_SELECTING = 1;
     public static final int IS_NOT_SELECTING = 0;
 
@@ -53,6 +55,9 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
     @Inject
     FlightPassengerListPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
+
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStop = false;
 
     public static FlightPassengerListFragment createInstance(FlightBookingPassengerViewModel selectedPassenger,
                                                              String requestId, String departureDate, boolean isDomestic) {
@@ -78,6 +83,8 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
         isDomestic = getArguments().getBoolean(EXTRA_IS_DOMESTIC);
         selectedPassengerId = (selectedPassenger.getPassengerId() != null) ? selectedPassenger.getPassengerId() : "";
         flightBookingPassengerViewModelList = new ArrayList<>();
+
+        performanceMonitoring = PerformanceMonitoring.start(PASSENGER_IDENTITY_TRACE);
     }
 
     @Nullable
@@ -144,6 +151,8 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
         if (flightBookingPassengerViewModelList.size() > 0) {
             addNewPassengerElement();
         }
+
+        stopTrace();
     }
 
     @Override
@@ -258,6 +267,14 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
     @Override
     public void onSuccessDeletePassengerData() {
         showSuccessSnackbar(R.string.flight_passenger_delete_success);
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring.stopTrace();
+            isTraceStop = true;
+        }
     }
 
     private void showSuccessSnackbar(int resId) {

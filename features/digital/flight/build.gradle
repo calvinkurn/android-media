@@ -40,6 +40,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.features.commonTravel)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.features.flightDbFlow)
 
@@ -57,7 +59,8 @@ dependencies {
     }
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

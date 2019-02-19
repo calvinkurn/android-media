@@ -15,6 +15,8 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by Irfan Khoirul on 08/08/18.
  */
@@ -23,15 +25,15 @@ public class ShippingDurationConverter {
 
     private static final int COD_TRUE_VAL = 1;
 
+    @Inject
+    public ShippingDurationConverter() {
+    }
+
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,
                                                               List<ShopShipment> shopShipmentList,
-                                                              ShipmentDetailData shipmentDetailData,
+                                                              int selectedSpId,
                                                               String ratesId,
                                                               int selectedServiceId) {
-        int selectedSpId = 0;
-        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
-            selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
-        }
         List<ShippingDurationViewModel> shippingDurationViewModels = new ArrayList<>();
         for (ServiceData serviceData : serviceDataList) {
             ShippingDurationViewModel shippingDurationViewModel = new ShippingDurationViewModel();

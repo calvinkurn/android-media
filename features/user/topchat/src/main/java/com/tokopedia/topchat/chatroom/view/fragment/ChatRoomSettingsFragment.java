@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,33 +20,34 @@ import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
-import com.tokopedia.topchat.common.di.DaggerChatRoomComponent;
 import com.tokopedia.topchat.common.util.Utils;
+import com.tokopedia.topchat.chatroom.di.DaggerChatComponent;
+import com.tokopedia.topchat.common.TopChatInternalRouter;
 
 import javax.inject.Inject;
 
-public class ChatRoomSettingsFragment extends BaseDaggerFragment implements ChatSettingsInterface.View, CompoundButton.OnCheckedChangeListener{
+public class ChatRoomSettingsFragment extends BaseDaggerFragment implements ChatSettingsInterface.View, CompoundButton.OnCheckedChangeListener {
 
     private Switch chatPromotionSwitch, chatPersonalSwitch;
     private ConstraintLayout chatPromotionInfoView, chatPersonalInfoView;
     private CardView chatPersonalCardView, chatPromotionalcardView;
     private TextView chatPromotionInfoText, chatPersonalInfoText;
-    public static final int RESULT_CODE_CHAT_SETTINGS_ENABLED = 1;
-    public static final int RESULT_CODE_CHAT_SETTINGS_DISABLED = 2;
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
     private String messageId;
+    private String shopId;
     private String chatRole, senderName;
     private boolean shouldShowToast = false;
     private FrameLayout progressBarLayout;
@@ -67,7 +69,8 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            messageId = getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID);
+            messageId = getArguments().getString(ApplinkConst.Chat.MESSAGE_ID);
+            shopId = String.valueOf(getArguments().getInt(ApplinkConst.Chat.SHOP_ID, 0));
             this.chatSettingsResponse = getArguments().getParcelable(InboxChatConstant.CHATRESPONSEMODEL);
             isChatEnabled = getArguments().getBoolean(InboxChatConstant.CHAT_ENABLED, true);
             chatRole = getArguments().getString(InboxChatConstant.CHAT_ROLE);
@@ -99,8 +102,8 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
             chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
         }
         if (isChatEnabled) {
-            chatSettingsPresenter.onPersonalChatSettingChange(messageId,true, false);
-            chatSettingsPresenter.onPromotionalChatSettingChange(messageId,true, false);
+            chatSettingsPresenter.onPersonalChatSettingChange(messageId, true, false, shopId);
+            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, true, false, shopId);
         } else if (chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked()) {
             setPromotionViewOpacity(true);
         }
@@ -111,9 +114,12 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
 
     @Override
     protected void initInjector() {
-        DaggerChatRoomComponent.builder().appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
-                .build()
-                .inject(this);
+        if (getActivity() != null) {
+            DaggerChatComponent.builder().baseAppComponent(
+                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                    .build()
+                    .inject(this);
+        }
     }
 
     @Override
@@ -133,8 +139,19 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                     setPersonalInfoViewVisibility(false);
                     setPromotionalInfoViewVisibility(false);
                 }
-                getActivity().setResult(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() ? RESULT_CODE_CHAT_SETTINGS_DISABLED
-                        : RESULT_CODE_CHAT_SETTINGS_ENABLED);
+
+                if(chatSettingsResponse.getChatBlockResponse() != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED,
+                            chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+                    bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_PROMO_BLOCKED,
+                            chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
+                    bundle.putString(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL,
+                            chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate());
+                    Intent data = new Intent();
+                    data.putExtras(bundle);
+                    getActivity().setResult(Activity.RESULT_OK, data);
+                }
             }
         }
     }
@@ -150,6 +167,19 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                     setPromotionalInfoViewVisibility(false);
                 }
             }
+        }
+
+        if(chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse()!= null) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED,
+                    chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+            bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_PROMO_BLOCKED,
+                    chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
+            bundle.putString(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL,
+                    chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate());
+            Intent data = new Intent();
+            data.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_OK, data);
         }
     }
 
@@ -204,10 +234,10 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
         ViewGroup.MarginLayoutParams layoutParams =
                 (ViewGroup.MarginLayoutParams) chatPromotionalcardView.getLayoutParams();
         if (!TextUtils.isEmpty(chatRole)) {
-            if (chatRole.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
+            if (chatRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)) {
                 setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
-            } else if (chatRole.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
+            } else if (chatRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
                 layoutParams.setMargins(0, (int) getResources().getDimension(R.dimen.dp_24), 0, 0);
                 chatPromotionalcardView.requestLayout();
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
@@ -247,9 +277,9 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
         }
 
         if (compoundButton.getId() == R.id.chat_personal_switch) {
-            chatSettingsPresenter.onPersonalChatSettingChange(messageId, isChecked, true);
+            chatSettingsPresenter.onPersonalChatSettingChange(messageId, isChecked, true, shopId);
         } else if (compoundButton.getId() == R.id.chat_promotion_switch) {
-            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, isChecked, true);
+            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, isChecked, true, shopId);
         }
     }
 

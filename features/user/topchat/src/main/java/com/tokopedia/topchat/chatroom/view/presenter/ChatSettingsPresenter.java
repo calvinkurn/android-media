@@ -60,7 +60,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
     }
 
     @Override
-    public void onPersonalChatSettingChange(String messageId, boolean state, boolean initialState) {
+    public void onPersonalChatSettingChange(String messageId, boolean state, boolean initialState, String shopId) {
         if (!isViewAttached()) {
             return;
         }
@@ -108,15 +108,15 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
             });
 
             if (state) {
-                chatSettingsAnalytics.sendTrackingUnblockPersonal();
+                chatSettingsAnalytics.sendTrackingUnblockPersonal(shopId);
             } else {
-                chatSettingsAnalytics.sendTrackingBlockPersonal();
+                chatSettingsAnalytics.sendTrackingBlockPersonal(shopId);
             }
         }
     }
 
     @Override
-    public void onPromotionalChatSettingChange(String messageId, boolean state, boolean initialState) {
+    public void onPromotionalChatSettingChange(String messageId, boolean state, boolean initialState, String shopId) {
         if (!isViewAttached()) {
             return;
         }
@@ -162,9 +162,9 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
             });
 
             if (state) {
-                chatSettingsAnalytics.sendTrackingUnblockPromotion();
+                chatSettingsAnalytics.sendTrackingUnblockPromotion(shopId);
             } else {
-                chatSettingsAnalytics.sendTrackingBlockPromotion();
+                chatSettingsAnalytics.sendTrackingBlockPromotion(shopId);
             }
         }
     }

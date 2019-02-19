@@ -111,7 +111,7 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
 
         String dateDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_SEARCH,
                 TrainDateUtil.DEFAULT_VIEW_FORMAT, trainSearchPassDataViewModel.getDepartureDate());
-        departureTripLabelView.setValueTitle(String.format("%s - %s", getString(R.string.train_search_departure_title), dateDepartureString));
+        departureTripLabelView.setValueDestination(String.format("%s - %s", viewModel.getOrigin(), viewModel.getDestination()));
 
         String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, viewModel.getDepartureTimestamp());
@@ -124,7 +124,10 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
                 TrainDateUtil.FORMAT_DAY, viewModel.getArrivalTimestamp());
         int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
         String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
-        departureTripLabelView.setValueDepartureTime(String.format(" | %s - %s %s", timeDepartureString, timeArrivalString, deviationDayString));
+        departureTripLabelView.setValueTime(String.format("%s - %s %s", timeDepartureString, timeArrivalString, deviationDayString));
+
+        departureTripLabelView.setValueName(String.format(" | %s", viewModel.getTrainName()));
+        departureTripLabelView.setValuePrice(viewModel.getDisplayAdultFare());
     }
 
     @Override

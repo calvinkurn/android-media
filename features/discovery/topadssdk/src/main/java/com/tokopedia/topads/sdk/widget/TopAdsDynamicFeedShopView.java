@@ -2,12 +2,12 @@ package com.tokopedia.topads.sdk.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -49,6 +49,7 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
 
         recommendationRv = findViewById(R.id.recommendationRv);
         recommendationRv.setAdapter(adapter);
+        ((DefaultItemAnimator) recommendationRv.getItemAnimator()).setSupportsChangeAnimations(false);
     }
 
     public void bind(List<Data> dataList) {
@@ -85,8 +86,6 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
     @Override
     public void onShopItemClicked(int position, Data data) {
         Shop shop = data.getShop();
-        shop.setAdRefKey(data.getAdRefKey());
-        shop.setAdId(data.getId());
         itemClickListener.onShopItemClicked(position, shop);
         openTopAdsUseCase.execute(data.getShopClickUrl());
     }

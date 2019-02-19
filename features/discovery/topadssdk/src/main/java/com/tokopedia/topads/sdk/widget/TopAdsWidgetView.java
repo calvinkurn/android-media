@@ -8,7 +8,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -23,12 +25,11 @@ import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
@@ -57,6 +58,7 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode mode = DisplayMode.GRID;
     private TypedArray styledAttributes;
+    private TopAdsItemImpressionListener impressionListener;
 
     @Inject
     TopAdsPresenter presenter;
@@ -98,6 +100,14 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem(position, product);
+                }
+            }
+        });
         try {
             adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
         } finally {
@@ -123,9 +133,9 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
         List<Item> visitables = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
-            if (d.getProduct() != null) {
+            if (d.getProduct() != null && !TextUtils.isEmpty(d.getProduct().getId())) {
                 visitables.add(ModelConverter.convertProductData(d, mode));
-            } else if (d.getShop() != null) {
+            } else if (d.getShop() != null && !TextUtils.isEmpty(d.getShop().getId())) {
                 visitables.add(ModelConverter.convertShopData(d, mode));
             }
         }
@@ -140,6 +150,13 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         openTopAdsUseCase.unsubscribe();
+        presenter.detachView();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        presenter.attachView(this);
     }
 
     @Override
@@ -176,6 +193,10 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setImpressionListener(TopAdsItemImpressionListener impressionListener) {
+        this.impressionListener = impressionListener;
     }
 
     public void notifyDataChange() {
@@ -260,25 +281,37 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
 
     @Override
     public void showSuccessAddWishlist() {
-        SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist),
-                Snackbar.LENGTH_LONG).show();
+        if(getView()!=null) {
+            SnackbarManager.makeGreen(getView(), getString(R.string.msg_success_add_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void showErrorAddWishlist() {
-        SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_add_wishlist),
-                Snackbar.LENGTH_LONG).show();
+        if(getView()!=null) {
+            SnackbarManager.makeRed(getView(), getString(R.string.msg_error_add_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void showSuccessRemoveWishlist() {
-        SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist),
-                Snackbar.LENGTH_LONG).show();
+        if(getView()!=null) {
+            SnackbarManager.makeGreen(getView(), getString(R.string.msg_success_remove_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void showErrorRemoveWishlist() {
-        SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_remove_wishlist),
-                Snackbar.LENGTH_LONG).show();
+        if(getView()!=null) {
+            SnackbarManager.makeRed(getView(), getString(R.string.msg_error_remove_wishlist),
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private View getView() {
+        return getRootView().findViewById(android.R.id.content);
     }
 }

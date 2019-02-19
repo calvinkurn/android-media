@@ -33,6 +33,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
 
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'

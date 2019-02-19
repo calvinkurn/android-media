@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16"
+    app:cardCornerRadius="@dimen/dp_4">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/img_product"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            android:background="@drawable/bg_image_round_corner"
+            tools:src="@color/grey_300" />
+
+        <TextView
+            android:id="@+id/tv_product_name"
+            style="@style/TextMidMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_toEndOf="@+id/img_product"
+            android:layout_toRightOf="@+id/img_product"
+            android:ellipsize="end"
+            android:maxLines="@integer/int_3"
+            tools:text="Hoodie H&amp;M Original Plain shgbks dsjkfg sdkjg ksjdgk kjsdbg jksdgk jksdbngk kjsdgk kasfk Hooded - Hitam Black Hoodie" />
+
+        <TextView
+            android:id="@+id/tv_product_price"
+            style="@style/TextMidMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_product_name"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_toEndOf="@+id/img_product"
+            android:layout_toRightOf="@+id/img_product"
+            android:textColor="@color/orange_red"
+            tools:text="Rp 66.000" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
