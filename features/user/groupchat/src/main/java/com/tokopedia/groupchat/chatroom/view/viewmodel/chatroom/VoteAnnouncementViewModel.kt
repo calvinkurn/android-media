@@ -13,7 +13,7 @@ import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 
 class VoteAnnouncementViewModel : BaseChatViewModel, Visitable<GroupChatTypeFactory>, Parcelable {
 
-    var voteType: String? = null
+    var voteType: String = ""
         private set
     var voteInfoViewModel: VoteInfoViewModel? = null
         private set
@@ -23,7 +23,7 @@ class VoteAnnouncementViewModel : BaseChatViewModel, Visitable<GroupChatTypeFact
                 updatedAt: Long, messageId: String, senderId: String,
                 senderName: String, senderIconUrl: String,
                 isInfluencer: Boolean, isAdministrator: Boolean,
-                voteInfoViewModel: VoteInfoViewModel) : super(message, createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
+                voteInfoViewModel: VoteInfoViewModel?) : super(message, createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
             isInfluencer, isAdministrator) {
         this.voteType = voteType
         this.voteInfoViewModel = voteInfoViewModel

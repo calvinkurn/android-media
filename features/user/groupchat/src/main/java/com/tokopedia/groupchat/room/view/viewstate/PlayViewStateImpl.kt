@@ -347,6 +347,9 @@ class PlayViewStateImpl(
 
     override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
         viewModel?.videoId = it.videoId
+        viewModel?.adsId?.let {
+            setSponsorData(it, viewModel?.adsImageUrl, viewModel?.adsName)
+        }
         initVideoFragment(childFragmentManager, it.videoId)
     }
 
@@ -425,7 +428,10 @@ class PlayViewStateImpl(
             pinnedMessageContainer.visibility = View.VISIBLE
 
             channelInfoViewModel.pinnedMessageViewModel?.let {
-                pinnedMessageContainer.visibility = View.VISIBLE
+                if(it.title.isBlank()) {
+                    pinnedMessageContainer.visibility = View.GONE
+                    return
+                }
                 (pinnedMessageContainer.findViewById(R.id.message) as TextView).text =
                         it.title
                 pinnedMessageContainer.setOnClickListener { view ->
@@ -523,7 +529,7 @@ class PlayViewStateImpl(
     }
 
     fun setSponsorData(adsId: String?, adsImageUrl: String?, adsName: String?) {
-        if (adsId == null || adsImageUrl == null) {
+        if (adsId == null || adsImageUrl.isNullOrEmpty()) {
             sponsorLayout.visibility = View.GONE
         } else {
             sponsorLayout.visibility = View.VISIBLE

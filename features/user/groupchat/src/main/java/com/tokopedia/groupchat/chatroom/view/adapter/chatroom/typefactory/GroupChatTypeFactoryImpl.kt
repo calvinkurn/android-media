@@ -50,11 +50,12 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
     }
 
     override fun type(imageViewModel: ImageAnnouncementViewModel): Int {
-        return ImageAnnouncementViewHolder.LAYOUT
+        return PlayImageAnnouncementViewHolder.LAYOUT
     }
 
     override fun type(voteAnnouncementViewModel: VoteAnnouncementViewModel): Int {
-        return VoteAnnouncementViewHolder.LAYOUT
+        return PlayQuizAnnouncementViewHolder.LAYOUT
+//        return VoteAnnouncementViewHolder.LAYOUT
     }
 
     override fun type(flashSaleViewModel: SprintSaleAnnouncementViewModel): Int {

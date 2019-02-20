@@ -1,12 +1,12 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
-import android.graphics.PorterDuff
 import android.support.annotation.LayoutRes
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageWithId
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
@@ -34,11 +34,11 @@ class PlayQuizAnnouncementViewHolder(itemView: View, var listener: ChatroomContr
     }
 
     override fun bind(element: VoteAnnouncementViewModel) {
+        val type = element.voteType.toLowerCase()
+        loadImageWithId(icon, getIcon(type))
 
-        icon.drawable.setColorFilter(getTitleTextColor(element.voteType), PorterDuff.Mode.SRC_IN)
-
-        title.text = getTitle(element.voteType)
-        title.setTextColor(getTitleTextColor(element.voteType))
+        title.text = getTitle(type)
+        title.setTextColor(getTitleTextColor(type))
 
         content.visibility = View.GONE
         element.voteInfoViewModel?.question?.let {
@@ -46,7 +46,16 @@ class PlayQuizAnnouncementViewHolder(itemView: View, var listener: ChatroomContr
             content.text = MethodChecker.fromHtml(it)
         }
 
-        itemView.setOnClickListener { listener.onVoteComponentClicked(element.voteType, element.message) }
+        itemView.setOnClickListener { listener.onVoteComponentClicked(type, element.message) }
+    }
+
+    private fun getIcon(voteType: String?): Int {
+        return when (voteType){
+            VoteAnnouncementViewModel.POLLING_START -> R.drawable.ic_quiz_start
+            VoteAnnouncementViewModel.POLLING_FINISHED,
+            VoteAnnouncementViewModel.POLLING_END-> R.drawable.ic_quiz_end
+            else -> 0
+        }
     }
 
     private fun getTitle(voteType: String?): CharSequence? {
