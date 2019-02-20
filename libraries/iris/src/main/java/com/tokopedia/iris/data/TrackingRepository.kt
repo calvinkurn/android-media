@@ -2,10 +2,7 @@ package com.tokopedia.iris.data
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.iris.DATABASE_NAME
-import com.tokopedia.iris.HEADER_CONTENT_TYPE
-import com.tokopedia.iris.HEADER_DEVICE
-import com.tokopedia.iris.Session
+import com.tokopedia.iris.*
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -43,8 +40,8 @@ class TrackingRepository (
         GlobalScope.launch {
             val requestBody = ApiService.parse(dataRequest)
             val request = service.sendSingleEvent(
-                    HEADER_CONTENT_TYPE,
-                    HEADER_DEVICE,
+                    HEADER_JSON,
+                    HEADER_ANDROID,
                     session.getUserId(),
                     requestBody)
             val response = request.await()

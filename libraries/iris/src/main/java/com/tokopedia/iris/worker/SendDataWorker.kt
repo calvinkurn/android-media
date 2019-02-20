@@ -4,10 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.tokopedia.iris.HEADER_CONTENT_TYPE
-import com.tokopedia.iris.HEADER_DEVICE
-import com.tokopedia.iris.IrisSession
-import com.tokopedia.iris.MAX_ROW
+import com.tokopedia.iris.*
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
@@ -37,8 +34,8 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
             val response = runBlocking {
                 val requestBody = ApiService.parse(request)
                 val response = service.sendMultiEvent(
-                        HEADER_CONTENT_TYPE,
-                        HEADER_DEVICE,
+                        HEADER_JSON,
+                        HEADER_ANDROID,
                         session.getUserId(),
                         requestBody)
                 response.await()
