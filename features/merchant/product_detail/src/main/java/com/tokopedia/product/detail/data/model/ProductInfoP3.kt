@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.model
 
+import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.product.detail.common.data.model.ProductOther
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
@@ -14,5 +15,6 @@ data class ProductInfoP3(
         var helpfulReviews: List<Review> = listOf(),
         var latestTalk: ProductTalkQuery = ProductTalkQuery(),
         var displayAds: TopAdsModel? = null,
-        var productOthers: List<ProductOther> = listOf()
+        var productOthers: List<ProductOther> = listOf(),
+        var pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate? = null
 )

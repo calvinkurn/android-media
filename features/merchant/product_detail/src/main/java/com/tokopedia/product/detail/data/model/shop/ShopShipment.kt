@@ -54,8 +54,7 @@ data class ShopShipment(
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt(),
-            parcel.createTypedArrayList(ShipmentProduct)) {
-    }
+            parcel.createTypedArrayList(ShipmentProduct))
 
     override fun type(typeFactory: CourierTypeFactory): Int = typeFactory.type(this)
 
@@ -80,8 +79,7 @@ data class ShopShipment(
                 parcel.readInt(),
                 parcel.readString(),
                 parcel.readString(),
-                parcel.readByte() != 0.toByte()) {
-        }
+                parcel.readByte() != 0.toByte())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeInt(isAvailable)

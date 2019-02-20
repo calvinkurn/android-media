@@ -4,6 +4,7 @@ import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -16,6 +17,7 @@ class PartialButtonActionView private constructor(private val view: View){
     var buyNowClick: (()-> Unit)? = null
     var addToChartClick: (()-> Unit)? = null
     var topchatClick: (() -> Unit)? = null
+    var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
     var visibility: Boolean = false
     set(value) {
         field = value
@@ -90,6 +92,23 @@ class PartialButtonActionView private constructor(private val view: View){
             btn_topchat.visibility = View.GONE
             btn_buy_now.visibility = View.GONE
             btn_add_to_cart.visibility = View.GONE
+        }
+    }
+
+    fun gone() {
+        view.base_btn_action.gone()
+    }
+
+    fun visible() {
+        view.base_btn_action.visible()
+    }
+
+    fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
+        with(view){
+            if(show) {
+                btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
+                btn_byme.visible()
+            } else btn_byme.gone()
         }
     }
 }

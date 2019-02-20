@@ -84,6 +84,7 @@ class PartialHeaderView private constructor(private val view: View,
                 text_original_price.visibility = View.GONE
                 text_discount.visibility = View.GONE
                 discount_timer_holder.visibility = View.GONE
+                if (data.basic.isEligibleCod) layout_cod_content.visible() else layout_cod_content.gone()
             }
         }
     }

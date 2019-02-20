@@ -1,0 +1,8 @@
+query getShopInfo($shopIds: [Int!]!){
+     reputation_shops(shop_ids: $shopIds) {
+         badge
+         badge_hd
+         score
+         score_map
+     }
+ }

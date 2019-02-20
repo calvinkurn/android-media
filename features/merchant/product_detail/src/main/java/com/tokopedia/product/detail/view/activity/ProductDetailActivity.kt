@@ -63,14 +63,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             extras.putBoolean(IS_FROM_EXPLORE_AFFILIATE, true)
             return Intent(context, ProductDetailActivity::class.java)
-                    .setData(uri.build())
                     .putExtras(extras)
         }
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
             .newInstance(intent.extras?.getString(PARAM_PRODUCT_ID),
-                    shopDomain, productKey, isFromDeeplink)
+                    shopDomain, productKey, isFromDeeplink, isFromAffiliate)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -89,7 +88,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
             productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
         }
-        //TODO use this value later
         isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
 
         super.onCreate(savedInstanceState)

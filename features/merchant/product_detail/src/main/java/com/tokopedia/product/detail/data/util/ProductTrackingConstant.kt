@@ -11,6 +11,7 @@ object ProductTrackingConstant {
         const val PRODUCT_CLICK = "productClick"
         const val TOPADS_CLICK = "click - top ads"
         const val TOPADS_IMPRESSION = "impression - top ads"
+        const val CLICK_BY_ME = "click - by.me"
     }
 
     object Report {
@@ -21,6 +22,12 @@ object ProductTrackingConstant {
 
     object PDP {
         const val EVENT = "clickPDP"
+    }
+
+    object Affiliate {
+        const val EVENT = "clickAffiliate"
+        const val CATEGORY = "product detail page tokopedia by.me"
+        const val ACTION = "click tambah ke by.me"
     }
 
     object ProductTalk {

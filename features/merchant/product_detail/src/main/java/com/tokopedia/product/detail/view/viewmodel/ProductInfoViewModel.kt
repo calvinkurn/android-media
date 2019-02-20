@@ -6,6 +6,7 @@ import android.util.SparseArray
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -17,8 +18,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
@@ -29,14 +30,14 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.TopAdsDisplayResponse
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.shop.ShopBadge
+import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.ProductTalkQuery
-import com.tokopedia.product.detail.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.topads.sdk.domain.Xparams
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,7 +45,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.experimental.*
-import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -60,6 +60,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productInfoP2resp = MutableLiveData<ProductInfoP2>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
+    val userId: String
+        get() = userSessionInterface.userId
 
     fun getProductInfo(productParams: ProductParams, resources: Resources) {
 
@@ -99,7 +101,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy).getSuccessData<ProductDetailVariantResponse>()
             }*/
 
-            val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID, productInfoP1.productInfo.basic.id, resources)
+            val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
+                    productInfoP1.productInfo.basic.id,
+                    productInfoP1.productInfo.basic.price.toInt(), resources)
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
@@ -111,12 +115,24 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productVariantResp.value = Fail(e)
             }*/
         }) {
-            productInfoP1Resp.value = Fail(it)
+            //productInfoP1Resp.value = Fail(it)
             // for testing
+            val gson = Gson()
+            val productInfoP1 = ProductInfoP1()
+            productInfoP1.productInfo = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_info_p1),
+                    ProductInfo.Response::class.java).data ?: ProductInfo()
+            productInfoP1Resp.value = Success(productInfoP1)
+            val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
+                    productInfoP1.productInfo.basic.id,
+                    productInfoP1.productInfo.basic.price.toInt(), resources)
+            productInfoP2resp.value = productInfoP2
+            val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
+            ?: return@launchCatchError
+            productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, resources)
         }
     }
 
-    private suspend fun getProductInfoP2(shopId: Int, productId: Int, resources: Resources): ProductInfoP2 = withContext(Dispatchers.IO) {
+    private suspend fun getProductInfoP2(shopId: Int, productId: Int, productPrice: Int, resources: Resources): ProductInfoP2 = withContext(Dispatchers.IO) {
         val productInfoP2 = ProductInfoP2()
 
         // gson for testing
@@ -125,6 +141,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                 PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
         val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
+
+        val shopBadgeParams = mapOf(PARAM_SHOP_IDS to listOf(shopId))
+        val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
+                ShopBadge.Response::class.java, shopBadgeParams)
+
+        val shopCommitmentParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString(),
+                PARAM_PRICE to productPrice)
+        val shopCommitmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COMMITMENT],
+                ShopCommitment.Response::class.java, shopCommitmentParams)
 
         val ratingParams = mapOf(PARAM_PRODUCT_ID to productId)
         val ratingRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_RATING],
@@ -141,7 +166,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
         try {
             val gqlResponse = graphqlRepository.getReseponse(listOf(shopRequest, ratingRequest,
-                    wishlistCountRequest, voucherRequest), cacheStrategy)
+                    wishlistCountRequest, voucherRequest, shopBadgeRequest, shopCommitmentRequest),
+                    cacheStrategy)
 
             val result = if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
                 (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result
@@ -151,6 +177,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
             if (result.data.isNotEmpty())
                 productInfoP2.shopInfo = result.data.first()
+
+            if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true){
+                productInfoP2.shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
+                        .result.firstOrNull()
+            }
 
             if (gqlResponse.getError(Rating.Response::class.java)?.isNotEmpty() != true)
                 productInfoP2.rating = gqlResponse.getData<Rating.Response>(Rating.Response::class.java).data
@@ -173,6 +204,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productInfoP2.vouchers = (gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_voucher),
                         MerchantVoucherQuery::class.java)?.result?.vouchers?.toList()
                         ?: listOf()).map { MerchantVoucherViewModel(it) }
+            }
+
+            if (gqlResponse.getError(ShopCommitment.Response::class.java)?.isNotEmpty() != true){
+                val resp = gqlResponse.getData<ShopCommitment.Response>(ShopCommitment.Response::class.java).result
+                if (resp.error.message.isBlank()){
+                    productInfoP2.shopCommitment = resp.shopCommitment
+                }
             }
 
             productInfoP2
@@ -256,10 +294,17 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
                 TopAdsDisplayResponse::class.java, topadsParams)
 
+        val affilateParams = mapOf(ParamAffiliate.PRODUCT_ID_PARAM to listOf(productInfo.basic.id),
+                ParamAffiliate.SHOP_ID_PARAM to productInfo.basic.shopID,
+                ParamAffiliate.INCLUDE_UI_PARAM to true)
+        val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
+                TopAdsPdpAffiliateResponse::class.java, affilateParams)
+
         try {
             val gson = Gson()
             val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, estimationRequest,
-                    imageReviewRequest, helpfulReviewRequest, latestTalkRequest, topAdsRequest, otherProductRequest))
+                    imageReviewRequest, helpfulReviewRequest, latestTalkRequest, topAdsRequest, otherProductRequest,
+                    affiliateRequest))
 
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
                 productInfoP3.rateEstimation = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)
@@ -298,11 +343,19 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
             if (response.getError(TopAdsDisplayResponse::class.java)?.isNotEmpty() != true) {
-                productInfoP3.displayAds = response.getData<TopAdsDisplayResponse>(TopAdsDisplayResponse::class.java).result
+                productInfoP3.displayAds = response
+                        .getData<TopAdsDisplayResponse>(TopAdsDisplayResponse::class.java).result
             }
 
             if (response.getError(ProductOther.Response::class.java)?.isNotEmpty() != true) {
-                productInfoP3.productOthers = response.getData<ProductOther.Response>(ProductOther.Response::class.java).result.products
+                productInfoP3.productOthers = response
+                        .getData<ProductOther.Response>(ProductOther.Response::class.java).result.products
+            }
+
+            if (response.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true){
+                productInfoP3.pdpAffiliate = response
+                        .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
+                        .topAdsPDPAffiliate?.data?.affiliate?.firstOrNull()
             }
 
         } catch (t: Throwable) {
@@ -368,6 +421,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         private const val PARAM_RATE_EST_SHOP_DOMAIN = "domain"
         private const val PARAM_RATE_EST_WEIGHT = "weight"
 
+        private const val PARAM_PRICE = "price"
+
         private const val PARAM_PAGE = "page"
         private const val PARAM_USER_ID = "user_id"
         private const val PARAM_TOTAL = "total"
@@ -393,6 +448,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             const val KEY_SRC = "src"
             const val KEY_EP = "ep"
             const val KEY_XPARAMS = "xparams"
+        }
+
+        private object ParamAffiliate {
+            const val SHOP_ID_PARAM = "shopId"
+            const val PRODUCT_ID_PARAM = "productId"
+            const val INCLUDE_UI_PARAM = "includeUI"
         }
     }
 

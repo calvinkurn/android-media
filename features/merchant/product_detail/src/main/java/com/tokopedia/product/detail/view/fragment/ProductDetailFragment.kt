@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.applink.ApplinkConst
@@ -99,6 +100,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var isFromDeeplink: Boolean = false
+    private var isAffiliate: Boolean = false
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
@@ -123,6 +125,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var isAppBarCollapsed = false
     private var menu: Menu? = null
     private var useVariant = true
+
+    private var shouldShowCod = false
 
     var loadingProgressDialog: ProgressDialog? = null
 
@@ -149,17 +153,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
         private const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
         private const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
+        private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
 
         fun newInstance(productId: String? = null,
                         shopDomain: String? = null,
                         productKey: String? = null,
-                        isFromDeeplink: Boolean = false) =
+                        isFromDeeplink: Boolean = false,
+                        isAffiliate: Boolean = false) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
                         productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
                         productKey?.let { pkey -> putString(ARG_PRODUCT_KEY, pkey) }
                         shopDomain?.let { domain -> putString(ARG_SHOP_DOMAIN, domain) }
                         putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
+                        putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
                     }
                 }
     }
@@ -178,6 +185,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productKey = it.getString(ARG_PRODUCT_KEY)
             shopDomain = it.getString(ARG_SHOP_DOMAIN)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
+            isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -416,6 +424,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
         initStatusBarLight()
         initToolbarLight()
         fab_detail.hide()
+        label_cod.visibility = if (shouldShowCod) View.INVISIBLE else View.GONE
+    }
+
+    private fun expandedAppBar() {
+        initStatusBarDark()
+        initToolbarTransparent()
+        showFabDetailAfterLoadData()
+        label_cod.visibility = if (shouldShowCod) View.INVISIBLE else View.GONE
     }
 
     private fun initToolbarLight() {
@@ -447,12 +463,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 window.statusBarColor = ContextCompat.getColor(this, R.color.green_600)
             }
         }
-    }
-
-    private fun expandedAppBar() {
-        initStatusBarDark()
-        initToolbarTransparent()
-        showFabDetailAfterLoadData()
     }
 
     private fun initToolbarTransparent() {
@@ -565,6 +575,38 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 productInfo?.basic?.shopID ?: 0)
         productInfoP3.displayAds?.let { topads_carousel.setData(it) }
         otherProductView.renderData(productInfoP3.productOthers)
+
+        productInfoP3.pdpAffiliate?.let { renderAffiliate(it) }
+    }
+
+    private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
+        if (isAffiliate){
+            base_btn_affiliate.visible()
+            btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
+            actionButtonView.gone()
+        } else {
+            base_btn_affiliate.gone()
+            actionButtonView.byMeClick = this::onAffiliateClick
+            actionButtonView.showByMe(true, pdpAffiliate)
+            actionButtonView.visible()
+        }
+    }
+
+    private fun onAffiliateClick(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate,
+                                 isRegularPdp: Boolean){
+        if (productInfo == null) return
+        activity?.let {
+            productDetailTracking.eventClickAffiliate(productInfoViewModel.userId, productInfo!!.basic.shopID,
+                    pdpAffiliate.productId.toString(), isRegularPdp)
+            if (productInfoViewModel.isUserSessionActive()){
+                RouteManager.route(it, ApplinkConst.AFFILIATE_CREATE_POST
+                                .replace("{product_id}", pdpAffiliate.productId.toString())
+                                .replace("{ad_id}", pdpAffiliate.adId.toString()))
+            } else {
+                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+            }
+        }
     }
 
     private fun gotoRateEstimation() {
@@ -611,8 +653,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 merchantVoucherListWidget.gone()
             }
         }
+        productInfoP2.shopBadge?.let{ productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
+        partialVariantAndRateEstView.renderPriorityOrder(productInfoP2.shopCommitment)
     }
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
@@ -663,6 +707,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
+        shouldShowCod = data.campaign.id < 1 && data.basic.isEligibleCod
+        if (shouldShowCod) label_cod.visible() else label_cod.gone()
         headerView.renderData(data)
         view_picture.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
