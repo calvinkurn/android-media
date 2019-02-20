@@ -7,6 +7,7 @@ import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
+import com.tokopedia.iris.data.network.ApiInterface
 import com.tokopedia.iris.data.network.ApiService
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
@@ -37,9 +38,10 @@ class TrackingRepository (
     fun sendSingleEvent(data: String, session: Session) {
         val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
         val service = ApiService(context).makeRetrofitService()
+        val apiService = service.create(ApiInterface::class.java)
         GlobalScope.launch {
             val requestBody = ApiService.parse(dataRequest)
-            val request = service.sendSingleEvent(
+            val request = apiService.sendSingleEvent(
                     HEADER_JSON,
                     HEADER_ANDROID,
                     session.getUserId(),

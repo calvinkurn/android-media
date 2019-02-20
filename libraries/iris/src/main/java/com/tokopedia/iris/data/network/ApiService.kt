@@ -16,27 +16,15 @@ import okhttp3.OkHttpClient
  */
 class ApiService(private val context: Context) {
 
-    fun makeRetrofitService(): ApiInterface {
+    fun makeRetrofitService(): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(createClient())
                 .addConverterFactory(StringResponseConverter())
                 .addCallAdapterFactory(CoroutineCallAdapterFactory())
-                .build().create(ApiInterface::class.java)
+                .client(OkHttpBuilder(context, OkHttpClient.Builder()).build())
+                .build()
     }
 
-    private fun createClient(): OkHttpClient {
-         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-        builder.connectTimeout(15000, TimeUnit.MILLISECONDS)
-        builder.writeTimeout(10000, TimeUnit.MILLISECONDS)
-        builder.readTimeout(10000, TimeUnit.MILLISECONDS)
-
-        if (BuildConfig.DEBUG) {
-            builder.addInterceptor(ChuckInterceptor(context))
-        }
-
-        return builder.build()
-    }
     companion object {
 
         fun parse(data: String) : RequestBody {
