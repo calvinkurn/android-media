@@ -23,11 +23,17 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -42,6 +48,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     @LayoutRes
     public static final int LAYOUT = R.layout.default_category_header;
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String SHOP = "shop";
 
     RecyclerView defaultCategoriesRecyclerView;
     LinearLayout expandLayout;
@@ -69,7 +76,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
     }
 
-    private void initTopAds(String depId) {
+    private void initTopAds(String depId, String categoryName) {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
@@ -85,8 +92,19 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 categoryListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventCategoryPromoShopClick(context, categoryName, data, position);
+                } else {
+                    TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, position);
+                }
+            }
+        });
+        this.topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventCategoryPromoView(context, categoryName, data, position);
             }
         });
         this.topAdsBannerView.loadTopAds();
@@ -94,7 +112,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
 
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
         if (!isInit) {
-            initTopAds(categoryHeaderModel.getDepartementId());
+            initTopAds(categoryHeaderModel.getDepartementId(), categoryHeaderModel.getHeaderModel().getCategoryName());
             isInit = true;
         }
         activeChildren = new ArrayList<>();
