@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
@@ -17,7 +16,6 @@ import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener;
-import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter;
 import com.tokopedia.saldodetails.response.model.DepositHistoryList;
 
@@ -27,7 +25,7 @@ import static com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFr
 import static com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.TRANSACTION_TYPE;
 
 public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryList,
-        SaldoDetailTransactionFactory> implements SaldoItemListener {
+        SaldoDetailTransactionFactory> {
 
     private static final int SELLER_SALDO = 1;
     private static final int BUYER_SALDO = 0;
@@ -37,7 +35,7 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     private SaldoHistoryPresenter presenter;
     private String transactionType;
 
-    public static SaldoHistoryListFragment createInstance(String type, boolean isSellerEnabled, SaldoHistoryPresenter saldoHistoryPresenter) {
+    public static SaldoHistoryListFragment createInstance(String type, SaldoHistoryPresenter saldoHistoryPresenter) {
         SaldoHistoryListFragment saldoHistoryListFragment = new SaldoHistoryListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TRANSACTION_TYPE, type);
@@ -117,7 +115,7 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
 
     @Override
     protected SaldoDetailTransactionFactory getAdapterTypeFactory() {
-        return new SaldoDetailTransactionFactory(this);
+        return new SaldoDetailTransactionFactory();
     }
 
     @Override
@@ -141,8 +139,4 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
         return null;
     }
 
-    @Override
-    public void setTextColor(View view, int colorId) {
-        ((TextView) view).setTextColor(colorId);
-    }
 }

@@ -7,11 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,7 +25,6 @@ import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter;
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
-import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
@@ -57,8 +54,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     private HeightWrappingViewPager depositHistoryViewPager;
     private TabLayout depositHistoryTabLayout;
 
-    private LinearLayout dateSelectorLL;
-
     private TextView startDateTV;
     private TextView endDateTV;
 
@@ -67,12 +62,9 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     @Inject
     UserSession userSession;
 
-    //    private SaldoDepositAdapter adapter;
     private SaldoDatePickerUtil datePicker;
-    //    private LinearLayoutManager linearLayoutManager;
     protected Bundle savedState;
 
-    private SaldoHistoryPagerAdapter saldoHistoryPagerAdapter;
     private boolean isSeller;
     private List<SaldoHistoryTabItem> saldoTabItems = new ArrayList<>();
     private SaldoHistoryTabItem singleTabItem;
@@ -134,18 +126,11 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         depositHistoryViewPager = view.findViewById(R.id.transaction_history_view_pager);
         depositHistoryTabLayout = view.findViewById(R.id.transaction_history_tab_layout);
         tabSeparator = view.findViewById(R.id.transaction_history_tab_view_separator);
-//        recyclerView = view.findViewById(R.id.recycler_view);
     }
 
     private void initialVar() {
 
-        if (getArguments() != null) {
-            boolean sellerOnlyTranxn = FOR_SELLER.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
-            boolean buyerOnlyTranxn = FOR_BUYER.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
-            boolean allTranxn = FOR_ALL.equalsIgnoreCase(getArguments().getString(TRANSACTION_TYPE));
-        }
-
-        isSeller = userSession.hasShop() || userSession.isAffiliate();//!TextUtils.isEmpty(userSession.getShopId());
+        isSeller = userSession.hasShop() || userSession.isAffiliate();
         if (isSeller) {
             loadMultipleTabItem();
         } else {
@@ -153,22 +138,20 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         }
 
         saldoHistoryPresenter.setSeller(isSeller);
-        saldoHistoryPagerAdapter = new SaldoHistoryPagerAdapter(getChildFragmentManager());
+        SaldoHistoryPagerAdapter saldoHistoryPagerAdapter = new SaldoHistoryPagerAdapter(getChildFragmentManager());
         saldoHistoryPagerAdapter.setItems(saldoTabItems);
         depositHistoryViewPager.setOffscreenPageLimit(2);
         depositHistoryViewPager.setAdapter(saldoHistoryPagerAdapter);
         depositHistoryTabLayout.setupWithViewPager(depositHistoryViewPager);
 
         datePicker = new SaldoDatePickerUtil(getActivity());
-//        adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
-//        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
     }
 
     private void loadOneTabItem() {
         saldoTabItems.clear();
         singleTabItem = new SaldoHistoryTabItem();
         singleTabItem.setTitle("");
-        singleTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, isSellerEnabled(), saldoHistoryPresenter));
+        singleTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, saldoHistoryPresenter));
         saldoTabItems.add(singleTabItem);
         depositHistoryTabLayout.setVisibility(View.GONE);
         tabSeparator.setVisibility(View.GONE);
@@ -180,19 +163,19 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
         allSaldoHistoryTabItem = new SaldoHistoryTabItem();
         allSaldoHistoryTabItem.setTitle("Semua");
-        allSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_ALL, isSellerEnabled(), saldoHistoryPresenter));
+        allSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryPresenter));
 
         saldoTabItems.add(allSaldoHistoryTabItem);
 
         buyerSaldoHistoryTabItem = new SaldoHistoryTabItem();
         buyerSaldoHistoryTabItem.setTitle("Refund");
-        buyerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, isSellerEnabled(), saldoHistoryPresenter));
+        buyerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_BUYER, saldoHistoryPresenter));
 
         saldoTabItems.add(buyerSaldoHistoryTabItem);
 
         sellerSaldoHistoryTabItem = new SaldoHistoryTabItem();
         sellerSaldoHistoryTabItem.setTitle("Penghasilan");
-        sellerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_SELLER, isSellerEnabled(), saldoHistoryPresenter));
+        sellerSaldoHistoryTabItem.setFragment(SaldoHistoryListFragment.createInstance(FOR_SELLER, saldoHistoryPresenter));
 
         saldoTabItems.add(sellerSaldoHistoryTabItem);
 
@@ -207,7 +190,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (activePosition != position) {
-//                    onRefresh();
                     activePosition = position;
                 }
             }
@@ -215,7 +197,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
             @Override
             public void onPageSelected(int position) {
                 if (activePosition != position) {
-//                    onRefresh();
                     activePosition = position;
                 }
             }
@@ -275,12 +256,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     public void showEmptyState() {
         setActionsEnabled(false);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> saldoHistoryPresenter.getSummaryDeposit());
-        try {
-            View retryLoad = getView().findViewById(R.id.main_retry);
-//            retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -294,12 +269,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         setActionsEnabled(false);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
                 () -> saldoHistoryPresenter.getSummaryDeposit());
-        try {
-            View retryLoad = getView().findViewById(R.id.main_retry);
-//            retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -388,21 +357,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
     }
 
-    /*@Override
-    public void loadData(int page) {
-
-    }
-
-    @Override
-    protected SaldoDetailTransactionFactory getAdapterTypeFactory() {
-        return new SaldoDetailTransactionFactory(this);
-    }
-
-    @Override
-    public void onItemClicked(DepositHistoryList depositHistoryList) {
-
-    }*/
-
     @Override
     public SaldoDepositAdapter getSingleTabAdapter() {
         if (singleTabItem != null) {
@@ -463,12 +417,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     }
 
     private SaldoDepositAdapter createNewAdapter() {
-        return new SaldoDepositAdapter(new SaldoDetailTransactionFactory(new SaldoItemListener() {
-            @Override
-            public void setTextColor(View view, int colorId) {
-
-            }
-        }));
+        return new SaldoDepositAdapter(new SaldoDetailTransactionFactory());
     }
 
     @Override
@@ -483,12 +432,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
             return ((SaldoHistoryListFragment) sellerSaldoHistoryTabItem.getFragment()).getAdapter();
         }
 
-        return new SaldoDepositAdapter(new SaldoDetailTransactionFactory(new SaldoItemListener() {
-            @Override
-            public void setTextColor(View view, int colorId) {
-
-            }
-        }));
+        return new SaldoDepositAdapter(new SaldoDetailTransactionFactory());
     }
 
     @Override
