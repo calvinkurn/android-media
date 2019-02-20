@@ -2,12 +2,9 @@ package com.tokopedia.iris.data.network
 
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
-import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.iris.*
 import okhttp3.*
 import org.json.JSONObject
 import retrofit2.Retrofit
-import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 
 

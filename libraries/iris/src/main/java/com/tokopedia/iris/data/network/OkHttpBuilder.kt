@@ -11,6 +11,7 @@ import okhttp3.CipherSuite
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import com.tokopedia.iris.*
 
 class OkHttpBuilder(private val context: Context, val builder: OkHttpClient.Builder) {
 
