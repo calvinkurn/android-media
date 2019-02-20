@@ -8,6 +8,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
@@ -81,12 +82,14 @@ public class ShopModule {
     @Provides
     public OkHttpClient provideOkHttpClientTomeBearerAuth(HttpLoggingInterceptor httpLoggingInterceptor,
                                                           BearerInterceptor bearerInterceptor,
-                                                          @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor
+                                                          @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor,
+                                                          FingerprintInterceptor fingerprintInterceptor
                                                           ) {
         return new OkHttpClient.Builder()
                 .addInterceptor(bearerInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(fingerprintInterceptor)
                 .build();
     }
 
