@@ -581,7 +581,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun setProfileToolbar(element: ProfileHeaderViewModel) {
         iv_image_collapse.loadImageRounded(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
-        tv_name.text = element.affiliateName
+        tv_name.text = element.name
+        tv_name_parallax.text = element.affiliateName
+        iv_back_parallax.setOnClickListener{
+            activity?.finish()
+        }
 
         if (element.isKol || element.isAffiliate) {
             kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE

@@ -50,7 +50,25 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16">
+
+                        <ImageView
+                            android:id="@+id/iv_back_parallax"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_action_back"
+                            android:layout_gravity="center"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_name_parallax"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_17"
+                            android:layout_gravity="center"/>
 
                     </LinearLayout>
 
@@ -145,8 +163,6 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-
-
 
             </FrameLayout>
 
