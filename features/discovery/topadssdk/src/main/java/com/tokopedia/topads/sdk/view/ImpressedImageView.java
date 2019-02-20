@@ -52,13 +52,17 @@ public class ImpressedImageView extends AppCompatImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        invoke();
+        if (holder != null && !holder.isInvoke()) {
+            invoke();
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        revoke();
+        if (holder != null && holder.isInvoke()) {
+            revoke();
+        }
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -171,7 +175,7 @@ public class ImpressedImageView extends AppCompatImageView {
 
     public void setImage(ProductImage image) {
         this.holder = image;
-        ImageHandler.loadImageThumbs(getContext(), this, image.getM_url());
+        ImageHandler.loadImageThumbs(getContext(), this, image.getM_ecs());
     }
 
     public void setImage(ImageProduct image) {
