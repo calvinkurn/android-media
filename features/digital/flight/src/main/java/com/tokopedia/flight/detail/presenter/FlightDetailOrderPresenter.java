@@ -175,7 +175,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 }
                 renderInsurances(flightOrder);
 
-                if (flightOrder.getEticketUri() != null) {
+                if (flightOrder.getEticketUri() != null && flightOrder.getEticketUri().length() > 0) {
                     getView().showLihatETicket();
                 } else {
                     getView().hideLihatETicket();
