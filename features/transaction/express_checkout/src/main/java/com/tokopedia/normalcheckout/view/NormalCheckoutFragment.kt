@@ -1,6 +1,8 @@
 package com.tokopedia.normalcheckout.view
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
@@ -31,15 +34,23 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
+import com.tokopedia.normalcheckout.model.ProductInfoP1
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.payment.model.PaymentPassData
+import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
@@ -50,7 +61,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var presenter: NormalCheckoutViewModel
+    lateinit var viewModel: NormalCheckoutViewModel
 
     lateinit var itemDecorator: CheckoutVariantItemDecorator
     lateinit var tkpdProgressDialog: TkpdProgressDialog
@@ -61,24 +72,43 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private lateinit var adapter: CheckoutVariantAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var fragmentListener: NormalCheckoutListener
+    private val compositeSubscription =  CompositeSubscription()
+
+    var shopId: String? = null
+    var productId: String? = null
+    var shopDomain: String? = null
+    var productName: String? = null
+    var notes: String? = null
+    var quantity: Int? = null
+    var selectedVariantId: ArrayList<String>? = null
+    var placeholderProductImage: String? = null
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
         const val EXTRA_PRODUCT_ID = "product_id"
+        const val EXTRA_SHOP_DOMAIN = "shop_domain"
+        const val EXTRA_PRODUCT_NAME = "product_name"
         const val EXTRA_NOTES = "notes"
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
+        const val EXTRA_PRODUCT_IMAGE = "product_image"
 
         fun createInstance(shopId: String?, productId: String?,
+                           shopDomain: String?, productName: String?,
                            notes: String? = "", quantity: Int? = 0,
-                           selectedVariantId: ArrayList<String>? = null): NormalCheckoutFragment {
+                           selectedVariantId: ArrayList<String>? = null,
+                           placeholderProductImage: String?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_SHOP_ID, shopId)
                     putString(EXTRA_PRODUCT_ID, productId)
+                    putString(EXTRA_SHOP_DOMAIN, shopDomain)
+                    putString(EXTRA_PRODUCT_NAME, productName)
                     putString(EXTRA_NOTES, notes)
                     putInt(EXTRA_QUANTITY, quantity ?: 0)
-                    putStringArrayList(EXTRA_SELECTED_VARIANT_ID, selectedVariantId ?: arrayListOf<String>())
+                    putString(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
+                    putStringArrayList(EXTRA_SELECTED_VARIANT_ID, selectedVariantId
+                            ?: arrayListOf<String>())
                 }
             }
 
@@ -87,16 +117,36 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun initInjector() {
-//        activity?.let {
-//            val baseAppComponent = it.application
-//            if (baseAppComponent is BaseMainApplication) {
-//                DaggerCheckoutVariantComponent.builder()
-//                        .baseAppComponent(baseAppComponent.baseAppComponent)
-//                        .build()
-//                        .inject(this)
-//            }
-//        }
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
+        }
     }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.productInfoP1Resp.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetProductInfo(it.data)
+                is Fail -> onErrorGetProductInfo(it.throwable)
+            }
+        })
+    }
+
+    private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
+        val viewModels = ModelMapper.convertToModels(productInfoP1.productInfo,
+                notes, quantity ?: 0)
+        fragmentViewModel.viewModels = viewModels
+        adapter.clearAllElements()
+        adapter.addDataViewModel(viewModels)
+        adapter.notifyDataSetChanged()
+
+    }
+    private fun onErrorGetProductInfo(throwable: Throwable) {
+        ToasterError.make(activity!!.findViewById(android.R.id.content),
+                ErrorHandler.getErrorMessage(context, throwable)).show()
+    }
+
 
     override fun onClickEditProfile() {
         //no op
@@ -110,19 +160,36 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         //no op
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val argument = arguments
+        if (argument != null) {
+            shopId = argument.getString(EXTRA_SHOP_ID)
+            productId = argument.getString(EXTRA_PRODUCT_ID)
+            shopDomain = argument.getString(EXTRA_SHOP_DOMAIN)
+            productName = argument.getString(EXTRA_PRODUCT_NAME)
+            notes = argument.getString(EXTRA_NOTES)
+            quantity = argument.getInt(EXTRA_QUANTITY)
+            placeholderProductImage = argument.getString(EXTRA_PRODUCT_IMAGE)
+        }
+        if (savedInstanceState == null) {
+            if (argument!= null) {
+                selectedVariantId = argument.getStringArrayList(EXTRA_SELECTED_VARIANT_ID)
+            }
+        } else {
+            selectedVariantId = savedInstanceState.getStringArrayList(EXTRA_SELECTED_VARIANT_ID)
+        }
+
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_detail_product_page, container, false)
+        val view = inflater.inflate(R.layout.fragment_normal_checkout, container, false)
 
         recyclerView = getRecyclerView(view)
         recyclerView.addItemDecoration(itemDecorator)
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        presenter.attachView(this)
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onAttach(context: Context?) {
@@ -162,6 +229,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun onItemClicked(t: Visitable<*>?) {
 
+    }
+
+    override fun loadData(page: Int) {
+        //viewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), resources)
     }
 
     override fun onNeedToNotifySingleItem(position: Int) {
@@ -435,7 +506,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         setOnboardingStateHasNotShown(activity, false)
     }
 
-    override fun onGetCompositeSubscriber(): CompositeSubscription = CompositeSubscription()
+    override fun onGetCompositeSubscriber() = compositeSubscription
 
     override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {
         val quantityViewModel = fragmentViewModel.getQuantityViewModel()
@@ -459,13 +530,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun getScreenName(): String? {
         return null
-    }
-
-    override fun loadData(page: Int) {
-        //TODO
-//        if (!isDataLoaded) {
-//            presenter.loadExpressCheckoutData(arguments?.get(ARGUMENT_ATC_REQUEST) as AtcRequestParam)
-//        }
     }
 
     override fun showToasterError(message: String?) {
@@ -560,6 +624,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         img_total_payment_info.setOnClickListener {
             recyclerView.smoothScrollToPosition(adapter.data.size - 1)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        //TODO getselected variantID to be saved
+        outState.putStringArrayList(EXTRA_SELECTED_VARIANT_ID, arrayListOf())
     }
 
 }

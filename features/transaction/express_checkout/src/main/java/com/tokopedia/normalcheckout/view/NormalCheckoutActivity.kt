@@ -18,20 +18,33 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
         const val EXTRA_PRODUCT_ID = "product_id"
+        const val EXTRA_SHOP_DOMAIN = "shop_domain"
+        const val EXTRA_PRODUCT_NAME = "product_name"
         const val EXTRA_NOTES = "notes"
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
+        const val EXTRA_PRODUCT_IMAGE = "product_image"
 
+        /**
+         * shopID: mandatory
+         * productID or (shopDomain and productName) is mandatory
+         *
+         */
         @JvmStatic
         fun getIntent(context: Context, shopId: String, productId: String,
+                      shopDomain: String?, productName: String?,
                       notes: String? = "", quantity: Int? = 0,
-                      selectedVariantId: ArrayList<Int>? = null): Intent {
+                      selectedVariantId: ArrayList<Int>? = null,
+                      placeholderProductImage: String? = ""): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(EXTRA_SHOP_ID, shopId)
                 putExtra(EXTRA_PRODUCT_ID, productId)
+                putExtra(EXTRA_SHOP_DOMAIN, shopDomain)
+                putExtra(EXTRA_PRODUCT_NAME, productName)
                 putExtra(EXTRA_NOTES, notes)
                 putExtra(EXTRA_QUANTITY, quantity)
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+                putExtra(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
             }
         }
     }
@@ -48,8 +61,11 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
             return NormalCheckoutFragment.createInstance(getString(EXTRA_SHOP_ID),
                     getString(EXTRA_PRODUCT_ID),
                     getString(EXTRA_NOTES),
+                    getString(EXTRA_SHOP_DOMAIN),
+                    getString(EXTRA_PRODUCT_NAME),
                     getInt(EXTRA_QUANTITY),
-                    getStringArrayList(EXTRA_SELECTED_VARIANT_ID))
+                    getStringArrayList(EXTRA_SELECTED_VARIANT_ID),
+                    getString(EXTRA_PRODUCT_IMAGE))
         }
         return Fragment()
     }
