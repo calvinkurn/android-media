@@ -350,48 +350,45 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
     }
 
     private fun goToImageExample(needResult: Boolean) {
+        val intent = CreatePostExampleActivity.createIntent(
+                context,
+                guide?.imageUrl ?: "",
+                guide?.imageDescription ?: ""
+        )
+
         if (needResult) {
-            startActivityForResult(
-                    CreatePostExampleActivity.createIntent(
-                            context,
-                            guide?.imageUrl ?: "",
-                            guide?.imageDescription ?: ""
-                    ),
-                    REQUEST_EXAMPLE
-            )
+            startActivityForResult(intent, REQUEST_EXAMPLE)
         } else {
-            startActivity(
-                    CreatePostExampleActivity.createIntent(
-                            context,
-                            guide?.imageUrl ?: "",
-                            guide?.imageDescription ?: ""
-                    )
-            )
+            startActivity(intent)
         }
     }
 
     private fun goToImagePicker() {
-        startActivityForResult(
-                CreatePostImagePickerActivity.getInstance(
-                        activity!!,
-                        viewModel!!.fileImageList,
-                        viewModel!!.maxImage - viewModel!!.urlImageList.size
-                ),
-                REQUEST_IMAGE_PICKER)
+        activity?.let {
+            startActivityForResult(
+                    CreatePostImagePickerActivity.getInstance(
+                            it,
+                            viewModel!!.fileImageList,
+                            viewModel!!.maxImage - viewModel!!.urlImageList.size
+                    ),
+                    REQUEST_IMAGE_PICKER)
+        }
     }
 
     private fun goToProfile() {
-        var profileApplink = if (viewModel!!.isEdit)
-            ApplinkConst.PROFILE_AFTER_EDIT
-        else
-            ApplinkConst.PROFILE_AFTER_POST
-        profileApplink = profileApplink.replace(PARAM_USER_ID, userSession.userId)
-        val intent = RouteManager.getIntent(
-                context!!,
-                profileApplink
-        )
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        activity?.let {
+            var profileApplink = if (viewModel!!.isEdit)
+                ApplinkConst.PROFILE_AFTER_EDIT
+            else
+                ApplinkConst.PROFILE_AFTER_POST
+            profileApplink = profileApplink.replace(PARAM_USER_ID, userSession.userId)
+            val intent = RouteManager.getIntent(
+                    it,
+                    profileApplink
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
     }
 
     private fun submitPost() {
