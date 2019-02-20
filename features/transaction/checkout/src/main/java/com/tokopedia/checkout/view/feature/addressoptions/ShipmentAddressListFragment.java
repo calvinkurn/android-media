@@ -37,6 +37,7 @@ import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.util.ArrayList;
@@ -62,6 +63,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
     public static final String TAG_CORNER_BS = "TAG_CORNER_BS";
     public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";
+    public static final String ARGUMENT_ORIGIN_DIRECTION_TYPE = "ARGUMENT_ORIGIN_DIRECTION_TYPE";
+    public static final int ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM = 1;
+    public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -93,33 +97,43 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
+    @Inject
+    CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
+
     private Token token;
+    private int originDirectionType;
 
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        bundle.putBoolean(ARGUMENT_DISABLE_CORNER, false);
+        bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
         return shipmentAddressListFragment;
     }
 
-    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress, boolean isDisableCorner) {
+    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress,
+                                                          boolean isDisableCorner) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putBoolean(ARGUMENT_DISABLE_CORNER, isDisableCorner);
+        bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
         return shipmentAddressListFragment;
     }
 
-    public static ShipmentAddressListFragment newInstance(HashMap<String, String> params) {
+    public static ShipmentAddressListFragment newInstanceFromMultipleAddressForm
+            (RecipientAddressModel currentAddress,
+             boolean isDisableCorner) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(PARAMS, params);
-
-        ShipmentAddressListFragment fragment = new ShipmentAddressListFragment();
-        fragment.setArguments(bundle);
-
-        return fragment;
+        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
+        bundle.putBoolean(ARGUMENT_DISABLE_CORNER, isDisableCorner);
+        bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM);
+        ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
+        shipmentAddressListFragment.setArguments(bundle);
+        return shipmentAddressListFragment;
     }
 
     @Override
@@ -189,6 +203,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getArguments() != null) {
             mCurrAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
             isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false);
+            originDirectionType = getArguments().getInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         }
     }
 
@@ -442,7 +457,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position) {
         mShipmentAddressListAdapter.updateSelected(position);
-        if (mCartAddressChoiceActivityListener != null && getActivity() != null && mCurrAddress != null){
+        if (mCartAddressChoiceActivityListener != null && getActivity() != null && mCurrAddress != null) {
             RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel, mCurrAddress.getId());
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
         } else {
@@ -514,8 +529,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAddAddressButtonClicked() {
         if (getActivity() != null) {
-            checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
-            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
+            if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
+            }else {
+                checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
+                checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
+            }
+
             startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
                     getActivity(), null, token, false, false),
                     LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);

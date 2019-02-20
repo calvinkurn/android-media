@@ -221,6 +221,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LANJUTKAN_TANPA_TEMPLATE = "click lanjutkan tanpa template";
         String CLICK_X = "click x";
         String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
+
+        String CLICK_PLUS_FROM_MULTIPLE = "click + from multiple";
     }
 
     interface EventLabel {

@@ -48,8 +48,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private int typeRequest;
     private Token token;
 
-    private ShipmentAddressListFragment defaultFragment;
-
     public static Intent createInstance(Activity activity,
                                         ArrayList<MultipleAddressAdapterData> dataList,
                                         int parentPosition) {
@@ -226,13 +224,11 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 return ShipmentAddressListFragment.newInstance(currentAddress);
-            case TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT :
+            case TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT:
             case TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
-                return ShipmentAddressListFragment.newInstance(currentAddress, true);
+                return ShipmentAddressListFragment.newInstanceFromMultipleAddressForm(currentAddress, true);
             default:
-                defaultFragment = ShipmentAddressListFragment.newInstance(
-                        currentAddress);
-                return defaultFragment;
+                return ShipmentAddressListFragment.newInstance(currentAddress);
         }
     }
 

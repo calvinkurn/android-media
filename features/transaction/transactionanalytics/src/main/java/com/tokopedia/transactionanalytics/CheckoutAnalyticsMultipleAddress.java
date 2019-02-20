@@ -125,4 +125,13 @@ public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
                 EventAction.CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT
         );
     }
+
+
+    public void eventClickAddressCartMultipleAddressClickPlusFromMultiple() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_PLUS_FROM_MULTIPLE
+        );
+    }
 }
