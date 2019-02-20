@@ -6,4 +6,5 @@
     <string name="go_to_product_details">Kembali Ke Detail Produk</string>
     <string name="text_price_holder">Harga Hp kamu Rp $1%d</string>
     <string name="text_check_functionality">Mulai Cek Fungsi</string>
+    <string name="noclick">Action-No-Click</string>
 </resources>
