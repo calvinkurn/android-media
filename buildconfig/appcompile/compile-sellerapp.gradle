@@ -25,6 +25,8 @@ include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
 //include "features:fintech:saldo_details_no_op"
 
+include "features:im:referral"
+
 include "features:logistic:district_recommendation"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticanalytics"
