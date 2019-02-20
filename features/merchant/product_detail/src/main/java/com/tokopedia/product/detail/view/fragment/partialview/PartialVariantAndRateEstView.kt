@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
@@ -60,6 +61,27 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             }
             visible()
             setOnClickListener { onRateEstimationClicked?.invoke() }
+        }
+    }
+
+    fun renderPriorityOrder(shopCommitment: ShopCommitment) {
+        with(view){
+            if (shopCommitment.isNowActive){
+                if (label_variant.isVisible || txt_courier_dest.isVisible){
+                    priority_order_divider.visible()
+                } else {
+                    priority_order_divider.gone()
+                }
+                icon_priority_order.visible()
+                txt_priority_order_title.visible()
+                txt_priority_order_message.visible()
+                txt_priority_order_message.text = MethodChecker.fromHtml(shopCommitment.staticMessages.pdpMessage)
+            } else {
+                priority_order_divider.gone()
+                icon_priority_order.gone()
+                txt_priority_order_title.gone()
+                txt_priority_order_message.gone()
+            }
         }
     }
 

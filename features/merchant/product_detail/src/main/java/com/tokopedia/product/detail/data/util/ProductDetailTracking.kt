@@ -124,6 +124,22 @@ class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
         ))
     }
 
+    fun eventClickAffiliate(userId: String, shopID: Int, productId: String, isRegularPdp: Boolean = false) {
+        val params: MutableMap<String, Any> = if (isRegularPdp){
+            mutableMapOf(KEY_EVENT to ProductTrackingConstant.PDP.EVENT,
+                    KEY_CATEGORY to ProductTrackingConstant.Category.PDP.toLowerCase(),
+                    KEY_ACTION to ProductTrackingConstant.Action.CLICK_BY_ME,
+                    KEY_LABEL to "$shopID - $productId")
+        } else {
+            mutableMapOf(KEY_EVENT to ProductTrackingConstant.Affiliate.EVENT,
+                    KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
+                    KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION,
+                    KEY_LABEL to productId)
+        }
+        params.put(KEY_USER_ID, userId)
+        analyticTracker?.sendEventTracking(params)
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"
@@ -132,6 +148,7 @@ class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
         private const val KEY_ECOMMERCE = "ecommerce"
         private const val KEY_PRODUCT_PROMO = "promoClick"
         private const val KEY_PROMOTIONS = "promotions"
+        private const val KEY_USER_ID = "user_id"
 
         private const val ID = "id"
         private const val PROMO_NAME = "name"

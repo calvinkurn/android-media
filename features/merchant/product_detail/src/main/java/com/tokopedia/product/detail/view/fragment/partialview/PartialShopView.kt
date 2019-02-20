@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import kotlinx.android.synthetic.main.partial_product_shop_info.view.*
 
@@ -83,5 +84,9 @@ class PartialShopView private constructor(private val view: View){
                 btn_favorite.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             }
         }
+    }
+
+    fun renderShopBadge(shopBadge: ShopBadge) {
+        ImageHandler.loadImage(view.context, view.l_medal, shopBadge.badge, -1)
     }
 }

@@ -253,6 +253,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)

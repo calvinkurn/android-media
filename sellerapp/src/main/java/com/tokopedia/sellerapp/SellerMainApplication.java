@@ -24,6 +24,7 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.core.common.category.CategoryDbFlow;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;

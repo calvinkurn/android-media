@@ -96,4 +96,32 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_OTHER_PRODUCT)
     fun provideRawOtherProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_other_product)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_SHOP)
+    fun provideGetShop(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_info)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_SHOP_BADGE)
+    fun provideGetShopBadge(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_badge)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE)
+    fun provideGetProductAffiliate(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_product_affiliate_data)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_SHOP_COMMITMENT)
+    fun provideGetShopCommitment(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_commitment)
 }

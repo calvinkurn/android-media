@@ -9,6 +9,33 @@
     android:background="@android:color/background_light"
     android:id="@+id/base_header">
 
+    <FrameLayout android:id="@+id/layout_cod_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_background"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_56"
+        android:paddingEnd="@dimen/dp_56"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cod_content"
+            app:fontSize="small"
+            app:textViewTheme="lightSecondary"/>
+
+    </FrameLayout>
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/discount_timer_holder"
         android:layout_width="0dp"
@@ -18,7 +45,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_cod_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:visibility="visible">

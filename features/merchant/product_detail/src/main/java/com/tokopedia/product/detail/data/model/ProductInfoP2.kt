@@ -3,11 +3,15 @@ package com.tokopedia.product.detail.data.model
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.Rating
 import com.tokopedia.product.detail.common.data.model.WishlistCount
+import com.tokopedia.product.detail.data.model.shop.ShopBadge
+import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 
 data class ProductInfoP2(
         var shopInfo: ShopInfo? = null,
         var rating: Rating = Rating(),
         var wishlistCount: WishlistCount = WishlistCount(),
-        var vouchers: List<MerchantVoucherViewModel> = listOf()
+        var vouchers: List<MerchantVoucherViewModel> = listOf(),
+        var shopBadge: ShopBadge? = null,
+        var shopCommitment: ShopCommitment = ShopCommitment()
 )
