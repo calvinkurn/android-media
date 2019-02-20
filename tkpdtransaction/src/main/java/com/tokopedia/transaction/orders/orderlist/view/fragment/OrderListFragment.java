@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
@@ -223,8 +224,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
         orderLabelList = arguments.getParcelable(ORDER_TAB_LIST);
-        if (arguments.getString(OrderListContants.ORDER_FILTER_ID) != null) {
-            selectedFilter = arguments.getString(OrderListContants.ORDER_FILTER_ID);
+        if (arguments.getString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER) != null) {
+            selectedFilter = arguments.getString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER);
         }
     }
 
