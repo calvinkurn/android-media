@@ -52,13 +52,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var presenter: NormalCheckoutViewModel
 
-    @Inject
     lateinit var itemDecorator: CheckoutVariantItemDecorator
-    @Inject
     lateinit var tkpdProgressDialog: TkpdProgressDialog
-    @Inject
     lateinit var fragmentViewModel: FragmentViewModel
-    @Inject
     lateinit var errorBottomsheets: ErrorBottomsheets
 
     private lateinit var router: ExpressCheckoutRouter
