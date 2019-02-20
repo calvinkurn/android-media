@@ -258,7 +258,14 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadEticket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flightDetailOrderPresenter.onDownloadETicketButtonClicked();
+                navigateToShowInvoice();
+            }
+        });
+
+        showETicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToShowETicket();
             }
         });
 
@@ -527,6 +534,22 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
+    public void showLihatETicket() {
+        showETicket.setVisibility(View.VISIBLE);
+        showETicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    @Override
+    public void hideLihatETicket() {
+        showETicket.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showCancellationStatus() {
         tvTicketCancellationStatus.setText(getString(R.string.flight_cancellation_ticket_status));
         containerTicketCancellationStatus.setVisibility(View.VISIBLE);
@@ -683,6 +706,20 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             }
         });
         dialog.show();
+    }
+
+    private void navigateToShowETicket() {
+        if (flightOrder.getEticketUri() != null) {
+            startActivity(flightModuleRouter.getWebviewActivity(
+                    getActivity(), flightOrder.getEticketUri()));
+        }
+    }
+
+    private void navigateToShowInvoice() {
+        if (flightOrder.getInvoiceUri() != null) {
+            startActivity(flightModuleRouter.getWebviewActivity(
+                    getActivity(), flightOrder.getInvoiceUri()));
+        }
     }
 
     private void showGreenSnackbar(int resId) {

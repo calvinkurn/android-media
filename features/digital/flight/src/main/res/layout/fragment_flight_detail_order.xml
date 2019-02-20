@@ -244,20 +244,22 @@
 
                     <TextView
                         style="@style/TextView.Micro.Green"
-                        android:text="@string/flight_label_eticket" />
+                        android:text="@string/flight_label_show_invoice" />
 
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/tv_lihat_e_ticket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:background="@color/white"
-            android:id="@+id/tv_lihat_e_ticket"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_16">
+            android:padding="@dimen/dp_16"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <ImageView
                 android:layout_width="wrap_content"

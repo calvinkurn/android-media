@@ -113,11 +113,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         getView().navigateToFlightHomePage();
     }
 
-    @Override
-    public void onDownloadETicketButtonClicked() {
-        getView().navigateToInputEmailForm(userSession.getUserId(), userResendEmail);
-    }
-
     private Subscriber<FlightOrder> getSubscriberGetDetailOrder(final FlightOrderDetailPassData flightOrderDetailPassData) {
         return new Subscriber<FlightOrder>() {
             @Override

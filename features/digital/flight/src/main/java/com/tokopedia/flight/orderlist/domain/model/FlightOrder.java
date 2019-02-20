@@ -22,6 +22,8 @@ public class FlightOrder {
     private int totalChildNumeric;
     private String totalInfant;
     private int totalInfantNumeric;
+    private String invoiceUri;
+    private String eticketUri;
     private String currency;
     private String pdf;
     private List<FlightOrderJourney> journeys;
@@ -201,5 +203,21 @@ public class FlightOrder {
 
     public void setContactUsUrl(String contactUsUrl) {
         this.contactUsUrl = contactUsUrl;
+    }
+
+    public String getInvoiceUri() {
+        return invoiceUri;
+    }
+
+    public void setInvoiceUri(String invoiceUri) {
+        this.invoiceUri = invoiceUri;
+    }
+
+    public String getEticketUri() {
+        return eticketUri;
+    }
+
+    public void setEticketUri(String eticketUri) {
+        this.eticketUri = eticketUri;
     }
 }

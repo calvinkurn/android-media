@@ -73,6 +73,10 @@ public interface FlightDetailOrderContract {
 
         void hidePaymentDueDate();
 
+        void showLihatETicket();
+
+        void hideLihatETicket();
+
         void showCancellationStatus();
 
         void showCancellationStatusInProgress(int numberOfProcess);
@@ -110,8 +114,6 @@ public interface FlightDetailOrderContract {
         void onHelpButtonClicked(String contactUsUrl);
 
         void actionReorderButtonClicked();
-
-        void onDownloadETicketButtonClicked();
 
         void onGetProfileData();
 
