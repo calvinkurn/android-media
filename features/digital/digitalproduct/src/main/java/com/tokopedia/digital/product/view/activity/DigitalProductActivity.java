@@ -109,7 +109,9 @@ public class DigitalProductActivity extends BaseSimpleActivity
     }
 
     private void invalidateTitleToolBar() {
-        if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+        if (!TextUtils.isEmpty(titleToolbar)) {
+            updateTitle(titleToolbar);
+        }
     }
 
     @Override
