@@ -2,16 +2,19 @@ package com.tokopedia.iris.data
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.iris.*
+import com.tokopedia.iris.DATABASE_NAME
+import com.tokopedia.iris.Session
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
-import com.tokopedia.iris.data.network.ApiInterface
 import com.tokopedia.iris.data.network.ApiService
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import java.io.File
+import java.lang.Exception
+import java.security.cert.CertificateException
+import javax.net.ssl.SSLHandshakeException
 
 /**
  * @author okasurya on 10/25/18.
@@ -37,19 +40,18 @@ class TrackingRepository (
 
     fun sendSingleEvent(data: String, session: Session) {
         val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
-        val service = ApiService(context).makeRetrofitService()
-        val apiService = service.create(ApiInterface::class.java)
-        GlobalScope.launch {
-            val requestBody = ApiService.parse(dataRequest)
-            val request = apiService.sendSingleEvent(
-                    HEADER_JSON,
-                    HEADER_ANDROID,
-                    session.getUserId(),
-                    requestBody)
-            val response = request.await()
-            if (response.isSuccessful) {
-                Log.d("Iris Service Single", "${response.code()}: response.body().toString()")
+        try {
+            val service = ApiService(context).makeRetrofitService()
+            GlobalScope.launch {
+                val requestBody = ApiService.parse(dataRequest)
+                val request = service.sendSingleEvent(requestBody)
+                val response = request.await()
+                if (response.isSuccessful) {
+                    Log.d("Iris Service Single", "${response.code()}: response.body().toString()")
+                }
             }
+        } catch (e: Exception) {
+            // no-op
         }
     }
 
