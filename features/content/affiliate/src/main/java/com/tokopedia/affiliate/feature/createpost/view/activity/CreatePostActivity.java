@@ -45,6 +45,6 @@ public class CreatePostActivity extends BaseSimpleActivity {
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
-        return CreatePostFragment.createInstance(bundle);
+        return CreatePostFragment.Companion.createInstance(bundle);
     }
 }
