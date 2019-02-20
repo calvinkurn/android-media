@@ -41,24 +41,7 @@ class ApiService(private val context: Context) {
     }
 
     private fun createClient(): OkHttpClient {
-        val tlsSocketFactory = Tls12SocketFactory()
          val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-        builder.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.trustManager)
-        builder.connectionSpecs(listOf(legacyChiper()))
-        builder.addInterceptor {
-                    val original = it.request()
-                    val request = original.newBuilder()
-                    request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
-                    if (!session.getUserId().isBlank()) {
-                        request.header(HEADER_USER_ID, session.getUserId())
-                    }
-                    request.header(HEADER_DEVICE, HEADER_ANDROID)
-                    request.method(original.method(), original.body())
-                    val requestBuilder = request.build()
-
-                    it.proceed(requestBuilder)
-                }
-
         builder.connectTimeout(15000, TimeUnit.MILLISECONDS)
         builder.writeTimeout(10000, TimeUnit.MILLISECONDS)
         builder.readTimeout(10000, TimeUnit.MILLISECONDS)
@@ -67,21 +50,10 @@ class ApiService(private val context: Context) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
 
+        builder.addInterceptor(CustomHeaderInterceptor(session))
+
         return builder.build()
     }
-    private fun legacyChiper() : ConnectionSpec {
-        var cipherSuites: MutableList<CipherSuite>? = ConnectionSpec.MODERN_TLS.cipherSuites()
-        if (!cipherSuites!!.contains(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA)) {
-            cipherSuites = ArrayList(cipherSuites)
-            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA)
-            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA)
-        }
-        return ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                .cipherSuites(*cipherSuites.toTypedArray())
-                .build()
-    }
-
-
     companion object {
 
         fun parse(data: String) : RequestBody {
