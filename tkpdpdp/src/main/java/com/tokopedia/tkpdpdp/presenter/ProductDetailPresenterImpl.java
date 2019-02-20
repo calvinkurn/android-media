@@ -44,14 +44,12 @@ import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListener;
-import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopShipment;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidget;
@@ -71,6 +69,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -96,6 +95,8 @@ import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggi
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse;
+import com.tokopedia.transactiondata.usecase.GetProfileListUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
@@ -1457,5 +1458,35 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         }
     }
 
+    @Override
+    public void checkExpressCheckoutProfile(Activity activity) {
+        GetProfileListUseCase useCase = new GetProfileListUseCase(activity);
+        useCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (viewListener != null) {
+                    viewListener.navigateToOneClickShipment();
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ProfileListGqlResponse profileResponse = graphqlResponse.getData(ProfileListGqlResponse.class);
+                if (profileResponse != null && profileResponse.getData() != null &&
+                        profileResponse.getData().getStatus() != null &&
+                        profileResponse.getData().getStatus().equals("OK") &&
+                        profileResponse.getData().getData().getDefaultProfileId() != 0) {
+                    viewListener.navigateToExpressCheckout();
+                } else {
+                    viewListener.navigateToOneClickShipment();
+                }
+            }
+        });
+    }
 }

@@ -1,10 +1,10 @@
-package com.tokopedia.expresscheckout.domain.usecase
+package com.tokopedia.transactiondata.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.data.entity.response.profile.ProfileListGqlResponse
+import com.tokopedia.transactiondata.R
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
