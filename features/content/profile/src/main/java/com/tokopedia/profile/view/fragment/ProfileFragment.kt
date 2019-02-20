@@ -597,9 +597,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 val offset = Math.abs(verticalOffset);
                 if (offset >= appBarLayout.totalScrollRange) {
-                    toolbar.visibility = View.GONE
-                } else {
                     toolbar.visibility = View.VISIBLE
+                } else {
+                    toolbar.visibility = View.GONE
                 }
             }
         })
