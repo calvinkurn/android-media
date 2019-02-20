@@ -2,10 +2,8 @@ package com.tokopedia.groupchat.room.view.viewstate
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Handler
-import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.FragmentActivity
@@ -31,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
@@ -43,14 +42,13 @@ import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.common.analytics.EEPromotion
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
-import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -100,13 +98,7 @@ class PlayViewStateImpl(
     val dynamicIcon = view.findViewById<ImageView>(R.id.icon_dynamic)
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
-    var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
-
-    lateinit var bottomSheetWebviewFragment: PlayWebviewFragment
-    lateinit var bottomSheetWebviewDialog: BottomSheetDialog
-    lateinit var bottomSheetWebviewBehavior: BottomSheetBehavior<View>
-
-    lateinit var overlayBottomSheet: CloseableBottomSheetDialog
+    lateinit var overlayDialog: CloseableBottomSheetDialog
     lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
     lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
 
@@ -251,19 +243,28 @@ class PlayViewStateImpl(
         initVideoFragment(childFragmentManager, it.videoId)
         showWidgetAboveInput(userSession.isLoggedIn)
 
+        //TODO map from response
         setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
         setDynamicIconNotification(true)
         setDynamicBackground("https://i.pinimg.com/originals/12/da/77/12da776434178d3a19176fb76048faba.jpg")
-        setFloatingIcon("tokopedia://webview?url=https://www.tokopedia" +
-                ".com/play/trivia-quiz?campaign=nakamatest", "https://i.gifer.com/M8tf.gif")
+        setFloatingIcon("tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
+                ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih", "https://i.gifer.com/M8tf.gif")
 
-        setChannelInfoBottomSheet()
-        setOverlayBottomSheet(it.overlayViewModel)
+        showBottomSheetFirstTime(it)
 
         showLoginButton(!userSession.isLoggedIn)
 
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
+        }
+    }
+
+    /**
+     * show overlay behind channel info
+     */
+    private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
+        showInfoBottomSheet(it) {
+                showOverlayBottomSheet(it)
         }
     }
 
@@ -424,16 +425,81 @@ class PlayViewStateImpl(
         //TODO channel Info
     }
 
-    private fun setOverlayBottomSheet(overlayViewModel: OverlayViewModel?) {
-        if (overlayViewModel == null) {
+    private fun showOverlayBottomSheet(channelInfoViewModel: ChannelInfoViewModel) {
+        if (channelInfoViewModel.overlayViewModel == null) {
             return
         }
 
-        if (!::overlayBottomSheet.isInitialized) {
-            //TODO initialize overlay
+        if (!::overlayDialog.isInitialized) {
+            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context) {
+                analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
+            }
+            overlayDialog.setOnShowListener { dialog ->
+                val d = dialog as BottomSheetDialog
+
+                val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            }
         }
 
-        //TODO show overlay
+        val view = createOverlayView(channelInfoViewModel)
+        overlayDialog.setCustomContentView(view, "",
+                channelInfoViewModel.overlayViewModel.isCloseable)
+        overlayDialog.setCanceledOnTouchOutside(channelInfoViewModel.overlayViewModel.isCloseable)
+
+        overlayDialog.show()
+
+        analytics.eventViewOverlay(channelInfoViewModel.channelId)
+
+    }
+
+    private fun createOverlayView(channelInfoViewModel: ChannelInfoViewModel): View {
+        val overlayView = activity.layoutInflater.inflate(R.layout.layout_interupt_page, null)
+        val interruptViewModel = channelInfoViewModel.overlayViewModel.interuptViewModel
+        interruptViewModel?.let{
+            if (!TextUtils.isEmpty(interruptViewModel.imageUrl)) {
+                ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
+                overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
+                    if (!TextUtils.isEmpty(interruptViewModel.imageLink)) {
+                        RouteManager.route(view.context, interruptViewModel.imageLink)
+                        closeOverlayDialog()
+                    }
+
+                    analytics.eventClickOverlayImage(channelInfoViewModel)
+                }
+            } else
+                (overlayView.findViewById(R.id.ivImage) as ImageView).visibility = View.GONE
+
+            if (!TextUtils.isEmpty(interruptViewModel.title))
+                (overlayView.findViewById<View>(R.id.tvTitle) as TextView).text = MethodChecker.fromHtml(interruptViewModel.title)
+            else
+                (overlayView.findViewById<View>(R.id.tvTitle) as TextView).visibility = View.GONE
+
+            if (!TextUtils.isEmpty(interruptViewModel.description))
+                (overlayView.findViewById<View>(R.id.tvDesc) as TextView).text = MethodChecker.fromHtml(interruptViewModel.description)
+            else
+                (overlayView.findViewById<View>(R.id.tvDesc) as TextView).visibility = View.GONE
+
+            (overlayView.findViewById<View>(R.id.btnCta) as ButtonCompat).text = MethodChecker.fromHtml(interruptViewModel.btnTitle)
+            (overlayView.findViewById<View>(R.id.btnCta) as ButtonCompat).setOnClickListener { view1 ->
+
+                analytics.eventClickOverlayButton(channelInfoViewModel)
+
+                if (!TextUtils.isEmpty(interruptViewModel.btnLink)) {
+                    RouteManager.route(view.context, interruptViewModel.btnLink)
+                }
+                closeOverlayDialog()
+            }
+        }
+
+        return overlayView
+    }
+
+    private fun closeOverlayDialog() {
+        if (::overlayDialog.isInitialized && overlayDialog.isShowing) overlayDialog.dismiss()
     }
 
     private fun setDynamicBackground(backgroundUrl: String) {
@@ -711,7 +777,7 @@ class PlayViewStateImpl(
 
     override fun onInfoMenuClicked() {
         viewModel?.run {
-            showInfoBottomSheet(this)
+            showInfoBottomSheet(this) {}
         }
     }
 
@@ -721,11 +787,15 @@ class PlayViewStateImpl(
         scrollToBottom()
     }
 
-    private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel) {
+    private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
+                                    onDismiss : () ->Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
             welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
-            welcomeInfoDialog.setOnDismissListener({ analytics.eventClickJoin(channelInfoViewModel.channelId) })
         }
+
+        welcomeInfoDialog.setOnDismissListener {
+            onDismiss()
+            analytics.eventClickJoin(channelInfoViewModel.channelId) }
 
         val welcomeInfoView = createWelcomeInfoView(channelInfoViewModel)
         welcomeInfoDialog.setOnShowListener() { dialog ->
