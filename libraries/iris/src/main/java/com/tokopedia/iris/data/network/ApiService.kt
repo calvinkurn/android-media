@@ -9,8 +9,6 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
-import java.security.KeyManagementException
-import java.security.NoSuchAlgorithmException
 
 
 /**
@@ -18,22 +16,10 @@ import java.security.NoSuchAlgorithmException
  */
 class ApiService(private val context: Context) {
 
-    private val session: Session = IrisSession(context)
-
     fun makeRetrofitService(): ApiInterface {
-        var client = OkHttpClient()
-
-        try {
-            client = createClient()
-        } catch (e: KeyManagementException) {
-            e.printStackTrace()
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        }
-
         return Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(client)
+                .client(createClient())
                 .addConverterFactory(StringResponseConverter())
                 .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .build().create(ApiInterface::class.java)
@@ -48,7 +34,6 @@ class ApiService(private val context: Context) {
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
-        builder.addInterceptor(CustomHeaderInterceptor(session))
 
         return builder.build()
     }
