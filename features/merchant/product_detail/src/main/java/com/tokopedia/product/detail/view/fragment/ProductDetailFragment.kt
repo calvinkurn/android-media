@@ -21,11 +21,9 @@ import android.view.*
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
@@ -47,7 +45,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
-import com.tokopedia.product.detail.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRD_STATE_ACTIVE
 import com.tokopedia.product.detail.data.util.ProductDetailTracking

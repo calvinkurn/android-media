@@ -1,16 +1,15 @@
 package com.tokopedia.normalcheckout.view
 
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -33,6 +32,7 @@ import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotSh
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
+import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
@@ -45,23 +45,19 @@ import rx.Observable
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-/**
- * Created by Irfan Khoirul on 30/11/18.
- */
-
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, CheckoutVariantActionListener {
 
     @Inject
-    lateinit var presenter: NormalCheckoutContract.Presenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var presenter: NormalCheckoutViewModel
+
     @Inject
     lateinit var itemDecorator: CheckoutVariantItemDecorator
     @Inject
     lateinit var tkpdProgressDialog: TkpdProgressDialog
     @Inject
     lateinit var fragmentViewModel: FragmentViewModel
-    @Inject
-    lateinit var compositeSubscription: CompositeSubscription
     @Inject
     lateinit var errorBottomsheets: ErrorBottomsheets
 
@@ -77,7 +73,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
 
-        fun createInstance(shopId: String, productId: String,
+        fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
                            selectedVariantId: ArrayList<String>? = null): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
@@ -129,7 +125,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        presenter.attachView(this)
+//        presenter.attachView(this)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -137,11 +133,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         super.onAttach(context)
         fragmentListener = context as NormalCheckoutListener
         router = context.applicationContext as ExpressCheckoutRouter
-    }
-
-    override fun onDetach() {
-        compositeSubscription.unsubscribe()
-        super.onDetach()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
@@ -448,9 +439,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         setOnboardingStateHasNotShown(activity, false)
     }
 
-    override fun onGetCompositeSubscriber(): CompositeSubscription {
-        return compositeSubscription
-    }
+    override fun onGetCompositeSubscriber(): CompositeSubscription = CompositeSubscription()
 
     override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {
         val quantityViewModel = fragmentViewModel.getQuantityViewModel()
@@ -575,10 +564,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         img_total_payment_info.setOnClickListener {
             recyclerView.smoothScrollToPosition(adapter.data.size - 1)
         }
-    }
-
-    private interface ReloadRatesDebounceListener {
-        fun onNeedToRecalculateRates(forceReload: Boolean)
     }
 
 }

@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRO
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
 import com.tokopedia.product.detail.common.data.model.*
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -29,7 +30,6 @@ import com.tokopedia.product.detail.data.model.TopAdsDisplayResponse
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.ProductTalkQuery
-import com.tokopedia.product.detail.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
@@ -398,6 +398,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     override fun clear() {
         super.clear()
         removeWishlistUseCase.unsubscribe()
+        addWishListUseCase.unsubscribe()
     }
 
 

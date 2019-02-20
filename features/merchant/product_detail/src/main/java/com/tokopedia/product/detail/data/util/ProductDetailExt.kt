@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.product.detail.common.data.model.Basic
-import com.tokopedia.product.detail.common.data.model.Campaign
 import com.tokopedia.product.detail.common.data.model.TxStats
 import com.tokopedia.product.detail.common.data.model.Video
 

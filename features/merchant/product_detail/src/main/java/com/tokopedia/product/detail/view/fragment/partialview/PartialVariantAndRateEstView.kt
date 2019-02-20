@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesModel
-import com.tokopedia.product.detail.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 
 class PartialVariantAndRateEstView private constructor(private val view: View) {

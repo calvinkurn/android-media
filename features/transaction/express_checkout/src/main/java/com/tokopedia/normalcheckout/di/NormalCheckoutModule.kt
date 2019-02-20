@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.di
+package com.tokopedia.normalcheckout.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -8,18 +8,18 @@ import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.Dispatchers
 import javax.inject.Named
 
-@ProductDetailScope
-@Module (includes = [ProductDetailUserModule::class])
-class ProductDetailModule {
+@NormalCheckoutScope
+@Module (includes = [NormalCheckoutUserModule::class])
+class NormalCheckoutModule {
 
-    @ProductDetailScope
+    @NormalCheckoutScope
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
-    @ProductDetailScope
+    @NormalCheckoutScope
     @Provides
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main

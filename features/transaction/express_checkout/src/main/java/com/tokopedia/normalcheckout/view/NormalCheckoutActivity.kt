@@ -44,8 +44,14 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        return NormalCheckoutFragment.createInstance(bundle.getString(EXTRA_SHOP_ID),
-                bundle.getString(EXTRA_PRODUCT_ID), bundle.getString(EXTRA_NOTES))
+        bundle?.run {
+            return NormalCheckoutFragment.createInstance(getString(EXTRA_SHOP_ID),
+                    getString(EXTRA_PRODUCT_ID),
+                    getString(EXTRA_NOTES),
+                    getInt(EXTRA_QUANTITY),
+                    getStringArrayList(EXTRA_SELECTED_VARIANT_ID))
+        }
+        return Fragment()
     }
 
     override fun finishWithResult(messages: String) {
