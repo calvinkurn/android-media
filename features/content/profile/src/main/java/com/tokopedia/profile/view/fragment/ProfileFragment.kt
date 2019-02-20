@@ -661,7 +661,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
                 ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(activity, R.color.black_54)
+                ds?.color = MethodChecker.getColor(activity, R.color.white)
             }
         }
 
