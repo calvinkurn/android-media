@@ -24,7 +24,7 @@ ext {
     runnerVersion = "1.0.2"
     rulesVersion = "1.0.2"
     apolloVersion = '0.3.0'
-    lottieVersion = '2.0.0-rc1'
+    lottieVersion = '2.5.1'
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'

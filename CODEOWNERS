@@ -5,6 +5,7 @@
 /tkpdinbox/         @tokopedia/minion-kevin
 /tkpddiscovery/     @tokopedia/minion-dave
 /tkpdtransaction/   @tokopedia/minion-bob
+/feature/discovery/category_common/     @tokopedia/minion-stuart
 /feature/discovery/topadssdk/           @tokopedia/minion-dave
 /feature/discovery/home/                @tokopedia/minion-dave
 /feature/discovery/recentview/          @tokopedia/minion-dave
@@ -17,7 +18,9 @@
 /tkpdabstraction/   @tokopedia/core-team
 /customerapp/       @tokopedia/core-team
 
+/features/common/developer_options                 @tokopedia/core-team
 /features/common/nps                               @tokopedia/core-team
+/features/common/resources_common                  @tokopedia/core-team
 
 /features/home/account-home/                       @tokopedia/core-team
 /features/home/navigation/                         @tokopedia/core-team
