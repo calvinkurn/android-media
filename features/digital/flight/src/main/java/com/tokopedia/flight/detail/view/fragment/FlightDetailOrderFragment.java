@@ -110,6 +110,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private Button buttonRescheduleTicket;
     private Button buttonReorder;
     private ProgressDialog progressDialog;
+    private LinearLayout showETicket;
+
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
@@ -187,6 +189,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
         insuranceLayout = (LinearLayout) view.findViewById(R.id.insurance_layout);
         insuranceRecyclerView = (RecyclerView) view.findViewById(R.id.rv_insurance);
+        showETicket = view.findViewById(R.is.tv_lihat_e_ticket);
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(R.id.cancellation_container);
