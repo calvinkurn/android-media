@@ -6,7 +6,12 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
@@ -15,13 +20,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.Menus
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.component.*
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
@@ -31,6 +36,8 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
@@ -54,6 +61,7 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.item_profile_header.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -244,8 +252,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             )
         }
 
+        setProfileToolbar(firstPageViewModel.profileHeaderViewModel)
+
         val visitables: ArrayList<Visitable<*>> = ArrayList()
-        visitables.add(firstPageViewModel.profileHeaderViewModel)
+//        visitables.add(firstPageViewModel.profileHeaderViewModel)
         if (!firstPageViewModel.visitableList.isEmpty()) {
             firstPageViewModel.visitableList
                     .filterIsInstance<BaseKolViewModel>()
@@ -565,6 +575,113 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun setToolbarTitle(title: String) {
         if (activity != null && activity is AppCompatActivity && !TextUtils.isEmpty(title)) {
             (activity as AppCompatActivity).supportActionBar?.title = title
+        }
+    }
+
+    private fun setProfileToolbar(element: ProfileHeaderViewModel) {
+        iv_image_collapse.loadImageRounded(element.avatar)
+        iv_profile.loadImageCircle(element.avatar)
+        tv_name.text = element.affiliateName
+
+        if (element.isKol || element.isAffiliate) {
+            kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE
+
+            followers.visibility =
+                    if (getFollowersText(element).length > ProfileHeaderViewHolder.TEXT_LENGTH_MIN) View.VISIBLE
+                    else View.GONE
+            followers.text = getFollowersText(element)
+            followers.movementMethod = LinkMovementMethod.getInstance()
+
+            if (!element.isOwner && GlobalConfig.isCustomerApp()) {
+                followBtn.visibility = View.VISIBLE
+                followBtn.setOnClickListener {
+                    followUnfollowUser(element.userId, !element.isFollowed)
+                }
+                updateButtonState(element.isFollowed)
+            } else {
+                followBtn.visibility = View.GONE
+            }
+        } else {
+            kolBadge.visibility = View.GONE
+            if (element.isOwner) {
+                followers.visibility =
+                        if (getFollowersText(element).length > ProfileHeaderViewHolder.TEXT_LENGTH_MIN) View.VISIBLE
+                        else View.GONE
+                followers.text = getFollowersText(element)
+                followers.movementMethod = LinkMovementMethod.getInstance()
+            } else {
+                followers.visibility = View.GONE
+            }
+        }
+
+        if (element.isOwner) {
+            changeAvatar.visibility = View.VISIBLE
+            changeAvatar.setOnClickListener {
+                onChangeAvatarClicked()
+            }
+            iv_profile.setOnClickListener {
+                onChangeAvatarClicked()
+            }
+        } else {
+            changeAvatar.visibility = View.GONE
+        }
+    }
+
+    private fun getFollowersText(element: ProfileHeaderViewModel): SpannableString {
+        val spannableString: SpannableString
+        val following =
+                if (element.following != ProfileHeaderViewModel.ZERO)
+                    String.format(getString(R.string.profile_following_number), element.following)
+                else ""
+        spannableString = if ((element.isKol || element.isAffiliate)
+                && element.followers != ProfileHeaderViewModel.ZERO) {
+
+            val followers = String.format(
+                    getString(R.string.profile_followers_number),
+                    element.followers
+            )
+            val followersAndFollowing =
+                    if (!TextUtils.isEmpty(following)) String.format(
+                            getString(R.string.profile_followers_and_following),
+                            followers,
+                            following
+                    )
+                    else followers
+            SpannableString(followersAndFollowing)
+
+        } else {
+            SpannableString(following)
+        }
+
+        val goToFollowing = object : ClickableSpan() {
+            override fun onClick(p0: View?) {
+                goToFollowing()
+            }
+
+            override fun updateDrawState(ds: TextPaint?) {
+                super.updateDrawState(ds)
+                ds?.setUnderlineText(false)
+                ds?.color = MethodChecker.getColor(activity, R.color.black_54)
+            }
+        }
+
+        if (spannableString.indexOf(following) != -1) {
+            spannableString.setSpan(
+                    goToFollowing,
+                    spannableString.indexOf(following),
+                    spannableString.indexOf(following) + following.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        return spannableString
+    }
+
+    private fun updateButtonState(isFollowed: Boolean) {
+        if (isFollowed) {
+            followBtn.buttonCompatType = ButtonCompat.SECONDARY
+            followBtn.text = getString(R.string.profile_following)
+        } else {
+            followBtn.buttonCompatType = ButtonCompat.PRIMARY
+            followBtn.text = getString(R.string.profile_follow)
         }
     }
 

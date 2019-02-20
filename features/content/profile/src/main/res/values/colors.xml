@@ -2,4 +2,6 @@
 <resources>
     <color name="profile_showcase_black">#101010</color>
     <color name="profile_share_color">#999</color>
+    <color name="gradient_1">#02a00c</color>
+    <color name="gradient_2">#5db6ef</color>
 </resources>
