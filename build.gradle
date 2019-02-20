@@ -44,10 +44,11 @@ buildscript {
 allprojects {
     project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
     repositories {
+        google()
+        mavenCentral()
         mavenLocal()
         maven { url "https://maven.google.com" }
         jcenter()
-        mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://www.jitpack.io" }
         maven { url 'https://maven.fabric.io/public' }

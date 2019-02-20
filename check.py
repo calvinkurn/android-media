@@ -7,7 +7,7 @@ def main(argv):
     user = None
     gradle = "./gradlew" 
     adb = "adb"
-    deviceId = "galaxy.tkpd:7477"
+    deviceId = "galaxy.tkpd:7545"
 
     try:
         opts, args = getopt.getopt(argv,"h",["token=","config=", "head=", "user=", "gradle=", "adb=", "deviceId="])
