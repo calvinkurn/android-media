@@ -44,6 +44,8 @@ def detectAffectedModule(token, config, head, user, gradle, adb, deviceId):
     configuration = getConfig(config)
     if configuration is None :
         exit(1)
+    doCommand("git reset --hard HEAD")
+    doCommand("git clean -f -d")
     doCommand("git fetch " + configuration["remote_name"])
     doCommand("git checkout " + configuration["master"])
     doCommand("git pull " + configuration["remote_name"] + " " + configuration["master"])
