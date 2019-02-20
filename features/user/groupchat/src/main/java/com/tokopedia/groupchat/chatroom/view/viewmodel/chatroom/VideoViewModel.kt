@@ -5,8 +5,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory
 import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory
 
 /**
  * @author by StevenFredian on 24/09/18.
@@ -17,6 +17,9 @@ class VideoViewModel : BaseGroupChatPojo, Visitable<GroupChatTypeFactory>, Parce
     @SerializedName("video_id")
     @Expose
     var videoId: String = ""
+    @SerializedName("video_live")
+    @Expose
+    var videoLive: Boolean = false
 
     constructor(videoId: String) {
         this.videoId = videoId
@@ -24,10 +27,12 @@ class VideoViewModel : BaseGroupChatPojo, Visitable<GroupChatTypeFactory>, Parce
 
     protected constructor(`in`: Parcel) {
         videoId = `in`.readString()
+        videoLive = `in`.readByte().toInt() != 0
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(videoId)
+        dest.writeByte((if (videoLive) 1 else 0).toByte())
     }
 
     override fun describeContents(): Int {

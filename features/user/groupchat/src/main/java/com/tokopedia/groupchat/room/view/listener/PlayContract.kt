@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
@@ -18,7 +19,6 @@ interface PlayContract {
         fun onMessageReceived(item: Visitable<*>, hideMessage: Boolean)
         fun setSnackBarConnectingWebSocket()
         fun setSnackBarRetryConnectingWebSocket()
-
         fun onLoginClicked(channelId: String?)
         fun onTotalViewChanged(participantViewModel: ParticipantViewModel)
         fun vibratePhone()
@@ -32,7 +32,8 @@ interface PlayContract {
         fun showOverlayDialog(it: OverlayViewModel)
         fun closeOverlayDialog()
         fun addIncomingMessage(it: Visitable<*>)
-
+        fun openOverlay(it: String)
+        fun updateDynamicButton(it: ButtonsPojo)
     }
 
     interface Presenter: CustomerPresenter<View> {

@@ -20,6 +20,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
@@ -366,6 +367,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     }
 
+
+    override fun updateDynamicButton(it: ButtonsPojo) {
+        viewState.onDynamicButtonUpdated(it)
+    }
+
     override fun onQuickReplyUpdated(it: GroupChatQuickReplyViewModel) {
         viewState.onQuickReplyUpdated(it)
     }
@@ -411,7 +417,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-
     override fun addIncomingMessage(it: Visitable<*>) {
         viewState.onMessageReceived(it)
     }
@@ -434,6 +439,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?) {
         viewState.onErrorSendMessage(pendingChatViewModel, exception)
         ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
+    }
+
+    override fun openOverlay(it: String) {
+
     }
 
     override fun onPause() {

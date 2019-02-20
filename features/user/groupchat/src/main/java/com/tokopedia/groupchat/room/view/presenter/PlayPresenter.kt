@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -112,6 +113,7 @@ class PlayPresenter @Inject constructor(
                         is GroupChatQuickReplyViewModel -> view.onQuickReplyUpdated(it)
                         is OverlayViewModel -> view.showOverlayDialog(it)
                         is OverlayCloseViewModel -> view.closeOverlayDialog()
+                        is ButtonsPojo -> view.updateDynamicButton(it)
                         else -> {view.addIncomingMessage(it)}
                     }
                 }

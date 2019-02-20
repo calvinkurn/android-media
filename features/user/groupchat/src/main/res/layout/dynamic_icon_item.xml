@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/icon"
+        app:srcCompat="@drawable/ic_play_dynamic_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/notification"
+        app:srcCompat="@drawable/circle_red_notification"
+        android:layout_width="@dimen/dp_10"
+        android:layout_height="@dimen/dp_10"
+        android:layout_alignRight="@id/icon"
+        android:layout_alignEnd="@id/icon"
+        android:layout_alignTop="@id/icon" />
+</RelativeLayout>

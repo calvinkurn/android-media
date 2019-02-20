@@ -33,7 +33,9 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.QuickReplyAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
@@ -51,6 +53,7 @@ import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
@@ -90,11 +93,10 @@ class PlayViewStateImpl(
     private var replyEditText: BackEditText = view.findViewById(R.id.reply_edit_text)
     private var login: View = view.findViewById(R.id.login)
     private var inputTextWidget: View = view.findViewById(R.id.bottom)
-    private var iconQuiz: View = view.findViewById(R.id.icon_quiz)
-    private var iconDynamic: View = view.findViewById(R.id.icon_dynamic)
     private var sendButton: View = view.findViewById(R.id.button_send)
+    private lateinit var dynamicButtonRecyclerView: RecyclerView
+    private var liveIndicator: View = toolbar.findViewById(R.id.toolbar_live)
 
-    val dynamicIcon = view.findViewById<ImageView>(R.id.icon_dynamic)
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
     var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
@@ -109,6 +111,7 @@ class PlayViewStateImpl(
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
+    private var dynamicButtonAdapter: DynamicButtonAdapter
     private var adapter: GroupChatAdapter
     private var newMessageCounter: Int = 0
 
@@ -130,7 +133,7 @@ class PlayViewStateImpl(
         layoutManager.setStackFromEnd(true)
         chatRecyclerView.layoutManager = layoutManager
         chatRecyclerView.adapter = adapter
-        val itemDecoration = SpaceItemDecoration(view.context
+        var itemDecoration = SpaceItemDecoration(view.context
                 .getResources().getDimension(R.dimen.space_play_chat).toInt())
         chatRecyclerView.addItemDecoration(itemDecoration)
 
@@ -163,6 +166,13 @@ class PlayViewStateImpl(
         val quickReplyItemDecoration = QuickReplyItemDecoration(view.context
                 .resources.getDimension(R.dimen.dp_16).toInt())
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
+
+        dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        var buttonSpace = SpaceItemDecoration(activity.getResources()
+                .getDimension(R.dimen.dp_4).toInt(), 2)
+        dynamicButtonAdapter = DynamicButtonAdapter(activity, listener)
+        dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
+        dynamicButtonRecyclerView.addItemDecoration(buttonSpace)
 
         replyEditText.setOnClickListener {
             onKeyboardShown()
@@ -202,12 +212,15 @@ class PlayViewStateImpl(
         }
     }
 
+    override fun onDynamicButtonUpdated(it: ButtonsPojo) {
+        dynamicButtonAdapter.setList(it.listDynamicButton)
+    }
+
     override fun onKeyboardHidden() {
         showWidgetAboveInput(true)
         inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
         sendButton.hide()
-        iconDynamic.show()
-        iconQuiz.show()
+        dynamicButtonRecyclerView.show()
         toolbar.show()
 
     }
@@ -216,8 +229,7 @@ class PlayViewStateImpl(
         showWidgetAboveInput(false)
         inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
         sendButton.show()
-        iconDynamic.hide()
-        iconQuiz.hide()
+        dynamicButtonRecyclerView.hide()
         toolbar.hide()
 //            setSprintSaleIcon(null)
     }
@@ -289,11 +301,10 @@ class PlayViewStateImpl(
 
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
-        initVideoFragment(childFragmentManager, it.videoId)
+        initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
         showWidgetAboveInput(userSession.isLoggedIn)
 
-        setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
-        setDynamicIconNotification(true)
+//        setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
         setDynamicBackground("https://i.pinimg.com/originals/12/da/77/12da776434178d3a19176fb76048faba.jpg")
         setFloatingIcon("tokopedia://webview?url=https://www.tokopedia" +
                 ".com/play/trivia-quiz?campaign=nakamatest", "https://i.gifer.com/M8tf.gif")
@@ -306,6 +317,8 @@ class PlayViewStateImpl(
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
         }
+
+        onDynamicButtonUpdated(it.buttonsPojo)
     }
 
     override fun getChannelInfo(): ChannelInfoViewModel? {
@@ -350,7 +363,7 @@ class PlayViewStateImpl(
         viewModel?.adsId?.let {
             setSponsorData(it, viewModel?.adsImageUrl, viewModel?.adsName)
         }
-        initVideoFragment(childFragmentManager, it.videoId)
+        initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
     }
 
     override fun onChannelFrozen(channelId: String) {
@@ -546,17 +559,19 @@ class PlayViewStateImpl(
         youtubeRunnable.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
     }
 
-    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String) {
-        videoContainer.visibility = View.GONE
+    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
+        videoContainer.hide()
+        liveIndicator.hide()
         videoId.let {
             if (it.isEmpty()) return
 
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
-                videoContainer.visibility = View.VISIBLE
-                sponsorLayout.visibility = View.GONE
+                videoContainer.show()
+                sponsorLayout.hide()
 
                 youTubePlayer?.let {
+                    liveIndicator.shouldShowWithAction(isVideoLive){}
                     it.cueVideo(videoId)
                     autoPlayVideo()
                 }
@@ -699,22 +714,13 @@ class PlayViewStateImpl(
     }
 
     private fun setDynamicIcon(redirectUrl: String) {
-        if (redirectUrl.isBlank()) {
-            return
-        }
-
-        dynamicIcon.setOnClickListener {
-            showWebviewBottomSheet(redirectUrl)
-        }
-    }
-
-    private fun setDynamicIconNotification(hasNotification: Boolean) {
-
-        if (hasNotification) {
-            //TODO set red dot
-        } else {
-            //TODO clear notification
-        }
+//        if (redirectUrl.isBlank()) {
+//            return
+//        }
+//
+//        dynamicIcon.setOnClickListener {
+//            showWebviewBottomSheet(redirectUrl)
+//        }
     }
 
     private fun showWebviewBottomSheet(url: String) {

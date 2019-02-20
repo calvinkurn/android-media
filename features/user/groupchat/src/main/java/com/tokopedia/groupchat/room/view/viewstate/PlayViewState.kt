@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 
@@ -36,4 +37,5 @@ interface PlayViewState {
     fun onQuickReplyClicked(text: String?)
     fun onKeyboardHidden()
     fun getChannelInfo(): ChannelInfoViewModel?
+    fun onDynamicButtonUpdated(it: ButtonsPojo)
 }
