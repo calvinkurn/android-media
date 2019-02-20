@@ -62,8 +62,6 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.item_profile_header.view.*
-import kotlinx.android.synthetic.main.layout_tab_secondary.*
 import java.util.*
 import javax.inject.Inject
 
