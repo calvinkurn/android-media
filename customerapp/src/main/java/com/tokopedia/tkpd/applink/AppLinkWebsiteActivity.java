@@ -76,7 +76,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
         try {
             needLogin = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_NEED_LOGIN,
-                    "true"));
+                    "false"));
         } catch (ParseException e) {
             needLogin = false;
         }
