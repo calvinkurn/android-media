@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.appsflyer.AFInAppEventType;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -72,6 +73,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
@@ -277,6 +280,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
             @Override
             public void onNext(AddToCartResult addToCartResult) {
+                NullCheckerKt.isContainNull(addToCartResult, s -> {
+                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ProductDetailPresenterImpl.class.getSimpleName());
+                    Crashlytics.logException(exception);
+                    throw exception;
+                });
+
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess()) {
                     addToCartResult.setSource(sourceAtc);
@@ -328,6 +337,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
             @Override
             public void onNext(AddToCartResult addToCartResult) {
+                NullCheckerKt.isContainNull(addToCartResult, s -> {
+                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ProductDetailPresenterImpl.class.getSimpleName());
+                    Crashlytics.logException(exception);
+                    throw exception;
+                });
+
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess()) {
                     addToCartResult.setSource(sourceAtc);

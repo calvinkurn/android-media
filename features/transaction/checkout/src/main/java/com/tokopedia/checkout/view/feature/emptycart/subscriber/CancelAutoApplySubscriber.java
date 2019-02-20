@@ -1,8 +1,12 @@
 package com.tokopedia.checkout.view.feature.emptycart.subscriber;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartContract;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +44,12 @@ public class CancelAutoApplySubscriber extends Subscriber<String> {
             boolean resultSuccess = false;
             try {
                 JSONObject jsonObject = new JSONObject(stringResponse);
+                NullCheckerKt.isContainNull(jsonObject, s -> {
+                    ContainNullException exception = new ContainNullException("Found " + s + " on " + CancelAutoApplySubscriber.class.getSimpleName());
+                    Crashlytics.logException(exception);
+                    throw exception;
+                });
+
                 resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
                         .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
             } catch (JSONException e) {
