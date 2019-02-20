@@ -299,6 +299,8 @@ public abstract class SellerRouterApplication extends MainApplication
         analyticTracker = initializeAnalyticTracker();
         initializeDagger();
         initializeRemoteConfig();
+
+        //TODO if using Trackapp, remove TrackingUtils from MainApplication
     }
 
     private AnalyticTracker initializeAnalyticTracker() {
@@ -621,7 +623,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
-    @Override
     public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
@@ -1243,18 +1244,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendEnhanceECommerceTracking(@NotNull Map<String, Object> events) {
         TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
-    }
-
-    @Override
-    public void sendTrackDefaultAuth() {
-        ScreenTracking.sendAuth(this);
-    }
-
-    @Override
-    public void sendTrackCustomAuth(@NotNull Context context, @NotNull String shopID,
-                                    @NotNull String shopType, @NotNull String pageType,
-                                    @NotNull String productId) {
-        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
     }
 
     @Override
