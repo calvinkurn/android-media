@@ -78,6 +78,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private View mViewCodeSeparator;
     private TextView mTextSwipeNote;
     private PerformanceMonitoring fpmDetailTokopoint;
+    private final static String SCREEN_NAME="/tokopoints/tukar-point/detail";
 
     @Inject
     public CouponCatalogPresenter mPresenter;
@@ -155,6 +156,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -204,7 +206,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

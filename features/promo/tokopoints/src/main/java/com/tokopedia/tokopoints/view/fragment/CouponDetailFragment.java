@@ -73,6 +73,8 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     @Inject
     public CouponDetailPresenter mPresenter;
     private View llBottomBtn;
+    private final static String SCREEN_NAME="/tokopoints/kupon-saya/detail";
+
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CouponDetailFragment();
@@ -126,6 +128,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -165,7 +168,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

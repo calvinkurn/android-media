@@ -88,6 +88,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private boolean isPointsAvailable = false;
     private FiltersBottomSheet filtersBottomSheet;
     private MenuItem menuItemFilter;
+    private static final String SCREEN_NAME="/tokopoints/tukar-point";
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CatalogListingFragment();
@@ -167,6 +168,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -396,7 +398,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

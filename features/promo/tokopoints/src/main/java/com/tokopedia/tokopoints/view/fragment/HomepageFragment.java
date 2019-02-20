@@ -95,6 +95,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private onAppBarCollapseListener appBarCollapseListener;
     private HomepagePagerAdapter homepagePagerAdapter;
     private PerformanceMonitoring performanceMonitoring;
+    private static final String SCREEN_NAME="/tokopoints";
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
@@ -191,6 +192,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -222,7 +224,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override
