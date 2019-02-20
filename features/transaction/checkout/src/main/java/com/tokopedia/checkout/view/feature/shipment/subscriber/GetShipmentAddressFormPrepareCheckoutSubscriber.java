@@ -98,12 +98,21 @@ public class GetShipmentAddressFormPrepareCheckoutSubscriber extends Subscriber<
                 } else {
                     view.renderCheckShipmentPrepareCheckoutSuccess();
                 }
+
+                if (cartShipmentAddressFormData.getEgoldAttributes() != null &&
+                        cartShipmentAddressFormData.getEgoldAttributes().isEligible()) {
+                    shipmentPresenter.setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
+                    view.showBuyEgoldWidget(cartShipmentAddressFormData.getEgoldAttributes());
+
+                } else {
+                    view.hideBuyEgoldWidget();
+                }
             }
         }
     }
 
     private void prepareDataAfterProcessShipmentPrepareCheckout(CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                               boolean isNeedToRemoveErrorProduct) {
+                                                                boolean isNeedToRemoveErrorProduct) {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = view.getShipmentDataConverter().getShipmentItems(
                 cartShipmentAddressFormData
         );

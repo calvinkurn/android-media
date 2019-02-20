@@ -16,6 +16,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.EgoldAttributeModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -122,6 +123,10 @@ public interface ShipmentContract {
         void showToastFailedTickerPromo(String text);
 
         void stopTrace();
+
+        void showBuyEgoldWidget(EgoldAttributeModel egoldAttributes);
+
+        void hideBuyEgoldWidget();
     }
 
     interface AnalyticsActionListener {
@@ -270,7 +275,11 @@ public interface ShipmentContract {
 
         ShipmentCostModel getShipmentCostModel();
 
+        EgoldAttributeModel getEgoldAttributeModel();
+
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
+
+        void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel);
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 

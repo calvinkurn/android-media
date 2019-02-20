@@ -16,9 +16,9 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ServiceId;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.EgoldAttributeModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 
 import java.util.ArrayList;
@@ -66,6 +66,22 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setCartPromoSuggestion(cartPromoSuggestion);
         }
 
+        if (shipmentAddressFormDataResponse.getEgoldAttributes() != null) {
+            EgoldAttributeModel egoldAttributeModel = new EgoldAttributeModel();
+            egoldAttributeModel.setEligible(shipmentAddressFormDataResponse.getEgoldAttributes().isEligible());
+            if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange() != null) {
+                egoldAttributeModel.setMinEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMinEgoldValue());
+                egoldAttributeModel.setMaxEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMaxEgoldValue());
+            }
+            if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage() != null) {
+                egoldAttributeModel.setTitleText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTitleText());
+                egoldAttributeModel.setSubText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getSubText());
+                egoldAttributeModel.setTickerText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTickerText());
+                egoldAttributeModel.setTooltipText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTooltipText());
+            }
+            dataResult.setEgoldAttributes(egoldAttributeModel);
+        }
+
         if (shipmentAddressFormDataResponse.getAutoApply() != null) {
             AutoApplyData autoApplyData = new AutoApplyData();
             autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoapplyV2().getCode());
@@ -73,7 +89,7 @@ public class ShipmentMapper implements IShipmentMapper {
             autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoapplyV2().getIsCoupon());
             autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getText());
             int promoId = 0;
-            if(!TextUtils.isEmpty(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId())){
+            if (!TextUtils.isEmpty(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId())) {
                 Integer.valueOf(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId());
             }
             autoApplyData.setPromoId(promoId);

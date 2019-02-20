@@ -23,6 +23,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
@@ -37,6 +38,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.EgoldAttributeModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -76,6 +78,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentInsuranceTncModel shipmentInsuranceTncModel;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private EgoldAttributeModel egoldAttributeModel;
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
@@ -84,6 +87,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastChooseCourierItemPosition;
     private String cartIds;
     private int lastServiceId;
+
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -122,6 +126,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
         } else if (item instanceof ShipmentDonationModel) {
             return ShipmentDonationViewHolder.ITEM_VIEW_DONATION;
+        } else if (item instanceof EgoldAttributeModel) {
+            return ShipmentEmasViewHolder.ITEM_VIEW_DONATION;
         }
 
         return super.getItemViewType(position);
@@ -183,6 +189,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentSellerCashbackViewHolder) holder).bindViewHolder(shipmentSellerCashbackModel);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             ((ShipmentDonationViewHolder) holder).bindViewHolder(shipmentDonationModel);
+        } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_DONATION) {
+            ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         }
     }
 
@@ -239,6 +247,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentInsuranceTncModel = null;
         shipmentSellerCashbackModel = null;
         shipmentDonationModel = null;
+        egoldAttributeModel = null;
         notifyDataSetChanged();
     }
 
@@ -282,6 +291,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.shipmentCostModel = shipmentCostModel;
             shipmentDataList.add(shipmentCostModel);
             updateShipmentCostModel();
+        }
+    }
+
+    public void addEgoldAttributeData(EgoldAttributeModel egoldAttributeModel) {
+        if (egoldAttributeModel != null) {
+            this.egoldAttributeModel = egoldAttributeModel;
+            shipmentDataList.add(shipmentCostModel);
         }
     }
 
@@ -396,6 +412,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void updateDonation(boolean checked) {
         if (shipmentDonationModel != null) {
             shipmentDonationModel.setChecked(checked);
+            updateShipmentCostModel();
+            notifyItemChanged(getShipmentCostPosition());
+        }
+    }
+
+    public void updateEgold(boolean checked) {
+        if (egoldAttributeModel != null) {
+            egoldAttributeModel.setChecked(checked);
             updateShipmentCostModel();
             notifyItemChanged(getShipmentCostPosition());
         }
@@ -674,6 +698,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         totalPrice += shipmentCostModel.getDonation();
         shipmentCostModel.setTotalPrice(totalPrice);
+
+        if (egoldAttributeModel.isChecked()) {
+            // TODO: 20/2/19 update cost model on the basis of emas value
+        }
+
         updateCheckoutButtonData(null);
     }
 
