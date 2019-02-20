@@ -90,10 +90,10 @@ public class ShopModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(bearerInterceptor)
                 .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(fingerprintInterceptor);
         if (GlobalConfig.DEBUG) {
-            builder.addInterceptor(chuckInterceptor);
+            builder.addInterceptor(chuckInterceptor)
+                    .addInterceptor(httpLoggingInterceptor);
         }
         return builder.build();
     }
