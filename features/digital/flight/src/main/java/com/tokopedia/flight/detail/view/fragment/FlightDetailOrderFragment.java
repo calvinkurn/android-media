@@ -539,7 +539,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         showETicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                navigateToShowETicket();
             }
         });
     }

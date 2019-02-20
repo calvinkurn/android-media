@@ -174,6 +174,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     getView().hideCancelButton();
                 }
                 renderInsurances(flightOrder);
+
+                if (flightOrder.getEticketUri() != null) {
+                    getView().showLihatETicket();
+                } else {
+                    getView().hideLihatETicket();
+                }
             }
         };
     }
