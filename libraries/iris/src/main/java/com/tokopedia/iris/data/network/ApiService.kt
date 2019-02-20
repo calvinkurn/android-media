@@ -2,6 +2,7 @@ package com.tokopedia.iris.data.network
 
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.tokopedia.iris.BASE_URL
 import okhttp3.*
 import org.json.JSONObject
 import retrofit2.Retrofit
