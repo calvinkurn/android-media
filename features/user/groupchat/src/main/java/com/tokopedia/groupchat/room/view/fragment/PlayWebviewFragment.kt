@@ -43,7 +43,7 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
     private var doubleTapExit = false
     private val EXIT_DELAY_MILLIS = 2000
     private val REQUEST_CODE_LOGIN = 123
-    private val PARAM_HEADER_GC_TOKEN: String = "gc-token"
+    private val PARAM_HEADER_GC_TOKEN: String = "X-User-Token"
 
     //Chrome Client
     val ATTACH_FILE_REQUEST = 1

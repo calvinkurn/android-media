@@ -1,13 +1,16 @@
 package com.tokopedia.groupchat.room.view.fragment
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.support.design.widget.Snackbar
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.*
@@ -15,6 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
@@ -73,13 +77,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var analytics : GroupChatAnalytics
+    lateinit var analytics: GroupChatAnalytics
 
     lateinit var viewState: PlayViewState
+    private lateinit var rootView: View
+    private lateinit var notifReceiver: BroadcastReceiver
 
-    private lateinit var channelInfoViewModel : ChannelInfoViewModel
-    private var exitDialog : Dialog? = null
-
+    private lateinit var channelInfoViewModel: ChannelInfoViewModel
+    private var exitDialog: Dialog? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,15 +107,19 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.run{inflate(R.menu.group_chat_room_menu, menu)}
+        inflater?.run { inflate(R.menu.group_chat_room_menu, menu) }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        item?.let{
+        item?.let {
             return when {
                 it.itemId == android.R.id.home -> {
                     backPress()
+                    true
+                }
+                it.itemId == R.id.action_info -> {
+                    onInfoClicked()
                     true
                 }
                 it.itemId == R.id.action_share -> {
@@ -124,8 +133,26 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return super.onOptionsItemSelected(item)
     }
 
+    private fun onGetNotif(data: Bundle) {
+        val model = GroupChatPointsViewModel(
+                data.getString("desc", ""),
+                data.getString("applinks", ""),
+                data.getString("tkp_code", "")
+        )
+
+        if (::viewState.isInitialized) {
+            viewState.onReceiveGamificationNotif(model)
+        }
+    }
+
+    private fun onInfoClicked() {
+        if (::viewState.isInitialized) {
+            viewState.onInfoMenuClicked()
+        }
+    }
+
     private fun shareChannel() {
-        activity?.let{
+        activity?.let {
 
             val TAG_CHANNEL = "{channel_url}"
 
@@ -197,8 +224,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun initView(view: View) {
         activity?.let {
-            viewState = PlayViewStateImpl(userSession, view,
-                    it,this, this, this, this,
+            viewState = PlayViewStateImpl(userSession, analytics, view,
+                    it, this, this, this, this,
                     this, this, sendMessage())
         }
         setToolbarView(view)
@@ -258,7 +285,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 //        if (onPlayTime != 0L) {
 //            analytics.eventWatchVideoDuration(getChannelInfoViewModel()!!.getChannelId(), getDurationWatchVideo())
 //        }
-        if(exitDialog != null){
+        if (exitDialog != null) {
             exitDialog!!.show()
         } else {
             activity?.finish()
@@ -298,7 +325,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onPointsClicked(url: String?) {
+        url?.let {
+            openRedirectUrl(it)
+            analytics.eventClickLoyaltyWidget(channelInfoViewModel.channelId)
 
+        }
+    }
+
+    private fun openRedirectUrl(it: String) {
+        (context as GroupChatModuleRouter).openRedirectUrl(activity, it)
     }
 
     override fun onOpenWebSocket() {
@@ -315,7 +350,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun vibratePhone() {
         val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
-        vibrator?.let{
+        vibrator?.let {
             if (Build.VERSION.SDK_INT >= 26) {
                 vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_LENGTH, VibrationEffect
                         .DEFAULT_AMPLITUDE))
@@ -339,7 +374,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun backToChannelList() {
         activity?.let {
-            if(it.isTaskRoot){
+            if (it.isTaskRoot) {
                 startActivity((it.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(context))
             }
             it.finish()
@@ -463,22 +498,25 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 //                }
 //
 //            }
-//
-//            if (notifReceiver == null) {
-//                notifReceiver = object : BroadcastReceiver() {
-//                    override fun onReceive(context: Context, intent: Intent) {
-//                        if (intent.extras != null) {
-//                            onGetNotif(intent.extras!!)
-//                        }
-//                    }
-//                }
-//            }
-//
-//            try {
-//                LocalBroadcastManager.getInstance(this).registerReceiver(notifReceiver, IntentFilter(TkpdState.LOYALTY_GROUP_CHAT))
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
+
+            if (::notifReceiver.isInitialized) {
+                notifReceiver = object : BroadcastReceiver() {
+                    override fun onReceive(context: Context, intent: Intent) {
+                        if (intent.extras != null) {
+                            onGetNotif(intent.extras!!)
+                        }
+                    }
+                }
+            }
+
+            context?.let {
+                try {
+                    LocalBroadcastManager.getInstance(it).registerReceiver(notifReceiver, IntentFilter
+                    (TkpdState.LOYALTY_GROUP_CHAT))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
 //
 //            if (viewModel != null) {
 //                viewModel.setTimeStampAfterResume(System.currentTimeMillis())
@@ -488,9 +526,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun canResume(): Boolean {
-            return true
-    //        return viewModel != null && (viewModel.getTimeStampAfterResume() == 0L || viewModel.getTimeStampAfterResume() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterResume() > PAUSE_RESUME_TRESHOLD_TIME)
-        }
+        return true
+        //        return viewModel != null && (viewModel.getTimeStampAfterResume() == 0L || viewModel.getTimeStampAfterResume() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterResume() > PAUSE_RESUME_TRESHOLD_TIME)
+    }
 
     private fun canPause(): Boolean {
         return true

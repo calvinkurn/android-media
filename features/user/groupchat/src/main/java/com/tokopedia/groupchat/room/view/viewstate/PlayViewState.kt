@@ -38,4 +38,6 @@ interface PlayViewState {
     fun onKeyboardHidden()
     fun getChannelInfo(): ChannelInfoViewModel?
     fun onDynamicButtonUpdated(it: ButtonsPojo)
+    fun onInfoMenuClicked()
+    fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
 }

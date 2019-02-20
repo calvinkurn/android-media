@@ -1761,11 +1761,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                         getAttributionTracking(GroupChatAnalytics
                                 .ATTRIBUTE_BANNER)
                 ));
-                analytics.eventClickOverlayImage(
-                        model.getChannelId(),GroupChatAnalytics.COMPONENT_BANNER,
-                        viewModel.getChannelInfoViewModel().getAdsName(),
-                        GroupChatAnalytics.ATTRIBUTE_BANNER,
-                        list);
+//                analytics.eventClickOverlayImage(
+//                        model.getChannelId(),GroupChatAnalytics.COMPONENT_BANNER,
+//                        viewModel.getChannelInfoViewModel().getAdsName(),
+//                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+//                        list);
             });
         } else
             ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
@@ -1791,11 +1791,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                     getAttributionTracking(GroupChatAnalytics
                             .ATTRIBUTE_BANNER)
             ));
-            analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle(),
-                    GroupChatAnalytics.COMPONENT_BANNER,
-                    viewModel.getChannelInfoViewModel().getAdsName(),
-                    GroupChatAnalytics.ATTRIBUTE_BANNER,
-                    list );
+//            analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle(),
+//                    GroupChatAnalytics.COMPONENT_BANNER,
+//                    viewModel.getChannelInfoViewModel().getAdsName(),
+//                    GroupChatAnalytics.ATTRIBUTE_BANNER,
+//                    list );
             if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
                 startApplink(interuptViewModel.getBtnLink());
             }
