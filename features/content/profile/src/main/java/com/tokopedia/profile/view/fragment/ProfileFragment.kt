@@ -3,6 +3,7 @@ package com.tokopedia.profile.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
@@ -62,6 +63,7 @@ import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_profile_header.view.*
+import kotlinx.android.synthetic.main.layout_tab_secondary.*
 import java.util.*
 import javax.inject.Inject
 
@@ -579,6 +581,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun setProfileToolbar(element: ProfileHeaderViewModel) {
+        app_bar_layout.visibility = View.VISIBLE
         iv_image_collapse.loadImageRounded(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
         tv_name.text = element.name
@@ -590,6 +593,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         iv_back.setOnClickListener{
             activity?.finish()
         }
+
+        app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            internal var titleIsShowing = false
+            internal var scrollRange = -1
+
+            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+               if (verticalOffset == 0) {
+                   toolbar.visibility = View.GONE
+               } else {
+                   toolbar.visibility = View.VISIBLE
+               }
+            }
+        })
 
         if (element.isKol || element.isAffiliate) {
             kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE
