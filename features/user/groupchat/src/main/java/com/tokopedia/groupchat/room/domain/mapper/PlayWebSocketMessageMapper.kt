@@ -15,6 +15,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
+import com.tokopedia.groupchat.vote.view.model.VoteViewModel
 import com.tokopedia.websocket.WebSocketResponse
 import java.util.*
 import javax.inject.Inject
@@ -294,7 +295,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
                     it.image,
                     false,
                     true,
-                    mappingToVoteInfoViewModel(pojo)!!
+                    mappingToVoteInfoViewModel(pojo)
             )
         }
 
@@ -302,66 +303,30 @@ class PlayWebSocketMessageMapper @Inject constructor() {
     }
 
     private fun mappingToVoteInfoViewModel(activePollPojo: ActivePollPojo): VoteInfoViewModel? {
-//        return if (hasPoll(activePollPojo)) {
-//            VoteInfoViewModel(
-//                    activePollPojo.pollId.toString(),
-//                    activePollPojo.title,
-//                    activePollPojo.question,
-//                    mapToListOptions(activePollPojo.isIsAnswered,
-//                            activePollPojo.optionType,
-//                            activePollPojo.statistic.statisticOptions,
-//                            activePollPojo.options),
-//                    activePollPojo.statistic.totalVoter.toString(),
-//                    activePollPojo.pollType,
-//                    getVoteOptionType(activePollPojo.optionType),
-//                    activePollPojo.status,
-//                    activePollPojo.statusId,
-//                    activePollPojo.isIsAnswered,
-//                    VoteInfoViewModel.getStringVoteInfo(activePollPojo.pollTypeId),
-//                    activePollPojo.winnerUrl.trim { it <= ' ' },
-//                    activePollPojo.startTime,
-//                    activePollPojo.endTime
-//            )
-//        } else {
-//            null
-//        }
-        return null
+        return if (hasPoll(activePollPojo)) {
+            VoteInfoViewModel(
+                    activePollPojo.pollId.toString(),
+                    activePollPojo.title,
+                    activePollPojo.question,
+                    null,
+                    activePollPojo.statistic?.totalVoter.toString(),
+                    activePollPojo.pollType,
+                    VoteViewModel.BAR_TYPE,
+                    activePollPojo.status,
+                    activePollPojo.statusId,
+                    activePollPojo.isIsAnswered,
+                    VoteInfoViewModel.getStringVoteInfo(activePollPojo.pollTypeId),
+                    activePollPojo.winnerUrl.trim { it <= ' ' },
+                    activePollPojo.startTime,
+                    activePollPojo.endTime
+            )
+        } else {
+            null
+        }
     }
-//
-//    private fun hasPoll(activePoll: ActivePollPojo?): Boolean {
-//        return (activePoll != null
-//                && activePoll.statistic != null
-//                && activePoll.pollId != DEFAULT_NO_POLL)
-//    }
-//
-//
-//    private fun mapToListOptions(isAnswered: Boolean, optionType: String,
-//                                 statisticOptions: List<StatisticOption>,
-//                                 options: List<Option>): List<Visitable<*>> {
-//        val list = ArrayList<Visitable<*>>()
-//        for (i in statisticOptions.indices) {
-//
-//            val statisticOptionPojo = statisticOptions[i]
-//            val optionPojo = options[i]
-//
-//            if (optionType.equals(OPTION_TEXT, ignoreCase = true)) {
-//                list.add(VoteViewModel(
-//                        statisticOptionPojo.optionId.toString(),
-//                        statisticOptionPojo.option,
-//                        statisticOptionPojo.percentage,
-//                        checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected)
-//                ))
-//            } else if (optionType.equals(OPTION_IMAGE, ignoreCase = true)) {
-//                list.add(VoteViewModel(
-//                        statisticOptionPojo.optionId.toString(),
-//                        statisticOptionPojo.option,
-//                        optionPojo.imageOption.trim { it <= ' ' },
-//                        statisticOptionPojo.percentage,
-//                        checkIfSelected(isAnswered, statisticOptionPojo.isIsSelected)
-//                ))
-//            }
-//        }
-//        return list
-//    }
+
+    private fun hasPoll(activePoll: ActivePollPojo?): Boolean {
+        return (!(activePoll?.statistic == null || activePoll.pollId == DEFAULT_NO_POLL))
+    }
 
 }

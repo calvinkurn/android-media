@@ -13,26 +13,7 @@
     android:orientation="horizontal"
     android:paddingStart="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_12"
-    tools:background="@color/red_150">
-
-        <!--<ImageView-->
-        <!--android:id="@+id/notification_dynamic_icon"-->
-        <!--android:layout_width="@dimen/dp_10"-->
-        <!--android:layout_height="@dimen/dp_10"-->
-        <!--app:layout_constraintRight_toRightOf="@id/icon_dynamic"-->
-        <!--app:layout_constraintTop_toTopOf="@id/icon_dynamic"-->
-        <!--app:srcCompat="@drawable/circle_red_notification" />-->
-
-
-
-        <!--<ImageView-->
-        <!--android:id="@+id/notification_quiz"-->
-        <!--android:layout_width="@dimen/dp_10"-->
-        <!--android:layout_height="@dimen/dp_10"-->
-        <!--app:layout_constraintRight_toRightOf="@id/icon_quiz"-->
-        <!--app:layout_constraintTop_toTopOf="@id/icon_quiz"-->
-        <!--app:srcCompat="@drawable/circle_red_notification" />-->
-
+    tools:background="@color/yellow_200">
         <com.tokopedia.design.text.BackEditText
             android:id="@+id/reply_edit_text"
             android:layout_width="0dp"
@@ -57,27 +38,53 @@
             android:layout_weight="1"
             tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/icon_quiz"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         android:visibility="visible"
-        android:layout_gravity="bottom"
-        app:srcCompat="@drawable/ic_play_dynamic_icon"
-        tools:visibility="gone" />
+        android:layout_gravity="bottom">
+        <ImageView
+            android:id="@+id/icon_quiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_play_dynamic_icon"
+            tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/icon_dynamic"
+        <ImageView
+            android:id="@+id/notification_quiz_icon"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            app:srcCompat="@drawable/circle_red_notification"
+            android:layout_alignRight="@id/icon_quiz"
+            android:layout_alignTop="@id/icon_quiz"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         android:visibility="visible"
-        android:layout_gravity="bottom"
-        app:srcCompat="@drawable/ic_play_dynamic_icon"
-        tools:visibility="gone" />
+        android:layout_gravity="bottom">
+        <ImageView
+            android:id="@+id/icon_dynamic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_play_dynamic_icon"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/notification_dynamic_icon"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            app:srcCompat="@drawable/circle_red_notification"
+            android:layout_alignRight="@id/icon_dynamic"
+            android:layout_alignTop="@id/icon_dynamic"
+            />
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/button_send"
