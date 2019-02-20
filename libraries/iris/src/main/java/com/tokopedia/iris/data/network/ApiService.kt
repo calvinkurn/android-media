@@ -10,7 +10,6 @@ import retrofit2.Retrofit
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
-import org.bouncycastle.crypto.tls.ConnectionEnd.client
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 
