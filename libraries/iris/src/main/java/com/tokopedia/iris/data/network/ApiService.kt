@@ -9,6 +9,11 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
+import okhttp3.OkHttpClient
+import org.bouncycastle.crypto.tls.ConnectionEnd.client
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
+
 
 /**
  * Created by meta on 21/11/18.
@@ -18,26 +23,28 @@ class ApiService(private val context: Context) {
     private val session: Session = IrisSession(context)
 
     fun makeRetrofitService(): ApiInterface {
+        var client = OkHttpClient()
+
+        try {
+            client = createClient()
+        } catch (e: KeyManagementException) {
+            e.printStackTrace()
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        }
+
         return Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(client)
                 .addConverterFactory(StringResponseConverter())
                 .addCallAdapterFactory(CoroutineCallAdapterFactory())
-                .client(createClient())
                 .build().create(ApiInterface::class.java)
     }
 
     private fun createClient(): OkHttpClient {
         val tlsSocketFactory = Tls12SocketFactory()
          val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-                 .sslSocketFactory(tlsSocketFactory, tlsSocketFactory.trustManager)
-                 .connectTimeout(15000, TimeUnit.MILLISECONDS)
-                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
-                 .readTimeout(10000, TimeUnit.MILLISECONDS)
-
-        if (BuildConfig.DEBUG) {
-            builder.addInterceptor(ChuckInterceptor(context))
-        }
-
+        builder.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.trustManager)
         builder.connectionSpecs(listOf(legacyChiper()))
         builder.addInterceptor {
                     val original = it.request()
@@ -52,6 +59,14 @@ class ApiService(private val context: Context) {
 
                     it.proceed(requestBuilder)
                 }
+
+        builder.connectTimeout(15000, TimeUnit.MILLISECONDS)
+        builder.writeTimeout(10000, TimeUnit.MILLISECONDS)
+        builder.readTimeout(10000, TimeUnit.MILLISECONDS)
+
+        if (BuildConfig.DEBUG) {
+            builder.addInterceptor(ChuckInterceptor(context))
+        }
 
         return builder.build()
     }
