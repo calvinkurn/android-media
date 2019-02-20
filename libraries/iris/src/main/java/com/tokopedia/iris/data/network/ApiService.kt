@@ -48,7 +48,7 @@ class ApiService(private val context: Context) {
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
-        builder.addInterceptor(CustomHeaderInterceptor())
+        builder.addInterceptor(CustomHeaderInterceptor(session))
 
         return builder.build()
     }
