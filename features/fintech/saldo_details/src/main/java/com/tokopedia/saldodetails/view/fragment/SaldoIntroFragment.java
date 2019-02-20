@@ -1,6 +1,6 @@
 package com.tokopedia.saldodetails.view.fragment;
 
-import android.graphics.Color;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,19 +15,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
-
-import java.util.Objects;
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 
 public class SaldoIntroFragment extends TkpdBaseV4Fragment {
 
     private TextView viewMore;
     private Button gotoSaldoPage;
+    private Context context;
 
     public static Fragment newInstance() {
         return new SaldoIntroFragment();
@@ -48,6 +47,12 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        this.context = getContext();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -59,13 +64,13 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
         if (startIndexOfLink != -1) {
             spannableString.setSpan(new ClickableSpan() {
                 @Override
-                public void onClick(View view) {
-                    Toast.makeText(getContext(), "Go to view more page", Toast.LENGTH_LONG).show();
-                    // TODO: 24/1/19 goto help page
+                public void onClick(@NonNull View view) {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                            SaldoDetailsConstants.SALDO_HELP_URL));
                 }
 
                 @Override
-                public void updateDrawState(TextPaint ds) {
+                public void updateDrawState(@NonNull TextPaint ds) {
                     super.updateDrawState(ds);
                     ds.setUnderlineText(false);
                     ds.setColor(getResources().getColor(R.color.green_250));
@@ -76,8 +81,10 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
         }
 
         gotoSaldoPage.setOnClickListener(v -> {
-            RouteManager.route(Objects.requireNonNull(getContext()), ApplinkConst.DEPOSIT);
-            Objects.requireNonNull(getActivity()).finish();
+            RouteManager.route(context, ApplinkConst.DEPOSIT);
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
         });
     }
 }

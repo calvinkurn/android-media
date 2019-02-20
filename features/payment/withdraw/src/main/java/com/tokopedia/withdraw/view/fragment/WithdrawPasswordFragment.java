@@ -24,9 +24,9 @@ import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
+import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
 import com.tokopedia.withdraw.view.listener.WithdrawPasswordContract;
-import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.presenter.WithdrawPasswordPresenter;
 
 import java.io.IOException;
@@ -58,11 +58,14 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
 
     @Override
     protected void initInjector() {
-        WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
-                .baseAppComponent(((BaseMainApplication) Objects.requireNonNull(getActivity()).getApplication()).getBaseAppComponent())
-                .build();
-        withdrawComponent.inject(this);
-        presenter.attachView(this);
+        if (getActivity() != null) {
+            WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
+                    .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                    .build();
+            withdrawComponent.inject(this);
+            presenter.attachView(this);
+        }
+
     }
 
     public static Fragment createInstance(Bundle bundle) {

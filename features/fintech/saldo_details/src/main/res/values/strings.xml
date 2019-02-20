@@ -72,5 +72,7 @@
     <string name="saldo_intro_help">Untuk melihat informasi selengkapnya lihat di sini.</string>
     <string name="saldo_help_text">di sini</string>
     <string name="saldo_min_withdrawal_error">Penarikan Saldo Minimum Rp10.000</string>
+    <string name="saldo_empty_list_heading">Belum Ada Transaksi</string>
+    <string name="saldo_empty_list_desc">Ubah tab untuk melihat transaksi yang lain</string>
 
 </resources>

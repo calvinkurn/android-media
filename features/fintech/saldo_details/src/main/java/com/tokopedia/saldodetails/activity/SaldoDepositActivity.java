@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -21,6 +20,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
@@ -126,10 +126,8 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         if (isSeller) {
             saldoHelp.setVisibility(View.VISIBLE);
             saldoHelp.setOnClickListener(v -> {
-                // TODO: 8/2/19 goto help page
-            /*RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                    SaldoDetailsConstants.SALDO_HELP_URL));*/
-                Toast.makeText(SaldoDepositActivity.this, "Go to help page", Toast.LENGTH_LONG).show();
+                RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                        SaldoDetailsConstants.SALDO_HELP_URL));
             });
         } else {
             saldoHelp.setVisibility(View.GONE);

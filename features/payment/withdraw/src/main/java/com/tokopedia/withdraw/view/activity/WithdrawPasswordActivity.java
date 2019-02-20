@@ -62,8 +62,6 @@ public class WithdrawPasswordActivity extends BaseSimpleActivity {
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
 
-        /*DaggerDoWithdrawComponent.builder().withdrawComponent(withdrawComponent)
-                .build().inject(this);*/
         withdrawComponent.inject(this);
 
     }

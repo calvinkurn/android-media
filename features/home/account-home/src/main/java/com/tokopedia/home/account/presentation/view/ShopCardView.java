@@ -39,7 +39,6 @@ public class ShopCardView extends BaseCustomView {
     private ImageView badge;
     private TextView textShopName;
     private ImageView shopReputation;
-    //    private LabelView labelViewDeposit;
     private WarningTickerView warningTickerView;
     private TextView shopStatus;
     private View infoButton;
@@ -62,7 +61,6 @@ public class ShopCardView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_shop_card, this);
-//        labelViewDeposit = view.findViewById(R.id.label_view_saldo);
         imageShop = view.findViewById(R.id.image_shop);
         badge = view.findViewById(R.id.image_badge);
         textShopName = view.findViewById(R.id.text_shop_name);
@@ -104,10 +102,6 @@ public class ShopCardView extends BaseCustomView {
         textShopName.setText(MethodChecker.fromHtml(shopName));
     }
 
-    /*public void setBalance(String balance) {
-        labelViewDeposit.setContent(balance);
-    }*/
-
     public void setShopReputation(String url) {
         if (!TextUtils.isEmpty(url)) {
             Glide.with(getContext())
@@ -128,10 +122,6 @@ public class ShopCardView extends BaseCustomView {
     public void setOnClickShopName(View.OnClickListener listener) {
         textShopName.setOnClickListener(listener);
     }
-
-    /*public void setOnClickDeposit(View.OnClickListener listener) {
-        labelViewDeposit.setOnClickListener(listener);
-    }*/
 
     public void setOnClickTopAdsView(View.OnClickListener listener) {
         labelViewTopAds.setOnClickListener(listener);

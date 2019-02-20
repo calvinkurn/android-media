@@ -18,38 +18,11 @@ import dagger.Provides;
 @Module
 public class WithdrawModule {
 
-    /*@WithdrawQualifier
-    @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
-    }*/
-
     @WithdrawScope
     @Provides
     public UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
-
-    /*@WithdrawQualifier
-    @Provides
-    public OkHttpClient provideOkHttpClient(
-            @ApplicationContext Context context,
-            @WithdrawQualifier ChuckInterceptor chuckInterceptor,
-            HttpLoggingInterceptor httpLoggingInterceptor,
-            @WithdrawQualifier UserSession userSession) {
-
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(new ErrorResponseInterceptor(WSErrorResponse.class))
-                .addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession))
-                .addInterceptor(new FingerprintInterceptor((NetworkRouter) context, userSession));
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(chuckInterceptor)
-                    .addInterceptor(new DebugInterceptor());
-        }
-        return builder.build();
-    }*/
 
     @WithdrawScope
     @Provides

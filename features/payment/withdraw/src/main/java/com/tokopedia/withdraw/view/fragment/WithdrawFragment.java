@@ -332,12 +332,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             }
         });
 
-        Observable<Boolean> allField = nominalMapper.map(new Func1<Boolean, Boolean>() {
-            @Override
-            public Boolean call(Boolean isValidNominal) {
-                return isValidNominal && isBankSelected();
-            }
-        });
+        Observable<Boolean> allField = nominalMapper.map(isValidNominal -> isValidNominal && isBankSelected());
 
         allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton));
         allField.subscribe(aBoolean -> canProceed((TextView) withdrawButton, aBoolean));
@@ -551,23 +546,21 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         new AlertDialog.Builder(getActivity())
                 .setTitle(getActivity().getString(R.string.alert_not_verified_yet_title))
                 .setMessage(getActivity().getString(R.string.alert_not_verified_yet_body))
-                .setPositiveButton(getActivity().getString(R.string.alert_not_verified_yet_positive), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton(getActivity().getString(R.string.alert_not_verified_yet_positive), (dialog, which) -> {
+                    if (getActivity() != null) {
                         Intent intent = ((WithdrawRouter) getActivity().getApplicationContext())
                                 .getProfileSettingIntent(getActivity());
                         startActivity(intent);
                         getActivity().finish();
                     }
+
                 })
-                .setNegativeButton(getActivity().getString(R.string.alert_not_verified_yet_negative), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setNegativeButton(getActivity().getString(R.string.alert_not_verified_yet_negative), (dialog, which) -> {
+                    if (getActivity() != null) {
                         getActivity().finish();
                     }
                 })
                 .setCancelable(false)
-
                 .show();
     }
 
@@ -579,7 +572,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public String getStringResource(int id) {
-        return getActivity().getString(id);
+        if (getActivity() != null) {
+            return getActivity().getString(id);
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -676,13 +673,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                             .setTitle(getActivity().getString(R.string.alert_success_withdraw_title))
                             .setMessage(getActivity().getString(R.string.alert_success_withdraw_body))
-                            .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_OK);
+                            .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), (dialog1, which) -> {
+                                dialog1.dismiss();
+                                if (getActivity() != null) {
+                                    getActivity().setResult(Activity.RESULT_OK);
                                     getActivity().finish();
                                 }
+
                             })
                             .setCancelable(false)
                             .create();
