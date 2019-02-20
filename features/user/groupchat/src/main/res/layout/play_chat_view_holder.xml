@@ -21,7 +21,7 @@
         android:fontFamily="sans-serif"
         android:textColor="@color/play_user"
         android:textColorLink="@color/play_user"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp_14"
         android:textStyle="normal"
         android:visibility="visible"
         tools:text="Kodok"/>

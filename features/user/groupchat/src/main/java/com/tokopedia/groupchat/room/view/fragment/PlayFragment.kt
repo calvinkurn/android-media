@@ -4,27 +4,27 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
-import android.support.v4.app.FragmentActivity
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.abstraction.constant.TkpdState
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
-import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
+import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -53,7 +53,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ChatroomContract.ChatItem.SprintSaleViewHolderListener,
         ChatroomContract.ChatItem.GroupChatPointsViewHolderListener {
 
-    private var snackbarWebsocket: Snackbar? = null
+    private var snackBarWebSocket: Snackbar? = null
 
     companion object {
 
@@ -76,13 +76,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var analytics : GroupChatAnalytics
+    lateinit var analytics: GroupChatAnalytics
 
-    private lateinit var viewState: PlayViewState
-    private lateinit var rootView : View
-    private lateinit var notifReceiver : BroadcastReceiver
+    lateinit var viewState: PlayViewState
+    private lateinit var rootView: View
+    private lateinit var notifReceiver: BroadcastReceiver
 
-    private lateinit var channelInfoViewModel : ChannelInfoViewModel
+    private lateinit var channelInfoViewModel: ChannelInfoViewModel
+    private var exitDialog: Dialog? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,20 +92,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         val channelUUID = getParamString(PlayActivity.EXTRA_CHANNEL_UUID, arguments,
                 savedInstanceState, "")
         channelInfoViewModel = ChannelInfoViewModel(channelUUID)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (::notifReceiver.isInitialized) {
-            notifReceiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    if (intent.extras != null) {
-                        onGetNotif(intent.extras!!)
-                    }
-                }
-            }
-        }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -118,15 +106,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.run{inflate(R.menu.group_chat_room_menu, menu)}
+        inflater?.run { inflate(R.menu.group_chat_room_menu, menu) }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        item?.let{
+        item?.let {
             return when {
                 it.itemId == android.R.id.home -> {
-                    onBackPressed()
+                    backPress()
                     true
                 }
                 it.itemId == R.id.action_info -> {
@@ -151,34 +139,34 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 data.getString("tkp_code", "")
         )
 
-        if(::viewState.isInitialized){
+        if (::viewState.isInitialized) {
             viewState.onReceiveGamificationNotif(model)
         }
     }
 
     private fun onInfoClicked() {
-        if(::viewState.isInitialized) {
+        if (::viewState.isInitialized) {
             viewState.onInfoMenuClicked()
         }
     }
 
     private fun shareChannel() {
-        activity?.let{
+        activity?.let {
 
-        val TAG_CHANNEL = "{channel_url}"
+            val TAG_CHANNEL = "{channel_url}"
 
-        analytics.eventClickShare(channelInfoViewModel.channelId)
+            analytics.eventClickShare(channelInfoViewModel.channelId)
 
-        val link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, channelInfoViewModel.channelUrl)
+            val link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, channelInfoViewModel.channelUrl)
 
-        val description = String.format("%s %s",
-                String.format(getString(R.string.lets_join_channel),
-                        channelInfoViewModel.title), "")
+            val description = String.format("%s %s",
+                    String.format(getString(R.string.lets_join_channel),
+                            channelInfoViewModel.title), "")
 
-        var userId = "0"
-        if (userSession.isLoggedIn) {
-            userId = userSession.userId
-        }
+            var userId = "0"
+            if (userSession.isLoggedIn) {
+                userId = userSession.userId
+            }
 
             (it.applicationContext as GroupChatModuleRouter).shareGroupChat(
                     it,
@@ -202,23 +190,48 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return {
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
             saveGCTokenToCache()
+            channelInfoViewModel = it
             presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
+            setExitDialog(it.exitMessage)
+        }
+    }
+
+    private fun setExitDialog(exitMessage: ExitMessage?) {
+        exitMessage?.let {
+            exitDialog = Dialog(this@PlayFragment.activity, Dialog.Type.PROMINANCE)
+            exitDialog?.let { dialog ->
+                dialog.setTitle(exitMessage.title)
+                dialog.setDesc(exitMessage.body)
+                dialog.setBtnOk(activity?.getString(R.string.exit_group_chat_yes))
+                dialog.setOnOkClickListener {
+                    //                    analytics.eventUserExit(getChannelInfoViewModel()!!.getChannelId() + " " + getDurationOnGroupChat())
+//                    if (isTaskRoot()) {
+//                        startActivity((getApplicationContext() as GroupChatModuleRouter).getInboxChannelsIntent(context))
+//                    }
+//                    if (onPlayTime != 0L) {
+//                        analytics.eventWatchVideoDuration(getChannelInfoViewModel()!!.getChannelId(), getDurationWatchVideo())
+//                    }
+                    activity?.finish()
+                    activity?.onBackPressed()
+                }
+
+                dialog.setBtnCancel(activity?.getString(R.string.exit_group_chat_no))
+                dialog.setOnCancelClickListener { dialog.dismiss() }
+            }
         }
     }
 
     private fun initView(view: View) {
         activity?.let {
-            viewState = PlayViewStateImpl(userSession, view,
-                    it,this, this, this, this,
+            viewState = PlayViewStateImpl(userSession, analytics, view,
+                    it, this, this, this, this,
                     this, this, sendMessage())
         }
         setToolbarView(view)
     }
 
     private fun setToolbarView(view: View) {
-
         val toolbar = viewState.getToolbar()
-
         activity?.let {
             (it as AppCompatActivity).let {
                 it.setSupportActionBar(toolbar)
@@ -227,21 +240,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    fun getSoftButtonsBarSizePort(activity: FragmentActivity): Int {
-        // getRealMetrics is only available with API 17 and +
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val metrics = DisplayMetrics()
-            activity.windowManager.defaultDisplay.getMetrics(metrics)
-            val usableHeight = metrics.heightPixels
-            activity.windowManager.defaultDisplay.getRealMetrics(metrics)
-            val realHeight = metrics.heightPixels
-            return if (realHeight > usableHeight)
-                realHeight - usableHeight
-            else
-                0
-        }
-        return 0
-    }
 
     override fun getRecyclerView(view: View): RecyclerView {
         return view.findViewById(R.id.chat_list)
@@ -282,15 +280,27 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         userSession.gcToken = "asd"
     }
 
-    override fun onBackPressed(): Boolean {
-        return if (::viewState.isInitialized) {
-            viewState.onBackPressed()
-        } else
-            false
+    fun backPress() {
+//        if (onPlayTime != 0L) {
+//            analytics.eventWatchVideoDuration(getChannelInfoViewModel()!!.getChannelId(), getDurationWatchVideo())
+//        }
+        if (exitDialog != null) {
+            exitDialog!!.show()
+        } else {
+            activity?.finish()
+            activity?.onBackPressed()
+        }
     }
 
-
     override fun addQuickReply(text: String?) {
+//        if (activity != null
+//                && activity is GroupChatContract.View
+//                && (activity as GroupChatContract.View).getChannelInfoViewModel() != null) {
+//            analytics.eventClickQuickReply(
+//                    String.format("%s - %s", (activity as GroupChatContract.View).getChannelInfoViewModel()!!.getChannelId(), message))
+//        }
+
+        viewState.onQuickReplyClicked(text)
     }
 
     override fun onImageAnnouncementClicked(url: String?) {
@@ -326,7 +336,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onOpenWebSocket() {
-        snackbarWebsocket?.dismiss()
+        snackBarWebSocket?.dismiss()
     }
 
     override fun onMessageReceived(item: Visitable<*>, hideMessage: Boolean) {
@@ -339,7 +349,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun vibratePhone() {
         val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
-        vibrator?.let{
+        vibrator?.let {
             if (Build.VERSION.SDK_INT >= 26) {
                 vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_LENGTH, VibrationEffect
                         .DEFAULT_AMPLITUDE))
@@ -363,7 +373,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun backToChannelList() {
         activity?.let {
-            if(it.isTaskRoot){
+            if (it.isTaskRoot) {
                 startActivity((it.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(context))
             }
             it.finish()
@@ -397,8 +407,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun setSnackBarConnectingWebSocket() {
         if (userSession.isLoggedIn) {
-            snackbarWebsocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
-            snackbarWebsocket?.let {
+            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
+            snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.show()
             }
@@ -407,18 +417,21 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun setSnackBarRetryConnectingWebSocket() {
         if (userSession.isLoggedIn) {
-            snackbarWebsocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
-            snackbarWebsocket?.let {
+            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
+            snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry), View.OnClickListener {
-                    setSnackBarConnectingWebSocket()
+                    viewState.getChannelInfo()?.let {
+                        presenter.getPlayInfo(it.channelId, onSuccessGetInfo())
+                        setSnackBarConnectingWebSocket()
+                    }
                 })
                 it.show()
             }
         }
     }
 
-    override fun onLoginClicked(channelId: String) {
+    override fun onLoginClicked(channelId: String?) {
 //      analytics.eventClickLogin(channelId)
 
         startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
@@ -458,9 +471,66 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
     }
 
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewState.onKeyboardHidden()
+        if (canResume()) {
+//            kickIfIdleForTooLong()
+//
+//            if (viewModel != null && viewModel.getChannelInfoViewModel() != null
+//                    && !isFirstTime) {
+//                if (!channelInfoDialog.isShowing() || loading.getVisibility() != View.VISIBLE) {
+//                    showLoading()
+//                    presenter.refreshChannelInfo(viewModel.getChannelUuid())
+//                }
+//
+//            }
+
+            if (::notifReceiver.isInitialized) {
+                notifReceiver = object : BroadcastReceiver() {
+                    override fun onReceive(context: Context, intent: Intent) {
+                        if (intent.extras != null) {
+                            onGetNotif(intent.extras!!)
+                        }
+                    }
+                }
+            }
+
+            context?.let {
+                try {
+                    LocalBroadcastManager.getInstance(it).registerReceiver(notifReceiver, IntentFilter
+                    (TkpdState.LOYALTY_GROUP_CHAT))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+//
+//            if (viewModel != null) {
+//                viewModel.setTimeStampAfterResume(System.currentTimeMillis())
+//            }
+//            }
+        }
+    }
+
+    private fun canResume(): Boolean {
+        return true
+        //        return viewModel != null && (viewModel.getTimeStampAfterResume() == 0L || viewModel.getTimeStampAfterResume() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterResume() > PAUSE_RESUME_TRESHOLD_TIME)
+    }
+
+    private fun canPause(): Boolean {
+        return true
+//        return viewModel != null && (viewModel.getTimeStampAfterPause() == 0L || (viewModel.getTimeStampAfterPause() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterPause() > PAUSE_RESUME_TRESHOLD_TIME
+//                && canResume()))
+    }
+
     override fun onDestroy() {
         viewState.destroy()
         presenter.detachView()
         super.onDestroy()
     }
+
 }

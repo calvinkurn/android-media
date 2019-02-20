@@ -3,8 +3,10 @@ package com.tokopedia.groupchat.room.view.presenter
 import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
+import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
@@ -34,6 +36,12 @@ class PlayPresenter @Inject constructor(
     : BaseDaggerPresenter<PlayContract.View>(), PlayContract.Presenter{
 
     private var mSubscription: CompositeSubscription? = null
+    private var localCacheHandler: LocalCacheHandler? = null
+
+    override fun attachView(view: PlayContract.View) {
+        super.attachView(view)
+        localCacheHandler = LocalCacheHandler(view.context, GroupChatPresenter::class.java.name)
+    }
 
     fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit) {
         getPlayInfoUseCase.execute(
@@ -59,7 +67,6 @@ class PlayPresenter @Inject constructor(
 
 
     override fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?) {
-
         var settings = settingGroupChat ?: SettingGroupChat()
         processUrl(userSession, channelId, groupChatToken, settings)
         connectWebSocket(userSession.userId, userSession.deviceId, userSession.accessToken, settings, groupChatToken)
@@ -161,7 +168,7 @@ class PlayPresenter @Inject constructor(
 
     private fun processUrl(userSession: UserSessionInterface, channelId: String, groupChatToken: String?, settingGroupChat: SettingGroupChat?) {
         var magicString = ChatroomUrl.GROUP_CHAT_WEBSOCKET_DOMAIN
-//        magicString = localCacheHandler.getString("ip_groupchat", magicString)
+        magicString = localCacheHandler?.getString("ip_groupchat", magicString)
 
         this.webSocketUrl = String.format("%s%s%s", magicString, ChatroomUrl.PATH_WEB_SOCKET_GROUP_CHAT_URL, channelId)
         this.webSocketUrlWithToken = String.format("%s%s%s", webSocketUrl, "&token=", groupChatToken)

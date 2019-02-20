@@ -2,6 +2,7 @@ package com.tokopedia.groupchat.room.view.viewstate
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
 import android.view.KeyEvent
@@ -29,7 +31,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.bottomsheet.RoundedCornerBottomSheetDialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
@@ -43,6 +44,7 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
@@ -64,6 +66,7 @@ import java.util.concurrent.TimeUnit
  */
 class PlayViewStateImpl(
         var userSession: UserSessionInterface,
+        var analytics: GroupChatAnalytics,
         var view: View,
         var activity: FragmentActivity,
         var listener: PlayContract.View,
@@ -77,7 +80,7 @@ class PlayViewStateImpl(
 ) : PlayViewState {
 
     private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
-    private lateinit var viewModel: ChannelInfoViewModel
+    private var viewModel: ChannelInfoViewModel? = null
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
     private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
@@ -97,21 +100,24 @@ class PlayViewStateImpl(
     val dynamicIcon = view.findViewById<ImageView>(R.id.icon_dynamic)
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
-        var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
+    var bottomSheetLayout = view.findViewById<ConstraintLayout>(R.id.bottom_sheet)
+
     lateinit var bottomSheetWebviewFragment: PlayWebviewFragment
     lateinit var bottomSheetWebviewDialog: BottomSheetDialog
     lateinit var bottomSheetWebviewBehavior: BottomSheetBehavior<View>
 
     lateinit var overlayBottomSheet: CloseableBottomSheetDialog
     lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
+    lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
 
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
+
     private var quickReplyAdapter: QuickReplyAdapter
     private var adapter: GroupChatAdapter
-
     private var newMessageCounter: Int = 0
 
     private var youtubeRunnable: Handler = Handler()
+
     private var layoutManager: LinearLayoutManager
 
     init {
@@ -163,37 +169,23 @@ class PlayViewStateImpl(
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
         replyEditText.setOnClickListener {
-            showWidgetAboveInput(false)
-            inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
-            sendButton.show()
-            iconDynamic.hide()
-            iconQuiz.hide()
-//            setSprintSaleIcon(null)
+            onKeyboardShown()
         }
 
         replyEditText.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
-            showWidgetAboveInput(false)
-            inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
-//            setSprintSaleIcon(null)
-            sendButton.show()
-            iconDynamic.hide()
-            iconQuiz.hide()
+            onKeyboardShown()
         }
 
         replyEditText.setKeyImeChangeListener { keyCode, event ->
             if (KeyEvent.KEYCODE_BACK == event.keyCode) {
-                showWidgetAboveInput(true)
-                inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
-                sendButton.hide()
-                iconDynamic.show()
-                iconQuiz.show()
+                onKeyboardHidden()
             }
         }
 
         showLoginButton(!userSession.isLoggedIn)
 
         login.setOnClickListener {
-            listener.onLoginClicked(viewModel.channelId)
+            listener.onLoginClicked(viewModel?.channelId)
         }
 
         chatNotificationView.setOnClickListener {
@@ -214,53 +206,28 @@ class PlayViewStateImpl(
         }
     }
 
+    override fun onKeyboardHidden() {
+        showWidgetAboveInput(true)
+        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
+        sendButton.hide()
+        iconDynamic.show()
+        iconQuiz.show()
+        toolbar.show()
+
+    }
+
+    fun onKeyboardShown() {
+        showWidgetAboveInput(false)
+        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
+        sendButton.show()
+        iconDynamic.hide()
+        iconQuiz.hide()
+        toolbar.hide()
+//            setSprintSaleIcon(null)
+    }
+
     private fun checkText(replyText: String): String {
         return replyText.replace("<", "&lt;")
-    }
-
-    private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
-        if (!::pinnedMessageDialog.isInitialized) {
-            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
-        }
-
-        val pinnedMessageView = createPinnedMessageView(viewModel)
-        pinnedMessageDialog.setOnShowListener() { dialog ->
-            val d = dialog as BottomSheetDialog
-
-            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
-            if (bottomSheet != null) {
-                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-                pinnedMessageView.findViewById<ImageView>(R.id.thumbnail).visibility = View.VISIBLE
-            }
-        }
-
-        pinnedMessageDialog.setContentView(pinnedMessageView, "Pinned Chat")
-        view.setOnClickListener(null)
-        pinnedMessageDialog.show()
-
-    }
-
-    private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
-        val view = activity.layoutInflater.inflate(R.layout
-                .layout_pinned_message_expanded, null)
-        ImageHandler.loadImageCircle2(activity, view.findViewById(R.id.pinned_message_avatar) as ImageView, channelInfoViewModel!!.adminPicture, R.drawable.ic_loading_toped_new)
-        (view.findViewById<View>(R.id.chat_header).findViewById(R.id.nickname) as TextView).text =
-                channelInfoViewModel.adminName
-        channelInfoViewModel.pinnedMessageViewModel?.let {
-            (view.findViewById(R.id.message) as TextView).text = it.message
-            ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
-                    .drawable.loading_page)
-            if (!TextUtils.isEmpty(it.imageUrl)) {
-                view.findViewById<ImageView>(R.id.thumbnail).setOnClickListener {
-                    (activity.applicationContext as GroupChatModuleRouter)
-                            .openRedirectUrl(activity,
-                                    channelInfoViewModel.pinnedMessageViewModel!!.imageUrl)
-                }
-            }
-            view.findViewById<ImageView>(R.id.thumbnail).visibility = View.GONE
-        }
-
-        return view
     }
 
     open fun scrollToBottom() {
@@ -295,16 +262,21 @@ class PlayViewStateImpl(
 
         showLoginButton(!userSession.isLoggedIn)
 
-        //
-        onReceiveGamificationNotif(GroupChatPointsViewModel(
-                "Selamat, anda mendapatkan 3 point", "tokopedia://groupchat", "1401"
-        ))
+        it.settingGroupChat?.maxChar?.let {
+            replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
+        }
+    }
+
+    override fun getChannelInfo(): ChannelInfoViewModel? {
+        return viewModel
     }
 
     private fun showWidgetAboveInput(isUserLoggedIn: Boolean) {
         if (isUserLoggedIn) {
-            setPinnedMessage(viewModel)
-            setQuickReply(viewModel.quickRepliesViewModel)
+            viewModel?.let {
+                setPinnedMessage(it)
+                setQuickReply(it.quickRepliesViewModel)
+            }
         } else {
             hidePinnedMessage()
             setQuickReply(null)
@@ -326,19 +298,19 @@ class PlayViewStateImpl(
     }
 
     override fun onAdsUpdated(it: AdsViewModel) {
-        viewModel.adsImageUrl = it.adsUrl
-        viewModel.adsId = it.adsId
-        viewModel.adsLink = it.adsLink
-        setSponsorData(viewModel.adsId, viewModel.adsImageUrl, viewModel.adsName)
+        viewModel?.adsImageUrl = it.adsUrl
+        viewModel?.adsId = it.adsId
+        viewModel?.adsLink = it.adsLink
+        setSponsorData(viewModel?.adsId, viewModel?.adsImageUrl, viewModel?.adsName)
     }
 
     override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
-        viewModel.videoId = it.videoId
+        viewModel?.videoId = it.videoId
         initVideoFragment(childFragmentManager, it.videoId)
     }
 
     override fun onChannelFrozen(channelId: String) {
-        if (channelId == viewModel.channelId) {
+        if (channelId == viewModel?.channelId) {
             val myAlertDialog = AlertDialog.Builder(view.context)
             myAlertDialog.setTitle(getStringResource(R.string.channel_not_found))
             myAlertDialog.setMessage(getStringResource(R.string.channel_deactivated))
@@ -363,7 +335,7 @@ class PlayViewStateImpl(
 
                 builder.setMessage(errorMessage)
 
-                viewModel.bannedMessage?.let {
+                viewModel?.bannedMessage?.let {
                     builder.setMessage(it)
                 }
 
@@ -371,8 +343,8 @@ class PlayViewStateImpl(
                     dialogInterface.dismiss()
                     val intent = Intent()
 //                    if (viewModel != null) {
-//                        intent.putExtra(TOTAL_VIEW, viewModel.totalView)
-//                        intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition())
+//                        intent.putExtra(TOTAL_VIEW, viewModel?.totalView)
+//                        intent.putExtra(EXTRA_POSITION, viewModel?.getChannelPosition())
 //                    }
 //                    setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent)
                     listener.backToChannelList()
@@ -396,7 +368,7 @@ class PlayViewStateImpl(
     }
 
     override fun onPinnedMessageUpdated(it: PinnedMessageViewModel) {
-        viewModel.pinnedMessageViewModel = it
+        viewModel?.pinnedMessageViewModel = it
         setPinnedMessage(viewModel)
     }
 
@@ -404,9 +376,9 @@ class PlayViewStateImpl(
         showLoginButton(userSession.isLoggedIn)
     }
 
-    private fun setPinnedMessage(channelInfoViewModel: ChannelInfoViewModel) {
+    private fun setPinnedMessage(channelInfoViewModel: ChannelInfoViewModel?) {
 
-        if (channelInfoViewModel.pinnedMessageViewModel == null) {
+        if (channelInfoViewModel?.pinnedMessageViewModel == null) {
             pinnedMessageContainer.visibility = View.GONE
         } else {
             pinnedMessageContainer.visibility = View.VISIBLE
@@ -416,11 +388,11 @@ class PlayViewStateImpl(
                 (pinnedMessageContainer.findViewById(R.id.message) as TextView).text =
                         it.title
                 pinnedMessageContainer.setOnClickListener { view ->
-                    //                                if (channelInfoViewModel != null) {
-//                                    analytics.eventClickAdminPinnedMessage(
-//                                            String.format("%s - %s", channelInfoViewModel.getChannelId(), pinnedMessage.title))
-//                                }
-
+                    channelInfoViewModel.pinnedMessageViewModel?.let {
+                        analytics.eventClickAdminPinnedMessage(
+                                String.format("%s - %s", channelInfoViewModel.channelId,
+                                        it.title))
+                    }
                     showPinnedMessage(channelInfoViewModel)
                 }
             }
@@ -433,15 +405,19 @@ class PlayViewStateImpl(
             if (it.isEmpty()) return
             quickReplyRecyclerView.visibility = View.VISIBLE
             quickReplyAdapter.setList(quickRepliesViewModel)
-//            userSession.let {
-//                if(it.isLoggedIn){
-//                    quickReplyRecyclerView.visibility = View.VISIBLE
-//                    quickReplyAdapter.setList(quickRepliesViewModel)
-//                } else{
-//                    quickReplyRecyclerView.visibility = View.GONE
-//                }
-//            }
         }
+    }
+
+    override fun onQuickReplyClicked(message: String?) {
+        val text = replyEditText.getText().toString()
+        val index = replyEditText.getSelectionStart()
+        replyEditText.setText(MethodChecker.fromHtml(String.format(
+                "%s %s %s",
+                text.substring(0, index),
+                message,
+                text.substring(index)
+        )))
+        sendButton.performClick()
     }
 
     private fun setChannelInfoBottomSheet() {
@@ -470,7 +446,7 @@ class PlayViewStateImpl(
 
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
-        toolbar.title = title
+        toolbar.findViewById<TextView>(R.id.toolbar_title).text = title
 
         loadImageChannelBanner(view.context, bannerUrl, blurredBannerUrl)
 
@@ -492,7 +468,8 @@ class PlayViewStateImpl(
 
     private fun setToolbarParticipantCount(context: Context, totalParticipant: String) {
         val textParticipant = String.format("%s %s", totalParticipant, context.getString(R.string.view))
-        toolbar.subtitle = textParticipant
+//        toolbar.subtitle = textParticipant
+        toolbar.findViewById<TextView>(R.id.toolbar_subtitle).text = textParticipant
     }
 
     override fun getToolbar(): Toolbar? {
@@ -548,7 +525,7 @@ class PlayViewStateImpl(
                                         youTubePlayer?.let {
                                             it.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
                                             it.setShowFullscreenButton(false)
-                                            it.cueVideo(viewModel.videoId)
+                                            it.cueVideo(viewModel?.videoId)
                                             autoPlayVideo()
 
 //                                            it.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
@@ -628,8 +605,8 @@ class PlayViewStateImpl(
     }
 
     override fun onTotalViewChanged(channelId: String, totalView: String) {
-        if (channelId == viewModel.channelId) {
-            setToolbarParticipantCount(view.context, totalView)
+        if (channelId == viewModel?.channelId) {
+            setToolbarParticipantCount(view.context, TextFormatter.format(totalView))
         }
     }
 
@@ -698,75 +675,10 @@ class PlayViewStateImpl(
         val bottomSheetDialog = PlayWebviewDialogFragment.createInstance(url)
         bottomSheetDialog.show(activity.supportFragmentManager, "Custom Bottom Sheet")
 
-//        if (!::bottomSheetWebviewBehavior.isInitialized) {
-//            bottomSheetWebviewBehavior = BottomSheetBehavior.from(bottomSheetLayout)
-//            bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-//            bottomSheetWebviewBehavior.isHideable = true
-//            bottomSheetWebviewBehavior.setBottomSheetCallback(getBottomSheetCallback())
-//
-//            bottomSheetLayout.findViewById<ImageView>(R.id.close_button).setOnClickListener {
-//                bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-//            }
-//        }
-//
-//        if (!::bottomSheetWebviewFragment.isInitialized) {
-//            bottomSheetWebviewFragment = PlayWebviewFragment.createInstance(url)
-//            activity.supportFragmentManager.beginTransaction()
-//                    .replace(R.id.bottom_sheet_fragment_container,
-//                            bottomSheetWebviewFragment,
-//                            bottomSheetWebviewFragment.javaClass.simpleName)
-//                    .commit()Bt
-//        }
-//        bottomSheetLayout.visibility = View.VISIBLE
-//
-//        bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-        /////
-//        if (!::bottomSheetWebviewDialog.isInitialized) {
-//            bottomSheetWebviewDialog.show()
-//        }
-//
-//        if (!::bottomSheetWebviewFragment.isInitialized) {
-//            bottomSheetWebviewFragment = PlayWebviewFragment.createInstance(url)
-//        }
-
-//        webviewBottomSheetDialog.initView(bottomSheetWebviewFragment)
-//
-//        webviewBottomSheetDialog.setOnShowListener { dialog ->
-//            val d = dialog as BottomSheetDialog
-//
-//            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
-//            if (bottomSheet != null) {
-//                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-//            }
-//        }
-//
-//        webviewBottomSheetDialog.show()
-
-    }
-
-
-
-    private fun getBottomSheetCallback(): BottomSheetBehavior.BottomSheetCallback? {
-        return object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(p0: View, p1: Float) {
-
-            }
-
-            override fun onStateChanged(p0: View, newState: Int) {
-
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED)
-                    bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-        }
     }
 
     override fun onBackPressed(): Boolean {
-        return if (::bottomSheetWebviewBehavior.isInitialized
-                && bottomSheetWebviewBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
-            bottomSheetWebviewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            true
-        } else false
+        return true
     }
 
     override fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel) {
@@ -783,7 +695,7 @@ class PlayViewStateImpl(
         adapter.addReply(viewModel)
         adapter.notifyItemInserted(0)
         setQuickReply(null)
-        this.viewModel.quickRepliesViewModel = null
+        this.viewModel?.quickRepliesViewModel = null
         scrollToBottom()
     }
 
@@ -793,11 +705,14 @@ class PlayViewStateImpl(
 
     override fun afterSendMessage() {
         KeyboardHandler.DropKeyboard(view.context, view)
+        onKeyboardHidden()
         replyEditText.text.clear()
     }
 
     override fun onInfoMenuClicked() {
-        showInfoBottomSheet()
+        viewModel?.run {
+            showInfoBottomSheet(this)
+        }
     }
 
     override fun onReceiveGamificationNotif(model: GroupChatPointsViewModel) {
@@ -806,8 +721,96 @@ class PlayViewStateImpl(
         scrollToBottom()
     }
 
-    private fun showInfoBottomSheet() {
+    private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel) {
+        if (!::welcomeInfoDialog.isInitialized) {
+            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
+            welcomeInfoDialog.setOnDismissListener({ analytics.eventClickJoin(channelInfoViewModel.channelId) })
+        }
 
+        val welcomeInfoView = createWelcomeInfoView(channelInfoViewModel)
+        welcomeInfoDialog.setOnShowListener() { dialog ->
+            val d = dialog as BottomSheetDialog
+
+            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+
+        welcomeInfoDialog.setContentView(welcomeInfoView, "")
+        view.setOnClickListener(null)
+        welcomeInfoDialog.show()
+
+    }
+
+    private fun createWelcomeInfoView(channelInfoViewModel: ChannelInfoViewModel): View {
+        val welcomeInfoView = activity.layoutInflater.inflate(R.layout
+                .channel_info_bottom_sheet_dialog, null)
+
+        val image = welcomeInfoView.findViewById<ImageView>(R.id.product_image)
+        val profile = welcomeInfoView.findViewById<ImageView>(R.id.prof_pict)
+        val title = welcomeInfoView.findViewById<TextView>(R.id.title)
+        val subtitle = welcomeInfoView.findViewById<TextView>(R.id.subtitle)
+        val name = welcomeInfoView.findViewById<TextView>(R.id.name)
+        val participant = welcomeInfoView.findViewById<TextView>(R.id.participant)
+
+        participant.text = TextFormatter.format(channelInfoViewModel.totalView.toString())
+        name.text = channelInfoViewModel.adminName
+        title.text = channelInfoViewModel.title
+        subtitle.text = channelInfoViewModel.description
+
+        ImageHandler.loadImage2(image, channelInfoViewModel.image, R.drawable.loading_page)
+        ImageHandler.loadImageCircle2(profile.context,
+                profile,
+                channelInfoViewModel.adminPicture,
+                R.drawable.loading_page)
+
+        return welcomeInfoView
+    }
+
+    private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
+        if (!::pinnedMessageDialog.isInitialized) {
+            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
+        }
+
+        val pinnedMessageView = createPinnedMessageView(viewModel)
+        pinnedMessageDialog.setOnShowListener() { dialog ->
+            val d = dialog as BottomSheetDialog
+
+            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+                pinnedMessageView.findViewById<ImageView>(R.id.thumbnail).visibility = View.VISIBLE
+            }
+        }
+
+        pinnedMessageDialog.setContentView(pinnedMessageView, "Pinned Chat")
+        view.setOnClickListener(null)
+        pinnedMessageDialog.show()
+
+    }
+
+    private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
+        val view = activity.layoutInflater.inflate(R.layout
+                .layout_pinned_message_expanded, null)
+        ImageHandler.loadImageCircle2(activity, view.findViewById(R.id.pinned_message_avatar) as ImageView, channelInfoViewModel!!.adminPicture, R.drawable.ic_loading_toped_new)
+        (view.findViewById<View>(R.id.chat_header).findViewById(R.id.nickname) as TextView).text =
+                channelInfoViewModel.adminName
+        channelInfoViewModel.pinnedMessageViewModel?.let {
+            (view.findViewById(R.id.message) as TextView).text = it.message
+            ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
+                    .drawable.loading_page)
+            if (!TextUtils.isEmpty(it.imageUrl)) {
+                view.findViewById<ImageView>(R.id.thumbnail).setOnClickListener {
+                    (activity.applicationContext as GroupChatModuleRouter)
+                            .openRedirectUrl(activity,
+                                    channelInfoViewModel.pinnedMessageViewModel!!.imageUrl)
+                }
+            }
+            view.findViewById<ImageView>(R.id.thumbnail).visibility = View.GONE
+        }
+
+        return view
     }
 
     override fun destroy() {
