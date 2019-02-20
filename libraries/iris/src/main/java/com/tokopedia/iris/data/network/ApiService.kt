@@ -7,7 +7,6 @@ import com.tokopedia.iris.*
 import okhttp3.*
 import org.json.JSONObject
 import retrofit2.Retrofit
-import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import java.security.KeyManagementException
@@ -49,8 +48,7 @@ class ApiService(private val context: Context) {
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
-
-        builder.addInterceptor(CustomHeaderInterceptor(session))
+        builder.addInterceptor(CustomHeaderInterceptor())
 
         return builder.build()
     }

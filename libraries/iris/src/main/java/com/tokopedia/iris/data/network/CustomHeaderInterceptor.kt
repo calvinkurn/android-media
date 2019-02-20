@@ -10,7 +10,7 @@ import java.io.IOException
  */
 class CustomHeaderInterceptor(val session: Session) : Interceptor {
 
-    override fun intercept(chain: Interceptor.Chain): Response {
+    override fun intercept(chain: Interceptor.Chain): Response? {
         val original = chain.request()
         val request = original.newBuilder()
         request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
@@ -23,7 +23,7 @@ class CustomHeaderInterceptor(val session: Session) : Interceptor {
         return try {
             chain.proceed(request.build())
         } catch (e: IOException) {
-            chain.proceed(original.newBuilder().build())
+            Response.Builder().build()
         }
     }
 }
