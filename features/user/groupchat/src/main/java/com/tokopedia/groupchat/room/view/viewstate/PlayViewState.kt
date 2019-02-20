@@ -36,4 +36,6 @@ interface PlayViewState {
     fun onQuickReplyClicked(text: String?)
     fun onKeyboardHidden()
     fun getChannelInfo(): ChannelInfoViewModel?
+    fun onInfoMenuClicked()
+    fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
 }

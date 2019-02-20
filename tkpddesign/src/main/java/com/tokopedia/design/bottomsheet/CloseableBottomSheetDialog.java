@@ -7,6 +7,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -72,28 +73,41 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     @Override
     public void setContentView(View view) {
-        View contentView = inflateCustomView(view, "");
+        View contentView = inflateCustomView(view, "", true);
         super.setContentView(contentView);
     }
 
     public void setContentView(View view, String title) {
-        View contentView = inflateCustomView(view, title);
+        View contentView = inflateCustomView(view, title, true);
         super.setContentView(contentView);
     }
 
-    private View inflateCustomView(View view, String title) {
+    public void setCustomContentView(View view, String title, boolean isCloseable) {
+        View contentView = inflateCustomView(view, title, isCloseable);
+        super.setContentView(contentView);
+    }
+
+    private View inflateCustomView(View view, String title, boolean isCloseable) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
                 .closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
         ImageView closeButton = contentView.findViewById(R.id.close_button);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                closeListener.onCloseDialog();
-            }
-        });
+
+        if (!isCloseable) {
+            closeButton.setVisibility(View.GONE);
+            contentView.findViewById(R.id.view_separator).setVisibility(View.GONE);
+            ((TextView)contentView.findViewById(R.id.title_closeable)).setVisibility(View.GONE);
+        } else {
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                    closeListener.onCloseDialog();
+                }
+            });
+        }
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
