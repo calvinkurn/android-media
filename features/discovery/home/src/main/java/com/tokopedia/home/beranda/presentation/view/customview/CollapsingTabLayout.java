@@ -69,6 +69,8 @@ public class CollapsingTabLayout extends TabLayout {
         initResources();
         initAnimator();
         setSmoothScrollingEnabled(true);
+        clearOnTabSelectedListeners();
+        viewPager.clearOnPageChangeListeners();
         setupWithViewPager(viewPager);
         addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

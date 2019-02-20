@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
     private final FragmentManager fragmentManager;
+    private final TrackingQueue homeTrackingQueue;
     private FragmentTransaction fragmentTransaction;
     private List<FeedTabModel> feedTabModelList = new ArrayList<>();
     private List<HomeFeedFragment> homeFeedFragmentList;
@@ -27,11 +29,13 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
     public HomeFeedPagerAdapter(HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fragmentManager,
-                                List<FeedTabModel> feedTabModelList) {
+                                List<FeedTabModel> feedTabModelList,
+                                TrackingQueue homeTrackingQueue) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
         this.fragmentManager = fragmentManager;
+        this.homeTrackingQueue = homeTrackingQueue;
         updateData(feedTabModelList);
     }
 
@@ -49,6 +53,7 @@ public class HomeFeedPagerAdapter extends FragmentPagerAdapter {
                     feedTabModel.getName()
             );
             homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setHomeTrackingQueue(homeTrackingQueue);
             homeFeedFragmentList.add(homeFeedFragment);
         }
         notifyDataSetChanged();

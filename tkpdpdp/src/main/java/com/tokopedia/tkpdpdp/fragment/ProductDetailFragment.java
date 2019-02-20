@@ -71,6 +71,7 @@ import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
@@ -258,7 +259,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener,
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener,
         ITransactionAnalyticsProductDetailPage, WishListActionListener, MerchantVoucherListView {
 
     private static final int FROM_COLLAPSED = 0;
@@ -2696,7 +2697,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
             topAds.setAdsItemClickListener(this);
             topAds.setAdsListener(this);
-            topAds.setAdsItemImpressionListener(this);
+            topAds.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+                @Override
+                public void onImpressionProductAdsItem(int position, Product product) {
+                    TopAdsGtmTracker.eventProductDetailProductView(getContext(), product, position);
+                }
+            });
             topAds.setConfig(config);
             topAds.loadTopAds();
         } catch (Exception e) {
@@ -2726,12 +2732,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        ProductPageTracking.eventTopAdsClicked(getActivity(), position, product);
-    }
-
-    @Override
-    public void onImpressionProductAdsItem(int position, Product product) {
-        ProductPageTracking.eventTopAdsImpression(getActivity(), position, product);
+        TopAdsGtmTracker.eventProductDetailProductClick(getContext(), product, position);
     }
 
     @Override

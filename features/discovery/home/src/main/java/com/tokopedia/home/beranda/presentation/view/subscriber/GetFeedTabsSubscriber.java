@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.subscriber;
 
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
-
 import java.util.List;
 
 import rx.Subscriber;

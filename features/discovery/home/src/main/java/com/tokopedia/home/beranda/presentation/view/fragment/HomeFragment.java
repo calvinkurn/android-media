@@ -19,6 +19,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
+import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
@@ -99,7 +101,8 @@ import rx.Observable;
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener,
-        NotificationListener, FragmentListener, HomeEggListener, HomeTabFeedListener, HomeInspirationListener {
+        NotificationListener, FragmentListener, HomeEggListener,
+        HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -117,6 +120,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     UserSessionInterface userSession;
 
+    private View fragmentRootView;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
     private CoordinatorLayout root;
@@ -138,6 +142,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private AppBarLayout appBarLayout;
     private HomeFeedPagerAdapter homeFeedPagerAdapter;
     private int lastOffset;
+    private int fragmentHeight;
+    private int actionBarHeight;
 
     private TrackingQueue trackingQueue;
 
@@ -250,6 +256,52 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fragmentRootView = view;
+        initResources();
+        disableExpandFeedSection();
+    }
+
+    private void initResources() {
+        TypedValue typedValue = new TypedValue();
+        if (getActivity() != null && getActivity().getTheme() != null &&
+                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
+        }
+    }
+
+    private void disableExpandFeedSection() {
+        if (fragmentHeight > 0) {
+            setMargins(mainToolbar, 0, 0, 0, fragmentHeight - actionBarHeight);
+            return;
+        }
+
+        if (fragmentRootView != null) {
+            fragmentRootView.post(new Runnable() {
+                @Override
+                public void run() {
+                    fragmentHeight = fragmentRootView.getMeasuredHeight();
+                    setMargins(mainToolbar, 0, 0, 0, fragmentHeight - actionBarHeight);
+                }
+            });
+        }
+    }
+
+    private void enableExpandFeedSection() {
+        setMargins(mainToolbar, 0, 0, 0, 0);
+    }
+
+    private void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
+    }
+
     private void initEggDragListener() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
         if (floatingEggButtonFragment != null) {
@@ -302,11 +354,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
+        enableExpandFeedSection();
         homeFeedsTabLayout.setVisibility(View.VISIBLE);
         homeFeedsViewPager.setVisibility(View.VISIBLE);
         if (homeFeedPagerAdapter == null) {
-            homeFeedPagerAdapter = new HomeFeedPagerAdapter(this,
-                    this, getChildFragmentManager(), feedTabModelList);
+            homeFeedPagerAdapter = new HomeFeedPagerAdapter(
+                    this,
+                    this,
+                    getChildFragmentManager(),
+                    feedTabModelList,
+                    trackingQueue);
         } else {
             homeFeedPagerAdapter.updateData(feedTabModelList);
         }
@@ -509,6 +566,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.getItemAnimator().setChangeDuration(0);
         HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
                 getChildFragmentManager(),
+                this,
                 this,
                 this,
                 this
@@ -728,6 +786,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeFeedsViewPager.setVisibility(View.GONE);
         homeFeedsViewPager.setAdapter(null);
         homeFeedsTabLayout.setup(homeFeedsViewPager, new ArrayList<>());
+        disableExpandFeedSection();
     }
 
     @Override
@@ -1100,12 +1159,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onTabFeedLoadError(Throwable e) {
+    public void onRetryLoadFeeds() {
+        adapter.removeRetry();
+        adapter.showLoading();
+        presenter.getFeedTabData();
+    }
 
+    @Override
+    public void onTabFeedLoadError(Throwable e) {
+        adapter.hideLoading();
+        adapter.showRetry();
     }
 
     @Override
     public void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList) {
+        adapter.hideLoading();
         initHomeFeedsViewPager(feedTabModelList);
     }
 
@@ -1113,6 +1181,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onHomeDataLoadSuccess() {
         if (!isFeedLoaded) {
             presenter.getFeedTabData();
+            adapter.showLoading();
             isFeedLoaded = true;
         }
     }

@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +24,12 @@ import java.util.List;
 public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     protected HomeAdapterFactory typeFactory;
+    private RetryModel retryModel;
 
     public HomeRecycleAdapter(HomeAdapterFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
         this.typeFactory = adapterTypeFactory;
+        this.retryModel = new RetryModel();
     }
 
     @Override
@@ -93,5 +96,21 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         clearItems();
         getItems().addAll(temporaryList);
         notifyDataSetChanged();
+    }
+
+    public void showRetry() {
+        int positionStart = getItemCount();
+        this.visitables.add(retryModel);
+        notifyItemRangeInserted(positionStart, 1);
+    }
+
+    public void removeRetry() {
+        int index = this.visitables.indexOf(retryModel);
+        this.visitables.remove(retryModel);
+        notifyItemRemoved(index);
+    }
+
+    public boolean isRetryShown() {
+        return visitables.contains(retryModel);
     }
 }
