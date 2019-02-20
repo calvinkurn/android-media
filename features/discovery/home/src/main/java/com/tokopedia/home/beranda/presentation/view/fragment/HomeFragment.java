@@ -274,7 +274,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void disableExpandFeedSection() {
-        /*if (fragmentHeight > 0) {
+        if (fragmentHeight > 0) {
             setMargins(mainToolbar, 0, 0, 0, fragmentHeight - actionBarHeight);
             return;
         }
@@ -287,11 +287,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     setMargins(mainToolbar, 0, 0, 0, fragmentHeight - actionBarHeight);
                 }
             });
-        }*/
+        }
     }
 
     private void enableExpandFeedSection() {
-        //setMargins(mainToolbar, 0, 0, 0, 0);
+        setMargins(mainToolbar, 0, 0, 0, 0);
     }
 
     private void setMargins(View v, int l, int t, int r, int b) {
