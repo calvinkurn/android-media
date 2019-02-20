@@ -23,7 +23,6 @@ public class BrandDetailsActivity extends DealsBaseActivity {
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_BRAND})
     public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        String deepLink = extras.getString(DeepLink.URI);
         Intent destination;
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
@@ -32,17 +31,21 @@ public class BrandDetailsActivity extends DealsBaseActivity {
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
 
-        Uri.Builder uri = Uri.parse(deepLink).buildUpon();
+        if (extras != null) {
+            String deepLink = extras.getString(DeepLink.URI);
+            Uri.Builder uri = Uri.parse(deepLink).buildUpon();
 
-        String brandSeoUrl=extras.getString("slug");
-        Brand brand=new Brand();
-        brand.setUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_BRAND+brandSeoUrl);
-        extras.putParcelable(BrandDetailsPresenter.BRAND_DATA, brand);
-        destination = new Intent(context, BrandDetailsActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
 
-        taskStackBuilder.addNextIntent(destination);
+            String brandSeoUrl = extras.getString("slug");
+            Brand brand = new Brand();
+            brand.setUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_BRAND + brandSeoUrl);
+            extras.putParcelable(BrandDetailsPresenter.BRAND_DATA, brand);
+            destination = new Intent(context, BrandDetailsActivity.class)
+                    .setData(uri.build())
+                    .putExtras(extras);
+
+            taskStackBuilder.addNextIntent(destination);
+        }
         return taskStackBuilder;
     }
 

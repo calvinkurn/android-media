@@ -103,7 +103,7 @@ public class DealsSearchPresenter
 
     @Override
     public void searchTextChanged(String searchText) {
-        if (!TextUtils.isEmpty(searchText)) {
+        if (!TextUtils.isEmpty(searchText.trim())) {
             getDealsListBySearch(searchText);
 
         } else {
@@ -114,7 +114,7 @@ public class DealsSearchPresenter
     }
 
     @Override
-    public void searchSubmitted(String searchText) {
+    public void searchSubmitted() {
         getView().renderFromSearchResults();
     }
 
