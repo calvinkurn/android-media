@@ -47,7 +47,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private RecyclerView mRecyclerView;
     private CouponListBaseAdapter mAdapter;
     private SpacesItemDecoration mItemDecoration;
-    private final static String SCREEN_NAME="/tokopoints/kupon-saya";
 
     @Inject
     public MyCouponListingPresenter mPresenter;
@@ -120,7 +119,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return AnalyticsTrackerUtil.ScreenKeys.MY_COUPON_LISTING_SCREEN_NAME;
     }
 
     @Override
