@@ -812,7 +812,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onBuyClick(String source) {
-        if (source.equals(SOURCE_BUTTON_BUY_PDP)) {
+        if (productData != null && productData.getCheckoutType() != null && source.equals(SOURCE_BUTTON_BUY_PDP)) {
             switch (productData.getCheckoutType()) {
                 case CHECKOUT_TYPE_DEFAULT:
                     checkVariant(source);
@@ -833,28 +833,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void goToAtcExpress() {
-        try {
-            if (getActivity() != null) {
-                AtcRequestParam atcRequestParam = new AtcRequestParam();
-                atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
-                atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
-                atcRequestParam.setNotes("");
-                int qty = 0;
-                try {
-                    qty = Integer.parseInt(productData.getInfo().getProductMinOrder());
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-                atcRequestParam.setQuantity(qty);
-                Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                        .getExpressCheckoutIntent(getActivity(), atcRequestParam);
-                if (intent != null) {
-                    startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
-                    getActivity().overridePendingTransition(R.anim.pull_up, 0);
-                }
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+        if (getActivity() != null) {
+            buttonBuyView.showLoadingBuyNow();
+            presenter.checkExpressCheckoutProfile(getActivity());
         }
     }
 
@@ -2887,5 +2868,36 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private String getUserId(){
         return userSession.getUserId();
+    }
+
+    @Override
+    public void navigateToOneClickShipment() {
+        buttonBuyView.removeLoading();
+        checkVariant(SOURCE_BUTTON_BUY_PDP);
+    }
+
+    @Override
+    public void navigateToExpressCheckout() {
+        buttonBuyView.removeLoading();
+        if (getActivity() != null) {
+            AtcRequestParam atcRequestParam = new AtcRequestParam();
+            atcRequestParam.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
+            atcRequestParam.setProductId(Integer.parseInt(productPass.getProductId()));
+            atcRequestParam.setNotes("");
+            int qty = 0;
+            try {
+                qty = Integer.parseInt(productData.getInfo().getProductMinOrder());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            atcRequestParam.setQuantity(qty);
+
+            Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                    .getExpressCheckoutIntent(getActivity(), atcRequestParam);
+            if (intent != null) {
+                startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
+                getActivity().overridePendingTransition(R.anim.pull_up, 0);
+            }
+        }
     }
 }
