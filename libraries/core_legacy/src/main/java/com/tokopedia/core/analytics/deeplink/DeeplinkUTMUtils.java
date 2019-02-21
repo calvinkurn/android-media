@@ -27,6 +27,7 @@ public class DeeplinkUTMUtils {
     private static final String APP_CRAWLER = "com.google.appcrawler";
     private static final String KEY_AMP = "amp";
     private static final String TOKOPEDIA_PACKAGE = "com.tokopedia.tkpd";
+    private static final String TOKOPEDIA_DOMAIN = "tokopedia.com";
 
     private DeeplinkUTMUtils() {
 
@@ -150,7 +151,7 @@ public class DeeplinkUTMUtils {
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
 
-                } else if (host.contains("tokopedia.com")) {
+                } else if (host.contains(TOKOPEDIA_DOMAIN)) {
                     //do nothing
                 } else {
 
