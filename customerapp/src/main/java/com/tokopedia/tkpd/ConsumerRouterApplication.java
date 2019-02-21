@@ -2441,7 +2441,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
             UnifyTracking.eventShopSendChat(context);
-            Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
+            Intent intent = getAskSellerIntent(this, shopId, shopName, "",TkpdInboxRouter.SHOP);
             context.startActivity(intent);
         } else {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
