@@ -39,8 +39,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLE
 public class DetailResChatActivity
         extends BasePresenterActivity<DetailResChatActivityListener.Presenter>
         implements DetailResChatActivityListener.View, HasComponent {
-
-    public static final String RESO_WEBVIEW_URL = "";
+\
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
     public static final String PARAM_SHOP_NAME = "shopName";
     public static final String PARAM_USER_NAME = "buyerName";

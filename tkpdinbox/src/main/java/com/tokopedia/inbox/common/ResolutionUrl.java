@@ -8,6 +8,9 @@ public class ResolutionUrl {
     private static final String HOSTNAME =  "https://m.tokopedia.com/";
 
     public static final String RESO_CREATE = HOSTNAME + "resolution-center/create/";
-    public static final String RESO_INBOX =  HOSTNAME + "resolution-center/inbox/buyer";
+    private static final String RESO_INBOX =  HOSTNAME + "resolution-center/inbox/";
     public static final String RESO_DETAIL =  HOSTNAME + "resolution-center/detail/";
+
+    public static final String RESO_INBOX_SELLER =  RESO_INBOX + "seller";
+    public static final String RESO_INBOX_BUYER =  RESO_INBOX + "buyer";
 }
