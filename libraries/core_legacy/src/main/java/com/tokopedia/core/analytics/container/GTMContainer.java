@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
+
 @Deprecated
 public class GTMContainer implements IGTMContainer {
 
@@ -60,6 +62,7 @@ public class GTMContainer implements IGTMContainer {
 
     /**
      * {@link GTMAnalytics#getTagManager()}
+     *
      * @return
      */
     @Override
@@ -69,6 +72,7 @@ public class GTMContainer implements IGTMContainer {
 
     /**
      * {@link GTMAnalytics#getClientIDString()}
+     *
      * @return
      */
     @Override
@@ -94,9 +98,8 @@ public class GTMContainer implements IGTMContainer {
             pResult.setResultCallback(cHolder -> {
                 ContainerHolderSingleton.setContainerHolder(cHolder);
                 if (isAllowRefreshDefault(cHolder)) {
-                    Log.i("GTM TKPD", "Refreshed Container ");
+                    Log.i("GTMTKPD", "Refreshed Container ");
                     cHolder.refresh();
-                    //setExpiryRefresh();
                 }
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -109,7 +112,6 @@ public class GTMContainer implements IGTMContainer {
         if (containerHolder.getContainer() != null) {
             lastRefresh = containerHolder.getContainer().getLastRefreshTime();
         }
-        Log.i("GTM TKPD", "Last refresh " + CommonUtils.getDate(lastRefresh));
         return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
     }
 
@@ -136,13 +138,24 @@ public class GTMContainer implements IGTMContainer {
 
     /**
      * {@link GTMAnalytics#sendScreen(String)}
+     *
      * @return
      */
     @Override
     public GTMContainer sendScreen(String screenName) {
+        sendScreen(screenName, null);
+        return this;
+    }
+
+    @Override
+    public GTMContainer sendScreen(String screenName, Map<String, String> customDimension) {
         Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
+        Map<String, Object> map = DataLayer.mapOf("screenName", screenName);
+        if (customDimension != null && customDimension.size() > 0) {
+            map.putAll(customDimension);
+        }
         GTMDataLayer.pushEvent(context,
-                "openScreen", DataLayer.mapOf("screenName", screenName));
+                "openScreen", map);
 
         return this;
     }
@@ -206,116 +219,55 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public GTMContainer sendScreenAuthenticated(String screenName) {
-        Authenticated authEvent = new Authenticated();
-        authEvent.setUserFullName(sessionHandler.getLoginName());
-        authEvent.setUserID(sessionHandler.getGTMLoginID());
-        authEvent.setShopID(sessionHandler.getShopID());
-        authEvent.setShopId(sessionHandler.getShopID());
-        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
-
-        CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-
-        eventAuthenticate(authEvent);
-        sendScreen(screenName);
-
-        return this;
-    }
-
-    @Override
-    public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
-        sendCustomAuth(shopID, shopType, pageType, productId);
+        eventAuthenticate();
         sendScreen(screenName);
         return this;
     }
 
     @Override
-    public GTMContainer sendCustomAuth(String shopID, String shopType, String pageType, String productId) {
-        Authenticated authEvent = new Authenticated();
-        authEvent.setUserFullName(sessionHandler.getLoginName());
-        authEvent.setUserID(sessionHandler.getGTMLoginID());
-        authEvent.setShopId(shopID);
-        authEvent.setShopType(shopType);
-        authEvent.setPageType(pageType);
-        authEvent.setProductId(productId);
-        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
-
-        eventAuthenticate(authEvent);
+    public GTMContainer sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+        eventAuthenticate(customDimension);
+        sendScreen(screenName, customDimension);
         return this;
     }
 
     @Override
-    public GTMContainer eventAuthenticate(Authenticated authenticated) {
-        CommonUtils.dumper("GAv4 send authenticated");
+    public GTMContainer sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+        Map<String, String> customDimension = new HashMap<>();
+        customDimension.put(Authenticated.KEY_SHOP_ID_SELLER, shopID);
+        customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);
+        customDimension.put(Authenticated.KEY_SHOP_TYPE, shopType);
+        customDimension.put(Authenticated.KEY_PRODUCT_ID, productId);
+        eventAuthenticate(customDimension);
+        sendScreen(screenName, customDimension);
+        return this;
+    }
 
-        authenticated.setAdsId(sessionHandler.getAdsId());
+    @Override
+    public GTMContainer eventAuthenticate() {
+        return eventAuthenticate(null);
+    }
 
-        authenticated.setAndroidId(sessionHandler.getAndroidId());
-
+    @Override
+    public GTMContainer eventAuthenticate(Map<String, String> customDimension) {
+        String afUniqueId = getAfUniqueId(context);
         Map<String, Object> map = DataLayer.mapOf(
-                Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
-                Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
-                Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
-                Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
-                Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                Authenticated.ADS_ID, authenticated.getAdsId(),
-                Authenticated.GA_CLIENT_ID, getClientIDString());
-
-        if (!TextUtils.isEmpty(authenticated.getcIntel())) {
-            map.put(Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel());
+                Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
+                        Authenticated.KEY_USER_SELLER, (sessionHandler.isUserHasShop() ? 1 : 0),
+                        Authenticated.KEY_USER_FULLNAME, sessionHandler.getLoginName(),
+                        Authenticated.KEY_USER_ID, sessionHandler.getGTMLoginID(),
+                        Authenticated.KEY_SHOP_ID, sessionHandler.getShopID(),
+                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none"),
+                        Authenticated.KEY_USER_EMAIL, sessionHandler.getEmail()
+                ),
+                Authenticated.ANDROID_ID, sessionHandler.getAndroidId(),
+                Authenticated.ADS_ID, sessionHandler.getAdsId(),
+                Authenticated.GA_CLIENT_ID, getClientIDString()
+        );
+        if (customDimension != null && customDimension.size() > 0) {
+            map.putAll(customDimension);
         }
-
-        if (!TextUtils.isEmpty(authenticated.getDeepLinkUrlStr())) {
-            map.put(Authenticated.KEY_DEEPLINK_URL, authenticated.getDeepLinkUrlStr());
-        }
-        GTMDataLayer.pushGeneral(context, map);
-/*
-
-        if (TextUtils.isEmpty(authenticated.getcIntel())) {
-            GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
-                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
-                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
-                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
-                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
-                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId(),
-                    Authenticated.GA_CLIENT_ID, getClientIDString()
-            ));
-
-        }
-        if (TextUtils.isEmpty(authenticated.getDeepLinkUrlStr())) {
-            GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
-                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
-                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
-                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
-                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
-                    Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
-                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId(),
-                    Authenticated.GA_CLIENT_ID, getClientIDString()
-            ));
-
-        } else {
-            GTMDataLayer.pushGeneral(context, DataLayer.mapOf(
-                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
-                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
-                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
-                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
-                    Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
-                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId(),
-                    Authenticated.GA_CLIENT_ID, getClientIDString()
-            ));
-        }
-*/
-
+        GTMDataLayer.pushEvent(context, Authenticated.KEY_CD_NAME, map);
         return this;
     }
 

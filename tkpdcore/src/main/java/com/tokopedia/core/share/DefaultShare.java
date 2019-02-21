@@ -8,43 +8,37 @@ import android.os.Build;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.util.BranchSdkUtils;
+import com.tokopedia.core.util.DataMapper;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareData;
+import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.linker.model.UserData;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by meta on 18/05/18.
  */
-public class DefaultShare {
+public class DefaultShare implements ShareCallback {
 
     private static final String TYPE = "text/plain";
     public static final String KEY_OTHER = "lainnya";
     public static final String TITLE_OTHER = "Lainnya";
 
-    private ShareData shareData;
+    private LinkerData shareData;
     private Activity activity;
 
-    public DefaultShare(Activity activity, ShareData data) {
+    public DefaultShare(Activity activity, LinkerData data) {
         this.shareData = data;
         this.activity = activity;
     }
 
     public void show() {
-        BranchSdkUtils.generateBranchLink(shareData, activity,
-                (shareContents, shareUri, branchUrl) -> {
-                    Intent intent = getIntent(shareContents);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                        Intent receiver = new Intent(activity, ShareBroadcastReceiver.class);
-                        receiver.putExtra(ShareBroadcastReceiver.KEY_TYPE, shareData.getType());
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0,
-                                receiver, PendingIntent.FLAG_UPDATE_CURRENT);
-                        activity.startActivity(Intent.createChooser(intent, TITLE_OTHER,
-                                pendingIntent.getIntentSender()));
-
-                    } else {
-                        activity.startActivity(Intent.createChooser(intent, TITLE_OTHER));
-                    }
-                    sendTracker();
-                });
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                DataMapper.getLinkerShareData(shareData), this));
     }
 
     private Intent getIntent(String contains) {
@@ -63,14 +57,14 @@ public class DefaultShare {
     }
 
     private void sendTracker() {
-        if (shareData.getType().equals(ShareData.CATEGORY_TYPE)) {
+        if (shareData.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(shareData);
         } else {
             sendAnalyticsToGtm(shareData.getType());
         }
     }
 
-    private void shareCategory(ShareData data) {
+    private void shareCategory(LinkerData data) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
             UnifyTracking.eventShareCategory(activity, shareParam[0], shareParam[1] + "-" + KEY_OTHER);
@@ -79,11 +73,11 @@ public class DefaultShare {
 
     private void sendAnalyticsToGtm(String type) {
         switch (type) {
-            case ShareData.REFERRAL_TYPE:
+            case LinkerData.REFERRAL_TYPE:
                 UnifyTracking.eventReferralAndShare(activity, AppEventTracking.Action.SELECT_CHANNEL, KEY_OTHER);
                 TrackingUtils.sendMoEngageReferralShareEvent(activity, KEY_OTHER);
                 break;
-            case ShareData.APP_SHARE_TYPE:
+            case LinkerData.APP_SHARE_TYPE:
                 UnifyTracking.eventAppShareWhenReferralOff(activity, AppEventTracking.Action.SELECT_CHANNEL,
                         KEY_OTHER);
                 break;
@@ -91,5 +85,27 @@ public class DefaultShare {
                 UnifyTracking.eventShare(activity, KEY_OTHER);
                 break;
         }
+    }
+
+    @Override
+    public void urlCreated(LinkerShareResult linkerShareData) {
+        Intent intent = getIntent(linkerShareData.getShareContents());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            Intent receiver = new Intent(activity, ShareBroadcastReceiver.class);
+            receiver.putExtra(ShareBroadcastReceiver.KEY_TYPE, shareData.getType());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0,
+                    receiver, PendingIntent.FLAG_UPDATE_CURRENT);
+            activity.startActivity(Intent.createChooser(intent, TITLE_OTHER,
+                    pendingIntent.getIntentSender()));
+
+        } else {
+            activity.startActivity(Intent.createChooser(intent, TITLE_OTHER));
+        }
+        sendTracker();
+    }
+
+    @Override
+    public void onError(LinkerError linkerError) {
+
     }
 }

@@ -8,10 +8,8 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.di.module.TopAdsShopModule;
@@ -49,10 +47,6 @@ public interface TopAdsComponent {
 
     @ShopQualifier
     Retrofit shopRetrofit();
-
-    ThreadExecutor threadExecutor();
-
-    PostExecutionThread postExecutionThread();
 
     AbstractionRouter abstractionRouter();
 

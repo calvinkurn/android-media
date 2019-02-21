@@ -465,7 +465,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
         pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(getActivity(), () -> {
             ((GroupChatContract.View) getActivity()).showOverlayDialogOnScreen();
-        }, null);
+        }, new CloseableBottomSheetDialog.BackHardwareClickedListener() {
+            @Override
+            public void onBackHardwareClicked() {
+
+            }
+        });
 
         View view = createPinnedMessageView(pinnedMessage);
         pinnedMessageDialog.setOnShowListener(new DialogInterface.OnShowListener() {

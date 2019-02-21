@@ -3,10 +3,8 @@ package com.tokopedia.topads.dashboard.domain.interactor;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -40,10 +38,8 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
     @Inject
-    public TopAdsCreateNewGroupUseCase(ThreadExecutor threadExecutor,
-                                       PostExecutionThread postExecutionThread,
-                                       TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsCreateNewGroupUseCase(TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
+        super();
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
     }
 

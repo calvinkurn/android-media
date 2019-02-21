@@ -54,7 +54,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                     product.getId(),
                     product.getName(),
                     product.getPriceFormat(),
-                    product.getImage().getM_url());
+                    product.getImage().getM_ecs());
 
             activity.startActivity(intent);
         }

@@ -60,6 +60,8 @@ public interface CouponCatalogContract {
         void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink);
 
         void onSwipeError(String errorMessage);
+
+        void onFinishRendering();
     }
 
     interface Presenter extends CustomerPresenter<View> {

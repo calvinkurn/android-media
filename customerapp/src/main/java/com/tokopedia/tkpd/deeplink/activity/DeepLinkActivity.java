@@ -42,6 +42,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
@@ -138,7 +139,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void shareProductInfo(@NonNull ShareData shareData) {
+    public void shareProductInfo(@NonNull LinkerData shareData) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_view,
                         ProductShareFragment.newInstance(shareData, false),
@@ -367,7 +368,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void deliverCatalogShareData(ShareData shareData) {
+    public void deliverCatalogShareData(LinkerData shareData) {
 
     }
 

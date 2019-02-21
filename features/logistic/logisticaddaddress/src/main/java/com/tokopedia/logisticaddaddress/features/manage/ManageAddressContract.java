@@ -37,6 +37,7 @@ public interface ManageAddressContract {
 
         void setIsEmptyAddress(boolean isEmpty);
 
+        void stopPerformanceMonitoring();
     }
 
     interface Presenter {

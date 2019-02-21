@@ -34,13 +34,34 @@ public class MoengageAnalytics extends ContextAnalytics {
                         getContext().getResources().getString(R.string.key_moengage))
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
+                        .optOutTokenRegistration()
                         .build();
         MoEngage.initialise(moEngage);
     }
 
     @Override
     public void sendGeneralEvent(Map<String, Object> value) {
+        // no op, only for GTM
+    }
 
+    @Override
+    public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+        // no op, only for GTM
+    }
+
+    @Override
+    public void sendScreenAuthenticated(String screenName) {
+        // no op, only for GTM
+    }
+
+    @Override
+    public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+        // no op, only for GTM
+    }
+
+    @Override
+    public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+        // no op, only for GTM
     }
 
     public void isExistingUser(final boolean bol) {

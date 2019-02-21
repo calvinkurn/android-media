@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:resources_common"
 
 include "features:communication:broadcast_message"
 //include "features:communication:broadcast_message_no_op"
@@ -14,6 +15,7 @@ include "features:content:profile"
 include "features:digital:common_digital"
 include "features:digital:digitalproduct"
 
+include "features:discovery:category_common"
 include "features:discovery:flashsale_management"
 //include "features:discovery:flashsale_management_no_op"
 include 'features:discovery:flashsale_management_common'
@@ -23,6 +25,8 @@ include "features:discovery:topadssdk"
 include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
 //include "features:fintech:saldo_details_no_op"
+
+include "features:im:referral"
 
 include "features:logistic:district_recommendation"
 include "features:logistic:logisticdata"

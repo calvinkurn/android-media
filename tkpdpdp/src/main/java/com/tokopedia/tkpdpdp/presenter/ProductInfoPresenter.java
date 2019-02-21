@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
 
 /**
  * @author Angga.Prasetiyo on 18/11/2015.
@@ -14,5 +15,5 @@ public interface ProductInfoPresenter {
 
     void initialFragment(@NonNull Context context, Uri uri, Bundle bundle);
 
-    void processToShareProduct(Context context, @NonNull ShareData data);
+    void processToShareProduct(Context context, @NonNull LinkerData data);
 }

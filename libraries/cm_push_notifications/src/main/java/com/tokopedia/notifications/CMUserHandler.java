@@ -1,6 +1,8 @@
 package com.tokopedia.notifications;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,6 +19,8 @@ import com.tokopedia.usecase.RequestParams;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 import rx.Completable;
 import rx.Subscriber;
@@ -33,26 +37,60 @@ public class CMUserHandler {
 
     private UpdateFcmTokenUseCase updateFcmTokenUseCase;
 
+    String token;
+
+    Handler handler = new Handler(Looper.getMainLooper());
 
     public CMUserHandler(Context context) {
         mContext = context;
     }
 
-    public void updateToken(String token) {
-        Completable.fromAction(() -> sendFcmTokenToServer(token))
-                .subscribeOn(Schedulers.io()).subscribe();
+    public void updateToken(String token, long remoteDelaySeconds, boolean userAction) {
+        try {
+            long delay = getRandomDelay(remoteDelaySeconds);
+            if (userAction)
+                delay = 0L;
+            this.token = token;
+            handler.postDelayed(runnable, delay);
+        } catch (Exception e) {
+        }
+
     }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Completable.fromAction(() -> sendFcmTokenToServer(token))
+                    .subscribeOn(Schedulers.io()).subscribe();
+        }
+    };
+
+    public void cancelRunnable() {
+        try {
+            if (handler != null) {
+                handler.removeCallbacks(runnable);
+            }
+            if (updateFcmTokenUseCase != null)
+                updateFcmTokenUseCase.unsubscribe();
+        } catch (Exception e) {
+        }
+    }
+
 
     private void sendFcmTokenToServer(String token) {
         try {
+            if (getTempFcmId().equalsIgnoreCase(token)) {
+                //ignore temporary fcm token
+                return;
+            }
             String userId = getUserId();
             String gAdId = getGoogleAdId();
-            int appVersion = CMNotificationUtils.getCurrentAppVersion(mContext);
+            String appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext);
 
             if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
                     CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()) ||
-                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId)||
-                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext,appVersion)) {
+                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId) ||
+                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext, appVersionName)) {
 
                 updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
                 RequestParams requestParams = updateFcmTokenUseCase.createRequestParams(
@@ -60,8 +98,8 @@ public class CMUserHandler {
                         token,
                         CMNotificationUtils.getSdkVersion(),
                         CMNotificationUtils.getUniqueAppId(mContext),
-                        appVersion,
-                        CMNotificationUtils.getUserStatus(mContext, userId));
+                        appVersionName,
+                        CMNotificationUtils.getUserStatus(mContext, userId), CMNotificationUtils.getCurrentLocalTimeStamp());
 
                 updateFcmTokenUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
                     @Override
@@ -80,7 +118,7 @@ public class CMUserHandler {
                             CMNotificationUtils.saveToken(mContext, token);
                             CMNotificationUtils.saveUserId(mContext, userId);
                             CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
-                            CMNotificationUtils.saveAppVersion(mContext,appVersion );
+                            CMNotificationUtils.saveAppVersion(mContext, appVersionName);
                         }
                     }
                 });
@@ -119,6 +157,17 @@ public class CMUserHandler {
 
     private String getUserId() {
         return ((CMRouter) mContext).getUserId();
+    }
+
+    private static String getTempFcmId() {
+        return UUID.randomUUID().toString();
+    }
+
+    private long getRandomDelay(long randomDelaySeconds) {
+        Random rand = new Random();
+        int millis = rand.nextInt(1000) + 1; //in millis delay
+        int seconds = rand.nextInt((int) randomDelaySeconds) + 1; //in seconds
+        return (seconds * 1000 + millis);
     }
 
 }

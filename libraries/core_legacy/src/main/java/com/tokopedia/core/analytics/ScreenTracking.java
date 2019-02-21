@@ -24,8 +24,8 @@ import java.util.Map;
 
 /**
  * @author by Herdi_WORK on 25.10.16.
- *         modified by Alvarisi
- *         This Class for screen tracking
+ * modified by Alvarisi
+ * This Class for screen tracking
  */
 
 public class ScreenTracking extends TrackingUtils {
@@ -39,7 +39,7 @@ public class ScreenTracking extends TrackingUtils {
     public static void sendScreen(Activity activity, IOpenScreenAnalytics openScreenAnalytics) {
         try {
             ScreenTrackingBuilder
-                    .newInstance(activity, openScreenAnalytics, getAfUniqueId(activity))
+                    .newInstance(openScreenAnalytics)
                     .execute(activity);
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class ScreenTracking extends TrackingUtils {
     public static void sendScreen(Context context, String screenName) {
         try {
             ScreenTrackingBuilder
-                    .newInstance(context, screenName, getAfUniqueId(context))
+                    .newInstance(screenName)
                     .execute(context);
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,16 +66,6 @@ public class ScreenTracking extends TrackingUtils {
         }
     }
 
-    public static void sendAuth(Context context) {
-        try {
-            ScreenTrackingBuilder
-                    .newInstance(context, "", getAfUniqueId(context))
-                    .sendAuth(context);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void screen(Context context, String screen) {
         if (TextUtils.isEmpty(screen)) {
             return;
@@ -83,24 +73,19 @@ public class ScreenTracking extends TrackingUtils {
         getGTMEngine(context).sendScreen(screen);
     }
 
-    public static void sendAFGeneralScreenEvent(Context context,String screenName) {
+    public static void sendAFGeneralScreenEvent(Context context, String screenName) {
         Map<String, Object> afValue = new HashMap<>();
         afValue.put(AFInAppEventParameterName.DESCRIPTION, screenName);
         getAFEngine(context).sendTrackEvent(AFInAppEventType.CONTENT_VIEW, afValue);
     }
 
-    public static void eventAuthScreen(Context context, Authenticated authenticated, String screenName) {
+    public static void eventAuthScreen(Context context, Map<String, String> customDimension, String screenName) {
         getGTMEngine(context)
-                .eventAuthenticate(authenticated)
-                .sendScreen(screenName);
-    }
-
-    public static void eventAuth(Context context, Authenticated authenticated) {
-        getGTMEngine(context).eventAuthenticate(authenticated);
+                .sendScreenAuthenticated(screenName, customDimension);
     }
 
     public static void sendAFPDPEvent(Context context, final ProductDetailData data, final String eventName) {
-        if(context instanceof Application && context instanceof AbstractionRouter){
+        if (context instanceof Application && context instanceof AbstractionRouter) {
             CacheManager cacheManager = ((AbstractionRouter) context).getGlobalCacheManager();
             final AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(cacheManager);
             getAFEngine(context).getAdsID(new AppsflyerContainer.AFAdsIDCallback() {
@@ -133,7 +118,7 @@ public class ScreenTracking extends TrackingUtils {
         }
     }
 
-    public static void eventDiscoveryScreenAuth(Context context,String departmentId) {
+    public static void eventDiscoveryScreenAuth(Context context, String departmentId) {
         if (!TextUtils.isEmpty(departmentId)) {
             getGTMEngine(context).sendScreenAuthenticated(
                     AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY + departmentId
@@ -141,17 +126,14 @@ public class ScreenTracking extends TrackingUtils {
         }
     }
 
-    public static void eventOfficialStoreScreenAuth(Context context,String shopID, String shopType, String pageType, String productId) {
-        getGTMEngine(context).sendScreenAuthenticatedOfficialStore(
+    public static void eventOfficialStoreScreenAuth(Context context, String shopID, String shopType, String pageType, String productId) {
+        getGTMEngine(context).sendScreenAuthenticated(
                 AppScreen.SCREEN_PRODUCT_INFO, shopID, shopType, pageType, productId
         );
     }
 
     public static void eventCustomScreen(Context context, String screenName, String shopID, String shopType, String pageType, String productId) {
-        getGTMEngine(context).sendScreenAuthenticatedOfficialStore(screenName, shopID, shopType, pageType, productId);
+        getGTMEngine(context).sendScreenAuthenticated(screenName, shopID, shopType, pageType, productId);
     }
 
-    public static void sendCustomAuth(Context context, String shopID, String shopType, String pageType, String productId) {
-        getGTMEngine(context).sendCustomAuth(shopID, shopType, pageType, productId);
-    }
 }
