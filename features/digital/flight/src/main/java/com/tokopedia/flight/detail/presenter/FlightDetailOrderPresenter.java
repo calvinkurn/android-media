@@ -114,7 +114,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     @Override
-    public void onSendETicketButtonClicked() {
+    public void onSendEticketButtonClicked() {
         getView().navigateToInputEmailForm(userSession.getUserId(), userResendEmail);
     }
 
@@ -181,9 +181,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 renderInsurances(flightOrder);
 
                 if (flightOrder.getEticketUri() != null && flightOrder.getEticketUri().length() > 0) {
-                    getView().showLihatETicket();
+                    getView().showLihatEticket();
                 } else {
-                    getView().hideLihatETicket();
+                    getView().hideLihatEticket();
                 }
             }
         };

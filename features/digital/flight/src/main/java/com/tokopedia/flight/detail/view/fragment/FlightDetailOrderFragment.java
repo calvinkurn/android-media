@@ -258,7 +258,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerSendETicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flightDetailOrderPresenter.onSendETicketButtonClicked();
+                flightDetailOrderPresenter.onSendEticketButtonClicked();
             }
         });
 
@@ -534,7 +534,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void showLihatETicket() {
+    public void showLihatEticket() {
         showETicket.setVisibility(View.VISIBLE);
         showETicket.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -545,7 +545,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void hideLihatETicket() {
+    public void hideLihatEticket() {
         showETicket.setVisibility(View.GONE);
     }
 

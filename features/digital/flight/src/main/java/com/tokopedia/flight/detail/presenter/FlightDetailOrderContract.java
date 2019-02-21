@@ -73,9 +73,9 @@ public interface FlightDetailOrderContract {
 
         void hidePaymentDueDate();
 
-        void showLihatETicket();
+        void showLihatEticket();
 
-        void hideLihatETicket();
+        void hideLihatEticket();
 
         void showCancellationStatus();
 
@@ -115,7 +115,7 @@ public interface FlightDetailOrderContract {
 
         void actionReorderButtonClicked();
 
-        void onSendETicketButtonClicked();
+        void onSendEticketButtonClicked();
 
         void onGetProfileData();
 
