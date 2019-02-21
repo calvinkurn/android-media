@@ -42,7 +42,6 @@ import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
-import com.tokopedia.groupchat.common.analytics.EEPromotion
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
@@ -264,7 +263,7 @@ class PlayViewStateImpl(
      */
     private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
         showInfoBottomSheet(it) {
-                showOverlayBottomSheet(it)
+            showOverlayBottomSheet(it)
         }
     }
 
@@ -388,7 +387,7 @@ class PlayViewStateImpl(
             pinnedMessageContainer.visibility = View.VISIBLE
 
             channelInfoViewModel.pinnedMessageViewModel?.let {
-                if(it.title.isBlank()) {
+                if (it.title.isBlank()) {
                     pinnedMessageContainer.visibility = View.GONE
                     return
                 }
@@ -465,7 +464,7 @@ class PlayViewStateImpl(
     private fun createOverlayView(channelInfoViewModel: ChannelInfoViewModel): View {
         val overlayView = activity.layoutInflater.inflate(R.layout.layout_interupt_page, null)
         val interruptViewModel = channelInfoViewModel.overlayViewModel.interuptViewModel
-        interruptViewModel?.let{
+        interruptViewModel?.let {
             if (!TextUtils.isEmpty(interruptViewModel.imageUrl)) {
                 ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
                 overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
@@ -793,15 +792,44 @@ class PlayViewStateImpl(
         scrollToBottom()
     }
 
+    override fun onReceiveOverlayMessageFromWebsocket(channelInfoViewModel: ChannelInfoViewModel) {
+        viewModel = channelInfoViewModel
+        viewModel?.let {
+
+            if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
+                welcomeInfoDialog.setOnDismissListener { onDismiss ->
+                    showOverlayBottomSheet(it)
+                }
+            } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
+                pinnedMessageDialog.setOnDismissListener { onDismiss ->
+                    showOverlayBottomSheet(it)
+                }
+            } else if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
+                overlayDialog.dismiss()
+                showOverlayBottomSheet(it)
+            } else {
+                showOverlayBottomSheet(it)
+            }
+
+        }
+    }
+
+    override fun onReceiveCloseOverlayMessageFromWebsocket() {
+        if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
+            overlayDialog.dismiss()
+        }
+    }
+
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
-                                    onDismiss : () ->Unit) {
+                                    onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
             welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
         }
 
         welcomeInfoDialog.setOnDismissListener {
             onDismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId) }
+            analytics.eventClickJoin(channelInfoViewModel.channelId)
+        }
 
         val welcomeInfoView = createWelcomeInfoView(channelInfoViewModel)
         welcomeInfoDialog.setOnShowListener() { dialog ->

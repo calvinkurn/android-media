@@ -304,6 +304,78 @@ public class ChannelInfoViewModel implements Parcelable {
         return overlayViewModel;
     }
 
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setChannelUrl(String channelUrl) {
+        this.channelUrl = channelUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
+    }
+
+    public void setBlurredBannerUrl(String blurredBannerUrl) {
+        this.blurredBannerUrl = blurredBannerUrl;
+    }
+
+    public void setBannerName(String bannerName) {
+        this.bannerName = bannerName;
+    }
+
+    public void setGroupChatToken(String groupChatToken) {
+        this.groupChatToken = groupChatToken;
+    }
+
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setAdminPicture(String adminPicture) {
+        this.adminPicture = adminPicture;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setChannelPartnerViewModels(List<ChannelPartnerViewModel> channelPartnerViewModels) {
+        this.channelPartnerViewModels = channelPartnerViewModels;
+    }
+
+    public void setBannedMessage(String bannedMessage) {
+        this.bannedMessage = bannedMessage;
+    }
+
+    public void setKickedMessage(String kickedMessage) {
+        this.kickedMessage = kickedMessage;
+    }
+
+    public void setFreeze(boolean freeze) {
+        isFreeze = freeze;
+    }
+
+    public void setSettingGroupChat(SettingGroupChat settingGroupChat) {
+        this.settingGroupChat = settingGroupChat;
+    }
+
+    public void setOverlayViewModel(OverlayViewModel overlayViewModel) {
+        this.overlayViewModel = overlayViewModel;
+    }
+
+    public void setExitMessage(@Nullable ExitMessage exitMessage) {
+        this.exitMessage = exitMessage;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -385,4 +457,5 @@ public class ChannelInfoViewModel implements Parcelable {
             return new ChannelInfoViewModel[size];
         }
     };
+
 }

@@ -38,4 +38,6 @@ interface PlayViewState {
     fun getChannelInfo(): ChannelInfoViewModel?
     fun onInfoMenuClicked()
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
+    fun onReceiveOverlayMessageFromWebsocket(it: ChannelInfoViewModel)
+    fun onReceiveCloseOverlayMessageFromWebsocket()
 }

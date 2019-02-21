@@ -394,11 +394,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun showOverlayDialog(it: OverlayViewModel) {
-
+        channelInfoViewModel.overlayViewModel = it
+        viewState.onReceiveOverlayMessageFromWebsocket(channelInfoViewModel)
     }
 
     override fun closeOverlayDialog() {
-
+        viewState.onReceiveCloseOverlayMessageFromWebsocket()
     }
 
     override fun onQuickReplyUpdated(it: GroupChatQuickReplyViewModel) {
