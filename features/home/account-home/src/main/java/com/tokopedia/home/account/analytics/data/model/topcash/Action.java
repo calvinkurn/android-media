@@ -12,13 +12,13 @@ import com.google.gson.annotations.SerializedName;
 public class Action implements Parcelable {
 
     @SerializedName("redirect_url")
-    private String mRedirectUrl;
+    private String mRedirectUrl = "";
     @SerializedName("text")
-    private String mText;
+    private String mText = "";
     @SerializedName("applinks")
-    private String mAppLinks;
+    private String mAppLinks = "";
     @SerializedName("visibility")
-    private String mVisibility;
+    private String mVisibility = "";
 
     public Action() {
     }
