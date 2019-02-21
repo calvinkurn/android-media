@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.common.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.constant.TimeUnitTypeDef
 
 data class Cashback(
         @SerializedName("percentage")
@@ -20,7 +21,7 @@ data class PreOrder(
 
         @SerializedName("timeUnit")
         @Expose
-        val timeUnit: String = ""
+        val timeUnit: String = TimeUnitTypeDef.UNKNOWN
 )
 
 data class Wholesale(

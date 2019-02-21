@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.Picture
+import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.PicturePagerAdapter
@@ -48,13 +49,13 @@ class PictureScrollingView @JvmOverloads constructor(
         indicator_picture.notifyDataSetChanged()
     }
 
-    fun renderShopStatus(shopInfo: ShopInfo, productStatus: Int, productStatusTitle: String = "",
+    fun renderShopStatus(shopInfo: ShopInfo, productStatus: String, productStatusTitle: String = "",
                          productStatusMessage: String = ""){
         if (shopInfo.statusInfo.shopStatus != SHOP_STATUS_ACTIVE){
             error_product_container.visible()
             error_product_title.text = shopInfo.statusInfo.statusTitle
             error_product_descr.text = shopInfo.statusInfo.statusMessage
-        } else if (productStatus != ProductDetailConstant.PRD_STATE_ACTIVE){
+        } else if (productStatus != ProductStatusTypeDef.ACTIVE){
             // TODO ASK PRODUCT STATUS DETAIL
             error_product_container.visible()
             error_product_title.text = productStatusTitle

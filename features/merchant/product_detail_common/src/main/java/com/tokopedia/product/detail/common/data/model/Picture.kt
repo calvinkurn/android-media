@@ -18,7 +18,7 @@ data class Picture(
 
         @SerializedName("picID")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("isFromIG")
         @Expose

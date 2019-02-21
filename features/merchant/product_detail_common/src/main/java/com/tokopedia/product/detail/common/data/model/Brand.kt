@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class Brand(
         @SerializedName("brandID")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("isActive")
         @Expose
@@ -24,7 +24,7 @@ data class Brand(
 data class Menu(
         @SerializedName("menuID")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("name")
         @Expose

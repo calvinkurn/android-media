@@ -2026,7 +2026,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Intent getIntermediaryIntent(Context context, int categoryId) {
+    public Intent getIntermediaryIntent(@NonNull Context context, String categoryId) {
         return new Intent();
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.Category
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.Video
+import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.view.activity.ProductFullDescriptionActivity
@@ -96,7 +97,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
             }
 
             txt_min_order.text = context.getString(R.string.template_min_order, data.basic.minOrder)
-            txt_product_condition.text = if (data.basic.condition == 1) "Baru" else "Bekas"
+            txt_product_condition.text = if (data.basic.condition == ProductConditionTypeDef.NEW) "Baru" else "Bekas"
 
             val descFormatted = MethodChecker.fromHtml(if (data.basic.description.isNotBlank()) data.basic.description
                 else NO_DESCRIPTION)
@@ -127,13 +128,13 @@ class PartialProductDescrFullView private constructor(private val view: View,
         }
     }
 
-    private fun gotoEtalase(etalaseId: Int, shopID: Int) {
+    private fun gotoEtalase(etalaseId: String, shopID: Int) {
         val appContext = view.context.applicationContext
         if (appContext !is ProductDetailRouter)
             return
 
-        val intent = if (etalaseId == 0){
-            appContext.getShoProductListIntent(view.context, shopID.toString(), "", etalaseId.toString())
+        val intent = if (etalaseId.isNotBlank()){
+            appContext.getShoProductListIntent(view.context, shopID.toString(), "", etalaseId)
         } else {
             appContext.getShopPageIntent(view.context, shopID.toString())
         }

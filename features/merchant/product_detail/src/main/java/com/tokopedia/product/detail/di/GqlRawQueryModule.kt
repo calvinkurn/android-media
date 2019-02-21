@@ -81,7 +81,7 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_GET_LATEST_TALK)
     fun provideRawGetLatestTalk(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_talk)
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_latest_talk)
 
     @ProductDetailScope
     @Provides

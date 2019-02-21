@@ -11,5 +11,5 @@ interface ProductDetailRouter{
     fun getShoProductListIntent(context: Context, shopId: String, keyword: String, etalaseId: String): Intent
     fun getShopPageIntent(context: Context, shopId: String): Intent
     fun goToEditProduct(context: Context, isEdit: Boolean, productId: String): Intent
-    fun getIntermediaryIntent(context: Context, categoryId: Int): Intent //only for non seller-app
+    fun getIntermediaryIntent(context: Context, categoryId: String): Intent //only for non seller-app
 }

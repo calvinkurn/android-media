@@ -79,6 +79,7 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             isAppsOnly
             startDate
             endDate
+            endDateUnix
             appLinks
         }
         cashback {

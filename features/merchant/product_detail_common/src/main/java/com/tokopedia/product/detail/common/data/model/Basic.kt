@@ -2,6 +2,10 @@ package com.tokopedia.product.detail.common.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.constant.PriceCurrencyTypeDef
+import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
+import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 
 data class Basic(
         @SerializedName("alias")
@@ -14,7 +18,7 @@ data class Basic(
 
         @SerializedName("condition")
         @Expose
-        val condition: Int = 0,
+        val condition: String = ProductConditionTypeDef.UNKNOWN,
 
         @SerializedName("description")
         @Expose
@@ -62,7 +66,7 @@ data class Basic(
 
         @SerializedName("priceCurrency")
         @Expose
-        val priceCurrency: String = "",
+        val priceCurrency: String = PriceCurrencyTypeDef.IDR,
 
         @SerializedName("shopID")
         @Expose
@@ -74,7 +78,7 @@ data class Basic(
 
         @SerializedName("status")
         @Expose
-        val status: Int = 1,
+        val status: String = ProductStatusTypeDef.ACTIVE,
 
         @SerializedName("url")
         @Expose
@@ -86,5 +90,5 @@ data class Basic(
 
         @SerializedName("weightUnit")
         @Expose
-        val weightUnit: String = ""
+        val weightUnit: String = WeightTypeDef.UNKNOWN
 )
