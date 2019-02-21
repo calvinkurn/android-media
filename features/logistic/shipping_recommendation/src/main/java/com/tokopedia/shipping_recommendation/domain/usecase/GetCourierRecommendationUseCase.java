@@ -164,14 +164,14 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.LANG, Param.VALUE_LANG_ID);
         queryStringBuilder = setParam(queryStringBuilder, Param.USER_HISTORY, String.valueOf(codHistory));
 
-        boolean isBlackbox = shipmentDetailData.getIsBlackbox();
+        boolean isBlackbox = shippingParam.getIsBlackbox();
         int blackbox = 0;
         if (isBlackbox) blackbox = 1;
 
         queryStringBuilder = setParam(queryStringBuilder, Param.IS_BLACKBOX, String.valueOf(blackbox));
-        queryStringBuilder = setParam(queryStringBuilder, Param.ADDRESS_ID, String.valueOf(shipmentDetailData.getAddressId()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.ADDRESS_ID, String.valueOf(shippingParam.getAddressId()));
 
-        boolean isPreorder = shipmentDetailData.getPreorder();
+        boolean isPreorder = shippingParam.getIsPreorder();
         int preorder = 0;
         if (isPreorder) preorder = 1;
 
