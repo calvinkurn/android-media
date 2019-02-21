@@ -242,6 +242,25 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(DIGITAL_DETAIL_TRACE);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
+            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) getActivity().getApplicationContext()).getAnalyticTracker(), getActivity());
+        }
+        View view = inflater.inflate(R.layout.fragment_product_digital_module, container, false);
+        initView(view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        renderViewShadow();
+        setupArguments(getArguments());
+
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
                     CategoryData.class, null);
@@ -265,36 +284,18 @@ public class DigitalProductFragment extends BaseDaggerFragment
             voucherCodeCopiedState = savedInstanceState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
             digitalHelpUrl = savedInstanceState.getString(EXTRA_STATE_HELP_URL);
             presenter.processStateDataToReRender();
-        }
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) getActivity().getApplicationContext()).getAnalyticTracker(), getActivity());
-        }
-        View view = inflater.inflate(R.layout.fragment_product_digital_module, container, false);
-        initView(view);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        renderViewShadow();
-        setupArguments(getArguments());
-        if (!isFromWidget) {
-            setHasOptionsMenu(true);
-            presenter.processGetHelpUrlData(categoryId);
-            presenter.processGetCategoryAndBannerData(
-                    categoryId, operatorId, productId, clientNumber);
         } else {
-            setMenuVisibility(false);
-            presenter.getCategoryData(
-                    categoryId, operatorId, productId, clientNumber
-            );
+            if (!isFromWidget) {
+                setHasOptionsMenu(true);
+                presenter.processGetHelpUrlData(categoryId);
+                presenter.processGetCategoryAndBannerData(
+                        categoryId, operatorId, productId, clientNumber);
+            } else {
+                setMenuVisibility(false);
+                presenter.getCategoryData(
+                        categoryId, operatorId, productId, clientNumber
+                );
+            }
         }
     }
 
@@ -949,7 +950,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             }
             if (GlobalConfig.isSellerApp()) {
                 navigateToActivity(
-                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(),TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
                 );
             } else {

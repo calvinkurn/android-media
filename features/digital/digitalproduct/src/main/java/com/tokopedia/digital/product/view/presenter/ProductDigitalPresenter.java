@@ -55,6 +55,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.hansel.b.at;
 import rx.Subscriber;
 
 import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.GUIDE_TAB;
@@ -64,7 +65,7 @@ import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.
  * @author anggaprasetiyo on 4/26/17.
  */
 
-public class ProductDigitalPresenter extends BaseDigitalPresenter
+public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigitalView>
         implements IProductDigitalPresenter {
 
     public static final int TAB_COUNT_ONE = 1;
@@ -99,7 +100,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private final static String balance = "balance";
     private final String PARAM_VALUE_SORT = "label";
     //    private Activity activity;
-    private IProductDigitalView view;
     private DigitalAnalytics digitalAnalytics;
     private IProductDigitalInteractor productDigitalInteractor;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
@@ -129,15 +129,10 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     }
 
     @Override
-    public void attachView(CustomerView view) {
-        this.view = (IProductDigitalView) view;
-    }
-
-    @Override
     public void processGetCategoryAndBannerData(
             String categoryId, String operatorId, String productId, String clientNumber
     ) {
-        view.showInitialProgressLoading();
+        getView().showInitialProgressLoading();
 
         getDigitalCategoryByIdUseCase.execute(getDigitalCategoryByIdUseCase.createRequestParam(
                 categoryId, operatorId, productId, clientNumber, PARAM_VALUE_SORT, true
@@ -146,7 +141,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public void getCategoryData(String categoryId, String operatorId, String productId, String clientNumber) {
-        view.showInitialProgressLoading();
+        getView().showInitialProgressLoading();
 
         getDigitalCategoryByIdUseCase.execute(getDigitalCategoryByIdUseCase.createRequestParam(
                 categoryId, operatorId, productId, clientNumber, PARAM_VALUE_SORT, true
@@ -163,25 +158,25 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
-                view.hideInitialProgressLoading();
+                getView().hideInitialProgressLoading();
 
-                view.goToCartPage(productDigitalData);
+                getView().goToCartPage(productDigitalData);
             }
         });
     }
 
     @Override
     public void processStateDataToReRender() {
-        CategoryData categoryData = view.getCategoryDataState();
-        List<BannerData> bannerDataList = view.getBannerDataListState();
-        List<BannerData> otherBannerDataList = view.getOtherBannerDataListState();
-        List<GuideData> guideDataList = view.getGuideDataListState();
-        HistoryClientNumber historyClientNumber = view.getHistoryClientNumberState();
+        CategoryData categoryData = getView().getCategoryDataState();
+        List<BannerData> bannerDataList = getView().getBannerDataListState();
+        List<BannerData> otherBannerDataList = getView().getOtherBannerDataListState();
+        List<GuideData> guideDataList = getView().getGuideDataListState();
+        HistoryClientNumber historyClientNumber = getView().getHistoryClientNumberState();
         if (categoryData != null) {
             renderCategoryDataAndBannerToView(
                     categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
             );
-            view.renderStateSelectedAllData();
+            getView().renderStateSelectedAllData();
         }
     }
 
@@ -200,7 +195,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
-                view.hideInitialProgressLoading();
+                getView().hideInitialProgressLoading();
                 CategoryData categoryData = productDigitalData.getCategoryData();
                 List<BannerData> bannerDataList = productDigitalData.getBannerDataList();
                 List<BannerData> otherBannerDataList = productDigitalData.getOtherBannerDataList();
@@ -231,41 +226,41 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                         categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
                 );
 
-                digitalAnalytics.sendCategoryScreen(view.getActivity(), productDigitalData.getCategoryData().getName());
+                digitalAnalytics.sendCategoryScreen(getView().getActivity(), productDigitalData.getCategoryData().getName());
             }
         };
     }
 
     private void handleCategoryError(Throwable e) {
         if (isViewAttached()) {
-            view.stopTrace();
+            getView().stopTrace();
             if (e instanceof UnknownHostException || e instanceof ConnectException) {
                 /* Ini kalau ga ada internet */
-                view.renderErrorNoConnectionProductDigitalData(
+                getView().renderErrorNoConnectionProductDigitalData(
                         ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                 );
             } else if (e instanceof SocketTimeoutException) {
                 /* Ini kalau timeout */
-                view.renderErrorTimeoutConnectionProductDigitalData(
+                getView().renderErrorTimeoutConnectionProductDigitalData(
                         ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                 );
             } else if (e instanceof ResponseErrorException) {
                 /* Ini kalau error dari API kasih message error */
-                view.renderErrorProductDigitalData(e.getMessage());
+                getView().renderErrorProductDigitalData(e.getMessage());
             } else if (e instanceof ResponseDataNullException) {
                 /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                view.renderErrorProductDigitalData(e.getMessage());
+                getView().renderErrorProductDigitalData(e.getMessage());
             } else if (e instanceof HttpErrorException) {
             /* Ini Http error, misal 403, 500, 404,
              code http errornya bisa diambil
              e.getErrorCode */
-                view.renderErrorHttpProductDigitalData(e.getMessage());
+                getView().renderErrorHttpProductDigitalData(e.getMessage());
             } else if (e instanceof ServerErrorException) {
-                view.clearContentRendered();
-                view.closeView();
+                getView().clearContentRendered();
+                getView().closeView();
                 ServerErrorHandlerUtil.handleError(e);
             } else {
-                view.renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                getView().renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
         }
     }
@@ -283,66 +278,66 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         this.categoryData = categoryData;
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
-                    .renderCategoryDataAndBannerToView(view.getActivity(),
+                    .renderCategoryDataAndBannerToView(getView().getActivity(),
                             categoryData.getOperatorStyle());
 
-            view.renderCategory(digitalProductView, categoryData, historyClientNumber);
+            getView().renderCategory(digitalProductView, categoryData, historyClientNumber);
 
             if (!GlobalConfig.isSellerApp()) {
-                view.showPromoContainer();
+                getView().showPromoContainer();
                 if (bannerDataList.size() > 0 && guideDataList.size() > 0) {
-                    view.renderPromoGuideTab(TAB_COUNT_TWO, PROMO_TAB);
+                    getView().renderPromoGuideTab(TAB_COUNT_TWO, PROMO_TAB);
                 } else if (bannerDataList.size() > 0 && guideDataList.size() == 0) {
-                    view.renderPromoGuideTab(TAB_COUNT_ONE, PROMO_TAB);
+                    getView().renderPromoGuideTab(TAB_COUNT_ONE, PROMO_TAB);
                 } else if (bannerDataList.size() == 0 && guideDataList.size() > 0) {
-                    view.renderPromoGuideTab(TAB_COUNT_ONE, GUIDE_TAB);
+                    getView().renderPromoGuideTab(TAB_COUNT_ONE, GUIDE_TAB);
                 }
 
                 if (bannerDataList.size() > 0 || guideDataList.size() > 0) {
-                    view.showPromoGuideTab();
-                    view.renderBannerListData(
+                    getView().showPromoGuideTab();
+                    getView().renderBannerListData(
                             categoryData.getName(),
                             bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
                     );
-                    view.renderOtherBannerListData(
-                            view.getStringFromResource(R.string.other_promo),
+                    getView().renderOtherBannerListData(
+                            getView().getStringFromResource(R.string.other_promo),
                             otherBannerDataList != null ? otherBannerDataList : new ArrayList<BannerData>()
                     );
-                    view.renderGuideListData(
+                    getView().renderGuideListData(
                             guideDataList != null ? guideDataList : new ArrayList<>()
                     );
                 } else {
-                    view.hidePromoGuideTab();
+                    getView().hidePromoGuideTab();
                 }
             }
         } else {
-            view.renderErrorStyleNotSupportedProductDigitalData(
-                    view.getStringFromResource(
+            getView().renderErrorStyleNotSupportedProductDigitalData(
+                    getView().getStringFromResource(
                             R.string.message_error_digital_category_style_not_supported
                     )
             );
         }
-        view.stopTrace();
+        getView().stopTrace();
         renderCheckETollBalance();
         renderCheckPulsa();
     }
 
     @Override
     public void processToCheckBalance(String ussdMobileNumber, int simSlot, String ussdCode) {
-        if (checkAccessibilitySettingsOn(view.getActivity())) {
+        if (checkAccessibilitySettingsOn(getView().getActivity())) {
             if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
-                view.registerUssdReciever();
+                getView().registerUssdReciever();
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
-                view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
-                        view.getActivity().getString(R.string.message_ussd_title));
+                getView().showMessageAlert(getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
+                        getView().getActivity().getString(R.string.message_ussd_title));
                 renderCheckPulsa();
-                view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
-                        view.getActivity().getString(R.string.message_ussd_title));
-                digitalAnalytics.eventUssdAttempt( view.getActivity().getString(R.string.status_failed_label) + view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                getView().showMessageAlert(getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
+                        getView().getActivity().getString(R.string.message_ussd_title));
+                digitalAnalytics.eventUssdAttempt( getView().getActivity().getString(R.string.status_failed_label) + getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         } else {
-            view.showAccessibilityAlertDialog();
+            getView().showAccessibilityAlertDialog();
         }
     }
 
@@ -358,12 +353,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
         //works only for API >= 23
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (DeviceUtil.getPhoneHandle(view.getActivity(), simPosition) != null) {
-                intent.putExtra(accoutHandleKey, DeviceUtil.getPhoneHandle(view.getActivity(), simPosition));
+            if (DeviceUtil.getPhoneHandle(getView().getActivity(), simPosition) != null) {
+                intent.putExtra(accoutHandleKey, DeviceUtil.getPhoneHandle(getView().getActivity(), simPosition));
             }
         }
-//        if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.CALL_PHONE)) {
-//            view.getActivity().startActivity(intent);
+//        if (RequestPermissionUtil.checkHasPermission(getView().getActivity(), Manifest.permission.CALL_PHONE)) {
+//            getView().getActivity().startActivity(intent);
 //        }
         ussdTimeOut = false;
         startUssdCheckBalanceTimer();
@@ -391,39 +386,39 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (view == null || view.getActivity() == null) {
+                if (getView() == null || getView().getActivity() == null) {
                     return;
                 }
 //                if (e instanceof UnknownHostException || e instanceof ConnectException) {
 //                    /* Ini kalau ga ada internet */
-//                    view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+//                    getView().showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
 //                } else if (e instanceof SocketTimeoutException) {
 //                    /* Ini kalau timeout */
-//                    view.showPulsaBalanceError(
+//                    getView().showPulsaBalanceError(
 //                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
 //                    );
 //                } else if (e instanceof ResponseErrorException) {
 //                    /* Ini kalau error dari API kasih message error */
-//                    view.showPulsaBalanceError(e.getMessage());
+//                    getView().showPulsaBalanceError(e.getMessage());
 //                } else if (e instanceof ResponseDataNullException) {
 //                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-//                    view.showPulsaBalanceError(e.getMessage());
+//                    getView().showPulsaBalanceError(e.getMessage());
 //                } else if (e instanceof HttpErrorException) {
 //                    /* Ini Http error, misal 403, 500, 404,
 //                    code http errornya bisa diambil
 //                    e.getErrorCode */
-//                    view.showPulsaBalanceError(e.getMessage());
+//                    getView().showPulsaBalanceError(e.getMessage());
 //                } else if (e instanceof ServerErrorException) {
 //                    ServerErrorHandlerUtil.handleError(e);
 //                } else {
-//                    view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+//                    getView().showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
 //                }
             }
 
             @Override
             public void onNext(PulsaBalance pulsaBalance) {
-                if (view != null && view.getActivity() != null) {
-                    view.renderPulsaBalance(pulsaBalance, selectedSim);
+                if (getView() != null && getView().getActivity() != null) {
+                    getView().renderPulsaBalance(pulsaBalance, selectedSim);
                 }
             }
         };
@@ -472,7 +467,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         attributes.setMessage(message);
         attributes.setClientNumber(number);
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
-        attributes.setIdentifier(view.getDigitalIdentifierParam());
+        attributes.setIdentifier(getView().getDigitalIdentifierParam());
         requestBodyPulsaBalance.setAttributes(attributes);
         return requestBodyPulsaBalance;
     }
@@ -480,8 +475,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     @Override
     public List<Operator> getSelectedUssdOperatorList(int selectedSim) {
         List<Operator> selectedOperatorList = new ArrayList<>();
-        String simOperatorName = DeviceUtil.getOperatorName(view.getActivity(), selectedSim);
-        CategoryData categoryData = view.getCategoryDataState();
+        String simOperatorName = DeviceUtil.getOperatorName(getView().getActivity(), selectedSim);
+        CategoryData categoryData = getView().getCategoryDataState();
         if (categoryData != null && categoryData.getOperatorList() != null) {
             for (Operator operator : categoryData.getOperatorList()) {
                 if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
@@ -512,7 +507,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public String getDeviceMobileNumber(int selectedSim) {
-        return DeviceUtil.getMobileNumber(view.getActivity(), selectedSim);
+        return DeviceUtil.getMobileNumber(getView().getActivity(), selectedSim);
     }
 
     private int parseStringToInt(String source) {
@@ -531,8 +526,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         ussdHandler = new Handler();
         ussdHandler.postDelayed(() -> {
             ussdTimeOut = true;
-            if (view != null && view.getActivity() != null) {
-                view.showPulsaBalanceError(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+            if (getView() != null && getView().getActivity() != null) {
+                getView().showPulsaBalanceError(getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }, ussdTimeOutTime);
     }
@@ -546,7 +541,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public String getUssdPhoneNumberFromCache(int selectedSim) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             return localCacheHandler.getString(KEY_USSD_SIM1);
         } else if (selectedSim == 1) {
@@ -558,7 +553,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     @Override
     public void storeUssdPhoneNumber(int selectedSim, String number) {
         number = DeviceUtil.formatPrefixClientNumber(number);
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             localCacheHandler.putString(KEY_USSD_SIM1, number);
         } else if (selectedSim == 1) {
@@ -569,8 +564,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public boolean isCarrierSignalsNotAvailable(String carrierName) {
-        final String noSignalStr = view.getActivity().getString(R.string.label_no_signal);
-        final String noServiceStr = view.getActivity().getString(R.string.label_no_service);
+        final String noSignalStr = getView().getActivity().getString(R.string.label_no_signal);
+        final String noServiceStr = getView().getActivity().getString(R.string.label_no_service);
         if (carrierName == null) {
             return false;
         }
@@ -584,18 +579,18 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 && categoryData != null
                 && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
                 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && view.isUserLoggedIn()
-                && view.getActivity() != null) {
-            view.removeCheckPulsaCards();
-            CategoryData categoryDataState = view.getCategoryDataState();
+                && getView().isUserLoggedIn()
+                && getView().getActivity() != null) {
+            getView().removeCheckPulsaCards();
+            CategoryData categoryDataState = getView().getCategoryDataState();
 
             if (isOperatorListAvailable(categoryDataState)) {
-                if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+                if (RequestPermissionUtil.checkHasPermission(getView().getActivity(), Manifest.permission.READ_PHONE_STATE)) {
                     List<Validation> validationList = categoryDataState.getClientNumberList().get(0).getValidation();
                     boolean isCheckUssdButtonActive = true;
 
                     for (int i = 0; i < MAX_SIM_COUNT; i++) {
-                        String carrierName = DeviceUtil.getOperatorName(view.getActivity(), i);
+                        String carrierName = DeviceUtil.getOperatorName(getView().getActivity(), i);
                         Operator operator = getSelectedUssdOperator(i);
                         String ussdCode = operator.getUssdCode();
                         if (carrierName != null) {
@@ -604,29 +599,29 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
                                 //show the card if signal is not available with error message
                                 if (isCarrierSignalsNotAvailable(carrierName)) {
-                                    String operatorErrorMsg = view.getActivity().getString(R.string.label_no_signal);
+                                    String operatorErrorMsg = getView().getActivity().getString(R.string.label_no_signal);
                                     carrierName = operatorErrorMsg;
-                                    view.renderCheckPulsaBalanceData(i, ussdCode,
+                                    getView().renderCheckPulsaBalanceData(i, ussdCode,
                                             getPhoneNumberForSim(i, operator, validationList),
                                             operatorErrorMsg, true, carrierName);
                                     isCheckUssdButtonActive = true;
                                 } else {
                                     //if check button was not active for previous sim, then do not show another card for inactive case
                                     if (isCheckUssdButtonActive || i != (MAX_SIM_COUNT - 1)) {
-                                        view.renderCheckPulsaBalanceData(i, ussdCode,
+                                        getView().renderCheckPulsaBalanceData(i, ussdCode,
                                                 getPhoneNumberForSim(i, operator, validationList),
-                                                view.getActivity().getString(R.string.label_operator_not_support),
+                                                getView().getActivity().getString(R.string.label_operator_not_support),
                                                 false, carrierName);
                                         isCheckUssdButtonActive = false;
                                     }
                                 }
                             } else {
-                                view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), null, true, carrierName);
+                                getView().renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), null, true, carrierName);
                             }
                         }
                     }
                 } else {
-                    view.renderCheckPulsaBalanceData(0, "", "", null, true, null);
+                    getView().renderCheckPulsaBalanceData(0, "", "", null, true, null);
                 }
             }
         }
@@ -637,9 +632,9 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 && categoryData != null
                 && categoryData.getAdditionalFeature() != null
                 && categoryData.getAdditionalFeature().getFeatureId() == 1
-                && view.isDigitalSmartcardEnabled()
-                && view.getActivity() != null) {
-            view.renderCheckETollBalance(categoryData.getAdditionalFeature().getText(),
+                && getView().isDigitalSmartcardEnabled()
+                && getView().getActivity() != null) {
+            getView().renderCheckETollBalance(categoryData.getAdditionalFeature().getText(),
                     categoryData.getAdditionalFeature().getButtonText());
         }
     }
@@ -661,7 +656,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     @Override
                     public void onNext(String url) {
                         if (url != null && url.length() > 0) {
-                            view.showHelpMenu(url);
+                            getView().showHelpMenu(url);
                         }
                     }
                 });
@@ -669,8 +664,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public void onHelpMenuClicked() {
-        if (view.getHelpUrl() != null && view.getHelpUrl().length() > 0) {
-            view.navigateToWebview(view.getHelpUrl());
+        if (getView().getHelpUrl() != null && getView().getHelpUrl().length() > 0) {
+            getView().navigateToWebview(getView().getHelpUrl());
         }
     }
 
@@ -693,6 +688,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public void detachView() {
+        super.detachView();
         getDigitalCategoryByIdUseCase.unsubscribe();
     }
 

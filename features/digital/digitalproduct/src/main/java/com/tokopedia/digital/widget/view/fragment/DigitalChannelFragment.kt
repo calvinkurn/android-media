@@ -93,17 +93,11 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val remoteConfig = FirebaseRemoteConfigImpl(activity)
-
-        if (userSession.isLoggedIn() && isDigitalChannelRecommendationEnabled(remoteConfig)) {
+        if (userSession.isLoggedIn()) {
             digitalChannelPresenter.getRecommendationList(5)
         } else {
             fetchCategoryList()
         }
-    }
-
-    private fun isDigitalChannelRecommendationEnabled(remoteConfig: FirebaseRemoteConfigImpl): Boolean {
-        return remoteConfig.getBoolean(DIGITAL_CHANNEL_RECOMMENDATION, false)
     }
 
     override fun initInjector() {

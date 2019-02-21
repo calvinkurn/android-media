@@ -2,7 +2,6 @@ package com.tokopedia.digital.widget.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
@@ -24,7 +23,7 @@ import rx.Subscriber;
  * @author rizkyfadillah on 15/01/18.
  */
 
-public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter implements IDigitalWidgetCategoryPresenter {
+public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter<IDigitalWidgetView> implements IDigitalWidgetCategoryPresenter {
 
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
@@ -33,7 +32,6 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
     private final String PARAM_VALUE_SORT = "label";
 
     private UserSession userSession;
-    private IDigitalWidgetView digitalWidgetView;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
 
     @Inject
@@ -46,13 +44,8 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
     }
 
     @Override
-    public void attachView(CustomerView view) {
-        this.digitalWidgetView = (IDigitalWidgetView) view;
-    }
-
-    @Override
     public void fetchCategory(String categoryId) {
-        digitalWidgetView.showInitialProgressLoading();
+        getView().showInitialProgressLoading();
 
         getDigitalCategoryByIdUseCase.execute(getDigitalCategoryByIdUseCase.createRequestParam(
                 categoryId, PARAM_VALUE_SORT, true
@@ -64,12 +57,12 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
 
             @Override
             public void onError(Throwable e) {
-                digitalWidgetView.hideInitialProgressLoading();
+                getView().hideInitialProgressLoading();
             }
 
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
-                digitalWidgetView.hideInitialProgressLoading();
+                getView().hideInitialProgressLoading();
 
                 CategoryData categoryData = productDigitalData.getCategoryData();
                 HistoryClientNumber historyClientNumber =
@@ -105,10 +98,10 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
-                    .renderCategoryDataAndBannerToView(digitalWidgetView.getContext(),
+                    .renderCategoryDataAndBannerToView(getView().getContext(),
                             categoryData.getOperatorStyle());
 
-            digitalWidgetView.renderCategory(digitalProductView, categoryData, historyClientNumber);
+            getView().renderCategory(digitalProductView, categoryData, historyClientNumber);
         }
     }
 
@@ -119,6 +112,7 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
 
     @Override
     public void detachView() {
+        super.detachView();
         getDigitalCategoryByIdUseCase.unsubscribe();
     }
 

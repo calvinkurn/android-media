@@ -389,7 +389,9 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void updateToolbarTitle(String toolbarTitle) {
-        interactionListener.updateToolbarTitle(toolbarTitle);
+        if (interactionListener != null) {
+            interactionListener.updateToolbarTitle(toolbarTitle);
+        }
     }
 
     @Override
@@ -418,7 +420,10 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public boolean isAlreadyShowOnBoard() {
-        return interactionListener.isAlreadyShowOnBoard();
+        if (interactionListener != null) {
+            return interactionListener.isAlreadyShowOnBoard();
+        }
+        return true;
     }
 
     public void updateSelectedDeal(DealProductViewModel viewModel) {

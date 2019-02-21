@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -52,7 +53,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         DigitalCartCheckoutHolderView.ActionListener {
     protected static final String ARG_PASS_DATA = "ARG_PASS_DATA";
     protected static final String ARG_CART_INFO = "ARG_CART_INFO";
-    protected static final String ARG_CHECKOUT_INFO = "ARG_CHECKOUT_INFO";
     private static final int REQUEST_CODE_OTP = 1001;
 
     protected CartDigitalInfoData cartDigitalInfoData;
@@ -67,6 +67,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private boolean traceStop;
     private PerformanceMonitoring performanceMonitoring;
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
+    private SaveInstanceCacheManager saveInstanceCacheManager;
 
     protected P presenter;
 
@@ -74,6 +75,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
+        saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
     }
 
     @Override

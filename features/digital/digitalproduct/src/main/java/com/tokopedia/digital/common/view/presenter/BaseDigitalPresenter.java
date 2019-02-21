@@ -24,7 +24,7 @@ import java.security.NoSuchAlgorithmException;
  * Modified by rizkyfadillah at 10/6/17.
  */
 
-public abstract class BaseDigitalPresenter extends BaseDaggerPresenter<CustomerView> implements IBaseDigitalPresenter {
+public abstract class BaseDigitalPresenter<T extends CustomerView> extends BaseDaggerPresenter<T> implements IBaseDigitalPresenter {
 
     private final String IDN_CALLING_CODE = "62";
     private final String IDN_CALLING_CODE_WITH_PLUS = "+62";
