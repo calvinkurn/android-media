@@ -94,7 +94,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private TextView orderId;
     private ImageView copyOrderId;
-    private View containerDownloadEticket;
+    private View containerSendETicket;
     private LinearLayout containerCancellation;
     private TextView orderStatus;
     private TextView transactionDate;
@@ -165,7 +165,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         View view = inflater.inflate(R.layout.fragment_flight_detail_order, container, false);
         orderId = view.findViewById(R.id.order_id_detail);
         copyOrderId = view.findViewById(R.id.copy_order_id);
-        containerDownloadEticket = view.findViewById(R.id.container_download_eticket);
+        containerSendETicket = view.findViewById(R.id.container_download_eticket);
         orderStatus = view.findViewById(R.id.status_ticket);
         transactionDate = view.findViewById(R.id.transaction_date);
         layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
@@ -255,10 +255,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             }
         });
 
-        containerDownloadEticket.setOnClickListener(new View.OnClickListener() {
+        containerSendETicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigateToShowInvoice();
+                flightDetailOrderPresenter.onSendETicketButtonClicked();
             }
         });
 
@@ -413,9 +413,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderStatus.setText(orderStatusString);
         orderStatus.setTextColor(ContextCompat.getColor(getActivity(), color));
         if (isTicketVisible) {
-            containerDownloadEticket.setVisibility(View.VISIBLE);
+            containerSendETicket.setVisibility(View.VISIBLE);
         } else {
-            containerDownloadEticket.setVisibility(View.GONE);
+            containerSendETicket.setVisibility(View.GONE);
         }
         if (isScheduleVisible) {
             buttonRescheduleTicket.setVisibility(View.VISIBLE);

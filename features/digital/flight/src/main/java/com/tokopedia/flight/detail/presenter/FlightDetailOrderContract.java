@@ -115,6 +115,8 @@ public interface FlightDetailOrderContract {
 
         void actionReorderButtonClicked();
 
+        void onSendETicketButtonClicked();
+
         void onGetProfileData();
 
         void checkIfFlightCancellable(String invoiceId, List<FlightCancellationJourney> items);
