@@ -307,7 +307,6 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         extras.putString("orderCategory", OrderCategory.MARKETPLACE);
-        extras.putString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER, extras.getString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER));
         Intent intent = new Intent(context, OrderListActivity.class);
         intent.setData(uri.build());
         return intent.putExtras(extras);
