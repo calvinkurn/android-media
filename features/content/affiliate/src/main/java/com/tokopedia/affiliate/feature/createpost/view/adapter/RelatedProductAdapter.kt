@@ -45,9 +45,8 @@ class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHol
         holder.itemView.name.text = element.name
         holder.itemView.price.text = element.price
         holder.itemView.delete.setOnClickListener {
-            val newList = list.toMutableList()
+            val newList= ArrayList(list)
             newList.removeAt(holder.adapterPosition)
-
             if (newList.isEmpty()) {
                 newList.add(emptyItem)
             }

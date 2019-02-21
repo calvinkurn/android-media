@@ -341,7 +341,12 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
     private fun convertAttachProduct(attachedProducts: MutableList<ResultProduct>): MutableList<RelatedProductItem> {
         val relatedProducts = arrayListOf<RelatedProductItem>()
         attachedProducts.forEach {
-            relatedProducts.add(RelatedProductItem(it.productId.toString(), it.name, it.price))
+            relatedProducts.add(RelatedProductItem(
+                    it.productId.toString(),
+                    it.name,
+                    it.price,
+                    it.productImageThumbnail)
+            )
         }
         return relatedProducts
     }
