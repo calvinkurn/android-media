@@ -233,7 +233,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/container_download_eticket"
+                    android:id="@+id/container_send_eticket"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -264,7 +264,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_flight_e_ticket" />
+                app:srcCompat="@drawable/ic_product_travel_flight_normal_eticket" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="match_parent"

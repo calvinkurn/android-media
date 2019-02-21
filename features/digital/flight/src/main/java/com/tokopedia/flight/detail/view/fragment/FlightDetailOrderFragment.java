@@ -165,7 +165,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         View view = inflater.inflate(R.layout.fragment_flight_detail_order, container, false);
         orderId = view.findViewById(R.id.order_id_detail);
         copyOrderId = view.findViewById(R.id.copy_order_id);
-        containerSendETicket = view.findViewById(R.id.container_download_eticket);
+        containerSendETicket = view.findViewById(R.id.container_send_eticket);
         orderStatus = view.findViewById(R.id.status_ticket);
         transactionDate = view.findViewById(R.id.transaction_date);
         layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
