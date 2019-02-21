@@ -79,9 +79,8 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
 
     private static Intent getWebviewIntent(Context context, String url) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
-            if (context instanceof Activity) {
-                return ((ResolutionRouter)context.getApplicationContext()).getBannerWebViewIntent((Activity)context, url);
-            }
+            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                    ResolutionUrl.RESO_APPLINK + url);
         }
         return null;
     }

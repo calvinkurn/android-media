@@ -14,4 +14,6 @@ public class ResolutionUrl {
 
     public static final String RESO_INBOX_SELLER =  RESO_INBOX + "seller" + MOBILE;
     public static final String RESO_INBOX_BUYER =  RESO_INBOX + "buyer" + MOBILE;
+
+    public static final String RESO_APPLINK =  "tokopedia://webview?titlebar=false&url=";
 }

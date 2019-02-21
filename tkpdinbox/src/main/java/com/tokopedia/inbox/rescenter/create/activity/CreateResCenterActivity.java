@@ -102,9 +102,8 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
 
     private static Intent getWebviewIntent(Context context, String orderId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
-            if (context instanceof Activity) {
-                return ((ResolutionRouter)context.getApplicationContext()).getBannerWebViewIntent((Activity)context, String.format(ResolutionUrl.RESO_CREATE, orderId));
-            }
+            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_CREATE, orderId));
         }
         return null;
     }

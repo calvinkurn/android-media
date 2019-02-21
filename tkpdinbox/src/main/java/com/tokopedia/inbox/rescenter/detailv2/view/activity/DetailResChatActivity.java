@@ -93,9 +93,8 @@ public class DetailResChatActivity
 
     private static Intent getWebviewIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
-            if (context instanceof Activity) {
-                return ((ResolutionRouter)context.getApplicationContext()).getBannerWebViewIntent((Activity)context, String.format(ResolutionUrl.RESO_DETAIL, resolutionId));
-            }
+            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_DETAIL, resolutionId));
         }
         return null;
     }
