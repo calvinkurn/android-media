@@ -45,12 +45,13 @@ class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHol
         holder.itemView.name.text = element.name
         holder.itemView.price.text = element.price
         holder.itemView.delete.setOnClickListener {
-            val newList= ArrayList(list)
-            newList.removeAt(holder.adapterPosition)
-            if (newList.isEmpty()) {
-                newList.add(emptyItem)
+            list.removeAt(holder.adapterPosition)
+            notifyItemRemoved(holder.adapterPosition)
+
+            if (list.isEmpty()) {
+                list.add(emptyItem)
+                notifyItemInserted(list.size)
             }
-            addAll(newList)
         }
     }
 
