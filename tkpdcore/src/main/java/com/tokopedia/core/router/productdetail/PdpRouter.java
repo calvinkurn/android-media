@@ -13,6 +13,8 @@ import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 
 import java.util.ArrayList;
 
@@ -30,7 +32,7 @@ public interface PdpRouter {
 
     void goToProductDetail(Context context, ProductPass productPass);
 
-    void goToProductDetail(Context context, ShareData shareData);
+    void goToProductDetail(Context context, LinkerData shareData);
 
     void goToAddProductDetail(Context context);
 
@@ -55,7 +57,9 @@ public interface PdpRouter {
 
     Intent getCartIntent(Activity activity);
 
-    Intent getCheckoutIntent(Activity activity);
+    Intent getCheckoutIntent(Context context);
+
+    Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam);
 
     Intent getLoginIntent(Context context);
 

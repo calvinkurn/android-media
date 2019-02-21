@@ -135,7 +135,6 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         if (errorView != null) errorView.setVisibility(View.GONE);
         if (firstTimeLoad) {
             adapter.addAllItems(promoDataList);
-            performanceMonitoring.stopTrace();
         } else {
             adapter.addAllItemsLoadMore(promoDataList);
         }
@@ -175,6 +174,11 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
                 dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
             }
         }).showRetrySnackbar();
+    }
+
+    @Override
+    public void stopPerformanceMonitoring() {
+        performanceMonitoring.stopTrace();
     }
 
     @Override
@@ -298,6 +302,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isLoadMore) {
                     dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
+                    isLoadMore = false;
                 }
             }
         };

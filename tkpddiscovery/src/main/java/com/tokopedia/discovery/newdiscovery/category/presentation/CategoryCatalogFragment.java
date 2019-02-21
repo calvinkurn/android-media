@@ -39,6 +39,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.fact
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -47,6 +48,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -207,6 +209,12 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
                 if (isAllowLoadMore()) {
                     onLoadMoreCatalog();
                 }
+            }
+        });
+        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventCategoryProductView(getContext(), getQueryKey(), product, position);
             }
         });
     }

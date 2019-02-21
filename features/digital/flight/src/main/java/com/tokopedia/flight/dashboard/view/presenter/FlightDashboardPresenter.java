@@ -64,6 +64,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
     private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
     private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
+    private static final int MAX_DATE_ADDITION_YEAR = 1;
     private static final String FLIGHT_AIRPORT = "flight_airport";
 
     private BannerGetDataUseCase bannerGetDataUseCase;
@@ -237,7 +238,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onDepartureDateButtonClicked() {
         Date minDate = FlightDateUtil.getCurrentDate();
-        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR);
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
         Calendar maxDateCalendar = FlightDateUtil.getCurrentCalendar();
         maxDateCalendar.setTime(maxDate);
@@ -257,11 +258,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, dayOfMonth);
         Date newDepartureDate = now.getTime();
-        Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
-        twoYears = FlightDateUtil.addTimeToSpesificDate(twoYears, Calendar.DATE, -1);
-        if (newDepartureDate.after(twoYears)) {
+        Date oneYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR);
+        oneYears = FlightDateUtil.addTimeToSpesificDate(oneYears, Calendar.DATE, -1);
+        if (newDepartureDate.after(oneYears)) {
             if (showError) {
-                getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error);
+                getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_one_years_from_today_error);
             }
         } else if (newDepartureDate.before(FlightDateUtil.getCurrentDate())) {
             if (showError) {
@@ -277,7 +278,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 Date currentReturnDate = FlightDateUtil.stringToDate(viewModel.getReturnDate());
                 if (currentReturnDate.compareTo(newDepartureDate) < 0) {
                     Date reAssignReturnDate = FlightDateUtil.addDate(newDepartureDate, 1);
-                    if (reAssignReturnDate.after(twoYears)) {
+                    if (reAssignReturnDate.after(oneYears)) {
                         viewModel.setReturnDate(newDepartureDateStr);
                         viewModel.setReturnDateFmt(newDepartureDateFmtStr);
                     } else {
@@ -289,7 +290,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 getView().renderRoundTripView();
             } else {
                 Date reAssignReturnDate = FlightDateUtil.addDate(newDepartureDate, 1);
-                if (reAssignReturnDate.after(twoYears)) {
+                if (reAssignReturnDate.after(oneYears)) {
                     viewModel.setReturnDate(newDepartureDateStr);
                     viewModel.setReturnDateFmt(newDepartureDateFmtStr);
                 } else {
@@ -306,7 +307,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void onReturnDateButtonClicked() {
         Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getReturnDate());
         Date minDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
-        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR);
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
         Calendar maxDateCalendar = FlightDateUtil.getCurrentCalendar();
         maxDateCalendar.setTime(maxDate);
@@ -325,11 +326,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, dayOfMonth);
         Date newReturnDate = now.getTime();
-        Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+        Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR);
         twoYears = FlightDateUtil.addTimeToSpesificDate(twoYears, Calendar.DATE, -1);
         if (newReturnDate.after(twoYears)) {
             if (showError) {
-                getView().showReturnDateMaxTwoYears(R.string.flight_dashboard_return_max_two_years_from_today_error);
+                getView().showReturnDateMaxTwoYears(R.string.flight_dashboard_return_max_one_years_from_today_error);
             }
         } else if (newReturnDate.before(FlightDateUtil.stringToDate(viewModel.getDepartureDate()))) {
             if (showError) {

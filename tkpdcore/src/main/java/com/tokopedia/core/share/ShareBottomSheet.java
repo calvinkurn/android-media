@@ -23,11 +23,17 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.share.adapter.ShareAdapter;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
+import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,10 +67,10 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private static final String TYPE = "text/plain";
 
-    private ShareData data;
+    private LinkerData data;
     private boolean isAdding;
 
-    public static ShareBottomSheet newInstance(ShareData data, boolean isAddingProduct) {
+    public static ShareBottomSheet newInstance(LinkerData data, boolean isAddingProduct) {
         ShareBottomSheet fragment = new ShareBottomSheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ShareBottomSheet.class.getName(), data);
@@ -73,12 +79,12 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         return fragment;
     }
 
-    public static void show(FragmentManager fragmentManager, ShareData data,
+    public static void show(FragmentManager fragmentManager, LinkerData data,
                             boolean isAddingProduct) {
         newInstance(data, isAddingProduct).show(fragmentManager, TITLE_EN);
     }
 
-    public static void show(FragmentManager fragmentManager, ShareData data) {
+    public static void show(FragmentManager fragmentManager, LinkerData data) {
         newInstance(data, false).show(fragmentManager, TITLE_EN);
     }
 
@@ -163,12 +169,21 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private void actionCopy() {
         data.setSource(AppEventTracking.Action.COPY);
-        BranchSdkUtils.generateBranchLink(data, getActivity(), new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                ClipboardHandler.CopyToClipboard(getActivity(), shareUri);
-            }
-        });
+        LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0,
+                        DataMapper.getLinkerShareData(data),
+                        new ShareCallback() {
+                            @Override
+                            public void urlCreated(LinkerShareResult linkerShareData) {
+                                ClipboardHandler.CopyToClipboard(getActivity(), linkerShareData.getShareUri());
+                            }
+
+                            @Override
+                            public void onError(LinkerError linkerError) {
+
+                            }
+                        })
+        );
 
         Toast.makeText(getActivity(), getString(R.string.msg_copy), Toast.LENGTH_SHORT).show();
         sendAnalyticsToGtm(data.getType(), AppEventTracking.Action.COPY);
@@ -185,15 +200,24 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     }
 
     private void actionMore(final String packageName) {
-        BranchSdkUtils.generateBranchLink(data, getActivity(), new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                Intent intent = getIntent(shareContents);
-                startActivity(Intent.createChooser(intent, getString(R.string.other)));
+        LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(
+                        0, DataMapper.getLinkerShareData(data),
+                        new ShareCallback() {
+                            @Override
+                            public void urlCreated(LinkerShareResult linkerShareData) {
+                                Intent intent = getIntent(linkerShareData.getShareContents());
+                                startActivity(Intent.createChooser(intent, getString(R.string.other)));
+                                sendTracker(packageName);
+                            }
 
-                sendTracker(packageName);
-            }
-        });
+                            @Override
+                            public void onError(LinkerError linkerError) {
+
+                            }
+                        }
+                )
+        );
     }
 
     private Intent getIntent(String contains) {
@@ -257,8 +281,8 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     }
 
     public void setData(Bundle data) {
-        this.data = new ShareData();
-        this.data.setType(ShareData.PRODUCT_TYPE);
+        this.data = new LinkerData();
+        this.data.setType(LinkerData.PRODUCT_TYPE);
         String productName = data.getString(TkpdState.ProductService.PRODUCT_NAME);
         if (StringUtils.isNotBlank(productName)) {
             this.data.setName(productName);
@@ -319,7 +343,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     private void sendTracker(String packageName) {
         String media = constantMedia(packageName);
         if (!media.isEmpty()) {
-            if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+            if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
                 shareCategory(data, media);
             } else {
                 sendAnalyticsToGtm(data.getType(), media);
@@ -327,7 +351,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
         }
     }
 
-    private void shareCategory(ShareData data, String media) {
+    private void shareCategory(LinkerData data, String media) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
             UnifyTracking.eventShareCategory(getContext(), shareParam[0], shareParam[1] + "-" + media);
@@ -336,15 +360,15 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
 
     private void sendAnalyticsToGtm(String type, String channel) {
         switch (type) {
-            case ShareData.REFERRAL_TYPE:
+            case LinkerData.REFERRAL_TYPE:
                 UnifyTracking.eventReferralAndShare(getContext(), AppEventTracking.Action.SELECT_CHANNEL, channel);
                 TrackingUtils.sendMoEngageReferralShareEvent(getContext(), channel);
                 break;
-            case ShareData.APP_SHARE_TYPE:
+            case LinkerData.APP_SHARE_TYPE:
                 UnifyTracking.eventAppShareWhenReferralOff(getContext(), AppEventTracking.Action.SELECT_CHANNEL,
                         channel);
                 break;
-            case ShareData.HOTLIST_TYPE:
+            case LinkerData.HOTLIST_TYPE:
                 HotlistPageTracking.eventShareHotlist(getContext(), channel);
                 break;
             default:

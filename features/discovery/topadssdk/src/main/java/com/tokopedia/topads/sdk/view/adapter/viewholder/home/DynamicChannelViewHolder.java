@@ -11,8 +11,8 @@ import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
@@ -27,10 +27,12 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
     private TextView productTxt;
     private LinearLayout container;
     private LocalAdsClickListener itemClickListener;
+    private TopAdsItemImpressionListener impressionListener;
 
-    public DynamicChannelViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
+    public DynamicChannelViewHolder(View itemView, LocalAdsClickListener itemClickListener, TopAdsItemImpressionListener impressionListener) {
         super(itemView);
         this.itemClickListener = itemClickListener;
+        this.impressionListener = impressionListener;
         imageView = (ImpressedImageView) itemView.findViewById(R.id.image);
         productTxt = itemView.findViewById(R.id.product_name);
         cashbackTxt = itemView.findViewById(R.id.bottom_label);
@@ -42,6 +44,19 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
     public void bind(ProductDynamicChannelViewModel element) {
         try {
             imageView.setImage(element.getProductImage());
+            imageView.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+                @Override
+                public void onViewHint() {
+                    if(impressionListener!=null){
+                        Product product = new Product();
+                        product.setName(element.getProductName());
+                        product.setPriceFormat(element.getProductPrice());
+                        product.setId(element.getProductId());
+                        product.setApplinks(element.getApplink());
+                        impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
+                    }
+                }
+            });
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 productTxt.setText(Html.fromHtml(element.getProductName(),
                         Html.FROM_HTML_MODE_LEGACY));
