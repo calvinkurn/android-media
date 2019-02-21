@@ -5,7 +5,7 @@ package com.tokopedia.inbox.common;
  */
 public class ResolutionUrl {
 
-    private static final String HOSTNAME =  "https://m-staging.tokopedia.com/";
+    private static final String HOSTNAME =  "https://m.tokopedia.com/";
     private static final String MOBILE =  "/mobile";
 
     public static final String RESO_CREATE = HOSTNAME + "resolution-center/create/%s" + MOBILE;
