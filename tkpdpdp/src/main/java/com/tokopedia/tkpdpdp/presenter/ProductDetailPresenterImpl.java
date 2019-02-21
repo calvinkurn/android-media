@@ -75,6 +75,7 @@ import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
+import com.tokopedia.tkpdpdp.BuildConfig;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
@@ -282,7 +283,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             public void onNext(AddToCartResult addToCartResult) {
                 NullCheckerKt.isContainNull(addToCartResult, s -> {
                     ContainNullException exception = new ContainNullException("Found " + s + " on " + ProductDetailPresenterImpl.class.getSimpleName());
-                    Crashlytics.logException(exception);
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
                     throw exception;
                 });
 
@@ -339,7 +342,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             public void onNext(AddToCartResult addToCartResult) {
                 NullCheckerKt.isContainNull(addToCartResult, s -> {
                     ContainNullException exception = new ContainNullException("Found " + s + " on " + ProductDetailPresenterImpl.class.getSimpleName());
-                    Crashlytics.logException(exception);
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
                     throw exception;
                 });
 

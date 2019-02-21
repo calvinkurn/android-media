@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
+import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -1033,7 +1034,9 @@ public class CartListPresenter implements ICartListPresenter {
                             JSONObject jsonObject = new JSONObject(stringResponse);
                             NullCheckerKt.isContainNull(jsonObject, s -> {
                                 ContainNullException exception = new ContainNullException("Found " + s + " on " + CartListPresenter.class.getSimpleName());
-                                Crashlytics.logException(exception);
+                                if (!BuildConfig.DEBUG) {
+                                    Crashlytics.logException(exception);
+                                }
                                 throw exception;
                             });
 

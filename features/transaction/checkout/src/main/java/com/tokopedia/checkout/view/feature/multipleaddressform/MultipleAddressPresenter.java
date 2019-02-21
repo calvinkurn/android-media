@@ -8,6 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -249,7 +250,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             public void onNext(SetShippingAddressData setShippingAddressData) {
                 NullCheckerKt.isContainNull(setShippingAddressData, s -> {
                     ContainNullException exception = new ContainNullException("Found " + s + " on " + MultipleAddressPresenter.class.getSimpleName());
-                    Crashlytics.logException(exception);
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
                     throw exception;
                 });
 

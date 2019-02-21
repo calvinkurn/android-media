@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
@@ -698,7 +699,9 @@ public class WishListImpl implements WishList {
             public void onNext(AddToCartResult addToCartResult) {
                 NullCheckerKt.isContainNull(addToCartResult, s -> {
                     ContainNullException exception = new ContainNullException("Found " + s + " on " + WishListImpl.class.getSimpleName());
-                    Crashlytics.logException(exception);
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
                     throw exception;
                 });
 

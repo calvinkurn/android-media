@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -715,7 +716,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onNext(CheckoutData checkoutData) {
                 NullCheckerKt.isContainNull(checkoutData, s -> {
                     ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                    Crashlytics.logException(exception);
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
                     throw exception;
                 });
                 getView().hideLoading();
@@ -1172,7 +1175,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     JSONObject jsonObject = new JSONObject(stringResponse);
                                     NullCheckerKt.isContainNull(jsonObject, s -> {
                                         ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                                        Crashlytics.logException(exception);
+                                        if (!BuildConfig.DEBUG) {
+                                            Crashlytics.logException(exception);
+                                        }
                                         throw exception;
                                     });
 
@@ -1251,7 +1256,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onNext(SetShippingAddressData setShippingAddressData) {
                                 NullCheckerKt.isContainNull(setShippingAddressData, s -> {
                                     ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
-                                    Crashlytics.logException(exception);
+                                    if (!BuildConfig.DEBUG) {
+                                        Crashlytics.logException(exception);
+                                    }
                                     throw exception;
                                 });
 
