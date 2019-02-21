@@ -266,7 +266,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAddAddressSubmitSuccessRendered() {
+    public void stopPerformaceMonitoring() {
         performanceMonitoring.stopTrace();
     }
 

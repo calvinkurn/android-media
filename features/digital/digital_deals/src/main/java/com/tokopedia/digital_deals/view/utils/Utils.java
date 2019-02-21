@@ -330,9 +330,9 @@ public class Utils {
         spannableString.setSpan(new ForegroundColorSpan(color), startIndexOfLink, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
     }
-    public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl) {
+    public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl, String desktopUrl) {
         String uri = DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
-        ((DealsModuleRouter) ((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl);
+        ((DealsModuleRouter) ((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl, desktopUrl);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

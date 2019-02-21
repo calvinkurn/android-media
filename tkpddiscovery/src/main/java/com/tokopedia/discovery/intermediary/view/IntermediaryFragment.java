@@ -157,7 +157,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
-    private static final String SHOP = "SHOP";
+    private static final String SHOP = "shop";
 
     public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();

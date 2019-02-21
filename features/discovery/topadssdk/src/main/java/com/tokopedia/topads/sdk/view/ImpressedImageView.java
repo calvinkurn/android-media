@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.CpmImage;
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
@@ -29,6 +30,7 @@ import android.view.ViewTreeObserver;
 public class ImpressedImageView extends AppCompatImageView {
 
     private static final String TAG = ImpressedImageView.class.getSimpleName();
+    public static final float DEF_VALUE = 8.0f;
     private ImpressHolder holder;
     private ViewHintListener hintListener;
     private float radius = 0.0f;
@@ -67,8 +69,8 @@ public class ImpressedImageView extends AppCompatImageView {
     private void init(Context context, AttributeSet attrs) {
         path = new Path();
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ImpressedImageView, 0, 0);
-        try {
-            radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_corner_radius, 8.0f);
+        try{
+            radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_corner_radius, DEF_VALUE);
         } finally {
             styledAttributes.recycle();
         }
@@ -106,19 +108,17 @@ public class ImpressedImageView extends AppCompatImageView {
                 setScrollChangedListener(this);
                 if (isVisible(getView())) {
                     if (holder != null && !holder.isInvoke()) {
-                        if (hintListener != null) {
+                        if(hintListener!=null){
                             hintListener.onViewHint();
                         }
-                        if (holder instanceof ProductImage) {
+                        if(holder instanceof ProductImage){
                             new ImpresionTask().execute(((ProductImage) holder).getM_url());
-                        } else if (holder instanceof CpmImage) {
+                        } else if(holder instanceof CpmImage){
                             new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
                         }
                         holder.invoke();
                     }
-                    if (getViewTreeObserver().isAlive()) {
-                        getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
-                    }
+                    revoke();
                 }
             }
         });
@@ -209,7 +209,7 @@ public class ImpressedImageView extends AppCompatImageView {
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
         } else {
-            Glide.with(getContext()).load(image.getImageUrl()).into(this);
+            ImageHandler.loadImageThumbs(getContext(), this, image.getImageUrl());
         }
     }
 
@@ -225,7 +225,7 @@ public class ImpressedImageView extends AppCompatImageView {
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
         } else {
-            Glide.with(getContext()).load(image.getFullEcs()).into(this);
+            ImageHandler.loadImageThumbs(getContext(), this, image.getFullEcs());
         }
     }
 

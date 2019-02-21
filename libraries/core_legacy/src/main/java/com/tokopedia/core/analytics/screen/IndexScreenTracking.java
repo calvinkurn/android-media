@@ -33,7 +33,7 @@ public class IndexScreenTracking extends TrackingUtils {
                                   ScreenTracking.IOpenScreenAnalytics openScreenAnalytics) {
         try {
             ScreenTrackingBuilder
-                    .newInstance(context, openScreenAnalytics, getAfUniqueId(context))
+                    .newInstance(openScreenAnalytics)
                     .setNetworkSpeed(getNetworkSpeed(context))
                     .setKeyCompetitorIntelligence(getCIData(context))
                     .execute(context);
