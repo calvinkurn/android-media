@@ -150,10 +150,10 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
             String buzzPointText = ((ChallengesModuleRouter) context.getApplicationContext())
                     .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
             if (TextUtils.isEmpty(buzzPointText)) {
-                viewHolder.bulletText.setVisibility(View.GONE);
+                viewHolder.tvBuzzPoint.setVisibility(View.GONE);
                 viewHolder.dividerBuzz.setVisibility(View.GONE);
-            }else {
-                viewHolder.bulletText.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.tvBuzzPoint.setVisibility(View.VISIBLE);
                 viewHolder.dividerBuzz.setVisibility(View.VISIBLE);
             }
             String description = challengeResult.getDescription();
@@ -273,14 +273,11 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
     private class ChallengeDetailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final RecyclerView prizeRecyclerView, winnerRecyclerView;
-        TextView tvShortDescription, /*tvSeeMoreLessButton,*/
-                seeMoreBuzzPoints;
-        // WebView fullDescriptionWebView;
+        TextView tvShortDescription, tvBuzzPoint;
         Result challengeResult;
         final ImageView ivTnc;
 
-        View containerPrize, containerWinners, containerVideo, containerBuzzPoint, dividerBuzz;
-        TextView bulletText;
+        View containerPrize, containerWinners, containerVideo, dividerBuzz;
 
         CustomVideoPlayer customVideoPlayer;
 
@@ -288,20 +285,16 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
             super(view);
             tvShortDescription = view.findViewById(R.id.short_description);
             tvShortDescription.setOnClickListener(this);
-            //tvSeeMoreLessButton = view.findViewById(R.id.seemorebutton_description);
-            //fullDescriptionWebView = view.findViewById(R.id.markdownView);
-            //tvSeeMoreLessButton.setOnClickListener(this);
             containerPrize = view.findViewById(R.id.cl_awards);
             containerWinners = view.findViewById(R.id.cl_winners);
             prizeRecyclerView = view.findViewById(R.id.rv_awards);
             winnerRecyclerView = view.findViewById(R.id.rv_winners);
             containerVideo = view.findViewById(R.id.cl_video_player);
             customVideoPlayer = view.findViewById(R.id.video_player);
-            containerBuzzPoint = view.findViewById(R.id.cl_how_buzzpoints);
-            seeMoreBuzzPoints = view.findViewById(R.id.seemorebutton_buzzpoints);
-            bulletText = view.findViewById(R.id.tv_how_buzz_points);
+            tvBuzzPoint = view.findViewById(R.id.tv_how_buzz_points);
+            tvBuzzPoint.setOnClickListener(this);
+
             dividerBuzz = view.findViewById(R.id.divider3);
-            bulletText.setOnClickListener(this);
             ivTnc = view.findViewById(R.id.iv_tnc);
             ivTnc.setOnClickListener(this);
         }
@@ -315,24 +308,11 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
                 onChallengeDetailListener.onShowBuzzPointsText();
             } else if (viewId == R.id.iv_tnc && onChallengeDetailListener != null) {
                 onChallengeDetailListener.onTncClick();
-            } /*else if (fullDescriptionWebView.getVisibility() == View.GONE) {
-                tvSeeMoreLessButton.setText(R.string.ch_see_less);
-                MarkdownProcessor m = new MarkdownProcessor();
-                String html = m.markdown(challengeResult.getDescription());
-                fullDescriptionWebView.loadDataWithBaseURL("fake://", html, "text/html",
-                        "UTF-8", null);
-                tvShortDescription.setVisibility(View.GONE);
-                fullDescriptionWebView.setVisibility(View.VISIBLE);
-            } else {
-                tvSeeMoreLessButton.setText(R.string.ch_see_more);
-                tvShortDescription.setVisibility(View.VISIBLE);
-                fullDescriptionWebView.setVisibility(View.GONE);
-            }*/
+            }
         }
     }
 
     public class FooterViewHolder extends RecyclerView.ViewHolder {
-
         View loadingLayout;
 
         private FooterViewHolder(View itemView) {

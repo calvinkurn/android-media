@@ -1,6 +1,7 @@
 package com.tokopedia.challenges.view.presenter;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -12,12 +13,14 @@ import com.tokopedia.challenges.domain.usecase.GetSubmissionChallengesUseCase;
 import com.tokopedia.challenges.domain.usecase.GetSubmissionInChallengeUseCase;
 import com.tokopedia.challenges.domain.usecase.GetTermsNConditionUseCase;
 import com.tokopedia.challenges.domain.usecase.GetWinnersUseCase;
+import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.adapter.ChallengeMainDetailsAdapter;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
@@ -46,6 +49,7 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
     private GetChallengeDetailsUseCase getChallengeDetailsUseCase;
     private GetWinnersUseCase getWinnersUseCase;
     private GetSubmissionInChallengeUseCase getSubmissionInChallengeUseCase;
+    private PostSubmissionLikeUseCase postSubmissionLikeUseCase;
 
 
     /*---All Submission Properties---*/
@@ -61,13 +65,15 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
     @Inject
     public ChallengeDetailsPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallengeDetailsUseCase getChallengeDetailsUseCase,
                                      GetSubmissionChallengesUseCase getSubmissionChallengesUseCase, GetTermsNConditionUseCase getTermsNConditionUseCase,
-                                     GetWinnersUseCase getWinnersUseCase, GetSubmissionInChallengeUseCase getSubmissionInChallengeUseCase) {
+                                     GetWinnersUseCase getWinnersUseCase, GetSubmissionInChallengeUseCase getSubmissionInChallengeUseCase,
+                                     PostSubmissionLikeUseCase postSubmissionLikeUseCase) {
         this.getChallengeSettingUseCase = mGetChallengeSettingUseCase;
         this.getSubmissionChallengesUseCase = getSubmissionChallengesUseCase;
         this.getTermsNConditionUseCase = getTermsNConditionUseCase;
         this.getChallengeDetailsUseCase = getChallengeDetailsUseCase;
         this.getWinnersUseCase = getWinnersUseCase;
         this.getSubmissionInChallengeUseCase = getSubmissionInChallengeUseCase;
+        this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
     }
 
     @Override
@@ -173,6 +179,28 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
         }
     }
 
+    public void setSubmissionLike(final SubmissionResult result) {
+        RequestParams requestParams = RequestParams.create();
+        if (result.getMe() != null)
+            requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
+        if (!TextUtils.isEmpty(result.getId()))
+            requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, result.getId());
+        postSubmissionLikeUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+            }
+        });
+
+    }
+
     public void loadMoreItems() {
         setNextPageParams();
         getSubmissionChallengesUseCase.execute(searchParams, new Subscriber<Map<Type, RestResponse>>() {
@@ -216,7 +244,6 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
             }
         });
     }
-
 
     public void getTermsNCondition(String id) {
         getTermsNConditionUseCase.setCollectionID(id);

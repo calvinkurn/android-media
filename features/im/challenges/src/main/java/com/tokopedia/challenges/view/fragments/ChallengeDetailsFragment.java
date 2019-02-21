@@ -2,18 +2,25 @@ package com.tokopedia.challenges.view.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -24,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -102,6 +110,9 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     private String tncHtml, challengeDescriptionHtml;
     private String buzzPointText;
     private CloseableBottomSheetDialog challengeDesciptionDialog;
+    private AppBarLayout appBarLayout;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallengeDetailsFragment();
@@ -128,6 +139,16 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.challenges_details_fragment, container, false);
         mPresenter.attachView(this);
+        appBarLayout = view.findViewById(R.id.app_bar);
+
+        toolbar = view.findViewById(R.id.toolbar);
+        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
+
+        collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        collapsingToolbarLayout.setTitle(" ");
+
         mainContentView = view.findViewById(R.id.main_content);
         challengeImage = view.findViewById(R.id.image_challenge);
         challengeTitle = view.findViewById(R.id.tv_title);
@@ -167,6 +188,34 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     protected void initInjector() {
         NetworkClient.init(getActivity());
         getComponent(ChallengesComponent.class).inject(this);
+    }
+
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+
+            verticalOffset = Math.abs(verticalOffset);
+            int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
+            if (verticalOffset >= difference) {
+                if (challengeTitle.getText() != null) {
+                    collapsingToolbarLayout.setTitle(challengeTitle.getText());
+                }
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(),
+                        R.color.tkpd_dark_gray_toolbar));
+            } else {
+                collapsingToolbarLayout.setTitle(" ");
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(),
+                        R.color.white));
+            }
+        });
+    }
+
+    public void setDrawableColorFilter(Drawable drawable, int color) {
+        if (drawable != null) {
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 
     @Override
@@ -209,7 +258,8 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     @Override
     public void renderChallengeDetail(Result challengeResult) {
-        ImageHandler.loadImage(getActivity(), challengeImage, Utils.getImageUrl(challengeResult.getThumbnailUrl()), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), challengeImage, Utils.getImageUrl(challengeResult.getThumbnailUrl()),
+                R.color.grey_1100, R.color.grey_1100);
         if (!TextUtils.isEmpty(challengeResult.getTitle())) {
             challengeTitle.setText(challengeResult.getTitle());
         } else {
@@ -451,7 +501,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
                     mainDetailsAdapter.showLoader();
                 }
             }
-        }, 210L);
+        }, 200L);
 
     }
 
@@ -464,7 +514,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
                     mainDetailsAdapter.hideLoader();
                 }
             }
-        }, 210L);
+        }, 200L);
 
     }
 
@@ -494,7 +544,12 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     @Override
     public void onLike(SubmissionResult result) {
-        //Toast.makeText(getActivity(), "Liked", Toast.LENGTH_SHORT).show();
+        mPresenter.setSubmissionLike(result);
+    }
+
+    @Override
+    public void onShareClick(SubmissionResult result) {
+        ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), result, false);
     }
 
     @Override
@@ -560,25 +615,11 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             sortByRecent();
         } else if (viewId == R.id.ll_continue) {
             mPresenter.onSubmitButtonClick();
-        } /*else if (viewId == R.id.tv_tnc) {
-            fragmentCallbacks.replaceFragment(tncText, getString(R.string.ch_terms_conditions));
-           *//* analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);*//*
-        } */ else if (viewId == R.id.fab_share || viewId == R.id.iv_share) {
+        } else if (viewId == R.id.fab_share || viewId == R.id.iv_share) {
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
         } else if (viewId == R.id.iv_sort) {
             showSortingDialog();
         }
-
-        /*else if (v.getId() == R.id.tv_tnc) {
-            fragmentCallbacks.replaceFragment(tncText, getString(R.string.ch_terms_conditions));
-            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);
-        } else if (v.getId() == R.id.fab_share) {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
-        }*/
     }
 
     private void showSortingDialog() {

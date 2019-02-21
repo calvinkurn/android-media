@@ -69,6 +69,7 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
         } else {
             ivFavourite.setVisibility(View.VISIBLE);
             ivShareVia.setVisibility(View.VISIBLE);
+            ivShareVia.setOnClickListener(this);
         }
 
         ImageHandler.loadImage(context, submissionImage,
@@ -149,7 +150,6 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
                 String action = result.getMe().isLiked() ?
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE :
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
-
                 if (result.getCollection() != null) {
                    /* analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
                             ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,
@@ -157,11 +157,12 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
                 }
             }
 
-        } else {
-            Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
-            detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, result);
-            detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
-            listener.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, 0);
+        } else if(v.getId() == R.id.iv_share){
+            listener.onShareClick(result);
+            //Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
+            //detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, result);
+            //detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
+            //listener.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, 0);
         }
     }
 
@@ -183,6 +184,8 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
 
     public interface SubmissionViewHolderListener {
         void onLike(SubmissionResult result);
+
+        void onShareClick(SubmissionResult result);
 
         void onNavigateToActivityRequest(Intent intent, int requestCode, int position);
 

@@ -8,7 +8,6 @@ import android.view.View;
 
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
-import com.tokopedia.challenges.view.fragments.ImageViewerFragment;
 import com.tokopedia.challenges.view.fragments.VideoViewFragment;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
@@ -31,16 +30,9 @@ public class ChallengeDetailsActivity extends ChallengesBaseActivity implements 
 
     @Override
     public void replaceFragment(String text, String toolBarText) {
-        /*FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Bundle bundle = new Bundle();
-        bundle.putString(TncBottomSheetFragment.TEXT, text);
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
-        transaction.add(R.id.parent_view, TncBottomSheetFragment.createInstance(bundle));
-        transaction.addToBackStack(null);
-        transaction.commit();*/
     }
 
-    public void openVideoPlayer(SubmissionResult submissionResult){
+    public void openVideoPlayer(SubmissionResult submissionResult) {
         Fragment fragemnt = VideoViewFragment.createInstance(submissionResult);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.parent_view, fragemnt);
@@ -51,12 +43,10 @@ public class ChallengeDetailsActivity extends ChallengesBaseActivity implements 
     @Override
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("VideoViewer");
-        if(fragment!= null) {
-            if (fragment != null) {
-                DialogFragment df = (DialogFragment) fragment;
-                df.dismiss();
-                return;
-            }
+        if (fragment != null) {
+            DialogFragment df = (DialogFragment) fragment;
+            df.dismiss();
+            return;
         }
         super.onBackPressed();
     }
