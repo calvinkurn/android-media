@@ -94,7 +94,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private TextView orderId;
     private ImageView copyOrderId;
-    private View containerSendETicket;
+    private View containerSendEticket;
     private LinearLayout containerCancellation;
     private TextView orderStatus;
     private TextView transactionDate;
@@ -110,7 +110,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private Button buttonRescheduleTicket;
     private Button buttonReorder;
     private ProgressDialog progressDialog;
-    private LinearLayout showETicket;
+    private LinearLayout showEticket;
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter;
@@ -165,7 +165,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         View view = inflater.inflate(R.layout.fragment_flight_detail_order, container, false);
         orderId = view.findViewById(R.id.order_id_detail);
         copyOrderId = view.findViewById(R.id.copy_order_id);
-        containerSendETicket = view.findViewById(R.id.container_send_eticket);
+        containerSendEticket = view.findViewById(R.id.container_send_eticket);
         orderStatus = view.findViewById(R.id.status_ticket);
         transactionDate = view.findViewById(R.id.transaction_date);
         layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
@@ -189,7 +189,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
         insuranceLayout = (LinearLayout) view.findViewById(R.id.insurance_layout);
         insuranceRecyclerView = (RecyclerView) view.findViewById(R.id.rv_insurance);
-        showETicket = view.findViewById(R.id.tv_lihat_e_ticket);
+        showEticket = view.findViewById(R.id.tv_lihat_e_ticket);
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(R.id.cancellation_container);
@@ -255,17 +255,17 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             }
         });
 
-        containerSendETicket.setOnClickListener(new View.OnClickListener() {
+        containerSendEticket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 flightDetailOrderPresenter.onSendEticketButtonClicked();
             }
         });
 
-        showETicket.setOnClickListener(new View.OnClickListener() {
+        showEticket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToShowETicket();
+                navigateToShowEticket();
             }
         });
 
@@ -413,9 +413,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderStatus.setText(orderStatusString);
         orderStatus.setTextColor(ContextCompat.getColor(getActivity(), color));
         if (isTicketVisible) {
-            containerSendETicket.setVisibility(View.VISIBLE);
+            containerSendEticket.setVisibility(View.VISIBLE);
         } else {
-            containerSendETicket.setVisibility(View.GONE);
+            containerSendEticket.setVisibility(View.GONE);
         }
         if (isScheduleVisible) {
             buttonRescheduleTicket.setVisibility(View.VISIBLE);
@@ -535,18 +535,18 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void showLihatEticket() {
-        showETicket.setVisibility(View.VISIBLE);
-        showETicket.setOnClickListener(new View.OnClickListener() {
+        showEticket.setVisibility(View.VISIBLE);
+        showEticket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToShowETicket();
+                navigateToShowEticket();
             }
         });
     }
 
     @Override
     public void hideLihatEticket() {
-        showETicket.setVisibility(View.GONE);
+        showEticket.setVisibility(View.GONE);
     }
 
     @Override
@@ -708,7 +708,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         dialog.show();
     }
 
-    private void navigateToShowETicket() {
+    private void navigateToShowEticket() {
         if (flightOrder.getEticketUri() != null) {
             startActivity(flightModuleRouter.getWebviewActivity(
                     getActivity(), flightOrder.getEticketUri()));
