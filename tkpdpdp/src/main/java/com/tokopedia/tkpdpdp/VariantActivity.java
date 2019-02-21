@@ -122,6 +122,7 @@ public class VariantActivity extends TActivity  implements
         super.onCreate(savedInstanceState);
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
         productDetailData = getIntent().getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+        tradeInParams = getIntent().getParcelableExtra(KEY_TRADE_IN_PARAMS);
         stateFormVariantPage = getIntent().getIntExtra(KEY_STATE_OPEN_VARIANT, STATE_VARIANT_DEFAULT);
         selectedQuantity = getIntent().getIntExtra(KEY_SELECTED_QUANTIY, 1);
         selectedRemarkNotes = getIntent().getStringExtra(KEY_REMARK_FOR_SELLER);

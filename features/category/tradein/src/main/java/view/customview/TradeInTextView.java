@@ -2,10 +2,12 @@ package view.customview;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.os.Build;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
@@ -47,7 +49,15 @@ public class TradeInTextView extends ConstraintLayout {
         viewModel = ViewModelProviders.of((FragmentActivity) getContext(), TradeInVMFactory.getInstance((FragmentActivity) getContext())).get(TradeInTextViewModel.class);
         viewModel.getResponseData().observe((FragmentActivity) getContext(), new TradeInResponseObserver(this));
         inflate(getContext(), R.layout.trade_in_textview, this);
-        this.setBackgroundResource(R.drawable.bg_rect_white_shadow);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            this.setBackgroundResource(R.drawable.bg_rect_white);
+            this.setElevation(TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    getResources().getDimension(R.dimen.dp_4),
+                    getResources().getDisplayMetrics()
+            ));
+        } else
+            this.setBackgroundResource(R.drawable.bg_rect_white_shadow);
         thisInstance = this;
         this.setOnClickListener(clickListener);
         this.setAlpha(0);

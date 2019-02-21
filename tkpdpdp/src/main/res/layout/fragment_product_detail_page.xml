@@ -174,8 +174,9 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:tag="@string/noclick"
-                android:layout_marginBottom="@dimen/dp_8"/>
+                android:visibility="gone" />
 
             <com.tokopedia.tkpdpdp.customview.ProductInfoShortView
                 android:id="@+id/view_product_info_short"

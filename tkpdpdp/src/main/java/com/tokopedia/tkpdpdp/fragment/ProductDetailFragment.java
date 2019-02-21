@@ -48,34 +48,6 @@ import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
-import com.tokopedia.design.component.TextViewCompat;
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener;
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry;
-import com.tokopedia.gallery.ImageReviewGalleryActivity;
-import com.tokopedia.gallery.domain.GetImageReviewUseCase;
-import com.tokopedia.gallery.viewmodel.ImageReviewItem;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.linker.model.LinkerData;
-import com.tokopedia.product.share.ProductData;
-import com.tokopedia.product.share.ProductShare;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.tkpdpdp.DescriptionActivityNew;
-import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
-import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
-import com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView;
-import com.tokopedia.tkpdpdp.customview.ProductInfoShortView;
-import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
-import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
-import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
-import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
-import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -88,7 +60,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
@@ -129,10 +100,13 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent;
 import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent;
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException;
@@ -205,6 +179,7 @@ import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -223,6 +198,8 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsProductDetailPage;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -270,8 +247,8 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
 import static com.tokopedia.tkpdpdp.constant.ConstantKey.ARGS_STATE_RESULT_PDP_MODAL;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
-import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_EXPRESS;
 import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_DEFAULT;
+import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_EXPRESS;
 import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.CHECKOUT_TYPE_OCS;
 import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.EXTRA_MESSAGES_ERROR;
 import static com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_ERROR;
@@ -697,7 +674,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
-        labelCod.setVisibility(isCodShown? View.INVISIBLE : View.GONE);
+        labelCod.setVisibility(isCodShown ? View.INVISIBLE : View.GONE);
     }
 
     private void expandedAppBar() {
@@ -706,7 +683,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
             fabWishlist.show();
         }
-        labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
+        labelCod.setVisibility(isCodShown ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -1070,30 +1047,29 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     }
 
-    private void checkAndExecuteReferralAction(ProductData productData){
+    private void checkAndExecuteReferralAction(ProductData productData) {
         UserSession userSession = new UserSession(getActivity());
         String fireBaseRemoteMsgGuest = firebaseRemoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "");
-        if(!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.setProductShareDescription(fireBaseRemoteMsgGuest);
+        if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest))
+            productData.setProductShareDescription(fireBaseRemoteMsgGuest);
 
-        if(userSession.isLoggedIn() && userSession.isMsisdnVerified()) {
+        if (userSession.isLoggedIn() && userSession.isMsisdnVerified()) {
             String fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "");
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
-                    doReferralShareAction(productData, fireBaseRemoteMsg);
-            }
-            else {
+                doReferralShareAction(productData, fireBaseRemoteMsg);
+            } else {
                 executeProductShare(productData);
             }
-        }
-        else {
+        } else {
             executeProductShare(productData);
         }
     }
 
-    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg){
-        ActionCreator actionCreator = new ActionCreator<String, Integer>(){
+    private void doReferralShareAction(ProductData productData, String fireBaseRemoteMsg) {
+        ActionCreator actionCreator = new ActionCreator<String, Integer>() {
             @Override
             public void actionSuccess(int actionId, String dataObj) {
-                if(!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
+                if (!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
                     productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
                     TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
@@ -1108,15 +1084,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             }
         };
 
-        ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
+        ((PdpRouter) (getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
                 (ActionUIDelegate<String, String>) getActivity());
 
     }
 
 
-    private void executeProductShare(ProductData productData){
+    private void executeProductShare(ProductData productData) {
         ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_TEXT);
-        productShare.share(productData, ()->{
+        productShare.share(productData, () -> {
             showProgressLoading();
             return Unit.INSTANCE;
         }, () -> {
@@ -1210,7 +1186,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductInfoShortClicked(Intent intent){
+    public void onProductInfoShortClicked(Intent intent) {
         intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
         startActivity(intent);
         getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
@@ -2268,7 +2244,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
-                    labelCod.setVisibility(isCodShown? View.VISIBLE : View.GONE);
+                    labelCod.setVisibility(isCodShown ? View.VISIBLE : View.GONE);
                     stateCollapsing = FROM_EXPANDED;
                 }
             }
@@ -2866,13 +2842,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onImageFromBuyerClick(int viewType, String reviewId) {
-        if(viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE){
+        if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE) {
             ProductPageTracking.eventClickReviewOnBuyersImage(
                     getActivity(),
                     String.valueOf(productData.getInfo().getProductId()),
                     reviewId
             );
-        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER){
+        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
             ProductPageTracking.eventClickReviewOnSeeAllImage(
                     getActivity(),
                     String.valueOf(productData.getInfo().getProductId())
@@ -2894,6 +2870,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void checkTradeIn(TradeInParams tradeInParams) {
         this.tradeInParams = tradeInParams;
+        tradeInTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams);
     }
 
@@ -2919,7 +2901,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    private String getUserId(){
+    private String getUserId() {
         return userSession.getUserId();
     }
 }

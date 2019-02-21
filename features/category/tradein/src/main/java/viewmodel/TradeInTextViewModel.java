@@ -29,9 +29,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
         responseData = new MutableLiveData<>();
     }
 
-    public void startTradeIn() {
-        activityWeakReference.get().startActivityForResult(new Intent(activityWeakReference.get(), TradeInHomeActivity.class), 1001);
-    }
+
 
     public MutableLiveData<ValidateTradeInResponse> getResponseData() {
         return responseData;
@@ -66,10 +64,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                     if (graphqlResponse != null) {
                         ValidateTradeInResponse tradeInResponse = graphqlResponse.getData(ValidateTradeInResponse.class);
                         if (tradeInResponse != null) {
-                            if (tradeInResponse.isEligible()) {
-                                //todo add call to laku6.maxPrice()
-                            } else
-                                responseData.setValue(tradeInResponse);
+                            responseData.setValue(tradeInResponse);
                             if (tradeInResponse.isEligible() && tradeInResponse.isDiagnosed() && tradeInResponse.getUsedPrice() > 0) {
                                 tradeInParams.setUsedPrice(tradeInResponse.getUsedPrice());
                                 tradeInParams.setRemainingPrice(tradeInResponse.getRemainingPrice());

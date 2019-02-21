@@ -14,9 +14,7 @@ public class TradeInVMFactory extends ViewModelProvider.NewInstanceFactory {
     private WeakReference<Activity> activityWeakReference;
 
     public static TradeInVMFactory getInstance(Activity activity) {
-        if (sInstance == null) {
-            sInstance = new TradeInVMFactory(activity);
-        }
+        sInstance = new TradeInVMFactory(activity);
         return sInstance;
     }
 

@@ -20,15 +20,16 @@ public class TradeInResponseObserver implements Observer<ValidateTradeInResponse
 
     @Override
     public void onChanged(@Nullable ValidateTradeInResponse response) {
-//        if (response != null && !response.isEligible()) {
-//            if (response.isDiagnosed()) {
-//                tradeInTextView.priceTextView.setText(String.format(tradeInTextView.getContext().getResources().getString(R.string.text_price_holder), response.getUsedPrice()));
-//            } else {
-//                tradeInTextView.priceTextView.setVisibility(View.GONE);
-//            }
-//
-//        } else {
-//            tradeInTextView.setVisibility(View.GONE);
-//        }
+        if (response != null && !response.isEligible()) {
+            tradeInTextView.setVisibility(View.VISIBLE);
+            if (response.isDiagnosed()) {
+                tradeInTextView.priceTextView.setText(String.format(tradeInTextView.getContext().getResources().getString(R.string.text_price_holder), response.getUsedPrice()));
+            } else {
+                tradeInTextView.priceTextView.setText(tradeInTextView.getContext().getResources().getString(R.string.trade_in_exchange));
+            }
+
+        } else {
+            tradeInTextView.setVisibility(View.GONE);
+        }
     }
 }

@@ -5,6 +5,13 @@
     <string name="model_not_found">Tidak dapat menemukan model HP</string>
     <string name="go_to_product_details">Kembali Ke Detail Produk</string>
     <string name="text_price_holder">Harga Hp kamu Rp $1%d</string>
+    <string name="trade_in_exchange">Beli HP baru dengan tukar HP kamu.</string>
     <string name="text_check_functionality">Mulai Cek Fungsi</string>
     <string name="noclick">Action-No-Click</string>
+    <string name="tukar_tambah_sekarang_juga">Tukar tambah sekarang juga!</string>
+    <string name="text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IME.
+        \n• Menyalakan WiFi
+        \n• Akses accelero meter</string>
+    <string name="text_request_access">Meminta Izin Akses</string>
+    <string name="accept">Setuju</string>
 </resources>

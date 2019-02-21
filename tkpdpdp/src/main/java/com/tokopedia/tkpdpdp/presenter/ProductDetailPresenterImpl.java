@@ -536,12 +536,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             UserSession userSession = new UserSession(viewListener.getActivityContext());
                             TradeInParams tradeInParams = new TradeInParams();
-                            tradeInParams.setCategoryId(Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId()));
+                            //tradeInParams.setCategoryId(Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId()));
+                            tradeInParams.setCategoryId(24);
                             tradeInParams.setDeviceId(userSession.getDeviceId());
                             tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
                             tradeInParams.setPrice(productDetailData.getInfo().getProductPriceUnformatted());
                             tradeInParams.setProductId(productDetailData.getInfo().getProductId());
-                            tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
+                            //tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
+                            tradeInParams.setShopId(2400899);
 
                             viewListener.checkTradeIn(tradeInParams);
 
@@ -1131,12 +1133,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                         TradeInParams tradeInParams = new TradeInParams();
                         UserSession userSession = new UserSession(viewListener.getActivityContext());
-                        tradeInParams.setCategoryId(Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId()));
+//                        tradeInParams.setCategoryId(Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId()));
+                        tradeInParams.setCategoryId(24);
                         tradeInParams.setDeviceId(userSession.getDeviceId());
                         tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
                         tradeInParams.setPrice(data.getInfo().getProductPriceUnformatted());
                         tradeInParams.setProductId(data.getInfo().getProductId());
-                        tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
+//                        tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
+                        tradeInParams.setShopId(2400899);
 
                         viewListener.checkTradeIn(tradeInParams);
 

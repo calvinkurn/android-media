@@ -8,7 +8,7 @@
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginBottom="@dimen/dp_8"
-    android:elevation="@dimen/dp_4"
+    android:elevation="@dimen/dp_8"
     tools:parentTag="view.customview.TradeInTextView">
 
     <ImageView
@@ -32,7 +32,7 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:lineSpacingExtra="@dimen/dp_6"
-        android:text="Tukar tambah sekarang juga!"
+        android:text="@string/tukar_tambah_sekarang_juga"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
