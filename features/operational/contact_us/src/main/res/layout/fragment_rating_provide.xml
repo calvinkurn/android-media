@@ -37,11 +37,11 @@
     <LinearLayout
         android:id="@+id/smile_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10"
+        android:layout_height="@dimen/dp_60"
+        android:padding="@dimen/dp_10"
         android:weightSum="5"
-        app:layout_constraintTop_toBottomOf="@id/txt_help_title">
+        app:layout_constraintTop_toBottomOf="@id/txt_help_title"
+        android:layout_marginTop="@dimen/dp_10">
 
     </LinearLayout>
 
@@ -81,74 +81,24 @@
         app:layout_constraintTop_toBottomOf="@id/divider"
         tools:text="Apa yang bisa diperbaiki dari layanan kami?" />
 
-    <TextView
-        android:id="@+id/txt_first_option"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_12"
-        android:background="@drawable/rounded_stroke_grey"
-        android:gravity="center"
-        android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/txt_second_option"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_6"
+        android:showDividers="end"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_feedback_question"
-        app:layout_constraintWidth_default="spread"
-        tools:text="Kecepatan respons" />
+        app:layout_scrollFlags="enterAlways">
 
-    <TextView
-        android:id="@+id/txt_second_option"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
-        android:backgroundTint="@color/green_50"
-        android:background="@drawable/rounded_stroke_grey"
-        android:gravity="center"
-        android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_first_option"
-        app:layout_constraintTop_toBottomOf="@+id/txt_feedback_question"
-        app:layout_constraintWidth_default="spread"
-        tools:text="Kejelasan bahasa" />
-
-    <TextView
-        android:id="@+id/txt_third_option"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/rounded_stroke_grey"
-        android:gravity="center"
-        android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/txt_first_option"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_first_option"
-        tools:text="Waktu penyelesaian" />
-
-    <TextView
-        android:id="@+id/txt_fourth_option"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/rounded_stroke_grey"
-        android:gravity="center"
-        android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/txt_second_option"
-        app:layout_constraintStart_toStartOf="@+id/txt_second_option"
-        app:layout_constraintTop_toBottomOf="@+id/txt_first_option"
-        tools:text="Kualitas jawaban" />
+        <com.tokopedia.contactus.inboxticket2.view.customview.CustomQuickOptionView
+            android:id="@+id/filter_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txt_finished"
@@ -163,7 +113,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Selesai" />
+        android:text="Selesai" />
 
 
 </android.support.constraint.ConstraintLayout>

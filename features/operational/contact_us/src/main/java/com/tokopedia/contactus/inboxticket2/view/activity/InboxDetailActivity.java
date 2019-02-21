@@ -303,15 +303,15 @@ public class InboxDetailActivity extends InboxBaseActivity
     @OnClick({R2.id.btn_inactive_1,R2.id.btn_inactive_2,R2.id.btn_inactive_3,R2.id.btn_inactive_4,R2.id.btn_inactive_5,})
     void onEmojiClick(View v) {
             if(v.getId() == R.id.btn_inactive_1) {
-                startActivity(ActivityProvideRating.getInstance(this, 1));
+                startActivity(ActivityProvideRating.getInstance(this, 1,getIntent().getStringExtra(PARAM_TICKET_ID)));
             }else if (v.getId() == R.id.btn_inactive_2) {
-                startActivity(ActivityProvideRating.getInstance(this, 2));
+                startActivity(ActivityProvideRating.getInstance(this, 2,getIntent().getStringExtra(PARAM_TICKET_ID)));
             }else if (v.getId() == R.id.btn_inactive_3) {
-                startActivity(ActivityProvideRating.getInstance(this, 3));
+                startActivity(ActivityProvideRating.getInstance(this, 3,getIntent().getStringExtra(PARAM_TICKET_ID)));
             }else if (v.getId() == R.id.btn_inactive_4) {
-                startActivity(ActivityProvideRating.getInstance(this, 4));
+                startActivity(ActivityProvideRating.getInstance(this, 4,getIntent().getStringExtra(PARAM_TICKET_ID)));
             }else if (v.getId() == R.id.btn_inactive_5) {
-                startActivity(ActivityProvideRating.getInstance(this, 5));
+                startActivity(ActivityProvideRating.getInstance(this, 5,getIntent().getStringExtra(PARAM_TICKET_ID)));
             }
     }
 

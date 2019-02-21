@@ -1,10 +1,15 @@
 package com.tokopedia.contactus.inboxticket2.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class Tickets{
+	@SerializedName("badCsatReasonList")
 	private List<BadCsatReasonListItem> badCsatReasonList;
+	@SerializedName("showRating")
 	private boolean showRating;
+	@SerializedName("id")
 	private String id;
 
 	public void setBadCsatReasonList(List<BadCsatReasonListItem> badCsatReasonList){

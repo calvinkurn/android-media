@@ -1,10 +1,13 @@
 package com.tokopedia.contactus.inboxticket2.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class Data{
+	@SerializedName("tickets")
 	private Tickets tickets;
-	private List<Object> messageError;
+	@SerializedName("isSuccess")
 	private int isSuccess;
 
 	public void setTickets(Tickets tickets){
@@ -15,13 +18,6 @@ public class Data{
 		return tickets;
 	}
 
-	public void setMessageError(List<Object> messageError){
-		this.messageError = messageError;
-	}
-
-	public List<Object> getMessageError(){
-		return messageError;
-	}
 
 	public void setIsSuccess(int isSuccess){
 		this.isSuccess = isSuccess;
@@ -36,8 +32,7 @@ public class Data{
 		return 
 			"Data{" + 
 			"tickets = '" + tickets + '\'' + 
-			",messageError = '" + messageError + '\'' + 
-			",isSuccess = '" + isSuccess + '\'' + 
+			",isSuccess = '" + isSuccess + '\'' +
 			"}";
 		}
 }

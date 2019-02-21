@@ -50,10 +50,18 @@ public class QuickSingleFilterView extends BaseCustomView {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_filter);
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(getLayoutManager());
         initialAdapter();
         recyclerView.setAdapter(adapterFilter);
+    }
+
+    public void updateLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
     }
 
     @LayoutRes

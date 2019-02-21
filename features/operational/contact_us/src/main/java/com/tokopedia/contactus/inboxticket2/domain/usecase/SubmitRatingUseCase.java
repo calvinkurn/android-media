@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail;
+import com.tokopedia.contactus.inboxticket2.data.model.ChipInboxDetails;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -27,23 +28,24 @@ public class SubmitRatingUseCase  extends UseCase<ChipGetInboxDetail> {
         this.graphqlUseCase = graphqlUseCase;
     }
 
-    public void createRequestParams(String commentID, String rating, String reason) {
+    public RequestParams createRequestParams(String commentID, String rating, String reason) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString("comment_id",commentID);
-        requestParams.putString("rating",rating);
+        requestParams.putString("commentID",commentID);
+        requestParams.putInt("rating", Integer.parseInt(rating));
         requestParams.putString("reason",reason);
+        return requestParams;
     }
 
     @Override
     public Observable<ChipGetInboxDetail> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.submit_rating), ChipGetInboxDetail.class, requestParams.getParameters());
+                R.raw.submit_rating), ChipInboxDetails.class, requestParams.getParameters());
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(requestParams).map(new Func1<GraphqlResponse, ChipGetInboxDetail>() {
             @Override
             public ChipGetInboxDetail call(GraphqlResponse graphqlResponse) {
-                return graphqlResponse.getData(ChipGetInboxDetail.class);
+                return ((ChipInboxDetails)(graphqlResponse.getData(ChipInboxDetails.class))).getChipGetInboxDetail();
             }
         });
     }

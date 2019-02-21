@@ -1,8 +1,13 @@
 package com.tokopedia.contactus.inboxticket2.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class BadCsatReasonListItem{
+	@SerializedName("messageEn")
 	private String messageEn;
+	@SerializedName("id")
 	private int id;
+	@SerializedName("message")
 	private String message;
 
 	public void setMessageEn(String messageEn){

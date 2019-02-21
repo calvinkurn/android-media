@@ -6,14 +6,4 @@
     <solid android:color="@color/white" />
 
     <corners android:radius="50dp" />
-
-    <padding
-        android:bottom="15dp"
-        android:left="15dp"
-        android:right="15dp"
-        android:top="15dp" />
-
-    <stroke
-        android:color="@color/grey_300"
-        android:width="1px"/>
 </shape>

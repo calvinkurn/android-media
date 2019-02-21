@@ -1,20 +1,35 @@
 package com.tokopedia.contactus.inboxticket2.view.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.inboxticket2.data.model.BadCsatReasonListItem;
 import com.tokopedia.contactus.inboxticket2.di.DaggerInboxComponent;
 import com.tokopedia.contactus.inboxticket2.di.InboxComponent;
 import com.tokopedia.contactus.inboxticket2.di.InboxModule;
 import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract;
+import com.tokopedia.contactus.inboxticket2.view.customview.CustomQuickOptionView;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,11 +43,10 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     private LinearLayout mSmileLayout;
     private TextView mTxtSmileSelected;
     private TextView mTxtFeedbackQuestion;
-    private TextView mTxtFirstOption;
-    private TextView mTxtSecondOption;
-    private TextView mTxtThirdOption;
-    private TextView mTxtFourthOption;
     private TextView mTxtFinished;
+    public static final String CLICKED_EMOJI = "clicked_emoji";
+    public static final String PARAM_TICKET_ID = "ticket_id";
+    private CustomQuickOptionView mFilterReview;
 
     public static FragmentProvideRating newInstance(Bundle bundle) {
         FragmentProvideRating fragment = new FragmentProvideRating();
@@ -54,6 +68,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         initView(view);
         presenter = component.getProvideRatingPresenter();
         presenter.attachView(this);
+        disableSubmitButton();
         return view;
     }
 
@@ -63,23 +78,135 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     }
 
     @Override
-    public void setFirstOption(String option) {
-        mTxtFirstOption.setText(option);
+    public void setFirstEmoji(int drawable) {
+        addImageView(drawable).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onFirstEmojiClick();
+            }
+        });
     }
 
     @Override
-    public void setSecondOption(String option) {
-        mTxtSecondOption.setText(option);
+    public void setSecondEmoji(int drawable) {
+        addImageView(drawable).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSecondEmojiClick();
+            }
+        });
     }
 
     @Override
-    public void setThirdOption(String option) {
-        mTxtThirdOption.setText(option);
+    public void setThirdEmoji(int drawable) {
+        addImageView(drawable).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onThirdEmojiClick();
+            }
+        });
     }
 
     @Override
-    public void setFourthOption(String option) {
-        mTxtFourthOption.setText(option);
+    public void setFourthEmoji(int drawable) {
+        addImageView(drawable).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onFourthEmojiClick();
+            }
+        });
+    }
+
+    @Override
+    public void setFifthEmoji(int drawable) {
+        addImageView(drawable).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onFifthEmojiClick();
+            }
+        });
+    }
+
+    @Override
+    public void setMessage(String message) {
+        mTxtSmileSelected.setText(message);
+    }
+
+    @Override
+    public void setMessageColor(String color) {
+        mTxtSmileSelected.setTextColor(Color.parseColor(color));
+    }
+
+    @Override
+    public void setQuestion(String question) {
+        mTxtFeedbackQuestion.setText(question);
+    }
+
+    private ImageView addImageView(int drawable) {
+        ImageView imageView = new ImageView(getContext());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        layoutParams.weight = 1.0f;
+        imageView.setImageResource(drawable);
+        imageView.setLayoutParams(layoutParams);
+        mSmileLayout.addView(imageView);
+        return imageView;
+    }
+
+
+
+
+    @Override
+    public int getSelectedEmoji() {
+        return getArguments().getInt(CLICKED_EMOJI);
+    }
+
+    @Override
+    public void clearEmoji() {
+        mSmileLayout.removeAllViews();
+    }
+
+    @Override
+    public void showErrorMessage(String o) {
+        ToasterError.make(getView(), o).show();
+    }
+
+    String selectedOption;
+    @Override
+    public void setFilterList(List<BadCsatReasonListItem> filterList) {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
+        mFilterReview.updateLayoutManager(gridLayoutManager);
+        List<QuickFilterItem> filterItems = new ArrayList<>();
+        for(BadCsatReasonListItem filter:filterList) {
+            CustomViewQuickFilterItem finishFilter = new CustomViewQuickFilterItem();
+            finishFilter.setName(filter.getMessage());
+            finishFilter.setType(filter.getId()+"");
+            finishFilter.setColorBorder(R.color.tkpd_main_green);
+            filterItems.add(finishFilter);
+        }
+        mFilterReview.renderFilter(filterItems);
+        mFilterReview.setListener(new QuickSingleFilterView.ActionListener() {
+            @Override
+            public void selectFilter(String typeFilter) {
+                selectedOption = typeFilter;
+                enableSubmitButton();
+            }
+        });
+    }
+
+
+    @Override
+    public String getTicketId() {
+        return getArguments().getString(PARAM_TICKET_ID);
+    }
+
+    @Override
+    public String getSelectedItem() {
+        return selectedOption;
+    }
+
+    @Override
+    public void onSuccessSubmit() {
+        Toast.makeText(getContext(), "submitSuccess", Toast.LENGTH_SHORT).show();
     }
 
     private void initView(View view) {
@@ -87,10 +214,27 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         mSmileLayout = view.findViewById(R.id.smile_layout);
         mTxtSmileSelected = view.findViewById(R.id.txt_smile_selected);
         mTxtFeedbackQuestion = view.findViewById(R.id.txt_feedback_question);
-        mTxtFirstOption = view.findViewById(R.id.txt_first_option);
-        mTxtSecondOption = view.findViewById(R.id.txt_second_option);
-        mTxtThirdOption = view.findViewById(R.id.txt_third_option);
-        mTxtFourthOption = view.findViewById(R.id.txt_fourth_option);
         mTxtFinished = view.findViewById(R.id.txt_finished);
+        mFilterReview = view.findViewById(R.id.filter_review);
+        mTxtFinished.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSubmitClick();
+            }
+        });
+    }
+
+    public void disableSubmitButton() {
+        MethodChecker.setBackground(mTxtFinished, MethodChecker.getDrawable(getContext(), R.drawable
+                .bg_button_disabled));
+        mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), R.color.grey_500));
+        mTxtFinished.setEnabled(false);
+    }
+
+    public void enableSubmitButton() {
+        MethodChecker.setBackground(mTxtFinished, MethodChecker.getDrawable(getContext(), R.drawable
+                .button_curvy_green));
+        mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
+        mTxtFinished.setEnabled(true);
     }
 }
