@@ -55,7 +55,7 @@
 
     <!--CREATE POST-->
     <string name="af_add_images">Tambah Foto</string>
-    <string name="af_done">Selesai</string>
+    <string name="af_done">Post Sekarang</string>
     <string name="af_add_more_image_to_product">Buat Produk Pilihanmu Lebih Menarik dengan Foto Ala Kamu!</string>
     <string name="af_see_example">Lihat Contoh</string>
     <string name="title_af_image_picker">Gambar Produk</string>
@@ -63,9 +63,12 @@
     <string name="title_af_create_post">Tambah Foto</string>
     <string name="title_af_choose_photo">Pilih Foto</string>
     <string name="title_af_create_post_example">Contoh Foto</string>
+    <string name="af_add_image">Tambah Foto</string>
+    <string name="af_add_video">Tambah Videoo</string>
     <string name="af_use_image_to_show">Gunakan foto yang menampilkan produk pilihanmu.</string>
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
+    <string name="af_caption_hint">Tulis caption yuk…</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>

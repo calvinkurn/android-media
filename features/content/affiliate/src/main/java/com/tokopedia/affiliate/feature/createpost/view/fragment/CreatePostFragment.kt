@@ -3,45 +3,37 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.support.v4.app.TaskStackBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking
+import com.tokopedia.affiliate.common.preference.AffiliatePreference
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Guide
-import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Medium
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostExampleActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity
+import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
-import com.tokopedia.affiliate.common.preference.AffiliatePreference
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
-import com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.user.session.UserSession
-
-import javax.inject.Inject
-
+import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
-import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.showLoading
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
+import javax.inject.Inject
 
 class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
 
@@ -54,9 +46,12 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
     @Inject
     lateinit var affiliateAnalytics: AffiliateAnalytics
 
-    private var viewModel: CreatePostViewModel? = null
-    private var adapter: PostImageAdapter? = null
-    private var guide: Guide? = null
+    private var viewModel: CreatePostViewModel = CreatePostViewModel()
+    private var guide: Guide = Guide()
+
+    private val adapter: RelatedProductAdapter by lazy {
+        RelatedProductAdapter()
+    }
 
     companion object {
 
@@ -66,6 +61,7 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
         private const val REQUEST_IMAGE_PICKER = 1234
         private const val REQUEST_EXAMPLE = 13
         private const val REQUEST_LOGIN = 83
+        private const val REQUEST_ATTACH_PRODUCT = 10
 
         fun createInstance(bundle: Bundle): CreatePostFragment {
             val fragment = CreatePostFragment()
@@ -107,19 +103,15 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
         presenter.attachView(this)
         initView()
         if (userSession.isLoggedIn) {
-            if (!viewModel!!.isEdit) {
-                presenter.fetchContentForm(viewModel!!.productId, viewModel!!.adId)
+            if (!viewModel.isEdit) {
+                presenter.fetchContentForm(viewModel.productId, viewModel.adId)
             } else {
-                presenter.fetchEditContentForm(viewModel!!.postId)
+                presenter.fetchEditContentForm(viewModel.postId)
             }
         } else {
-            startActivityForResult(
-                    RouteManager.getIntent(
-                            context!!,
-                            ApplinkConst.LOGIN
-                    ),
-                    REQUEST_LOGIN
-            )
+            context?.let {
+                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQUEST_LOGIN)
+            }
         }
     }
 
@@ -137,11 +129,15 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
-                viewModel!!.fileImageList = data!!.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                setupViewPager()
+                viewModel.fileImageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
+                updateThumbnail()
             }
             REQUEST_EXAMPLE -> goToImagePicker()
-            REQUEST_LOGIN -> presenter.fetchContentForm(viewModel!!.productId, viewModel!!.adId)
+            REQUEST_LOGIN -> presenter.fetchContentForm(viewModel.productId, viewModel.adId)
+            REQUEST_ATTACH_PRODUCT -> {
+                val products = data?.getParcelableArrayListExtra<ResultProduct>(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY) ?: arrayListOf()
+                setRelatedProduct(convertAttachProduct(products))
+            }
             else -> {
             }
         }
@@ -160,67 +156,60 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
     }
 
     override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
-        viewModel!!.token = feedContentForm.token
-        viewModel!!.maxImage = feedContentForm.media.maxMedia
-        if (!feedContentForm.guides.isEmpty()) {
-            setupHeader(feedContentForm.guides[0])
-        }
+        viewModel.token = feedContentForm.token
+        viewModel.maxImage = feedContentForm.media.maxMedia
         if (!feedContentForm.media.media.isEmpty()) {
-            if (viewModel!!.urlImageList.isEmpty()) {
-                viewModel!!.urlImageList.clear()
-                for (i in 0 until feedContentForm.media.media.size) {
-                    val medium = feedContentForm.media.media[i]
-                    viewModel!!.urlImageList.add(medium.mediaUrl)
+            if (viewModel.urlImageList.isEmpty()) {
+                viewModel.urlImageList.clear()
+                feedContentForm.media.media.forEach {
+                    viewModel.urlImageList.add(it.mediaUrl)
                 }
             }
-            setupViewPager()
-            setMain!!.visibility = if (adapter!!.count > 1) View.VISIBLE else View.INVISIBLE
-            deleteImageLayout!!.visibility = if (adapter!!.count > 1) View.VISIBLE else View.GONE
         }
-        updateSetMainView()
+        updateThumbnail()
     }
 
     override fun onErrorGetContentForm(message: String) {
         NetworkErrorHelper.showEmptyState(context, mainView, message
-        ) { presenter.fetchContentForm(viewModel!!.productId, viewModel!!.adId) }
+        ) { presenter.fetchContentForm(viewModel.productId, viewModel.adId) }
     }
 
     override fun onErrorGetEditContentForm(message: String) {
         NetworkErrorHelper.showEmptyState(context, mainView, message
-        ) { presenter.fetchEditContentForm(viewModel!!.postId) }
+        ) { presenter.fetchEditContentForm(viewModel.postId) }
     }
 
     override fun onErrorNotAffiliate() {
-        if (activity != null) {
-            val taskStackBuilder = TaskStackBuilder.create(activity!!)
+        activity?.let {
+            val taskStackBuilder = TaskStackBuilder.create(it)
 
-            val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel!!.productId
-            val onboardingIntent = RouteManager.getIntent(activity!!, onboardingApplink)
+            val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel.productId
+            val onboardingIntent = RouteManager.getIntent(it, onboardingApplink)
             onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             taskStackBuilder.addNextIntent(onboardingIntent)
 
             val educationIntent = RouteManager.getIntent(
-                    activity!!,
+                    it,
                     ApplinkConst.AFFILIATE_EDUCATION)
             taskStackBuilder.addNextIntent(educationIntent)
 
             taskStackBuilder.startActivities()
-            activity!!.finish()
+            it.finish()
         }
     }
 
     override fun onErrorNoQuota() {
-        if (activity != null) {
-            Toast.makeText(activity, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
+        activity?.let {
+            Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show()
-            activity!!.finish()
+            it.finish()
             affiliateAnalytics.onJatahRekomendasiHabisPdp()
         }
     }
 
     override fun onSuccessSubmitPost() {
         goToProfile()
-        activity!!.finish()
+        activity?.finish()
     }
 
     override fun onErrorSubmitPost(message: String) {
@@ -232,34 +221,28 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
     }
 
     private fun initVar(savedInstanceState: Bundle?) {
-        if (viewModel == null) {
-            viewModel = CreatePostViewModel()
-        }
-        if (adapter == null) {
-            adapter = PostImageAdapter()
-        }
-
         if (savedInstanceState != null) {
-            viewModel = savedInstanceState.getParcelable(VIEW_MODEL)
+            viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
         } else if (arguments != null) {
-            viewModel!!.productId = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
-            viewModel!!.adId = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "")
-            viewModel!!.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
-            viewModel!!.isEdit = arguments!!.getBoolean(CreatePostActivity.PARAM_IS_EDIT, false)
+            viewModel.productId = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
+            viewModel.adId = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "")
+            viewModel.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
+            viewModel.isEdit = arguments!!.getBoolean(CreatePostActivity.PARAM_IS_EDIT, false)
         }
     }
 
     private fun initView() {
-        doneBtn!!.setOnClickListener {
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel!!.productId)
-            if (!viewModel!!.isEdit) {
-                submitPost()
-            } else {
-                editPost()
-            }
+        relatedProductRv.adapter = adapter
+        doneBtn.setOnClickListener {
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productId)
+//            if (!viewModel.isEdit) {
+//                submitPost()
+//            } else {
+//                editPost()
+//            }
         }
-        addImageBtn!!.setOnClickListener {
-            affiliateAnalytics.onTambahGambarButtonClicked(viewModel!!.productId)
+        addImageBtn.setOnClickListener {
+            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productId)
             if (shouldShowExample()) {
                 goToImageExample(true)
                 affiliatePreference.setFirstTimeCreatePost(userSession.userId)
@@ -267,29 +250,12 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
                 goToImagePicker()
             }
         }
-        deleteImageLayout!!.setOnClickListener {
-            if (viewModel!!.mainImageIndex == tabLayout!!.selectedTabPosition && tabLayout!!.selectedTabPosition == adapter!!.count - 2) {
-                if (tabLayout!!.selectedTabPosition - 1 > 0) {
-                    viewModel!!.mainImageIndex = tabLayout!!.selectedTabPosition - 1
-                } else {
-                    viewModel!!.mainImageIndex = 0
-                }
-                updateSetMainView()
-            }
-
-            if (tabLayout!!.selectedTabPosition < viewModel!!.fileImageList.size) {
-                viewModel!!.fileImageList.removeAt(tabLayout!!.selectedTabPosition)
-            } else {
-                viewModel!!.urlImageList.removeAt(
-                        tabLayout!!.selectedTabPosition - viewModel!!.fileImageList.size
-                )
-            }
-            adapter!!.imageList.removeAt(tabLayout!!.selectedTabPosition)
-            adapter!!.notifyDataSetChanged()
-        }
-        setMain!!.setOnClickListener {
-            viewModel!!.mainImageIndex = tabLayout!!.selectedTabPosition
-            updateSetMainView()
+        relatedAddBtn.setOnClickListener {
+            val intent = AttachProductActivity.createInstance(context,
+                    userSession.shopId, "",
+                    true,
+                    AttachProductActivity.SOURCE_TALK)
+            startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
         }
     }
 
@@ -297,63 +263,11 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
         return affiliatePreference.isFirstTimeCreatePost(userSession.userId)
     }
 
-    private fun setupHeader(guide: Guide) {
-        this.guide = guide
-        title!!.text = guide.header
-        seeExample!!.text = guide.moreText
-        seeExample!!.setOnClickListener {
-            affiliateAnalytics.onLihatContohButtonClicked(viewModel!!.productId)
-            goToImageExample(false)
-        }
-    }
-
-    private fun setupViewPager() {
-        adapter!!.setList(viewModel!!.completeImageList)
-        imageViewPager!!.adapter = adapter
-        imageViewPager!!.offscreenPageLimit = adapter!!.count
-        tabLayout!!.setupWithViewPager(imageViewPager)
-        tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                deleteImageLayout!!.visibility = if (tab.position == adapter!!.count - 1)
-                    View.GONE
-                else
-                    View.VISIBLE
-                setMain!!.visibility = if (tab.position == adapter!!.count - 1)
-                    View.INVISIBLE
-                else
-                    View.VISIBLE
-                updateSetMainView()
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-
-            }
-        })
-    }
-
-    private fun updateSetMainView() {
-        if (viewModel!!.mainImageIndex == tabLayout!!.selectedTabPosition) {
-            setMain!!.setText(R.string.af_main_image)
-            setMain!!.setTextColor(MethodChecker.getColor(context, R.color.black_38))
-            setMain!!.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    MethodChecker.getDrawable(context, R.drawable.ic_af_check_gray), null
-            )
-        } else {
-            setMain!!.setText(R.string.af_set_main_image)
-            setMain!!.setTextColor(MethodChecker.getColor(context, R.color.medium_green))
-            setMain!!.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
-        }
-    }
-
     private fun goToImageExample(needResult: Boolean) {
         val intent = CreatePostExampleActivity.createIntent(
                 context,
-                guide?.imageUrl ?: "",
-                guide?.imageDescription ?: ""
+                guide.imageUrl ?: "",
+                guide.imageDescription ?: ""
         )
 
         if (needResult) {
@@ -368,8 +282,8 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
                             it,
-                            viewModel!!.fileImageList,
-                            viewModel!!.maxImage - viewModel!!.urlImageList.size
+                            viewModel.fileImageList,
+                            viewModel.maxImage - viewModel.urlImageList.size
                     ),
                     REQUEST_IMAGE_PICKER)
         }
@@ -377,7 +291,7 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
 
     private fun goToProfile() {
         activity?.let {
-            var profileApplink = if (viewModel!!.isEdit)
+            var profileApplink = if (viewModel.isEdit)
                 ApplinkConst.PROFILE_AFTER_EDIT
             else
                 ApplinkConst.PROFILE_AFTER_POST
@@ -393,20 +307,41 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
 
     private fun submitPost() {
         presenter.submitPost(
-                viewModel!!.productId,
-                viewModel!!.adId,
-                viewModel!!.token,
-                viewModel!!.completeImageList,
-                viewModel!!.mainImageIndex
+                viewModel.productId,
+                viewModel.adId,
+                viewModel.token,
+                viewModel.completeImageList,
+                viewModel.mainImageIndex
         )
     }
 
     private fun editPost() {
         presenter.editPost(
-                viewModel!!.postId,
-                viewModel!!.token,
-                viewModel!!.completeImageList,
-                viewModel!!.mainImageIndex
+                viewModel.postId,
+                viewModel.token,
+                viewModel.completeImageList,
+                viewModel.mainImageIndex
         )
+    }
+
+    private fun updateThumbnail() {
+        if (viewModel.completeImageList.isNotEmpty()) {
+            thumbnail.loadImageRounded(viewModel.completeImageList.first())
+            carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
+        } else {
+            thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+        }
+    }
+
+    private fun setRelatedProduct(products: MutableList<RelatedProductItem>) {
+        adapter.addAll(products)
+    }
+
+    private fun convertAttachProduct(attachedProducts: MutableList<ResultProduct>): MutableList<RelatedProductItem> {
+        val relatedProducts = arrayListOf<RelatedProductItem>()
+        attachedProducts.forEach {
+            relatedProducts.add(RelatedProductItem(it.productId.toString(), it.name, it.price))
+        }
+        return relatedProducts
     }
 }

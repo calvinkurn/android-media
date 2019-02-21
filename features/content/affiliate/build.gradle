@@ -30,6 +30,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.attachproduct)
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)

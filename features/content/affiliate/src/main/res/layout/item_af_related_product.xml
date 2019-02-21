@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <Space
+        android:id="@+id/spaceThumbnail"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/thumbnail"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:ellipsize="end"
+        android:lineSpacingExtra="6sp"
+        android:maxLines="1"
+        android:textColor="#e131353b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toTopOf="@+id/price"
+        app:layout_constraintEnd_toStartOf="@+id/delete"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/spaceThumbnail"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Merries Baby Diapers Terbaik sepanjang masa dunia ini hanya sementara" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="#009eed"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/spaceBottom"
+        app:layout_constraintEnd_toStartOf="@+id/delete"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/spaceThumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        tools:text="Komisi Rp8.400" />
+
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:src="@drawable/ic_system_action_close_grayscale_24"
+        app:layout_constraintBottom_toTopOf="@+id/spaceBottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnusedAttribute" />
+
+    <Space
+        android:id="@+id/spaceBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/thumbnail" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="@color/bg_button_border_outline"
+        android:paddingTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/spaceThumbnail" />
+</android.support.constraint.ConstraintLayout>

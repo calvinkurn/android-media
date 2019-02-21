@@ -57,7 +57,7 @@ public class UploadMultipleImageUseCase extends UseCase<List<SubmitPostMedium>> 
 
     private Func1<SubmitPostMedium, Observable<SubmitPostMedium>> uploadSingleImage() {
         return medium -> {
-            if (CreatePostViewModel.urlIsFile(medium.getMediaURL())) {
+            if (CreatePostViewModel.Companion.urlIsFile(medium.getMediaURL())) {
                 return uploadImageUseCase.createObservable(createUploadParams(medium.getMediaURL()))
                         .map(mapToUrl(medium))
                         .subscribeOn(Schedulers.io());
