@@ -339,10 +339,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         snackBarWebSocket?.dismiss()
     }
 
-    override fun onMessageReceived(item: Visitable<*>, hideMessage: Boolean) {
-
-    }
-
     override fun onTotalViewChanged(participantViewModel: ParticipantViewModel) {
         viewState.onTotalViewChanged(participantViewModel.channelId, participantViewModel.totalView)
     }

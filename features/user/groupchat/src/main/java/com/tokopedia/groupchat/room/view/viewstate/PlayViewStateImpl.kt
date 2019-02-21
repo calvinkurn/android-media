@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
@@ -30,7 +31,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.text.BackEditText
+import com.tokopedia.design.widget.ViewTooltip
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
@@ -245,6 +248,7 @@ class PlayViewStateImpl(
         //TODO map from response
         setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
         setDynamicIconNotification(true)
+        setDynamicIconTooltip("asdasdasdtooltip")
         setDynamicBackground("https://i.pinimg.com/originals/12/da/77/12da776434178d3a19176fb76048faba.jpg")
         setFloatingIcon("tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
                 ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih", "https://i.gifer.com/M8tf.gif")
@@ -263,6 +267,8 @@ class PlayViewStateImpl(
      */
     private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
         showInfoBottomSheet(it) {
+            if(it.overlayViewModel!= null
+                    && it.overlayViewModel.interuptViewModel!= null)
             showOverlayBottomSheet(it)
         }
     }
@@ -730,6 +736,7 @@ class PlayViewStateImpl(
         dynamicIcon.setOnClickListener {
             showWebviewBottomSheet(redirectUrl)
         }
+
     }
 
     private fun setDynamicIconNotification(hasNotification: Boolean) {
@@ -739,6 +746,22 @@ class PlayViewStateImpl(
         } else {
             //TODO clear notification
         }
+    }
+
+    private fun setDynamicIconTooltip(tooltipText: String) {
+        if(tooltipText.isBlank())return
+
+        ViewTooltip.on(activity, dynamicIcon)
+                .autoHide(true, 5000)
+                .corner(30)
+                .clickToHide(false)
+                .color(MethodChecker.getColor(dynamicIcon.context, R.color.white))
+                .textColor(MethodChecker.getColor(dynamicIcon.context, R.color.black_70))
+                .position(ViewTooltip.Position.TOP)
+                .text(tooltipText)
+                .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                .show()
+
     }
 
     private fun showWebviewBottomSheet(url: String) {

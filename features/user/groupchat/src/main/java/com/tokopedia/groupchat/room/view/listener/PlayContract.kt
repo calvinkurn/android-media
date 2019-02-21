@@ -15,7 +15,6 @@ import com.tokopedia.user.session.UserSessionInterface
 interface PlayContract {
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
         fun onOpenWebSocket()
-        fun onMessageReceived(item: Visitable<*>, hideMessage: Boolean)
         fun setSnackBarConnectingWebSocket()
         fun setSnackBarRetryConnectingWebSocket()
 
