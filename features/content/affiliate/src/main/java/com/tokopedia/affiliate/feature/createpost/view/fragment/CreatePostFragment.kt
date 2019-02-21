@@ -31,7 +31,7 @@ import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import javax.inject.Inject
 
@@ -45,6 +45,9 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
 
     @Inject
     lateinit var affiliateAnalytics: AffiliateAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var viewModel: CreatePostViewModel = CreatePostViewModel()
     private var guide: Guide = Guide()
@@ -100,6 +103,7 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         presenter.attachView(this)
         initView()
         if (userSession.isLoggedIn) {
@@ -141,10 +145,6 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
             else -> {
             }
         }
-    }
-
-    override fun getUserSession(): UserSession {
-        return UserSession(context)
     }
 
     override fun showLoading() {
@@ -252,7 +252,8 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
         }
         relatedAddBtn.setOnClickListener {
             val intent = AttachProductActivity.createInstance(context,
-                    userSession.shopId, "",
+                    userSession.shopId,
+                    "",
                     true,
                     AttachProductActivity.SOURCE_TALK)
             startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)

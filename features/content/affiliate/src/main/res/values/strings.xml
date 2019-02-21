@@ -69,6 +69,8 @@
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
     <string name="af_caption_hint">Tulis caption yuk…</string>
+    <string name="af_related_product">Produk Terkait</string>
+    <string name="af_add_product_tag">Tambah Tag</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>

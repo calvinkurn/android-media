@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadDrawable
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_af_related_product.view.*
 
 /**
@@ -15,7 +18,12 @@ import kotlinx.android.synthetic.main.item_af_related_product.view.*
  */
 class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
 
-    private val list : MutableList<RelatedProductItem> = arrayListOf()
+    private val emptyItem: RelatedProductItem = RelatedProductItem(EMPTY_ITEM_ID)
+    private val list: MutableList<RelatedProductItem> = arrayListOf(emptyItem)
+
+    companion object {
+        private const val EMPTY_ITEM_ID = "-1"
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_af_related_product, parent, false)
@@ -25,10 +33,33 @@ class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHol
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position])
+        val element = list[position]
+
+        if (element.id == EMPTY_ITEM_ID) {
+            holder.itemView.thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            holder.itemView.delete.hide()
+        } else {
+            holder.itemView.thumbnail.loadImage(element.image)
+            holder.itemView.delete.show()
+        }
+        holder.itemView.name.text = element.name
+        holder.itemView.price.text = element.price
+        holder.itemView.delete.setOnClickListener {
+            val newList = list.toMutableList()
+            newList.removeAt(holder.adapterPosition)
+
+            if (newList.isEmpty()) {
+                newList.add(emptyItem)
+            }
+            addAll(newList)
+        }
     }
 
     fun addAll(list: MutableList<RelatedProductItem>) {
+        if (list.isEmpty()) {
+            list.add(emptyItem)
+        }
+
         val diffResult = DiffUtil.calculateDiff(Callback(this.list, list))
         diffResult.dispatchUpdatesTo(this)
 
@@ -36,13 +67,7 @@ class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHol
         this.list.addAll(list)
     }
 
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        fun bind(element: RelatedProductItem) {
-            itemView.thumbnail.loadImage(element.image)
-            itemView.name.text = element.name
-            itemView.price.text = element.price
-        }
-    }
+    class ViewHolder(v: View) : RecyclerView.ViewHolder(v)
 
     class Callback(
             private val oldList: List<RelatedProductItem>,

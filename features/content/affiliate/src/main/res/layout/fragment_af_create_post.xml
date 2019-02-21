@@ -154,7 +154,7 @@
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addImageBtn"
-                tools:text="Produk Terkait" />
+                android:text="@string/af_related_product" />
 
             <TextView
                 android:id="@+id/relatedAddBtn"
@@ -168,7 +168,7 @@
                 android:textSize="@dimen/sp_12"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addImageBtn"
-                tools:text="Tambah Tag" />
+                android:text="@string/af_add_product_tag" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/relatedProductRv"
