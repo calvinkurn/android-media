@@ -164,21 +164,27 @@ public class UsernameInputFragment extends BaseDaggerFragment
         }
 
         if (!TextUtils.isEmpty(productId)) {
-            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+            Intent homeIntent = RouteManager.getIntent(
+                    getActivity(),
+                    ApplinkConst.HOME
+            );
 
             Intent profileIntent = RouteManager.getIntent(
                     getActivity(),
                     ApplinkConst.PROFILE.replace(PARAM_USER_ID, userSession.getUserId())
             );
             profileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            taskStackBuilder.addNextIntent(profileIntent);
 
             Intent recommendIntent = RecommendProductActivity.createIntent(
                     getActivity(),
                     productId
             );
-            taskStackBuilder.addNextIntent(recommendIntent);
 
+
+            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+            taskStackBuilder.addNextIntent(homeIntent);
+            taskStackBuilder.addNextIntent(profileIntent);
+            taskStackBuilder.addNextIntent(recommendIntent);
             taskStackBuilder.startActivities();
         }
 
