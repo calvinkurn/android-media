@@ -35,6 +35,12 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.UserData;
+import com.tokopedia.linker.requests.LinkerGenericRequest;
+import com.tokopedia.user.session.UserSession;
 
 @Deprecated
 /**
@@ -577,7 +583,11 @@ public class SessionHandler {
         TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
         if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
-        BranchSdkUtils.sendIdentityEvent(u_id);
+        UserData userData = new UserData();
+        userData.setUserId(u_id);
+
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                userData));
 
         //return status;
     }
@@ -592,7 +602,10 @@ public class SessionHandler {
         }
 
         //Set logout to Branch.io sdk,
-        BranchSdkUtils.sendLogoutEvent();
+        LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGOUT_VAL,
+                        null)
+        );
     }
 
     private void clearUserData() {

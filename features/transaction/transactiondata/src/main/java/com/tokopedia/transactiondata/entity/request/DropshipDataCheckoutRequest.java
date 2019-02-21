@@ -15,6 +15,9 @@ public class DropshipDataCheckoutRequest {
     @Expose
     public String telpNo;
 
+    public DropshipDataCheckoutRequest() {
+    }
+
     private DropshipDataCheckoutRequest(Builder builder) {
         name = builder.name;
         telpNo = builder.telpNo;
