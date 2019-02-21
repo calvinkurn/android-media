@@ -39,7 +39,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLE
 public class DetailResChatActivity
         extends BasePresenterActivity<DetailResChatActivityListener.Presenter>
         implements DetailResChatActivityListener.View, HasComponent {
-\
+
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
     public static final String PARAM_SHOP_NAME = "shopName";
     public static final String PARAM_USER_NAME = "buyerName";
@@ -86,14 +86,15 @@ public class DetailResChatActivity
     }
 
     private static boolean isToggleResoEnabled(Context context) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+//        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+        return true;
     }
 
     private static Intent getWebviewIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             if (context instanceof Activity) {
-                return ((ResolutionRouter)context.getApplicationContext()).getBannerWebViewIntent((Activity)context, ResolutionUrl.RESO_DETAIL+resolutionId);
+                return ((ResolutionRouter)context.getApplicationContext()).getBannerWebViewIntent((Activity)context, String.format(ResolutionUrl.RESO_DETAIL, resolutionId));
             }
         }
         return null;

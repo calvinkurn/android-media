@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.create.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +13,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.ResolutionRouter;
+import com.tokopedia.inbox.common.ResolutionUrl;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseProductTroubleFragment;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseSolutionFragment;
 import com.tokopedia.inbox.rescenter.create.listener.CreateResCenterListener;
@@ -20,6 +23,10 @@ import com.tokopedia.inbox.rescenter.create.presenter.CreateResCenterImpl;
 import com.tokopedia.inbox.rescenter.create.presenter.CreateResCenterPresenter;
 import com.tokopedia.inbox.rescenter.create.service.CreateResCenterReceiver;
 import com.tokopedia.inbox.rescenter.create.service.CreateResCenterService;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
 public class CreateResCenterActivity extends BasePresenterActivity<CreateResCenterPresenter>
         implements CreateResCenterListener, CreateResCenterReceiver.Receiver, HasComponent {
@@ -44,20 +51,32 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     }
 
     public static Intent newInstance(Context context, String orderID) {
-        Intent intent = new Intent(context, CreateResCenterActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_PARAM_ORDER_ID, orderID);
-        bundle.putInt(KEY_PARAM_FLAG_RECEIVED, 1);
-        intent.putExtras(bundle);
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getWebviewIntent(context, orderID);
+        }
+        if (intent == null) {
+            intent = new Intent(context, CreateResCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_PARAM_ORDER_ID, orderID);
+            bundle.putInt(KEY_PARAM_FLAG_RECEIVED, 1);
+            intent.putExtras(bundle);
+        }
         return intent;
     }
 
     public static Intent newRecomplaintInstance(Context context, String orderID, String resolutionId) {
-        Intent intent = new Intent(context, CreateResCenterActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_PARAM_ORDER_ID, orderID);
-        bundle.putString(KEY_PARAM_RESOLUTION_ID, resolutionId);
-        intent.putExtras(bundle);
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getWebviewIntent(context, orderID);
+        }
+        if (intent == null) {
+            intent = new Intent(context, CreateResCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_PARAM_ORDER_ID, orderID);
+            bundle.putString(KEY_PARAM_RESOLUTION_ID, resolutionId);
+            intent.putExtras(bundle);
+        }
         return intent;
     }
 
@@ -73,6 +92,21 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         bundle.putInt(KEY_PARAM_SOLUTION_ID, solutionID);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    private static boolean isToggleResoEnabled(Context context) {
+//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+//        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+        return true;
+    }
+
+    private static Intent getWebviewIntent(Context context, String orderId) {
+        if (context.getApplicationContext() instanceof ResolutionRouter) {
+            if (context instanceof Activity) {
+                return ((ResolutionRouter)context.getApplicationContext()).getBannerWebViewIntent((Activity)context, String.format(ResolutionUrl.RESO_CREATE, orderId));
+            }
+        }
+        return null;
     }
 
     @Override
