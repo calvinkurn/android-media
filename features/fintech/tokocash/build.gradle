@@ -33,9 +33,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.gson
-    implementation (rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
+
     implementation rootProject.ext.miscDependencies.multiDex
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
