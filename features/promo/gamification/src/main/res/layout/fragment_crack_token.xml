@@ -43,10 +43,10 @@
         android:id="@+id/widget_remaining_token_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_gravity="bottom"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/dp_8"
         android:visibility="gone" />
 
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
@@ -75,11 +75,12 @@
             android:id="@+id/text_info_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_40"
-            android:layout_marginRight="@dimen/dp_40"
+            android:layout_marginLeft="@dimen/dp_36"
+            android:layout_marginRight="@dimen/dp_36"
             android:layout_marginBottom="@dimen/dp_16"
             android:background="@drawable/bg_info_crack_egg"
             android:gravity="center"
+            android:layout_gravity="center"
             android:paddingLeft="@dimen/dp_32"
             android:paddingTop="@dimen/dp_8"
             android:paddingRight="@dimen/dp_32"
@@ -93,62 +94,61 @@
     </LinearLayout>
 
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolbar_color"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            android:background="@color/toolbar_color"
-            app:contentInsetStartWithNavigation="0dp"
-            app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="?titleTextAppearance">
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="sans-serif"
+                android:textSize="@dimen/sp_17"
+                android:textStyle="normal" />
 
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:id="@+id/fl_remaining_token"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginRight="@dimen/dp_16"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/image_remaining_token"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_margin="@dimen/dp_8"
+                    tools:src="@drawable/ic_empty_egg" />
 
                 <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:fontFamily="sans-serif"
-                    android:textSize="@dimen/sp_17"
-                    android:textStyle="normal" />
-
-                <FrameLayout
-                    android:id="@+id/fl_remaining_token"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/image_remaining_token"
-                        android:layout_width="@dimen/dp_32"
-                        android:layout_height="@dimen/dp_32"
-                        android:layout_margin="@dimen/dp_8"
-                        tools:src="@drawable/ic_empty_egg" />
-
-                    <TextView
-                        android:id="@+id/tv_floating_counter"
-                        style="@style/TextView.Micro10"
-                        android:layout_width="@dimen/dp_22"
-                        android:layout_height="@dimen/dp_22"
-                        android:layout_gravity="top|end"
-                        android:background="@drawable/circle_red_shadow"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        tools:text="99+" />
-                </FrameLayout>
-
+                    android:id="@+id/tv_floating_counter"
+                    style="@style/TextView.Micro10"
+                    android:layout_width="@dimen/dp_22"
+                    android:layout_height="@dimen/dp_22"
+                    android:layout_gravity="top|end"
+                    android:background="@drawable/circle_red_shadow"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    tools:text="99+" />
             </FrameLayout>
 
+        </FrameLayout>
 
-        </android.support.v7.widget.Toolbar>
+
+    </android.support.v7.widget.Toolbar>
 
 
     <ProgressBar
