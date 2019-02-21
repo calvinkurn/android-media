@@ -58,7 +58,7 @@ public class DetailResChatActivity
     public static Intent newBuyerInstance(Context context, String resolutionId, String shopName) {
         Intent intent = null;
         if (isToggleResoEnabled(context)) {
-            intent = getWebviewIntent(context, resolutionId);
+            intent = getApplinkIntent(context, resolutionId);
         }
 
         if (intent == null) {
@@ -73,7 +73,7 @@ public class DetailResChatActivity
     public static Intent newSellerInstance(Context context, String resolutionId, String username) {
         Intent intent = null;
         if (isToggleResoEnabled(context)) {
-            intent = getWebviewIntent(context, resolutionId);
+            intent = getApplinkIntent(context, resolutionId);
         }
 
         if (intent == null) {
@@ -86,11 +86,12 @@ public class DetailResChatActivity
     }
 
     private static boolean isToggleResoEnabled(Context context) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+//        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+        return true;
     }
 
-    private static Intent getWebviewIntent(Context context, String resolutionId) {
+    private static Intent getApplinkIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
                     String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_DETAIL, resolutionId));

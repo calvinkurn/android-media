@@ -42,7 +42,7 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     public static Intent newSellerInstance(Context context) {
         Intent intent = null;
         if (isToggleResoEnabled(context)) {
-            intent = getWebviewIntent(context, ResolutionUrl.RESO_INBOX_SELLER);
+            intent = getApplinkIntent(context, ResolutionUrl.RESO_INBOX_SELLER);
         }
 
         if (intent == null) {
@@ -58,7 +58,7 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     public static Intent newBuyerInstance(Context context) {
         Intent intent = null;
         if (isToggleResoEnabled(context)) {
-            intent = getWebviewIntent(context, ResolutionUrl.RESO_INBOX_BUYER);
+            intent = getApplinkIntent(context, ResolutionUrl.RESO_INBOX_BUYER);
         }
 
         if (intent == null) {
@@ -72,11 +72,12 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     }
 
     private static boolean isToggleResoEnabled(Context context) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+//        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+        return true;
     }
 
-    private static Intent getWebviewIntent(Context context, String url) {
+    private static Intent getApplinkIntent(Context context, String url) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
                     ResolutionUrl.RESO_APPLINK + url);
