@@ -96,6 +96,14 @@ public class ScreenTracking extends TrackingUtils {
                         analHandler.setAdsId(adsID);
                     }
 
+                    if (data.getBreadcrumb() != null && data.getBreadcrumb().size() > 0) {
+                        int size = data.getBreadcrumb().size();
+                        for (int i = 1; i <= size; i++) {
+                            values.put("level" + i + "_name", data.getBreadcrumb().get(size - i).getDepartmentName());
+                            values.put("level" + i + "_id", data.getBreadcrumb().get(size - i).getDepartmentId());
+                        }
+                    }
+
                     CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
                     getAFEngine(context).sendTrackEvent(eventName, values);
                 }
