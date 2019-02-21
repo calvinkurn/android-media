@@ -15,6 +15,7 @@ include "features:content:profile"
 include "features:digital:common_digital"
 include "features:digital:digitalproduct"
 
+include "features:discovery:category_common"
 include "features:discovery:flashsale_management"
 //include "features:discovery:flashsale_management_no_op"
 include 'features:discovery:flashsale_management_common'

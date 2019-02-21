@@ -31,6 +31,10 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         private set
     var variant: String = ""
         private set
+    var dropPercentage: String = ""
+        private set
+    var priceBefore: String = ""
+        private set
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
                 replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
@@ -64,7 +68,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
                 productPrice: String, productUrl: String,
                 productImage: String, isSender: Boolean, message: String,
                 canShowFooter : Boolean, blastId: Int, productPriceInt: Int, category:String,
-                variant:String)
+                variant:String, dropPercentage: String, priceBefore: String)
             : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message) {
         this.productId = productId
@@ -78,6 +82,8 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.priceInt = productPriceInt
         this.category = category
         this.variant = variant
+        this.dropPercentage = dropPercentage
+        this.priceBefore = priceBefore
     }
 
     /**
@@ -106,7 +112,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
                 productUrl: String, productImage: String,
                 isSender: Boolean, message: String, startTime: String,
                 canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category:String,
-                variant:String)
+                variant:String, dropPercentage: String, priceBefore: String)
             : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             startTime, false, false, isSender, message) {
         this.productId = productId
@@ -120,6 +126,8 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.priceInt = productPriceInt
         this.category = category
         this.variant = variant
+        this.dropPercentage = dropPercentage
+        this.priceBefore = priceBefore
     }
 
     /**

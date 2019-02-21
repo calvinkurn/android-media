@@ -57,6 +57,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
 
     implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
 
     implementation project(rootProject.ext.features.saldodetails)

@@ -350,22 +350,6 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
         }
     }
 
-    public void animateOut() {
-        try {
-            ValueAnimator slideTitle = slideToX(titleView, 1, 0, mScreenWidth);
-            ValueAnimator slideDesc = slideToX(descView, 1, 0, mScreenWidth);
-            animatorSet.playTogether(slideTitle, slideDesc);
-            if (!animatorSet.isRunning()) {
-                animatorSet.start();
-
-                lottieAnimationView.setProgress(0.4f);
-                lottieAnimationView.reverseAnimation();
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-
     protected String getScreenName() {
         int pageNumber = position + 1;
         return SCREEN_NAME + pageNumber;
