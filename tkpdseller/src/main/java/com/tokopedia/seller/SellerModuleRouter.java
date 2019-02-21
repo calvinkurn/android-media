@@ -29,8 +29,6 @@ public interface SellerModuleRouter {
 
     void goToGMSubscribe(Activity activity);
 
-    Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
-
     GetShopInfoUseCase getShopInfo();
 
     ShopComponent getShopComponent();

@@ -42,6 +42,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.networkDependencies.glide
 
