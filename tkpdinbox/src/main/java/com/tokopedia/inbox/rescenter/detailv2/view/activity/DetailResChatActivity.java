@@ -21,10 +21,16 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.ResolutionRouter;
+import com.tokopedia.inbox.common.ResolutionUrl;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
 /**
  * Created by yoasfs on 10/6/17.
@@ -34,6 +40,7 @@ public class DetailResChatActivity
         extends BasePresenterActivity<DetailResChatActivityListener.Presenter>
         implements DetailResChatActivityListener.View, HasComponent {
 
+    public static final String RESO_WEBVIEW_URL = "";
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
     public static final String PARAM_SHOP_NAME = "shopName";
     public static final String PARAM_USER_NAME = "buyerName";
@@ -49,21 +56,48 @@ public class DetailResChatActivity
     private String userName;
     private boolean isSeller;
 
-
     public static Intent newBuyerInstance(Context context, String resolutionId, String shopName) {
-        Intent intent = new Intent(context, DetailResChatActivity.class);
-        intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
-        intent.putExtra(PARAM_SHOP_NAME, shopName);
-        intent.putExtra(PARAM_IS_SELLER, false);
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getWebviewIntent(context, resolutionId);
+        }
+
+        if (intent == null) {
+            intent = new Intent(context, DetailResChatActivity.class);
+            intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
+            intent.putExtra(PARAM_SHOP_NAME, shopName);
+            intent.putExtra(PARAM_IS_SELLER, false);
+        }
         return intent;
     }
 
     public static Intent newSellerInstance(Context context, String resolutionId, String username) {
-        Intent intent = new Intent(context, DetailResChatActivity.class);
-        intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
-        intent.putExtra(PARAM_USER_NAME, username);
-        intent.putExtra(PARAM_IS_SELLER, true);
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getWebviewIntent(context, resolutionId);
+        }
+
+        if (intent == null) {
+            intent = new Intent(context, DetailResChatActivity.class);
+            intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
+            intent.putExtra(PARAM_USER_NAME, username);
+            intent.putExtra(PARAM_IS_SELLER, true);
+        }
         return intent;
+    }
+
+    private static boolean isToggleResoEnabled(Context context) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+    }
+
+    private static Intent getWebviewIntent(Context context, String resolutionId) {
+        if (context.getApplicationContext() instanceof ResolutionRouter) {
+            if (context instanceof Activity) {
+                return ((ResolutionRouter)context.getApplicationContext()).getBannerWebViewIntent((Activity)context, ResolutionUrl.RESO_DETAIL+resolutionId);
+            }
+        }
+        return null;
     }
 
     @DeepLink(Constants.Applinks.RESCENTER)
