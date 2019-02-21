@@ -42,9 +42,9 @@ public class ScreenTrackingBuilder {
         return this;
     }
 
-    public ScreenTrackingBuilder setDeepLinkUrl(String deepLinkUrlStr){
-        if(!TextUtils.isEmpty(deepLinkUrlStr))
-            authEvent.setDeepLinkUrl(deepLinkUrlStr);
+    public ScreenTrackingBuilder setDeepLinkUrl(String deepLinkUrlStr) {
+        if (!TextUtils.isEmpty(deepLinkUrlStr))
+            customDimension.put(Authenticated.KEY_DEEPLINK_URL, deepLinkUrlStr);
         return this;
     }
 

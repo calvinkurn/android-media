@@ -58,7 +58,7 @@ public class ScreenTracking extends TrackingUtils {
     public static void sendScreen(Context context, String screenName, String deepLink) {
         try {
             ScreenTrackingBuilder
-                    .newInstance(context, screenName, getAfUniqueId(context))
+                    .newInstance(screenName)
                     .setDeepLinkUrl(deepLink)
                     .execute(context);
         } catch (Exception e) {
