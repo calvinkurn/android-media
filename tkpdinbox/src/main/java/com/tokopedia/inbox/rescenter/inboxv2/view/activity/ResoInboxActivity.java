@@ -72,9 +72,8 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     }
 
     private static boolean isToggleResoEnabled(Context context) {
-//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-//        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
-        return true;
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
     }
 
     private static Intent getApplinkIntent(Context context, String url) {
