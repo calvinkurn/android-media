@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -129,6 +130,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         String settingDescTkpdPay = walletName + getString(R.string.subtitle_tkpd_pay_setting);
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay));
+        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
+                getString(R.string.title_tkpd_template_setting), getString(R.string.subtitle_template_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)));
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -174,6 +177,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             case SettingConstant.SETTING_TKPD_PAY_ID:
                 accountAnalytics.eventClickSetting(PAYMENT_METHOD);
                 startActivity(TkpdPaySettingActivity.createIntent(getActivity()));
+                break;
+            case SettingConstant.SETTING_TEMPLATE_ID:
+                Toast.makeText(getActivity(), "Template pembelian", Toast.LENGTH_SHORT).show();
                 break;
             case SettingConstant.SETTING_NOTIFICATION_ID:
                 accountAnalytics.eventClickSetting(NOTIFICATION);
