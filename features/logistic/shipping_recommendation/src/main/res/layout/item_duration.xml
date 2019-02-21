@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_price"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/dp_4"
             tools:text="(Direkomendasikan untuk berat di atas 5kg)" />
 
         <TextView
