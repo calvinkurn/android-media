@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.linker.model.LinkerData;
 
 /**
  * @author anggaprasetiyo on 12/22/16.
@@ -56,7 +57,7 @@ public class ProductDetailRouter {
     }
 
     public static Intent createInstanceProductDetailInfoActivity(
-            Context context, ShareData shareData) {
+            Context context, LinkerData shareData) {
         Intent intent = RouterUtils.getActivityIntent(context, PRODUCT_DETAIL_INFO_ACTIVITY);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SHARE_DATA, shareData);

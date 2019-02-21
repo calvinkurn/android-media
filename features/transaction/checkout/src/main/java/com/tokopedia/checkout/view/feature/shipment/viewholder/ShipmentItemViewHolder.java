@@ -120,7 +120,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvRecipientName;
     private TextView tvRecipientAddress;
     private TextView tvRecipientPhone;
-    private TextViewCompat tvChangeAddress;
     private LinearLayout addressLayout;
     private PickupPointLayout pickupPointLayout;
     private RecyclerView rvCartItem;
@@ -246,7 +245,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
         tvProtectionLabel = itemView.findViewById(R.id.tv_purchase_protection_label);
         tvProtectionFee = itemView.findViewById(R.id.tv_purchase_protection_fee);
-        tvChangeAddress = itemView.findViewById(R.id.tv_change_address);
         addressLayout = itemView.findViewById(R.id.address_layout);
         pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
         rvCartItem = itemView.findViewById(R.id.rv_cart_item);
@@ -404,7 +402,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
         renderErrorAndWarning(shipmentCartItemModel);
         renderInsurance(shipmentCartItemModel);
-        renderDropshipper();
+        renderDropshipper(recipientAddressModel != null && recipientAddressModel.isCornerAddress());
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
     }
@@ -820,13 +818,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel));
     }
 
-    private void renderDropshipper() {
+    private void renderDropshipper(boolean isCorner) {
         if (shipmentDataList != null) {
             ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition());
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                     shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
 
-                if (!shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().isAllowDropshiper()) {
+                if (!shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().isAllowDropshiper() || isCorner) {
                     llDropshipper.setVisibility(View.GONE);
                     llDropshipperInfo.setVisibility(View.GONE);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
@@ -1119,7 +1117,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderAddress(RecipientAddressModel recipientAddressModel) {
         if (recipientAddressModel != null) {
             tvAddressName.setVisibility(View.GONE);
-            tvChangeAddress.setVisibility(View.GONE);
             tvAddressStatus.setVisibility(View.GONE);
             String addressName = recipientAddressModel.getAddressName();
             String recipientName = recipientAddressModel.getRecipientName();

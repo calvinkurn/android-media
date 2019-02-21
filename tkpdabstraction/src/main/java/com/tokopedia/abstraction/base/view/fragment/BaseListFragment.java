@@ -353,8 +353,8 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected void onGetListErrorWithEmptyData(Throwable throwable) {
-        if (getView() != null) {
-            String message = getMessageFromThrowable(getView().getContext(), throwable);
+        if (getActivity() != null) {
+            String message = getMessageFromThrowable(getActivity(), throwable);
             adapter.showErrorNetwork(message, this);
             if (swipeToRefresh != null) {
                 swipeToRefresh.setEnabled(false);
@@ -388,8 +388,12 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     private void showSnackBarRetry(Throwable throwable, View.OnClickListener listener) {
+        if (getActivity() == null) {
+            return;
+        }
+
         if (snackBarRetry == null) {
-            String message = getMessageFromThrowable(getView().getContext(), throwable);
+            String message = getMessageFromThrowable(getActivity(), throwable);
 
             snackBarRetry = ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
                     .setAction(R.string.retry_label, listener);

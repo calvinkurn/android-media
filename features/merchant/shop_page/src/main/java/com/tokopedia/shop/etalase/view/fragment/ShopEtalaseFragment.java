@@ -15,7 +15,6 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.di.component.DaggerShopEtalaseComponent;
-import com.tokopedia.shop.etalase.di.module.ShopEtalaseModule;
 import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
 import com.tokopedia.shop.etalase.view.listener.ShopEtalaseView;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
@@ -95,14 +94,18 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
 
     @Override
     public void renderList(@NonNull List<ShopEtalaseViewModel> list, boolean isHasNext) {
+        int selectedIndex = DEFAULT_INDEX_SELECTION;
         if (selectedEtalaseId != null) {
             for (int i = 0; i < list.size(); i++)
-                if (list.get(i).getEtalaseId().equalsIgnoreCase(selectedEtalaseId))
+                if (list.get(i).getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
                     list.get(i).setSelected(true);
+                    selectedIndex = i;
+                }
         } else {
             list.get(DEFAULT_INDEX_SELECTION).setSelected(true);
         }
         super.renderList(list, isHasNext);
+        getRecyclerView(getView()).smoothScrollToPosition(selectedIndex);
     }
 
     @Override

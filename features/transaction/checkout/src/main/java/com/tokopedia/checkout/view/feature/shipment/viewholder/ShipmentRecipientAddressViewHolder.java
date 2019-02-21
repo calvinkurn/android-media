@@ -31,8 +31,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
     private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
 
-    private static final int PRIME_ADDRESS = 2;
-
     private CardView cardAddress;
     private RelativeLayout rlRecipientAddressLayout;
     private TextView tvAddressStatus;
@@ -42,10 +40,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private TextView tvRecipientPhone;
     private TextView tvRecipientChangeAddress;
     private TextView tvSendToMultipleAddress;
-    private PickupPointLayout pickupPointLayout;
-    private TextViewCompat tvChangeAddress;
 
-    private RecipientAddressModel recipientAddress;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
     public ShipmentRecipientAddressViewHolder(View itemView, ShipmentAdapterActionListener shipmentAdapterActionListener) {
@@ -62,8 +57,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
         tvRecipientChangeAddress = itemView.findViewById(R.id.tv_change_recipient_address);
         tvSendToMultipleAddress = itemView.findViewById(R.id.tv_send_to_multiple_address);
-        pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
-        tvChangeAddress = itemView.findViewById(R.id.tv_change_address);
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
@@ -75,7 +68,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             tvSendToMultipleAddress.setVisibility(View.VISIBLE);
         }
 
-        tvChangeAddress.setVisibility(View.GONE);
         tvAddressStatus.setVisibility(View.GONE);
         tvAddressName.setVisibility(View.GONE);
         formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
