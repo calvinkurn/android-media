@@ -167,7 +167,6 @@ import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
@@ -965,12 +964,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public String getFlavor() {
         return BuildConfig.FLAVOR;
-    }
-
-    @Override
-    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
-        GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
-        return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
     }
 
     public GetShopInfoUseCase getShopInfo() {
