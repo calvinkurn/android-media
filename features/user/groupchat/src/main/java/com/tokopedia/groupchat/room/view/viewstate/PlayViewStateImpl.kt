@@ -44,7 +44,6 @@ import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
-import com.tokopedia.groupchat.common.analytics.EEPromotion
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
@@ -95,7 +94,7 @@ class PlayViewStateImpl(
     private var login: View = view.findViewById(R.id.login)
     private var inputTextWidget: View = view.findViewById(R.id.bottom)
     private var sendButton: View = view.findViewById(R.id.button_send)
-    private lateinit var dynamicButtonRecyclerView: RecyclerView
+    private var dynamicButtonRecyclerView: RecyclerView = view.findViewById(R.id.buttons)
     private var liveIndicator: View = toolbar.findViewById(R.id.toolbar_live)
 
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
