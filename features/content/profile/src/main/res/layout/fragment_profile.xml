@@ -103,25 +103,6 @@
                                 android:id="@+id/iv_profile"
                                 android:layout_width="@dimen/dp_64"
                                 android:layout_height="@dimen/dp_64" />
-
-                            <FrameLayout
-                                android:id="@+id/changeAvatar"
-                                android:layout_width="@dimen/dp_24"
-                                android:layout_height="@dimen/dp_24"
-                                android:background="@drawable/bg_af_circle_white"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                android:padding="@dimen/dp_4"
-                                android:visibility="gone"
-                                android:layout_gravity="bottom|right"
-                                tools:visibility="visible">
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:src="@drawable/ic_af_camera" />
-                            </FrameLayout>
                         </FrameLayout>
 
                         <LinearLayout
@@ -174,7 +155,19 @@
                                 android:textAllCaps="false"
                                 android:visibility="gone"
                                 app:buttonCompatSize="small"
-                                app:buttonCompatType="primary"
+                                app:buttonCompatType="secondary"
+                                tools:visibility="visible" />
+
+                            <com.tokopedia.design.component.ButtonCompat
+                                android:id="@+id/editButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/dp_8"
+                                android:text="@string/profile_edit"
+                                android:textAllCaps="false"
+                                android:visibility="gone"
+                                app:buttonCompatSize="small"
+                                app:buttonCompatType="secondary"
                                 tools:visibility="visible" />
 
                         </LinearLayout>
@@ -307,24 +300,6 @@
                 app:layout_constraintStart_toEndOf="@+id/footerOwnSpace"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
-
-        <FrameLayout
-            android:id="@+id/footerOther"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <com.tokopedia.design.component.ButtonCompat
-                android:id="@+id/shareOther"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_1"
-                android:text="@string/profile_share_this_profile"
-                android:textAllCaps="false"
-                app:buttonCompatSize="medium"
-                app:buttonCompatType="secondary" />
-        </FrameLayout>
     </LinearLayout>
 
     <FrameLayout

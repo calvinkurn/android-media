@@ -128,12 +128,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         profileAnalytics.sendScreen(activity!!, screenName)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        if (userSession.userId == userId.toString()) {
-            inflater?.inflate(R.menu.menu_profile, menu)
-        }
-    }
 
     override fun onDestroy() {
         presenter.detachView()
@@ -171,7 +165,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSwipeRefresh() {
         footerOwn.visibility = View.GONE
-        footerOther.visibility = View.GONE
+        collapsing.visibility = View.GONE
         super.onSwipeRefresh()
     }
 
@@ -230,23 +224,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onlyOnePost = firstPageViewModel.visitableList.size == 1
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
         affiliatePostQuota = firstPageViewModel.affiliatePostQuota
-
-        val selfProfile = userSession.userId == userId.toString()
-                && firstPageViewModel.profileHeaderViewModel.isAffiliate
-        lateinit var action: View.OnClickListener
-        if (!selfProfile) {
-            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
-            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
-            action = shareLinkClickListener(firstPageViewModel.profileHeaderViewModel.link)
-        } else {
-            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
-            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
-            action = View.OnClickListener {
-                goToDashboard()
-            }
-        }
-        iv_action.setOnClickListener(action)
-        iv_action_parallax.setOnClickListener(action)
 
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
@@ -595,6 +572,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             activity?.finish()
         }
 
+
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -607,6 +585,24 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         })
 
+        val selfProfile = userSession.userId == userId.toString()
+                && element.isAffiliate
+        lateinit var action: View.OnClickListener
+        if (!selfProfile) {
+            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
+            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
+            action = shareLinkClickListener(element.link)
+        } else {
+            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
+            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
+            action = View.OnClickListener {
+                goToDashboard()
+            }
+        }
+        iv_action.setOnClickListener(action)
+        iv_action_parallax.setOnClickListener(action)
+
+
         if (element.isKol || element.isAffiliate) {
             kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE
 
@@ -616,14 +612,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             followers.text = getFollowersText(element)
             followers.movementMethod = LinkMovementMethod.getInstance()
 
-            if (!element.isOwner && GlobalConfig.isCustomerApp()) {
-                followBtn.visibility = View.VISIBLE
-                followBtn.setOnClickListener {
-                    followUnfollowUser(element.userId, !element.isFollowed)
+            if (GlobalConfig.isCustomerApp()) {
+                if (!element.isOwner) {
+                    editButton.visibility = View.GONE
+                    followBtn.visibility = View.VISIBLE
+                    followBtn.setOnClickListener {
+                        followUnfollowUser(element.userId, !element.isFollowed)
+                    }
+                    updateButtonState(element.isFollowed)
+                } else {
+                    editButton.visibility = View.VISIBLE
+                    followBtn.visibility = View.GONE
+                    editButton.setOnClickListener {
+                        onChangeAvatarClicked()
+                    }
                 }
-                updateButtonState(element.isFollowed)
-            } else {
-                followBtn.visibility = View.GONE
             }
         } else {
             kolBadge.visibility = View.GONE
@@ -636,18 +639,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             } else {
                 followers.visibility = View.GONE
             }
-        }
-
-        if (element.isOwner) {
-            changeAvatar.visibility = View.VISIBLE
-            changeAvatar.setOnClickListener {
-                onChangeAvatarClicked()
-            }
-            iv_profile.setOnClickListener {
-                onChangeAvatarClicked()
-            }
-        } else {
-            changeAvatar.visibility = View.GONE
         }
     }
 
@@ -746,8 +737,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
-            footerOther.visibility = View.GONE
-
             bindCurationQuota(affiliatePostQuota)
             addCuration.setOnClickListener {
                 goToAffiliateExplore()
@@ -765,13 +754,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         } else {
             footerOwn.visibility = View.GONE
-            footerOther.visibility = View.VISIBLE
-
-            shareOther.setOnClickListener(shareLinkClickListener(headerViewModel.link))
-            shareOther.setOnLongClickListener {
-                showToast(getString(R.string.profile_share_this_profile))
-                true
-            }
         }
     }
 
