@@ -27,7 +27,6 @@ public class TransactionPurchaseRouter {
 
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_STATE_TX_FILTER = "EXTRA_STATE_TX_FILTER";
-    public static final String EXTRA_STATE_MARKETPLACE_FILTER = "filter_id";
 
     // TODO: 7/30/18 oka: need to be deleted
     public final static int TAB_POSITION_PURCHASE_SUMMARY = 0;
@@ -40,15 +39,6 @@ public class TransactionPurchaseRouter {
     public final static int TAB_POSITION_PURCHASE_SHIPPED = 2;
     public final static int TAB_POSITION_PURCHASE_DELIVERED = 3;
     public final static int TAB_POSITION_PURCHASE_ALL_ORDER = 4;
-
-    //Filter-Ids for Purchase order as per New MarketPlace Design
-    public final static String PURCHASE_NEW_ORDER_FILTER_ID = "5";
-    public final static String PURCHASE_FINISH_ORDER_FILTER_ID = "7";
-    public final static String PURCHASE_CANCEL_FILTER_ID = "12";
-    public final static String PURCHASE_CONFIRM_SHIPPING_FILTER_ID = "13";
-    public final static String PURCHASE_FINISH_REMINDER_FILTER_ID = "14";
-    public final static String PURCHASE_REJECTED_FILTER_ID = "16";
-    public final static String PURCHASE_AUTO_CANCEL_FILTER_ID = "17";
 
 
     public static final String ALL_STATUS_FILTER_ID = "";

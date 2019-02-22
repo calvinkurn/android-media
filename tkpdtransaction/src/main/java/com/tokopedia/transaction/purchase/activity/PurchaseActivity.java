@@ -27,6 +27,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
@@ -305,10 +306,10 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     }
 
     private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        extras.putString("orderCategory", OrderCategory.MARKETPLACE);
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI));
+        extras.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
+        extras.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
         Intent intent = new Intent(context, OrderListActivity.class);
-        intent.setData(uri.build());
         return intent.putExtras(extras);
     }
 

@@ -34,7 +34,6 @@ public class PurchaseRejectedShippingNotification extends BaseNotification {
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER);
         bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
                 TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID);
-        bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_MARKETPLACE_FILTER, TransactionPurchaseRouter.PURCHASE_REJECTED_FILTER_ID);
         mNotificationPass.extraData = bundle;
         mNotificationPass.mIntent.putExtras(bundle);
     }

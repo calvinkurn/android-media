@@ -165,14 +165,14 @@ public interface ApplinkConst {
     String SETTING_PROFILE = "tokopedia://setting/profile";
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
-    String PURCHASE_ORDER = "tokopedia://buyer/order/{filter_id}";
+    String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
-    String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed/{filter_id}";
-    String PURCHASE_PROCESSED = "tokopedia://buyer/processed/{filter_id}";
+    String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
+    String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
     String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
-    String PURCHASE_SHIPPED = "tokopedia://buyer/shipped/{filter_id}";
-    String PURCHASE_DELIVERED = "tokopedia://buyer/delivered/{filter_id}";
-    String PURCHASE_HISTORY = "tokopedia://buyer/history/{filter_id}";
+    String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
+    String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
+    String PURCHASE_HISTORY = "tokopedia://buyer/history";
 
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
