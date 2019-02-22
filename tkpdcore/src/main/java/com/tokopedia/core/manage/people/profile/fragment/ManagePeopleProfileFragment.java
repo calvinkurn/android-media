@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -13,10 +14,6 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -36,6 +33,8 @@ import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
@@ -276,8 +275,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void showEmailVerificationDialog(String userEmail) {
-        UserSession session = ((AbstractionRouter) getActivity().getApplicationContext()).getSession();
-        if (session.isHasPassword()) {
+        if (isHasPassword()) {
             DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
                     new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
                         @Override
@@ -289,6 +287,16 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         } else {
             showChangeEmailNoPassword(getActivity());
         }
+    }
+
+    /**
+     * Temporary method, not exist in UserSession class
+     * @return
+     */
+    @Deprecated
+    public boolean isHasPassword() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean("HAS_PASSWORD", false);
     }
 
     private void showChangeEmailNoPassword(final Context context) {

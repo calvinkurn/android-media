@@ -6,9 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.BaseAbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
@@ -22,6 +20,8 @@ import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONObject;
 
@@ -231,8 +231,7 @@ public class BranchSdkUtils {
 
     public static void sendCommerceEvent(Context context, Purchase purchase, String productType) {
         if(context instanceof Application && context instanceof BaseAbstractionRouter) {
-            AbstractionRouter router = (AbstractionRouter) context;
-            UserSession session = router.getSession();
+            UserSessionInterface session = new UserSession(context);
 
             try {
                 if (purchase != null && purchase.getListProduct() != null) {
