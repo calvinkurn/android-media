@@ -124,4 +124,11 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_SHOP_COMMITMENT)
     fun provideGetShopCommitment(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_commitment)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_INSTALLMENT)
+    fun provideGetInstallment(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment)
 }

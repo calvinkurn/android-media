@@ -32,6 +32,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -50,6 +51,7 @@ import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -650,6 +652,18 @@ class ProductDetailFragment : BaseDaggerFragment() {
             } else {
                 merchantVoucherListWidget.gone()
             }
+            productInfoP2.minInstallment?.let {
+                label_installment.visible()
+                label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
+                        (if(shopInfo.goldOS.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
+                label_desc_installment.visible()
+                if (label_min_wholesale.isVisible){
+                    wholesale_divider.visible()
+                } else {
+                    wholesale_divider.gone()
+                }
+                base_view_wholesale.visible()
+            }
         }
         productInfoP2.shopBadge?.let{ productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
@@ -705,7 +719,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
-        shouldShowCod = data.campaign.id.isBlank() && data.basic.isEligibleCod
+        shouldShowCod = (!data.campaign.isActive || (data.campaign.id.toIntOrNull() ?: 0) == 0) && data.basic.isEligibleCod
         if (shouldShowCod) label_cod.visible() else label_cod.gone()
         headerView.renderData(data)
         view_picture.renderData(data.pictures, this::onPictureProductClicked)
@@ -716,13 +730,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
         txt_last_update.visible()
 
         if (data.wholesale.isNotEmpty()) {
-            val minPrice = data.wholesale.sortedBy { it.price }.get(0).price
+            val minPrice = data.wholesale.minBy { it.price }?.price ?: return
             label_min_wholesale.text = getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
             label_wholesale.visibility = View.VISIBLE
             label_min_wholesale.visibility = View.VISIBLE
             base_view_wholesale.visibility = View.VISIBLE
         } else {
-            base_view_wholesale.visibility = View.GONE
+            label_wholesale.visibility = View.GONE
+            label_min_wholesale.visibility = View.GONE
+            if (label_desc_installment.isVisible) base_view_wholesale.visibility = View.VISIBLE
+            else base_view_wholesale.gone()
         }
         activity?.invalidateOptionsMenu()
     }

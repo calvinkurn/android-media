@@ -29,6 +29,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.TopAdsDisplayResponse
+import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopCommitment
@@ -106,7 +107,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
                     productInfoP1.productInfo.basic.id,
-                    productInfoP1.productInfo.basic.price.toInt(), resources)
+                    productInfoP1.productInfo.basic.price, resources)
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
@@ -127,7 +128,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             productInfoP1Resp.value = Success(productInfoP1)
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
                     productInfoP1.productInfo.basic.id,
-                    productInfoP1.productInfo.basic.price.toInt(), resources)
+                    productInfoP1.productInfo.basic.price, resources)
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
@@ -135,7 +136,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2(shopId: Int, productId: Int, productPrice: Int, resources: Resources): ProductInfoP2 = withContext(Dispatchers.IO) {
+    private suspend fun getProductInfoP2(shopId: Int, productId: Int, productPrice: Float, resources: Resources): ProductInfoP2 = withContext(Dispatchers.IO) {
         val productInfoP2 = ProductInfoP2()
 
         // gson for testing
@@ -150,7 +151,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 ShopBadge.Response::class.java, shopBadgeParams)
 
         val shopCommitmentParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString(),
-                PARAM_PRICE to productPrice)
+                PARAM_PRICE to productPrice.toInt())
         val shopCommitmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COMMITMENT],
                 ShopCommitment.Response::class.java, shopCommitmentParams)
 
@@ -166,10 +167,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val voucherRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_VOUCHER],
                 MerchantVoucherQuery::class.java, voucherParams)
 
+        val installmentParams = mapOf(PARAM_PRICE to productPrice, "qty" to 1)
+        val installmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSTALLMENT],
+                InstallmentResponse::class.java, installmentParams)
+
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
         try {
             val gqlResponse = graphqlRepository.getReseponse(listOf(shopRequest, ratingRequest,
-                    wishlistCountRequest, voucherRequest, shopBadgeRequest, shopCommitmentRequest),
+                    wishlistCountRequest, voucherRequest, shopBadgeRequest, shopCommitmentRequest,
+                    installmentRequest),
                     cacheStrategy)
 
             val result = if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
@@ -216,6 +222,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 }
             }
 
+            if (gqlResponse.getError(InstallmentResponse::class.java)?.isNotEmpty() != true){
+                val resp = gqlResponse.getData<InstallmentResponse>(InstallmentResponse::class.java)?.result
+                resp?.let {
+                    productInfoP2.minInstallment = it.bank.flatMap { it.installmentList }.minBy { it.minAmount }
+                }
+            }
+
             productInfoP2
         } catch (t: Throwable) {
             // for testing
@@ -225,13 +238,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     private fun generateTopAdsParams(productInfo: ProductInfo): String {
         val xparams = Xparams().apply {
-            //            product_id = 140253038 //productInfo.basic.id
-//            product_name = "sofa L Putus tangan minang" //productInfo.basic.name
-//            source_shop_id = 1707618 //productInfo.basic.shopID
-//            /*if (productInfo.category.detail.size > 2)
-//                child_cat_id = productInfo.category.detail[2].id*/
-//            child_cat_id = 984
-
             product_id = productInfo.basic.id
             product_name = productInfo.basic.name
             source_shop_id = productInfo.basic.shopID

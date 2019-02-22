@@ -17,4 +17,5 @@ object RawQueryKeyConstant {
     const val QUERY_DISPLAY_ADS = "display_ads"
     const val QUERY_OTHER_PRODUCT = "other_product"
     const val QUERY_PRODUCT_AFFILIATE = "product_affiliate"
+    const val QUERY_INSTALLMENT = "installment"
 }
