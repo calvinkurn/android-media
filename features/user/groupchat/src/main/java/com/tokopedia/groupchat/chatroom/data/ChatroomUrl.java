@@ -7,6 +7,8 @@ package com.tokopedia.groupchat.chatroom.data;
 public class ChatroomUrl {
 
     static final String GET_CHANNEL_INFO = "/gcn/api/v2/channel/{channel_uuid}";
+    static final String GET_DYNAMIC_BUTTONS = "/gcn/api/v3/channel/{channel_uuid}/buttons";
+
     static final String PATH_CHANNEL_UUID = "channel_uuid";
     public static final String DESKTOP_URL = "https://tokopedia.link/playblog";
 

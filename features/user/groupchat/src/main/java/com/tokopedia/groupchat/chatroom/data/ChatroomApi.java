@@ -22,4 +22,9 @@ public interface ChatroomApi {
             @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid,
             @QueryMap HashMap<String, Object> requestParam);
 
+//    @GET(ChatroomUrl.GET_DYNAMIC_BUTTONS)
+//    Observable<Response<DataResponse<DynamicButtonPojo>>> getChannelInfo(
+//            @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid,
+//            @QueryMap HashMap<String, Object> requestParam);
+
 }
