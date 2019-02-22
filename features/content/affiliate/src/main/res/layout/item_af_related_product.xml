@@ -7,15 +7,15 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
     tools:ignore="UnusedAttribute">
 
     <ImageView
         android:id="@+id/thumbnail"
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
@@ -66,6 +66,8 @@
         android:id="@+id/delete"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
@@ -83,10 +85,24 @@
         app:layout_constraintTop_toBottomOf="@+id/thumbnail" />
 
     <View
+        android:id="@+id/separatorBottom"
         android:layout_width="0dp"
         android:layout_height="0.5dp"
         android:background="@color/bg_button_border_outline"
-        android:paddingTop="16dp"
+        android:paddingTop="@dimen/dp_16"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/spaceThumbnail" />
+        app:layout_constraintStart_toEndOf="@+id/spaceThumbnail"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/separatorBottomEmpty"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="@color/bg_button_border_outline"
+        android:paddingTop="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/thumbnail"
+        tools:visibility="gone" />
 </android.support.constraint.ConstraintLayout>
