@@ -1,4 +1,4 @@
-package com.tokopedia.flight.orderlist.contract;
+package com.tokopedia.flight.orderlist.view.contract;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
