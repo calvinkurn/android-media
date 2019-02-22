@@ -6,16 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class HomeFeedGqlResponse {
 
-    @SerializedName("feed")
+    @SerializedName("get_home_recommendation")
     @Expose
-    private Feed feed;
+    private GetHomeRecommendation homeRecommendation;
 
-    public Feed getFeed() {
-        return feed;
+    public GetHomeRecommendation getHomeRecommendation() {
+        return homeRecommendation;
     }
-
-    public void setFeed(Feed feed) {
-        this.feed = feed;
-    }
-
 }

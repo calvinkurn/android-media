@@ -4,20 +4,17 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
@@ -27,6 +24,7 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +50,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private static final String TAG = HomePresenter.class.getSimpleName();
     private static final String CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED";
-    private UserSession userSession;
+
+    private UserSessionInterface userSession;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
@@ -61,27 +60,22 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Inject
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
-    GetHomeFeedUseCase getHomeFeedUseCase;
+    GetFeedTabUseCase getFeedTabUseCase;
 
     private String currentCursor = "";
-    private PagingHandler pagingHandler;
     private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
-    private HomeFeedListener feedListener;
     private HeaderViewModel headerViewModel;
     private boolean fetchFirstData;
     private long REQUEST_DELAY = 180000;// 3 minutes
     private static long lastRequestTime;
 
-    public HomePresenter(PagingHandler pagingHandler,
-                         UserSession userSession,
+    public HomePresenter(UserSessionInterface userSession,
                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         this.userSession = userSession;
-        this.pagingHandler = pagingHandler;
         this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;
 
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
-        resetPageFeed();
     }
 
     @Override
@@ -319,39 +313,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    public void setFeedListener(HomeFeedListener feedListener) {
-        this.feedListener = feedListener;
-    }
-
-    public void resetPageFeed() {
-        currentCursor = "";
-        pagingHandler.setPage(0);
-        if (getHomeFeedUseCase != null) {
-            getHomeFeedUseCase.unsubscribe();
-        }
-    }
-
-    public void fetchNextPageFeed() {
-        pagingHandler.nextPage();
-        fetchCurrentPageFeed();
-    }
-
-    public void fetchCurrentPageFeed() {
-        if (currentCursor == null)
-            return;
-        getHomeFeedUseCase.execute(
-                getHomeFeedUseCase.getFeedPlusParam(
-                        userSession.getUserId(),
-                        currentCursor),
-                new GetHomeFeedsSubscriber(getView().getContext(), feedListener, pagingHandler.getPage()));
-    }
-
     public void setCursor(String currentCursor) {
         this.currentCursor = currentCursor;
-    }
-
-    public void setCursorNoNextPageFeed() {
-        this.currentCursor = CURSOR_NO_NEXT_PAGE_FEED;
     }
 
     public boolean hasNextPageFeed() {
@@ -419,6 +382,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 }
                 if (homePresenter.isDataValid(visitables)) {
                     homePresenter.getView().removeNetworkError();
+                    homePresenter.getView().onHomeDataLoadSuccess();
                 } else {
                     homePresenter.showNetworkError();
                 }
@@ -448,15 +412,15 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private void unsubscribeAllUseCase() {
         if (getHomeDataUseCase != null) {
-            getHomeFeedUseCase.unsubscribe();
-        }
-
-        if (getHomeFeedUseCase != null) {
-            getHomeFeedUseCase.unsubscribe();
+            getHomeDataUseCase.unsubscribe();
         }
 
         if (localHomeDataUseCase != null) {
             localHomeDataUseCase.unsubscribe();
+        }
+
+        if (getFeedTabUseCase != null) {
+            getFeedTabUseCase.unsubscribe();
         }
 
         if (subscription != null) {
@@ -523,5 +487,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if(slidesModel.getRedirectUrl()!=null && !slidesModel.getRedirectUrl().isEmpty()) {
             new ImpresionTask().execute(slidesModel.getRedirectUrl());
         }
+    }
+
+    @Override
+    public void getFeedTabData() {
+        getFeedTabUseCase.execute(new GetFeedTabsSubscriber(getView()));
     }
 }

@@ -43,6 +43,7 @@ public class BannerView extends BaseCustomView {
     private OnPromoLoadedListener onPromoLoadedListener;
     private OnPromoScrolledListener onPromoScrolledListener;
     private OnPromoAllClickListener onPromoAllClickListener;
+    private OnPromoDragListener onPromoDragListener;
 
     private ArrayList<ImageView> indicatorItems;
     private ArrayList<Boolean> impressionStatusList;
@@ -129,6 +130,11 @@ public class BannerView extends BaseCustomView {
         void onPromoAllClick();
     }
 
+    public interface OnPromoDragListener {
+        void onPromoDragStart();
+        void onPromoDragEnd();
+    }
+
     private void init(AttributeSet attrs) {
         init();
     }
@@ -189,6 +195,13 @@ public class BannerView extends BaseCustomView {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING && recyclerView.isInTouchMode()) {
                     stopAutoScrollBanner();
+                    if (onPromoDragListener != null) {
+                        onPromoDragListener.onPromoDragStart();
+                    }
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (onPromoDragListener != null) {
+                        onPromoDragListener.onPromoDragEnd();
+                    }
                 }
             }
 
@@ -306,6 +319,10 @@ public class BannerView extends BaseCustomView {
 
     public void setOnPromoAllClickListener(OnPromoAllClickListener onPromoAllClickListener) {
         this.onPromoAllClickListener = onPromoAllClickListener;
+    }
+
+    public void setOnPromoDragListener(OnPromoDragListener onPromoDragListener) {
+        this.onPromoDragListener = onPromoDragListener;
     }
 
     public boolean isInitialized() {
