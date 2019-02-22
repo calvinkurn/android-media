@@ -3,7 +3,6 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -17,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -30,6 +28,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
@@ -179,7 +178,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 startActivity(TkpdPaySettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_TEMPLATE_ID:
-                Toast.makeText(getActivity(), "Template pembelian", Toast.LENGTH_SHORT).show();
+                RouteManager.route(getActivity(), AccountHomeUrl.APPLINK_TOKOPEDIA_CORNER);
                 break;
             case SettingConstant.SETTING_NOTIFICATION_ID:
                 accountAnalytics.eventClickSetting(NOTIFICATION);
