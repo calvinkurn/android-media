@@ -16,6 +16,12 @@ public class FlightEntity {
     @SerializedName("phone")
     @Expose
     private String phone;
+    @SerializedName("invoice_uri")
+    @Expose
+    private String invoiceUri;
+    @SerializedName("eticket_uri")
+    @Expose
+    private String eticketUri;
     @SerializedName("total_adult")
     @Expose
     private String totalAdult;
@@ -126,4 +132,11 @@ public class FlightEntity {
         return contactUsUrl;
     }
 
+    public String getInvoiceUri() {
+        return invoiceUri;
+    }
+
+    public String getEticketUri() {
+        return eticketUri;
+    }
 }

@@ -8,7 +8,6 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.util.BranchSdkUtils;
 
 import org.json.JSONArray;
 
@@ -22,7 +21,6 @@ import java.util.Map;
 public class PaymentTracking extends TrackingUtils {
 
     public static void eventTransactionGTM(Context context, Purchase purchase) {
-        BranchSdkUtils.sendCommerceEvent(context, purchase, BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
         getGTMEngine(context).eventTransaction(purchase);
         getGTMEngine(context).sendScreen(AppScreen.SCREEN_FINISH_TX_OLD);
         getGTMEngine(context).clearTransactionDataLayer(purchase);

@@ -44,6 +44,7 @@ import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSou
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -160,7 +161,7 @@ public class ProductManageModule {
 
     @ProductManageScope
     @Provides
-    UserSession provideUserSession(AbstractionRouter abstractionRouter){
+    UserSession provideUserSessionAbstraction(AbstractionRouter abstractionRouter){
         return abstractionRouter.getSession();
     }
 
@@ -229,4 +230,9 @@ public class ProductManageModule {
         return new GraphqlUseCase();
     }
 
+    @ProductManageScope
+    @Provides
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new com.tokopedia.user.session.UserSession(context);
+    }
 }

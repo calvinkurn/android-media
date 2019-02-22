@@ -3,6 +3,7 @@ package com.tokopedia.shipping_recommendation.shippingcourier.view;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public interface ShippingCourierBottomsheetListener {
 
-    void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
+    void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
                           int cartPosition, boolean isCod, boolean isPromoCourier, boolean isNeedPinpoint);
 
     void onCourierShipmentRecpmmendationCloseClicked();

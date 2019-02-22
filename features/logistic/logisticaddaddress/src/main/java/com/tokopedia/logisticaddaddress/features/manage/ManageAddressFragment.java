@@ -249,7 +249,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     @Override
-    public void onFirstPageSuccessRendered() {
+    public void stopPerformanceMonitoring() {
         performanceMonitoring.stopTrace();
     }
 
