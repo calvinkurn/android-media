@@ -66,7 +66,16 @@ public class OrderListActivity extends BaseSimpleActivity
                 .setData(uri.build())
                 .putExtras(bundle);
     }
-
+    @DeepLink({ApplinkConst.MARKETPLACE_ORDER,ApplinkConst.MARKETPLACE_ORDER_FILTER})
+    public static Intent getMarketPlaceOrderListIntent(Context context, Bundle bundle) {
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        bundle.putString(ORDER_CATEGORY, OrderCategory.MARKETPLACE);
+        Intent intent = new Intent(context,OrderListActivity.class);
+        if(uri!=null) {
+            intent.setData(uri.build());
+        }
+        return intent.putExtras(bundle);
+    }
     public static Intent getInstance(Context context) {
         return new Intent(context, OrderListActivity.class);
     }
@@ -109,6 +118,16 @@ public class OrderListActivity extends BaseSimpleActivity
     @Override
     public Context getAppContext() {
         return this.getApplicationContext();
+    }
+
+    @Override
+    public Bundle getBundle() {
+        Bundle bundle = getIntent().getExtras();
+        if(bundle == null){
+            return new Bundle();
+        } else  {
+            return bundle;
+        }
     }
 
     @Override
@@ -156,11 +175,14 @@ public class OrderListActivity extends BaseSimpleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            presenter.getInitData();
-        } else {
-            finish();
+        if (requestCode == REQUEST_CODE ) {
+            if(resultCode == RESULT_OK) {
+                presenter.getInitData();
+            } else {
+                finish();
+            }
         }
+
     }
 
     @Override
