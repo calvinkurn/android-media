@@ -25,8 +25,6 @@ public interface AddAddressContract {
 
         void showErrorSnackbar(String errorMessage);
 
-        String getPassword();
-
         boolean isValidAddress();
 
         Destination getAddress();

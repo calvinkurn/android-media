@@ -32,7 +32,6 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     private static final String PARAM_RECEIVER_PHONE = "receiver_phone";
     private static final String PARAM_LATITUDE = "latitude";
     private static final String PARAM_LONGITUDE = "longitude";
-    private static final String PARAM_PASSWORD = "user_password";
 
     private AddAddressContract.View mView;
     private final AddressRepository networkInteractor;
@@ -139,8 +138,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         Destination address = mView.getAddress();
 
         if (mView.isEdit()) {
-            String password = mView.getPassword();
-            params = getParamEditAddress(address, password);
+            params = getParamEditAddress(address);
         } else {
             params = getParamAddAddress(address);
         }
@@ -165,7 +163,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         return param;
     }
 
-    private TKPDMapParam<String, String> getParamEditAddress(Destination address, String password) {
+    private TKPDMapParam<String, String> getParamEditAddress(Destination address) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(PARAM_ADDRESS_ID, (address.getAddressId() != null) ? address.getAddressId() : "");
         param.put(PARAM_ADDRESS, (address.getAddressStreet() != null) ? address.getAddressStreet() : "");
@@ -180,7 +178,6 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             param.put(PARAM_LATITUDE, String.valueOf(address.getLatitude()));
             param.put(PARAM_LONGITUDE, String.valueOf(address.getLongitude()));
         }
-        param.put(PARAM_PASSWORD, password);
         return param;
     }
 
