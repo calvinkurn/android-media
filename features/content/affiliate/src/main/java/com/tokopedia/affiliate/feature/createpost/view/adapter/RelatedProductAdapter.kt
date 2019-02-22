@@ -49,6 +49,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener)
             holder.itemView.delete.show()
             holder.itemView.separatorBottom.show()
             holder.itemView.separatorBottomEmpty.hide()
+            holder.itemView.setOnClickListener { }
         }
         holder.itemView.name.text = element.name
         holder.itemView.price.text = element.price
