@@ -43,4 +43,5 @@ interface PlayViewState {
     fun onBackgroundUpdated(it: BackgroundViewModel)
     fun getDurationWatchVideo(): String?
     fun onErrorGetInfo(it: String)
+    fun setBottomView()
 }

@@ -93,6 +93,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private var timeStampAfterResume: Long = 0
     private var timeStampAfterPause: Long = 0
     private var position = 0
+    private var optionsMenuEnable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,7 +118,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.run { inflate(R.menu.group_chat_room_menu, menu) }
+        inflater?.run {
+            inflate(R.menu.group_chat_room_menu, menu)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -141,6 +144,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.action_info).isEnabled = optionsMenuEnable
+        menu.findItem(R.id.action_share).isEnabled = optionsMenuEnable
     }
 
     private fun onGetNotif(data: Bundle) {
@@ -203,6 +212,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
             (activity as PlayActivity)?.let {
                 it.changeHomeDrawableColor(R.color.white)
+                optionsMenuEnable = true
             }
 
             saveGCTokenToCache()
@@ -215,12 +225,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorGetInfo(): (String) -> Unit {
         return {
-
             viewState.onErrorGetInfo(it)
 
             (activity as PlayActivity)?.let {
                 it.changeHomeDrawableColor(R.color.black_70)
                 it.setSwipeable(false)
+                optionsMenuEnable = false
             }
         }
     }
@@ -525,7 +535,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onResume() {
         super.onResume()
-        viewState.onKeyboardHidden()
+        viewState.setBottomView()
         kickIfIdleForTooLong()
         if (canResume()) {
 //

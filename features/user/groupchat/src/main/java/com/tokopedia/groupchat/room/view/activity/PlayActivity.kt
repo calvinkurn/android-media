@@ -10,7 +10,6 @@ import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
@@ -21,6 +20,7 @@ import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
+import com.tokopedia.groupchat.common.util.NonSwipeableViewPager
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit
 open class PlayActivity : BaseSimpleActivity() {
 
     lateinit var rootView: View
-    lateinit var viewPager: ViewPager
+    lateinit var viewPager: NonSwipeableViewPager
     private val KEYBOARD_THRESHOLD = 100
     private lateinit var pagerAdapter: FragmentPagerAdapter
 
@@ -62,7 +62,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
     private fun setFragment() {
 
-        viewPager = findViewById<ViewPager>(R.id.view_pager_play)
+        viewPager = findViewById(R.id.view_pager_play)
 
         val fragmentList = ArrayList<Fragment>()
 
@@ -77,6 +77,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
         viewPager.currentItem = 1
 
+        viewPager.swipeable = false
     }
 
     private fun setupToolbar() {
@@ -171,6 +172,8 @@ open class PlayActivity : BaseSimpleActivity() {
             DrawableCompat.setTint(wrapped, MethodChecker.getColor(this, resId))
             it.setHomeAsUpIndicator(drawable)
         }
+
+        invalidateOptionsMenu()
     }
 
     fun setSwipeable(swipeable: Boolean) {
