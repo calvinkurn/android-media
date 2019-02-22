@@ -74,7 +74,18 @@
                             android:layout_weight="1"
                             android:textColor="@color/white"
                             android:textSize="@dimen/sp_17"
+                            android:layout_marginLeft="@dimen/dp_16"
                             android:layout_gravity="center"/>
+
+                        <ImageView
+                            android:id="@+id/iv_action_parallax"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:tint="@color/white"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            tools:src="@drawable/ic_share_white"
+                            />
 
                     </LinearLayout>
 
@@ -202,7 +213,18 @@
                         android:layout_weight="1"
                         android:textColor="@color/black_70"
                         android:textSize="@dimen/sp_17"
+                        android:layout_marginLeft="@dimen/dp_16"
                         android:layout_gravity="center"/>
+
+                    <ImageView
+                        android:id="@+id/iv_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:tint="@color/black_70"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        tools:src="@drawable/ic_share_white"
+                        />
 
                 </LinearLayout>
             </android.support.v7.widget.Toolbar>
@@ -236,10 +258,7 @@
         android:layout_gravity="bottom"
         android:background="@drawable/card_shadow_top"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:padding="@dimen/dp_16"
         android:visibility="gone"
         app:layout_anchor="@+id/swipeToRefresh"
         app:layout_anchorGravity="bottom"
@@ -259,6 +278,7 @@
                 android:layout_margin="@dimen/dp_1"
                 android:text="@string/profile_add_rec"
                 android:textAllCaps="false"
+                android:textColor="#f531353b"
                 app:buttonCompatSize="medium"
                 app:buttonCompatType="secondary"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -268,7 +288,7 @@
 
             <View
                 android:id="@+id/footerOwnSpace"
-                android:layout_width="@dimen/dp_8"
+                android:layout_width="@dimen/dp_16"
                 android:layout_height="0dp"
                 app:layout_constraintEnd_toStartOf="@+id/shareProfile"
                 app:layout_constraintStart_toEndOf="@+id/addCuration" />

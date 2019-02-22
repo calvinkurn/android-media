@@ -135,15 +135,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_dashboard) {
-            if (isAffiliate) goToDashboard()
-            else goToAffiliateExplore()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
@@ -240,9 +231,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
         affiliatePostQuota = firstPageViewModel.affiliatePostQuota
 
-        val shouldShowDashboard = userSession.userId == userId.toString()
+        val selfProfile = userSession.userId == userId.toString()
                 && firstPageViewModel.profileHeaderViewModel.isAffiliate
-        setHasOptionsMenu(shouldShowDashboard)
+        lateinit var action: View.OnClickListener
+        if (!selfProfile) {
+            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
+            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
+            action = shareLinkClickListener(firstPageViewModel.profileHeaderViewModel.link)
+        } else {
+            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
+            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
+            action = View.OnClickListener {
+                goToDashboard()
+            }
+        }
+        iv_action.setOnClickListener(action)
+        iv_action_parallax.setOnClickListener(action)
 
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
@@ -255,7 +259,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         setProfileToolbar(firstPageViewModel.profileHeaderViewModel)
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
-//        visitables.add(firstPageViewModel.profileHeaderViewModel)
         if (!firstPageViewModel.visitableList.isEmpty()) {
             firstPageViewModel.visitableList
                     .filterIsInstance<BaseKolViewModel>()
