@@ -24,7 +24,7 @@ import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
+import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
 import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
