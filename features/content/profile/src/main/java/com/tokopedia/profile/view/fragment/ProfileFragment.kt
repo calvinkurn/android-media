@@ -165,7 +165,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSwipeRefresh() {
         footerOwn.visibility = View.GONE
-        collapsing.visibility = View.GONE
+        app_bar_layout.visibility = View.GONE
         super.onSwipeRefresh()
     }
 
