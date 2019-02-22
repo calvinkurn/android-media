@@ -1,17 +1,17 @@
-package com.tokopedia.abstraction.base.view.fragment;
+package com.tokopedia.webview;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.network.URLGenerator;
-@Deprecated
+import com.tokopedia.network.utils.URLGenerator;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+
 public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public static final String ARGS_URL = "arg_url";
 
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private String url;
     public static final String TOKOPEDIA_STRING = "tokopedia";
     private boolean isTokopediaUrl;
@@ -29,7 +29,7 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
         super.onCreate(savedInstanceState);
         url = getArguments().getString(ARGS_URL);
         isTokopediaUrl = Uri.parse(url).getHost().contains(TOKOPEDIA_STRING);
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity().getApplicationContext());
     }
 
     @Override

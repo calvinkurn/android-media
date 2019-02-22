@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.webview;
+package com.tokopedia.webview;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.network.URLGenerator;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.utils.URLGenerator;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -17,7 +17,6 @@ import java.net.URLEncoder;
 /**
  * Created by nisie on 11/30/16.
  */
-@Deprecated
 public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";

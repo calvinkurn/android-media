@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.fragment;
+package com.tokopedia.webview;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,12 +17,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.webview.R;
 
 import static android.app.Activity.RESULT_OK;
 
-@Deprecated
+
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int MAX_PROGRESS = 100;
 
