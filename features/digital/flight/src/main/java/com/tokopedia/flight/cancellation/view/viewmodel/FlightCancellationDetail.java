@@ -30,7 +30,7 @@ public class FlightCancellationDetail implements Parcelable {
         realRefund = in.readString();
         status = in.readInt();
         passengers = in.createTypedArrayList(FlightCancellationListPassengerViewModel.CREATOR);
-        journeys = in.createTypedArrayList(FlightOrderJourney.CREATOR);
+        journeys = in.createTypedArrayList(FlightOrderJourney.Companion.getCREATOR());
     }
 
     public static final Creator<FlightCancellationDetail> CREATOR = new Creator<FlightCancellationDetail>() {
