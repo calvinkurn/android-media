@@ -57,8 +57,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
     public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
                                                          RecipientAddressModel recipientAddressModel,
                                                          int cartPosition) {
-        ShippingCourierBottomsheet shippingCourierBottomsheet =
-                new ShippingCourierBottomsheet();
+        ShippingCourierBottomsheet shippingCourierBottomsheet = new ShippingCourierBottomsheet();
         Bundle bundle = new Bundle();
         if (shippingCourierViewModels != null) {
             bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
@@ -70,8 +69,20 @@ public class ShippingCourierBottomsheet extends BottomSheets
         return shippingCourierBottomsheet;
     }
 
+    public static ShippingCourierBottomsheet newInstance() {
+        return new ShippingCourierBottomsheet();
+    }
+
     public void setShippingCourierBottomsheetListener(ShippingCourierBottomsheetListener shippingCourierBottomsheetListener) {
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener;
+    }
+
+    public void updateArguments(List<ShippingCourierViewModel> shippingCourierViewModels) {
+        Bundle bundle = new Bundle();
+        if (shippingCourierViewModels != null) {
+            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        }
+        setArguments(bundle);
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
@@ -123,6 +134,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
                     getArguments().getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
             if (shippingCourierViewModels != null) {
                 presenter.setData(shippingCourierViewModels);
+                presenter.setSelectedCourier();
                 setupRecyclerView(cartPosition);
             } else {
                 showLoading();
@@ -170,7 +182,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         boolean isCod = productData.getCodProductData() != null && (productData.getCodProductData().getIsCodAvailable() == 1);
         if (shippingCourierBottomsheetListener != null) {
             shippingCourierBottomsheetListener.onCourierChoosen(
-                    courierItemData, presenter.getRecipientAddressModel(), cartPosition, isCod,
+                    shippingCourierViewModel, courierItemData, presenter.getRecipientAddressModel(), cartPosition, isCod,
                     !TextUtils.isEmpty(productData.getPromoCode()), isNeedPinpoint);
         }
         dismiss();

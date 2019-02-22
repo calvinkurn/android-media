@@ -75,7 +75,6 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -1004,22 +1003,44 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData, int checklistCondition) {
+    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData,
+                                            boolean checkoutProductEligibleForCashOnDelivery,
+                                            int checklistCondition) {
         switch (checklistCondition) {
             case CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES:
-                sendAnalyticsOnSuccessToCheckoutDefault(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutDefault(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES:
-                sendAnalyticsOnSuccessToCheckoutCheckAll(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutCheckAll(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP:
-                sendAnalyticsOnSuccessToCheckoutPartialShop(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialShop(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM:
-                sendAnalyticsOnSuccessToCheckoutPartialProduct(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialProduct(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM:
-                sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
+                }
                 break;
         }
         renderToAddressChoice();
@@ -1462,6 +1483,31 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefaultEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAllEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProductEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProductEligibleCod(eeData);
     }
 
     @Override

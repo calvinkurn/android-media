@@ -43,14 +43,15 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.websocket)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.features.transactioncommon)
-    implementation project(rootProject.ext.libraries.analytics)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -83,8 +84,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation 'io.reactivex:rxkotlin:0.60.0'
 }
 
 apply from: '../../../publish_local.gradle'

@@ -118,7 +118,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val twoYears: Date = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
 
         if (dateToSet.after(twoYears)) {
-            view.showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error)
+            view.showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_one_years_from_today_error)
         } else if (!view.isReturning() && dateToSet.before(FlightDateUtil.getCurrentDate())) {
             view.showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error)
         } else if (view.isReturning() && dateToSet.before(FlightDateUtil.stringToDate(flightSearchPassDataViewModel.departureDate))) {

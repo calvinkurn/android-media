@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.customview;
 
+import android.graphics.Typeface;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -340,6 +341,8 @@ public class CollapsingTabLayout extends TabLayout {
     private View getTabView(Context context, int position) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
         TextView textView = (TextView) rootView.findViewById(R.id.tabTitle);
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+        textView.setTypeface(typeface);
         textView.setText(tabItemDataList.get(position).getTitle());
         textView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 

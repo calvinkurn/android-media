@@ -145,9 +145,16 @@ public class DynamicFeedShopAdapter
             itemView.setOnClickListener(v ->
                     itemClickListener.onShopItemClicked(getAdapterPosition(), data)
             );
-            btnFollow.setOnClickListener(v ->
-                    itemClickListener.onAddFavorite(getAdapterPosition(), data)
-            );
+            btnFollow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(data.isFavorit()){
+                        itemClickListener.onShopItemClicked(getAdapterPosition(), data);
+                    } else {
+                        itemClickListener.onAddFavorite(getAdapterPosition(), data);
+                    }
+                }
+            });
         }
 
         private void loadImageOrDefault(ImageView imageView, String imageUrl) {
@@ -178,7 +185,7 @@ public class DynamicFeedShopAdapter
         private void bindFavorite(Data data) {
             if (data.isFavorit()) {
                 btnFollow.setButtonCompatType(ButtonCompat.SECONDARY);
-                btnFollow.setText(btnFollow.getContext().getString(R.string.topads_following));
+                btnFollow.setText(btnFollow.getContext().getString(R.string.topads_visit_shop));
             } else {
                 btnFollow.setButtonCompatType(ButtonCompat.PRIMARY);
                 btnFollow.setText(btnFollow.getContext().getString(R.string.topads_follow));

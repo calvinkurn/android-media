@@ -34,7 +34,6 @@
         android:paddingRight="@dimen/dp_10"
         android:paddingTop="@dimen/dp_16"
         android:textColor="@color/white"
-        android:textStyle="bold"
         android:textSize="12sp"
         android:gravity="top"
         android:ellipsize="end"

@@ -64,6 +64,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.item
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -479,15 +480,15 @@ public class HotlistFragment extends BrowseSectionFragment
             return;
         }
 
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.DISCOVERY_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
                 .setId(aliasHotlist)
                 .build();
 
-        shareData.setType(ShareData.HOTLIST_TYPE);
+        shareData.setType(LinkerData.HOTLIST_TYPE);
         new DefaultShare(getActivity(), shareData).show();
     }
 
