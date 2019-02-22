@@ -20,7 +20,7 @@ class ShopEtalasePickerActivity() {
             val startMain = Intent(Intent.ACTION_MAIN)
             startMain.addCategory(Intent.CATEGORY_HOME)
             startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(startMain)
+            return startMain
         }
     }
 

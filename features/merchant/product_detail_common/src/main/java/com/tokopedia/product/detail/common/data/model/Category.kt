@@ -14,7 +14,7 @@ data class Category(
 
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("name")
         @Expose
@@ -31,7 +31,7 @@ data class Category(
 
             @SerializedName("id")
             @Expose
-            val id: Int = 0,
+            val id: String = "",
 
             @SerializedName("name")
             @Expose

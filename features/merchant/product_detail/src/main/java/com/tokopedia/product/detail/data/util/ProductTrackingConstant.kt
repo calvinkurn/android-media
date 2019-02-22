@@ -31,7 +31,7 @@ object ProductTrackingConstant {
     }
 
     object ProductTalk {
-        const val EVENT_LABEL = "Talk"
+        const val EVENT_LABEL = "TalkOld"
     }
 
     object ProductReview {

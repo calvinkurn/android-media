@@ -1,4 +1,4 @@
-query getShopInfo($shopIds: [Int!]!){
+query getShopBadge($shopIds: [Int!]!){
      reputation_shops(shop_ids: $shopIds) {
          badge
          badge_hd

@@ -279,7 +279,7 @@ public abstract class SellerRouterApplication extends MainApplication
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
-        UnifiedOrderListRouter, FlashSaleRouter,
+        UnifiedOrderListRouter,
         com.tokopedia.product.detail.ProductDetailRouter,
         CoreNetworkRouter,
         ChatbotRouter,
@@ -797,15 +797,19 @@ public abstract class SellerRouterApplication extends MainApplication
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source, avatar);
+                 customMessage, source, avatar);
     }
 
 
+    @NonNull
     @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
+    public Intent getAskSellerIntent(@NonNull Context context, @NonNull String toShopId,
+                                     @NonNull String shopName, @NonNull String customSubject,
+                                     @NonNull String customMessage, @NonNull String source,
+                                     @NonNull String avatar) {
 
         return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
 
     }
 
@@ -841,8 +845,9 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
+    @NonNull
     @Override
-    public Intent getSplashScreenIntent(Context context) {
+    public Intent getSplashScreenIntent(@NonNull Context context) {
         return new Intent(context, SplashScreenActivity.class);
     }
 
@@ -903,7 +908,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToGMSubscribe(Activity activity) {
+    public void goToGMSubscribe(@NonNull Activity activity) {
         Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(activity);
         activity.startActivity(intent);
     }
@@ -1970,10 +1975,10 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
-    @Override
+    /*@Override
     public String getContactUsBaseURL() {
         return TkpdBaseURL.ContactUs.URL_HELP;
-    }
+    }*/
 
     @Override
     public Class getDeeplinkClass() {
@@ -1981,29 +1986,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refereshFcmTokenToCMNotif(String token) {
-
-    }
-
-    @Override
-    public void onLoginSuccess() {
-
-    }
-
-    @Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }
-
-    @Override
     public Intent getSaldoDepositIntent(Context context) {
         return null;
-    }
-
-    @Override
-    public void refereshFcmTokenToCMNotif(String token) {
-
     }
 
     @Override
@@ -2016,11 +2000,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return false;
     }
 
-    @Override
-    public String getContactUsBaseURL() {
-        return TkpdBaseURL.ContactUs.URL_HELP;
-    }
-
     public void onLoginSuccess() {
     }
 
@@ -2029,7 +2008,13 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCheckoutIntent(Activity activity) {
+    public Intent getCheckoutIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getExpressCheckoutIntent(Activity activity,
+                                           com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
         return null;
     }
 
@@ -2041,7 +2026,32 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Intent getIntermediaryIntent(Context context, int categoryId) {
+    public Intent getIntermediaryIntent(@NonNull Context context, String categoryId) {
         return new Intent();
+    }
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+
+    }
+
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+
+    }
+
+    @Override
+    public void refreshFCMTokenFromForegroundToCM() {
+
+    }
+
+    @Override
+    public com.tokopedia.iris.Iris getIris() {
+        return null;
+    }
+
+    @Override
+    public void openImagePreviewFromChat(@NotNull Context context, @NotNull ArrayList<String> listImage, @NotNull ArrayList<String> imageDesc, @NotNull String title, @NotNull String date) {
+
     }
 }

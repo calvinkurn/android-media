@@ -61,8 +61,8 @@ public class SplashScreenActivity extends SplashScreen {
         return intent;
     }
 
-    @Override
+    /*@Override
     protected void handlingInitBranchSession(JSONObject referringParams) {
         moveToHome();
-    }
+    }*/
 }

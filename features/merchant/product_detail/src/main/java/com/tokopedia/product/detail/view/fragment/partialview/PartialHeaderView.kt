@@ -78,6 +78,10 @@ class PartialHeaderView private constructor(private val view: View,
                 text_discount.visibility = View.VISIBLE
                 discount_timer_holder.visibility = View.VISIBLE
                 showCountDownTimer(data.campaign)
+                sale_text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
+                text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
+                sale_text_stock_available.visible()
+                text_stock_available.gone()
             } else {
                 tv_price_pdp.text = context.getString(R.string.template_price, data.basic.priceCurrency,
                         data.basic.price.toString())
@@ -85,6 +89,9 @@ class PartialHeaderView private constructor(private val view: View,
                 text_discount.visibility = View.GONE
                 discount_timer_holder.visibility = View.GONE
                 if (data.basic.isEligibleCod) layout_cod_content.visible() else layout_cod_content.gone()
+                text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
+                sale_text_stock_available.gone()
+                text_stock_available.visible()
             }
         }
     }
@@ -126,6 +133,8 @@ class PartialHeaderView private constructor(private val view: View,
             text_original_price.visibility = View.GONE
             tv_price_pdp.text = context.getString(R.string.template_price, "",
                     campaign.originalPrice.getCurrencyFormatted())
+            sale_text_stock_available.gone()
+            text_stock_available.visible()
         }
     }
 }

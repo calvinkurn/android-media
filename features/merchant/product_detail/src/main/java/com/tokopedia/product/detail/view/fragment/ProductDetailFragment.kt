@@ -45,10 +45,9 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
+import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRD_STATE_ACTIVE
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
@@ -276,7 +275,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 val productP3value = productInfoViewModel.productInfoP3resp.value
                 if (shopInfo != null && shopInfo?.isAllowManage == 1) {
-                    if (productInfo?.basic?.status != ProductDetailConstant.PRD_STATE_PENDING) {
+                    if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
                         gotoEditProduct()
                     } else {
                         // TODO show toast product status title
@@ -640,7 +639,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
-            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: PRD_STATE_ACTIVE)
+            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString()
                         ?: "", shopInfo.shipments)
@@ -706,7 +705,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
-        shouldShowCod = data.campaign.id < 1 && data.basic.isEligibleCod
+        shouldShowCod = data.campaign.id.isBlank() && data.basic.isEligibleCod
         if (shouldShowCod) label_cod.visible() else label_cod.gone()
         headerView.renderData(data)
         view_picture.renderData(data.pictures, this::onPictureProductClicked)
@@ -912,7 +911,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
             val isOwned = productInfoViewModel.isShopOwner(productInfo!!.basic.shopID)
             val isSellerApp = GlobalConfig.isSellerApp()
-            val isWareHousing = productInfo!!.basic.status == ProductDetailConstant.PRD_STATE_WAREHOUSE
+            val isWareHousing = productInfo!!.basic.status == ProductStatusTypeDef.WAREHOUSE
 
             menuCart.isVisible = !isOwned && !isSellerApp
             menuCart.isEnabled = !isOwned && !isSellerApp

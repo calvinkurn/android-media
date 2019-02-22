@@ -33,7 +33,8 @@ import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
-import com.tokopedia.product.detail.data.model.talk.ProductTalkQuery
+import com.tokopedia.product.detail.data.model.talk.Talk
+import com.tokopedia.product.detail.data.model.talk.TalkList
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
@@ -235,7 +236,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             product_name = productInfo.basic.name
             source_shop_id = productInfo.basic.shopID
             if (productInfo.category.detail.size > 2)
-                child_cat_id = productInfo.category.detail[2].id
+                child_cat_id = productInfo.category.detail[2].id.toIntOrNull() ?: 0
         }
 
         return mapOf(TopAdsDisplay.KEY_ITEM to TopAdsDisplay.DEFAULT_TOTAL_ITEM,
@@ -283,9 +284,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val helpfulReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW], Review.Response::class.java,
                 helpfulReviewParams)
 
-        val latestTalkParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id.toString())
+        val latestTalkParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id)
         val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
-                ProductTalkQuery.Response::class.java, latestTalkParams)
+                TalkList.Response::class.java, latestTalkParams)
 
         val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
                 productInfo.basic.shopID, productInfo.basic.id))
@@ -336,12 +337,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productInfoP3.helpfulReviews = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_most_helpful_review),
                         Review.Response::class.java).productMostHelpfulReviewQuery.list
 
-            if (response.getError(ProductTalkQuery.Response::class.java)?.isNotEmpty() != true) {
-                productInfoP3.latestTalk = response.getData<ProductTalkQuery.Response>(ProductTalkQuery.Response::class.java)
-                        .productTalkQuery
-            } else {
-                productInfoP3.latestTalk = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_latest_talk),
-                        ProductTalkQuery.Response::class.java).productTalkQuery
+            if (response.getError(TalkList.Response::class.java)?.isNotEmpty() != true) {
+                productInfoP3.latestTalk = response.getData<TalkList.Response>(TalkList.Response::class.java)
+                        .result.data.talks.firstOrNull() ?: Talk()
             }
 
             if (response.getError(TopAdsDisplayResponse::class.java)?.isNotEmpty() != true) {
