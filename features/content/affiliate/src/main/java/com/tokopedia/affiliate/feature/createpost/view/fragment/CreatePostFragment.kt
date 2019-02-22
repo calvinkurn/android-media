@@ -330,7 +330,7 @@ class CreatePostFragment : BaseDaggerFragment(),
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            thumbnail.loadImageRounded(viewModel.completeImageList.first())
+            thumbnail.loadImageRounded(viewModel.completeImageList.first(), 25f)
             carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
         } else {
             thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)

@@ -9,7 +9,7 @@ import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadDrawable
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_af_related_product.view.*
 
@@ -39,12 +39,16 @@ class RelatedProductAdapter(val listener: RelatedProductListener)
         if (element.id == EMPTY_ITEM_ID) {
             holder.itemView.thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
             holder.itemView.delete.hide()
+            holder.itemView.separatorBottom.hide()
+            holder.itemView.separatorBottomEmpty.show()
             holder.itemView.setOnClickListener {
                 listener.onEmptyProductClick()
             }
         } else {
-            holder.itemView.thumbnail.loadImage(element.image)
+            holder.itemView.thumbnail.loadImageRounded(element.image, 25f)
             holder.itemView.delete.show()
+            holder.itemView.separatorBottom.show()
+            holder.itemView.separatorBottomEmpty.hide()
         }
         holder.itemView.name.text = element.name
         holder.itemView.price.text = element.price
@@ -64,11 +68,12 @@ class RelatedProductAdapter(val listener: RelatedProductListener)
             list.add(emptyItem)
         }
 
-        val diffResult = DiffUtil.calculateDiff(Callback(this.list, list))
-        diffResult.dispatchUpdatesTo(this)
+//        val diffResult = DiffUtil.calculateDiff(Callback(this.list, list))
+//        diffResult.dispatchUpdatesTo(this)
 
         this.list.clear()
         this.list.addAll(list)
+        notifyDataSetChanged()
     }
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v)
