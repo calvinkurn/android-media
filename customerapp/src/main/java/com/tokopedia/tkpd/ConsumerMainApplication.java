@@ -160,9 +160,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeDatabase();
         TrackApp.initTrackApp(this);
 
-        TrackApp.getInstance().registerImplementation("GTM", GTMAnalytics.class);
-        TrackApp.getInstance().registerImplementation("Appsflyer", AppsflyerAnalytics.class);
-        TrackApp.getInstance().registerImplementation("MoEngage", MoengageAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
         super.onCreate();

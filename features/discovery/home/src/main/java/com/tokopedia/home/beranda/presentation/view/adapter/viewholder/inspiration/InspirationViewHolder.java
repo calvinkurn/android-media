@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.listener.HomeFeedListener;
+import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 /**
@@ -21,14 +21,14 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inspiration_layout;
-    private final HomeFeedListener viewListener;
+    private final HomeInspirationListener viewListener;
 
     RecyclerView recyclerView;
     TextView textView;
 
     private InspirationAdapter adapter;
 
-    public InspirationViewHolder(View itemView, HomeFeedListener viewListener) {
+    public InspirationViewHolder(View itemView, HomeInspirationListener viewListener) {
         super(itemView);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
         textView = (TextView) itemView.findViewById(R.id.title);

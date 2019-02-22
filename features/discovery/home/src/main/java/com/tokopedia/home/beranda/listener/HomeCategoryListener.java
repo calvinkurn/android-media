@@ -48,4 +48,8 @@ public interface HomeCategoryListener {
     long getServerTimeOffset();
 
     boolean isHomeFragment();
+
+    void onPromoDragStart();
+
+    void onPromoDragEnd();
 }
