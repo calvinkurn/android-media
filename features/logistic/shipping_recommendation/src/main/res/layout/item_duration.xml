@@ -64,15 +64,6 @@
             tools:text="Mulai dari Rp10.000" />
 
         <TextView
-            android:id="@+id/tv_cod_availability"
-            style="@style/TextSmallNormalBlack54"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_price"
-            android:layout_marginTop="4dp"
-            tools:text="(Tersedia Bayar di Tempat)" />
-
-        <TextView
             android:id="@+id/tv_text_desc"
             style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
@@ -82,11 +73,20 @@
             tools:text="(Direkomendasikan untuk berat di atas 5kg)" />
 
         <TextView
+            android:id="@+id/tv_cod_availability"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_text_desc"
+            android:layout_marginTop="4dp"
+            tools:text="(Tersedia Bayar di Tempat)" />
+
+        <TextView
             android:id="@+id/tv_error"
             style="@style/TextSmallNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_duration"
+            android:layout_below="@+id/tv_cod_availability"
             android:layout_marginTop="4dp"
             android:textColor="@color/text_courier_error_red"
             tools:text="Jarak melebihi batas maksimum kurir" />
