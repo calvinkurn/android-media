@@ -388,6 +388,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private RemoteConfig firebaseRemoteConfig;
 
     private boolean isCodShown = false;
+    private boolean isFromTradeIn = false;
 
     @Inject
     UserSession userSession;
@@ -947,6 +948,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 return VariantActivity.STATE_BUTTON_BUY;
             case ProductDetailView.SOURCE_BUTTON_CART_PDP:
                 return VariantActivity.STATE_BUTTON_CART;
+            case ProductDetailView.SOURCE_BUTTON_TRADEIN:
+                return VariantActivity.STATE_BUTTON_TRADEIN;
             default:
                 return VariantActivity.STATE_VARIANT_DEFAULT;
         }
@@ -1137,6 +1140,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             productVariant,
                             productData,
                             tradeInParams,
+                            isFromTradeIn,
                             selectedQuantity,
                             state,
                             selectedRemarkNotes
@@ -1157,6 +1161,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
         bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productData);
         bundle.putParcelable(VariantActivity.KEY_TRADE_IN_PARAMS, tradeInParams);
+        bundle.putBoolean(VariantActivity.KEY_TRADE_IS_TRADEIN, isFromTradeIn);
         intent.putExtras(bundle);
         intent.putExtra(KEY_STATE_OPEN_VARIANT, state);
         intent.putExtra(VariantActivity.KEY_SELECTED_QUANTIY, selectedQuantity);
@@ -2873,7 +2878,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         tradeInTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                checkVariant(ProductDetailView.SOURCE_BUTTON_TRADEIN);
             }
         });
         tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams);

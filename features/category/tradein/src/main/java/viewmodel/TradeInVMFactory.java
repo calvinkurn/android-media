@@ -1,24 +1,22 @@
 package viewmodel;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 
 public class TradeInVMFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private static TradeInVMFactory sInstance;
-    private WeakReference<Activity> activityWeakReference;
+    private WeakReference<FragmentActivity> activityWeakReference;
 
-    public static TradeInVMFactory getInstance(Activity activity) {
-        sInstance = new TradeInVMFactory(activity);
-        return sInstance;
+    public static TradeInVMFactory getInstance(FragmentActivity activity) {
+        return new TradeInVMFactory(activity);
     }
 
-    private TradeInVMFactory(Activity activity) {
+    private TradeInVMFactory(FragmentActivity activity) {
         activityWeakReference = new WeakReference<>(activity);
     }
 
@@ -28,7 +26,7 @@ public class TradeInVMFactory extends ViewModelProvider.NewInstanceFactory {
         //noinspection TryWithIdenticalCatches
         if (TradeInTextViewModel.class.isAssignableFrom(modelClass)) {
             try {
-                return modelClass.getConstructor(Activity.class).newInstance(activityWeakReference.get());
+                return modelClass.getConstructor(FragmentActivity.class).newInstance(activityWeakReference.get());
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("Cannot create an instance of " + modelClass, e);
             } catch (InstantiationException e) {

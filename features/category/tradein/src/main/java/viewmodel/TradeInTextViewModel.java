@@ -1,9 +1,10 @@
 package viewmodel;
 
-import android.app.Activity;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.example.tradein.R;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -18,18 +19,24 @@ import java.util.Map;
 import model.TradeInParams;
 import model.ValidateTradeInResponse;
 import rx.Subscriber;
-import view.viewcontrollers.TradeInHomeActivity;
+import view.viewcontrollers.AccessRequestFragment;
 
 public class TradeInTextViewModel extends ViewModel implements ITradeInParamReceiver {
     private MutableLiveData<ValidateTradeInResponse> responseData;
-    private WeakReference<Activity> activityWeakReference;
+    private WeakReference<FragmentActivity> activityWeakReference;
 
-    public TradeInTextViewModel(Activity activity) {
+    public TradeInTextViewModel(FragmentActivity activity) {
         activityWeakReference = new WeakReference<>(activity);
         responseData = new MutableLiveData<>();
     }
 
-
+    public void showAccessRequestDialog() {
+        if (activityWeakReference.get() != null) {
+            FragmentManager fragmentManager = activityWeakReference.get().getSupportFragmentManager();
+            AccessRequestFragment accessDialog = new AccessRequestFragment();
+            accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
+        }
+    }
 
     public MutableLiveData<ValidateTradeInResponse> getResponseData() {
         return responseData;

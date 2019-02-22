@@ -28,7 +28,7 @@ public class TradeInTextView extends ConstraintLayout {
     private View.OnClickListener clickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewModel.startTradeIn();
+            viewModel.showAccessRequestDialog();
         }
     };
 

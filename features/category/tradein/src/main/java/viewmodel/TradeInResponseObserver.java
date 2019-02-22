@@ -20,7 +20,7 @@ public class TradeInResponseObserver implements Observer<ValidateTradeInResponse
 
     @Override
     public void onChanged(@Nullable ValidateTradeInResponse response) {
-        if (response != null && !response.isEligible()) {
+        if (response != null && response.isEligible()) {
             tradeInTextView.setVisibility(View.VISIBLE);
             if (response.isDiagnosed()) {
                 tradeInTextView.priceTextView.setText(String.format(tradeInTextView.getContext().getResources().getString(R.string.text_price_holder), response.getUsedPrice()));

@@ -19,6 +19,8 @@ import viewmodel.IAccessRequestListener;
 
 public class AccessRequestFragment extends DialogFragment {
 
+    public static final String TAG = "ACCESS REQUEST FRAGMENT";
+
     AccessRequestViewModel mViewModel;
 
     private IAccessRequestListener accessRequestListener;
