@@ -48,19 +48,12 @@ interface NormalCheckoutContract {
 
         fun finishWithError(messages: String)
 
-        fun navigateCheckoutToOcs()
-
         fun navigateCheckoutToPayment(paymentPassData: PaymentPassData)
 
         fun navigateCheckoutToThankYouPage(appLink: String)
 
-        fun generateFingerprintPublicKey()
-
         fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult>
 
-        fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData>
-
-        fun getEditAddressObservable(requestParams: RequestParams): Observable<String>
     }
 
     interface Presenter : CustomerPresenter<View> {

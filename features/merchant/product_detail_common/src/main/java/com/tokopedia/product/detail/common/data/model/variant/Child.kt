@@ -8,115 +8,153 @@ import com.google.gson.annotations.SerializedName
  */
 data class Child(
 
-        @SerializedName("product_id")
+        @SerializedName("ProductID")
         @Expose
-        private val productId: Int? = null,
-        @SerializedName("price")
+        private val productId: Int? = null, //ex: 15212348
+
+        @SerializedName("Price")
         @Expose
-        private val price: Int? = null,
-        @SerializedName("stock")
+        private val price: Float? = null, //ex: 100000000
+
+        @SerializedName("PriceFmt")
         @Expose
-        private val stock: Int? = null,
-        @SerializedName("min_order")
+        private val priceFmt: String? = null, //ex: Rp 100.000.000
+
+        @SerializedName("SKU")
         @Expose
-        private val minOrder: Int? = null,
-        @SerializedName("max_order")
+        private val sku: String? = null, // ex:gew2134
+
+        @SerializedName("Stock")
         @Expose
-        private val maxOrder: Int? = null,
-        @SerializedName("sku")
-        @Expose
-        private val sku: String? = null,
-        @SerializedName("option_ids")
+        private val stock: VariantStock? = null,
+
+        @SerializedName("OptionID")
         @Expose
         private val optionIds: List<Int>? = null,
-        @SerializedName("enabled")
+
+        @SerializedName("Enabled")
         @Expose
         private val enabled: Boolean? = null,
-        @SerializedName("name")
+
+        @SerializedName("ProductName")
         @Expose
         private val name: String? = null,
-        @SerializedName("url")
+
+        @SerializedName("ProductURL")
         @Expose
         private val url: String? = null,
-        @SerializedName("is_buyable")
-        @Expose
-        private val isBuyable: Boolean? = null,
-        @SerializedName("picture")
+
+        @SerializedName("Picture")
         @Expose
         private val picture: Picture? = null,
-        @SerializedName("price_fmt")
-        @Expose
-        private val priceFmt: String? = null,
-        @SerializedName("campaign")
+
+        @SerializedName("CampaignInfo")
         @Expose
         private val campaign: Campaign? = null,
-        @SerializedName("is_wishlist")
+
+        @SerializedName("IsWishlist")
         @Expose
         private val isWishlist: Boolean? = null,
-        @SerializedName("always_available")
+
+        @SerializedName("IsCOD")
         @Expose
-        private val alwaysAvailable: Boolean? = null,
-        @SerializedName("stock_wording")
-        @Expose
-        private val stockWording: String? = null,
-        @SerializedName("stock_wording_html")
-        @Expose
-        private val stockWordingHtml: String? = null,
-        @SerializedName("other_variant_stock")
-        @Expose
-        private val otherVariantStock: String? = null,
-        @SerializedName("is_limited_stock")
-        @Expose
-        private val isLimitedStock: Boolean? = null,
-        @SerializedName("is_cod")
-        @Expose
-        private val isCod: Boolean? = null
+        private val isCod: Boolean? = false
 )
 
 data class Campaign(
-        @SerializedName("is_active")
+
+        @SerializedName("CampaignID")
+        @Expose
+        private val campaignID: String? = "",
+
+        @SerializedName("IsActive")
         @Expose
         private val isActive: Boolean? = null,
-        @SerializedName("original_price")
+
+        @SerializedName("OriginalPrice")
         @Expose
-        private val originalPrice: Int? = null,
-        @SerializedName("original_price_fmt")
+        private val originalPrice: Float? = null,
+
+        @SerializedName("OriginalPriceFmt")
         @Expose
         private val originalPriceFmt: String? = null,
-        @SerializedName("discounted_percentage")
+
+        @SerializedName("DiscountPercentage")
         @Expose
-        private val discountedPercentage: Int? = null,
-        @SerializedName("discounted_price")
+        private val discountedPercentage: Float? = 0f,
+
+        @SerializedName("DiscountPrice")
         @Expose
-        private val discountedPrice: Int? = null,
-        @SerializedName("discounted_price_fmt")
+        private val discountedPrice: Float? = 0f,
+
+        @SerializedName("DiscountPriceFmt")
         @Expose
         private val discountedPriceFmt: String? = null,
-        @SerializedName("campaign_type")
+
+        @SerializedName("CampaignType")
         @Expose
         private val campaignType: Int? = null,
-        @SerializedName("campaign_type_name")
+
+        @SerializedName("CampaignTypeName")
         @Expose
         private val campaignTypeName: String? = null,
-        @SerializedName("campaign_short_name")
-        @Expose
-        private val campaignShortName: String? = null,
-        @SerializedName("start_date")
+
+        @SerializedName("StartDate")
         @Expose
         private val startDate: String? = null,
-        @SerializedName("end_date")
+
+        @SerializedName("EndDate")
         @Expose
         private val endDate: String? = null,
-        @SerializedName("end_date_unix")
-        @Expose
-        private val endDateUnix: Int? = null,
-        @SerializedName("stock")
+
+        @SerializedName("Stock")
         @Expose
         private val stock: Int? = null,
-        @SerializedName("apps_only")
+
+        @SerializedName("IsAppsOnly")
         @Expose
-        private val appsOnly: Boolean? = null,
-        @SerializedName("applinks")
+        private val isAppsOnly: Boolean? = null,
+
+        @SerializedName("AppLinks")
         @Expose
         private val applinks: String? = null
+)
+
+
+data class VariantStock(
+        @SerializedName("Stock")
+        @Expose
+        private val stock: Int? = 0,
+
+        @SerializedName("IsBuyable")
+        @Expose
+        private val isBuyable: Boolean? = false,
+
+        @SerializedName("AlwaysAvailable")
+        @Expose
+        private val alwaysAvailable: Boolean? = false,
+
+        @SerializedName("IsLimitedStock")
+        @Expose
+        private val isLimitedStock: Boolean? = false,
+
+        @SerializedName("StockWording")
+        @Expose
+        private val stockWording: String? = "",
+
+        @SerializedName("StockWordingHTML")
+        @Expose
+        private val stockWordingHTML: String? = "",
+
+        @SerializedName("OtherVariantStock")
+        @Expose
+        private val otherVariantStock: String? = "",
+
+        @SerializedName("MinimumOrder")
+        @Expose
+        private val minimumOrder: Int? = 0,
+
+        @SerializedName("MaximumOrder")
+        @Expose
+        private val maximumOrder: Int? = 0
 )

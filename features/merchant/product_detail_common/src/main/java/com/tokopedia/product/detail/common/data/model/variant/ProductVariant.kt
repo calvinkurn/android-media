@@ -4,45 +4,52 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductDetailVariantResponse(
-        @SerializedName("getPDPVariantInfo")
+        @SerializedName("GetProductVariant")
         @Expose
-        val data: ProductVariant = ProductVariant()
+        val data: ProductVariant? = ProductVariant()
 )
 
 data class ProductVariant(
 
-        @SerializedName("parent_id")
+        @SerializedName("ParentID")
         @Expose
         var parentId: Int? = null,
-        @SerializedName("default_child")
+
+        @SerializedName("DefaultChild")
         @Expose
         var defaultChild: Int? = null,
-        @SerializedName("variant")
-        @Expose
-        var variant: List<Variant>? = null,
-        @SerializedName("children")
-        @Expose
-        var children: List<Child>? = null,
-        @SerializedName("sizechart")
+
+        @SerializedName("SizeChart")
         @Expose
         var sizechart: String? = null,
-        @SerializedName("enabled")
+
+        @SerializedName("Enabled")
         @Expose
         var enabled: Boolean? = null,
-        @SerializedName("always_available")
+
+        @SerializedName("AlwaysAvailable")
         @Expose
         var alwaysAvailable: Boolean? = null,
-        @SerializedName("stock")
+
+        @SerializedName("Stock")
         @Expose
-        var stock: Int? = null
+        var stock: Int? = null,
+
+        @SerializedName("Variant")
+        @Expose
+        var variant: List<Variant>? = null,
+
+        @SerializedName("Children")
+        @Expose
+        var children: List<Child>? = null
 )
 
 data class Picture(
 
-        @SerializedName("original")
+        @SerializedName("URL")
         @Expose
         var original: String? = null,
-        @SerializedName("thumbnail")
+        @SerializedName("URL200")
         @Expose
         var thumbnail: String? = null
 

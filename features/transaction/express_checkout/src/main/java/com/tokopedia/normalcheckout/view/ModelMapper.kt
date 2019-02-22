@@ -299,7 +299,9 @@ object ModelMapper {
         quantityViewModel.errorProductMinQuantity = ""
         quantityViewModel.isStateError = false
 
-        quantityViewModel.maxOrderQuantity = productInfo.basic.maxOrder
+//        quantityViewModel.maxOrderQuantity = if (productInfo.basic.maxOrder > 0 ) productInfo.basic.maxOrder else {
+//            productInfo.stock.
+//        }
         quantityViewModel.minOrderQuantity = productInfo.basic.minOrder
         quantityViewModel.orderQuantity = if (quantity > 0) quantity else productInfo.basic.minOrder
         quantityViewModel.stockWording = ""

@@ -38,6 +38,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -128,6 +129,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     var loadingProgressDialog: ProgressDialog? = null
 
+    private var userInputNotes = ""
+    private var userInputQuantity = 0
+    private var userInputVariant: ArrayList<Int> = arrayListOf()
+
     private val productDetailTracking: ProductDetailTracking by lazy {
         ProductDetailTracking((context?.applicationContext as? AbstractionRouter)?.analyticTracker)
     }
@@ -143,6 +148,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563
         const val REQUEST_CODE_MERCHANT_VOUCHER = 564
         const val REQUEST_CODE_ETALASE = 565
+        const val REQUEST_CODE_NORMAL_CHECKOUT = 566
+
+        const val SAVED_NOTE = "saved_note"
+        const val SAVED_QUANTITY = "saved_quantity"
+        const val SAVED_VARIANT = "saved_variant"
 
         private const val PDP_TRACE = "pdp_trace"
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
@@ -177,6 +187,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring = PerformanceMonitoring.start(PDP_TRACE)
+        if (savedInstanceState != null) {
+            userInputNotes = savedInstanceState.getString(SAVED_NOTE, "")
+            userInputQuantity = savedInstanceState.getInt(SAVED_QUANTITY, 1)
+            userInputVariant = savedInstanceState.getIntegerArrayList(SAVED_VARIANT)
+                    ?: arrayListOf()
+        }
         super.onCreate(savedInstanceState)
         arguments?.let {
             productId = it.getString(ARG_PRODUCT_ID)
@@ -384,7 +400,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
         topads_carousel.setAdsItemClickListener(adsItemsClickListener)
         topads_carousel.setAdsListener(adsListener)
-        topads_carousel.setAdsItemImpressionListener (object : TopAdsItemImpressionListener(){
+        topads_carousel.setAdsItemImpressionListener(object : TopAdsItemImpressionListener() {
             override fun onImpressionProductAdsItem(position: Int, product: Product?) {
                 product?.let {
                     productDetailTracking.eventTopAdsImpression(position, it)
@@ -545,6 +561,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     //presenter.loadMerchantVoucher
                 }
             }
+            REQUEST_CODE_NORMAL_CHECKOUT -> {
+                //TODO set the product = product variant selected
+                //TODO set note, qty, and selected variant
+                //TODO refresh the UI
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -578,7 +599,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
-        if (isAffiliate){
+        if (isAffiliate) {
             base_btn_affiliate.visible()
             btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
@@ -591,15 +612,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onAffiliateClick(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate,
-                                 isRegularPdp: Boolean){
+                                 isRegularPdp: Boolean) {
         if (productInfo == null) return
         activity?.let {
             productDetailTracking.eventClickAffiliate(productInfoViewModel.userId, productInfo!!.basic.shopID,
                     pdpAffiliate.productId.toString(), isRegularPdp)
-            if (productInfoViewModel.isUserSessionActive()){
+            if (productInfoViewModel.isUserSessionActive()) {
                 RouteManager.route(it, ApplinkConst.AFFILIATE_CREATE_POST
-                                .replace("{product_id}", pdpAffiliate.productId.toString())
-                                .replace("{ad_id}", pdpAffiliate.adId.toString()))
+                        .replace("{product_id}", pdpAffiliate.productId.toString())
+                        .replace("{ad_id}", pdpAffiliate.adId.toString()))
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
@@ -639,7 +660,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
-            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: ProductStatusTypeDef.ACTIVE)
+            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status
+                    ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString()
                         ?: "", shopInfo.shipments)
@@ -651,7 +673,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 merchantVoucherListWidget.gone()
             }
         }
-        productInfoP2.shopBadge?.let{ productShopView.renderShopBadge(it) }
+        productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
         partialVariantAndRateEstView.renderPriorityOrder(productInfoP2.shopCommitment)
@@ -688,7 +710,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun gotoEditProduct() {
-        val id = productVariant?.parentId?.toString() ?: productId ?: return
+        val id = productInfo?.parentProductId ?: return
         context?.let {
             if (it.applicationContext is ProductDetailRouter) {
                 val intent = (it.applicationContext as ProductDetailRouter).goToEditProduct(it, true, id)
@@ -862,13 +884,17 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun onVariantClicked() {
         //go to variant Activity
-//        context?.let {
-//            startActivityForResult(ProductModalActivity.getIntent(it,
-//                    productInfo,
-//                    productVariant,
-//                    0, "", BUY), REQUEST_CODE_BUY)
-//        }
-
+        context?.let {
+            productInfo?.run {
+                val id = parentProductId
+                startActivityForResult(NormalCheckoutActivity.getIntent(it,
+                        basic.shopID.toString(),
+                        parentProductId,
+                        userInputNotes,
+                        userInputQuantity,
+                        userInputVariant, null), REQUEST_CODE_NORMAL_CHECKOUT);
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -1070,5 +1096,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun showProgressLoading() {
         pb_loading.visible()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_NOTE, userInputNotes)
+        outState.putInt(SAVED_QUANTITY, userInputQuantity)
+        outState.putIntegerArrayList(SAVED_VARIANT, userInputVariant)
     }
 }

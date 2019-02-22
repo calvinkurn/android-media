@@ -4,14 +4,14 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.RecyclerView
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -26,7 +26,6 @@ import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActi
 import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.domain.model.atc.WholesalePriceModel
-import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
@@ -34,21 +33,16 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
-import com.tokopedia.normalcheckout.model.ProductInfoP1
+import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
+import com.tokopedia.normalcheckout.model.ProductInfoVariant
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
+import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
@@ -63,21 +57,23 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
 
-    lateinit var itemDecorator: CheckoutVariantItemDecorator
-    lateinit var tkpdProgressDialog: TkpdProgressDialog
-    lateinit var fragmentViewModel: FragmentViewModel
-    lateinit var errorBottomsheets: ErrorBottomsheets
+    val tkpdProgressDialog: TkpdProgressDialog by lazy {
+        TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS)
+    }
+    val fragmentViewModel: FragmentViewModel by lazy {
+        FragmentViewModel()
+    }
+    val errorBottomsheets: ErrorBottomsheets by lazy {
+        ErrorBottomsheets()
+    }
 
-    private lateinit var router: ExpressCheckoutRouter
+    private lateinit var router: NormalCheckoutRouter
     private lateinit var adapter: CheckoutVariantAdapter
-    private lateinit var recyclerView: RecyclerView
     private lateinit var fragmentListener: NormalCheckoutListener
-    private val compositeSubscription =  CompositeSubscription()
+    private val compositeSubscription = CompositeSubscription()
 
     var shopId: String? = null
     var productId: String? = null
-    var shopDomain: String? = null
-    var productName: String? = null
     var notes: String? = null
     var quantity: Int? = null
     var selectedVariantId: ArrayList<String>? = null
@@ -86,15 +82,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
         const val EXTRA_PRODUCT_ID = "product_id"
-        const val EXTRA_SHOP_DOMAIN = "shop_domain"
-        const val EXTRA_PRODUCT_NAME = "product_name"
         const val EXTRA_NOTES = "notes"
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
 
         fun createInstance(shopId: String?, productId: String?,
-                           shopDomain: String?, productName: String?,
                            notes: String? = "", quantity: Int? = 0,
                            selectedVariantId: ArrayList<String>? = null,
                            placeholderProductImage: String?): NormalCheckoutFragment {
@@ -102,8 +95,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 arguments = Bundle().apply {
                     putString(EXTRA_SHOP_ID, shopId)
                     putString(EXTRA_PRODUCT_ID, productId)
-                    putString(EXTRA_SHOP_DOMAIN, shopDomain)
-                    putString(EXTRA_PRODUCT_NAME, productName)
                     putString(EXTRA_NOTES, notes)
                     putInt(EXTRA_QUANTITY, quantity ?: 0)
                     putString(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
@@ -118,6 +109,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun initInjector() {
         activity?.run {
+            DaggerNormalCheckoutComponent.builder()
+                    .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+                    .inject(this@NormalCheckoutFragment)
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
         }
@@ -125,7 +119,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.productInfoP1Resp.observe(this, Observer {
+        viewModel.productInfoResp.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetProductInfo(it.data)
                 is Fail -> onErrorGetProductInfo(it.throwable)
@@ -133,8 +127,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         })
     }
 
-    private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
-        val viewModels = ModelMapper.convertToModels(productInfoP1.productInfo,
+    private fun onSuccessGetProductInfo(productInfoVariant: ProductInfoVariant) {
+        val viewModels = ModelMapper.convertToModels(productInfoVariant.productInfo,
                 notes, quantity ?: 0)
         fragmentViewModel.viewModels = viewModels
         adapter.clearAllElements()
@@ -142,6 +136,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         adapter.notifyDataSetChanged()
 
     }
+
     private fun onErrorGetProductInfo(throwable: Throwable) {
         ToasterError.make(activity!!.findViewById(android.R.id.content),
                 ErrorHandler.getErrorMessage(context, throwable)).show()
@@ -165,14 +160,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         if (argument != null) {
             shopId = argument.getString(EXTRA_SHOP_ID)
             productId = argument.getString(EXTRA_PRODUCT_ID)
-            shopDomain = argument.getString(EXTRA_SHOP_DOMAIN)
-            productName = argument.getString(EXTRA_PRODUCT_NAME)
             notes = argument.getString(EXTRA_NOTES)
             quantity = argument.getInt(EXTRA_QUANTITY)
             placeholderProductImage = argument.getString(EXTRA_PRODUCT_IMAGE)
         }
         if (savedInstanceState == null) {
-            if (argument!= null) {
+            if (argument != null) {
                 selectedVariantId = argument.getStringArrayList(EXTRA_SELECTED_VARIANT_ID)
             }
         } else {
@@ -183,19 +176,19 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_normal_checkout, container, false)
+        return inflater.inflate(R.layout.fragment_normal_checkout, container, false)
+    }
 
-        recyclerView = getRecyclerView(view)
-        recyclerView.addItemDecoration(itemDecorator)
-        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        recycler_view.addItemDecoration(CheckoutVariantItemDecorator())
+        (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         fragmentListener = context as NormalCheckoutListener
-        router = context.applicationContext as ExpressCheckoutRouter
+        router = context.applicationContext as NormalCheckoutRouter
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
@@ -232,12 +225,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun loadData(page: Int) {
-        //viewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), resources)
+        viewModel.getProductInfo(ProductParams(productId, null, null), resources)
     }
 
     override fun onNeedToNotifySingleItem(position: Int) {
-        if (recyclerView.isComputingLayout) {
-            recyclerView.post {
+        if (recycler_view.isComputingLayout) {
+            recycler_view.post {
                 adapter.notifyItemChanged(position)
             }
         } else {
@@ -246,8 +239,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onNeedToRemoveSingleItem(position: Int) {
-        if (recyclerView.isComputingLayout) {
-            recyclerView.post {
+        if (recycler_view.isComputingLayout) {
+            recycler_view.post {
                 adapter.notifyItemRemoved(position)
             }
         } else {
@@ -256,8 +249,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onNeedToNotifyAllItem() {
-        if (recyclerView.isComputingLayout) {
-            recyclerView.post {
+        if (recycler_view.isComputingLayout) {
+            recycler_view.post {
                 adapter.notifyDataSetChanged()
             }
         } else {
@@ -480,22 +473,22 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onNeedToValidateButtonBuyVisibility() {
-//        var hasError = false
-//        when {
-//            fragmentViewModel.getProfileViewModel()?.isDurationError == true -> hasError = true
-//            fragmentViewModel.getProfileViewModel()?.isCourierError == true -> hasError = true
-//            fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
-//        }
-//
-//        if (activity != null) {
-//            if (hasError) {
-//                bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
-//                bt_buy.setOnClickListener { }
-//            } else {
-//                bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
-//                bt_buy.setOnClickListener { presenter.checkoutExpress(fragmentViewModel) }
-//            }
-//        }
+        var hasError = false
+        when {
+            fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
+        }
+
+        if (activity != null) {
+            if (hasError) {
+                bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+                bt_buy.setOnClickListener { }
+            } else {
+                bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
+                bt_buy.setOnClickListener {
+                    //TODO
+                }
+            }
+        }
     }
 
     override fun onNeedToRecalculateRatesAfterChangeTemplate() {
@@ -541,24 +534,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         fragmentListener.finishWithResult(messages)
     }
 
-    override fun generateFingerprintPublicKey() {
-        if (!fragmentViewModel.hasGenerateFingerprintPublicKey) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && router.checkoutModuleRouterGetEnableFingerprintPayment()) {
-                val publicKey = router.checkoutModuleRouterGeneratePublicKey()
-                if (publicKey != null) {
-                    fragmentViewModel.fingerprintPublicKey = router.checkoutModuleRouterGetPublicKey(publicKey)
-                }
-            }
-            fragmentViewModel.hasGenerateFingerprintPublicKey = true
-        }
-    }
-
-    override fun navigateCheckoutToOcs() {
-        if (activity != null) startActivity(router.getCheckoutIntent(activity as Context))
-        activity?.finish()
-    }
-
     override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {
         if (activity != null) startActivityForResult(
                 TopPayActivity.createInstance(activity, paymentPassData),
@@ -573,14 +548,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult> {
         return router.addToCartProduct(addToCartRequest, true)
-    }
-
-    override fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData> {
-        return router.checkoutProduct(checkoutRequest, true, true)
-    }
-
-    override fun getEditAddressObservable(requestParams: RequestParams): Observable<String> {
-        return router.updateAddress(requestParams)
     }
 
     override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {
@@ -622,7 +589,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
         rl_bottom_action_container.visibility = View.VISIBLE
         img_total_payment_info.setOnClickListener {
-            recyclerView.smoothScrollToPosition(adapter.data.size - 1)
+            recycler_view.smoothScrollToPosition(adapter.data.size - 1)
         }
     }
 

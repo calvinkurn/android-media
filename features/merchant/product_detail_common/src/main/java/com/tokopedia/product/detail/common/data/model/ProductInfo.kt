@@ -60,15 +60,23 @@ data class ProductInfo(
         @Expose
         val stock: Stock = Stock()
 ) {
-        data class Response(
-                @SerializedName("getPDPInfo")
-                @Expose
-                val data: ProductInfo? = null
-        )
+    data class Response(
+            @SerializedName("getPDPInfo")
+            @Expose
+            val data: ProductInfo? = null
+    )
 
-        data class WishlistStatus(
-                @SerializedName("ProductWishlistQuery")
-                @Expose
-                var isWishlisted: Boolean? = null
-        )
+    data class WishlistStatus(
+            @SerializedName("ProductWishlistQuery")
+            @Expose
+            var isWishlisted: Boolean? = null
+    )
+
+    val parentProductId: String
+        get() =
+            if (variant.isVariant) {
+                variant.parentID
+            } else {
+                basic.id.toString()
+            }
 }

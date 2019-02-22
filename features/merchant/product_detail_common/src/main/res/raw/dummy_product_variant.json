@@ -1,0 +1,417 @@
+{
+  "GetProductVariant": {
+    "ParentID": "15212348",
+    "DefaultChild": "15212348",
+    "SizeChart": "",
+    "Enabled": true,
+    "AlwaysAvailable": true,
+    "Stock": 0,
+    "Variant": [
+      {
+        "Name": "warna",
+        "Identifier": "colour",
+        "UnitName": "",
+        "Position": 1,
+        "VariantID": "1",
+        "VariantUnitID": 0,
+        "ProductVariantID": "6528",
+        "Option": [
+          {
+            "Value": "Putih",
+            "Hex": "#ffffff",
+            "ProductVariantOptionID": 23454,
+            "VariantUnitValueID": 1,
+            "Picture": {
+              "URL": "",
+              "URL200": ""
+            }
+          },
+          {
+            "Value": "Hitam",
+            "Hex": "#000000",
+            "ProductVariantOptionID": 23455,
+            "VariantUnitValueID": 2,
+            "Picture": {
+              "URL": "",
+              "URL200": ""
+            }
+          },
+          {
+            "Value": "Navy",
+            "Hex": "#05056b",
+            "ProductVariantOptionID": 23456,
+            "VariantUnitValueID": 4,
+            "Picture": {
+              "URL": "",
+              "URL200": ""
+            }
+          },
+          {
+            "Value": "merah custom",
+            "Hex": "",
+            "ProductVariantOptionID": 23457,
+            "VariantUnitValueID": 0,
+            "Picture": {
+              "URL": "",
+              "URL200": ""
+            }
+          }
+        ]
+      },
+      {
+        "Name": "ukuran",
+        "Identifier": "size",
+        "UnitName": "International",
+        "Position": 2,
+        "VariantID": "6",
+        "VariantUnitID": 7,
+        "ProductVariantID": "6529",
+        "Option": [
+          {
+            "Value": "M",
+            "Hex": "",
+            "ProductVariantOptionID": 23460,
+            "VariantUnitValueID": 25,
+            "Picture": {
+              "URL": "",
+              "URL200": ""
+            }
+          },
+          {
+            "Value": "XXS",
+            "Hex": "",
+            "ProductVariantOptionID": 23458,
+            "VariantUnitValueID": 22,
+            "Picture": {
+              "URL": "",
+              "URL200": ""
+            }
+          },
+          {
+            "Value": "S",
+            "Hex": "",
+            "ProductVariantOptionID": 23459,
+            "VariantUnitValueID": 24,
+            "Picture": {
+              "URL": "",
+              "URL200": ""
+            }
+          },
+          {
+            "Value": "ukuran custom",
+            "Hex": "",
+            "ProductVariantOptionID": 23461,
+            "VariantUnitValueID": 0,
+            "Picture": {
+              "URL": "",
+              "URL200": ""
+            }
+          }
+        ]
+      }
+    ],
+    "Children": [
+      {
+        "ProductID": "15212348",
+        "Price": 100000000,
+        "PriceFmt": "Rp 100.000.000",
+        "SKU": "",
+        "OptionID": [
+          23457,
+          23459
+        ],
+        "ProductName": "Contoh Variant 2 Level",
+        "ProductURL": "https://staging.tokopedia.com/qc47/contoh-variant-2-level",
+        "IsCOD": false,
+        "IsWishlist": false,
+        "Enabled": true,
+        "CampaignInfo": {
+          "CampaignID": "0",
+          "IsActive": false,
+          "OriginalPrice": 0,
+          "OriginalPriceFmt": "",
+          "DiscountPercentage": 0,
+          "DiscountPrice": 0,
+          "DiscountPriceFmt": "",
+          "CampaignType": 0,
+          "CampaignTypeName": "",
+          "StartDate": "",
+          "EndDate": "",
+          "Stock": 0,
+          "AppLinks": "",
+          "IsAppsOnly": false
+        },
+        "Stock": {
+          "IsLimitedStock": false,
+          "StockWording": "",
+          "StockWordingHTML": "",
+          "OtherVariantStock": "",
+          "MinimumOrder": 0,
+          "MaximumOrder": 0
+        },
+        "Picture": {
+          "URL": "",
+          "URL200": ""
+        }
+      },
+      {
+        "ProductID": "15212348",
+        "Price": 100000000,
+        "PriceFmt": "Rp 100.000.000",
+        "SKU": "",
+        "OptionID": [
+          23457,
+          23460
+        ],
+        "ProductName": "Contoh Variant 2 Level",
+        "ProductURL": "https://staging.tokopedia.com/qc47/contoh-variant-2-level",
+        "IsCOD": false,
+        "IsWishlist": false,
+        "Enabled": true,
+        "CampaignInfo": {
+          "CampaignID": "0",
+          "IsActive": false,
+          "OriginalPrice": 0,
+          "OriginalPriceFmt": "",
+          "DiscountPercentage": 0,
+          "DiscountPrice": 0,
+          "DiscountPriceFmt": "",
+          "CampaignType": 0,
+          "CampaignTypeName": "",
+          "StartDate": "",
+          "EndDate": "",
+          "Stock": 0,
+          "AppLinks": "",
+          "IsAppsOnly": false
+        },
+        "Stock": {
+          "IsLimitedStock": false,
+          "StockWording": "",
+          "StockWordingHTML": "",
+          "OtherVariantStock": "",
+          "MinimumOrder": 0,
+          "MaximumOrder": 0
+        },
+        "Picture": {
+          "URL": "",
+          "URL200": ""
+        }
+      },
+      {
+        "ProductID": "15212348",
+        "Price": 100000000,
+        "PriceFmt": "Rp 100.000.000",
+        "SKU": "",
+        "OptionID": [
+          23457,
+          23461
+        ],
+        "ProductName": "Contoh Variant 2 Level",
+        "ProductURL": "https://staging.tokopedia.com/qc47/contoh-variant-2-level",
+        "IsCOD": false,
+        "IsWishlist": false,
+        "Enabled": true,
+        "CampaignInfo": {
+          "CampaignID": "0",
+          "IsActive": false,
+          "OriginalPrice": 0,
+          "OriginalPriceFmt": "",
+          "DiscountPercentage": 0,
+          "DiscountPrice": 0,
+          "DiscountPriceFmt": "",
+          "CampaignType": 0,
+          "CampaignTypeName": "",
+          "StartDate": "",
+          "EndDate": "",
+          "Stock": 0,
+          "AppLinks": "",
+          "IsAppsOnly": false
+        },
+        "Stock": {
+          "IsLimitedStock": false,
+          "StockWording": "",
+          "StockWordingHTML": "",
+          "OtherVariantStock": "",
+          "MinimumOrder": 0,
+          "MaximumOrder": 0
+        },
+        "Picture": {
+          "URL": "",
+          "URL200": ""
+        }
+      },
+      {
+        "ProductID": "15212348",
+        "Price": 100000000,
+        "PriceFmt": "Rp 100.000.000",
+        "SKU": "",
+        "OptionID": [
+          23455,
+          23458
+        ],
+        "ProductName": "Contoh Variant 2 Level",
+        "ProductURL": "https://staging.tokopedia.com/qc47/contoh-variant-2-level",
+        "IsCOD": false,
+        "IsWishlist": false,
+        "Enabled": true,
+        "CampaignInfo": {
+          "CampaignID": "0",
+          "IsActive": false,
+          "OriginalPrice": 0,
+          "OriginalPriceFmt": "",
+          "DiscountPercentage": 0,
+          "DiscountPrice": 0,
+          "DiscountPriceFmt": "",
+          "CampaignType": 0,
+          "CampaignTypeName": "",
+          "StartDate": "",
+          "EndDate": "",
+          "Stock": 0,
+          "AppLinks": "",
+          "IsAppsOnly": false
+        },
+        "Stock": {
+          "IsLimitedStock": false,
+          "StockWording": "",
+          "StockWordingHTML": "",
+          "OtherVariantStock": "",
+          "MinimumOrder": 0,
+          "MaximumOrder": 0
+        },
+        "Picture": {
+          "URL": "",
+          "URL200": ""
+        }
+      },
+      {
+        "ProductID": "15212348",
+        "Price": 100000000,
+        "PriceFmt": "Rp 100.000.000",
+        "SKU": "",
+        "OptionID": [
+          23456,
+          23460
+        ],
+        "ProductName": "Contoh Variant 2 Level",
+        "ProductURL": "https://staging.tokopedia.com/qc47/contoh-variant-2-level",
+        "IsCOD": false,
+        "IsWishlist": false,
+        "Enabled": true,
+        "CampaignInfo": {
+          "CampaignID": "0",
+          "IsActive": false,
+          "OriginalPrice": 0,
+          "OriginalPriceFmt": "",
+          "DiscountPercentage": 0,
+          "DiscountPrice": 0,
+          "DiscountPriceFmt": "",
+          "CampaignType": 0,
+          "CampaignTypeName": "",
+          "StartDate": "",
+          "EndDate": "",
+          "Stock": 0,
+          "AppLinks": "",
+          "IsAppsOnly": false
+        },
+        "Stock": {
+          "IsLimitedStock": false,
+          "StockWording": "",
+          "StockWordingHTML": "",
+          "OtherVariantStock": "",
+          "MinimumOrder": 0,
+          "MaximumOrder": 0
+        },
+        "Picture": {
+          "URL": "",
+          "URL200": ""
+        }
+      },
+      {
+        "ProductID": "15212348",
+        "Price": 100000000,
+        "PriceFmt": "Rp 100.000.000",
+        "SKU": "",
+        "OptionID": [
+          23456,
+          23461
+        ],
+        "ProductName": "Contoh Variant 2 Level",
+        "ProductURL": "https://staging.tokopedia.com/qc47/contoh-variant-2-level",
+        "IsCOD": false,
+        "IsWishlist": false,
+        "Enabled": true,
+        "CampaignInfo": {
+          "CampaignID": "0",
+          "IsActive": false,
+          "OriginalPrice": 0,
+          "OriginalPriceFmt": "",
+          "DiscountPercentage": 0,
+          "DiscountPrice": 0,
+          "DiscountPriceFmt": "",
+          "CampaignType": 0,
+          "CampaignTypeName": "",
+          "StartDate": "",
+          "EndDate": "",
+          "Stock": 0,
+          "AppLinks": "",
+          "IsAppsOnly": false
+        },
+        "Stock": {
+          "IsLimitedStock": false,
+          "StockWording": "",
+          "StockWordingHTML": "",
+          "OtherVariantStock": "",
+          "MinimumOrder": 0,
+          "MaximumOrder": 0
+        },
+        "Picture": {
+          "URL": "",
+          "URL200": ""
+        }
+      },
+      {
+        "ProductID": "15212348",
+        "Price": 100000000,
+        "PriceFmt": "Rp 100.000.000",
+        "SKU": "",
+        "OptionID": [
+          23457,
+          23458
+        ],
+        "ProductName": "Contoh Variant 2 Level",
+        "ProductURL": "https://staging.tokopedia.com/qc47/contoh-variant-2-level",
+        "IsCOD": false,
+        "IsWishlist": false,
+        "Enabled": true,
+        "CampaignInfo": {
+          "CampaignID": "0",
+          "IsActive": false,
+          "OriginalPrice": 0,
+          "OriginalPriceFmt": "",
+          "DiscountPercentage": 0,
+          "DiscountPrice": 0,
+          "DiscountPriceFmt": "",
+          "CampaignType": 0,
+          "CampaignTypeName": "",
+          "StartDate": "",
+          "EndDate": "",
+          "Stock": 0,
+          "AppLinks": "",
+          "IsAppsOnly": false
+        },
+        "Stock": {
+          "IsLimitedStock": false,
+          "StockWording": "",
+          "StockWordingHTML": "",
+          "OtherVariantStock": "",
+          "MinimumOrder": 0,
+          "MaximumOrder": 0
+        },
+        "Picture": {
+          "URL": "",
+          "URL200": ""
+        }
+      }
+    ]
+  }
+}

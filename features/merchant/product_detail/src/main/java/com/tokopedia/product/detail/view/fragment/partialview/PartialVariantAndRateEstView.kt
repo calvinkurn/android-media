@@ -19,12 +19,15 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
     }
 
     fun renderData(productVariant: ProductVariant?, onVariantClickedListener: (()->Unit)? = null) {
-        //TODO hide/show logic for variant/rate/courier/etc
         with(view) {
             if (productVariant != null) {
                 label_variant.visible()
                 label_choose_variant.visible()
-                variant_divider.visible()
+                if (txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible){
+                    variant_divider.visible()
+                } else {
+                    variant_divider.gone()
+                }
                 label_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 label_choose_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 val chooseString = "${view.context.getString(R.string.choose)} " +
