@@ -571,8 +571,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         iv_back.setOnClickListener{
             activity?.finish()
         }
-
-
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -692,10 +690,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun updateButtonState(isFollowed: Boolean) {
         if (isFollowed) {
-            followBtn.buttonCompatType = ButtonCompat.SECONDARY
             followBtn.text = getString(R.string.profile_following)
         } else {
-            followBtn.buttonCompatType = ButtonCompat.PRIMARY
             followBtn.text = getString(R.string.profile_follow)
         }
     }
