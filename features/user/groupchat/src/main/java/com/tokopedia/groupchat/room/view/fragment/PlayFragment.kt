@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -23,6 +24,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
@@ -35,8 +37,10 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
+import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
@@ -85,16 +89,23 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private lateinit var channelInfoViewModel: ChannelInfoViewModel
     private var exitDialog: Dialog? = null
 
+    private var enterTimeStamp: Long = 0
+    private var timeStampAfterResume: Long = 0
+    private var timeStampAfterPause: Long = 0
+    private var position = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         val channelUUID = getParamString(PlayActivity.EXTRA_CHANNEL_UUID, arguments,
                 savedInstanceState, "")
+        position = getParamInt(PlayActivity.EXTRA_POSITION, arguments,
+                savedInstanceState, 0)
         channelInfoViewModel = ChannelInfoViewModel(channelUUID)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        enterTimeStamp = System.currentTimeMillis()
         var view = inflater.inflate(R.layout.play_fragment, container, false)
         return view
     }
@@ -102,7 +113,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo())
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -189,11 +200,33 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
+
+            (activity as PlayActivity)?.let {
+                it.changeHomeDrawableColor(R.color.white)
+            }
+
             saveGCTokenToCache()
             channelInfoViewModel = it
             presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
             setExitDialog(it.exitMessage)
+
         }
+    }
+
+    private fun onErrorGetInfo(): (String) -> Unit {
+        return {
+
+            viewState.onErrorGetInfo(it)
+
+            (activity as PlayActivity)?.let {
+                it.changeHomeDrawableColor(R.color.black_70)
+                it.setSwipeable(false)
+            }
+        }
+    }
+
+    override fun onRetryGetInfo() {
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
     }
 
     private fun setExitDialog(exitMessage: ExitMessage?) {
@@ -204,15 +237,17 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 dialog.setDesc(exitMessage.body)
                 dialog.setBtnOk(activity?.getString(R.string.exit_group_chat_yes))
                 dialog.setOnOkClickListener {
-                    //                    analytics.eventUserExit(getChannelInfoViewModel()!!.getChannelId() + " " + getDurationOnGroupChat())
-//                    if (isTaskRoot()) {
-//                        startActivity((getApplicationContext() as GroupChatModuleRouter).getInboxChannelsIntent(context))
-//                    }
-//                    if (onPlayTime != 0L) {
-//                        analytics.eventWatchVideoDuration(getChannelInfoViewModel()!!.getChannelId(), getDurationWatchVideo())
-//                    }
+                    viewState.getChannelInfo()?.let {
+                        analytics.eventUserExit(it.channelId + " " + (System.currentTimeMillis() - enterTimeStamp))
+                        analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
+                    }
+
+                    activity?.let {
+                        if (it.isTaskRoot) {
+                            (activity as PlayActivity).startActivity(getInboxChannelsIntent())
+                        }
+                    }
                     activity?.finish()
-                    activity?.onBackPressed()
                 }
 
                 dialog.setBtnCancel(activity?.getString(R.string.exit_group_chat_no))
@@ -281,25 +316,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     fun backPress() {
-//        if (onPlayTime != 0L) {
-//            analytics.eventWatchVideoDuration(getChannelInfoViewModel()!!.getChannelId(), getDurationWatchVideo())
-//        }
         if (exitDialog != null) {
             exitDialog!!.show()
         } else {
             activity?.finish()
-            activity?.onBackPressed()
         }
     }
 
     override fun addQuickReply(text: String?) {
-//        if (activity != null
-//                && activity is GroupChatContract.View
-//                && (activity as GroupChatContract.View).getChannelInfoViewModel() != null) {
-//            analytics.eventClickQuickReply(
-//                    String.format("%s - %s", (activity as GroupChatContract.View).getChannelInfoViewModel()!!.getChannelId(), message))
-//        }
-
         viewState.onQuickReplyClicked(text)
     }
 
@@ -331,8 +355,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun openRedirectUrl(it: String) {
-        (context as GroupChatModuleRouter).openRedirectUrl(activity, it)
+    override fun openRedirectUrl(it: String) {
+        (activity?.applicationContext as GroupChatModuleRouter).openRedirectUrl(activity, it)
+    }
+
+    private fun getInboxChannelsIntent(): Intent? {
+        return (context as GroupChatModuleRouter).getInboxChannelsIntent(activity)
     }
 
     override fun onOpenWebSocket() {
@@ -398,6 +426,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onReceiveCloseOverlayMessageFromWebsocket()
     }
 
+    override fun updateDynamicButton(it: DynamicButtonsViewModel) {
+        viewState.onDynamicButtonUpdated(it)
+    }
+
+    override fun onBackgroundUpdated(it: BackgroundViewModel) {
+        viewState.onBackgroundUpdated(it)
+    }
+
     override fun onQuickReplyUpdated(it: GroupChatQuickReplyViewModel) {
         viewState.onQuickReplyUpdated(it)
     }
@@ -417,19 +453,19 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
-                it.setAction(getString(R.string.retry), View.OnClickListener {
+                it.setAction(getString(R.string.retry)) {
                     viewState.getChannelInfo()?.let {
-                        presenter.getPlayInfo(it.channelId, onSuccessGetInfo())
+                        presenter.getPlayInfo(it.channelId, onSuccessGetInfo(), onErrorGetInfo())
                         setSnackBarConnectingWebSocket()
                     }
-                })
+                }
                 it.show()
             }
         }
     }
 
     override fun onLoginClicked(channelId: String?) {
-//      analytics.eventClickLogin(channelId)
+        analytics.eventClickLogin(channelId)
 
         startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
                 .getLoginIntent(activity), REQUEST_LOGIN)
@@ -439,10 +475,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_LOGIN) {
             viewState.onSuccessLogin()
-            presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo())
+            presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
         }
     }
-
 
     override fun addIncomingMessage(it: Visitable<*>) {
         viewState.onMessageReceived(it)
@@ -468,15 +503,28 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
     }
 
+    override fun openOverlay(it: String) {
+
+    }
+
     override fun onPause() {
         super.onPause()
+        timeStampAfterPause = System.currentTimeMillis()
+        presenter.destroyWebSocket()
+        if (canPause()) {
+            if (::notifReceiver.isInitialized) {
+                context?.let {
+                    LocalBroadcastManager.getInstance(it).unregisterReceiver(notifReceiver)
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         viewState.onKeyboardHidden()
+        kickIfIdleForTooLong()
         if (canResume()) {
-//            kickIfIdleForTooLong()
 //
 //            if (viewModel != null && viewModel.getChannelInfoViewModel() != null
 //                    && !isFirstTime) {
@@ -486,6 +534,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 //                }
 //
 //            }
+            viewState.getChannelInfo()?.let {
+                presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
+            }
 
             if (::notifReceiver.isInitialized) {
                 notifReceiver = object : BroadcastReceiver() {
@@ -505,11 +556,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     e.printStackTrace()
                 }
             }
-//
-//            if (viewModel != null) {
-//                viewModel.setTimeStampAfterResume(System.currentTimeMillis())
-//            }
-//            }
+
+            timeStampAfterResume = System.currentTimeMillis()
         }
     }
 
@@ -522,6 +570,32 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return true
 //        return viewModel != null && (viewModel.getTimeStampAfterPause() == 0L || (viewModel.getTimeStampAfterPause() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterPause() > PAUSE_RESUME_TRESHOLD_TIME
 //                && canResume()))
+    }
+
+    private fun kickIfIdleForTooLong() {
+        Log.i("play pause", timeStampAfterPause.toString())
+        Log.i("play pause now", System.currentTimeMillis().toString())
+        if (timeStampAfterPause > 0
+                && System.currentTimeMillis() - timeStampAfterPause > PlayActivity.KICK_THRESHOLD_TIME) {
+            showKickUser()
+        }
+    }
+
+    private fun showKickUser() {
+        var dialog = Dialog(activity, Dialog.Type.RETORIC)
+        dialog.setTitle(getString(R.string.you_have_been_kicked))
+        dialog.setDesc(getString(R.string.you_have_been_idle_for_too_long))
+        dialog.setBtnOk(getString(R.string.title_ok))
+        dialog.setOnOkClickListener { dialogView ->
+            dialog.dismiss()
+            val intent = Intent()
+            viewState.getChannelInfo()?.let {
+                intent.putExtra(PlayActivity.TOTAL_VIEW, it.totalView)
+                intent.putExtra(PlayActivity.EXTRA_POSITION, position)
+            }
+            activity?.setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent)
+            activity?.finish()
+        }
     }
 
     override fun onDestroy() {

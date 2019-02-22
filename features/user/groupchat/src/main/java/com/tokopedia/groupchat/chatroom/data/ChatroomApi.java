@@ -1,6 +1,7 @@
 package com.tokopedia.groupchat.chatroom.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
 
 import java.util.HashMap;
@@ -22,9 +23,9 @@ public interface ChatroomApi {
             @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid,
             @QueryMap HashMap<String, Object> requestParam);
 
-//    @GET(ChatroomUrl.GET_DYNAMIC_BUTTONS)
-//    Observable<Response<DataResponse<DynamicButtonPojo>>> getChannelInfo(
-//            @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid,
-//            @QueryMap HashMap<String, Object> requestParam);
+    @GET(ChatroomUrl.GET_DYNAMIC_BUTTONS)
+    Observable<Response<com.tokopedia.network.data.model.response.DataResponse<ButtonsPojo>>> getDynamicButtons(
+            @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid,
+            @QueryMap HashMap<String, Object> requestParam);
 
 }

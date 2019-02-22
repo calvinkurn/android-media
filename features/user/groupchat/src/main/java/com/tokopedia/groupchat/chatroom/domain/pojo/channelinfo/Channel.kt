@@ -2,10 +2,12 @@ package com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel
 
 data class Channel(
         @SerializedName("channel_id")
@@ -98,10 +100,20 @@ data class Channel(
         @SerializedName("video_id")
         @Expose
         val videoId: String = "",
+        @SerializedName("videoLive")
+        @Expose
+        val videoLive: Boolean = false,
         @SerializedName("settings")
         @Expose
         val settingGroupChat: SettingGroupChat = SettingGroupChat(),
         @SerializedName("overlay_message")
         @Expose
-        val overlayMessage: OverlayMessagePojo = OverlayMessagePojo()
+        val overlayMessage: OverlayMessagePojo = OverlayMessagePojo(),
+        @SerializedName("button")
+        @Expose
+        val button: ButtonsPojo = ButtonsPojo(),
+        @SerializedName("background")
+        @Expose
+        val backgroundViewModel: BackgroundViewModel = BackgroundViewModel()
+
 ) {}

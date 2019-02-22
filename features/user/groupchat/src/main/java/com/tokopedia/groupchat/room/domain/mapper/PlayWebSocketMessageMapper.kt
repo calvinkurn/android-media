@@ -76,8 +76,20 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             ParticipantViewModel.TYPE -> mapToParticipant(data)
             OverlayViewModel.TYPE -> mapToOverlay(data)
             OverlayCloseViewModel.TYPE -> mapToOverlayClose(data)
+            ButtonsPojo.TYPE -> mapToDynamicButton(data)
+            BackgroundViewModel.TYPE -> mapToBackground(data)
             else -> null
         }
+    }
+
+    private fun mapToBackground(data: JsonObject?): Visitable<*>? {
+        val pojo = gson.fromJson(data, BackgroundViewModel::class.java)
+        return pojo
+    }
+
+    private fun mapToDynamicButton(data: JsonObject?): Visitable<*>? {
+        val pojo = gson.fromJson(data, ButtonsPojo::class.java)
+        return pojo
     }
 
 
