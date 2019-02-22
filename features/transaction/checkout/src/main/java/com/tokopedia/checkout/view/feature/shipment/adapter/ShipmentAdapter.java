@@ -253,7 +253,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void removeNotifierData() {
         if (shipmentDataList.get(HEADER_POSITION) instanceof ShipmentNotifierModel) {
             shipmentDataList.remove(HEADER_POSITION);
-            notifyDataSetChanged();
+            notifyItemRemoved(HEADER_POSITION);
         }
     }
 
