@@ -9,12 +9,14 @@ import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
@@ -22,6 +24,7 @@ import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
+import java.util.concurrent.TimeUnit
 
 /**
  * @author : Steven 11/02/19
@@ -30,7 +33,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
     lateinit var rootView: View
     lateinit var viewPager: ViewPager
-    val KEYBOARD_THRESHOLD = 100
+    private val KEYBOARD_THRESHOLD = 100
     private lateinit var pagerAdapter: FragmentPagerAdapter
 
     override fun getNewFragment(): Fragment? {
@@ -71,6 +74,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
         pagerAdapter = FragmentPagerAdapter(supportFragmentManager, fragmentList)
         viewPager.adapter = pagerAdapter
+
         viewPager.currentItem = 1
 
     }
@@ -110,31 +114,8 @@ open class PlayActivity : BaseSimpleActivity() {
 //        }
     }
 
-    fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
-    }
-
     private fun isLollipopOrNewer(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-    }
-
-    private fun removePaddingStatusBar() {
-
-        rootView = findViewById<View>(R.id.root_view)
-        rootView.viewTreeObserver.addOnGlobalLayoutListener {
-            val heightDiff = rootView.rootView.height - rootView.height
-
-            if (heightDiff > KEYBOARD_THRESHOLD) {
-                removePaddingIfKeyboardIsShowing()
-            } else {
-                addPaddingIfKeyboardIsClosed()
-            }
-        }
     }
 
     private fun addPaddingIfKeyboardIsClosed() {
@@ -182,9 +163,25 @@ open class PlayActivity : BaseSimpleActivity() {
 
     }
 
+    fun changeHomeDrawableColor(resId: Int) {
+        supportActionBar?.let {
+            var drawable = MethodChecker.getDrawable(this, R.drawable.ic_action_back)
+            val wrapped = DrawableCompat.wrap(drawable)
+            drawable.mutate()
+            DrawableCompat.setTint(wrapped, MethodChecker.getColor(this, resId))
+            it.setHomeAsUpIndicator(drawable)
+        }
+    }
+
+    fun setSwipeable(swipeable: Boolean) {
+        if(!swipeable){
+        } else {
+        }
+    }
 
     companion object {
 
+        val TOTAL_VIEW = "total_view"
         val EXTRA_CHANNEL_UUID = "CHANNEL_UUID"
         val EXTRA_CHANNEL_INFO = "CHANNEL_INFO"
         val EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM"
@@ -233,6 +230,8 @@ open class PlayActivity : BaseSimpleActivity() {
             intent.putExtras(bundle)
             return intent
         }
+
+        val KICK_THRESHOLD_TIME = TimeUnit.SECONDS.toMillis(15)
     }
 
     object DeepLickIntents {

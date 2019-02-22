@@ -40,4 +40,7 @@ interface PlayViewState {
     fun onDynamicButtonUpdated(it: ButtonsPojo)
     fun onInfoMenuClicked()
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
+    fun onBackgroundUpdated(it: BackgroundViewModel)
+    fun getDurationWatchVideo(): String?
+    fun onErrorGetInfo(it: String)
 }

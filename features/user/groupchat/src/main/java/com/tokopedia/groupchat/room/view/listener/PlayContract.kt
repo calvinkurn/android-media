@@ -34,6 +34,9 @@ interface PlayContract {
         fun addIncomingMessage(it: Visitable<*>)
         fun openOverlay(it: String)
         fun updateDynamicButton(it: ButtonsPojo)
+        fun onBackgroundUpdated(it: BackgroundViewModel)
+        fun openRedirectUrl(generateLink: String)
+        fun onRetryGetInfo()
     }
 
     interface Presenter: CustomerPresenter<View> {

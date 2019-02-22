@@ -3,6 +3,7 @@ package com.tokopedia.groupchat.room.view.viewstate
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
@@ -31,7 +32,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.text.BackEditText
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
@@ -44,6 +44,7 @@ import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.common.analytics.EEPromotion
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
@@ -99,6 +100,8 @@ class PlayViewStateImpl(
 
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
+    var errorView: View = view.findViewById(R.id.card_retry)
+
     lateinit var overlayDialog: CloseableBottomSheetDialog
     lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
     lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
@@ -113,6 +116,12 @@ class PlayViewStateImpl(
     private var youtubeRunnable: Handler = Handler()
 
     private var layoutManager: LinearLayoutManager
+
+    private var onPlayTime: Long = 0
+    private var onPauseTime:Long = 0
+    private var onEndTime:Long = 0
+    private var onLeaveTime:Long = 0
+    private val onTrackingTime: Long = 0
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -216,7 +225,6 @@ class PlayViewStateImpl(
         inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
         sendButton.hide()
         dynamicButtonRecyclerView.show()
-        toolbar.show()
 
     }
 
@@ -225,7 +233,6 @@ class PlayViewStateImpl(
         inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
         sendButton.show()
         dynamicButtonRecyclerView.hide()
-        toolbar.hide()
 //            setSprintSaleIcon(null)
     }
 
@@ -268,6 +275,12 @@ class PlayViewStateImpl(
         }
 
         onDynamicButtonUpdated(it.buttonsPojo)
+        onBackgroundUpdated(it.backgroundViewModel)
+        errorView.hide()
+    }
+
+    override fun onBackgroundUpdated(it: BackgroundViewModel) {
+
     }
 
     /**
@@ -427,8 +440,8 @@ class PlayViewStateImpl(
     }
 
     override fun onQuickReplyClicked(message: String?) {
-        val text = replyEditText.getText().toString()
-        val index = replyEditText.getSelectionStart()
+        val text = replyEditText.text.toString()
+        val index = replyEditText.selectionStart
         replyEditText.setText(MethodChecker.fromHtml(String.format(
                 "%s %s %s",
                 text.substring(0, index),
@@ -436,6 +449,10 @@ class PlayViewStateImpl(
                 text.substring(index)
         )))
         sendButton.performClick()
+
+        analytics.eventClickQuickReply(
+                String.format("%s - %s", viewModel?.channelId, message))
+
     }
 
     private fun setChannelInfoBottomSheet() {
@@ -529,16 +546,41 @@ class PlayViewStateImpl(
 
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
+        toolbar.setBackgroundResource(R.color.transparent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 0f
+        }
+
         toolbar.findViewById<TextView>(R.id.toolbar_title).text = title
+        setToolbarParticipantCount(view.context, TextFormatter.format(totalView))
+
+        toolbar.findViewById<TextView>(R.id.toolbar_title).setTextColor(MethodChecker.getColor(activity, R.color.white))
+        toolbar.findViewById<TextView>(R.id.toolbar_subtitle).setTextColor(MethodChecker.getColor(activity, R.color.white))
 
         loadImageChannelBanner(view.context, bannerUrl, blurredBannerUrl)
-
-        setToolbarParticipantCount(view.context, TextFormatter.format(totalView))
 
         when {
             title != null -> setVisibilityHeader(View.VISIBLE)
             else -> setVisibilityHeader(View.GONE)
         }
+    }
+
+
+    private fun setToolbarWhite() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 10f
+            toolbar.setBackgroundResource(R.color.white)
+        } else {
+            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow)
+        }
+        var title = toolbar.findViewById<TextView>(R.id.toolbar_title)
+        var subtitle = toolbar.findViewById<TextView>(R.id.toolbar_subtitle)
+        subtitle.hide()
+        toolbar.findViewById<TextView>(R.id.toolbar_live).hide()
+        title.text = "PLAY"
+        subtitle.text = ""
+        title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
+        subtitle.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
     }
 
     override fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?) {
@@ -551,8 +593,8 @@ class PlayViewStateImpl(
 
     private fun setToolbarParticipantCount(context: Context, totalParticipant: String) {
         val textParticipant = String.format("%s %s", totalParticipant, context.getString(R.string.view))
-//        toolbar.subtitle = textParticipant
         toolbar.findViewById<TextView>(R.id.toolbar_subtitle).text = textParticipant
+        toolbar.findViewById<TextView>(R.id.toolbar_subtitle).show()
     }
 
     override fun getToolbar(): Toolbar? {
@@ -570,12 +612,89 @@ class PlayViewStateImpl(
         } else {
             sponsorLayout.visibility = View.VISIBLE
             ImageHandler.loadImage2(sponsorImage, adsImageUrl, R.drawable.loading_page)
-            sponsorImage.setOnClickListener {}
+            viewModel?.let {
+                infoViewModel ->
+                sponsorImage.setOnClickListener {
+                    listener.openRedirectUrl(generateLink(
+                        infoViewModel.adsLink,
+                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+                        infoViewModel.channelUrl,
+                        infoViewModel.title))
+
+                    analytics.eventClickBanner(String.format(
+                            "%s - %s",
+                            infoViewModel.channelId,
+                            adsId
+                    ))
+
+                    val list = ArrayList<EEPromotion>()
+                    list.add(EEPromotion(adsId,
+                            EEPromotion.NAME_GROUPCHAT,
+                            GroupChatAnalytics.DEFAULT_EE_POSITION,
+                            adsName,
+                            adsImageUrl,
+                            getAttributionTracking(GroupChatAnalytics.ATTRIBUTE_BANNER)
+                    ))
+
+                    eventClickComponentEnhancedEcommerce(
+                            GroupChatAnalytics.COMPONENT_BANNER,
+                            adsName,
+                            GroupChatAnalytics.ATTRIBUTE_BANNER,
+                            list)
+                }
+            }
         }
 
         if (sponsorLayout.visibility == View.VISIBLE) {
-            //TODO analytics event view banner
+            analytics.eventViewBanner(String.format(
+                    "%s - %s",
+                    viewModel?.channelId,
+                    viewModel?.adsName
+            ))
         }
+    }
+
+    private fun eventClickComponentEnhancedEcommerce(
+            componentType: String,
+            campaignName: String?,
+            attributeName: String,
+            list: ArrayList<EEPromotion>
+    ) {
+        analytics.eventClickComponentEnhancedEcommerce(componentType, campaignName,
+                attributeName, viewModel?.channelUrl, viewModel?.title, list)
+    }
+    private fun eventViewComponentEnhancedEcommerce(
+            componentType: String,
+            campaignName: String?,
+            attributeName: String,
+            list: ArrayList<EEPromotion>
+    ) {
+        analytics.eventViewComponentEnhancedEcommerce(componentType, campaignName,
+                attributeName, viewModel?.channelUrl, viewModel?.title, list)
+    }
+
+    private fun generateLink(
+            applink: String,
+            attributeBanner: String,
+            channelUrl: String,
+            channelName: String): String {
+        return if (applink.contains("?")) {
+            applink + "&" + generateTrackerAttribution(attributeBanner,
+                    channelUrl, channelName)
+        } else {
+            applink + "?" + generateTrackerAttribution(attributeBanner,
+                    channelUrl, channelName)
+        }
+    }
+
+    private fun generateTrackerAttribution(attributeBanner: String,
+                                           channelUrl: String,
+                                           channelName: String): String {
+        return "tracker_attribution=" + GroupChatAnalytics.generateTrackerAttribution(attributeBanner, channelUrl, channelName)
+    }
+
+    fun getAttributionTracking(attributeName: String): String {
+        return GroupChatAnalytics.generateTrackerAttribution(attributeName, viewModel?.channelUrl, viewModel?.title)
     }
 
     fun autoPlayVideo() {
@@ -613,63 +732,49 @@ class PlayViewStateImpl(
                                             it.cueVideo(viewModel?.videoId)
                                             autoPlayVideo()
 
-//                                            it.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
-//                                                internal var TAG = "youtube"
+                                            it.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
+                                                internal var TAG = "youtube"
+
+                                                override fun onPlaying() {
+                                                    Log.i(TAG, "onPlaying: ")
+                                                    if (onPlayTime == 0L) {
+                                                        onPlayTime = System.currentTimeMillis() / 1000L
+                                                    }
+                                                    analytics.eventClickAutoPlayVideo(viewModel?.channelId)
+                                                }
+
+                                                override fun onPaused() {
+                                                    onPauseTime = System.currentTimeMillis() / 1000L
+                                                }
+                                                override fun onStopped() {
+                                                }
+                                                override fun onBuffering(b: Boolean) {
+                                                }
+                                                override fun onSeekTo(i: Int) {}
+                                            })
 //
-//                                                override fun onPlaying() {
-//                                                    Log.i(TAG, "onPlaying: ")
-//                                                    if (onPlayTime == 0L) {
-//                                                        onPlayTime = System.currentTimeMillis() / 1000L
-//                                                    }
-//                                                    analytics.eventClickAutoPlayVideo(getChannelInfoViewModel()!!.getChannelId())
-//                                                }
-//
-//                                                override fun onPaused() {
-//                                                    Log.i(TAG, "onPaused: ")
-//                                                    onPauseTime = System.currentTimeMillis() / 1000L
-//                                                }
-//
-//                                                override fun onStopped() {
-//                                                    Log.i(TAG, "onStopped: ")
-//                                                }
-//
-//                                                override fun onBuffering(b: Boolean) {
-//                                                    Log.i(TAG, "onBuffering: ")
-//                                                }
-//
-//                                                override fun onSeekTo(i: Int) {
-//                                                    Log.i(TAG, "onSeekTo: ")
-//                                                }
-//                                            })
-//
-//                                            it.setPlayerStateChangeListener(object : YouTubePlayer.PlayerStateChangeListener {
-//                                                internal var TAG = "youtube"
-//
-//                                                override fun onLoading() {
-//                                                    Log.i(TAG, "onLoading: ")
-//                                                }
-//
-//                                                override fun onLoaded(s: String) {
-//                                                    Log.i(TAG, "onLoaded: ")
-//                                                }
-//
-//                                                override fun onAdStarted() {
-//                                                    Log.i(TAG, "onAdStarted: ")
-//                                                }
-//
-//                                                override fun onVideoStarted() {
-//                                                    Log.i(TAG, "onVideoStarted: ")
-//                                                }
-//
-//                                                override fun onVideoEnded() {
-//                                                    Log.i(TAG, "onVideoEnded: ")
-//                                                    onEndTime = System.currentTimeMillis() / 1000L
-//                                                }
-//
-//                                                override fun onError(errorReason: YouTubePlayer.ErrorReason) {
-//                                                    Log.i(TAG, errorReason.declaringClass() + " onError: " + errorReason.name)
-//                                                }
-//                                            })
+                                            it.setPlayerStateChangeListener(object : YouTubePlayer.PlayerStateChangeListener {
+                                                var TAG = "youtube"
+                                                override fun onLoading() {
+                                                    Log.i(TAG, "onLoading: ")
+                                                }
+                                                override fun onLoaded(s: String) {
+                                                    Log.i(TAG, "onLoaded: ")
+                                                }
+                                                override fun onAdStarted() {
+                                                    Log.i(TAG, "onAdStarted: ")
+                                                }
+                                                override fun onVideoStarted() {
+                                                    Log.i(TAG, "onVideoStarted: ")
+                                                }
+                                                override fun onVideoEnded() {
+                                                    Log.i(TAG, "onVideoEnded: ")
+                                                    onEndTime = System.currentTimeMillis() / 1000L
+                                                }
+                                                override fun onError(errorReason: YouTubePlayer.ErrorReason) {
+                                                    Log.i(TAG, errorReason.declaringClass.toString() + " onError: " + errorReason.name)
+                                                }
+                                            })
                                         }
 
                                     } catch (e: Exception) {
@@ -686,6 +791,18 @@ class PlayViewStateImpl(
                 )
 
             }
+        }
+    }
+
+    override fun getDurationWatchVideo(): String? {
+        if(onPlayTime == 0L) return null
+        if (onEndTime != 0L) {
+            return (onEndTime - onPlayTime).toString()
+        } else if (onPauseTime != 0L) {
+            return (onPauseTime - onPlayTime).toString()
+        } else {
+            onLeaveTime = System.currentTimeMillis() / 1000L
+            return (onLeaveTime - onPlayTime).toString()
         }
     }
 
@@ -777,6 +894,12 @@ class PlayViewStateImpl(
 
     override fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?) {
 
+    }
+
+    override fun onErrorGetInfo(it: String) {
+        setEmptyState(R.drawable.ic_play_dynamic_icon, it)
+        errorView.show()
+        setToolbarWhite()
     }
 
     override fun afterSendMessage() {
@@ -882,9 +1005,7 @@ class PlayViewStateImpl(
                     .drawable.loading_page)
             if (!TextUtils.isEmpty(it.imageUrl)) {
                 view.findViewById<ImageView>(R.id.thumbnail).setOnClickListener {
-                    (activity.applicationContext as GroupChatModuleRouter)
-                            .openRedirectUrl(activity,
-                                    channelInfoViewModel.pinnedMessageViewModel!!.imageUrl)
+                    listener.openRedirectUrl(channelInfoViewModel.pinnedMessageViewModel!!.imageUrl)
                 }
             }
             view.findViewById<ImageView>(R.id.thumbnail).visibility = View.GONE
@@ -892,6 +1013,19 @@ class PlayViewStateImpl(
 
         return view
     }
+
+    private fun setEmptyState(imageResId: Int, titleText: String){
+        var imageView = errorView.findViewById<ImageView>(R.id.image)
+        var title = errorView.findViewById<TextView>(R.id.title)
+        var button = errorView.findViewById<View>(R.id.button)
+        var buttonText = errorView.findViewById<TextView>(R.id.button_text)
+
+        ImageHandler.loadImageWithId(imageView, imageResId)
+        title.text = titleText
+        buttonText.text = getStringResource(R.string.title_try_again)
+        button.setOnClickListener { listener.onRetryGetInfo() }
+    }
+
 
     override fun destroy() {
         youTubePlayer?.release()

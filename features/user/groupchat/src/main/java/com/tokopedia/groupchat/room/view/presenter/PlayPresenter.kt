@@ -4,6 +4,7 @@ import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
@@ -13,6 +14,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.chatroom.websocket.GroupChatWebSocketParam
+import com.tokopedia.groupchat.common.util.GroupChatErrorHandler
 import com.tokopedia.groupchat.room.domain.mapper.PlayWebSocketMessageMapper
 import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
@@ -44,7 +46,7 @@ class PlayPresenter @Inject constructor(
         localCacheHandler = LocalCacheHandler(view.context, GroupChatPresenter::class.java.name)
     }
 
-    fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit) {
+    fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit, onErrorGetInfo: (String) -> Unit) {
         getPlayInfoUseCase.execute(
                 GetPlayInfoUseCase.createParams(channelId),
                 object : Subscriber<ChannelInfoViewModel>() {
@@ -60,7 +62,14 @@ class PlayPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        Log.d("tevplay", e.toString())
+                        val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
+                        val defaultMessage = view.context.getString(R.string.default_request_error_unknown)
+                        val internalServerErrorMessage = "Internal Server Error"
+                         if (errorMessage == defaultMessage || errorMessage.equals(internalServerErrorMessage, ignoreCase = true)) {
+                            onErrorGetInfo(view.context.getString(R.string.default_error_enter_channel))
+                        } else {
+                            onErrorGetInfo(errorMessage)
+                        }
                     }
 
                 })
@@ -114,6 +123,7 @@ class PlayPresenter @Inject constructor(
                         is OverlayViewModel -> view.showOverlayDialog(it)
                         is OverlayCloseViewModel -> view.closeOverlayDialog()
                         is ButtonsPojo -> view.updateDynamicButton(it)
+                        is BackgroundViewModel -> view.onBackgroundUpdated(it)
                         else -> {view.addIncomingMessage(it)}
                     }
                 }

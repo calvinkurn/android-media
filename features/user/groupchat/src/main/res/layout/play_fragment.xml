@@ -116,6 +116,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
+            android:visibility="gone"
             app:layout_constraintDimensionRatio="6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -322,6 +323,24 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.85"
             app:layout_constraintEnd_toStartOf="@id/webview_icon"/>
+
+        <RelativeLayout
+            android:id="@+id/card_retry"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/channel_banner"
+            android:background="@color/white"
+            android:visibility="gone"
+            tools:visibility="gone">
+
+            <include
+                layout="@layout/channel_not_found_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
 
     </android.support.constraint.ConstraintLayout>
 
