@@ -13,10 +13,11 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
@@ -181,17 +182,17 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     }
 
     private Visitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
-        CategorySectionViewModel viewModel = new CategorySectionViewModel();
+        UseCaseIconSectionViewModel viewModel = new UseCaseIconSectionViewModel();
         for (DynamicHomeIcon.UseCaseIcon icon : iconList) {
-            viewModel.addSection(new LayoutSections(LayoutSections.ICON_USE_CASE, icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModel.addItem(new HomeIconItem(icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
         return viewModel;
     }
 
     private Visitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList) {
-        CategorySectionViewModel viewModel = new CategorySectionViewModel();
+        DynamicIconSectionViewModel viewModel = new DynamicIconSectionViewModel();
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
-            viewModel.addSection(new LayoutSections(LayoutSections.ICON_DYNAMIC_CASE, icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModel.addItem(new HomeIconItem(icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
         return viewModel;
     }

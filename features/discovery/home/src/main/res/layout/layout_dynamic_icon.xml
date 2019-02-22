@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal|top"
-    android:layout_marginBottom="@dimen/dp_2"
+    android:layout_marginBottom="@dimen/dp_16"
     android:orientation="vertical">
 
     <FrameLayout
@@ -14,16 +14,15 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_64"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
             app:srcCompat="@drawable/ic_squircle" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/icon"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_beli" />
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_gravity="center"/>
     </FrameLayout>
 
     <TextView
