@@ -11,10 +11,10 @@ import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellation
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.view.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
 
@@ -61,29 +61,32 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
     @Override
     public void loadData(String selectedFilter, final int page, final int perPage) {
-        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(page - 1 >= 0 ? page - 1 : page, selectedFilter, perPage), new Subscriber<List<FlightOrder>>() {
-            @Override
-            public void onCompleted() {
+        flightGetOrdersUseCase.execute(
+                flightGetOrdersUseCase.createRequestParam(page - 1 >= 0 ? page - 1 : page, selectedFilter, perPage),
+                new Subscriber<List<? extends FlightOrder>>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    getView().showGetListError(e);
-                }
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().showGetListError(e);
+                        }
+                    }
 
-            @Override
-            public void onNext(List<FlightOrder> orderEntities) {
-                List<Visitable> visitables = flightOrderViewModelMapper.transform(orderEntities);
-                if (page == 1) {
-                    buildAndRenderFilterList();
-                }
-                getView().renderList(visitables, visitables.size() >= perPage);
-            }
-        });
+
+                    @Override
+                    public void onNext(List<? extends FlightOrder> flightOrders) {
+                        List<Visitable> visitables = flightOrderViewModelMapper.transform((List<FlightOrder>) flightOrders);
+                        if (page == 1) {
+                            buildAndRenderFilterList();
+                        }
+                        getView().renderList(visitables, visitables.size() >= perPage);
+                    }
+                });
     }
 
     @Override

@@ -196,24 +196,13 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<FlightOrder>> getOrders(Map<String, Object> maps) {
         return flightOrderDataSource.getOrders(maps)
-                .map(new Func1<List<OrderEntity>, List<FlightOrder>>() {
-                    @Override
-                    public List<FlightOrder> call(List<OrderEntity> orderEntities) {
-                        return flightOrderMapper.transform(orderEntities);
-                    }
-                });
-
+                .map(it -> flightOrderMapper.transform(it));
     }
 
     @Override
     public Observable<FlightOrder> getOrder(String id) {
         return flightOrderDataSource.getOrder(id)
-                .map(new Func1<OrderEntity, FlightOrder>() {
-                    @Override
-                    public FlightOrder call(OrderEntity orderEntity) {
-                        return flightOrderMapper.transform(orderEntity);
-                    }
-                });
+                .map(it -> flightOrderMapper.transform(it));
     }
 
     @Override

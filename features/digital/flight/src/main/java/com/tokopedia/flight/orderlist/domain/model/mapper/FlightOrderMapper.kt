@@ -9,34 +9,38 @@ constructor(private val flightOrderJourneyMapper: FlightOrderJourneyMapper,
             private val passengerViewModelMapper: FlightOrderPassengerViewModelMapper,
             private val flightInsuranceMapper: FlightInsuranceMapper) {
 
+    fun transform(orderEntity: OrderEntity): FlightOrder {
+        return FlightOrder(
+                orderEntity.id,
+                orderEntity.attributes.status,
+                orderEntity.attributes.statusFmt,
+                orderEntity.attributes.createTime,
+                orderEntity.attributes.flight.email,
+                orderEntity.attributes.flight.phone,
+                orderEntity.attributes.flight.totalAdult,
+                orderEntity.attributes.flight.totalAdultNumeric,
+                orderEntity.attributes.flight.totalChild,
+                orderEntity.attributes.flight.totalChildNumeric,
+                orderEntity.attributes.flight.totalInfant,
+                orderEntity.attributes.flight.totalInfantNumeric,
+                orderEntity.attributes.flight.invoiceUri,
+                orderEntity.attributes.flight.eticketUri,
+                orderEntity.attributes.flight.currency,
+                orderEntity.attributes.flight.pdf,
+                flightOrderJourneyMapper.transform(orderEntity.attributes.flight.journeys),
+                passengerViewModelMapper.transform(orderEntity.attributes.flight.passengers,
+                        orderEntity.attributes.flight.cancellations),
+                orderEntity.attributes.flight.payment,
+                orderEntity.attributes.flight.cancellations,
+                flightInsuranceMapper.transform(orderEntity.attributes.flight.insurances),
+                passengerViewModelMapper.getCancelledPassengerCount(orderEntity.attributes
+                        .flight.cancellations),
+                orderEntity.attributes.flight.contactUsUrl)
+    }
+
     fun transform(orderEntities: List<OrderEntity>): List<FlightOrder> {
         return orderEntities.map {
-            return@map FlightOrder(
-                    it.id,
-                    it.attributes.status,
-                    it.attributes.statusFmt,
-                    it.attributes.createTime,
-                    it.attributes.flight.email,
-                    it.attributes.flight.phone,
-                    it.attributes.flight.totalAdult,
-                    it.attributes.flight.totalAdultNumeric,
-                    it.attributes.flight.totalChild,
-                    it.attributes.flight.totalChildNumeric,
-                    it.attributes.flight.totalInfant,
-                    it.attributes.flight.totalInfantNumeric,
-                    it.attributes.flight.invoiceUri,
-                    it.attributes.flight.eticketUri,
-                    it.attributes.flight.currency,
-                    it.attributes.flight.pdf,
-                    flightOrderJourneyMapper.transform(it.attributes.flight.journeys),
-                    passengerViewModelMapper.transform(it.attributes.flight.passengers,
-                            it.attributes.flight.cancellations),
-                    it.attributes.flight.payment,
-                    it.attributes.flight.cancellations,
-                    flightInsuranceMapper.transform(it.attributes.flight.insurances),
-                    passengerViewModelMapper.getCancelledPassengerCount(it.attributes
-                            .flight.cancellations),
-                    it.attributes.flight.contactUsUrl)
+            return@map transform(it)
         }
     }
 }

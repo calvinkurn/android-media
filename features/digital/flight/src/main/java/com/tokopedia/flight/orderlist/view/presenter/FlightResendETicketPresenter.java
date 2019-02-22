@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
-import com.tokopedia.flight.orderlist.contract.FlightResendETicketContract;
+import com.tokopedia.flight.orderlist.view.contract.FlightResendETicketContract;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.FlightSendEmailUseCase;
 
