@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
@@ -48,6 +49,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private SettingGroupChat settingGroupChat;
     private OverlayViewModel overlayViewModel;
     private ButtonsPojo buttonsPojo;
+    private BackgroundViewModel backgroundViewModel;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -98,6 +100,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.settingGroupChat = null;
         this.overlayViewModel = null;
         this.buttonsPojo = null;
+        this.backgroundViewModel = null;
     }
 
     public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
@@ -114,7 +117,7 @@ public class ChannelInfoViewModel implements Parcelable {
                                 List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel,
                                 String videoId, Boolean videoLive,
                                 SettingGroupChat settingGroupChat, OverlayViewModel overlayViewModel,
-                                ButtonsPojo buttonsPojo) {
+                                ButtonsPojo buttonsPojo, BackgroundViewModel backgroundViewModel) {
         this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
@@ -145,6 +148,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.settingGroupChat = settingGroupChat;
         this.overlayViewModel = overlayViewModel;
         this.buttonsPojo = buttonsPojo;
+        this.backgroundViewModel = backgroundViewModel;
     }
 
     public String getChannelId() {
@@ -324,6 +328,10 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public void setButtonsPojo(ButtonsPojo buttonsPojo) {
         this.buttonsPojo = buttonsPojo;
+    }
+
+    public BackgroundViewModel getBackgroundViewModel() {
+        return backgroundViewModel;
     }
 
     @Override
