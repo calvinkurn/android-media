@@ -35,14 +35,16 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
     private Func1<Map<Type, RestResponse>, Map<Type, RestResponse>> checkForNull() {
         return responseMap -> {
             for (Map.Entry<Type, RestResponse> pair : responseMap.entrySet()) {
-                NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
-                    String message = String.format("Found %s in %s", errorMessage, RestRequestUseCase.class.getSimpleName());
-                    ContainNullException exception = new ContainNullException(message);
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
-                    throw exception;
-                });
+                if (isCheckNull()) {
+                    NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
+                        String message = String.format("Found %s in %s", errorMessage, RestRequestUseCase.class.getSimpleName());
+                        ContainNullException exception = new ContainNullException(message);
+                        if (!BuildConfig.DEBUG) {
+                            Crashlytics.logException(exception);
+                        }
+                        throw exception;
+                    });
+                }
             }
             return responseMap;
         };
@@ -103,4 +105,14 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
      */
     protected abstract List<RestRequest> buildRequest(RequestParams requestParams);
 
+    /**
+     * A function to indicate whether the use case needs to check for null variables
+     * in the responses.
+     *
+     * Please override this function and return `false`
+     * if you want the use case to _NOT_ check for null.
+     **/
+    protected boolean isCheckNull() {
+        return true;
+    }
 }
