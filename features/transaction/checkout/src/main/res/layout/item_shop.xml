@@ -84,6 +84,12 @@
 
         </FrameLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test Area Promo Merchant"
+            android:layout_margin="@dimen/dp_10"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cart_item"
             android:layout_width="match_parent"
