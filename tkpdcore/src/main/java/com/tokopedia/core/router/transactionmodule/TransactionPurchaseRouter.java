@@ -40,7 +40,6 @@ public class TransactionPurchaseRouter {
     public final static int TAB_POSITION_PURCHASE_DELIVERED = 3;
     public final static int TAB_POSITION_PURCHASE_ALL_ORDER = 4;
 
-
     public static final String ALL_STATUS_FILTER_ID = "";
     public static final String PAYMENT_CONFIRMATION_FILTER_ID = "1";
     public static final String PAYMENT_VERIFICATION_FILTER_ID = "2";
