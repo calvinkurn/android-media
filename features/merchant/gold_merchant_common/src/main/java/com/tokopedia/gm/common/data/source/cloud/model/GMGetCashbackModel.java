@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.cashback;
+package com.tokopedia.gm.common.data.source.cloud.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by zulfikarrahman on 10/4/17.
  */
 
-public class DataCashbackModel {
+public class GMGetCashbackModel {
     @SerializedName("product_id")
     @Expose
     private int productId;

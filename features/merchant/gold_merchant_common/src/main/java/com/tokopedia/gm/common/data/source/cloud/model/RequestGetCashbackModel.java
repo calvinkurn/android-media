@@ -1,4 +1,4 @@
-package com.tokopedia.gm.cashback.data.model;
+package com.tokopedia.gm.common.data.source.cloud.model;
 
 import com.google.gson.annotations.SerializedName;
 

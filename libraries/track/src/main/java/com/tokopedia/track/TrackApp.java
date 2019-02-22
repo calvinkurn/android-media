@@ -1,6 +1,7 @@
 package com.tokopedia.track;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.GuardedBy;
 import android.support.annotation.Nullable;
@@ -23,6 +24,10 @@ public class TrackApp {
 
     private static final Object LOCK2 = new Object();
 
+    public static final String GTM = "GTM";
+    public static final String APPSFLYER = "Appsflyer";
+    public static final String MOENGAGE = "MoEngage";
+
     @GuardedBy("LOCK")
     static final Map<String, TypedValue<? extends ContextAnalytics>> INSTANCES = new ArrayMap<>();
 
@@ -33,44 +38,41 @@ public class TrackApp {
     private static final Class<?>[] CONTEXT_ANALYTICS_CONSTRUCTOR_SIGNATURE =
             new Class[]{Context.class};
 
-    private final Context context;
+    private final Application context;
 
     private final AtomicBoolean deleted = new AtomicBoolean();
 
     /**
-     *
-     *
      * @param context Application Context
      */
-    private TrackApp(Context context){
+    private TrackApp(Application context) {
         this.context = context;
     }
 
     /**
-     *
      * @return
      */
     @Nullable
-    public static TrackApp getInstance(){
-        synchronized (LOCK2){
-            if(trackApp == null){
+    public static TrackApp getInstance() {
+        synchronized (LOCK2) {
+            if (trackApp == null) {
                 throw new IllegalStateException(
                         "Default TrackApp is not initialized in this "
-                        +"process "
-                        + ". make sure to call "
-                        + "TrackApp.initTrackApp(Context) first."
+                                + "process "
+                                + ". make sure to call "
+                                + "TrackApp.initTrackApp(Context) first."
                 );
             }
             return trackApp;
         }
     }
 
-    public static boolean deleteInstance(){
-        synchronized (LOCK2){
-            if(trackApp != null){
+    public static boolean deleteInstance() {
+        synchronized (LOCK2) {
+            if (trackApp != null) {
                 trackApp = null;
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
@@ -79,31 +81,23 @@ public class TrackApp {
     /**
      * this method needs to be called before other methods.
      * otherwise it will break other methods.
-     * @param context
+     *
+     * @param application
      * @return
      */
-    public static TrackApp initTrackApp(Context context){
-        synchronized (LOCK2){
-            Context applicationContext;
-            if(context.getApplicationContext()==null){
-                applicationContext = context;
-            }else{
-                applicationContext = context.getApplicationContext();
-            }
-
-           if(trackApp==null){
-               trackApp = new TrackApp(applicationContext);
-           }
-           return trackApp;
+    public static TrackApp initTrackApp(Application application) {
+        synchronized (LOCK2) {
+            trackApp = new TrackApp(application);
+            return trackApp;
         }
     }
 
     @SuppressWarnings("RestrictedApi")
-    private void checkNotDeleted(){
+    private void checkNotDeleted() {
         Preconditions.checkState(!deleted.get(), "TrackApp was deleted");
     }
 
-    public void registerImplementation(String TAG, Class<? extends ContextAnalytics> className){
+    public void registerImplementation(String TAG, Class<? extends ContextAnalytics> className) {
         // determine if trackapp is initialized or not ??
         checkNotDeleted();
 
@@ -116,14 +110,14 @@ public class TrackApp {
         }
     }
 
-    public void initializeAllApis(){
+    public void initializeAllApis() {
         checkNotDeleted();
 
         getInstance();
 
-        synchronized (LOCK){
+        synchronized (LOCK) {
             // get TrackApp object
-            for (Iterator<String> iterator = INSTANCES.keySet().iterator(); iterator.hasNext();){
+            for (Iterator<String> iterator = INSTANCES.keySet().iterator(); iterator.hasNext(); ) {
                 String key = iterator.next();
                 ContextAnalytics analytics = trackApp.getValue(key);
                 analytics.initialize();
@@ -131,22 +125,22 @@ public class TrackApp {
         }
     }
 
-    private <T extends ContextAnalytics> TypedValue<? extends ContextAnalytics> createContextAnalytics(Class<? extends ContextAnalytics> className){
-        if(className != null){
-            try{
+    private <T extends ContextAnalytics> TypedValue<? extends ContextAnalytics> createContextAnalytics(Class<? extends ContextAnalytics> className) {
+        if (className != null) {
+            try {
                 ClassLoader classLoader = context.getClassLoader();
                 Class<? extends ContextAnalytics> contextAnalyticsClass
                         = classLoader.loadClass(className.getName()).asSubclass(ContextAnalytics.class);
 
                 Constructor<? extends ContextAnalytics> constructor;
                 Object[] constructorArgs = null;
-                try{
+                try {
                     constructor = contextAnalyticsClass.getConstructor(CONTEXT_ANALYTICS_CONSTRUCTOR_SIGNATURE);
-                    constructorArgs  = new Object[]{context};
-                }catch(NoSuchMethodException e){
-                    try{
-                        constructor =  contextAnalyticsClass.getConstructor();
-                    }catch(NoSuchMethodException e1){
+                    constructorArgs = new Object[]{context};
+                } catch (NoSuchMethodException e) {
+                    try {
+                        constructor = contextAnalyticsClass.getConstructor();
+                    } catch (NoSuchMethodException e1) {
                         e1.initCause(e);
                         throw new IllegalStateException(className.getName()
                                 + ": Error creating LayoutManager " + className, e1);
@@ -174,7 +168,7 @@ public class TrackApp {
         return null;
     }
 
-    public void delete(){
+    public void delete() {
         boolean valueChanged = deleted.compareAndSet(false /* expected */, true);
         if (!valueChanged) {
             return;
@@ -185,9 +179,28 @@ public class TrackApp {
         }
     }
 
-    public ContextAnalytics getValue(String TAG){
-        if(!INSTANCES.containsKey(TAG))
-            throw new RuntimeException(String.format("no instance related to this TAG : \'%s\' ",TAG));
+    public ContextAnalytics getGTM() {
+        return getValue(GTM);
+    }
+
+    public ContextAnalytics getAppsFlyer() {
+        return getValue(APPSFLYER);
+    }
+
+    public ContextAnalytics getMoEngage() {
+        return getValue(MOENGAGE);
+    }
+
+    /**
+     * outside of the library, use getGTM(), or getMoEngage() or getAppsFyler instead
+     * This will change to private
+     * @param TAG
+     * @return
+     */
+    @Deprecated
+    public ContextAnalytics getValue(String TAG) {
+        if (!INSTANCES.containsKey(TAG))
+            throw new RuntimeException(String.format("no instance related to this TAG : \'%s\' ", TAG));
 
         TypedValue<? extends ContextAnalytics> typedValue = INSTANCES.get(TAG);
         ContextAnalytics value = typedValue.value;
@@ -197,6 +210,7 @@ public class TrackApp {
     static class TypedValue<T> {
         public final Class<T> type;
         public final T value;
+
         TypedValue(Class<T> type, T value) {
             this.type = type;
             this.value = value;
