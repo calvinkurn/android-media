@@ -16,7 +16,8 @@ import kotlinx.android.synthetic.main.item_af_related_product.view.*
 /**
  * @author by milhamj on 21/02/19.
  */
-class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
+class RelatedProductAdapter(val listener: RelatedProductListener)
+    : RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
 
     private val emptyItem: RelatedProductItem = RelatedProductItem(EMPTY_ITEM_ID)
     private val list: MutableList<RelatedProductItem> = arrayListOf(emptyItem)
@@ -38,6 +39,9 @@ class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHol
         if (element.id == EMPTY_ITEM_ID) {
             holder.itemView.thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
             holder.itemView.delete.hide()
+            holder.itemView.setOnClickListener {
+                listener.onEmptyProductClick()
+            }
         } else {
             holder.itemView.thumbnail.loadImage(element.image)
             holder.itemView.delete.show()
@@ -94,5 +98,9 @@ class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHol
 
             return oldItem == newItem
         }
+    }
+
+    interface RelatedProductListener {
+        fun onEmptyProductClick()
     }
 }

@@ -4,9 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingRight="@dimen/dp_16"
+    tools:ignore="UnusedAttribute">
 
     <ImageView
         android:id="@+id/thumbnail"

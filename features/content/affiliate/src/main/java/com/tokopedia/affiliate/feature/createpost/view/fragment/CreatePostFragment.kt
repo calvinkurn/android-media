@@ -35,7 +35,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import javax.inject.Inject
 
-class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
+class CreatePostFragment : BaseDaggerFragment(),
+        CreatePostContract.View,
+        RelatedProductAdapter.RelatedProductListener {
 
     @Inject
     lateinit var presenter: CreatePostContract.Presenter
@@ -53,7 +55,7 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
     private var guide: Guide = Guide()
 
     private val adapter: RelatedProductAdapter by lazy {
-        RelatedProductAdapter()
+        RelatedProductAdapter(this)
     }
 
     companion object {
@@ -133,13 +135,15 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
-                viewModel.fileImageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
+                viewModel.fileImageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                        ?: arrayListOf()
                 updateThumbnail()
             }
             REQUEST_EXAMPLE -> goToImagePicker()
             REQUEST_LOGIN -> presenter.fetchContentForm(viewModel.productId, viewModel.adId)
             REQUEST_ATTACH_PRODUCT -> {
-                val products = data?.getParcelableArrayListExtra<ResultProduct>(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY) ?: arrayListOf()
+                val products = data?.getParcelableArrayListExtra<ResultProduct>(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                        ?: arrayListOf()
                 setRelatedProduct(convertAttachProduct(products))
             }
             else -> {
@@ -220,6 +224,10 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
         NetworkErrorHelper.showEmptyState(context, mainView, message) { this.editPost() }
     }
 
+    override fun onEmptyProductClick() {
+        goToAttachProduct()
+    }
+
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
@@ -251,12 +259,7 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
             }
         }
         relatedAddBtn.setOnClickListener {
-            val intent = AttachProductActivity.createInstance(context,
-                    userSession.shopId,
-                    "",
-                    true,
-                    AttachProductActivity.SOURCE_TALK)
-            startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
+            goToAttachProduct()
         }
     }
 
@@ -332,6 +335,15 @@ class CreatePostFragment : BaseDaggerFragment(), CreatePostContract.View {
         } else {
             thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
         }
+    }
+
+    private fun goToAttachProduct() {
+        val intent = AttachProductActivity.createInstance(context,
+                userSession.shopId,
+                "",
+                true,
+                AttachProductActivity.SOURCE_TALK)
+        startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
     }
 
     private fun setRelatedProduct(products: MutableList<RelatedProductItem>) {
