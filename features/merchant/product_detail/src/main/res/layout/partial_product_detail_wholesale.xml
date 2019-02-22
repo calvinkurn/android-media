@@ -67,6 +67,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_8"
         android:visibility="gone"
+        tools:visibility="visible"
         app:fontSize="small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -75,13 +76,14 @@
         app:layout_constraintTop_toBottomOf="@+id/wholesale_divider"/>
 
     <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/label_desc_wholesale"
+        android:id="@+id/label_desc_installment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="@string/label_choose_product_variant"
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/tkpd_main_green"
         android:visibility="gone"
+        tools:visibility="visible"
         app:fontSize="small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
