@@ -43,14 +43,17 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.service.HUDIntent;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.UserData;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
-import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 
 public abstract class MainApplication extends MainRouterApplication{
@@ -318,10 +321,13 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runGTMFirstTime(this);
-        TrackingUtils.runAppsFylerFirstTime(this);
-        TrackingUtils.runMoengageFirstTime(this);
-        TrackingUtils.enableDebugging(this, isDebug());
+        //TODO to be remove, after sellerapp is added Trackapp library
+        if (GlobalConfig.isSellerApp()) {
+            TrackingUtils.runGTMFirstTime(this);
+            TrackingUtils.runAppsFylerFirstTime(this);
+            TrackingUtils.runMoengageFirstTime(this);
+            TrackingUtils.enableDebugging(this, isDebug());
+        }
     }
 
     public void initCrashlytics() {
@@ -360,18 +366,16 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     private void initBranch() {
-        Branch.getAutoInstance(this);
-        if (SessionHandler.isV4Login(this)) {
-            BranchSdkUtils.sendIdentityEvent(SessionHandler.getLoginID(this));
-        }
-    }
+        LinkerManager.initLinkerManager(getApplicationContext());
 
-    private void initFirebase() {
-        if (GlobalConfig.DEBUG) {
-            FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
-            builder.setApplicationId("1:692092518182:android:9bb64c665e7c68ee");
-            builder.setApiKey("AIzaSyDan4qOIiANywQFOk-AG-WhRxsEMVqfcbg");
-            FirebaseApp.initializeApp(this, builder.build());
+        UserSession userSession = new UserSession(this);
+
+        if(userSession.isLoggedIn()) {
+            UserData userData = new UserData();
+            userData.setUserId(userSession.getUserId());
+
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                    userData));
         }
     }
 

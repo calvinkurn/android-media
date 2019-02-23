@@ -14,7 +14,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
     private String productBrand;
     private String productCategory;
     private String productVariant;
-    private String productQuantity;
+    private int productQuantity;
     private String productShopId;
     private String productShopType;
     private String productShopName;
@@ -50,7 +50,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         return productVariant;
     }
 
-    public String getProductQuantity() {
+    public int getProductQuantity() {
         return productQuantity;
     }
 
@@ -98,7 +98,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         this.productVariant = productVariant;
     }
 
-    public void setProductQuantity(String productQuantity) {
+    public void setProductQuantity(int productQuantity) {
         this.productQuantity = productQuantity;
     }
 
@@ -139,7 +139,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         dest.writeString(this.productBrand);
         dest.writeString(this.productCategory);
         dest.writeString(this.productVariant);
-        dest.writeString(this.productQuantity);
+        dest.writeInt(this.productQuantity);
         dest.writeString(this.productShopId);
         dest.writeString(this.productShopType);
         dest.writeString(this.productShopName);
@@ -158,7 +158,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         this.productBrand = in.readString();
         this.productCategory = in.readString();
         this.productVariant = in.readString();
-        this.productQuantity = in.readString();
+        this.productQuantity = in.readInt();
         this.productShopId = in.readString();
         this.productShopType = in.readString();
         this.productShopName = in.readString();
