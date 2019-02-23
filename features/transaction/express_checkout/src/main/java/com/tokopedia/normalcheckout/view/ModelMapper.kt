@@ -4,20 +4,25 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.atc.*
-import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 
 object ModelMapper {
 
-    fun convertToModels(productInfo: ProductInfo, noteString: String?,
-                        quantity: Int = 0): ArrayList<Visitable<*>> {
+    fun convertToModels(productInfoAndVariant: ProductInfoAndVariant, noteString: String?,
+                        quantity: Int = 0, selectedVariantIds: ArrayList<String>?): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
-        dataList.add(convertToQuantityViewModel(productInfo, quantity))
-//        if (variantViewModelList.isNotEmpty()) {
-//            dataList.addAll(variantViewModelList)
-//        }
+        if (productInfoAndVariant.productInfo.variant.isVariant) {
+            //TODO will get selected variant
+            val variantViewModelList = ArrayList<TypeVariantViewModel>()
+            if (variantViewModelList.isNotEmpty()) {
+                dataList.addAll(variantViewModelList)
+            }
+        } else {
+            //no need to selected variant, use itself because the data is already correct
+            dataList.add(convertToQuantityViewModel(productInfoAndVariant, quantity))
+        }
         dataList.add(convertToNoteViewModel(noteString))
         return dataList
     }
@@ -242,31 +247,6 @@ object ModelMapper {
         return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
     }
 
-    fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel {
-        val userProfileModel: ProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
-        val profileViewModel = ProfileViewModel()
-        profileViewModel.profileId = userProfileModel?.id ?: 0
-        profileViewModel.addressId = userProfileModel?.addressModel?.addressId ?: 0
-        profileViewModel.districtName = userProfileModel?.addressModel?.districtName ?: ""
-        profileViewModel.cityName = userProfileModel?.addressModel?.cityName ?: ""
-        profileViewModel.addressTitle = userProfileModel?.addressModel?.addressName ?: ""
-        profileViewModel.addressDetail = userProfileModel?.addressModel?.addressStreet ?: ""
-        profileViewModel.paymentOptionImageUrl = userProfileModel?.paymentModel?.image ?: ""
-        profileViewModel.paymentDetail = userProfileModel?.paymentModel?.gatewayCode ?: ""
-        profileViewModel.shippingDuration = userProfileModel?.shipmentModel?.serviceDuration ?: ""
-        profileViewModel.shippingDurationId = userProfileModel?.shipmentModel?.serviceId ?: 0
-        profileViewModel.isDefaultProfileCheckboxChecked = false
-        profileViewModel.isDurationError = false
-        profileViewModel.isCourierError = false
-        profileViewModel.isEditable = false
-        profileViewModel.isSelected = true
-        profileViewModel.isShowDefaultProfileCheckBox = false
-        profileViewModel.isStateHasChangedProfile = false
-        profileViewModel.isStateHasRemovedProfile = false
-
-        return profileViewModel
-    }
-
     fun convertToQuantityViewModel(atcResponseModel: AtcResponseModel,
                                    productViewModel: ProductViewModel): QuantityViewModel {
         val quantityViewModel = QuantityViewModel()
@@ -293,18 +273,33 @@ object ModelMapper {
         return quantityViewModel
     }
 
-    fun convertToQuantityViewModel(productInfo: ProductInfo, quantity: Int = 0): QuantityViewModel {
+    /**
+     * convert the product model got from api and the selected quantity to the view model to be rendered to view
+     * The View model has the upper and lower bound to be set.
+     * We should check the campaign (because the campaign has its own upper and lower stock)
+     * if it is not in campaign, use the default stock
+     * If it has stock, the upper max will be that stock, otherwise, use the max order value
+     */
+    fun convertToQuantityViewModel(productInfoAndVariant: ProductInfoAndVariant, quantity: Int = 0): QuantityViewModel {
         val quantityViewModel = QuantityViewModel()
         quantityViewModel.errorProductMaxQuantity = ""
         quantityViewModel.errorProductMinQuantity = ""
         quantityViewModel.isStateError = false
 
-//        quantityViewModel.maxOrderQuantity = if (productInfo.basic.maxOrder > 0 ) productInfo.basic.maxOrder else {
-//            productInfo.stock.
-//        }
+        val productInfo = productInfoAndVariant.productInfo
+
+        quantityViewModel.maxOrderQuantity =
+                when {
+                    productInfo.hasActiveCampaign && productInfo.campaign.stock > 0 ->
+                        productInfo.campaign.stock
+                    productInfo.stock.useStock && productInfo.stock.value > 0 ->
+                        productInfo.stock.value
+                    productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
+                    else -> MAX_QUANTITY
+                }
         quantityViewModel.minOrderQuantity = productInfo.basic.minOrder
         quantityViewModel.orderQuantity = if (quantity > 0) quantity else productInfo.basic.minOrder
-        quantityViewModel.stockWording = ""
+        quantityViewModel.stockWording = productInfo.stock.stockWording
 
         return quantityViewModel
     }

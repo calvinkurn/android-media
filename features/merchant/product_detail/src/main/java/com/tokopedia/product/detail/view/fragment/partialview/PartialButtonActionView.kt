@@ -83,7 +83,7 @@ class PartialButtonActionView private constructor(private val view: View){
     private fun showNoStockButton() {
         with(view) {
             tv_buy.setTextColor(ContextCompat.getColor(context, R.color.black_38))
-            btn_buy.setBackgroundResource(R.drawable.btn_buy_grey)
+            btn_buy.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300))
             tv_buy.text = context.getString(R.string.no_stock)
             btn_buy.isEnabled = false
             btn_buy.visibility = View.VISIBLE

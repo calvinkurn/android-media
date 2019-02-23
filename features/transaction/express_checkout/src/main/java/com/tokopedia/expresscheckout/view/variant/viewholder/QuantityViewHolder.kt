@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.QuantityViewModel
@@ -67,38 +68,47 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
                 }
             })
 
-            itemView.tv_quantity_stock_available.text = element.stockWording
+            itemView.tv_quantity_stock_available.text = MethodChecker.fromHtml(element.stockWording)
 
+            itemView.btn_qty_min.setOnClickListener {
+                if (element.orderQuantity > element.minOrderQuantity && element.orderQuantity > 0) {
+                    element.orderQuantity -= 1
+                    updateQuantityText(element)
+                }
+            }
             setupMinButton(element)
+            itemView.btn_qty_plus.setOnClickListener {
+                if (element.orderQuantity < element.maxOrderQuantity) {
+                    element.orderQuantity += 1
+                    updateQuantityText(element)
+                }
+            }
             setupPlusButton(element)
             validateQuantity(element)
             actionListener.onNeedToValidateButtonBuyVisibility()
         }
     }
 
+    fun updateQuantityText(element: QuantityViewModel){
+        itemView.et_qty.setText(element.orderQuantity.toString())
+        itemView.et_qty.setSelection(itemView.et_qty.text.length)
+        setupMinButton(element)
+        setupPlusButton(element)
+    }
+
     private fun setupMinButton(element: QuantityViewModel) {
         if (element.orderQuantity > element.minOrderQuantity && element.orderQuantity > 0) {
             itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_enabled)
-            itemView.btn_qty_min.setOnClickListener {
-                element.orderQuantity -= 1
-                itemView.et_qty.setText(element.orderQuantity.toString())
-            }
         } else {
             itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_disabled)
-            itemView.btn_qty_min.setOnClickListener { }
         }
     }
 
     private fun setupPlusButton(element: QuantityViewModel) {
         if (element.orderQuantity < element.maxOrderQuantity) {
             itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_enabled)
-            itemView.btn_qty_plus.setOnClickListener {
-                element.orderQuantity += 1
-                itemView.et_qty.setText(element.orderQuantity.toString())
-            }
         } else {
             itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_disabled)
-            itemView.btn_qty_plus.setOnClickListener { }
         }
     }
 

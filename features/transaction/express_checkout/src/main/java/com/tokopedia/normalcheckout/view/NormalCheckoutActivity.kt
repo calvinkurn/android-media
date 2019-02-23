@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.expresscheckout.R
+import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
+import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.EXTRA_MESSAGES_ERROR
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_ERROR
 
@@ -22,6 +24,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
+        const val EXTRA_ACTION = "action"
 
         /**
          * shopID: mandatory
@@ -32,6 +35,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
         fun getIntent(context: Context, shopId: String, productId: String,
                       notes: String? = "", quantity: Int? = 0,
                       selectedVariantId: ArrayList<Int>? = null,
+                      @ProductAction action: Int = ATC_AND_BUY,
                       placeholderProductImage: String? = ""): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(EXTRA_SHOP_ID, shopId)
@@ -39,6 +43,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
                 putExtra(EXTRA_NOTES, notes)
                 putExtra(EXTRA_QUANTITY, quantity)
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+                putExtra(EXTRA_ACTION, action)
                 putExtra(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
             }
         }
@@ -58,6 +63,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
                     getString(EXTRA_NOTES),
                     getInt(EXTRA_QUANTITY),
                     getStringArrayList(EXTRA_SELECTED_VARIANT_ID),
+                    getInt(EXTRA_ACTION),
                     getString(EXTRA_PRODUCT_IMAGE))
         }
         return Fragment()

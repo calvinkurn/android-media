@@ -2,7 +2,7 @@
   "getPDPInfo": {
     "basic": {
       "id": 15212348,
-      "shopID": 394715,
+      "shopID": 480202,
       "name": "Contoh Variant 2 Level",
       "alias": "contoh-variant-2-level",
       "price": 100000000,
@@ -57,60 +57,7 @@
         }
       ]
     },
-    "pictures": [
-      {
-        "picID": "21125351",
-        "fileName": "3045010_fb2ec497-e8ab-407e-bc70-a9870de612d7_511_450.png",
-        "filePath": "product-1/2018/2/19/3045010",
-        "description": "",
-        "isFromIG": false,
-        "width": 511,
-        "height": 450,
-        "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_fb2ec497-e8ab-407e-bc70-a9870de612d7_511_450.png",
-        "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/2/19/3045010/3045010_fb2ec497-e8ab-407e-bc70-a9870de612d7_511_450.png",
-        "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2018/2/19/3045010/3045010_fb2ec497-e8ab-407e-bc70-a9870de612d7_511_450.png",
-        "status": 2
-      },
-      {
-        "picID": "21125352",
-        "fileName": "3045010_9e7b0da2-ee61-4df2-a063-884f51ae39d7_511_450.png",
-        "filePath": "product-1/2018/2/19/3045010",
-        "description": "",
-        "isFromIG": false,
-        "width": 511,
-        "height": 450,
-        "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_9e7b0da2-ee61-4df2-a063-884f51ae39d7_511_450.png",
-        "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/2/19/3045010/3045010_9e7b0da2-ee61-4df2-a063-884f51ae39d7_511_450.png",
-        "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2018/2/19/3045010/3045010_9e7b0da2-ee61-4df2-a063-884f51ae39d7_511_450.png",
-        "status": 1
-      },
-      {
-        "picID": "21125353",
-        "fileName": "3045010_6a4fb6bf-3734-42ee-94fd-2fe298424253_511_450.png",
-        "filePath": "product-1/2018/2/19/3045010",
-        "description": "",
-        "isFromIG": false,
-        "width": 511,
-        "height": 450,
-        "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_6a4fb6bf-3734-42ee-94fd-2fe298424253_511_450.png",
-        "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/2/19/3045010/3045010_6a4fb6bf-3734-42ee-94fd-2fe298424253_511_450.png",
-        "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2018/2/19/3045010/3045010_6a4fb6bf-3734-42ee-94fd-2fe298424253_511_450.png",
-        "status": 1
-      },
-      {
-        "picID": "21125354",
-        "fileName": "3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
-        "filePath": "product-1/2018/2/19/3045010",
-        "description": "",
-        "isFromIG": false,
-        "width": 511,
-        "height": 450,
-        "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
-        "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/2/19/3045010/3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
-        "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2018/2/19/3045010/3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
-        "status": 1
-      }
-    ],
+    "pictures": [],
     "preorder": {
       "isActive": true,
       "duration": 1,
@@ -162,7 +109,7 @@
     },
     "stock": {
       "useStock": true,
-      "value": 1230,
+      "value": 102,
       "stockWording": "<b>Stok terbatas!</b> Tersedia &gt;50"
     }
   }

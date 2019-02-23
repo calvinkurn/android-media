@@ -26,13 +26,6 @@ import rx.Observable
 interface NormalCheckoutContract {
 
     interface View : CustomerView {
-        fun showLoading()
-
-        fun hideLoading()
-
-        fun showLoadingDialog()
-
-        fun hideLoadingDialog()
 
         fun onNeedToValidateButtonBuyVisibility()
 

@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
@@ -34,8 +35,11 @@ import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotSh
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
+import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
+import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
+import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
-import com.tokopedia.normalcheckout.model.ProductInfoVariant
+import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
@@ -45,7 +49,7 @@ import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_detail_product_page.*
+import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -78,6 +82,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var quantity: Int? = null
     var selectedVariantId: ArrayList<String>? = null
     var placeholderProductImage: String? = null
+    lateinit var recyclerView: RecyclerView
+    @ProductAction
+    var action: Int = ATC_AND_BUY
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -85,11 +92,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_NOTES = "notes"
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
+        const val EXTRA_ACTION = "action"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
                            selectedVariantId: ArrayList<String>? = null,
+                           @ProductAction action: Int = ATC_AND_BUY,
                            placeholderProductImage: String?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -97,6 +106,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(EXTRA_PRODUCT_ID, productId)
                     putString(EXTRA_NOTES, notes)
                     putInt(EXTRA_QUANTITY, quantity ?: 0)
+                    putInt(EXTRA_ACTION, action)
                     putString(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
                     putStringArrayList(EXTRA_SELECTED_VARIANT_ID, selectedVariantId
                             ?: arrayListOf<String>())
@@ -127,9 +137,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         })
     }
 
-    private fun onSuccessGetProductInfo(productInfoVariant: ProductInfoVariant) {
-        val viewModels = ModelMapper.convertToModels(productInfoVariant.productInfo,
-                notes, quantity ?: 0)
+    private fun onSuccessGetProductInfo(productInfoAndVariant: ProductInfoAndVariant) {
+        val viewModels = ModelMapper.convertToModels(productInfoAndVariant,
+                notes, quantity ?: 0, selectedVariantId)
         fragmentViewModel.viewModels = viewModels
         adapter.clearAllElements()
         adapter.addDataViewModel(viewModels)
@@ -163,6 +173,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             notes = argument.getString(EXTRA_NOTES)
             quantity = argument.getInt(EXTRA_QUANTITY)
             placeholderProductImage = argument.getString(EXTRA_PRODUCT_IMAGE)
+            action
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -180,9 +191,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recycler_view.addItemDecoration(CheckoutVariantItemDecorator())
-        (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        val recyclerView = getRecyclerView(view)
+        recyclerView.addItemDecoration(CheckoutVariantItemDecorator())
+        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         super.onViewCreated(view, savedInstanceState)
+
     }
 
     override fun onAttach(context: Context?) {
@@ -196,28 +209,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         return adapter
     }
 
-    override fun showLoading() {
-        super.showLoading()
-    }
-
-    override fun hideLoading() {
-        super.hideLoading()
-    }
-
-    override fun showLoadingDialog() {
-        tkpdProgressDialog.showDialog()
-    }
-
-    override fun hideLoadingDialog() {
-        tkpdProgressDialog.dismiss()
-    }
-
-    override fun isLoadMoreEnabledByDefault(): Boolean {
-        return false
-    }
+    override fun isLoadMoreEnabledByDefault() = false
 
     override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypeFactory {
-        return CheckoutVariantAdapterTypeFactory(this)
+        return NormalCheckoutAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -229,8 +224,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onNeedToNotifySingleItem(position: Int) {
-        if (recycler_view.isComputingLayout) {
-            recycler_view.post {
+        if (recyclerView.isComputingLayout) {
+            recyclerView.post {
                 adapter.notifyItemChanged(position)
             }
         } else {
@@ -239,8 +234,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onNeedToRemoveSingleItem(position: Int) {
-        if (recycler_view.isComputingLayout) {
-            recycler_view.post {
+        if (recyclerView.isComputingLayout) {
+            recyclerView.post {
                 adapter.notifyItemRemoved(position)
             }
         } else {
@@ -249,8 +244,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onNeedToNotifyAllItem() {
-        if (recycler_view.isComputingLayout) {
-            recycler_view.post {
+        if (recyclerView.isComputingLayout) {
+            recyclerView.post {
                 adapter.notifyDataSetChanged()
             }
         } else {
@@ -274,7 +269,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
         val productViewModel = fragmentViewModel.getProductViewModel()
-        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
         val quantityViewModel = fragmentViewModel.getQuantityViewModel()
 
         if (productViewModel != null && productViewModel.productChildrenList.isNotEmpty()) {
@@ -308,12 +302,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     productChild.isSelected = productChild.productId == newSelectedProductChild.productId
                 }
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
-
-                if (summaryViewModel != null) {
-                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice.toLong())
-                            ?: 0
-                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
-                }
 
                 val variantTypeViewModels = fragmentViewModel.getVariantTypeViewModel()
                 for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
@@ -451,7 +439,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         val totalPayment = summaryViewModel?.itemPrice?.plus(summaryViewModel.shippingPrice)?.plus(summaryViewModel.servicePrice)?.plus(summaryViewModel.insurancePrice)
         fragmentViewModel.totalPayment = totalPayment
 
-        tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentViewModel.totalPayment
+        tv_total.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentViewModel.totalPayment
                 ?: 0, false)
     }
 
@@ -478,13 +466,17 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
         }
 
+        renderButton(hasError)
+    }
+
+    fun renderButton(hasError: Boolean = false) {
         if (activity != null) {
             if (hasError) {
-                bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
-                bt_buy.setOnClickListener { }
+                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+                button_buy_partial.setOnClickListener { }
             } else {
-                bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
-                bt_buy.setOnClickListener {
+                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
+                button_buy_partial.setOnClickListener {
                     //TODO
                 }
             }
@@ -502,12 +494,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun onGetCompositeSubscriber() = compositeSubscription
 
     override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {
-        val quantityViewModel = fragmentViewModel.getQuantityViewModel()
-        if (quantityViewModel != null) {
-            quantityViewModel.maxOrderQuantity = productViewModel.maxOrderQuantity
-            quantityViewModel.stockWording = stockWording
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
-        }
+        // TODO need update quantity?
     }
 
     override fun onBindVariantGetProductViewModel(): ProductViewModel? {
@@ -588,9 +575,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         onSummaryChanged(fragmentViewModel.getSummaryViewModel())
 
         rl_bottom_action_container.visibility = View.VISIBLE
-        img_total_payment_info.setOnClickListener {
-            recycler_view.smoothScrollToPosition(adapter.data.size - 1)
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -35,5 +35,6 @@
     <string name="label_courier_with_value"><![CDATA[Kurir <b>%1$s</b>]]></string>
     <string name="label_address_with_value"><![CDATA[<b>%1$s</b> %2$s]]></string>
     <string name="label_total_price">Total Harga</string>
+    <string name="no_stock">Stok Kosong</string>
 
 </resources>

@@ -74,9 +74,16 @@ data class ProductInfo(
 
     val parentProductId: String
         get() =
-            if (variant.isVariant) {
+            if (variant.isVariant && variant.parentID.isNotEmpty() && variant.parentID.toInt() > 0) {
                 variant.parentID
             } else {
                 basic.id.toString()
             }
+
+    val shouldShowCod: Boolean
+        get() = (!campaign.activeAndHasId) && basic.isEligibleCod
+
+    val hasActiveCampaign: Boolean
+        get() = campaign.activeAndHasId
+
 }

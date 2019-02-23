@@ -39,6 +39,8 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.normalcheckout.constant.ATC_AND_SELECT
+import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
@@ -741,7 +743,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
-        shouldShowCod = (!data.campaign.isActive || (data.campaign.id.toIntOrNull() ?: 0) == 0) && data.basic.isEligibleCod
+        shouldShowCod = data.shouldShowCod
         if (shouldShowCod) label_cod.visible() else label_cod.gone()
         headerView.renderData(data)
         view_picture.renderData(data.pictures, this::onPictureProductClicked)
@@ -772,6 +774,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
+        //TODO shop status must be 1
         productVariant = data
         partialVariantAndRateEstView.renderData(data, this::onVariantClicked)
     }
@@ -909,7 +912,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         parentProductId,
                         userInputNotes,
                         userInputQuantity,
-                        userInputVariant, null), REQUEST_CODE_NORMAL_CHECKOUT);
+                        userInputVariant,
+                        ATC_AND_SELECT,
+                        null), REQUEST_CODE_NORMAL_CHECKOUT);
             }
         }
     }

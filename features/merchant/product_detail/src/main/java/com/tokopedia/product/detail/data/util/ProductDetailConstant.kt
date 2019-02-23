@@ -6,20 +6,6 @@ object ProductDetailConstant {
     @JvmField
     var BASE_REST_URL = "https://ws.tokopedia.com/"
 
-    const val PRD_STATE_ACTIVE = 1
-    const val PRD_STATE_PENDING = -1
-    const val PRD_STATE_WAREHOUSE = 3
-
-    const val MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads"
-
-    @IntDef(BUY, ADD_TO_CART, BUY_NOW)
-    @Retention(AnnotationRetention.SOURCE)
-    annotation class ProductAction {}
-
-    const val BUY = 0
-    const val ADD_TO_CART = 1
-    const val BUY_NOW = 2
-
     //report product
     const val PATH_PRODUCT_TYPE = "v4/product/"
     const val PATH_REPORT_TYPE = "get_product_report_type.pl"

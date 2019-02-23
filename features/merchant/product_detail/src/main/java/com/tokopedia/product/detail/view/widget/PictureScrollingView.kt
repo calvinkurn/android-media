@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -50,12 +51,12 @@ class PictureScrollingView @JvmOverloads constructor(
     }
 
     fun renderShopStatus(shopInfo: ShopInfo, productStatus: String, productStatusTitle: String = "",
-                         productStatusMessage: String = ""){
-        if (shopInfo.statusInfo.shopStatus != SHOP_STATUS_ACTIVE){
+                         productStatusMessage: String = "") {
+        if (shopInfo.statusInfo.shopStatus != SHOP_STATUS_ACTIVE) {
             error_product_container.visible()
-            error_product_title.text = shopInfo.statusInfo.statusTitle
-            error_product_descr.text = shopInfo.statusInfo.statusMessage
-        } else if (productStatus != ProductStatusTypeDef.ACTIVE){
+            error_product_title.text = MethodChecker.fromHtml(shopInfo.statusInfo.statusTitle)
+            error_product_descr.text = MethodChecker.fromHtml(shopInfo.statusInfo.statusMessage)
+        } else if (productStatus != ProductStatusTypeDef.ACTIVE) {
             // TODO ASK PRODUCT STATUS DETAIL
             error_product_container.visible()
             error_product_title.text = productStatusTitle
