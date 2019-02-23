@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.groupchat.R;
@@ -22,6 +21,7 @@ import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
 import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -57,7 +57,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         localCacheHandler = new LocalCacheHandler(getView().getContext(), GroupChatPresenter.class.getName());
     }
 
-    public void connectWebSocket(UserSession userSession, String channelId, String groupChatToken
+    public void connectWebSocket(UserSessionInterface userSession, String channelId, String groupChatToken
             , SettingGroupChat settingGroupChat) {
         String magicString = ChatroomUrl.GROUP_CHAT_WEBSOCKET_DOMAIN;
         magicString = localCacheHandler.getString("ip_groupchat", magicString);

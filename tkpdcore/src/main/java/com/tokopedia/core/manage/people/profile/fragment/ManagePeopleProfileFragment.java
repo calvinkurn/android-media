@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -40,6 +39,8 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -275,7 +276,8 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void showEmailVerificationDialog(String userEmail) {
-        if (isHasPassword()) {
+        UserSessionInterface userSession = new UserSession(getActivity());
+        if (userSession.hasPassword()) {
             DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
                     new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
                         @Override
@@ -287,16 +289,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         } else {
             showChangeEmailNoPassword(getActivity());
         }
-    }
-
-    /**
-     * Temporary method, not exist in UserSession class
-     * @return
-     */
-    @Deprecated
-    public boolean isHasPassword() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
-        return sharedPrefs.getBoolean("HAS_PASSWORD", false);
     }
 
     private void showChangeEmailNoPassword(final Context context) {
