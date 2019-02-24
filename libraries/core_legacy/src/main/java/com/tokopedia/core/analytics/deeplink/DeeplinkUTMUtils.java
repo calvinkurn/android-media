@@ -26,6 +26,7 @@ public class DeeplinkUTMUtils {
     private static final String QUICK_SEARCH_BOX = "com.google.android.googlequicksearchbox";
     private static final String APP_CRAWLER = "com.google.appcrawler";
     private static final String KEY_AMP = "amp";
+    private static final String TOKOPEDIA_DOMAIN = "tokopedia.com";
 
     private DeeplinkUTMUtils() {
 
@@ -94,6 +95,7 @@ public class DeeplinkUTMUtils {
         Map<String, String> maps = splitQuery(uri1);
         Campaign campaign = new Campaign();
 
+
         Uri referrerUri = getReferrer(activity);
 
         boolean isAmpUri = (maps != null && "true".equalsIgnoreCase(maps.get(KEY_AMP)));
@@ -149,6 +151,8 @@ public class DeeplinkUTMUtils {
                     campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
 
+                } else if (host.contains(TOKOPEDIA_DOMAIN)) {
+                    //do nothing
                 } else {
 
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
@@ -171,7 +175,14 @@ public class DeeplinkUTMUtils {
 
                 AndroidAppUri appUri = AndroidAppUri.newAndroidAppUri(referrerUri);
                 String referrerPackage = appUri.getPackageName();
-                if (QUICK_SEARCH_BOX.equals(referrerPackage)) {
+                String tokopediaPackage = "";
+                if (activity != null) {
+                    tokopediaPackage = activity.getPackageName();
+                }
+
+                if (tokopediaPackage.equals(referrerPackage)) {
+                    //do nothing
+                } else if (QUICK_SEARCH_BOX.equals(referrerPackage)) {
                     // App was opened from the Google app
 
                     campaign.setUtmSource("google_app");
