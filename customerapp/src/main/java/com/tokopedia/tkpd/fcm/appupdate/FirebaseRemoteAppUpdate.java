@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.fcm.appupdate;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp;
