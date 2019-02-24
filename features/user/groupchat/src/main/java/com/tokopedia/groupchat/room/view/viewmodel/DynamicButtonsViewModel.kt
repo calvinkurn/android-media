@@ -17,22 +17,35 @@ class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
         this.listDynamicButton = `in`.createTypedArrayList(Button.CREATOR)
     }
 
-    class Button(var buttonType: String = "",
-                 var imageUrl: String = "",
-                 var linkUrl: String = "") : Parcelable {
+    class Button(var imageUrl: String = "",
+                 var linkUrl: String = "",
+                 var contentType: String = "",
+                 var contentText: String = "",
+                 var contentLinkUrl: String = "",
+                 var contentImageUrl: String = "",
+                 var hasNotification: Boolean = false,
+                 var tooltip : String = "") : Parcelable {
 
-
-
-        constructor(parcel: Parcel) : this() {
-            buttonType = parcel.readString()
-            imageUrl = parcel.readString()
-            linkUrl = parcel.readString()
+        constructor(parcel: Parcel) : this(
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readByte() != 0.toByte(),
+                parcel.readString()) {
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(buttonType)
             parcel.writeString(imageUrl)
             parcel.writeString(linkUrl)
+            parcel.writeString(contentType)
+            parcel.writeString(contentText)
+            parcel.writeString(contentLinkUrl)
+            parcel.writeString(contentImageUrl)
+            parcel.writeByte(if (hasNotification) 1 else 0)
+            parcel.writeString(tooltip)
         }
 
         override fun describeContents(): Int {
@@ -48,11 +61,16 @@ class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
                 return arrayOfNulls(size)
             }
         }
+
+
     }
 
     companion object {
 
         const val TYPE = "dynamic_button"
+        const val TYPE_REDIRECT_EXTERNAL = "external"
+        const val TYPE_OVERLAY_CTA = "overlay_cta"
+        const val TYPE_OVERLAY_WEBVIEW = "overlay_webview"
 
         @JvmField
         val CREATOR: Parcelable.Creator<DynamicButtonsViewModel> = object : Parcelable.Creator<DynamicButtonsViewModel> {

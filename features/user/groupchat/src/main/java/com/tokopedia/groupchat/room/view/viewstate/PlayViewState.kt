@@ -38,6 +38,7 @@ interface PlayViewState {
     fun onKeyboardHidden()
     fun getChannelInfo(): ChannelInfoViewModel?
     fun onDynamicButtonUpdated(it: DynamicButtonsViewModel)
+    fun onErrorGetDynamicButtons()
     fun onInfoMenuClicked()
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
     fun onBackgroundUpdated(it: BackgroundViewModel)
@@ -45,4 +46,7 @@ interface PlayViewState {
     fun onErrorGetInfo(it: String)
     fun onReceiveOverlayMessageFromWebsocket(it: ChannelInfoViewModel)
     fun onReceiveCloseOverlayMessageFromWebsocket()
+    fun onShowOverlayCTAFromDynamicButton(it: DynamicButtonsViewModel.Button)
+    fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button)
+
 }

@@ -13,7 +13,6 @@ import javax.inject.Inject
  */
 class GetDynamicButtonsUseCase @Inject constructor(private val channelInfoSource:
                                                    ChannelInfoSource) : UseCase<DynamicButtonsViewModel>() {
-    val PARAM_CHANNEL_UUID = "channel_uuid"
 
     override fun createObservable(requestParams: RequestParams): Observable<DynamicButtonsViewModel> {
         return channelInfoSource.getDynamicButtons(requestParams.getString(
@@ -26,4 +25,17 @@ class GetDynamicButtonsUseCase @Inject constructor(private val channelInfoSource
         params.remove(PARAM_CHANNEL_UUID)
         return params
     }
+
+
+    companion object {
+
+        val PARAM_CHANNEL_UUID = "channel_uuid"
+
+        fun createParams(channelUuid: String?): RequestParams {
+            val params = RequestParams.create()
+            params.putString(PARAM_CHANNEL_UUID, channelUuid?:"")
+            return params
+        }
+    }
+
 }

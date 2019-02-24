@@ -113,7 +113,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
+        loadFirstTime()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -195,6 +195,66 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun loadData(page: Int) {
 
+    }
+
+    private fun onSuccessGetDynamicButtons(): (DynamicButtonsViewModel) -> Unit {
+        return {
+            channelInfoViewModel.dynamicButtons = it
+            viewState.onDynamicButtonUpdated(it)
+        }
+    }
+
+    private fun onErrorGetDynamicButtons(): (String) -> Unit {
+        return {
+//            viewState.onErrorGetDynamicButtons()
+
+            val listDynamic = ArrayList<DynamicButtonsViewModel.Button>()
+
+            listDynamic.add(DynamicButtonsViewModel.Button(
+                    "https://i.gifer.com/M8tf.gif",
+                    "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
+                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
+                    "external",
+                    "",
+                    "tokopedia://gamiication",
+                    "",
+                    false,
+                    ""
+            ))
+
+            listDynamic.add(DynamicButtonsViewModel.Button(
+                    "https://i.gifer.com/M8tf.gif",
+                    "https://www.tokopedia.com/",
+                    "overlay_webview",
+"Heyahyehayhea",
+                    "https%3A%2F%2Fwww" +
+                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
+                    "",
+                    true,
+                    "Test tooltip"
+                    ))
+            listDynamic.add(DynamicButtonsViewModel.Button(
+                    "https://i.gifer.com/M8tf.gif",
+                    "tokopedia://gamification",
+                    "overlay_cta",
+                    "Heyahyehayhea",
+                    "tokopedia://gamification",
+                    "https://www.vgr.com/wp-content/uploads/2019/02/kingdom-hearts-3-gameplay-16-2-925x520.jpg",
+                    true,
+                    ""
+            ))
+
+            viewState.onDynamicButtonUpdated(
+                    DynamicButtonsViewModel(
+                            DynamicButtonsViewModel.Button(
+                                    "https://i.gifer.com/M8tf.gif",
+                                    "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
+                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih"
+                                    ),
+                            listDynamic
+                    )
+            )
+        }
     }
 
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
@@ -475,8 +535,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_LOGIN) {
             viewState.onSuccessLogin()
-            presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
+            loadFirstTime()
         }
+    }
+
+    private fun loadFirstTime() {
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
+        presenter.getDynamicButtons(channelInfoViewModel.channelId, onSuccessGetDynamicButtons(),
+                onErrorGetDynamicButtons())
     }
 
     override fun addIncomingMessage(it: Visitable<*>) {
@@ -503,8 +569,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
     }
 
-    override fun openOverlay(it: String) {
-
+    override fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button) {
+        when(it.contentType){
+            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.linkUrl)
+            DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
+            DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
+        }
     }
 
     override fun onPause() {

@@ -47,7 +47,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private String videoId;
     private Boolean videoLive;
     private SettingGroupChat settingGroupChat;
-    private OverlayViewModel overlayViewModel;
+    public OverlayViewModel overlayViewModel;
     private DynamicButtonsViewModel dynamicButtons;
     private BackgroundViewModel backgroundViewModel;
 

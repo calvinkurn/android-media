@@ -37,9 +37,14 @@ class DynamicButtonsMapper @Inject constructor() : Func1<Response<DataResponse<B
         listDynamicButton?.let {
             for (pojo in listDynamicButton) {
                 buttonList.add(DynamicButtonsViewModel.Button(
-                        pojo.buttonType,
                         pojo.imageUrl,
-                        pojo.linkUrl))
+                        pojo.linkUrl,
+                        pojo.contentType,
+                        pojo.contentText,
+                        pojo.contentLinkUrl,
+                        pojo.contentImageUrl,
+                        pojo.redDot,
+                        pojo.tooltip))
             }
         }
         return buttonList
@@ -48,9 +53,12 @@ class DynamicButtonsMapper @Inject constructor() : Func1<Response<DataResponse<B
     private fun convertToFloatingModel(floatingButton: ButtonsPojo.Button?): DynamicButtonsViewModel.Button {
         val button = DynamicButtonsViewModel.Button()
         floatingButton?.let {
-            button.buttonType = it.buttonType
+            button.contentType = it.contentType
             button.imageUrl = it.imageUrl
             button.linkUrl = it.linkUrl
+            button.contentText = it.contentText
+            button.contentImageUrl = it.contentImageUrl
+            button.contentLinkUrl = it.contentLinkUrl
         }
         return button
     }

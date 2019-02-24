@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  * @author by StevenFredian .
  */
 
-class ButtonsPojo() : Visitable<Any>, Parcelable {
+class ButtonsPojo() {
 
     @SerializedName("floating_button")
     @Expose
@@ -20,12 +20,7 @@ class ButtonsPojo() : Visitable<Any>, Parcelable {
     @Expose
     var listDynamicButton: List<Button>?= null
 
-    constructor(`in`: Parcel) : this() {
-        this.floatingButton = `in`.readParcelable(Button::class.java.classLoader)
-        this.listDynamicButton = `in`.createTypedArrayList(Button.CREATOR)
-    }
-
-    class Button() : Parcelable {
+    class Button() {
 
         @SerializedName("button_type")
         @Expose
@@ -36,61 +31,25 @@ class ButtonsPojo() : Visitable<Any>, Parcelable {
         @SerializedName("link_url")
         @Expose
         var linkUrl: String = ""
+        @SerializedName("content_type")
+        @Expose
+        var contentType: String = ""
+        @SerializedName("content_image_url")
+        @Expose
+        var contentImageUrl: String = ""
+        @SerializedName("content_text")
+        @Expose
+        var contentText: String = ""
+        @SerializedName("content_link_url")
+        @Expose
+        var contentLinkUrl: String = ""
+        @SerializedName("tooltip")
+        @Expose
+        var tooltip: String = ""
+        @SerializedName("red_dot")
+        @Expose
+        var redDot: Boolean = false
 
-        constructor(parcel: Parcel) : this() {
-            buttonType = parcel.readString()
-            imageUrl = parcel.readString()
-            linkUrl = parcel.readString()
-        }
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(buttonType)
-            parcel.writeString(imageUrl)
-            parcel.writeString(linkUrl)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<Button> {
-            override fun createFromParcel(parcel: Parcel): Button {
-                return Button(parcel)
-            }
-
-            override fun newArray(size: Int): Array<Button?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    companion object {
-
-        const val TYPE = "dynamic_button"
-
-        @JvmField
-        val CREATOR: Parcelable.Creator<ButtonsPojo> = object : Parcelable.Creator<ButtonsPojo> {
-            override fun createFromParcel(parcel: Parcel): ButtonsPojo {
-                return ButtonsPojo(parcel)
-            }
-
-            override fun newArray(size: Int): Array<ButtonsPojo?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    override fun type(typeFactory: Any): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeParcelable(this.floatingButton, flags)
-        dest.writeTypedList(listDynamicButton)
-    }
-
-    override fun describeContents(): Int {
-        return 0
     }
 
 }

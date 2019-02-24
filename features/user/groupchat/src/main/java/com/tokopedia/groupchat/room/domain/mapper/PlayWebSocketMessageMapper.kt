@@ -14,6 +14,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.Product
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel
 import com.tokopedia.websocket.WebSocketResponse
@@ -24,9 +25,9 @@ import javax.inject.Inject
  * @author : Steven 15/02/19
  */
 class PlayWebSocketMessageMapper @Inject constructor() {
-    
+
     lateinit var gson: Gson
-    
+
     companion object {
         const val DEFAULT_NO_POLL = 0
         const val FORMAT_DISCOUNT_LABEL = "%d%% OFF"
@@ -38,9 +39,9 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             VibrateViewModel.TYPE, SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING,
             PinnedMessageViewModel.TYPE, AdsViewModel.TYPE, GroupChatQuickReplyViewModel.TYPE,
             EventHandlerPojo.BANNED, EventHandlerPojo.FREEZE, ParticipantViewModel.TYPE,
-            OverlayViewModel.TYPE, OverlayCloseViewModel.TYPE, VideoViewModel.TYPE  -> true
+            OverlayViewModel.TYPE, OverlayCloseViewModel.TYPE, VideoViewModel.TYPE,
+            DynamicButtonsViewModel.TYPE -> true
             else -> false
-            
         }
     }
 
@@ -58,7 +59,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             VoteAnnouncementViewModel.POLLING_UPDATE,
             VoteAnnouncementViewModel.POLLING_CANCEL ->
                 mapToPollingViewModel(response, data)
-            
+
             ChatViewModel.ADMM -> mapToAdminChat(data)
 
             ImageAnnouncementViewModel.ADMIN_ANNOUNCEMENT -> mapToAdminImageChat(data)
@@ -76,7 +77,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             ParticipantViewModel.TYPE -> mapToParticipant(data)
             OverlayViewModel.TYPE -> mapToOverlay(data)
             OverlayCloseViewModel.TYPE -> mapToOverlayClose(data)
-            ButtonsPojo.TYPE -> mapToDynamicButton(data)
+            DynamicButtonsViewModel.TYPE -> mapToDynamicButton(data)
             BackgroundViewModel.TYPE -> mapToBackground(data)
             else -> null
         }
@@ -89,13 +90,48 @@ class PlayWebSocketMessageMapper @Inject constructor() {
 
     private fun mapToDynamicButton(data: JsonObject?): Visitable<*>? {
         val pojo = gson.fromJson(data, ButtonsPojo::class.java)
-        return pojo
+        return convertDynamicButtons(pojo)
+    }
+
+    private fun convertDynamicButtons(button: ButtonsPojo): DynamicButtonsViewModel {
+        val dynamicButtonsViewModel = DynamicButtonsViewModel()
+        if (button.floatingButton != null) {
+            dynamicButtonsViewModel.floatingButton = DynamicButtonsViewModel.Button(
+                    button.floatingButton!!.imageUrl,
+                    button.floatingButton!!.linkUrl,
+                    button.floatingButton!!.contentType,
+                    button.floatingButton!!.contentText,
+                    button.floatingButton!!.contentLinkUrl,
+                    button.floatingButton!!.contentImageUrl,
+                    button.floatingButton!!.redDot,
+                    button.floatingButton!!.tooltip
+            )
+        }
+
+        if (button.listDynamicButton != null) {
+            for (buttonItem in button.listDynamicButton!!) {
+                dynamicButtonsViewModel.listDynamicButton.add(
+                        DynamicButtonsViewModel.Button(
+                                buttonItem.imageUrl,
+                                buttonItem.linkUrl,
+                                buttonItem.contentType,
+                                buttonItem.contentText,
+                                buttonItem.contentLinkUrl,
+                                buttonItem.contentImageUrl,
+                                buttonItem.redDot,
+                                buttonItem.tooltip
+                        )
+                )
+            }
+        }
+
+        return dynamicButtonsViewModel
     }
 
 
     private fun mapToUserChat(data: JsonObject?): Visitable<*>? {
         val pojo = gson.fromJson(data, UserMsg::class.java)
-        pojo.user?.let{
+        pojo.user?.let {
             return ChatViewModel(
                     pojo.message,
                     pojo.timestamp!!,

@@ -95,19 +95,29 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         DynamicButtonsViewModel dynamicButtonsViewModel = new DynamicButtonsViewModel();
         if(button.getFloatingButton() != null){
             dynamicButtonsViewModel.setFloatingButton(new DynamicButtonsViewModel.Button(
-                    button.getFloatingButton().getButtonType(),
                     button.getFloatingButton().getImageUrl(),
-                    button.getFloatingButton().getLinkUrl()
-                    ));
+                    button.getFloatingButton().getLinkUrl(),
+                    button.getFloatingButton().getContentType(),
+                    button.getFloatingButton().getContentText(),
+                    button.getFloatingButton().getContentLinkUrl(),
+                    button.getFloatingButton().getContentImageUrl(),
+                    button.getFloatingButton().getRedDot(),
+                    button.getFloatingButton().getTooltip()
+            ));
         }
 
         if(button.getListDynamicButton()!= null){
             for(ButtonsPojo.Button buttonItem : button.getListDynamicButton()){
                 dynamicButtonsViewModel.getListDynamicButton().add(
                         new DynamicButtonsViewModel.Button(
-                                buttonItem.getButtonType(),
                                 buttonItem.getImageUrl(),
-                                buttonItem.getLinkUrl()
+                                buttonItem.getLinkUrl(),
+                                buttonItem.getContentType(),
+                                buttonItem.getContentText(),
+                                buttonItem.getContentLinkUrl(),
+                                buttonItem.getContentImageUrl(),
+                                buttonItem.getRedDot(),
+                                buttonItem.getTooltip()
                                 )
                 );
             }

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
+import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
@@ -31,7 +32,7 @@ interface PlayContract {
         fun showOverlayDialog(it: OverlayViewModel)
         fun closeOverlayDialog()
         fun addIncomingMessage(it: Visitable<*>)
-        fun openOverlay(it: String)
+        fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button)
         fun updateDynamicButton(it: DynamicButtonsViewModel)
         fun onBackgroundUpdated(it: BackgroundViewModel)
         fun openRedirectUrl(generateLink: String)
@@ -46,5 +47,10 @@ interface PlayContract {
                 onSuccessSendMessage: (PendingChatViewModel) -> Unit,
                 onErrorSendMessage: (PendingChatViewModel, Exception?) -> Unit
         )
+
+        fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit,
+                        onErrorGetInfo: (String) -> Unit)
+        fun getDynamicButtons(channelId: String?, onSuccessGetDynamicButtons:
+        (DynamicButtonsViewModel) -> Unit, onErrorGetDynamicButtons: (String) -> Unit)
     }
 }

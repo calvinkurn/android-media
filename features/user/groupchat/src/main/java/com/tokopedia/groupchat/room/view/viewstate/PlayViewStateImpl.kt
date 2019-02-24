@@ -45,6 +45,8 @@ import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.common.analytics.EEPromotion
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
@@ -219,7 +221,19 @@ class PlayViewStateImpl(
     }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
-        dynamicButtonAdapter.setList(it.listDynamicButton)
+       if(!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()){
+           it.floatingButton.run {
+               setFloatingIcon(linkUrl.trim(), imageUrl.trim())
+           }
+        }
+
+        if(!it.listDynamicButton.isEmpty()) {
+            dynamicButtonAdapter.setList(it.listDynamicButton)
+        }
+    }
+
+    override fun onErrorGetDynamicButtons() {
+        dynamicButtonAdapter.setList(ArrayList())
     }
 
     override fun onKeyboardHidden() {
@@ -263,11 +277,7 @@ class PlayViewStateImpl(
         initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
         showWidgetAboveInput(userSession.isLoggedIn)
 
-//        setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
         setDynamicBackground("https://i.pinimg.com/originals/12/da/77/12da776434178d3a19176fb76048faba.jpg")
-        setFloatingIcon("tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
-                ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih", "https://i.gifer.com/M8tf.gif")
-
         showBottomSheetFirstTime(it)
 
         showLoginButton(!userSession.isLoggedIn)
@@ -856,33 +866,10 @@ class PlayViewStateImpl(
 
     }
 
-    private fun setDynamicIcon(redirectUrl: String) {
-//        if (redirectUrl.isBlank()) {
-//            return
-//        }
-//
-//        dynamicIcon.setOnClickListener {
-//            showWebviewBottomSheet(redirectUrl)
-//        }
-    }
-
-    private fun setDynamicIconTooltip(tooltipText: String) {
-        if(tooltipText.isBlank())return
-
-//        ViewTooltip.on(activity, dynamicIcon)
-//                .autoHide(true, 5000)
-//                .corner(30)
-//                .clickToHide(false)
-//                .color(MethodChecker.getColor(dynamicIcon.context, R.color.white))
-//                .textColor(MethodChecker.getColor(dynamicIcon.context, R.color.black_70))
-//                .position(ViewTooltip.Position.TOP)
-//                .text(tooltipText)
-//                .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-//                .show()
-
-    }
-
     private fun showWebviewBottomSheet(url: String) {
+
+        if(url.isBlank())
+            return
 
         val bottomSheetDialog = PlayWebviewDialogFragment.createInstance(url)
         bottomSheetDialog.show(activity.supportFragmentManager, "Custom Bottom Sheet")
@@ -1072,6 +1059,31 @@ class PlayViewStateImpl(
         title.text = titleText
         buttonText.text = getStringResource(R.string.title_try_again)
         button.setOnClickListener { listener.onRetryGetInfo() }
+    }
+
+    override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
+        viewModel?.let{
+
+            it.overlayViewModel = OverlayViewModel(
+                    true,
+                    0,
+                    InteruptViewModel(
+                            "",
+                            button.contentText,
+                            button.contentImageUrl,
+                            button.contentLinkUrl,
+                            "Ayo!",
+                            button.contentLinkUrl
+                    )
+            )
+
+            showOverlayBottomSheet(it)
+        }
+
+    }
+
+    override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
+        showWebviewBottomSheet(it.linkUrl)
     }
 
 

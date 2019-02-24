@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
+import com.tokopedia.groupchat.chatroom.domain.usecase.GetDynamicButtonsUseCase
 import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
@@ -18,16 +19,16 @@ import com.tokopedia.groupchat.room.domain.mapper.PlayWebSocketMessageMapper
 import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocket
-import com.tokopedia.websocket.WebSocketException
-import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.websocket.WebSocketSubscriber
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.RxWebSocket
+import com.tokopedia.websocket.WebSocketException
+import com.tokopedia.websocket.WebSocketResponse
+import com.tokopedia.websocket.WebSocketSubscriber
 
 /**
  * @author : Steven 13/02/19
@@ -35,8 +36,9 @@ import javax.inject.Inject
 
 class PlayPresenter @Inject constructor(
         var getPlayInfoUseCase: GetPlayInfoUseCase,
+        var getDynamicButtonsUseCase: GetDynamicButtonsUseCase,
         var webSocketMessageMapper: PlayWebSocketMessageMapper)
-    : BaseDaggerPresenter<PlayContract.View>(), PlayContract.Presenter{
+    : BaseDaggerPresenter<PlayContract.View>(), PlayContract.Presenter {
 
     private var mSubscription: CompositeSubscription? = null
     private var localCacheHandler: LocalCacheHandler? = null
@@ -46,14 +48,15 @@ class PlayPresenter @Inject constructor(
         localCacheHandler = LocalCacheHandler(view.context, GroupChatPresenter::class.java.name)
     }
 
-    fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit, onErrorGetInfo: (String) -> Unit) {
+    override fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit,
+                             onErrorGetInfo: (String) -> Unit) {
         getPlayInfoUseCase.execute(
                 GetPlayInfoUseCase.createParams(channelId),
                 object : Subscriber<ChannelInfoViewModel>() {
                     override fun onNext(t: ChannelInfoViewModel?) {
-                        if(t != null) {
+                        if (t != null) {
                             onSuccessGetInfo(t)
-                        }else {
+                        } else {
                             view.onChannelDeleted()
                         }
                     }
@@ -65,7 +68,7 @@ class PlayPresenter @Inject constructor(
                         val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
                         val defaultMessage = view.context.getString(R.string.default_request_error_unknown)
                         val internalServerErrorMessage = "Internal Server Error"
-                         if (errorMessage == defaultMessage || errorMessage.equals(internalServerErrorMessage, ignoreCase = true)) {
+                        if (errorMessage == defaultMessage || errorMessage.equals(internalServerErrorMessage, ignoreCase = true)) {
                             onErrorGetInfo(view.context.getString(R.string.default_error_enter_channel))
                         } else {
                             onErrorGetInfo(errorMessage)
@@ -75,6 +78,28 @@ class PlayPresenter @Inject constructor(
                 })
     }
 
+    override fun getDynamicButtons(channelId: String?,
+                                   onSuccessGetDynamicButtons: (DynamicButtonsViewModel) -> Unit,
+                                   onErrorGetDynamicButtons: (String) -> Unit) {
+        getDynamicButtonsUseCase.execute(
+                GetDynamicButtonsUseCase.createParams(channelId),
+                object : Subscriber<DynamicButtonsViewModel>() {
+                    override fun onNext(t: DynamicButtonsViewModel?) {
+                        if (t != null) {
+                            onSuccessGetDynamicButtons(t)
+                        }
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
+                        onErrorGetDynamicButtons(errorMessage)
+                    }
+                }
+        )
+    }
 
     override fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?) {
         var settings = settingGroupChat ?: SettingGroupChat()
@@ -124,7 +149,9 @@ class PlayPresenter @Inject constructor(
                         is OverlayCloseViewModel -> view.closeOverlayDialog()
                         is DynamicButtonsViewModel -> view.updateDynamicButton(it)
                         is BackgroundViewModel -> view.onBackgroundUpdated(it)
-                        else -> {view.addIncomingMessage(it)}
+                        else -> {
+                            view.addIncomingMessage(it)
+                        }
                     }
                 }
             }
@@ -213,6 +240,7 @@ class PlayPresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         getPlayInfoUseCase.unsubscribe()
+        getDynamicButtonsUseCase.unsubscribe()
         destroyWebSocket()
     }
 
@@ -229,11 +257,11 @@ class PlayPresenter @Inject constructor(
             showDummy(e.toString(), "error logger send")
         }
 
-        if(errorSendIndicator == null){
+        if (errorSendIndicator == null) {
             onSuccessSendMessage(viewModel)
-        } else if(errorSendIndicator !is WebSocketException){
+        } else if (errorSendIndicator !is WebSocketException) {
             onErrorSendMessage(viewModel, errorSendIndicator)
-        } else if(errorSendIndicator is WebSocketException) {
+        } else if (errorSendIndicator is WebSocketException) {
             view.setSnackBarRetryConnectingWebSocket()
         }
 

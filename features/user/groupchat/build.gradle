@@ -80,6 +80,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
+    compile project(path: ':libraries:user_session')
 }
 
 apply from: '../../../publish_local.gradle'
