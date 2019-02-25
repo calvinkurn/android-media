@@ -84,11 +84,13 @@
 
         </FrameLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!--sementara imageview, nanti ganti dgn cardview-->
+        <ImageView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Test Area Promo Merchant"
-            android:layout_margin="@dimen/dp_10"/>
+            android:src="@drawable/use_coupon"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cart_item"
