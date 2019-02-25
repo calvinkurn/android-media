@@ -84,14 +84,15 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(this.getTitle());
         }
         actionSetToolbarTitle(getToolbarTitle());
     }
 
     @Override
     public void actionSetToolbarTitle(String title) {
-        if(!TextUtils.isEmpty(title)) {
-            toolbar.setTitle(title);
+        if(!TextUtils.isEmpty(title) && getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
         }
     }
 
