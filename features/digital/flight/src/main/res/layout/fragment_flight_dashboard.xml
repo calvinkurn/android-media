@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,8 +21,8 @@
         android:id="@+id/dashboard_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
         android:background="@color/white"
+        android:clipToPadding="false"
         android:fitsSystemWindows="true"
         android:visibility="gone"
         tools:visibility="visible">
@@ -34,7 +35,9 @@
             <com.tokopedia.design.component.ticker.UnifyTickerView
                 android:id="@+id/flight_ticker_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:showCloseButton="true"
+                app:type="1" />
 
             <include layout="@layout/partial_flight_dashboard_search" />
         </RelativeLayout>
