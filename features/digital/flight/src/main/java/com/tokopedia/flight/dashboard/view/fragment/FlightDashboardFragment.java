@@ -626,8 +626,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             tickerView.setPageIndicatorOffColor(ContextCompat.getColor(getContext(), R.color.colorPink));
             tickerView.setBackGroundColor(ContextCompat.getColor(getContext(), R.color.colorPink));
         }
-        tickerView.invalidate();
-        tickerView.requestLayout();
 
         tickerView.buildView();
 
