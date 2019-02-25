@@ -44,7 +44,7 @@ public class TravelTickerUseCase extends UseCase<TravelTickerViewModel> {
     public Observable<TravelTickerViewModel> createObservable(RequestParams requestParams) {
         return Observable.just(requestParams)
                 .flatMap(reqParams -> {
-                    HashMap<String, String> params = new HashMap<>();
+                    HashMap<String, Object> params = new HashMap<>();
                     if (reqParams != null) {
                         params.put(PARAM_DID, ANDROID_DEVICE_ID);
                         params.put(PARAM_INSTANCE_NAME, reqParams.getString(PARAM_INSTANCE_NAME, ""));
