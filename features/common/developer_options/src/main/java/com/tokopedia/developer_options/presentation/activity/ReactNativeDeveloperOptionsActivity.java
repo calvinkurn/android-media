@@ -45,7 +45,7 @@ public class ReactNativeDeveloperOptionsActivity
 
     @Override
     protected String getToolbarTitle() {
-        Intent intent = getIntent();
+        Intent intent = getIntentReactFragment();
 
         if (intent != null && intent.getExtras() != null) {
             return intent.getExtras().getString(EXTRA_TITLE);
