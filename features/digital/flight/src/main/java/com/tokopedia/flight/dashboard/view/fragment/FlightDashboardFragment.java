@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
@@ -33,7 +34,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.banner.BannerView;
-import com.tokopedia.design.component.ticker.UnifyTickerView;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.service.GetAirportListJobService;
@@ -93,6 +94,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
+    private static final int DEFAULT_POST_DELAYED_VALUE = 500;
+
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -109,7 +112,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View returnDateSeparatorView;
     View bannerLayout;
     BannerView bannerView;
-    UnifyTickerView tickerView;
+    TickerView tickerView;
     List<BannerDetail> bannerList;
 
     @Inject
@@ -609,15 +612,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        tickerView.setMType(travelTickerViewModel.getType());
-        tickerView.setTickerContent(travelTickerViewModel.getMessage());
-        tickerView.setTickerListener(new UnifyTickerView.UnifyTickerListener() {
-            @Override
-            public void OnTickerCloseClickListener() {
-
-            }
-        });
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(travelTickerViewModel.getMessage());
+        tickerView.setVisibility(View.INVISIBLE);
+        tickerView.setListMessage(messages);
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_light_green));
         tickerView.buildView();
+
+        tickerView.postDelayed(() -> {
+            tickerView.setItemTextAppearance(R.style.TextView_Micro);
+            tickerView.setVisibility(View.VISIBLE);
+        }, DEFAULT_POST_DELAYED_VALUE);
     }
 
     @Override
