@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
@@ -32,6 +31,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.design.component.ticker.TickerView;
@@ -612,29 +612,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(travelTickerViewModel.getMessage());
-        tickerView.setListMessage(messages);
-        if (travelTickerViewModel.getType() == 2) {
-            tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-            tickerView.setPageIndicatorOnColor(ContextCompat.getColor(getContext(), R.color.light_green));
-            tickerView.setPageIndicatorOffColor(ContextCompat.getColor(getContext(), R.color.light_green));
-            tickerView.setBackGroundColor(ContextCompat.getColor(getContext(), R.color.light_green));
-        } else if (travelTickerViewModel.getType() == 1) {
-            tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.snackbar_border_error));
-            tickerView.setPageIndicatorOnColor(ContextCompat.getColor(getContext(), R.color.colorPink));
-            tickerView.setPageIndicatorOffColor(ContextCompat.getColor(getContext(), R.color.colorPink));
-            tickerView.setBackGroundColor(ContextCompat.getColor(getContext(), R.color.colorPink));
-        }
-
-        tickerView.buildView();
-
-        tickerView.postDelayed(() -> {
-            if (tickerView != null) {
-                tickerView.setItemTextAppearance(R.style.TextView_Micro);
-                tickerView.setVisibility(View.VISIBLE);
-            }
-        }, DEFAULT_POST_DELAYED_VALUE);
+        TravelTickerUtils.buildTravelTicker(getContext(), travelTickerViewModel, travelTicker);
     }
 
     @Override
