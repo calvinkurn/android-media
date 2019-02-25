@@ -17,6 +17,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -160,9 +162,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeDatabase();
         TrackApp.initTrackApp(this);
 
-        TrackApp.getInstance().registerImplementation("GTM", GTMAnalytics.class);
-        TrackApp.getInstance().registerImplementation("Appsflyer", AppsflyerAnalytics.class);
-        TrackApp.getInstance().registerImplementation("MoEngage", MoengageAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
         super.onCreate();
@@ -179,6 +181,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         InstabugInitalize.init(this);
+        initFirebase();
 
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
@@ -531,6 +534,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
 
+    }
+
+    private void initFirebase() {
+        if (GlobalConfig.DEBUG && FirebaseApp.getInstance() == null) {
+            FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
+            builder.setApplicationId("1:692092518182:android:f4cc247c743f7921");
+            FirebaseApp.initializeApp(this, builder.build());
+        }
     }
 
 

@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.util;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -92,6 +93,21 @@ public class AnalyticsTrackerUtil {
         String COPY_CODE = "salin kode swipe";
         String CLICK_MEM_BOTTOM = "click footer status membership";
         String CLICK_SELL_ALL_COUPON = "click kupon milik saya";
+        String VIEW_REDEEM_SUCCESS = "view redeem success";
+    }
+
+    public static void sendScreenEvent(Activity context, String screenName) {
+        if (context == null) {
+            return;
+        }
+
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        if (tracker == null) {
+            return;
+        }
+
+        tracker.sendScreen(context, screenName);
     }
 
     public static void sendEvent(Context context, String event, String category,
@@ -122,5 +138,13 @@ public class AnalyticsTrackerUtil {
         map.put(EventKeys.EVENT_LABEL, label);
         map.put(EventKeys.ECOMMERCE, ecommerce);
         tracker.sendEnhancedEcommerce(map);
+    }
+
+    public interface ScreenKeys {
+        String MY_COUPON_LISTING_SCREEN_NAME = "/tokopoints/kupon-saya";
+        String COUPON_CATALOG_SCREEN_NAME = "/tokopoints/tukar-point/detail";
+        String CATALOG_LISTING_SCREEN_NAME = "/tokopoints/tukar-point";
+        String COUPON_DETAIL_SCREEN_NAME = "/tokopoints/kupon-saya/detail";
+        String HOME_PAGE_SCREEN_NAME = "/tokopoints";
     }
 }

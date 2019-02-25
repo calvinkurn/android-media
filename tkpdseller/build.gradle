@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheManager)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
