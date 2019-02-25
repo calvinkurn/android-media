@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingTop="@dimen/padding_16">
+        android:paddingTop="@dimen/padding_16"
+        android:paddingBottom="@dimen/dp_10">
 
         <RelativeLayout
             android:id="@+id/container_flight_info"
@@ -34,11 +34,11 @@
                 tools:text="19:25" />
 
             <TextView
-                android:layout_marginLeft="@dimen/margin_4"
-                android:layout_marginStart="@dimen/margin_4"
                 android:id="@+id/departure_date"
                 style="@style/TextView.Micro.BlackDisabled"
                 android:layout_alignBottom="@+id/departure_time"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginLeft="@dimen/margin_4"
                 android:layout_toRightOf="@+id/departure_time"
                 tools:text="9 ags" />
 
@@ -48,8 +48,8 @@
                 android:layout_height="@dimen/dp_8"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="6dp"
+                android:layout_marginRight="@dimen/dp_15"
                 app:srcCompat="@drawable/selector_flight_detail" />
 
             <TextView
@@ -62,26 +62,26 @@
             <TextView
                 android:id="@+id/arrival_date"
                 style="@style/TextView.Micro.BlackDisabled"
-                android:layout_alignLeft="@+id/container_departure_detail"
                 android:layout_below="@+id/container_departure_detail"
+                android:layout_alignLeft="@+id/container_departure_detail"
                 tools:text="9 ags" />
 
             <ImageView
                 android:id="@+id/arrival_time_circle"
                 android:layout_width="@dimen/dp_8"
                 android:layout_height="@dimen/dp_8"
-                android:layout_alignBottom="@+id/arrival_time"
                 android:layout_alignLeft="@+id/departure_time_circle"
-                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_alignBottom="@+id/arrival_time"
                 android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginBottom="@dimen/dp_5"
                 app:srcCompat="@drawable/selector_flight_detail" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/arrival_time_circle"
-                android:layout_alignLeft="@+id/departure_time_circle"
                 android:layout_below="@id/departure_time_circle"
+                android:layout_alignLeft="@+id/departure_time_circle"
                 android:layout_marginLeft="4dp"
                 android:background="@color/grey_300" />
 
@@ -89,8 +89,8 @@
                 android:id="@+id/container_departure_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/departure_date"
-                android:layout_below="@+id/departure_date">
+                android:layout_below="@+id/departure_date"
+                android:layout_alignLeft="@+id/departure_date">
 
                 <TextView
                     android:id="@+id/departure_airport_name"
@@ -101,17 +101,29 @@
                 <TextView
                     android:id="@+id/departure_desc_airport_name"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_alignLeft="@+id/departure_airport_name"
                     android:layout_below="@+id/departure_airport_name"
-                    android:layout_marginBottom="@dimen/dp_15"
+                    android:layout_alignStart="@+id/departure_airport_name"
+                    android:layout_alignLeft="@+id/departure_airport_name"
                     tools:text="Soekarno-Hatta Intl Airport" />
+
+                <TextView
+                    android:id="@+id/departure_terminal"
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_below="@+id/departure_desc_airport_name"
+                    android:layout_alignStart="@+id/departure_airport_name"
+                    android:layout_alignLeft="@+id/departure_airport_name"
+                    android:layout_marginBottom="@dimen/dp_15"
+                    android:visibility="gone"
+                    tools:text="Terminal 1*"
+                    tools:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/container_flight_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/departure_terminal"
+                    android:layout_alignStart="@id/departure_desc_airport_name"
                     android:layout_alignLeft="@id/departure_desc_airport_name"
-                    android:layout_below="@id/departure_desc_airport_name"
                     android:layout_marginBottom="@dimen/dp_15"
                     android:orientation="vertical">
 
@@ -124,6 +136,7 @@
                         <ImageView
                             android:layout_width="@dimen/dp_16"
                             android:layout_height="@dimen/dp_16"
+                            android:layout_marginEnd="@dimen/dp_5"
                             android:layout_marginRight="@dimen/dp_5"
                             app:srcCompat="@drawable/ic_clock_flight" />
 
@@ -153,8 +166,7 @@
                             android:id="@+id/tv_flight_stop_over"
                             style="@style/TextView.Micro.BlackDisabled"
                             android:layout_marginTop="@dimen/margin_8"
-                            tools:text="Transit: 1 kali berhenti"
-                            />
+                            tools:text="Transit: 1 kali berhenti" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -164,17 +176,30 @@
             <TextView
                 android:id="@+id/arrival_airport_name"
                 style="@style/TextView.Small"
-                android:layout_alignLeft="@+id/arrival_date"
                 android:layout_below="@+id/arrival_date"
+                android:layout_alignStart="@+id/arrival_date"
+                android:layout_alignLeft="@+id/arrival_date"
                 android:textStyle="bold"
                 tools:text="Jakarta (CGK)" />
 
             <TextView
                 android:id="@+id/arrival_desc_airport_name"
                 style="@style/TextView.Micro.BlackSecondary"
-                android:layout_alignLeft="@+id/arrival_airport_name"
                 android:layout_below="@+id/arrival_airport_name"
+                android:layout_alignStart="@+id/arrival_airport_name"
+                android:layout_alignLeft="@+id/arrival_airport_name"
                 tools:text="Soekarno-Hatta Intl Airport" />
+
+            <TextView
+                android:id="@+id/arrival_terminal"
+                style="@style/TextView.Micro.BlackSecondary"
+                android:layout_below="@+id/arrival_desc_airport_name"
+                android:layout_alignStart="@+id/arrival_airport_name"
+                android:layout_alignLeft="@+id/arrival_airport_name"
+                android:visibility="gone"
+                tools:text="Terminal 3*"
+                tools:visibility="visible" />
+
         </RelativeLayout>
 
         <TextView
@@ -183,8 +208,8 @@
             android:layout_width="match_parent"
             android:layout_below="@+id/container_flight_info"
             android:layout_marginLeft="@dimen/margin_16"
-            android:layout_marginRight="@dimen/margin_16"
             android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginRight="@dimen/margin_16"
             android:background="@drawable/bg_stroke_dash_green_flight"
             android:padding="@dimen/dp_10"
             android:visibility="gone"

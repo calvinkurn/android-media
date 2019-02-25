@@ -357,6 +357,33 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         flushEnhancedECommerceGoToCheckoutStep1();
     }
 
+
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessDefaultEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessCheckAllEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialProductEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProductEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
     //PHASE 2
     public void eventClickCheckoutCartClickCheckoutFailed() {
         sendEventCategoryActionLabel(

@@ -215,7 +215,6 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
         this.promoDetailAdapter.setPromoDetail(promoDataMapper.convert(promoData));
         this.promoDetailAdapter.notifyDataSetChanged();
         setFragmentLayout(promoData);
-        performanceMonitoring.stopTrace();
     }
 
     @Override
@@ -236,6 +235,11 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     @Override
     public void renderErrorHttpGetPromoDetail(String message) {
         handleErrorEmptyState(message);
+    }
+
+    @Override
+    public void stopPerformanceMonitoring() {
+        performanceMonitoring.stopTrace();
     }
 
 

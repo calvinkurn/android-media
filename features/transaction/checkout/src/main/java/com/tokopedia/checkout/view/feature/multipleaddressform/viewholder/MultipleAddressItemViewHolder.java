@@ -11,18 +11,16 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
-import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressItemAdapter;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
-import com.tokopedia.design.component.TextViewCompat;
+import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressItemAdapter;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -52,9 +50,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 100;
 
     private TextView shippingIndex;
-    private TextViewCompat pseudoEditButton;
     private ImageView deleteButton;
-    private ViewGroup addressLayout;
     private TextView addressTitle;
     private TextView addressReceiverName;
     private TextView address;
@@ -81,9 +77,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         this.multipleAddressItemAdapter = multipleAddressItemAdapter;
 
         shippingIndex = itemView.findViewById(R.id.shipping_index);
-        pseudoEditButton = itemView.findViewById(R.id.tv_change_address);
         deleteButton = itemView.findViewById(R.id.delete_button);
-        addressLayout = itemView.findViewById(R.id.address_layout);
         addressTitle = itemView.findViewById(R.id.tv_address_name);
         addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
         address = itemView.findViewById(R.id.tv_recipient_address);
@@ -304,7 +298,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private void renderAddress(MultipleAddressItemData itemData,
                                MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
                                int parentPosition) {
-        pseudoEditButton.setVisibility(View.GONE);
         tvChangeRecipientAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

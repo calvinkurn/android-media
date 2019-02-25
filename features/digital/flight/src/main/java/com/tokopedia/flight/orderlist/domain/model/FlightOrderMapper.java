@@ -55,6 +55,8 @@ public class FlightOrderMapper {
             flightOrder.setCancellations(orderEntity.getAttributes().getFlight().getCancellations());
             flightOrder.setInsurances(flightInsuranceMapper.transform(orderEntity.getAttributes().getFlight().getInsurances()));
             flightOrder.setContactUsUrl(orderEntity.getAttributes().getFlight().getContactUsUrl());
+            flightOrder.setInvoiceUri(orderEntity.getAttributes().getFlight().getInvoiceUri());
+            flightOrder.setEticketUri(orderEntity.getAttributes().getFlight().getEticketUri());
         }
         return flightOrder;
     }

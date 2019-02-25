@@ -57,7 +57,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -71,10 +70,6 @@ dependencies {
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
-
-    implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
 }

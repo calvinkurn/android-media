@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
 @Deprecated
-public class ProductDetailData implements Parcelable{
+public class ProductDetailData implements Parcelable {
     private static final String TAG = ProductDetailData.class.getSimpleName();
 
     @SerializedName("info")
@@ -67,6 +67,9 @@ public class ProductDetailData implements Parcelable{
     @SerializedName("is_big_promo")
     @Expose
     private boolean isBigPromo;
+    @SerializedName("checkout_type")
+    @Expose
+    private String checkoutType;
 
     /**
      * this is not supposed to be here
@@ -181,8 +184,16 @@ public class ProductDetailData implements Parcelable{
         return isBigPromo;
     }
 
+    public String getCheckoutType() {
+        return "express";
+    }
+
     public void setBigPromo(boolean bigPromo) {
         isBigPromo = bigPromo;
+    }
+
+    public void setCheckoutType(String checkoutType) {
+        this.checkoutType = checkoutType;
     }
 
     public static class Builder {
@@ -196,6 +207,7 @@ public class ProductDetailData implements Parcelable{
         private ProductCashback cashBack;
         private long serverTimeUnix;
         private boolean isBigPromo;
+        private String checkoutType;
 
         private Builder() {
         }
@@ -244,7 +256,7 @@ public class ProductDetailData implements Parcelable{
             return this;
         }
 
-        public Builder setServerTimeUnix(long serverTimeUnix){
+        public Builder setServerTimeUnix(long serverTimeUnix) {
             this.serverTimeUnix = serverTimeUnix;
             return this;
         }
@@ -254,8 +266,13 @@ public class ProductDetailData implements Parcelable{
             return this;
         }
 
+        public Builder setCheckoutType(String checkoutType) {
+            this.checkoutType = checkoutType;
+            return this;
+        }
+
         public Builder but() {
-            return aProductInfoData().setInfo(info).setStatistic(statistic).setShopInfo(shopInfo).setWholesalePrice(wholesalePrice).setBreadcrumb(breadcrumb).setRating(rating).setProductImages(productImages).setCashBack(cashBack).setServerTimeUnix(serverTimeUnix).setIsBigPromo(isBigPromo);
+            return aProductInfoData().setInfo(info).setStatistic(statistic).setShopInfo(shopInfo).setWholesalePrice(wholesalePrice).setBreadcrumb(breadcrumb).setRating(rating).setProductImages(productImages).setCashBack(cashBack).setServerTimeUnix(serverTimeUnix).setIsBigPromo(isBigPromo).setCheckoutType(checkoutType);
         }
 
         public ProductDetailData build() {
@@ -270,6 +287,7 @@ public class ProductDetailData implements Parcelable{
             productDetailData.setCashBack(cashBack);
             productDetailData.setServerTimeUnix(serverTimeUnix);
             productDetailData.setBigPromo(isBigPromo);
+            productDetailData.setCheckoutType(checkoutType);
             return productDetailData;
         }
     }
@@ -292,7 +310,7 @@ public class ProductDetailData implements Parcelable{
         dest.writeTypedList(this.productImages);
         dest.writeParcelable(this.latestTalkViewModel, flags);
         dest.writeTypedList(this.reviewList);
-        dest.writeParcelable(this.campaign,flags);
+        dest.writeParcelable(this.campaign, flags);
         dest.writeLong(this.serverTimeUnix);
         dest.writeByte(this.isBigPromo ? (byte) 1 : (byte) 0);
     }

@@ -30,10 +30,13 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 import java.text.NumberFormat;
@@ -50,6 +53,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     @LayoutRes
     public static final int LAYOUT = R.layout.revamp_category_header;
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String SHOP = "shop";
 
     ImageView imageHeader;
     TextView titleHeader;
@@ -92,7 +96,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         this.categoryListener = categoryListener;
     }
 
-    private void initTopAds(String depId) {
+    private void initTopAds(String depId, String categoryName) {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
@@ -107,8 +111,19 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 categoryListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventCategoryPromoShopClick(context, categoryName, data, position);
+                } else {
+                    TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, position);
+                }
+            }
+        });
+        this.topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventCategoryPromoView(context, categoryName, data, position);
             }
         });
         this.topAdsBannerView.loadTopAds();
@@ -116,7 +131,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
 
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
         if (!isInit) {
-            initTopAds(categoryHeaderModel.getDepartementId());
+            initTopAds(categoryHeaderModel.getDepartementId(), categoryHeaderModel.getHeaderModel().getCategoryName());
             isInit = true;
         }
         activeChildren = new ArrayList<>();
