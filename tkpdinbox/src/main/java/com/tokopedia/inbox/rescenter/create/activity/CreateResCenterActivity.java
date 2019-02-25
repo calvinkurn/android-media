@@ -97,7 +97,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     private static boolean isToggleResoEnabled(Context context) {
 //        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
 //        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
-        return false;
+        return true;
     }
 
     private static Intent getApplinkIntent(Context context, String orderId) {
