@@ -784,7 +784,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
                     @Override
                     public void onNext(TravelTickerViewModel travelTickerViewModel) {
-                        getView().renderTickerView(travelTickerViewModel);
+                        if (travelTickerViewModel != null &&
+                                travelTickerViewModel.getMessage().length() > 0) {
+                            getView().renderTickerView(travelTickerViewModel);
+                        }
                     }
                 }));
     }
