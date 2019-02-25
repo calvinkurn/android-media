@@ -80,6 +80,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var isOwner: Boolean = false
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
+    private var profileHeader:ProfileHeaderViewModel? = null
 
     override lateinit var profileRouter: ProfileModuleRouter
 
@@ -442,27 +443,27 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onSuccessFollowKol() {
-        if (adapter.dataSize > 0 && adapter.data.first() is ProfileHeaderViewModel) {
-            val profileHeaderViewModel = adapter.data.first() as ProfileHeaderViewModel
-            profileHeaderViewModel.isFollowed = !profileHeaderViewModel.isFollowed
+        if (profileHeader != null) {
+            profileHeader!!.isFollowed = !profileHeader!!.isFollowed
 
             try {
-                var followers = profileHeaderViewModel.followers.toInt()
-                followers += if (profileHeaderViewModel.isFollowed) 1 else -1
-                profileHeaderViewModel.followers = followers.toString()
+                var followers = profileHeader!!.followers.toInt()
+                followers += if (profileHeader!!.isFollowed) 1 else -1
+                profileHeader!!.followers = followers.toString()
             } catch (e: NumberFormatException) {
             }
 
-            if (profileHeaderViewModel.isFollowed) {
+            if (profileHeader!!.isFollowed) {
                 ToasterNormal
                         .make(view,
                                 getString(R.string.follow_success_toast),
                                 BaseToaster.LENGTH_LONG)
                         .setAction(getString(R.string.follow_success_check_now),
-                                followSuccessOnClickListener(profileHeaderViewModel))
+                                followSuccessOnClickListener(profileHeader!!))
                         .show()
             }
-            adapter.notifyItemChanged(0, ProfileHeaderViewHolder.PAYLOAD_FOLLOW)
+
+            setProfileToolbar(profileHeader!!, false)
 
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
@@ -471,7 +472,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
                 resultIntent!!.putExtra(
                         ProfileActivity.PARAM_IS_FOLLOWING,
-                        if (profileHeaderViewModel.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
+                        if (profileHeader!!.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
                         else ProfileActivity.IS_FOLLOWING_FALSE
                 )
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
@@ -562,6 +563,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun setProfileToolbar(element: ProfileHeaderViewModel, isFromLogin: Boolean) {
+        this.profileHeader = element
         app_bar_layout.visibility = View.VISIBLE
         iv_image_collapse.loadImageRounded(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
