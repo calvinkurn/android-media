@@ -616,7 +616,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         messages.add(travelTickerViewModel.getMessage());
         tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
-        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_light_green));
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        tickerView.setPageIndicatorOnColor(ContextCompat.getColor(getContext(), R.color.light_green));
         tickerView.buildView();
 
         tickerView.postDelayed(() -> {
