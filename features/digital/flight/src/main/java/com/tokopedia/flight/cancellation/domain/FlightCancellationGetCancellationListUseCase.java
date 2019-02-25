@@ -61,104 +61,104 @@ public class FlightCancellationGetCancellationListUseCase extends UseCase<List<F
                     public Observable<List<FlightCancellationListViewModel>> call(OrderEntity orderEntity) {
                         return Observable.just(flightOrderEntityToCancellationListMapper.transform(orderEntity));
                     }
-                })
-                .flatMap(new Func1<List<FlightCancellationListViewModel>, Observable<List<FlightCancellationListViewModel>>>() {
-                    @Override
-                    public Observable<List<FlightCancellationListViewModel>> call(List<FlightCancellationListViewModel> flightCancellationListViewModels) {
-                        return Observable.from(flightCancellationListViewModels)
-                                .flatMap(new Func1<FlightCancellationListViewModel, Observable<FlightCancellationListViewModel>>() {
-                                    @Override
-                                    public Observable<FlightCancellationListViewModel> call(FlightCancellationListViewModel flightCancellationListViewModel) {
-                                        return getJourneyObservable(flightCancellationListViewModel);
-                                    }
-                                })
-                                .toList();
-                    }
                 });
+//                .flatMap(new Func1<List<FlightCancellationListViewModel>, Observable<List<FlightCancellationListViewModel>>>() {
+//                    @Override
+//                    public Observable<List<FlightCancellationListViewModel>> call(List<FlightCancellationListViewModel> flightCancellationListViewModels) {
+//                        return Observable.from(flightCancellationListViewModels)
+//                                .flatMap(new Func1<FlightCancellationListViewModel, Observable<FlightCancellationListViewModel>>() {
+//                                    @Override
+//                                    public Observable<FlightCancellationListViewModel> call(FlightCancellationListViewModel flightCancellationListViewModel) {
+//                                        return getJourneyObservable(flightCancellationListViewModel);
+//                                    }
+//                                })
+//                                .toList();
+//                    }
+//                });
     }
-
-    private Observable<FlightCancellationListViewModel> getJourneyObservable(FlightCancellationListViewModel flightCancellationListViewModel) {
-        return Observable.zip(
-                Observable.just(flightCancellationListViewModel),
-                Observable.from(flightCancellationListViewModel.getCancellations().getJourneys())
-                        .flatMap(new Func1<FlightOrderJourney, Observable<FlightOrderJourney>>() {
-                            @Override
-                            public Observable<FlightOrderJourney> call(FlightOrderJourney flightOrderJourney) {
-                                return Observable.zip(
-                                        Observable.just(flightOrderJourney),
-                                        flightRepository.getAirportById(flightOrderJourney.getDepartureAiportId()),
-                                        flightRepository.getAirportById(flightOrderJourney.getArrivalAirportId()),
-                                        Observable.from(flightOrderJourney.getRouteViewModels())
-                                                .flatMap(new Func1<FlightDetailRouteViewModel, Observable<FlightDetailRouteViewModel>>() {
-                                                    @Override
-                                                    public Observable<FlightDetailRouteViewModel> call(FlightDetailRouteViewModel flightDetailRouteViewModel) {
-                                                        return getDetailRouteObservable(flightDetailRouteViewModel);
-                                                    }
-                                                }).toList(),
-                                        new Func4<FlightOrderJourney, FlightAirportDB, FlightAirportDB, List<FlightDetailRouteViewModel>, FlightOrderJourney>() {
-                                            @Override
-                                            public FlightOrderJourney call(FlightOrderJourney flightOrderJourney, FlightAirportDB departureAirport, FlightAirportDB arrivalAirport, List<FlightDetailRouteViewModel> flightDetailRouteViewModels) {
-                                                if (departureAirport != null) {
-                                                    flightOrderJourney.setDepartureCity(departureAirport.getCityName());
-                                                    flightOrderJourney.setDepartureCityCode(departureAirport.getCityCode());
-                                                }
-
-                                                if (arrivalAirport != null) {
-                                                    flightOrderJourney.setArrivalCity(arrivalAirport.getCityName());
-                                                    flightOrderJourney.setArrivalCityCode(arrivalAirport.getCityCode());
-                                                }
-
-                                                return flightOrderJourney;
-                                            }
-                                        }
-                                );
-                            }
-                        })
-                        .toList(),
-                new Func2<FlightCancellationListViewModel, List<FlightOrderJourney>, FlightCancellationListViewModel>() {
-                    @Override
-                    public FlightCancellationListViewModel call(FlightCancellationListViewModel flightCancellationListViewModel, List<FlightOrderJourney> flightOrderJourneyList) {
-                        flightCancellationListViewModel.getCancellations().setJourneys(flightOrderJourneyList);
-                        return flightCancellationListViewModel;
-                    }
-                }
-        );
-    }
-
-    private Observable<FlightDetailRouteViewModel> getDetailRouteObservable(FlightDetailRouteViewModel flightDetailRouteViewModel) {
-        return Observable.zip(Observable.just(flightDetailRouteViewModel),
-                flightRepository.getAirportById(flightDetailRouteViewModel.getDepartureAirportCode()),
-                flightRepository.getAirportById(flightDetailRouteViewModel.getArrivalAirportCode()),
-                flightRepository.getAirlineList(flightDetailRouteViewModel.getAirlineCode()),
-                new Func4<FlightDetailRouteViewModel,
-                        FlightAirportDB,
-                        FlightAirportDB,
-                        List<FlightAirlineDB>,
-                        FlightDetailRouteViewModel>() {
-                    @Override
-                    public FlightDetailRouteViewModel call(FlightDetailRouteViewModel flightDetailRouteViewModel,
-                                                           FlightAirportDB departureAirports,
-                                                           FlightAirportDB arrivalAirports,
-                                                           List<FlightAirlineDB> flightAirlineDBS) {
-                        if (departureAirports != null) {
-                            flightDetailRouteViewModel.setDepartureAirportCity(departureAirports.getCityName());
-                            flightDetailRouteViewModel.setDepartureAirportName(departureAirports.getAirportName());
-                        }
-                        if (arrivalAirports != null) {
-                            flightDetailRouteViewModel.setArrivalAirportCity(arrivalAirports.getCityName());
-                            flightDetailRouteViewModel.setArrivalAirportName(arrivalAirports.getAirportName());
-                        }
-
-                        if (flightAirlineDBS != null && flightAirlineDBS.size() > 0) {
-                            FlightAirlineDB flightAirlineDB = flightAirlineDBS.get(0);
-                            flightDetailRouteViewModel.setAirlineLogo(flightAirlineDB.getLogo());
-                            flightDetailRouteViewModel.setAirlineName(flightAirlineDB.getName());
-                        }
-                        return flightDetailRouteViewModel;
-                    }
-                }
-        );
-    }
+//
+//    private Observable<FlightCancellationListViewModel> getJourneyObservable(FlightCancellationListViewModel flightCancellationListViewModel) {
+//        return Observable.zip(
+//                Observable.just(flightCancellationListViewModel),
+//                Observable.from(flightCancellationListViewModel.getCancellations().getJourneys())
+//                        .flatMap(new Func1<FlightOrderJourney, Observable<FlightOrderJourney>>() {
+//                            @Override
+//                            public Observable<FlightOrderJourney> call(FlightOrderJourney flightOrderJourney) {
+//                                return Observable.zip(
+//                                        Observable.just(flightOrderJourney),
+//                                        flightRepository.getAirportById(flightOrderJourney.getDepartureAiportId()),
+//                                        flightRepository.getAirportById(flightOrderJourney.getArrivalAirportId()),
+//                                        Observable.from(flightOrderJourney.getRouteViewModels())
+//                                                .flatMap(new Func1<FlightDetailRouteViewModel, Observable<FlightDetailRouteViewModel>>() {
+//                                                    @Override
+//                                                    public Observable<FlightDetailRouteViewModel> call(FlightDetailRouteViewModel flightDetailRouteViewModel) {
+//                                                        return getDetailRouteObservable(flightDetailRouteViewModel);
+//                                                    }
+//                                                }).toList(),
+//                                        new Func4<FlightOrderJourney, FlightAirportDB, FlightAirportDB, List<FlightDetailRouteViewModel>, FlightOrderJourney>() {
+//                                            @Override
+//                                            public FlightOrderJourney call(FlightOrderJourney flightOrderJourney, FlightAirportDB departureAirport, FlightAirportDB arrivalAirport, List<FlightDetailRouteViewModel> flightDetailRouteViewModels) {
+//                                                if (departureAirport != null) {
+//                                                    flightOrderJourney.setDepartureCity(departureAirport.getCityName());
+//                                                    flightOrderJourney.setDepartureCityCode(departureAirport.getCityCode());
+//                                                }
+//
+//                                                if (arrivalAirport != null) {
+//                                                    flightOrderJourney.setArrivalCity(arrivalAirport.getCityName());
+//                                                    flightOrderJourney.setArrivalCityCode(arrivalAirport.getCityCode());
+//                                                }
+//
+//                                                return flightOrderJourney;
+//                                            }
+//                                        }
+//                                );
+//                            }
+//                        })
+//                        .toList(),
+//                new Func2<FlightCancellationListViewModel, List<FlightOrderJourney>, FlightCancellationListViewModel>() {
+//                    @Override
+//                    public FlightCancellationListViewModel call(FlightCancellationListViewModel flightCancellationListViewModel, List<FlightOrderJourney> flightOrderJourneyList) {
+//                        flightCancellationListViewModel.getCancellations().setJourneys(flightOrderJourneyList);
+//                        return flightCancellationListViewModel;
+//                    }
+//                }
+//        );
+//    }
+//
+//    private Observable<FlightDetailRouteViewModel> getDetailRouteObservable(FlightDetailRouteViewModel flightDetailRouteViewModel) {
+//        return Observable.zip(Observable.just(flightDetailRouteViewModel),
+//                flightRepository.getAirportById(flightDetailRouteViewModel.getDepartureAirportCode()),
+//                flightRepository.getAirportById(flightDetailRouteViewModel.getArrivalAirportCode()),
+//                flightRepository.getAirlineList(flightDetailRouteViewModel.getAirlineCode()),
+//                new Func4<FlightDetailRouteViewModel,
+//                        FlightAirportDB,
+//                        FlightAirportDB,
+//                        List<FlightAirlineDB>,
+//                        FlightDetailRouteViewModel>() {
+//                    @Override
+//                    public FlightDetailRouteViewModel call(FlightDetailRouteViewModel flightDetailRouteViewModel,
+//                                                           FlightAirportDB departureAirports,
+//                                                           FlightAirportDB arrivalAirports,
+//                                                           List<FlightAirlineDB> flightAirlineDBS) {
+//                        if (departureAirports != null) {
+//                            flightDetailRouteViewModel.setDepartureAirportCity(departureAirports.getCityName());
+//                            flightDetailRouteViewModel.setDepartureAirportName(departureAirports.getAirportName());
+//                        }
+//                        if (arrivalAirports != null) {
+//                            flightDetailRouteViewModel.setArrivalAirportCity(arrivalAirports.getCityName());
+//                            flightDetailRouteViewModel.setArrivalAirportName(arrivalAirports.getAirportName());
+//                        }
+//
+//                        if (flightAirlineDBS != null && flightAirlineDBS.size() > 0) {
+//                            FlightAirlineDB flightAirlineDB = flightAirlineDBS.get(0);
+//                            flightDetailRouteViewModel.setAirlineLogo(flightAirlineDB.getLogo());
+//                            flightDetailRouteViewModel.setAirlineName(flightAirlineDB.getName());
+//                        }
+//                        return flightDetailRouteViewModel;
+//                    }
+//                }
+//        );
+//    }
 
     public RequestParams createRequestParams(String invoiceId) {
         RequestParams requestParams = RequestParams.create();
