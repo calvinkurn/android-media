@@ -32,6 +32,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     public static final String DEEP_LINK_URI = "deep_link_uri";
 
     private ProgressBar loaderBootingReact;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     }
 
     protected void initView() {
-        actionSetToolbarTitle(getToolbarTitle());
+        setupToolbar();
         loaderBootingReact = findViewById(R.id.rn_progressbar);
         T fragment = getReactNativeFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -77,10 +78,15 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         }
     }
 
+    private void setupToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        actionSetToolbarTitle(getToolbarTitle());
+    }
+
     @Override
     public void actionSetToolbarTitle(String title) {
         if(!TextUtils.isEmpty(title)) {
-            Toolbar toolbar = findViewById(R.id.toolbar);
             toolbar.setTitle(title);
         }
     }
