@@ -31,6 +31,11 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <com.tokopedia.design.component.ticker.UnifyTickerView
+                android:id="@+id/flight_ticker_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <include layout="@layout/partial_flight_dashboard_search" />
         </RelativeLayout>
 

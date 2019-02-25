@@ -288,4 +288,13 @@
     <declare-styleable name="TouchViewPager">
         <attr name="can_swipe" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="UnifyTickerView">
+        <attr name="type" format="enum">
+            <enum name="announcement" value="1" />
+            <enum name="warning" value="2" />
+            <enum name="danger" value="3" />
+        </attr>
+        <attr name="showCloseButton" format="boolean" />
+    </declare-styleable>
 </resources>
