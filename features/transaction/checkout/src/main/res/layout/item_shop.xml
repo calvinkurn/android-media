@@ -22,6 +22,12 @@
             android:id="@+id/ll_warning_and_error"
             layout="@layout/layout_item_warning_and_error" />
 
+        <View
+            android:id="@+id/item_shop_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_5"
+            android:background="@color/separator_color" />
+
         <FrameLayout
             android:id="@+id/fl_shop_item_container"
             android:layout_width="match_parent"
@@ -91,6 +97,7 @@
             android:src="@drawable/use_coupon"
             android:layout_marginBottom="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_5"/>
+        <!--end-->
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cart_item"
