@@ -7,6 +7,7 @@
     android:layout_width="match_parent">
 
     <android.support.design.widget.CoordinatorLayout
+        android:fitsSystemWindows="true"
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,41 +15,40 @@
         android:background="@color/grey_default_background">
 
         <android.support.design.widget.AppBarLayout
+            app:elevation="@dimen/dp_0"
+            android:fitsSystemWindows="true"
+            android:elevation="@dimen/dp_0"
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.design.widget.CollapsingToolbarLayout
+                android:fitsSystemWindows="true"
                 android:id="@+id/collapse_toolbar_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <FrameLayout
-                    android:id="@+id/home_content_container"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list"
+                    android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="?actionBarSize">
+                    android:descendantFocusability="beforeDescendants"
+                    android:tag="home_list"/>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:descendantFocusability="beforeDescendants"
-                        android:tag="home_list"/>
-
-                </FrameLayout>
-
-                <com.tokopedia.searchbar.MainToolbar
+                <com.tokopedia.home.beranda.presentation.view.customview.HomeMainToolbar
                     android:id="@+id/toolbar"
+                    android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
+                    android:paddingTop="17dp"
+                    android:layout_height="70dp"
                     android:gravity="top"
                     app:contentInsetStart="0dp"
                     app:contentInsetLeft="0dp"
                     app:layout_collapseMode="pin"
-                    app:layout_anchor="@id/home_content_container"
+                    app:layout_anchor="@id/list"
                     app:screenName="/"/>
 
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -70,11 +70,13 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 app:tabPaddingStart="0dp"
                 app:tabPaddingEnd="0dp"
+                app:tabPaddingBottom="@dimen/dp_8"
                 app:tabMode="scrollable"
                 app:tabBackground="@android:color/transparent"
-                android:background="@color/white"
+                android:background="@drawable/home_bg_shadow_bottom"
                 android:visibility="gone"
-                app:tabIndicatorHeight="0dp"/>
+                app:tabIndicatorHeight="0dp"
+                />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager_home_feeds"

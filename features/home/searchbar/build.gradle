@@ -17,4 +17,5 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }

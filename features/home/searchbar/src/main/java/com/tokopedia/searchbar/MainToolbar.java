@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -21,11 +22,11 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class MainToolbar extends Toolbar {
 
-    private final static String TAG_INBOX = "inbox";
+    protected final static String TAG_INBOX = "inbox";
 
-    private ImageButton btnNotification;
-    private ImageButton btnWishlist;
-    private BadgeView badgeView;
+    protected ImageView btnNotification;
+    protected ImageView btnWishlist;
+    protected BadgeView badgeView;
 
     private SearchBarAnalytics searchBarAnalytics;
     private UserSessionInterface userSession;
@@ -64,11 +65,11 @@ public class MainToolbar extends Toolbar {
             btnWishlist.setImageResource(R.drawable.ic_inbox_searcbar);
         } else {
             btnWishlist.setTag("");
-            btnWishlist.setImageResource(R.drawable.ic_wishlist_searchbar);
+            btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_grey);
         }
     }
 
-    private void init(Context context, @Nullable AttributeSet attrs) {
+    protected void init(Context context, @Nullable AttributeSet attrs) {
 
         userSession = new UserSession(context);
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
@@ -137,11 +138,11 @@ public class MainToolbar extends Toolbar {
         inflate(context, R.layout.main_toolbar, this);
     }
 
-    public ImageButton getBtnNotification() {
+    public ImageView getBtnNotification() {
         return btnNotification;
     }
 
-    public ImageButton getBtnWishlist() {
+    public ImageView getBtnWishlist() {
         return btnWishlist;
     }
 }

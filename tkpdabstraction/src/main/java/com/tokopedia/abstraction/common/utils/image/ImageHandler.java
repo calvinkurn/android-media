@@ -40,8 +40,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.BitmapCrossFadeFactory;
 import com.bumptech.glide.request.animation.DrawableCrossFadeFactory;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.animation.ViewAnimationFactory;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -762,44 +764,22 @@ public class ImageHandler {
             Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
-                    .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
-                    .into(new SimpleTarget<Bitmap>() {
+                    .placeholder(imageView.getDrawable())
+                    .listener(new RequestListener<String, Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation
-                                glideAnimation) {
-                            Bitmap blurredBitmap = blur(context, resource);
-                            imageView.setImageBitmap(blurredBitmap);
+                        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                            return false;
                         }
-                    });
-        }
-    }
 
-    public static void loadImageBlurWithFadeIn(final Context context, final ImageView imageView, String imageUrl) {
-        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .crossFade()
-                    .override(80, 80)
-                    .centerCrop()
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            Bitmap blurredImage = blur(context, resource);
+                            return new BitmapCrossFadeFactory(/* customize animation here */)
+                                    .build(false, false) // force crossFade() even if coming from memory cache
+                                    .animate(blurredImage, (GlideAnimation.ViewAdapter)target);
+                        }
+                    })
                     .into(imageView);
-        }
-
-        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .asBitmap()
-                    .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
-                    .centerCrop()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation
-                                glideAnimation) {
-                            Bitmap blurredBitmap = blur(context, resource);
-                            Animation fadeInAnimation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
-                            imageView.startAnimation(fadeInAnimation);
-                            imageView.setImageBitmap(blurredBitmap);
-                        }
-                    });
         }
     }
 
