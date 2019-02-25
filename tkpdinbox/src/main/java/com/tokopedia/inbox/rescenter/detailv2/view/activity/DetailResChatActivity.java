@@ -86,8 +86,9 @@ public class DetailResChatActivity
     }
 
     private static boolean isToggleResoEnabled(Context context) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+//        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+        return true;
     }
 
     private static Intent getApplinkIntent(Context context, String resolutionId) {
