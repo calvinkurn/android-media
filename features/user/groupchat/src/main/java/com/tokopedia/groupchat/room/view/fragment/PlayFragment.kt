@@ -717,6 +717,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             activity?.setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent)
             activity?.finish()
         }
+        dialog.show()
     }
 
     override fun onDestroy() {

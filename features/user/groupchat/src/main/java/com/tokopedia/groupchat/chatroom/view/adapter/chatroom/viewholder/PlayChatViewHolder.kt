@@ -21,6 +21,7 @@ class PlayChatViewHolder(itemView: View) : AbstractViewHolder<ChatViewModel>(ite
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.play_chat_view_holder
+        val MAX_LENGTH = 8
     }
 
     private val message: TextView
@@ -40,8 +41,12 @@ class PlayChatViewHolder(itemView: View) : AbstractViewHolder<ChatViewModel>(ite
     private fun getUserName(senderName: String?, administrator: Boolean): Spannable {
         return when {
             administrator -> getColoredString(senderName, ContextCompat.getColor(itemView.context, R.color.play_admin))
-            else -> getColoredString(senderName, ContextCompat.getColor(itemView.context, R.color.play_user))
+            else -> getColoredString(getTrimmedName(senderName), ContextCompat.getColor(itemView.context, R.color.play_user))
         }
+    }
+
+    private fun getTrimmedName(senderName: String?): String? {
+        return ("${senderName?.take(MAX_LENGTH)}..")
     }
 
     fun getColoredString(mString: String?, colorId:Int): Spannable {
