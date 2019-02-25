@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.create.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +11,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.common.ResolutionUrl;
@@ -31,6 +31,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLE
 public class CreateResCenterActivity extends BasePresenterActivity<CreateResCenterPresenter>
         implements CreateResCenterListener, CreateResCenterReceiver.Receiver, HasComponent {
 
+    public static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     public static final String KEY_PARAM_ORDER_ID = "ORDER_ID";
     public static final String KEY_PARAM_FLAG_RECEIVED = "FLAG_RECEIVED";
     public static final String KEY_PARAM_TROUBLE_ID = "TROUBLE_ID";
@@ -48,6 +49,38 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_RESOLUTION_CENTER_ADD;
+    }
+
+    public static Intent getCreateResCenterActivityIntent(Context context, String orderId) {
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getApplinkIntent(context, orderId);
+        }
+        if (intent == null) {
+            intent = new Intent(context, CreateResCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(EXTRA_ORDER_ID, orderId);
+            bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 1);
+            intent.putExtras(bundle);
+        }
+        return intent;
+    }
+
+    public static Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getApplinkIntent(context, orderId);
+        }
+        if (intent == null) {
+            intent = new Intent(context, CreateResCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(InboxRouter.EXTRA_ORDER_ID, orderId);
+            bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 0);
+            bundle.putInt(InboxRouter.EXTRA_TROUBLE_ID, troubleId);
+            bundle.putInt(InboxRouter.EXTRA_SOLUTION_ID, solutionId);
+            intent.putExtras(bundle);
+        }
+        return intent;
     }
 
     public static Intent newInstance(Context context, String orderID) {

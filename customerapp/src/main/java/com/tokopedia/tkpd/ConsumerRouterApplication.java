@@ -93,6 +93,7 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
+import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
@@ -1710,6 +1711,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
         return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
+    }
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
+        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
+    }
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
+        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId, troubleId, solutionId);
     }
 
     @Override
