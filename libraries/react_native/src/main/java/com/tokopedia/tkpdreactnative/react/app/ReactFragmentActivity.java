@@ -111,10 +111,6 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         return newBundle;
     }
 
-    protected Intent getIntentReactFragment() {
-        return getIntent();
-    }
-
     protected abstract T getReactNativeFragment();
 
     protected abstract String getToolbarTitle();
