@@ -80,7 +80,6 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         actionSetToolbarTitle(getToolbarTitle());
     }
 
@@ -88,6 +87,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     public void actionSetToolbarTitle(String title) {
         if(!TextUtils.isEmpty(title)) {
             toolbar.setTitle(title);
+            setSupportActionBar(toolbar);
         }
     }
 
