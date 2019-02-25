@@ -15,6 +15,11 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSurveyParams;
+import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
+import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurveyResponse;
+import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.InsertSurveyResponse;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +102,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     if (!data.orders().isEmpty()) {
                         getView().renderDataList(data.orders());
                         getView().setLastOrderId(data.orders().get(0).getOrderId());
+                        checkBomSurveyEligibility();
                     } else {
                         getView().unregisterScrollListener();
                         getView().renderEmptyList(typeRequest);
@@ -113,6 +119,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
         List<QuickFilterItem> quickFilterItems = new ArrayList<>();
+        int selctedIndex = 0;
         boolean isAnyItemSelected = false;
         for (FilterStatus entry : filterItems) {
             CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
@@ -122,15 +129,106 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
                 isAnyItemSelected = true;
                 finishFilter.setSelected(true);
+                selctedIndex = filterItems.indexOf(entry);
             } else {
                 finishFilter.setSelected(false);
             }
             quickFilterItems.add(finishFilter);
         }
-        getView().renderOrderStatus(quickFilterItems);
+        getView().renderOrderStatus(quickFilterItems, selctedIndex);
     }
 
     public void onDestroy() {
         getOrderListUseCase.unsubscribe();
+    }
+
+
+
+    public void checkBomSurveyEligibility() {
+        Map<String, Object> variables = new HashMap<>();
+
+        CheckBOMSurveyParams checkBOMSurveyParams = new CheckBOMSurveyParams();
+        checkBOMSurveyParams.setSource("1");
+
+        variables.put(OrderCategory.SURVEY_PARAM, checkBOMSurveyParams);
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.checkbomsurvey), CheckSurveyResponse.class, variables);
+        getOrderListUseCase.clearRequest();
+        getOrderListUseCase.addRequest(graphqlRequest);
+
+
+        getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                if (graphqlResponse != null) {
+
+                    CheckSurveyResponse checkSurveyResponse = graphqlResponse.getData(CheckSurveyResponse.class);
+                    if (checkSurveyResponse != null && checkSurveyResponse.getCheckResponseData() != null) {
+                        getView().showSurveyButton(checkSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isEligible());
+                    } else {
+                        getView().showFailureMessage("Something went Wrong");
+                    }
+
+                }
+
+            }
+        });
+
+    }
+
+    public void insertSurveyRequest(int rating, String comment) {
+        Map<String, Object> variables = new HashMap<>();
+
+        InsertBOMSurveyParams insertBOMSurveyParams = new InsertBOMSurveyParams();
+        insertBOMSurveyParams.setRating(rating);
+        insertBOMSurveyParams.setComments(comment);
+        insertBOMSurveyParams.setDeviceType("android");
+
+        variables.put(OrderCategory.SURVEY_PARAM, insertBOMSurveyParams);
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.insertbomsurvey), InsertSurveyResponse.class, variables);
+        getOrderListUseCase.clearRequest();
+        getOrderListUseCase.addRequest(graphqlRequest);
+
+        getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (graphqlResponse != null) {
+                    InsertSurveyResponse insertSurveyResponse = graphqlResponse.getData(InsertSurveyResponse.class);
+                    if (insertSurveyResponse != null && insertSurveyResponse.getCheckResponseData() != null) {
+                        if (insertSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isSuccess()) {
+                            getView().showSuccessMessage("Terimakasih atas pendapat anda");
+                        } else {
+                            getView().showFailureMessage(insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
+                        }
+                    }
+                }
+            }
+        });
     }
 }
