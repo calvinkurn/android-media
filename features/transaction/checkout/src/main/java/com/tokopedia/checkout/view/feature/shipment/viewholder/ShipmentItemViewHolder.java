@@ -1248,11 +1248,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderAddress(RecipientAddressModel recipientAddressModel) {
         if (recipientAddressModel != null) {
-            tvAddressName.setVisibility(View.GONE);
+            // tvAddressName.setVisibility(View.GONE);
             tvAddressStatus.setVisibility(View.GONE);
+            if (recipientAddressModel.getAddressStatus() == 2) {
+                tvAddressStatus.setVisibility(View.VISIBLE);
+            } else {
+                tvAddressStatus.setVisibility(View.GONE);
+            }
             String addressName = recipientAddressModel.getAddressName();
             String recipientName = recipientAddressModel.getRecipientName();
-            addressName = " (" + addressName + ")";
+            /*addressName = " (" + addressName + ")";
             recipientName += addressName;
             int startSpan = recipientName.indexOf(addressName);
             int endSpan = recipientName.indexOf(addressName) + addressName.length();
@@ -1260,8 +1265,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             final int color = ContextCompat.getColor(tvRecipientName.getContext(), R.color.black_38);
             formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tvRecipientName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
-            tvRecipientName.setText(formattedPromoMessage);
+            tvRecipientName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));*/
+            tvRecipientName.setText(recipientName);
+            tvAddressName.setText(addressName);
             String fullAddress = recipientAddressModel.getStreet() + ", "
                     + recipientAddressModel.getDestinationDistrictName() + ", "
                     + recipientAddressModel.getCityName() + ", "
