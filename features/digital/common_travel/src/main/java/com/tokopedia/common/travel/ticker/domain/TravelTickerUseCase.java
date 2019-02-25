@@ -54,7 +54,7 @@ public class TravelTickerUseCase extends UseCase<TravelTickerViewModel> {
                     String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_travel_ticker);
 
                     if (!TextUtils.isEmpty(query)) {
-                        GraphqlRequest request = new GraphqlRequest(query, TravelTickerEntity.class);
+                        GraphqlRequest request = new GraphqlRequest(query, TravelTickerEntity.class, params, TRAVEL_TICKER_OPERATION_NAME);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(request);
                         return graphqlUseCase.createObservable(null);
