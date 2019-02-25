@@ -40,7 +40,9 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     override fun initInjector() {
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_af_media_preview, container, false)
     }
 
@@ -60,7 +62,9 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         mediaViewPager.offscreenPageLimit = imageAdapter.count
         tabLayout.setupWithViewPager(mediaViewPager)
 
-        productAdapter.addAll(viewModel.relatedProducts)
-        relatedProductRv.adapter = productAdapter
+        if (viewModel.relatedProducts.isNotEmpty()) {
+            productAdapter.setList(viewModel.relatedProducts)
+            relatedProductRv.adapter = productAdapter
+        }
     }
 }

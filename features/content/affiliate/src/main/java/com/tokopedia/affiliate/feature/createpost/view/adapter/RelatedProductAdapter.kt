@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.feature.createpost.view.adapter
 
-import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -19,10 +18,10 @@ import kotlinx.android.synthetic.main.item_af_related_product.view.*
 class RelatedProductAdapter(val listener: RelatedProductListener?)
     : RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
 
-    constructor(): this(null)
+    constructor() : this(null)
 
     private val emptyItem: RelatedProductItem = RelatedProductItem(EMPTY_ITEM_ID)
-    private val list: MutableList<RelatedProductItem> = arrayListOf(emptyItem)
+    private var list: MutableList<RelatedProductItem> = arrayListOf(emptyItem)
 
     companion object {
         private const val EMPTY_ITEM_ID = "-1"
@@ -66,47 +65,15 @@ class RelatedProductAdapter(val listener: RelatedProductListener?)
         }
     }
 
-    fun addAll(list: MutableList<RelatedProductItem>) {
+    fun setList(list: MutableList<RelatedProductItem>) {
         if (list.isEmpty()) {
             list.add(emptyItem)
         }
-
-//        val diffResult = DiffUtil.calculateDiff(Callback(this.list, list))
-//        diffResult.dispatchUpdatesTo(this)
-
-        this.list.clear()
-        this.list.addAll(list)
+        this.list = list
         notifyDataSetChanged()
     }
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v)
-
-    class Callback(
-            private val oldList: List<RelatedProductItem>,
-            private val newList: List<RelatedProductItem>) : DiffUtil.Callback() {
-
-        override fun getOldListSize(): Int {
-            return oldList.size
-        }
-
-        override fun getNewListSize(): Int {
-            return newList.size
-        }
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = newList[newItemPosition]
-
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = newList[newItemPosition]
-
-            return oldItem == newItem
-        }
-    }
 
     interface RelatedProductListener {
         fun onEmptyProductClick()

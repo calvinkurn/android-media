@@ -334,7 +334,7 @@ class CreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateRelatedProduct() {
-        adapter.addAll(viewModel.relatedProducts)
+        adapter.setList(viewModel.relatedProducts)
     }
 
     private fun convertAttachProduct(attachedProducts: MutableList<ResultProduct>): MutableList<RelatedProductItem> {
