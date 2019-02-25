@@ -1,5 +1,6 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
+import android.graphics.Paint
 import android.support.annotation.LayoutRes
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -55,6 +56,7 @@ class PlaySprintSaleAnnouncementViewHolder(itemView: View, var listener: Chatroo
         ImageHandler.loadImage(contentImage.context, contentImage, item.productImage, R.drawable.ic_loading_toped_new)
         price.text = item.productPrice
         priceBefore.text = item.productPriceBeforeDiscount
+        priceBefore.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         stockProgress.progress = item.stockPercentage.toInt()
         itemView.setOnClickListener { listener.onSprintSaleComponentClicked(element) }
     }

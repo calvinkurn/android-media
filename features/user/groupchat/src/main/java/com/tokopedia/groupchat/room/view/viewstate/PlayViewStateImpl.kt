@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
-import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
@@ -33,9 +32,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.text.BackEditText
-import com.tokopedia.design.widget.ViewTooltip
 import com.tokopedia.groupchat.R
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
@@ -293,7 +290,6 @@ class PlayViewStateImpl(
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
         initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
         setBottomView()
-        setDynamicBackground()
         showBottomSheetFirstTime(it)
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
@@ -729,7 +725,7 @@ class PlayViewStateImpl(
     fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
-        setChatListHasSpaceOnTop(false)
+        setChatListHasSpaceOnTop(true)
         videoId.let {
             if (it.isEmpty()) return
 
@@ -740,7 +736,7 @@ class PlayViewStateImpl(
 
                 youTubePlayer?.let {
                     liveIndicator.shouldShowWithAction(isVideoLive){}
-                    setChatListHasSpaceOnTop(true)
+                    setChatListHasSpaceOnTop(false)
                     it.cueVideo(videoId)
                     autoPlayVideo()
                 }
@@ -1107,8 +1103,10 @@ class PlayViewStateImpl(
     }
 
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
-        var space = 0
-        if(hasSpace) space = view.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+        var space = when {
+            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
+        }
         chatRecyclerView.setPadding(0, space, 0, 0)
     }
 

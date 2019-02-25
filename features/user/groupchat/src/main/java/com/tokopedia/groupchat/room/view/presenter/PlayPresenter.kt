@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetDynamicButtonsUseCase
 import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter
@@ -20,16 +19,16 @@ import com.tokopedia.groupchat.room.domain.mapper.PlayWebSocketMessageMapper
 import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
-import okhttp3.WebSocket
-import okio.ByteString
-import rx.Subscriber
-import rx.subscriptions.CompositeSubscription
-import javax.inject.Inject
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketException
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import okhttp3.WebSocket
+import okio.ByteString
+import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
+import javax.inject.Inject
 
 /**
  * @author : Steven 13/02/19
