@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -43,7 +44,6 @@ import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -84,7 +84,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     lateinit var analytics: GroupChatAnalytics
 
     lateinit var viewState: PlayViewState
-    private lateinit var rootView: View
     private lateinit var notifReceiver: BroadcastReceiver
 
     private lateinit var channelInfoViewModel: ChannelInfoViewModel
@@ -108,7 +107,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         enterTimeStamp = System.currentTimeMillis()
-        var view = inflater.inflate(R.layout.play_fragment, container, false)
+        val view = inflater.inflate(R.layout.play_fragment, container, false)
         return view
     }
 
@@ -203,10 +202,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     }
 
-    override fun loadData(page: Int) {
-
-    }
-
     private fun onSuccessGetDynamicButtons(): (DynamicButtonsViewModel) -> Unit {
         return {
             channelInfoViewModel.dynamicButtons = it
@@ -216,54 +211,55 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorGetDynamicButtons(): (String) -> Unit {
         return {
-            //            viewState.onErrorGetDynamicButtons()
+                        viewState.onErrorGetDynamicButtons()
 
-            val listDynamic = ArrayList<DynamicButtonsViewModel.Button>()
-
-            listDynamic.add(DynamicButtonsViewModel.Button(
-                    "https://i.gifer.com/M8tf.gif",
-                    "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
-                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
-                    "external",
-                    "",
-                    "tokopedia://gamiication",
-                    "",
-                    false,
-                    ""
-            ))
-
-            listDynamic.add(DynamicButtonsViewModel.Button(
-                    "https://i.gifer.com/M8tf.gif",
-                    "https://www.tokopedia.com/",
-                    "overlay_webview",
-                    "Heyahyehayhea",
-                    "https%3A%2F%2Fwww" +
-                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
-                    "",
-                    true,
-                    "Test tooltip"
-            ))
-            listDynamic.add(DynamicButtonsViewModel.Button(
-                    "https://i.gifer.com/M8tf.gif",
-                    "tokopedia://gamification",
-                    "overlay_cta",
-                    "Heyahyehayhea",
-                    "tokopedia://gamification",
-                    "https://www.vgr.com/wp-content/uploads/2019/02/kingdom-hearts-3-gameplay-16-2-925x520.jpg",
-                    true,
-                    ""
-            ))
-
-            viewState.onDynamicButtonUpdated(
-                    DynamicButtonsViewModel(
-                            DynamicButtonsViewModel.Button(
-                                    "https://i.gifer.com/M8tf.gif",
-                                    "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
-                                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih"
-                            ),
-                            listDynamic
-                    )
-            )
+            //TODO DELETE THIS
+//            val listDynamic = ArrayList<DynamicButtonsViewModel.Button>()
+//
+//            listDynamic.add(DynamicButtonsViewModel.Button(
+//                    "https://i.gifer.com/M8tf.gif",
+//                    "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
+//                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
+//                    "external",
+//                    "",
+//                    "tokopedia://gamiication",
+//                    "",
+//                    false,
+//                    ""
+//            ))
+//
+//            listDynamic.add(DynamicButtonsViewModel.Button(
+//                    "https://i.gifer.com/M8tf.gif",
+//                    "https://www.tokopedia.com/",
+//                    "overlay_webview",
+//                    "Heyahyehayhea",
+//                    "https%3A%2F%2Fwww" +
+//                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
+//                    "",
+//                    true,
+//                    "Test tooltip"
+//            ))
+//            listDynamic.add(DynamicButtonsViewModel.Button(
+//                    "https://i.gifer.com/M8tf.gif",
+//                    "tokopedia://gamification",
+//                    "overlay_cta",
+//                    "Heyahyehayhea",
+//                    "tokopedia://gamification",
+//                    "https://www.vgr.com/wp-content/uploads/2019/02/kingdom-hearts-3-gameplay-16-2-925x520.jpg",
+//                    true,
+//                    ""
+//            ))
+//
+//            viewState.onDynamicButtonUpdated(
+//                    DynamicButtonsViewModel(
+//                            DynamicButtonsViewModel.Button(
+//                                    "https://i.gifer.com/M8tf.gif",
+//                                    "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
+//                                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih"
+//                            ),
+//                            listDynamic
+//                    )
+//            )
         }
     }
 
@@ -271,7 +267,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return {
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
 
-            (activity as PlayActivity)?.let {
+            (activity as PlayActivity).let {
                 it.changeHomeDrawableColor(R.color.white)
                 optionsMenuEnable = true
             }
@@ -288,7 +284,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return {
             viewState.onErrorGetInfo(it)
 
-            (activity as PlayActivity)?.let {
+            (activity as PlayActivity).let {
                 it.changeHomeDrawableColor(R.color.black_70)
                 it.setSwipeable(false)
                 optionsMenuEnable = false
@@ -333,10 +329,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     it, this, this, this, this,
                     this, this, sendMessage())
         }
-        setToolbarView(view)
+        setToolbarView()
     }
 
-    private fun setToolbarView(view: View) {
+    private fun setToolbarView() {
         val toolbar = viewState.getToolbar()
         activity?.let {
             (it as AppCompatActivity).let {
@@ -346,29 +342,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById(R.id.chat_list)
-    }
-
-    override fun isLoadMoreEnabledByDefault(): Boolean {
-        return false
-    }
-
-    override fun callInitialLoadAutomatically(): Boolean {
-        return false
-    }
-
     override fun getAdapterTypeFactory(): GroupChatTypeFactoryImpl {
         return GroupChatTypeFactoryImpl(this, this, this, this)
-    }
-
-    override fun onItemClicked(t: Visitable<*>?) {
-
-    }
-
-    override fun getScreenName(): String {
-        return ""
     }
 
     override fun initInjector() {
@@ -434,7 +409,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onVoteComponentClicked(type: String?, name: String?) {
-
+        //TODO
     }
 
     override fun onSprintSaleProductClicked(productViewModel: SprintSaleProductViewModel?, position: Int) {
@@ -448,26 +423,36 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onSprintSaleComponentClicked(sprintSaleAnnouncementViewModel: SprintSaleAnnouncementViewModel?) {
+        sprintSaleAnnouncementViewModel?.let{
+            if((it.redirectUrl?:"").isBlank()){
+                return
+            }
+
+            if (!it.sprintSaleType.equals(SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH, true)) {
+                analytics.eventClickSprintSaleComponent(sprintSaleAnnouncementViewModel,
+                        position, channelInfoViewModel)
+                openRedirectUrl(it.redirectUrl ?: "")
+            }
+        }
 
     }
 
     override fun onSprintSaleIconClicked(sprintSaleViewModel: SprintSaleViewModel?) {
-
+        //NOT USED
     }
 
     override fun onPointsClicked(url: String?) {
         url?.let {
             openRedirectUrl(it)
             analytics.eventClickLoyaltyWidget(channelInfoViewModel.channelId)
-
         }
     }
 
-    override fun openRedirectUrl(it: String) {
-        if(it.isBlank())
+    override fun openRedirectUrl(generateLink: String) {
+        if(generateLink.isBlank())
             return
 
-        (activity?.applicationContext as GroupChatModuleRouter).openRedirectUrl(activity, it)
+        (activity?.applicationContext as GroupChatModuleRouter).openRedirectUrl(activity, generateLink)
     }
 
     private fun getInboxChannelsIntent(): Intent? {
@@ -482,6 +467,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onTotalViewChanged(participantViewModel.channelId, participantViewModel.totalView)
     }
 
+    @Suppress("DEPRECATION")
     override fun vibratePhone() {
         val vibrator = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
         vibrator?.let {
@@ -518,13 +504,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onVideoUpdated(it: VideoViewModel) {
         viewState.onVideoUpdated(it, childFragmentManager)
-
     }
 
-    override fun handleEvent(event: EventGroupChatViewModel) {
+    override fun handleEvent(it: EventGroupChatViewModel) {
         when {
-            event.isFreeze -> viewState.onChannelFrozen(event.channelId)
-            event.isBanned -> viewState.banUser(event.userId)
+            it.isFreeze -> viewState.onChannelFrozen(it.channelId)
+            it.isBanned -> viewState.banUser(it.userId)
         }
     }
 
@@ -565,8 +550,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry)) {
-                    viewState.getChannelInfo()?.let {
-                        presenter.getPlayInfo(it.channelId, onSuccessGetInfo(), onErrorGetInfo())
+                    viewState.getChannelInfo()?.let { channelInfo ->
+                        presenter.getPlayInfo(channelInfo.channelId, onSuccessGetInfo(), onErrorGetInfo())
                         setSnackBarConnectingWebSocket()
                     }
                 }
@@ -580,14 +565,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
         startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
                 .getLoginIntent(activity), REQUEST_LOGIN)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_LOGIN) {
-            viewState.onSuccessLogin()
-            loadFirstTime()
-        }
     }
 
     private fun loadFirstTime() {
@@ -703,11 +680,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun showKickUser() {
-        var dialog = Dialog(activity, Dialog.Type.RETORIC)
+        val dialog = Dialog(activity, Dialog.Type.RETORIC)
         dialog.setTitle(getString(R.string.you_have_been_kicked))
         dialog.setDesc(getString(R.string.you_have_been_idle_for_too_long))
         dialog.setBtnOk(getString(R.string.title_ok))
-        dialog.setOnOkClickListener { dialogView ->
+        dialog.setOnOkClickListener {
             dialog.dismiss()
             val intent = Intent()
             viewState.getChannelInfo()?.let {
@@ -720,10 +697,42 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         dialog.show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_LOGIN) {
+            viewState.onSuccessLogin()
+            loadFirstTime()
+        }
+    }
+
     override fun onDestroy() {
         viewState.destroy()
         presenter.detachView()
         super.onDestroy()
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById(R.id.chat_list)
+    }
+
+    override fun isLoadMoreEnabledByDefault(): Boolean {
+        return false
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
+    }
+
+    override fun loadData(page: Int) {
+        //NOT USED
+    }
+
+    override fun onItemClicked(t: Visitable<*>?) {
+        //NOT USED
+    }
+
+    override fun getScreenName(): String {
+        return ""
     }
 
 }
