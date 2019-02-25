@@ -7,23 +7,21 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginRight="@dimen/dp_30">
+        android:scrollbars="none">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <include
-                layout="@layout/kyc_selfie_intro"
-                android:visibility="gone" />
+                layout="@layout/kyc_selfie_intro" />
 
             <LinearLayout
                 android:id="@+id/selfieid_preview_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -33,8 +31,10 @@
                     <ImageView
                         android:id="@+id/selfieid_img"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+                        android:layout_height="260dp"
+                        android:layout_gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/ovo_premier_verifikasi_gagal"/>
                 </FrameLayout>
 
                 <Button
@@ -50,11 +50,11 @@
                     android:textColor="#ffffff"
                     android:textSize="14sp" />
 
-                <Button
+                <TextView
                     android:id="@+id/retake_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:layout_marginLeft="@dimen/dp_30"
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dp_30"

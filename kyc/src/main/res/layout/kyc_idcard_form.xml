@@ -7,8 +7,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginRight="@dimen/dp_30">
+
+        android:scrollbars="none">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -18,16 +18,20 @@
             <ImageView
                 android:id="@+id/card_id_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="260dp"
+                android:scaleType="centerCrop" />
 
-            <TextView
+            <Button
                 android:id="@+id/retake_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/card_id_img"
                 android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_24"
-                android:gravity="center_horizontal"
+                android:layout_marginRight="@dimen/dp_30"
+                android:background="@color/transparent"
+                android:gravity="center"
                 android:text="ULANGI FOTO"
                 android:textColor="#06b3ba"
                 android:textSize="14sp" />
@@ -37,7 +41,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/retake_photo"
+                android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_35"
+                android:layout_marginRight="@dimen/dp_30"
                 android:text="Pilih Jenis Kartu Identitas"
                 android:textColor="#6b767e"
                 android:textSize="16sp" />
@@ -47,6 +53,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtv_select_id"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginRight="@dimen/dp_30"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -54,6 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_20"
+                    android:checked="true"
                     android:text="KTP (WNI)"
                     android:textColor="#2d263b"
                     android:textSize="14sp" />
@@ -75,7 +84,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/id_radio_group"
+                android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginRight="@dimen/dp_30"
                 android:clickable="false"
                 android:hint="">
 
@@ -97,7 +108,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/wrapper_number_ktp"
+                android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_56"
+                android:layout_marginRight="@dimen/dp_30"
                 android:clickable="false">
 
                 <EditText
@@ -112,13 +125,16 @@
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <Button
+                android:id="@+id/confirmation_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/wrapper_name"
+                android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_52"
+                android:layout_marginRight="@dimen/dp_30"
+                android:layout_marginBottom="@dimen/dp_50"
                 android:background="@drawable/btn_bg_rounded_corners"
                 android:gravity="center"
-                android:id="@+id/confirmation_btn"
                 android:text="KONFIRMASI"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />

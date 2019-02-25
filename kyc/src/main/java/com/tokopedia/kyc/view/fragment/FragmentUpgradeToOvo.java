@@ -10,11 +10,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
+import com.tokopedia.kyc.model.EligibilityBase;
+import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.view.interfaces.UpgradeToOvoContract;
+
+import rx.Subscriber;
 
 public class FragmentUpgradeToOvo extends BaseDaggerFragment
         implements UpgradeToOvoContract.View, View.OnClickListener{
@@ -22,7 +30,7 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     private ActivityListener activityListener;
     private Button proceedWithUpgrade;
     private Button upgradeLater;
-    private String TAG_START_UPGRADE = "start_upgrade";
+    private String TAG = "start_upgrade";
 
     @Override
     protected void initInjector() {
@@ -76,9 +84,40 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.upgrade_btn) {
-            activityListener.addReplaceFragment(this, true, TAG_START_UPGRADE);
+            KycUtil.executeEligibilityCheck(getContext(), getEligibilityCheckSubscriber());
         } else if (i == R.id.later_btn) {
             getActivity().finish();
         }
+    }
+
+    private Subscriber getEligibilityCheckSubscriber(){
+        return new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                EligibilityBase eligibilityBase = graphqlResponse.getData(EligibilityBase.class);
+                if(eligibilityBase != null && eligibilityBase.getGoalKYCRequest().getKycRequestId() > 0){
+                    KycUtil.saveDataToPersistentStore(getContext(), Constants.Keys.KYC_REQ_ID,
+                            eligibilityBase.getGoalKYCRequest().getKycRequestId());
+
+                    FragmentIntroToOvoUpgradeSteps fragmentIntroToOvoUpgradeSteps =
+                            FragmentIntroToOvoUpgradeSteps.newInstance();
+                    ConfirmRequestDataContainer confirmRequestDataContainer = new ConfirmRequestDataContainer();
+                    confirmRequestDataContainer.setKycReqId(eligibilityBase.getGoalKYCRequest().getKycRequestId());
+                    fragmentIntroToOvoUpgradeSteps.setArguments(KycUtil.getConfirmReqDataContainerBundle(confirmRequestDataContainer));
+                    activityListener.addReplaceFragment(fragmentIntroToOvoUpgradeSteps,
+                            true, FragmentIntroToOvoUpgradeSteps.TAG);
+                }
+            }
+        };
     }
 }

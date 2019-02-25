@@ -6,7 +6,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
@@ -16,16 +17,16 @@
             <FrameLayout
                 android:id="@+id/cardid_container"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="102dp"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24">
 
                 <ImageView
                     android:id="@+id/cardid_img"
+                    android:layout_height="match_parent"
                     android:layout_width="wrap_content"
-                    android:layout_height="102dp"
-                    android:background="@drawable/bg_transparent_black_rounded_corners"
-                    android:src="@drawable/ovo_premier_verifikasi_gagal" />
+                    android:scaleType="fitXY"
+                    android:background="@drawable/bg_transparent_black_rounded_corners" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -53,7 +54,7 @@
             <FrameLayout
                 android:id="@+id/selfieid_container"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="102dp"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
                 android:layout_toRightOf="@+id/cardid_container">
@@ -61,9 +62,9 @@
                 <ImageView
                     android:id="@+id/selfieid_img"
                     android:layout_width="wrap_content"
-                    android:layout_height="102dp"
-                    android:background="@drawable/bg_transparent_black_rounded_corners"
-                    android:src="@drawable/ovo_premier_verifikasi_gagal" />
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:background="@drawable/bg_transparent_black_rounded_corners" />
 
                 <TextView
                     android:layout_width="wrap_content"

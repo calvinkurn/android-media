@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/hc_camera_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.otaliastudios.cameraview.CameraView
+            android:id="@+id/camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:keepScreenOn="true"
+            app:cameraAudio="on"
+            app:cameraGestureLongTap="none"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureScrollHorizontal="exposureCorrection"
+            app:cameraGestureScrollVertical="none"
+            app:cameraGestureTap="focusWithMarker"
+            app:cameraGrid="off"
+            app:cameraPlaySounds="true"
+            app:cameraSessionType="picture" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/iv_image_captured"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/cicleOverlay"
+        android:src="@drawable/img_guide_01"
+        android:layout_width="match_parent"
+        android:scaleType="centerCrop"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dp_20">
+
+        <ImageView
+            android:id="@+id/button_cancel"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"
+            android:clickable="false"
+            android:src="@drawable/ic_close_white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="#80000000"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:id="@+id/desc_1"
+            android:textSize="15sp"
+            android:textColor="#ffffff"
+            android:lineSpacingExtra="5sp"
+            android:gravity="center_horizontal"
+            android:text="Pastikan wajah Anda berada di area oval dan Kartu Identitas Anda berada di area kotak" />
+
+        <include
+            layout="@layout/camera_action_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
+    </RelativeLayout>
+
+
+</FrameLayout>

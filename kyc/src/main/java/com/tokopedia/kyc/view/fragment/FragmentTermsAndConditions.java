@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
 public class FragmentTermsAndConditions extends BaseDaggerFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
@@ -26,6 +27,7 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     private Button proceedFurther;
     private ImageView cardIdImage;
     private ImageView selfieIdImage;
+    public static String TAG = "tandc_page";
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -79,6 +81,7 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
         proceedFurther = view.findViewById(R.id.proceed_tnc);
         cardIdImage = view.findViewById(R.id.cardid_img);
         selfieIdImage = view.findViewById(R.id.selfieid_img);
+        setImages();
         return view;
     }
 
@@ -88,5 +91,13 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
             if(isChecked) proceedFurther.setEnabled(true);
             else proceedFurther.setEnabled(false);
         }
+    }
+
+    private void setImages(){
+        KycUtil.setCameraCapturedImage(
+                (String) KycUtil.getDataFromPersistentStore(getContext(),
+                        Constants.Keys.CARD_IMG_PATH, String.class,""),
+                (boolean) KycUtil.getDataFromPersistentStore(getContext(),
+                        Constants.Keys.FLIP_CARD_IMG, Boolean.TYPE, false), cardIdImage);
     }
 }

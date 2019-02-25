@@ -28,9 +28,11 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -89,6 +91,9 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
+import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
+import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
@@ -116,7 +121,6 @@ import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -243,8 +247,6 @@ import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
-import com.tokopedia.loyalty.common.PopUpNotif;
-import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.loyalty.di.component.DaggerTokopointComponent;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.di.module.ServiceApiModule;
@@ -460,6 +462,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
+import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
+import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 
 
 /**
@@ -550,7 +554,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ChatbotRouter,
         TrackingOptimizerRouter,
-        LoginRegisterPhoneRouter{
+        LoginRegisterPhoneRouter,
+        KYCRouter {
 
     private static final String EXTRA = "extra";
 
@@ -3707,5 +3712,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
         return CheckLoginPhoneNumberActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
+                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType){
+        Bundle bundle = new Bundle();
+        BaseDaggerFragment baseDaggerFragment = null;
+        switch (cameraType) {
+            case KYC_CARDID_CAMERA:
+                baseDaggerFragment = new FragmentCardIdCamera();
+                bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
+                bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
+                baseDaggerFragment.setArguments(bundle);
+            break;
+            case KYC_SELFIEID_CAMERA:
+                baseDaggerFragment = new FragmentSelfieIdCamera();
+                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);
+                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
+                baseDaggerFragment.setArguments(bundle);
+                break;
+        }
+        return baseDaggerFragment;
     }
 }

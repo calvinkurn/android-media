@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
+import com.tokopedia.kyc.di.DaggerKYCComponent;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.view.fragment.FragmentUpgradeToOvo;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
@@ -22,7 +23,6 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
         HasComponent<KYCComponent>, ActivityListener {
 
     private KYCComponent KYCComponent = null;
-    private static final String UPGRADE_OVO_SCREEN = "/upgradeovo";
 
 
     @DeepLink(Constants.AppLinks.OVOUPGRADE)
@@ -53,7 +53,7 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
 
     @Override
     public String getScreenName() {
-        return UPGRADE_OVO_SCREEN;
+        return Constants.Values.UPGRADE_OVO_SCR;
     }
 
     @Override
@@ -72,5 +72,11 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
         }
         fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void showHideActionbar(boolean show){
+        if(show) getSupportActionBar().show();
+        else getSupportActionBar().hide();
     }
 }

@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:background="@drawable/btn_bg_rounded_corners"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:text="OKE"
         android:textColor="#ffffff"
         android:textSize="14sp" />

@@ -19,7 +19,7 @@ buildCache {
 apply from: "buildconfig/appcompile/compile-libraries.gradle"
 apply from: "buildconfig/appcompile/compile-customerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-customerapp-no-op.gradle"
-apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
 //apply from: "buildconfig/appcompile/compile-posapp.gradle"
 //apply from: "buildconfig/appcompile/compile-posapp-no-op.gradle"
