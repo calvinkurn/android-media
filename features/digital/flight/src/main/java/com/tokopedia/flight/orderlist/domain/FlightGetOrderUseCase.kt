@@ -4,13 +4,9 @@ import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-
-import javax.inject.Inject
-
 import rx.Observable
 
-class FlightGetOrderUseCase @Inject
-constructor(private val flightRepository: FlightRepository) : UseCase<FlightOrder>() {
+class FlightGetOrderUseCase(private val flightRepository: FlightRepository) : UseCase<FlightOrder>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<FlightOrder> {
         return flightRepository.getOrder(requestParams.getString(PARAM_ID, DEFAULT_EMPTY_VALUE))

@@ -15,17 +15,17 @@ import dagger.Provides
 class FlightOrderModule {
 
     @Provides
-    internal fun provideFlightGetOrdersUseCase(flightRepository: FlightRepository): FlightGetOrdersUseCase {
+    fun provideFlightGetOrdersUseCase(flightRepository: FlightRepository): FlightGetOrdersUseCase {
         return FlightGetOrdersUseCase(flightRepository)
     }
 
     @Provides
-    internal fun provideFlightGetOrderUseCase(flightRepository: FlightRepository): FlightGetOrderUseCase {
+    fun provideFlightGetOrderUseCase(flightRepository: FlightRepository): FlightGetOrderUseCase {
         return FlightGetOrderUseCase(flightRepository)
     }
 
     @Provides
-    internal fun provideFlightSendEmailUseCase(flightRepository: FlightRepository): FlightSendEmailUseCase {
+    fun provideFlightSendEmailUseCase(flightRepository: FlightRepository): FlightSendEmailUseCase {
         return FlightSendEmailUseCase(flightRepository)
     }
 }

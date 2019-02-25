@@ -12,20 +12,24 @@ import javax.inject.Inject
 class FlightOrderJourneyMapper @Inject
 constructor(private val flightDetailRouteViewModelMapper: FlightDetailRouteViewModelMapper) {
 
+    fun transform(journeyEntity: JourneyEntity): FlightOrderJourney {
+        return FlightOrderJourney(
+                journeyEntity.id,
+                journeyEntity.departureCityName,
+                "",
+                journeyEntity.departureAirportId,
+                journeyEntity.departureTime,
+                journeyEntity.arrivalCityName,
+                "",
+                journeyEntity.arrivalAirportId,
+                journeyEntity.arrivalTime,
+                journeyEntity.status.toString(),
+                flightDetailRouteViewModelMapper.transformList(journeyEntity.routes))
+    }
+
     fun transform(journeyEntities: List<JourneyEntity>): List<FlightOrderJourney> {
         return journeyEntities.map {
-            return@map FlightOrderJourney(
-                    it.id,
-                    it.departureCityName,
-                    "",
-                    it.departureAirportId,
-                    it.departureTime,
-                    it.arrivalCityName,
-                    "",
-                    it.arrivalAirportId,
-                    it.arrivalTime,
-                    it.status.toString(),
-                    flightDetailRouteViewModelMapper.transformList(it.routes))
+            return@map transform(it)
         }
     }
 }

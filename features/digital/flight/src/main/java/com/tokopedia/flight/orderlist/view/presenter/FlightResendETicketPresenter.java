@@ -1,4 +1,4 @@
-package com.tokopedia.flight.orderlist.presenter;
+package com.tokopedia.flight.orderlist.view.presenter;
 
 import android.util.Patterns;
 

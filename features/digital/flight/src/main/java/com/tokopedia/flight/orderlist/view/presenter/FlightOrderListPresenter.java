@@ -1,4 +1,4 @@
-package com.tokopedia.flight.orderlist.presenter;
+package com.tokopedia.flight.orderlist.view.presenter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
