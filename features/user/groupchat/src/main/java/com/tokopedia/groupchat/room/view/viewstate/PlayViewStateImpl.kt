@@ -70,7 +70,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @author : Steven 13/02/19
  */
-class PlayViewStateImpl(
+open class PlayViewStateImpl(
         var userSession: UserSessionInterface,
         var analytics: GroupChatAnalytics,
         var view: View,
@@ -272,7 +272,7 @@ class PlayViewStateImpl(
         return replyText.replace("<", "&lt;")
     }
 
-    open fun scrollToBottom() {
+    private fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -293,7 +293,6 @@ class PlayViewStateImpl(
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
         initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
         setBottomView()
-        setDynamicBackground()
         showBottomSheetFirstTime(it)
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {

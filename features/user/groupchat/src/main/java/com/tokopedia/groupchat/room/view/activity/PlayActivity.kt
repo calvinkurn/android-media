@@ -13,7 +13,9 @@ import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.WindowManager
+import android.widget.RelativeLayout
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -22,6 +24,7 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.common.util.NonSwipeableViewPager
+import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
@@ -34,7 +37,6 @@ open class PlayActivity : BaseSimpleActivity() {
 
     lateinit var rootView: View
     lateinit var viewPager: NonSwipeableViewPager
-    private val KEYBOARD_THRESHOLD = 100
     private lateinit var pagerAdapter: FragmentPagerAdapter
 
     override fun getNewFragment(): Fragment? {
@@ -57,7 +59,6 @@ open class PlayActivity : BaseSimpleActivity() {
 
     private fun initView() {
         setupToolbar()
-
         setFragment()
     }
 
@@ -82,38 +83,34 @@ open class PlayActivity : BaseSimpleActivity() {
     }
 
     private fun setupToolbar() {
-//        if (isLollipopOrNewer()) {
-//            window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-//                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-//            window.statusBarColor = Color.TRANSPARENT
-//        }
 
         if (isLollipopOrNewer()) {
+            TransparentStatusBarHelper.assistActivity(this)
+
             val window = window
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.statusBarColor = Color.TRANSPARENT
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         }
 
-//        if (isLollipopOrNewer()) {
-//            TransparentStatusBarHelper.assistActivity(this)
-//        }
+        removePaddingStatusBar()
+    }
 
-//        removePaddingStatusBar()
 
-//        toolbar = findViewById(R.id.toolbar)
+    private fun removePaddingStatusBar() {
 
-//        if (isLollipopOrNewer()) {
-////            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-////                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-////                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-//            toolbar.setPadding(0, getStatusBarHeight(), 0, 0)
-//        }
-//        setSupportActionBar(toolbar)
+        rootView = findViewById(R.id.root_view)
+        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+            val heightDiff = rootView.rootView.height - rootView.height
 
-//        if (supportActionBar != null) {
-//            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-//        }
+            if (heightDiff > KEYBOARD_THRESHOLD) {
+                removePaddingIfKeyboardIsShowing()
+            } else {
+                addPaddingIfKeyboardIsClosed()
+            }
+        }
     }
 
     private fun isLollipopOrNewer(): Boolean {
@@ -122,9 +119,9 @@ open class PlayActivity : BaseSimpleActivity() {
 
     private fun addPaddingIfKeyboardIsClosed() {
         if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
-            val container = rootView.findViewById<View>(R.id.container)
+            val container = rootView.findViewById<View>(R.id.main_content)
             val params = container
-                    .layoutParams as ConstraintLayout.LayoutParams
+                    .layoutParams as RelativeLayout.LayoutParams
             params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(this))
             container.layoutParams = params
         }
@@ -132,8 +129,8 @@ open class PlayActivity : BaseSimpleActivity() {
 
     private fun removePaddingIfKeyboardIsShowing() {
         if (isLollipopOrNewer() && getSoftButtonsBarSizePort(this) > 0) {
-            val container = rootView.findViewById<View>(R.id.container)
-            val params = container.layoutParams as ConstraintLayout.LayoutParams
+            val container = rootView.findViewById<View>(R.id.main_content)
+            val params = container.layoutParams as RelativeLayout.LayoutParams
             params.setMargins(0, 0, 0, 0)
             container.layoutParams = params
         }
@@ -184,6 +181,8 @@ open class PlayActivity : BaseSimpleActivity() {
     }
 
     companion object {
+
+        private val KEYBOARD_THRESHOLD = 100
 
         val TOTAL_VIEW = "total_view"
         val EXTRA_CHANNEL_UUID = "CHANNEL_UUID"
