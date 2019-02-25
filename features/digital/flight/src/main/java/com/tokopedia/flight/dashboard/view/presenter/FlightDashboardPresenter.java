@@ -779,7 +779,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override
