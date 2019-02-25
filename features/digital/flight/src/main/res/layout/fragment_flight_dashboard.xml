@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:showCloseButton="true"
-                app:type="1" />
+                app:type="announcement" />
 
             <include layout="@layout/partial_flight_dashboard_search" />
         </RelativeLayout>
