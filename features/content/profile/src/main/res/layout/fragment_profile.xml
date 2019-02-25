@@ -247,6 +247,7 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
+                    android:background="@drawable/gradient_profile"
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -255,8 +256,7 @@
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:background="@drawable/gradient_profile">
+                        android:layout_marginRight="@dimen/dp_16">
 
                         <ImageView
                             android:id="@+id/iv_back"
