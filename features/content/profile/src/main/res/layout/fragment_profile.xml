@@ -255,14 +255,14 @@
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16">
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:background="@drawable/gradient_profile">
 
                         <ImageView
                             android:id="@+id/iv_back"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_action_back"
-                            android:tint="@color/black_70"
                             android:layout_gravity="center"
                             />
 
@@ -271,7 +271,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textColor="@color/black_70"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/sp_17"
                             android:textStyle="bold"
                             android:layout_marginLeft="@dimen/dp_16"
@@ -281,7 +281,6 @@
                             android:id="@+id/iv_action"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:tint="@color/black_70"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/dp_16"
                             tools:src="@drawable/ic_share_white"
