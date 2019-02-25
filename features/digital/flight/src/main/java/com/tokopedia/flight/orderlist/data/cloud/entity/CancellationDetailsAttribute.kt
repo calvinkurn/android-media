@@ -13,7 +13,7 @@ class CancellationDetailsAttribute(
         var journeyId: Long = 0,
         @SerializedName("passenger_id")
         @Expose
-        val passengerId: String) {
+        val passengerId: String = "") {
 
     override fun equals(obj: Any?): Boolean {
         var isEqual = false

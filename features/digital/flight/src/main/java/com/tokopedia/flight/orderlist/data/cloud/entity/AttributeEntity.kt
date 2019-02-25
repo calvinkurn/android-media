@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 class AttributeEntity(
         @SerializedName("create_time")
         @Expose
-        val createTime: String,
+        val createTime: String = "",
         @SerializedName("status")
         @Expose
-        val status: Int,
+        val status: Int = 0,
         @SerializedName("status_string")
         @Expose
-        val statusFmt: String,
+        val statusFmt: String = "",
         @SerializedName("flight")
         @Expose
         val flight: FlightEntity)

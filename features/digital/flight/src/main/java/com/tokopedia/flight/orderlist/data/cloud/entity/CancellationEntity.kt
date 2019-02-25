@@ -10,19 +10,19 @@ import com.google.gson.annotations.SerializedName
 class CancellationEntity(
         @SerializedName("cancel_id")
         @Expose
-        val refundId: Int,
+        val refundId: Int = 0,
         @SerializedName("details")
         @Expose
         val details: List<CancellationDetailsAttribute>,
         @SerializedName("create_time")
         @Expose
-        val createTime: String,
+        val createTime: String = "",
         @SerializedName("estimated_refund")
         @Expose
-        val estimatedRefund: String,
+        val estimatedRefund: String = "",
         @SerializedName("real_refund")
         @Expose
-        val realRefund: String,
+        val realRefund: String = "",
         @SerializedName("status")
         @Expose
-        val status: Int)
+        val status: Int = 0)

@@ -16,10 +16,10 @@ class AmenityEntity(
         val freeBaggage: BaggageEntity,
         @SerializedName("meal")
         @Expose
-        val isMeal: Boolean,
+        val isMeal: Boolean = false,
         @SerializedName("usb_port")
         @Expose
-        val isUsbPort: Boolean,
+        val isUsbPort: Boolean = false,
         @SerializedName("wifi")
         @Expose
         val isWifi: Boolean = false)

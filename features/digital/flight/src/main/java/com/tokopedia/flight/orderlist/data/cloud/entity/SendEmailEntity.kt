@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName
 
 class SendEmailEntity(
         @SerializedName("meta")
-        var meta: MetaEntity) {
+        val meta: MetaEntity) {
 
     inner class MetaEntity {
         @SerializedName("status")
-        var status: String? = null
+        val status: String = ""
     }
 }

@@ -6,52 +6,52 @@ import com.google.gson.annotations.SerializedName
 class JourneyEntity(
         @SerializedName("id")
         @Expose
-        val id: Long,
+        val id: Long = 0,
         @SerializedName("status")
         @Expose
-        val status: Int,
+        val status: Int = 0,
         @SerializedName("departure_id")
         @Expose
-        val departureAirportId: String,
+        val departureAirportId: String = "",
         @SerializedName("departure_time")
         @Expose
-        val departureTime: String,
+        val departureTime: String = "",
         @SerializedName("departure_airport_name")
         @Expose
-        val departureAirportName: String,
+        val departureAirportName: String = "",
         @SerializedName("departure_terminal")
         @Expose
-        val departureTerminal: String,
+        val departureTerminal: String = "",
         @SerializedName("departure_city_name")
         @Expose
-        val departureCityName: String,
+        val departureCityName: String = "",
         @SerializedName("arrival_id")
         @Expose
-        val arrivalAirportId: String,
+        val arrivalAirportId: String = "",
         @SerializedName("arrival_time")
         @Expose
-        val arrivalTime: String,
+        val arrivalTime: String = "",
         @SerializedName("arrival_airport_name")
         @Expose
-        val arrivalAirportName: String,
+        val arrivalAirportName: String = "",
         @SerializedName("arrival_terminal")
         @Expose
-        val arrivalTerminal: String,
+        val arrivalTerminal: String = "",
         @SerializedName("arrival_city_name")
         @Expose
-        val arrivalCityName: String,
+        val arrivalCityName: String = "",
         @SerializedName("total_transit")
         @Expose
-        val totalTransit: Int,
+        val totalTransit: Int = 0,
         @SerializedName("total_stop")
         @Expose
-        val totalStop: Int,
+        val totalStop: Int = 0,
         @SerializedName("routes")
         @Expose
         val routes: List<RouteEntity>,
         @SerializedName("duration")
         @Expose
-        val duration: String,
+        val duration: String = "",
         @SerializedName("add_day_arrival")
         @Expose
-        val addDayArrival: String)
+        val addDayArrival: String = "")

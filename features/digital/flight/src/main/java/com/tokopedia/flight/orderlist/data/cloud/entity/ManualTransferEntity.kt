@@ -10,19 +10,19 @@ import com.google.gson.annotations.SerializedName
 class ManualTransferEntity(
         @SerializedName("unique_code")
         @Expose
-        val uniqueCode: Int,
+        val uniqueCode: Int = 0,
         @SerializedName("total")
         @Expose
-        val total: String,
+        val total: String = "",
         @SerializedName("account_bank_name")
         @Expose
-        val accountBankName: String,
+        val accountBankName: String = "",
         @SerializedName("account_branch")
         @Expose
-        val accountBranch: String,
+        val accountBranch: String = "",
         @SerializedName("account_name")
         @Expose
-        val accountName: String,
+        val accountName: String = "",
         @SerializedName("account_no")
         @Expose
-        val accountNo: String)
+        val accountNo: String = "")

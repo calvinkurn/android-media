@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName
 class StopDetailEntity(
         @SerializedName("code")
         @Expose
-        val code: String,
+        val code: String = "",
         @SerializedName("city")
         @Expose
-        val city: String)
+        val city: String = "")
     : Parcelable {
 
     constructor(parcel: Parcel) : this(

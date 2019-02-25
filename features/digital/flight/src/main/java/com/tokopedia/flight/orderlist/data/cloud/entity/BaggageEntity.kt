@@ -13,7 +13,7 @@ class BaggageEntity(
         var isUpTo: Boolean = false,
         @SerializedName("unit")
         @Expose
-        var unit: String,
+        var unit: String = "",
         @SerializedName("value")
         @Expose
-        var value: String)
+        var value: String = "")

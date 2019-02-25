@@ -6,40 +6,40 @@ import com.google.gson.annotations.SerializedName
 class FlightEntity(
         @SerializedName("email")
         @Expose
-        val email: String,
+        val email: String = "",
         @SerializedName("phone")
         @Expose
-        val phone: String,
+        val phone: String = "",
         @SerializedName("invoice_uri")
         @Expose
-        val invoiceUri: String,
+        val invoiceUri: String = "",
         @SerializedName("eticket_uri")
         @Expose
-        val eticketUri: String,
+        val eticketUri: String = "",
         @SerializedName("total_adult")
         @Expose
-        val totalAdult: String,
+        val totalAdult: String = "",
         @SerializedName("total_adult_numeric")
         @Expose
-        val totalAdultNumeric: Int,
+        val totalAdultNumeric: Int = 0,
         @SerializedName("total_child")
         @Expose
-        val totalChild: String,
+        val totalChild: String = "",
         @SerializedName("total_child_numeric")
         @Expose
-        val totalChildNumeric: Int,
+        val totalChildNumeric: Int = 0,
         @SerializedName("total_infant")
         @Expose
-        val totalInfant: String,
+        val totalInfant: String = "",
         @SerializedName("total_infant_numeric")
         @Expose
-        val totalInfantNumeric: Int,
+        val totalInfantNumeric: Int = 0,
         @SerializedName("currency")
         @Expose
-        val currency: String,
+        val currency: String = "",
         @SerializedName("pdf")
         @Expose
-        val pdf: String,
+        val pdf: String = "",
         @SerializedName("journeys")
         @Expose
         val journeys: List<JourneyEntity>,
@@ -57,4 +57,4 @@ class FlightEntity(
         val cancellations: List<CancellationEntity>,
         @SerializedName("contact_us_url")
         @Expose
-        val contactUsUrl: String)
+        val contactUsUrl: String = "")

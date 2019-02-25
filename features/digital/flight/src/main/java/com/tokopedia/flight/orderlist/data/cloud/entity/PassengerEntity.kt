@@ -10,34 +10,34 @@ import com.google.gson.annotations.SerializedName
 class PassengerEntity(
         @SerializedName("id")
         @Expose
-        val id: String,
+        val id: String = "",
         @SerializedName("type")
         @Expose
-        val type: Int,
+        val type: Int = 0,
         @SerializedName("title")
         @Expose
-        val title: Int,
+        val title: Int = 0,
         @SerializedName("first_name")
         @Expose
-        val firstName: String,
+        val firstName: String = "",
         @SerializedName("last_name")
         @Expose
-        val lastName: String,
+        val lastName: String = "",
         @SerializedName("dob")
         @Expose
-        val dob: String,
+        val dob: String = "",
         @SerializedName("nationality")
         @Expose
-        val nationality: String,
+        val nationality: String = "",
         @SerializedName("passport_no")
         @Expose
-        val passportNo: String,
+        val passportNo: String = "",
         @SerializedName("passport_country")
         @Expose
-        val passportCountry: String,
+        val passportCountry: String = "",
         @SerializedName("passport_expiry")
         @Expose
-        val passportExpiry: String,
+        val passportExpiry: String = "",
         @SerializedName("amenities")
         @Expose
         val amenities: List<PassengerAmentityEntity>)
