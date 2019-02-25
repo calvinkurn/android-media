@@ -19,7 +19,6 @@
     <string name="title_reply_review">Ulasan yang dibalas</string>
     <string name="msg_new_order">Toko Anda mendapat pesanan baru, mohon diproses</string>
     <string name="title_new_message">Pesan baru</string>
-    <string name="BRANCH_SDK_KEY">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="notification_dialog_content_seller_app">Kami mendeteksi aplikasi utama Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
     <string name="notification_dialog_positive_button">Pengaturan</string>
     <string name="notification_dialog_content_main_app">Kami mendeteksi aplikasi Seller Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>

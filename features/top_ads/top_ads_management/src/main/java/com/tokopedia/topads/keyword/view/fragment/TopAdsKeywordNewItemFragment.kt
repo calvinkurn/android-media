@@ -12,17 +12,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
-import com.tkpd.library.ui.expandablelayout.ExpandableLayoutListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.design.widget.ExpandableView.ExpandableLayoutListener
 import com.tokopedia.topads.R
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum
 import com.tokopedia.topads.keyword.helper.KeywordTypeMapper
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewItemActivity
-import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 import kotlinx.android.synthetic.main.fragment_top_ads_keyword_new_item.*
 import java.util.*
 
@@ -188,7 +187,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
         }
         seeDetailToggleIcon.rotation = 0f
         seeDetailToggleDesc.apply {
-            isExpanded = false
+            setExpanded(false)
             setListener(object : ExpandableLayoutListener {
                 override fun onAnimationEnd() {}
 

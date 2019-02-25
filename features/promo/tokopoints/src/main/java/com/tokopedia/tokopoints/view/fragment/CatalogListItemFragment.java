@@ -294,6 +294,12 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
+
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
+                title);
     }
 
     public void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode) {

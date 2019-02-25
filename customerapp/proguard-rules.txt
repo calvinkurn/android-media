@@ -371,3 +371,6 @@
 
 -keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}
+
+# -- App indexing
+-dontwarn com.google.firebase.appindexing.**

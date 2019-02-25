@@ -16,10 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -29,10 +27,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.item
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.Endpoint;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 import java.util.ArrayList;
@@ -47,6 +46,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.search_header_layout;
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String SHOP = "shop";
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
@@ -57,11 +57,12 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
-    private boolean isAdsBannerLoaded = false;
+    private final String searchQuery;
 
-    public HeaderViewHolder(View itemView, ProductListener productListener, Config topAdsConfig) {
+    public HeaderViewHolder(View itemView, ProductListener productListener, String searchQuery) {
         super(itemView);
         context = itemView.getContext();
+        this.searchQuery = searchQuery;
         this.productListener = productListener;
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
@@ -74,29 +75,24 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 context.getResources().getDimensionPixelSize(R.dimen.dp_8),
                 context.getResources().getDimensionPixelSize(R.dimen.dp_16)
         ));
-        //initTopAds(topAdsConfig);
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 productListener.onBannerAdsClicked(applink);
+                if (applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
+                } else {
+                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position);
+                }
             }
         });
-    }
-
-    private void initTopAds(Config topAdsConfig) {
-        TopAdsParams newParam = new TopAdsParams();
-        newParam.getParam().putAll(topAdsConfig.getTopAdsParams().getParam());
-        newParam.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
-        newParam.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
-        Config newConfig = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(productListener.getUserId())
-                .setEndpoint(Endpoint.CPM)
-                .topAdsParams(newParam)
-                .build();
-        adsBannerView.setConfig(newConfig);
-        adsBannerView.loadTopAds();
+        adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventSearchResultPromoView(context, data, position);
+            }
+        });
     }
 
     private void initQuickFilterRecyclerView() {
@@ -111,10 +107,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @Override
     public void bind(final HeaderViewModel element) {
-        if (!isAdsBannerLoaded) {
-            adsBannerView.displayAds(element.getCpmModel());
-            isAdsBannerLoaded = true;
-        }
+        adsBannerView.displayAds(element.getCpmModel());
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
             View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);

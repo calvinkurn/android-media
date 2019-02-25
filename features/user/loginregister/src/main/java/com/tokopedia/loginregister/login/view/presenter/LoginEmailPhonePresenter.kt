@@ -14,6 +14,7 @@ import com.tokopedia.loginregister.login.view.listener.LoginContract
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.login.view.subscriber.LoginSubscriber
+import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWithSosmedUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
@@ -37,7 +38,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    LoginWithSosmedUseCase,
                                                    private val registerValidationUseCase:
                                                    RegisterValidationUseCase,
-                                                   private val loginEmailUseCase: LoginEmailUseCase)
+                                                   private val loginEmailUseCase:
+                                                   LoginEmailUseCase,
+                                                   private val loginWebviewUseCase: LoginWebviewUseCase
+)
     : BaseDaggerPresenter<LoginContract.View>(),
         LoginEmailPhoneContract.Presenter {
 
@@ -146,6 +150,44 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                         email, view, LoginRegisterAnalytics.GOOGLE))
     }
 
+
+    override fun loginWebview(data: Intent?) {
+        val BUNDLE = "bundle"
+        val ERROR = "error"
+        val CODE = "code"
+        val MESSAGE = "message"
+        val SERVER = "server"
+        val PATH = "path"
+        val HTTPS = "https://"
+        val ACTIVATION_SOCIAL = "activation-social"
+
+        if (!(data?.getBundleExtra(BUNDLE) == null
+                        || data.getBundleExtra(BUNDLE).getString(PATH) == null)) {
+            val bundle = data.getBundleExtra(BUNDLE)
+            if (bundle.getString(PATH, "").contains(ERROR)) {
+                view.onErrorLoginSosmed(LoginRegisterAnalytics.WEBVIEW,
+                        bundle.getString(MESSAGE, "")
+                                + view.context.getString(R.string.code_error) + " " +
+                                ErrorHandlerSession.ErrorCode.WS_ERROR)
+            } else if (bundle.getString(PATH, "").contains(CODE)) {
+                view.showLoadingLogin()
+                loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString(CODE, ""), (HTTPS + bundle.getString(SERVER) + bundle.getString(PATH))),
+                        LoginThirdPartySubscriber(view.context,
+                                view.loginRouter,
+                                "", view, LoginRegisterAnalytics.WEBVIEW))
+            } else if (bundle.getString(PATH, "").contains(ACTIVATION_SOCIAL)) {
+                view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                        view.context))
+            }
+        } else {
+            view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                    view.context))
+        }
+    }
+
+
     override fun login(email: String, password: String) {
         view.resetError()
         if (isValid(email, password)) {
@@ -187,6 +229,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         loginWithSosmedUseCase.unsubscribe()
         registerValidationUseCase.unsubscribe()
         loginEmailUseCase.unsubscribe()
+        loginWebviewUseCase.unsubscribe()
+
     }
 
     override fun discoverLogin() {
@@ -204,10 +248,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     override fun getLoginIdList(): ArrayList<String> {
         //NOT USED
         return ArrayList()
-    }
-
-    override fun loginWebview(data: Intent?) {
-        //NOT USED
     }
 
 }

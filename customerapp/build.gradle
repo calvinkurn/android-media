@@ -117,8 +117,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 311801101;
-        defaultVersionName = "3.18";
+        defaultVersionCode = 322001101;
+        defaultVersionName = "3.22";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -344,6 +344,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.expressCheckout)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticaddaddress)
@@ -362,6 +363,7 @@ dependencies {
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
@@ -391,7 +393,9 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
+    implementation project(rootProject.ext.features.categoryCommon)
 
+    implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
@@ -460,9 +464,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation (rootProject.ext.analyticsDependencies.branch) {
-        exclude module: 'answers-shim'
-    }
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
@@ -544,6 +545,8 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.features.challenges)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmnotification)
@@ -551,6 +554,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackinterface)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
+    implementation project(rootProject.ext.libraries.cacheManager)
 }
 
 

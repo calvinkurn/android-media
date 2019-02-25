@@ -22,6 +22,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -90,7 +91,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
         topAdsBannerView.setConfig(bannerAdsConfig);
         topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String appLink) {
+            public void onBannerAdsClicked(int position, String appLink, CpmData data) {
                 productListener.onBannerAdsClicked(appLink);
             }
         });

@@ -52,6 +52,7 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
         dataResult.setMultiple(shipmentAddressFormDataResponse.getIsMultiple() == 1);
         dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
+        dataResult.setIsBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
@@ -131,6 +132,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     userAddressResult.setProvinceId(groupAddress.getUserAddress().getProvinceId());
                     userAddressResult.setProvinceName(groupAddress.getUserAddress().getProvinceName());
                     userAddressResult.setReceiverName(groupAddress.getUserAddress().getReceiverName());
+                    userAddressResult.setCornerId(groupAddress.getUserAddress().getCornerId());
 
                     groupAddressResult.setUserAddress(userAddressResult);
                 }
@@ -239,7 +241,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductShopType(generateShopType(groupShop.getShop()));
                                 analyticsProductCheckoutData.setProductVariant("");
                                 analyticsProductCheckoutData.setProductBrand("");
-                                analyticsProductCheckoutData.setProductQuantity(String.valueOf(product.getProductQuantity()));
+                                analyticsProductCheckoutData.setProductQuantity(product.getProductQuantity());
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
                                 if (product.getErrors() != null) {

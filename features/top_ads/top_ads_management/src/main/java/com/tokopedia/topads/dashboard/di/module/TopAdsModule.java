@@ -7,10 +7,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
@@ -44,18 +40,6 @@ import retrofit2.Retrofit;
 @TopAdsScope
 @Module
 public class TopAdsModule {
-
-    @TopAdsScope
-    @Provides
-    public ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
-        return jobExecutor;
-    }
-
-    @TopAdsScope
-    @Provides
-    public PostExecutionThread providePostExecutionThread(UIThread uiThread) {
-        return uiThread;
-    }
 
     @TopAdsScope
     @Provides
@@ -103,9 +87,8 @@ public class TopAdsModule {
 
     @TopAdsScope
     @Provides
-    public GetDepositTopAdsUseCase provideGetDepositTopAdsUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                                                  GetDepositTopAdsRepository getDepositTopAdsRepository) {
-        return new GetDepositTopAdsUseCase(threadExecutor, postExecutionThread, getDepositTopAdsRepository);
+    public GetDepositTopAdsUseCase provideGetDepositTopAdsUseCase(GetDepositTopAdsRepository getDepositTopAdsRepository) {
+        return new GetDepositTopAdsUseCase(getDepositTopAdsRepository);
     }
 
     @TopAdsScope
