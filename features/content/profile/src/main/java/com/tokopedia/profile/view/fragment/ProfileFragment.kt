@@ -604,6 +604,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 goToDashboard()
             }
         }
+        if (!element.isAffiliate) {
+            iv_action_parallax.visibility = View.GONE
+            iv_action.visibility = View.GONE
+        }
         iv_action.setOnClickListener(action)
         iv_action_parallax.setOnClickListener(action)
 
