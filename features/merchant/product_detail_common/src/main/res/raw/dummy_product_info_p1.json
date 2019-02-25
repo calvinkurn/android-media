@@ -5,7 +5,7 @@
       "shopID": 480202,
       "name": "Contoh Variant 2 Level",
       "alias": "contoh-variant-2-level",
-      "price": 100000000,
+      "price": 1000,
       "priceCurrency": "IDR",
       "lastUpdatePrice": "19-02-2018, 20:22 WIB",
       "description": "Ini adalah contoh dekripsi\r\n\r\n script   script   br /   br / \r\n\r\nTest deskripsi & test",
@@ -57,7 +57,58 @@
         }
       ]
     },
-    "pictures": [],
+    "pictures": [{
+      "picID": "21125351",
+      "fileName": "3045010_fb2ec497-e8ab-407e-bc70-a9870de612d7_511_450.png",
+      "filePath": "product-1/2018/2/19/3045010",
+      "description": "",
+      "isFromIG": false,
+      "width": 511,
+      "height": 450,
+      "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_fb2ec497-e8ab-407e-bc70-a9870de612d7_511_450.png",
+      "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/2/19/3045010/3045010_fb2ec497-e8ab-407e-bc70-a9870de612d7_511_450.png",
+      "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2018/2/19/3045010/3045010_fb2ec497-e8ab-407e-bc70-a9870de612d7_511_450.png",
+      "status": 2
+    },
+      {
+        "picID": "21125352",
+        "fileName": "3045010_9e7b0da2-ee61-4df2-a063-884f51ae39d7_511_450.png",
+        "filePath": "product-1/2018/2/19/3045010",
+        "description": "",
+        "isFromIG": false,
+        "width": 511,
+        "height": 450,
+        "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_9e7b0da2-ee61-4df2-a063-884f51ae39d7_511_450.png",
+        "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/2/19/3045010/3045010_9e7b0da2-ee61-4df2-a063-884f51ae39d7_511_450.png",
+        "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2018/2/19/3045010/3045010_9e7b0da2-ee61-4df2-a063-884f51ae39d7_511_450.png",
+        "status": 1
+      },
+      {
+        "picID": "21125353",
+        "fileName": "3045010_6a4fb6bf-3734-42ee-94fd-2fe298424253_511_450.png",
+        "filePath": "product-1/2018/2/19/3045010",
+        "description": "",
+        "isFromIG": false,
+        "width": 511,
+        "height": 450,
+        "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_6a4fb6bf-3734-42ee-94fd-2fe298424253_511_450.png",
+        "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/2/19/3045010/3045010_6a4fb6bf-3734-42ee-94fd-2fe298424253_511_450.png",
+        "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2018/2/19/3045010/3045010_6a4fb6bf-3734-42ee-94fd-2fe298424253_511_450.png",
+        "status": 1
+      },
+      {
+        "picID": "21125354",
+        "fileName": "3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
+        "filePath": "product-1/2018/2/19/3045010",
+        "description": "",
+        "isFromIG": false,
+        "width": 511,
+        "height": 450,
+        "urlOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
+        "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/2/19/3045010/3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
+        "url300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2018/2/19/3045010/3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
+        "status": 1
+      }],
     "preorder": {
       "isActive": true,
       "duration": 1,
@@ -66,20 +117,20 @@
     "wholesale": [
       {
         "minQty": 101,
-        "price": 99000000
+        "price": 990
       },
       {
         "minQty": 103,
-        "price": 98000000
+        "price": 980
       }
     ],
     "campaign": {
       "campaignID": "0",
       "campaignType": 0,
       "campaignTypeName": "",
-      "percentageAmount": 0,
-      "originalPrice": 0,
-      "discountedPrice": 0,
+      "percentageAmount": 10,
+      "originalPrice": 5000,
+      "discountedPrice": 4500,
       "stock": 0,
       "isActive": true,
       "isAppsOnly": false,

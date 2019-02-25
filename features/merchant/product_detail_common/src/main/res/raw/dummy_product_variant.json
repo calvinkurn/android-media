@@ -142,7 +142,10 @@
           "IsAppsOnly": false
         },
         "Stock": {
-          "IsLimitedStock": false,
+          "Stock" : 100,
+          "IsBuyable" : true,
+          "AlwaysAvailable" : false,
+          "IsLimitedStock": true,
           "StockWording": "",
           "StockWordingHTML": "",
           "OtherVariantStock": "",
@@ -185,6 +188,9 @@
           "IsAppsOnly": false
         },
         "Stock": {
+          "Stock" : 0,
+          "IsBuyable" : false,
+          "AlwaysAvailable" : false,
           "IsLimitedStock": false,
           "StockWording": "",
           "StockWordingHTML": "",
@@ -228,7 +234,10 @@
           "IsAppsOnly": false
         },
         "Stock": {
-          "IsLimitedStock": false,
+          "Stock" : 100,
+          "IsBuyable" : true,
+          "AlwaysAvailable" : false,
+          "IsLimitedStock": true,
           "StockWording": "",
           "StockWordingHTML": "",
           "OtherVariantStock": "",
@@ -271,7 +280,10 @@
           "IsAppsOnly": false
         },
         "Stock": {
-          "IsLimitedStock": false,
+          "Stock" : 100,
+          "IsBuyable" : true,
+          "AlwaysAvailable" : false,
+          "IsLimitedStock": true,
           "StockWording": "",
           "StockWordingHTML": "",
           "OtherVariantStock": "",
@@ -314,7 +326,10 @@
           "IsAppsOnly": false
         },
         "Stock": {
-          "IsLimitedStock": false,
+          "Stock" : 100,
+          "IsBuyable" : true,
+          "AlwaysAvailable" : false,
+          "IsLimitedStock": true,
           "StockWording": "",
           "StockWordingHTML": "",
           "OtherVariantStock": "",
@@ -357,7 +372,10 @@
           "IsAppsOnly": false
         },
         "Stock": {
-          "IsLimitedStock": false,
+          "Stock" : 100,
+          "IsBuyable" : true,
+          "AlwaysAvailable" : false,
+          "IsLimitedStock": true,
           "StockWording": "",
           "StockWordingHTML": "",
           "OtherVariantStock": "",
@@ -400,7 +418,10 @@
           "IsAppsOnly": false
         },
         "Stock": {
-          "IsLimitedStock": false,
+          "Stock" : 100,
+          "IsBuyable" : true,
+          "AlwaysAvailable" : false,
+          "IsLimitedStock": true,
           "StockWording": "",
           "StockWordingHTML": "",
           "OtherVariantStock": "",

@@ -91,4 +91,12 @@ data class Basic(
         @SerializedName("weightUnit")
         @Expose
         val weightUnit: String = WeightTypeDef.UNKNOWN
-)
+) {
+    fun isWarehouse(): Boolean {
+        return status == ProductStatusTypeDef.WAREHOUSE
+    }
+
+    fun isActive(): Boolean {
+        return status == ProductStatusTypeDef.ACTIVE
+    }
+}

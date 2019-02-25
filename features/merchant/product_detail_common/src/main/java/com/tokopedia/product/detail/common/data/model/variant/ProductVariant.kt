@@ -42,7 +42,13 @@ data class ProductVariant(
         @SerializedName("Children")
         @Expose
         var children: List<Child>? = null
-)
+) {
+        val hasChildren: Boolean
+                get() = with(children) {this!= null && this.isNotEmpty() }
+
+        val hasVariant: Boolean
+                get() = with(variant) {this!= null && this.isNotEmpty() }
+}
 
 data class Picture(
 

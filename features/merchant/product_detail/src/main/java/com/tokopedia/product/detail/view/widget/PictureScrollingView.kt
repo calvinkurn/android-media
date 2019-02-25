@@ -32,8 +32,8 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(pictures: List<Picture>, onPictureClickListener: ((Int) -> Unit)?) {
-        val photoList = if (pictures.isEmpty()) {
+    fun renderData(pictures: List<Picture>?, onPictureClickListener: ((Int) -> Unit)?) {
+        val photoList = if (pictures== null || pictures.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
             val uriNoPhoto = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE

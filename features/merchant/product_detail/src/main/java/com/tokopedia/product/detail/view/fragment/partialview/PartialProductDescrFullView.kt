@@ -112,7 +112,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
             label_see_detail_product_descr.setOnClickListener {
                 view.context.startActivity(ProductFullDescriptionActivity.createIntent(view.context,
                         data.basic.name, data.basic.price, shopInfo?.shopCore?.name ?: "",
-                        data.pictures[0].urlThumbnail,
+                        data.firstThumbnailPicture,
                         data.basic.description, data.videos.map { it.url },
                         shopInfo?.goldOS?.isOfficial == 1))
                 activity?.overridePendingTransition(R.anim.pull_up, 0)

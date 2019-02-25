@@ -30,8 +30,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -40,18 +40,17 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.constant.ATC_AND_SELECT
-import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.ProductInfoP1
-import com.tokopedia.product.detail.data.model.ProductInfoP2
-import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.data.model.ProductInfoP1
+import com.tokopedia.product.detail.data.model.ProductInfoP2
+import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -59,11 +58,11 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.partialview.*
-import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
+import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -96,7 +95,6 @@ import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
@@ -135,7 +133,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private var userInputNotes = ""
     private var userInputQuantity = 0
-    private var userInputVariant: ArrayList<Int> = arrayListOf()
+    private var userInputVariant: String? = null
 
     private val productDetailTracking: ProductDetailTracking by lazy {
         ProductDetailTracking((context?.applicationContext as? AbstractionRouter)?.analyticTracker)
@@ -194,8 +192,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (savedInstanceState != null) {
             userInputNotes = savedInstanceState.getString(SAVED_NOTE, "")
             userInputQuantity = savedInstanceState.getInt(SAVED_QUANTITY, 1)
-            userInputVariant = savedInstanceState.getIntegerArrayList(SAVED_VARIANT)
-                    ?: arrayListOf()
+            userInputVariant = savedInstanceState.getString(SAVED_VARIANT)
         }
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -647,9 +644,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
             val data = productInfo ?: return
 
-            actionButtonView.renderData(data.basic.status,
+            actionButtonView.renderData(data.basic.isWarehouse(),
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
-                            || shopInfo.isAllowManage == 1),
+                            || shopInfo.allowManage),
                     data.preorder)
 
             actionButtonView.promoTopAdsClick = {
@@ -753,8 +750,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         txt_last_update.text = getString(R.string.template_last_update_price, data.basic.lastUpdatePrice)
         txt_last_update.visible()
 
-        if (data.wholesale.isNotEmpty()) {
-            val minPrice = data.wholesale.minBy { it.price }?.price ?: return
+        if (data.hasWholesale) {
+            val minPrice = data.wholesale?.minBy { it.price }?.price ?: return
             label_min_wholesale.text = getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
             label_wholesale.visibility = View.VISIBLE
             label_min_wholesale.visibility = View.VISIBLE
@@ -885,7 +882,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     fun getImageURIPaths(): ArrayList<String> {
-        val arrayList = ArrayList(productInfo?.run { pictures.map { it.urlOriginal } } ?: listOf())
+        val arrayList = ArrayList(productInfo?.run { pictures?.map { it.urlOriginal } } ?: listOf())
 
         if (hasVariant()) {
             //TODO
@@ -1082,7 +1079,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 productInfo!!.basic.url,
                 "",
                 productInfo!!.basic.id.toString(),
-                productInfo!!.pictures.getOrNull(0)?.urlOriginal ?: ""
+                productInfo!!.pictures?.getOrNull(0)?.urlOriginal ?: ""
         )
 
         productShare.share(productData, {
@@ -1124,6 +1121,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_NOTE, userInputNotes)
         outState.putInt(SAVED_QUANTITY, userInputQuantity)
-        outState.putIntegerArrayList(SAVED_VARIANT, userInputVariant)
+        outState.putString(SAVED_VARIANT, userInputVariant)
     }
 }

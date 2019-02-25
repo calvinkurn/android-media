@@ -39,8 +39,8 @@ class PartialButtonActionView private constructor(private val view: View){
         }
     }
 
-    fun renderData(productStatus: String, hasShopAuthority: Boolean, preOrder: PreOrder?){
-        if (productStatus == ProductStatusTypeDef.WAREHOUSE) {
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?){
+        if (isWarehouseProduct) {
             showNoStockButton()
         } else if (hasShopAuthority){
             showShopManageButton()
@@ -56,7 +56,7 @@ class PartialButtonActionView private constructor(private val view: View){
             btn_promote_topads.visibility = View.GONE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
-            tv_buy_now.text = context.getString(if (preOrder?.isActive == true && preOrder.duration > 0){
+            tv_buy_now.text = context.getString(if (preOrder?.isPreOrderActive() == true){
                 R.string.action_preorder
             } else R.string.buy)
             btn_buy_now.visibility = View.VISIBLE

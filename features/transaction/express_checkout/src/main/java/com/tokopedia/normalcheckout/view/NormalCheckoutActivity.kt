@@ -15,7 +15,7 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESU
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener {
+open class NormalCheckoutActivity : BaseSimpleActivity() {
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -34,7 +34,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
         @JvmStatic
         fun getIntent(context: Context, shopId: String, productId: String,
                       notes: String? = "", quantity: Int? = 0,
-                      selectedVariantId: ArrayList<Int>? = null,
+                      selectedVariantId: String? = null,
                       @ProductAction action: Int = ATC_AND_BUY,
                       placeholderProductImage: String? = ""): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
@@ -62,23 +62,16 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), NormalCheckoutListener
                     getString(EXTRA_PRODUCT_ID),
                     getString(EXTRA_NOTES),
                     getInt(EXTRA_QUANTITY),
-                    getStringArrayList(EXTRA_SELECTED_VARIANT_ID),
+                    getString(EXTRA_SELECTED_VARIANT_ID),
                     getInt(EXTRA_ACTION),
                     getString(EXTRA_PRODUCT_IMAGE))
         }
         return Fragment()
     }
 
-    override fun finishWithResult(messages: String) {
-        val intentResult = Intent()
-        intentResult.putExtra(EXTRA_MESSAGES_ERROR, messages)
-        setResult(RESULT_CODE_ERROR, intentResult)
-        finish()
-        overridePendingTransition(0, R.anim.push_down)
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
+        //TODO set user input
         overridePendingTransition(0, R.anim.push_down)
     }
 }

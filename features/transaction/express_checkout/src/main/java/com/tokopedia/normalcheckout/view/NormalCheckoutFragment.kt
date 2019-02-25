@@ -16,27 +16,29 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
-import com.tokopedia.expresscheckout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
+import com.tokopedia.normalcheckout.constant.ATC_AND_SELECT
+import com.tokopedia.normalcheckout.constant.ATC_ONLY
 import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
@@ -44,6 +46,7 @@ import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.payment.model.PaymentPassData
+import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
@@ -73,18 +76,18 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private lateinit var router: NormalCheckoutRouter
     private lateinit var adapter: CheckoutVariantAdapter
-    private lateinit var fragmentListener: NormalCheckoutListener
-    private val compositeSubscription = CompositeSubscription()
 
     var shopId: String? = null
     var productId: String? = null
     var notes: String? = null
-    var quantity: Int? = null
-    var selectedVariantId: ArrayList<String>? = null
+    var quantity: Int = 0
+    var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
     lateinit var recyclerView: RecyclerView
     @ProductAction
     var action: Int = ATC_AND_BUY
+
+    var selectedProductInfo: ProductInfo? = null
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -97,7 +100,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
-                           selectedVariantId: ArrayList<String>? = null,
+                           selectedVariantId: String? = null,
                            @ProductAction action: Int = ATC_AND_BUY,
                            placeholderProductImage: String?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
@@ -108,8 +111,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putInt(EXTRA_QUANTITY, quantity ?: 0)
                     putInt(EXTRA_ACTION, action)
                     putString(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
-                    putStringArrayList(EXTRA_SELECTED_VARIANT_ID, selectedVariantId
-                            ?: arrayListOf<String>())
+                    putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId ?: "")
                 }
             }
 
@@ -138,13 +140,100 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun onSuccessGetProductInfo(productInfoAndVariant: ProductInfoAndVariant) {
-        val viewModels = ModelMapper.convertToModels(productInfoAndVariant,
-                notes, quantity ?: 0, selectedVariantId)
-        fragmentViewModel.viewModels = viewModels
-        adapter.clearAllElements()
-        adapter.addDataViewModel(viewModels)
-        adapter.notifyDataSetChanged()
+        selectedProductInfo = getProductInfo(productInfoAndVariant, selectedVariantId)
+        selectedProductInfo?.let { it ->
+            val viewModels = ModelMapper.convertToModels(it, productInfoAndVariant.productVariant,
+                    notes, quantity)
+            fragmentViewModel.viewModels = viewModels
+            quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity ?: 0
+            adapter.clearAllElements()
+            adapter.addDataViewModel(viewModels)
+            adapter.notifyDataSetChanged()
+            renderActionButton(it)
+            renderTotalPrice(it)
+        }
+    }
 
+    fun getProductInfo(productInfoAndVariant: ProductInfoAndVariant, selectedVariantId: String?): ProductInfo {
+        //TODO get product by selected variant
+        return productInfoAndVariant.productInfo
+    }
+
+    private fun renderActionButton(productInfo: ProductInfo) {
+        if (GlobalConfig.isCustomerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
+                productInfo.basic.isActive()) {
+            if (productInfo.basic.isWarehouse()) { //out of stock
+                showFullButton(false, false, false)
+            } else {
+                button_buy_full.gone()
+                button_buy_partial.visible()
+                rl_bottom_action_container.visible()
+                if (action == ATC_AND_SELECT || action == ATC_AND_BUY) {
+                    button_cart.visible()
+                } else {
+                    button_cart.gone()
+                }
+                button_buy_partial.text = if (action == ATC_ONLY) {
+                    getString(R.string.add_to_cart)
+                } else if (productInfo.isPreorderActive) {
+                    getString(R.string.label_button_preorder)
+                } else {
+                    getString(R.string.label_button_buy)
+                }
+                if (hasError()) {
+                    button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+                } else {
+                    button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
+                }
+            }
+        } else { // sellerapp
+            showFullButton(productInfo.basic.isWarehouse(), productInfo.isPreorderActive, false)
+        }
+    }
+
+    private fun renderTotalPrice(productInfo: ProductInfo) {
+        // if it has campaign, use campaign price
+        var totalString: String = ""
+        if (productInfo.campaign.activeAndHasId) {
+            totalString = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    productInfo.campaign.discountedPrice.toDouble() * quantity, true)
+        } else {
+            // if it has wholesale, use the price in the wholesale range
+            if (productInfo.hasWholesale) {
+                productInfo.wholesale!!.forEachIndexed { index, item ->
+                    val hasNextItem = (index + 1) < (productInfo.wholesale!!.size)
+                    val isLessThanNextMinQty = if (hasNextItem) {
+                        quantity < productInfo.wholesale!![index + 1].minQty
+                    } else true
+                    if (quantity >= item.minQty && isLessThanNextMinQty) {
+                        totalString = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                item.price.toDouble() * quantity, true)
+                    }
+                }
+            }
+        }
+        tv_total.text = if (totalString.isEmpty()) {
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    productInfo.basic.price.toDouble() * quantity, true)
+        } else {
+            totalString
+        }
+    }
+
+    // show disabled secondary-buy button, and hide main buttons
+    private fun showFullButton(hasStock: Boolean = false,
+                               isPreorder: Boolean = false, enabled: Boolean = false) {
+        rl_bottom_action_container.gone()
+        button_buy_full.visible()
+        button_buy_full.text = if (!hasStock) {
+            getString(R.string.no_stock)
+        } else if (isPreorder) {
+            getString(R.string.label_button_preorder)
+        } else {
+            getString(R.string.label_button_buy)
+        }
+        button_buy_full.isClickable = enabled
+        button_buy_full.isEnabled = enabled
     }
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
@@ -177,10 +266,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
         if (savedInstanceState == null) {
             if (argument != null) {
-                selectedVariantId = argument.getStringArrayList(EXTRA_SELECTED_VARIANT_ID)
+                selectedVariantId = argument.getString(EXTRA_SELECTED_VARIANT_ID)
             }
         } else {
-            selectedVariantId = savedInstanceState.getStringArrayList(EXTRA_SELECTED_VARIANT_ID)
+            selectedVariantId = savedInstanceState.getString(EXTRA_SELECTED_VARIANT_ID)
+            notes = savedInstanceState.getString(EXTRA_NOTES)
+            quantity = savedInstanceState.getInt(EXTRA_QUANTITY)
         }
 
         super.onCreate(savedInstanceState)
@@ -195,13 +286,35 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         recyclerView.addItemDecoration(CheckoutVariantItemDecorator())
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         super.onViewCreated(view, savedInstanceState)
+        button_buy_partial.setOnClickListener {
+            if (hasError()) {
+                return@setOnClickListener
+            }
+            //TODO buy
+            if (action == ATC_ONLY) {
+                addToCart()
+            } else {
+                // TODO buy or preorder
+            }
+        }
+        button_cart.setOnClickListener {
+            addToCart()
+        }
+    }
 
+    private fun addToCart() {
+        //TODO add to cart
+    }
+
+    override fun showData(viewModels: ArrayList<Visitable<*>>) {
+        // no op, we use onSuccess
     }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        fragmentListener = context as NormalCheckoutListener
-        router = context.applicationContext as NormalCheckoutRouter
+        context?.run {
+            router = applicationContext as NormalCheckoutRouter
+        }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
@@ -216,7 +329,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-
+        // no op
     }
 
     override fun loadData(page: Int) {
@@ -254,17 +367,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onClickInsuranceInfo(insuranceInfo: String) {
-        if (activity != null) {
-            val tooltip = Tooltip(activity as Context)
-            tooltip.setTitle(activity?.getString(R.string.title_bottomsheet_insurance))
-            tooltip.setDesc(insuranceInfo)
-            tooltip.setTextButton(activity?.getString(R.string.label_button_bottomsheet_close))
-            tooltip.setIcon(R.drawable.ic_insurance)
-            tooltip.btnAction.setOnClickListener {
-                tooltip.dismiss()
-            }
-            tooltip.show()
-        }
+        // no op
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
@@ -385,47 +488,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
-        val productViewModel = fragmentViewModel.getProductViewModel()
-        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
-
-        if (fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.isNotEmpty() == true) {
-            val wholesalePriceModels = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.asReversed()
-            if (wholesalePriceModels != null) {
-                var eligibleForWholesalePrice = false
-                for (wholesalePriceModel: WholesalePriceModel in wholesalePriceModels) {
-                    if (quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMax ||
-                            (quantityViewModel.orderQuantity < wholesalePriceModel.qtyMax &&
-                                    quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMin)) {
-                        productViewModel?.productPrice = wholesalePriceModel.prdPrc
-                        eligibleForWholesalePrice = true
-                        break
-                    }
-                }
-                if (!eligibleForWholesalePrice) {
-                    productViewModel?.productPrice = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice
-                            ?: 0
-                }
-            }
+        quantity = quantityViewModel.orderQuantity
+        //TODO check with the previous code
+        selectedProductInfo?.let {
+            renderActionButton(it)
+            renderTotalPrice(it)
         }
-
-        if (productViewModel?.productChildrenList != null && productViewModel.productChildrenList.size > 0) {
-            for (productChild: ProductChild in productViewModel.productChildrenList) {
-                if (productChild.isSelected) {
-                    summaryViewModel?.itemPrice = productChild.productPrice.toLong() * quantityViewModel.orderQuantity
-                    break
-                }
-            }
-        } else {
-            summaryViewModel?.itemPrice = productViewModel?.productPrice?.toLong()?.times(quantityViewModel.orderQuantity)
-                    ?: 0
-        }
-
-        if (summaryViewModel != null) {
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
-            onSummaryChanged(summaryViewModel)
-        }
-
-        onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
         fragmentViewModel.isStateChanged = true
     }
 
@@ -436,62 +504,34 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
-        val totalPayment = summaryViewModel?.itemPrice?.plus(summaryViewModel.shippingPrice)?.plus(summaryViewModel.servicePrice)?.plus(summaryViewModel.insurancePrice)
-        fragmentViewModel.totalPayment = totalPayment
-
-        tv_total.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentViewModel.totalPayment
-                ?: 0, false)
+        //no op. does not have summary
     }
 
     override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {
-        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
-        if (summaryViewModel != null) {
-            if (insuranceViewModel.isChecked) {
-                summaryViewModel.insurancePrice = insuranceViewModel.insurancePrice
-                summaryViewModel.isUseInsurance = true
-            } else {
-                summaryViewModel.insurancePrice = 0
-                summaryViewModel.isUseInsurance = false
-            }
-
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
-        }
-        onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
-        fragmentViewModel.isStateChanged = true
+        //no-op
     }
 
     override fun onNeedToValidateButtonBuyVisibility() {
+        //no op
+    }
+
+    fun hasError(): Boolean {
         var hasError = false
         when {
             fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
         }
-
-        renderButton(hasError)
-    }
-
-    fun renderButton(hasError: Boolean = false) {
-        if (activity != null) {
-            if (hasError) {
-                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
-                button_buy_partial.setOnClickListener { }
-            } else {
-                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
-                button_buy_partial.setOnClickListener {
-                    //TODO
-                }
-            }
-        }
+        return hasError
     }
 
     override fun onNeedToRecalculateRatesAfterChangeTemplate() {
-        fragmentViewModel.getProfileViewModel()?.isStateHasChangedProfile = false
+        // no op. no rates
     }
 
     override fun onNeedToUpdateOnboardingStatus() {
         setOnboardingStateHasNotShown(activity, false)
     }
 
-    override fun onGetCompositeSubscriber() = compositeSubscription
+    override fun onGetCompositeSubscriber() = CompositeSubscription()
 
     override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {
         // TODO need update quantity?
@@ -515,10 +555,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun showToasterError(message: String?) {
         ToasterError.make(view, message
                 ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun finishWithError(messages: String) {
-        fragmentListener.finishWithResult(messages)
     }
 
     override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {
@@ -560,27 +596,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         fragmentViewModel.atcResponseModel = atcResponseModel
     }
 
-    override fun showData(viewModels: ArrayList<Visitable<*>>) {
-        for (viewModel: Visitable<*> in viewModels) {
-            if (viewModel is com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel) {
-                viewModel.isFirstTimeShowProfile = isOnboardingStateHasNotShown(activity)
-                break
-            }
-        }
-        fragmentViewModel.viewModels = viewModels
-        adapter.clearAllElements()
-        adapter.addDataViewModel(viewModels)
-        adapter.notifyDataSetChanged()
-
-        onSummaryChanged(fragmentViewModel.getSummaryViewModel())
-
-        rl_bottom_action_container.visibility = View.VISIBLE
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        //TODO getselected variantID to be saved
-        outState.putStringArrayList(EXTRA_SELECTED_VARIANT_ID, arrayListOf())
+        outState.putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+        outState.putInt(EXTRA_QUANTITY, quantity)
+        outState.putString(EXTRA_NOTES, notes)
     }
 
 }

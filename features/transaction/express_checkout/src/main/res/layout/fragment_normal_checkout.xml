@@ -45,7 +45,10 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -89,8 +92,8 @@
 
             <ImageView
                 android:id="@+id/button_cart"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
@@ -103,7 +106,7 @@
             <Button
                 android:id="@+id/button_buy_partial"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_48"
+                android:layout_height="@dimen/dp_40"
                 android:background="@drawable/bg_button_orange_enabled"
                 android:fontFamily="sans-serif"
                 android:gravity="center"

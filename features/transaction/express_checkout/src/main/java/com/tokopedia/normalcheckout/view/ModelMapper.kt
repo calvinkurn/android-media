@@ -5,57 +5,28 @@ import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
+import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import kotlin.math.roundToInt
 
 object ModelMapper {
 
-    fun convertToModels(productInfoAndVariant: ProductInfoAndVariant, noteString: String?,
-                        quantity: Int = 0, selectedVariantIds: ArrayList<String>?): ArrayList<Visitable<*>> {
+    fun convertToModels(productInfo: ProductInfo,
+                        productVariant: ProductVariant?,
+                        noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
-        if (productInfoAndVariant.productInfo.variant.isVariant) {
-            //TODO will get selected variant
+        dataList.add(convertToProductViewModel(productInfo))
+        dataList.add(convertToQuantityViewModel(productInfo, quantity))
+        if (productVariant != null && productVariant.hasChildren) {
+
+        }
+        productVariant?.run {
             val variantViewModelList = ArrayList<TypeVariantViewModel>()
             if (variantViewModelList.isNotEmpty()) {
                 dataList.addAll(variantViewModelList)
             }
-        } else {
-            //no need to selected variant, use itself because the data is already correct
-            dataList.add(convertToQuantityViewModel(productInfoAndVariant, quantity))
         }
         dataList.add(convertToNoteViewModel(noteString))
-        return dataList
-    }
-
-    fun convertToModels(atcResponseModel: AtcResponseModel, productData: ProductData?): ArrayList<Visitable<*>> {
-        val dataList: ArrayList<Visitable<*>> = ArrayList()
-
-        val variantViewModelList = ArrayList<TypeVariantViewModel>()
-        val productVariantDataModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels
-        if (productVariantDataModels != null && productVariantDataModels.isNotEmpty()) {
-            val variantCombinationValidation = validateVariantCombination(productVariantDataModels[0])
-            val variantChildrenValidation = validateVariantChildren(productVariantDataModels[0])
-            val hasVariant = variantCombinationValidation && variantChildrenValidation
-            val children = productVariantDataModels[0].childModels
-            val variantModels = productVariantDataModels[0].variantModels
-            if (hasVariant && variantModels != null) {
-                for (variantModel: VariantModel in variantModels) {
-                    if (children != null) {
-                        variantViewModelList.add(convertToTypeVariantViewModel(variantModel, children))
-                    }
-                }
-            }
-        }
-        val productViewModel = convertToProductViewModel(atcResponseModel, variantViewModelList)
-        dataList.add(productViewModel)
-        dataList.add(convertToQuantityViewModel(atcResponseModel, productViewModel))
-        if (variantViewModelList.isNotEmpty()) {
-            dataList.addAll(variantViewModelList)
-        }
-        dataList.add(convertToNoteViewModel(atcResponseModel))
-        val summaryViewModel = convertToSummaryViewModel(atcResponseModel)
-        dataList.add(summaryViewModel)
-
         return dataList
     }
 
@@ -68,161 +39,33 @@ object ModelMapper {
         return noteViewModel
     }
 
-
-    fun convertToNoteViewModel(atcResponseModel: AtcResponseModel): NoteViewModel {
-        val noteViewModel = NoteViewModel()
-        noteViewModel.noteCharMax = atcResponseModel.atcDataModel?.maxCharNote ?: 144
-        noteViewModel.note = ""
-
-        return noteViewModel
-    }
-
-    fun convertToSummaryViewModel(atcResponseModel: AtcResponseModel): SummaryViewModel {
-        val summaryViewModel = SummaryViewModel(null)
-        val productModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
-        summaryViewModel.itemPrice = productModel?.productQuantity?.times(productModel?.productPrice?.toLong()
-                ?: 0)?.toLong() ?: 0
-
-        return summaryViewModel
-    }
-
-    fun convertToProductViewModel(atcResponseModel: AtcResponseModel,
-                                  typeVariantViewModels: ArrayList<TypeVariantViewModel>): ProductViewModel {
-        val productModel: ProductModel? = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
+    fun convertToProductViewModel(productInfo: ProductInfo): ProductViewModel {
         val productViewModel = ProductViewModel()
-        productViewModel.parentId = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productId
-                ?: 0
-        productViewModel.productImageUrl = productModel?.productImageSrc200Square ?: ""
-        productViewModel.productName = productModel?.productName ?: ""
-        productViewModel.minOrderQuantity = productModel?.productMinOrder ?: 0
-        if (productModel != null) {
-            if (productModel.productInvenageValue > 0) {
-                productViewModel.maxOrderQuantity = productModel.productInvenageValue
-            } else {
-                productViewModel.maxOrderQuantity = atcResponseModel.atcDataModel?.maxQuantity
-                        ?: MAX_QUANTITY
-            }
+        productViewModel.parentId = productInfo.parentProductId.toInt()
+        productViewModel.productImageUrl = productInfo.firstThumbnailPicture
+        productViewModel.productName = productInfo.basic.name
+        productViewModel.minOrderQuantity = productInfo.basic.minOrder
+        productViewModel.maxOrderQuantity = when {
+            productInfo.stock.useStock && productInfo.stock.value > 0 ->
+                productInfo.stock.value
+            productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
+            else -> MAX_QUANTITY
         }
-        productViewModel.productPrice = productModel?.productPrice ?: 0
-        val productChildList = ArrayList<ProductChild>()
-        var hasSelectedDefaultVariant = false
-        if (typeVariantViewModels.size > 0) {
-            val childrenModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)?.childModels
-            if (childrenModel != null) {
-                for (childModel: ChildModel in childrenModel) {
-                    val productChild = ProductChild()
-                    productChild.productId = childModel.productId
-                    productChild.productName = childModel.name ?: ""
-                    productChild.isAvailable = childModel.isBuyable ?: false
-                    productChild.productPrice = childModel.price
-                    productChild.stockWording = childModel.stockWording ?: ""
-                    productChild.stock = childModel.stock
-                    productChild.minOrder = childModel.minOrder
-                    productChild.maxOrder = if (childModel.maxOrder != 0) childModel.maxOrder else childModel.stock
-                    productChild.optionsId = childModel.optionIds ?: ArrayList()
-                    val productVariantDataModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)
-                    if (productVariantDataModel?.defaultChild == childModel.productId &&
-                            productChild.isAvailable && !hasSelectedDefaultVariant) {
-                        productChild.isSelected = true
-                        hasSelectedDefaultVariant = true
-                        val defaultVariantIdOptionMap = LinkedHashMap<Int, Int>()
-                        val optionIds = childModel.optionIds
-                        if (optionIds != null) {
-                            for (optionId: Int in optionIds) {
-                                val variantModels = productVariantDataModel.variantModels
-                                if (variantModels != null) {
-                                    for (variantModel: VariantModel in variantModels) {
-                                        val optionModels = variantModel.optionModels
-                                        if (optionModels != null) {
-                                            for (optionModel: OptionModel in optionModels) {
-                                                if (optionId == optionModel.id) {
-                                                    defaultVariantIdOptionMap[variantModel.productVariantId
-                                                            ?: 0] = optionId
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        productViewModel.selectedVariantOptionsIdMap = defaultVariantIdOptionMap
-                    } else {
-                        productChild.isSelected = false
-                    }
-                    productChildList.add(productChild)
-                }
-            }
+        productViewModel.productPrice = if (productInfo.hasActiveCampaign && productInfo.campaign.discountedPrice > 0) {
+            productInfo.campaign.discountedPrice.roundToInt()
+        } else {
+            productInfo.basic.price.roundToInt()
         }
-        productViewModel.productChildrenList = productChildList
-
-        if (productChildList.isNotEmpty()) {
-            if (!hasSelectedDefaultVariant) {
-                for (productChild: ProductChild in productViewModel.productChildrenList) {
-                    if (productChild.isAvailable) {
-                        productChild.isSelected = true
-                        val defaultVariantIdOptionMap = LinkedHashMap<Int, Int>()
-                        for (optionId: Int in productChild.optionsId) {
-                            val variantModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)?.variantModels
-                            if (variantModels != null) {
-                                for (variantModel: VariantModel in variantModels) {
-                                    val optionModels = variantModel.optionModels
-                                    if (optionModels != null) {
-                                        for (optionModel: OptionModel in optionModels) {
-                                            if (optionId == optionModel.id) {
-                                                defaultVariantIdOptionMap[variantModel.productVariantId
-                                                        ?: 0] = optionId
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        productViewModel.selectedVariantOptionsIdMap = defaultVariantIdOptionMap
-                        break
-                    }
-                }
-            }
-            var firstVariantId = 0
-            var firstOptionId = 0
-            for ((key, value) in productViewModel.selectedVariantOptionsIdMap) {
-                if (firstVariantId == 0 && firstOptionId == 0) {
-                    firstVariantId = key
-                    firstOptionId = value
-                }
-            }
-
-            for (variantTypeViewModel: TypeVariantViewModel in typeVariantViewModels) {
-                if (variantTypeViewModel.variantId != firstVariantId) {
-                    for (optionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
-
-                        // Get other variant type selected option id
-                        val otherVariantSelectedOptionIds = ArrayList<Int>()
-                        for ((key, value) in productViewModel.selectedVariantOptionsIdMap) {
-                            if (key != firstVariantId && key != variantTypeViewModel.variantId) {
-                                otherVariantSelectedOptionIds.add(value)
-                            }
-                        }
-
-                        // Look for available child
-                        var hasAvailableChild = false
-                        for (productChild: ProductChild in productViewModel.productChildrenList) {
-                            hasAvailableChild = checkChildAvailable(productChild, optionViewModel.optionId, firstOptionId, otherVariantSelectedOptionIds)
-                            if (hasAvailableChild) break
-                        }
-
-                        // Set option id state with checking result
-                        if (!hasAvailableChild) {
-                            optionViewModel.hasAvailableChild = false
-                            optionViewModel.currentState == optionViewModel.STATE_NOT_AVAILABLE
-                        } else if (optionViewModel.currentState != optionViewModel.STATE_SELECTED) {
-                            optionViewModel.hasAvailableChild = true
-                            optionViewModel.currentState == optionViewModel.STATE_NOT_SELECTED
-                        }
-                    }
-                }
-            }
+        productViewModel.originalPrice = if (productInfo.hasActiveCampaign && productInfo.campaign.originalPrice > 0) {
+            productInfo.campaign.originalPrice.roundToInt()
+        } else {
+            productInfo.basic.price.roundToInt()
         }
-
+        productViewModel.discountedPercentage = if (productInfo.hasActiveCampaign && productInfo.campaign.percentage > 0) {
+            productInfo.campaign.percentage
+        } else {
+            0f
+        }
         return productViewModel
     }
 
@@ -280,18 +123,14 @@ object ModelMapper {
      * if it is not in campaign, use the default stock
      * If it has stock, the upper max will be that stock, otherwise, use the max order value
      */
-    fun convertToQuantityViewModel(productInfoAndVariant: ProductInfoAndVariant, quantity: Int = 0): QuantityViewModel {
+    fun convertToQuantityViewModel(productInfo: ProductInfo, quantity: Int = 0): QuantityViewModel {
         val quantityViewModel = QuantityViewModel()
         quantityViewModel.errorProductMaxQuantity = ""
         quantityViewModel.errorProductMinQuantity = ""
         quantityViewModel.isStateError = false
 
-        val productInfo = productInfoAndVariant.productInfo
-
         quantityViewModel.maxOrderQuantity =
                 when {
-                    productInfo.hasActiveCampaign && productInfo.campaign.stock > 0 ->
-                        productInfo.campaign.stock
                     productInfo.stock.useStock && productInfo.stock.value > 0 ->
                         productInfo.stock.value
                     productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder

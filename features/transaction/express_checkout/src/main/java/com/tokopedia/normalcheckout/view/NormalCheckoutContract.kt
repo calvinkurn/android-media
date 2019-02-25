@@ -39,8 +39,6 @@ interface NormalCheckoutContract {
 
         fun showToasterError(message: String?)
 
-        fun finishWithError(messages: String)
-
         fun navigateCheckoutToPayment(paymentPassData: PaymentPassData)
 
         fun navigateCheckoutToThankYouPage(appLink: String)

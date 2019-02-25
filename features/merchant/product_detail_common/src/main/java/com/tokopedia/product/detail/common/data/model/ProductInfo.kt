@@ -30,7 +30,7 @@ data class ProductInfo(
 
         @SerializedName("pictures")
         @Expose
-        val pictures: List<Picture> = listOf(),
+        val pictures: List<Picture>? = listOf(),
 
         @SerializedName("preorder")
         @Expose
@@ -50,7 +50,7 @@ data class ProductInfo(
 
         @SerializedName("wholesale")
         @Expose
-        val wholesale: List<Wholesale> = listOf(),
+        val wholesale: List<Wholesale>? = listOf(),
 
         @SerializedName("variant")
         @Expose
@@ -85,5 +85,28 @@ data class ProductInfo(
 
     val hasActiveCampaign: Boolean
         get() = campaign.activeAndHasId
+
+    val isPreorderActive: Boolean
+        get() = with(preorder) { isActive && duration > 0 }
+
+    val hasWholesale: Boolean
+        get() = wholesale!= null && wholesale.size > 0
+
+    val firstThumbnailPicture: String
+        get() {
+            if (pictures!= null && pictures.size > 0) {
+                if (pictures[0].urlThumbnail.isNotEmpty()){
+                    return pictures[0].urlThumbnail
+                } else if (pictures[0].url300.isNotEmpty()){
+                    return pictures[0].url300
+                } else if (pictures[0].urlOriginal.isNotEmpty()){
+                    return pictures[0].urlOriginal
+                } else {
+                    return ""
+                }
+            } else {
+                return ""
+            }
+        }
 
 }

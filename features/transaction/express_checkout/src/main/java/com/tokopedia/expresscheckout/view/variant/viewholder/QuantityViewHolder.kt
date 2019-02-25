@@ -36,6 +36,31 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
         val LAYOUT = R.layout.item_quantity_detail_product_page
     }
 
+    private val textWatcher by lazy{
+        object : TextWatcher {
+            var previousQuantity: Int = element.orderQuantity
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                var newQuantity = 0
+                try {
+                    newQuantity = s.toString().toInt()
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
+                    element.orderQuantity = 0
+                }
+                val quantityModel = QuantityModel(previousQuantity, newQuantity)
+                quantityChangeDebounceListener.onDoNext(quantityModel)
+            }
+        }
+    }
+
     override fun bind(element: QuantityViewModel?) {
         if (element != null) {
             this.element = element
@@ -45,28 +70,7 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
                 itemView.et_qty.setText(element.orderQuantity.toString())
             }
             itemView.et_qty.setSelection(itemView.et_qty.length())
-            itemView.et_qty.addTextChangedListener(object : TextWatcher {
-                var previousQuantity: Int = element.orderQuantity
-                override fun afterTextChanged(s: Editable?) {
-
-                }
-
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    var newQuantity = 0
-                    try {
-                        newQuantity = s.toString().toInt()
-                    } catch (e: NumberFormatException) {
-                        e.printStackTrace()
-                        element.orderQuantity = 0
-                    }
-                    val quantityModel = QuantityModel(previousQuantity, newQuantity)
-                    quantityChangeDebounceListener.onDoNext(quantityModel)
-                }
-            })
+            itemView.et_qty.addTextChangedListener(textWatcher)
 
             itemView.tv_quantity_stock_available.text = MethodChecker.fromHtml(element.stockWording)
 
@@ -168,8 +172,7 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
 
                     override fun onNext(quantityModel: QuantityModel) {
                         if (quantityModel.newQuantity != quantityModel.previousQuantity) {
-                            itemView.et_qty.setSelection(itemView.et_qty.length())
-                            quantityModel.previousQuantity = quantityModel.newQuantity
+                            textWatcher.previousQuantity = quantityModel.newQuantity
                             element.orderQuantity = quantityModel.newQuantity
                             commitQuantityChange(element)
                         }
