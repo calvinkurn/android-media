@@ -109,6 +109,7 @@ class PlayViewStateImpl(
     lateinit var overlayDialog: CloseableBottomSheetDialog
     lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
     lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
+    lateinit var webviewDialog : PlayWebviewDialogFragment
 
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
@@ -871,8 +872,13 @@ class PlayViewStateImpl(
         if(url.isBlank())
             return
 
-        val bottomSheetDialog = PlayWebviewDialogFragment.createInstance(url)
-        bottomSheetDialog.show(activity.supportFragmentManager, "Custom Bottom Sheet")
+        if(!::webviewDialog.isInitialized) {
+            webviewDialog = PlayWebviewDialogFragment.createInstance(url)
+        }else{
+            webviewDialog.setUrl(url)
+        }
+
+        webviewDialog.show(activity.supportFragmentManager, "Custom Bottom Sheet")
 
     }
 

@@ -97,7 +97,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         loadWebview()
     }
 
@@ -105,6 +104,9 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         webview.loadAuthUrl(url, userSession.userId, userSession.accessToken, getHeaderPlay())
     }
 
+    fun setUrl(url: String) {
+        this.url = url
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebview(view: View) {
