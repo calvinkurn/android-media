@@ -809,6 +809,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?) {
         if (shippingCourierViewModels != null) {
+            for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
+                if (shippingCourierViewModel.productData.isRecommend) {
+                    shippingCourierViewModel.isSelected = true
+                    break
+                }
+            }
             fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
         }
 
