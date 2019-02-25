@@ -41,6 +41,7 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_4"
                 android:padding="@dimen/dp_10"
+                android:visibility="gone"
                 app:tckv_indicator_off_color="@color/grey_550"
                 app:tckv_indicator_on_color="@color/tkpd_main_green" />
 
