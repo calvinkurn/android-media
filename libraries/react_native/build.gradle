@@ -27,8 +27,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.codePushReactNative
 
-    implementation project(rootProject.ext.features.core)
-
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
