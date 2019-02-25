@@ -62,10 +62,9 @@
     <string name="title_af_image_editor">Image Editor</string>
     <string name="title_af_create_post">Tambah Foto</string>
     <string name="title_af_choose_photo">Pilih Foto</string>
-    <string name="title_af_create_post_example">Contoh Foto</string>
+    <string name="title_af_preview">Preview</string>
     <string name="af_add_image">Tambah Foto</string>
-    <string name="af_add_video">Tambah Videoo</string>
-    <string name="af_use_image_to_show">Gunakan foto yang menampilkan produk pilihanmu.</string>
+    <string name="af_add_video">Tambah Video</string>
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
     <string name="af_caption_hint">Tulis caption yuk…</string>

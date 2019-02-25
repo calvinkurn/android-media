@@ -16,10 +16,8 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking
 import com.tokopedia.affiliate.common.preference.AffiliatePreference
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Guide
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
-import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostExampleActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
@@ -52,7 +50,6 @@ class CreatePostFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     private var viewModel: CreatePostViewModel = CreatePostViewModel()
-    private var guide: Guide = Guide()
 
     private val adapter: RelatedProductAdapter by lazy {
         RelatedProductAdapter(this)
@@ -251,12 +248,7 @@ class CreatePostFragment : BaseDaggerFragment(),
         }
         addImageBtn.setOnClickListener {
             affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productId)
-            if (shouldShowExample()) {
-                goToImageExample(true)
-                affiliatePreference.setFirstTimeCreatePost(userSession.userId)
-            } else {
-                goToImagePicker()
-            }
+            goToImagePicker()
         }
         relatedAddBtn.setOnClickListener {
             goToAttachProduct()
@@ -265,20 +257,6 @@ class CreatePostFragment : BaseDaggerFragment(),
 
     private fun shouldShowExample(): Boolean {
         return affiliatePreference.isFirstTimeCreatePost(userSession.userId)
-    }
-
-    private fun goToImageExample(needResult: Boolean) {
-        val intent = CreatePostExampleActivity.createIntent(
-                context,
-                guide.imageUrl ?: "",
-                guide.imageDescription ?: ""
-        )
-
-        if (needResult) {
-            startActivityForResult(intent, REQUEST_EXAMPLE)
-        } else {
-            startActivity(intent)
-        }
     }
 
     private fun goToImagePicker() {
