@@ -140,7 +140,7 @@ class CreatePostFragment : BaseDaggerFragment(),
             }
             REQUEST_EXAMPLE -> goToImagePicker()
             REQUEST_LOGIN -> presenter.fetchContentForm(viewModel.productId, viewModel.adId)
-            REQUEST_ATTACH_PRODUCT -> if (resultCode == Activity.RESULT_OK) {
+            REQUEST_ATTACH_PRODUCT -> if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
                 val products = data?.getParcelableArrayListExtra<ResultProduct>(
                         AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
                         ?: arrayListOf()
