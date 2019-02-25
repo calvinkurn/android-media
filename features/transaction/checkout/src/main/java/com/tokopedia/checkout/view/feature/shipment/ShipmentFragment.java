@@ -304,6 +304,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setShipmentCostModel(savedShipmentCostModel);
             shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentPresenter.setShipmentDonationModel(savedShipmentDonationModel);
+            shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
             shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
             shipmentAdapter.addPromoVoucherData(savedPromoData);
@@ -395,8 +396,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.setCartIds(cartIdsStringBuilder.toString());
 
         shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+        if (egoldAttributeModel != null) {
+            shipmentAdapter.updateEgold(false);
+            shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
+        }
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
-        shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
         shipmentAdapter.updateShipmentSellerCashbackVisibility();
         if (isInitialRender) {
             if (!shipmentSelectionStateDataHashSet.isEmpty()) {
@@ -1544,7 +1548,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onEgoldChecked(boolean checked) {
         shipmentAdapter.updateEgold(checked);
-        if(checked) {
+        if (checked) {
             // TODO: 20/2/19 send analytics
         }
     }

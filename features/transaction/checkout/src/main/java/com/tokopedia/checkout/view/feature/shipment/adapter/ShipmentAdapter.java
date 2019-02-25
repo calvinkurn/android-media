@@ -64,6 +64,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static final int DEFAULT_ERROR_POSITION = -1;
     public static final int HEADER_POSITION = 0;
+    private static final double LAST_THREE_DIGIT_MODULUS = 1000;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -127,7 +128,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof ShipmentDonationModel) {
             return ShipmentDonationViewHolder.ITEM_VIEW_DONATION;
         } else if (item instanceof EgoldAttributeModel) {
-            return ShipmentEmasViewHolder.ITEM_VIEW_DONATION;
+            return ShipmentEmasViewHolder.ITEM_VIEW_EMAS;
         }
 
         return super.getItemViewType(position);
@@ -155,6 +156,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentSellerCashbackViewHolder(view);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             return new ShipmentDonationViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
+            return new ShipmentEmasViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -189,7 +192,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentSellerCashbackViewHolder) holder).bindViewHolder(shipmentSellerCashbackModel);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             ((ShipmentDonationViewHolder) holder).bindViewHolder(shipmentDonationModel);
-        } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_DONATION) {
+        } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
             ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         }
     }
@@ -297,7 +300,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void addEgoldAttributeData(EgoldAttributeModel egoldAttributeModel) {
         if (egoldAttributeModel != null) {
             this.egoldAttributeModel = egoldAttributeModel;
-            shipmentDataList.add(shipmentCostModel);
+            shipmentDataList.add(egoldAttributeModel);
         }
     }
 
@@ -413,8 +416,32 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentDonationModel != null) {
             shipmentDonationModel.setChecked(checked);
             updateShipmentCostModel();
+            notifyItemChanged(getBuyEmasPosition());
             notifyItemChanged(getShipmentCostPosition());
         }
+    }
+
+    private void updateEmasCostModel() {
+        double totalPrice = shipmentCostModel.getTotalPrice();
+        int valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
+        int buyEgoldValue = 0;
+        for (int i = egoldAttributeModel.getMinEgoldRange(); i <= egoldAttributeModel.getMaxEgoldRange(); i++) {
+            valueTOCheck = valueTOCheck + i;
+            if (valueTOCheck % LAST_THREE_DIGIT_MODULUS == 0) {
+                buyEgoldValue = i;
+                break;
+            }
+        }
+        egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
+    }
+
+    private int getBuyEmasPosition() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof EgoldAttributeModel) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public void updateEgold(boolean checked) {
@@ -699,8 +726,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         totalPrice += shipmentCostModel.getDonation();
         shipmentCostModel.setTotalPrice(totalPrice);
 
-        if (egoldAttributeModel.isChecked()) {
-            // TODO: 20/2/19 update cost model on the basis of emas value
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
+            updateEmasCostModel();
+            if (egoldAttributeModel.isChecked()) {
+                totalPrice += egoldAttributeModel.getBuyEgoldValue();
+                shipmentCostModel.setTotalPrice(totalPrice);
+                shipmentCostModel.setEmasPrice(egoldAttributeModel.getBuyEgoldValue());
+            }
         }
 
         updateCheckoutButtonData(null);

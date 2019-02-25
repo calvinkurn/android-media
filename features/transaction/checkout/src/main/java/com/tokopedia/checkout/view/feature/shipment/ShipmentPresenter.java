@@ -118,6 +118,7 @@ import rx.subscriptions.CompositeSubscription;
 public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View>
         implements ShipmentContract.Presenter {
 
+    private static final int LAST_THREE_DIGIT_MODULUS = 1000;
     private final CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase;
     private final CheckoutUseCase checkoutUseCase;
     private final CompositeSubscription compositeSubscription;
@@ -281,20 +282,34 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public EgoldAttributeModel getEgoldAttributeModel() {
-        if (egoldAttributeModel == null) {
-            egoldAttributeModel = new EgoldAttributeModel();
-        }
         return egoldAttributeModel;
     }
 
     @Override
     public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
         this.shipmentCostModel = shipmentCostModel;
+        updateEgoldBuyValue();
     }
 
     @Override
     public void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel) {
+//        updateEgoldBuyValue();
         this.egoldAttributeModel = egoldAttributeModel;
+    }
+
+    private void updateEgoldBuyValue() {
+        double totalPrice = shipmentCostModel.getTotalPrice();
+        int valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
+        int buyEgoldValue = 0;
+        for (int i = egoldAttributeModel.getMinEgoldRange(); i <= egoldAttributeModel.getMaxEgoldRange(); i++) {
+            valueTOCheck = valueTOCheck + i;
+            if (valueTOCheck % LAST_THREE_DIGIT_MODULUS == 0) {
+                buyEgoldValue = i;
+                break;
+            }
+        }
+        egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
+        getView().renderDataChanged();
     }
 
     @Override
@@ -378,6 +393,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             isPurchaseProtectionPage = true;
             mTrackerPurchaseProtection.eventImpressionOfProduct();
         }
+
+        setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
     }
 
     private boolean checkHaveSameCurrentCodAddress(String cornerId) {

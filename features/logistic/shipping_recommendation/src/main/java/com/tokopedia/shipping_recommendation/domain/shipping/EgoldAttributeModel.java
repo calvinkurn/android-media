@@ -71,6 +71,14 @@ public class EgoldAttributeModel implements ShipmentData, Parcelable {
         this.tooltipText = tooltipText;
     }
 
+    public int getBuyEgoldValue() {
+        return buyEgoldValue;
+    }
+
+    public void setBuyEgoldValue(int buyEgoldValue) {
+        this.buyEgoldValue = buyEgoldValue;
+    }
+
     @Override
     public int describeContents() {
         return 0;

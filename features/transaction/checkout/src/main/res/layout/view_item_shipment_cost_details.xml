@@ -178,4 +178,28 @@
         android:gravity="end"
         tools:text="Rp100.000" />
 
+    <TextView
+        android:id="@+id/tv_emas_label"
+        style="@style/TextSmallNormalBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_donation_label"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/label_emas"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/tv_emas_price"
+        style="@style/TextSmallMediumBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_donation_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        tools:text="Rp100.000" />
+
+
+
 </RelativeLayout>
