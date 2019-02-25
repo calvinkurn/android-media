@@ -28,7 +28,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.home.account.AccountHomeRouter;
-import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
@@ -178,7 +177,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 startActivity(TkpdPaySettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_TEMPLATE_ID:
-                RouteManager.route(getActivity(), AccountHomeUrl.APPLINK_TOKOPEDIA_CORNER);
+                if (getActivity() != null) {
+                    String url = "http://m-beta.tokopedia.com/user/settings/express-checkout";
+                    String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url);
+                    RouteManager.route(getActivity(), applink);
+                }
                 break;
             case SettingConstant.SETTING_NOTIFICATION_ID:
                 accountAnalytics.eventClickSetting(NOTIFICATION);
