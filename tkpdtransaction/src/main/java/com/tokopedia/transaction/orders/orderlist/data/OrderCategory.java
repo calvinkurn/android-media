@@ -6,6 +6,9 @@ package com.tokopedia.transaction.orders.orderlist.data;
 
 public class OrderCategory {
     public static final String KEY_LABEL = "orderCategory";
+    public static final String PAGE = "Page";
+    public static final String PER_PAGE = "PerPage";
     public static final String DIGITAL = "DIGITAL";
     public static final String FLIGHTS = "FLIGHTS";
+    public static final String MARKETPLACE = "MARKETPLACE";
 }
