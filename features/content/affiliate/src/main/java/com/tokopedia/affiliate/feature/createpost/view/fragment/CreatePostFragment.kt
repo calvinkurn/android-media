@@ -19,6 +19,7 @@ import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedC
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity
+import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
@@ -132,19 +133,22 @@ class CreatePostFragment : BaseDaggerFragment(),
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
-                viewModel.fileImageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                        ?: arrayListOf()
+                val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
+                viewModel.fileImageList.clear()
+                viewModel.fileImageList.addAll(imageList)
                 updateThumbnail()
             }
             REQUEST_EXAMPLE -> goToImagePicker()
             REQUEST_LOGIN -> presenter.fetchContentForm(viewModel.productId, viewModel.adId)
-            REQUEST_ATTACH_PRODUCT -> {
-                val products = data?.getParcelableArrayListExtra<ResultProduct>(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+            REQUEST_ATTACH_PRODUCT -> if (resultCode == Activity.RESULT_OK) {
+                val products = data?.getParcelableArrayListExtra<ResultProduct>(
+                        AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
                         ?: arrayListOf()
-                setRelatedProduct(convertAttachProduct(products))
+                viewModel.relatedProducts.clear()
+                viewModel.relatedProducts.addAll(convertAttachProduct(products))
+                updateRelatedProduct()
             }
-            else -> {
-            }
+            else -> { }
         }
     }
 
@@ -253,18 +257,16 @@ class CreatePostFragment : BaseDaggerFragment(),
         relatedAddBtn.setOnClickListener {
             goToAttachProduct()
         }
+        thumbnail.setOnClickListener {
+            goToMediaPreview()
+        }
     }
-
-    private fun shouldShowExample(): Boolean {
-        return affiliatePreference.isFirstTimeCreatePost(userSession.userId)
-    }
-
     private fun goToImagePicker() {
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
                             it,
-                            viewModel.fileImageList,
+                            ArrayList(viewModel.fileImageList),
                             viewModel.maxImage - viewModel.urlImageList.size
                     ),
                     REQUEST_IMAGE_PICKER)
@@ -286,6 +288,13 @@ class CreatePostFragment : BaseDaggerFragment(),
             startActivity(intent)
         }
     }
+
+    private fun goToMediaPreview() {
+        context?.let {
+            startActivity(MediaPreviewActivity.createIntent(it, viewModel))
+        }
+    }
+
 
     private fun submitPost() {
         presenter.submitPost(
@@ -324,8 +333,8 @@ class CreatePostFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
     }
 
-    private fun setRelatedProduct(products: MutableList<RelatedProductItem>) {
-        adapter.addAll(products)
+    private fun updateRelatedProduct() {
+        adapter.addAll(viewModel.relatedProducts)
     }
 
     private fun convertAttachProduct(attachedProducts: MutableList<ResultProduct>): MutableList<RelatedProductItem> {

@@ -16,8 +16,10 @@ import kotlinx.android.synthetic.main.item_af_related_product.view.*
 /**
  * @author by milhamj on 21/02/19.
  */
-class RelatedProductAdapter(val listener: RelatedProductListener)
+class RelatedProductAdapter(val listener: RelatedProductListener?)
     : RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
+
+    constructor(): this(null)
 
     private val emptyItem: RelatedProductItem = RelatedProductItem(EMPTY_ITEM_ID)
     private val list: MutableList<RelatedProductItem> = arrayListOf(emptyItem)
@@ -42,7 +44,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener)
             holder.itemView.separatorBottom.hide()
             holder.itemView.separatorBottomEmpty.show()
             holder.itemView.setOnClickListener {
-                listener.onEmptyProductClick()
+                listener?.onEmptyProductClick()
             }
         } else {
             holder.itemView.thumbnail.loadImageRounded(element.image, 25f)

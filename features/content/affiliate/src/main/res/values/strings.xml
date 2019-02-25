@@ -65,7 +65,7 @@
     <string name="title_af_preview">Preview</string>
     <string name="af_add_image">Tambah Foto</string>
     <string name="af_add_video">Tambah Video</string>
-    <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
+    <string name="af_set_main_image">Set Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
     <string name="af_caption_hint">Tulis caption yuk…</string>
     <string name="af_related_product">Produk Terkait</string>

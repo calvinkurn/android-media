@@ -13,9 +13,10 @@ data class CreatePostViewModel(
         var mainImageIndex: Int = 0,
         var maxImage: Int = 5,
         var isEdit: Boolean = false,
-        var fileImageList: ArrayList<String> = ArrayList(),
-        var urlImageList: ArrayList<String> = ArrayList())
-    : Parcelable {
+        val fileImageList: MutableList<String> = arrayListOf(),
+        val urlImageList: MutableList<String> = arrayListOf(),
+        val relatedProducts: MutableList<RelatedProductItem> = arrayListOf()
+) : Parcelable {
 
     val completeImageList: ArrayList<String>
         get() {
@@ -39,19 +40,21 @@ data class CreatePostViewModel(
         dest.writeByte(if (this.isEdit) 1.toByte() else 0.toByte())
         dest.writeStringList(this.fileImageList)
         dest.writeStringList(this.urlImageList)
+        dest.writeTypedList(this.relatedProducts)
     }
 
-    private constructor(`in`: Parcel) : this() {
-        this.productId = `in`.readString() ?: ""
-        this.adId = `in`.readString() ?: ""
-        this.postId = `in`.readString() ?: ""
-        this.token = `in`.readString() ?: ""
-        this.mainImageIndex = `in`.readInt()
-        this.maxImage = `in`.readInt()
-        this.isEdit = `in`.readByte().toInt() != 0
-        this.fileImageList = `in`.createStringArrayList() ?: arrayListOf()
-        this.urlImageList = `in`.createStringArrayList() ?: arrayListOf()
-    }
+    private constructor(`in`: Parcel) : this(
+            `in`.readString() ?: "",
+            `in`.readString() ?: "",
+            `in`.readString() ?: "",
+            `in`.readString() ?: "",
+            `in`.readInt(),
+            `in`.readInt(),
+            `in`.readByte().toInt() != 0,
+            `in`.createStringArrayList() ?: arrayListOf(),
+            `in`.createStringArrayList() ?: arrayListOf(),
+            `in`.createTypedArrayList(RelatedProductItem.CREATOR) ?: arrayListOf()
+    )
 
     companion object {
         private const val FILE_PREFIX = "file:"
