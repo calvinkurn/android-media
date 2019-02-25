@@ -41,6 +41,7 @@
         android:layout_toEndOf="@id/spac"
         android:layout_alignTop="@id/icon"
         android:layout_alignBottom="@id/icon"
+        android:gravity="center"
         tools:text="Quiz Telah berakhir"/>
 
     <android.widget.Space

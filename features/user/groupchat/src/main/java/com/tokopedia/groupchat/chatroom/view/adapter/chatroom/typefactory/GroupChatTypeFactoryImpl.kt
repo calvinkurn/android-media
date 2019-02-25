@@ -59,7 +59,7 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
     }
 
     override fun type(flashSaleViewModel: SprintSaleAnnouncementViewModel): Int {
-        return SprintSaleViewHolder.LAYOUT
+        return PlaySprintSaleAnnouncementViewHolder.LAYOUT
     }
 
     override fun type(groupChatPointsViewModel: GroupChatPointsViewModel): Int {
@@ -98,8 +98,8 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
 //            viewHolder = ImageAnnouncementViewHolder(parent, imageListener)
 //        } else if (type == VoteAnnouncementViewHolder.LAYOUT) {
 //            viewHolder = VoteAnnouncementViewHolder(parent, voteAnnouncementViewHolderListener)
-        } else if (type == SprintSaleViewHolder.LAYOUT) {
-            viewHolder = SprintSaleViewHolder(parent, sprintSaleViewHolderListener)
+//        } else if (type == SprintSaleViewHolder.LAYOUT) {
+//            viewHolder = SprintSaleViewHolder(parent, sprintSaleViewHolderListener)
         } else if (type == GeneratedMessageViewHolder.LAYOUT) {
             viewHolder = GeneratedMessageViewHolder(parent)
         }
@@ -114,6 +114,8 @@ class GroupChatTypeFactoryImpl(imageListen: ChatroomContract.ChatItem.ImageAnnou
             viewHolder = PlayQuizAnnouncementViewHolder(parent, voteAnnouncementViewHolderListener)
         } else if (type == PlayImageAnnouncementViewHolder.LAYOUT){
             viewHolder = PlayImageAnnouncementViewHolder(parent, imageListener)
+        } else if (type == PlaySprintSaleAnnouncementViewHolder.LAYOUT) {
+            viewHolder = PlaySprintSaleAnnouncementViewHolder(parent, sprintSaleViewHolderListener)
         } else {
             viewHolder = super.createViewHolder(parent, type)
         }

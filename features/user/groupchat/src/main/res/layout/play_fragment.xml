@@ -72,6 +72,7 @@
                     android:textColor="#ffffff"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:textStyle="bold"
+                    android:maxLines="1"
                     tools:text="Ramadan Ekstra" />
 
                 <LinearLayout
@@ -335,7 +336,7 @@
             android:visibility="gone"
             android:paddingLeft="@dimen/dp_48"
             android:paddingRight="@dimen/dp_48"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <include
                 layout="@layout/channel_not_found_layout"

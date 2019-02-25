@@ -124,6 +124,12 @@ class PlayViewStateImpl(
     private var onLeaveTime:Long = 0
     private val onTrackingTime: Long = 0
 
+    var defaultBackground = arrayListOf(
+            R.drawable.bg_play_1,
+            R.drawable.bg_play_2,
+            R.drawable.bg_play_3
+    )
+
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
                 imageListener,
@@ -271,7 +277,6 @@ class PlayViewStateImpl(
         setBottomView()
 
 //        setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
-        setDynamicBackground()
         setFloatingIcon("tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
                 ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih", "https://i.gifer.com/M8tf.gif")
 
@@ -289,7 +294,20 @@ class PlayViewStateImpl(
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
+        var background = defaultBackground[0]
+        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
 
+        lateinit var url: String
+        it.let {
+            background = defaultBackground[it.default]
+            url = it.url
+
+            if(url.isBlank()){
+                activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
+            } else {
+                ImageHandler.loadBackgroundImage(activity.window, url)
+            }
+        }
     }
 
     /**
@@ -541,18 +559,6 @@ class PlayViewStateImpl(
         if (::overlayDialog.isInitialized && overlayDialog.isShowing) overlayDialog.dismiss()
     }
 
-    private fun setDynamicBackground() {
-//
-//        var temp = viewModel?.backgroundViewModel?.url
-//
-//        if (temp?.isBlank()) {
-//            activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, backgroundResId))
-//        } else {
-//            ImageHandler.loadBackgroundImage(activity.window, backgroundUrl)
-//        }
-        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, R.drawable.bg_play_1))
-    }
-
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
         toolbar.setBackgroundResource(R.color.transparent)
@@ -713,6 +719,7 @@ class PlayViewStateImpl(
     fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
+        setChatListHasSpaceOnTop(false)
         videoId.let {
             if (it.isEmpty()) return
 
@@ -723,6 +730,7 @@ class PlayViewStateImpl(
 
                 youTubePlayer?.let {
                     liveIndicator.shouldShowWithAction(isVideoLive){}
+                    setChatListHasSpaceOnTop(true)
                     it.cueVideo(videoId)
                     autoPlayVideo()
                 }
@@ -1059,6 +1067,12 @@ class PlayViewStateImpl(
             action()
             loadingView.show()
         }
+    }
+
+    private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
+        var space = 0
+        if(hasSpace) space = view.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+        chatRecyclerView.setPadding(0, space, 0, 0)
     }
 
 
