@@ -86,10 +86,10 @@ class UnifyTickerView : BaseCustomView {
 
     private fun initView() {
         baseView = inflate(context, R.layout.widget_unify_ticker, this)
-        baseTicker = view.findViewById(R.id.parent_view)
-        container = view.findViewById(R.id.container)
-        tvContent = view.findViewById(R.id.ticker_content)
-        imgClose = view.findViewById(R.id.ticker_close_button)
+        baseTicker = baseView.findViewById(R.id.parent_view)
+        container = baseView.findViewById(R.id.container)
+        tvContent = baseView.findViewById(R.id.ticker_content)
+        imgClose = baseView.findViewById(R.id.ticker_close_button)
     }
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
