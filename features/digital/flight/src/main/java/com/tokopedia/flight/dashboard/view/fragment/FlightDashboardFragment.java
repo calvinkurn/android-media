@@ -614,17 +614,20 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
         ArrayList<String> messages = new ArrayList<>();
         messages.add(travelTickerViewModel.getMessage());
-        tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
         if (travelTickerViewModel.getType() == 2) {
             tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
             tickerView.setPageIndicatorOnColor(ContextCompat.getColor(getContext(), R.color.light_green));
             tickerView.setPageIndicatorOffColor(ContextCompat.getColor(getContext(), R.color.light_green));
+            tickerView.setBackGroundColor(ContextCompat.getColor(getContext(), R.color.light_green));
         } else if (travelTickerViewModel.getType() == 1) {
             tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.snackbar_border_error));
             tickerView.setPageIndicatorOnColor(ContextCompat.getColor(getContext(), R.color.colorPink));
             tickerView.setPageIndicatorOffColor(ContextCompat.getColor(getContext(), R.color.colorPink));
+            tickerView.setBackGroundColor(ContextCompat.getColor(getContext(), R.color.colorPink));
         }
+        tickerView.invalidate();
+        tickerView.requestLayout();
 
         tickerView.buildView();
 
