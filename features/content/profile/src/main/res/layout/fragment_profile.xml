@@ -138,6 +138,7 @@
                                 android:layout_weight="1"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/sp_17"
+                                android:textStyle="bold"
                                 android:layout_marginLeft="@dimen/dp_16"
                                 android:layout_gravity="center"/>
 
@@ -161,7 +162,9 @@
 
                             <FrameLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:background="@color/white"
+                                android:padding="@dimen/dp_2">
 
                                 <ImageView
                                     android:id="@+id/iv_profile"
@@ -219,7 +222,7 @@
                                     android:textAllCaps="false"
                                     android:visibility="gone"
                                     app:buttonCompatSize="small"
-                                    app:buttonCompatType="secondary"
+                                    app:buttonCompatType="white_transparent"
                                     tools:visibility="visible" />
 
                                 <com.tokopedia.design.component.ButtonCompat
@@ -231,7 +234,7 @@
                                     android:textAllCaps="false"
                                     android:visibility="gone"
                                     app:buttonCompatSize="small"
-                                    app:buttonCompatType="secondary"
+                                    app:buttonCompatType="white_transparent"
                                     tools:visibility="visible" />
 
                             </LinearLayout>
@@ -270,6 +273,7 @@
                             android:layout_weight="1"
                             android:textColor="@color/black_70"
                             android:textSize="@dimen/sp_17"
+                            android:textStyle="bold"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_gravity="center"/>
 
