@@ -196,9 +196,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
                 new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
             }
         });
-        nameTxt.setText(escapeHTML(cpm.getName()));
-        descriptionTxt.setText(escapeHTML(cpm.getDecription()));
-        ctaTxt.setText(cpm.getCta());
+        nameTxt.setText(escapeHTML(cpm.getName() == null ? "" : cpm.getName()));
+        descriptionTxt.setText(escapeHTML(cpm.getDecription() == null ? "" : cpm.getDecription()));
+        ctaTxt.setText(cpm.getCta() == null ? "" : cpm.getCta());
     }
 
     public void setConfig(Config config) {
