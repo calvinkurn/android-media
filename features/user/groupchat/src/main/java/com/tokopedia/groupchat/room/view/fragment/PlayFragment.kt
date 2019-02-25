@@ -43,6 +43,7 @@ import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -93,6 +94,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private var timeStampAfterResume: Long = 0
     private var timeStampAfterPause: Long = 0
     private var position = 0
+    private var optionsMenuEnable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,7 +119,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.run { inflate(R.menu.group_chat_room_menu, menu) }
+        inflater?.run {
+            inflate(R.menu.group_chat_room_menu, menu)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -141,6 +145,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.action_info).isEnabled = optionsMenuEnable
+        menu.findItem(R.id.action_share).isEnabled = optionsMenuEnable
     }
 
     private fun onGetNotif(data: Bundle) {
@@ -206,7 +216,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorGetDynamicButtons(): (String) -> Unit {
         return {
-//            viewState.onErrorGetDynamicButtons()
+            //            viewState.onErrorGetDynamicButtons()
 
             val listDynamic = ArrayList<DynamicButtonsViewModel.Button>()
 
@@ -226,13 +236,13 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     "https://i.gifer.com/M8tf.gif",
                     "https://www.tokopedia.com/",
                     "overlay_webview",
-"Heyahyehayhea",
+                    "Heyahyehayhea",
                     "https%3A%2F%2Fwww" +
                             ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
                     "",
                     true,
                     "Test tooltip"
-                    ))
+            ))
             listDynamic.add(DynamicButtonsViewModel.Button(
                     "https://i.gifer.com/M8tf.gif",
                     "tokopedia://gamification",
@@ -249,8 +259,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                             DynamicButtonsViewModel.Button(
                                     "https://i.gifer.com/M8tf.gif",
                                     "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
-                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih"
-                                    ),
+                                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih"
+                            ),
                             listDynamic
                     )
             )
@@ -263,9 +273,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
             (activity as PlayActivity)?.let {
                 it.changeHomeDrawableColor(R.color.white)
+                optionsMenuEnable = true
             }
 
-            saveGCTokenToCache()
+            saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
             presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
             setExitDialog(it.exitMessage)
@@ -275,12 +286,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorGetInfo(): (String) -> Unit {
         return {
-
             viewState.onErrorGetInfo(it)
 
             (activity as PlayActivity)?.let {
                 it.changeHomeDrawableColor(R.color.black_70)
                 it.setSwipeable(false)
+                optionsMenuEnable = false
             }
         }
     }
@@ -371,8 +382,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun saveGCTokenToCache() {
-        userSession.gcToken = "asd"
+    private fun saveGCTokenToCache(groupChatToken: String) {
+        userSession.gcToken = groupChatToken
     }
 
     fun backPress() {
@@ -387,16 +398,53 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onQuickReplyClicked(text)
     }
 
-    override fun onImageAnnouncementClicked(url: String?) {
+//    fun generateAttributeApplink(applink: String,
+//                                          attributeBanner: String): String {
+//        try {
+//            return if (RouteManager.isSupportApplink(context, applink)) {
+//                generateAttributeApplink(applink, attributeBanner,
+//                        channelInfoViewModel.getChannelUrl(),
+//                        channelInfoViewModel.title())
+//            } else {
+//                applink
+//            }
+//        } catch (e: UnknownFormatConversionException) {
+//            e.printStackTrace()
+//            return applink
+//        }
+//    }
+//
+//    private fun generateAttributeApplink(applink: String,
+//                                         attributeBanner: String,
+//                                         channelUrl: String,
+//                                         channelName: String): String {
+//        return if (applink.contains("?")) {
+//            String.format("$applink&%s", generateTrackerAttribution(attributeBanner,
+//                    channelUrl, channelName))
+//        } else {
+//            String.format("$applink?%s", generateTrackerAttribution(attributeBanner,
+//                    channelUrl, channelName))
+//        }
+//    }
 
+    override fun onImageAnnouncementClicked(url: String?) {
+        url?.run {
+            openRedirectUrl(this)
+        }
     }
 
     override fun onVoteComponentClicked(type: String?, name: String?) {
 
     }
 
-    override fun onSprintSaleProductClicked(sprintSaleViewModel: SprintSaleProductViewModel?, position: Int) {
+    override fun onSprintSaleProductClicked(productViewModel: SprintSaleProductViewModel?, position: Int) {
 
+        channelInfoViewModel.sprintSaleViewModel?.let {
+            if (!it.sprintSaleType.equals(SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH, true)) {
+                analytics.eventClickSprintSaleProduct(productViewModel, position, channelInfoViewModel)
+                openRedirectUrl(it.redirectUrl ?: "")
+            }
+        }
     }
 
     override fun onSprintSaleComponentClicked(sprintSaleAnnouncementViewModel: SprintSaleAnnouncementViewModel?) {
@@ -416,6 +464,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun openRedirectUrl(it: String) {
+        if(it.isBlank())
+            return
+
         (activity?.applicationContext as GroupChatModuleRouter).openRedirectUrl(activity, it)
     }
 
@@ -570,7 +621,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button) {
-        when(it.contentType){
+        when (it.contentType) {
             DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.linkUrl)
             DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
             DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
@@ -592,7 +643,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onResume() {
         super.onResume()
-        viewState.onKeyboardHidden()
+        viewState.setBottomView()
         kickIfIdleForTooLong()
         if (canResume()) {
 //

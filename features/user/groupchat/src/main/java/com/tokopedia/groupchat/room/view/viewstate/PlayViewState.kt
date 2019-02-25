@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
@@ -48,5 +49,5 @@ interface PlayViewState {
     fun onReceiveCloseOverlayMessageFromWebsocket()
     fun onShowOverlayCTAFromDynamicButton(it: DynamicButtonsViewModel.Button)
     fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button)
-
+    fun setBottomView()
 }

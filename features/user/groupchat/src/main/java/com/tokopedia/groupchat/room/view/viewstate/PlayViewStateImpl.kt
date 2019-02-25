@@ -35,6 +35,7 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.design.widget.ViewTooltip
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
@@ -105,6 +106,7 @@ class PlayViewStateImpl(
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
     var errorView: View = view.findViewById(R.id.card_retry)
+    var loadingView: View = view.findViewById(R.id.loading_view)
 
     lateinit var overlayDialog: CloseableBottomSheetDialog
     lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -197,7 +199,7 @@ class PlayViewStateImpl(
             }
         }
 
-        showLoginButton(!userSession.isLoggedIn)
+        setBottomView()
 
         login.setOnClickListener {
             listener.onLoginClicked(viewModel?.channelId)
@@ -245,7 +247,14 @@ class PlayViewStateImpl(
 
     }
 
-    fun onKeyboardShown() {
+    override fun setBottomView() {
+        showLoginButton(!userSession.isLoggedIn)
+        if(userSession.isLoggedIn){
+            onKeyboardHidden()
+        }
+    }
+
+    private fun onKeyboardShown() {
         showWidgetAboveInput(false)
         inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
         sendButton.show()
@@ -273,16 +282,14 @@ class PlayViewStateImpl(
     override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
         viewModel = it
 
+        loadingView.hide()
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
         initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
-        showWidgetAboveInput(userSession.isLoggedIn)
-
-        setDynamicBackground("https://i.pinimg.com/originals/12/da/77/12da776434178d3a19176fb76048faba.jpg")
+        setBottomView()
+        setDynamicBackground()
         showBottomSheetFirstTime(it)
-
         showLoginButton(!userSession.isLoggedIn)
-
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
         }
@@ -301,7 +308,8 @@ class PlayViewStateImpl(
     private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
         showInfoBottomSheet(it) {
             if(it.overlayViewModel!= null
-                    && it.overlayViewModel.interuptViewModel!= null)
+                    && it.overlayViewModel.interuptViewModel!= null
+                    && !it.overlayViewModel.interuptViewModel!!.btnLink!!.isBlank())
             showOverlayBottomSheet(it)
         }
     }
@@ -405,10 +413,6 @@ class PlayViewStateImpl(
         return view.context.resources.getString(id)
     }
 
-    override fun onChannelDeleted() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun onPinnedMessageUpdated(it: PinnedMessageViewModel) {
         viewModel?.pinnedMessageViewModel = it
         setPinnedMessage(viewModel)
@@ -467,10 +471,6 @@ class PlayViewStateImpl(
         analytics.eventClickQuickReply(
                 String.format("%s - %s", viewModel?.channelId, message))
 
-    }
-
-    private fun setChannelInfoBottomSheet() {
-        //TODO channel Info
     }
 
     private fun showOverlayBottomSheet(channelInfoViewModel: ChannelInfoViewModel) {
@@ -550,12 +550,8 @@ class PlayViewStateImpl(
         if (::overlayDialog.isInitialized && overlayDialog.isShowing) overlayDialog.dismiss()
     }
 
-    private fun setDynamicBackground(backgroundUrl: String) {
-        if (backgroundUrl.isBlank()) {
-            activity.window?.setBackgroundDrawable(null)
-        } else {
-            ImageHandler.loadBackgroundImage(activity.window, backgroundUrl)
-        }
+    private fun setDynamicBackground() {
+        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, R.drawable.bg_play_1))
     }
 
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
@@ -598,11 +594,11 @@ class PlayViewStateImpl(
     }
 
     override fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?) {
-        if (TextUtils.isEmpty(blurredBannerUrl)) {
-            ImageHandler.loadImageBlur(context, channelBanner, bannerUrl)
-        } else {
-            ImageHandler.LoadImage(channelBanner, blurredBannerUrl)
-        }
+//        if (TextUtils.isEmpty(blurredBannerUrl)) {
+//            ImageHandler.loadImageBlur(context, channelBanner, bannerUrl)
+//        } else {
+//            ImageHandler.LoadImage(channelBanner, blurredBannerUrl)
+//        }
     }
 
     private fun setToolbarParticipantCount(context: Context, totalParticipant: String) {
@@ -766,7 +762,7 @@ class PlayViewStateImpl(
                                                 }
                                                 override fun onSeekTo(i: Int) {}
                                             })
-//
+
                                             it.setPlayerStateChangeListener(object : YouTubePlayer.PlayerStateChangeListener {
                                                 var TAG = "youtube"
                                                 override fun onLoading() {
@@ -909,9 +905,30 @@ class PlayViewStateImpl(
     }
 
     override fun onErrorGetInfo(it: String) {
-        setEmptyState(R.drawable.ic_play_dynamic_icon, it)
+        setEmptyState(R.drawable.ic_play_dynamic_icon, it,
+                getStringResource(R.string.try_again_later),
+                getStringResource(R.string.title_try_again),
+                listener::onRetryGetInfo)
+        loadingView.hide()
         errorView.show()
         setToolbarWhite()
+    }
+
+
+    override fun onChannelDeleted() {
+        setEmptyState(R.drawable.ic_group_chat,
+                getStringResource(R.string.next_event_warn),
+                getStringResource(R.string.join_and_win_prize),
+                getStringResource(R.string.check_next_event_schedule),
+                checkNextEvent())
+    }
+
+    private fun checkNextEvent(): () -> Unit {
+        return {
+            val adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate"
+            listener.openRedirectUrl(adsLink)
+            activity?.finish()
+        }
     }
 
     override fun afterSendMessage() {
@@ -1055,17 +1072,23 @@ class PlayViewStateImpl(
         return view
     }
 
-    private fun setEmptyState(imageResId: Int, titleText: String){
-        var imageView = errorView.findViewById<ImageView>(R.id.image)
-        var title = errorView.findViewById<TextView>(R.id.title)
-        var button = errorView.findViewById<View>(R.id.button)
-        var buttonText = errorView.findViewById<TextView>(R.id.button_text)
+    private fun setEmptyState(imageResId: Int, titleText: String, bodyText: String, buttonText: String, action:()-> Unit){
+        val imageView = errorView.findViewById<ImageView>(R.id.image)
+        val title = errorView.findViewById<TextView>(R.id.title)
+        val body = errorView.findViewById<TextView>(R.id.body)
+        val button = errorView.findViewById<View>(R.id.button)
+        val buttonTxt = errorView.findViewById<TextView>(R.id.button_text)
 
         ImageHandler.loadImageWithId(imageView, imageResId)
         title.text = titleText
-        buttonText.text = getStringResource(R.string.title_try_again)
-        button.setOnClickListener { listener.onRetryGetInfo() }
+        body.text = bodyText
+        buttonTxt.text = buttonText
+        button.setOnClickListener {
+            action()
+            loadingView.show()
+        }
     }
+
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
         viewModel?.let{
@@ -1091,7 +1114,6 @@ class PlayViewStateImpl(
     override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
         showWebviewBottomSheet(it.linkUrl)
     }
-
 
     override fun destroy() {
         youTubePlayer?.release()

@@ -63,6 +63,10 @@ class DynamicButtonAdapter(
         return list.size
     }
 
+    fun getList(): List<DynamicButtonsViewModel.Button> {
+        return list
+    }
+
     fun setList(list: ArrayList<DynamicButtonsViewModel.Button>) {
         list.let {
             this.list.clear()

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel;
