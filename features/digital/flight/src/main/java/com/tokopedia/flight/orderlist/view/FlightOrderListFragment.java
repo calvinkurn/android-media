@@ -76,7 +76,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     public static final int PER_PAGE = 10;
     public static final boolean DEFAULT_CHECK_PRELOAD = true;
 
-    private String selectedFilter;
+    private String selectedFilter = "";
 
     @Inject
     FlightModuleRouter flightModuleRouter;
