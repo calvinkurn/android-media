@@ -630,8 +630,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         tickerView.buildView();
 
         tickerView.postDelayed(() -> {
-            tickerView.setItemTextAppearance(R.style.TextView_Micro);
-            tickerView.setVisibility(View.VISIBLE);
+            if (tickerView != null) {
+                tickerView.setItemTextAppearance(R.style.TextView_Micro);
+                tickerView.setVisibility(View.VISIBLE);
+            }
         }, DEFAULT_POST_DELAYED_VALUE);
     }
 
