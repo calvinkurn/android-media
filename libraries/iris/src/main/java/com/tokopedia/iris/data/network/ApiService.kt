@@ -28,7 +28,7 @@ class ApiService(private val context: Context) {
     }
 
     private fun createClient(): OkHttpClient {
-         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
+        val builder: OkHttpClient.Builder = OkHttpClient.Builder()
                 .addInterceptor {
                     val original = it.request()
                     val request = original.newBuilder()
