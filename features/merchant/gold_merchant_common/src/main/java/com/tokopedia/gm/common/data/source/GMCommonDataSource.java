@@ -3,9 +3,12 @@ package com.tokopedia.gm.common.data.source;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
+import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestCashbackModel;
+import com.tokopedia.gm.common.data.source.cloud.model.RequestGetCashbackModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,6 +44,26 @@ public class GMCommonDataSource {
                     @Override
                     public Boolean call(String s) {
                         return s != null;
+                    }
+                });
+    }
+
+    public Observable<List<GMGetCashbackModel>> getCashbackList(List<String> productIdList, String shopId) {
+        List<Long> productIdsLong = new ArrayList<>();
+        for(String productId : productIdList){
+            productIdsLong.add(Long.parseLong(productId));
+        }
+        RequestGetCashbackModel.DataRequestGetCashback dataRequestGetCashback = new RequestGetCashbackModel.DataRequestGetCashback(productIdsLong, Long.parseLong(shopId));
+        List<RequestGetCashbackModel.DataRequestGetCashback> requestGetCashbackModelList = new ArrayList<>();
+        requestGetCashbackModelList.add(dataRequestGetCashback);
+        RequestGetCashbackModel requestGetCashbackModel = new RequestGetCashbackModel(requestGetCashbackModelList);
+        return gmCommonCloudDataSource.getCashbackList(requestGetCashbackModel)
+                .map(new DataResponseMapper<>())
+                .map(dataCashbackModels -> {
+                    if(dataCashbackModels == null){
+                        return new ArrayList<>();
+                    }else{
+                        return dataCashbackModels;
                     }
                 });
     }

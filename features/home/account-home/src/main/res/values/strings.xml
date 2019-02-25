@@ -101,7 +101,8 @@
     <string name="label_menu_buyer_complain">Lihat status komplain</string>
     <string name="title_menu_seller_complain">Komplain Sebagai Penjual</string>
     <string name="label_menu_seller_complain">Lihat status komplain</string>
-    <string name="title_menu_other_transaction">Transaksi Lainnya</string>
+    <string name="title_menu_other_transaction">Detail Transaksi</string>
+    <string name="title_menu_other_transaction_1">Daftar Transaksi</string>
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_favorite_topic">Topik Favorit</string>
     <string name="label_menu_favorite_topic">Atur topik favorit Anda</string>
@@ -121,6 +122,7 @@
     <string name="title_menu_resolution_center">Pusat Bantuan</string>
     <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
     <string name="title_menu_top_up_bill"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="title_menu_market_place">Belanja</string>
     <string name="title_menu_deals">Deals</string>
     <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>

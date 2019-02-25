@@ -342,7 +342,6 @@ import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
@@ -1262,7 +1261,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CommonUtils.dumper(eventTracking.toString());
     }
 
-    @Override
     public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
@@ -1610,12 +1608,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return Observable.just(gmFeaturedProductDomainModel);
     }
 
-    @Override
-    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
-        List<DataCashbackModel> dataCashbackModels = new ArrayList<>();
-        return Observable.just(dataCashbackModels);
-    }
-
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
             Intent intent = new Intent(activity, ProductAddNameCategoryActivity.class);
@@ -1833,18 +1825,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendEnhanceECommerceTracking(Map<String, Object> events) {
         TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
-    }
-
-    @Override
-    public void sendTrackDefaultAuth() {
-        ScreenTracking.sendAuth(this);
-    }
-
-    @Override
-    public void sendTrackCustomAuth(Context context, String shopID,
-                                    String shopType, String pageType,
-                                    String productId) {
-        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
     }
 
     @Override

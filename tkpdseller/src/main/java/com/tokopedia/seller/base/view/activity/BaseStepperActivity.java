@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 7/27/17.
  */
-
+@Deprecated
 public abstract class BaseStepperActivity<T extends StepperModel> extends BaseToolbarActivity implements StepperListener<T> {
     public static final String STEPPER_MODEL_EXTRA = "STEPPER_MODEL_EXTRA";
     public static final String SAVED_POSITION = "SVD_POS";
