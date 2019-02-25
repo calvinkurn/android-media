@@ -39,7 +39,6 @@ constructor() {
                     it.title,
                     it.firstName,
                     it.lastName,
-                    it.dob,
                     transformAmenities(it.amenities))
         }
     }

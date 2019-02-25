@@ -23,9 +23,6 @@ class PassengerEntity(
         @SerializedName("last_name")
         @Expose
         val lastName: String = "",
-        @SerializedName("dob")
-        @Expose
-        val dob: String = "",
         @SerializedName("nationality")
         @Expose
         val nationality: String = "",
