@@ -568,8 +568,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         iv_image_collapse.loadImageRounded(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
         tv_name.text = element.name
-        tv_name_parallax.text = element.affiliateName
-        tv_aff_name.text = element.affiliateName
+        var affName = "Profile"
+        if (!element.affiliateName.equals("")) affName = element.affiliateName
+        tv_name_parallax.text = affName
+        tv_aff_name.text = affName
         iv_back_parallax.setOnClickListener{
             activity?.finish()
         }

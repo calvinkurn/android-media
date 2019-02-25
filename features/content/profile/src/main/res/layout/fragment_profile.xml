@@ -212,7 +212,7 @@
                                     android:textSize="@dimen/sp_12"
                                     android:textColor="@color/white"
                                     android:layout_marginTop="@dimen/dp_4"
-                                    tools:text="200 follower"/>
+                                    tools:text="200 follower"/>     
 
                                 <com.tokopedia.design.component.ButtonCompat
                                     android:id="@+id/followBtn"
