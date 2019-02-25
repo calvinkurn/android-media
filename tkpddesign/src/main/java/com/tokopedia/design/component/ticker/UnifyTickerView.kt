@@ -2,16 +2,15 @@ package com.tokopedia.design.component.ticker
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import com.tokopedia.design.R
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.component.TextViewCompat
-import com.tokopedia.design.R
 
 /**
  * @author by furqan on 15/02/19
@@ -24,10 +23,12 @@ class UnifyTickerView : BaseCustomView {
     var showCloseButton: Boolean = true
     var stateVisibility: Int = VISIBLE
 
+    private lateinit var baseView: View
     private lateinit var tvContent: TextViewCompat
     private lateinit var imgClose: ImageView
     private lateinit var container: View
     private lateinit var baseTicker: View
+    private lateinit var listener: UnifyTickerListener
 
     constructor(context: Context) : super(context)
 
@@ -45,10 +46,13 @@ class UnifyTickerView : BaseCustomView {
         } else {
             GONE
         }
-    }
 
-    fun setOnActionCloseClickListener(listener: OnClickListener) {
-        imgClose.setOnClickListener(listener)
+        imgClose.setOnClickListener {
+            if (::listener.isInitialized) {
+                listener.OnTickerCloseClickListener()
+            }
+            baseView.visibility = GONE
+        }
     }
 
     override fun onSaveInstanceState(): Parcelable {
@@ -76,8 +80,12 @@ class UnifyTickerView : BaseCustomView {
         tvContent.text = content
     }
 
+    fun setTickerListener(listener: UnifyTickerListener) {
+        this.listener = listener
+    }
+
     private fun initView() {
-        val view = inflate(context, R.layout.widget_unify_ticker, this)
+        baseView = inflate(context, R.layout.widget_unify_ticker, this)
         baseTicker = view.findViewById(R.id.parent_view)
         container = view.findViewById(R.id.container)
         tvContent = view.findViewById(R.id.ticker_content)
@@ -121,6 +129,10 @@ class UnifyTickerView : BaseCustomView {
     }
 
     private fun configDangerTicker() {
+    }
+
+    public interface UnifyTickerListener {
+        fun OnTickerCloseClickListener()
     }
 
     companion object {

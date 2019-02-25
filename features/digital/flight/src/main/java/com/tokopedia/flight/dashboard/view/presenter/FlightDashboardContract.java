@@ -4,6 +4,7 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -66,6 +67,8 @@ public interface FlightDashboardContract {
         void renderBannerView(List<BannerDetail> bannerList);
 
         void hideBannerView();
+
+        void renderTickerView(TravelTickerViewModel travelTickerViewModel);
 
         String getScreenName();
 

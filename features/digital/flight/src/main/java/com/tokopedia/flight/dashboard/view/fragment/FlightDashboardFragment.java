@@ -31,7 +31,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.banner.BannerView;
+import com.tokopedia.design.component.ticker.UnifyTickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.service.GetAirportListJobService;
@@ -107,6 +109,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View returnDateSeparatorView;
     View bannerLayout;
     BannerView bannerView;
+    UnifyTickerView tickerView;
     List<BannerDetail> bannerList;
 
     @Inject
@@ -167,6 +170,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView = view.findViewById(R.id.banner);
         progressBar = view.findViewById(R.id.progress_bar);
         formContainerLayout = view.findViewById(R.id.dashboard_container);
+        tickerView = view.findViewById(R.id.flight_ticker_view);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -601,6 +605,19 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void hideBannerView() {
         bannerLayout.setVisibility(View.GONE);
         bannerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
+        tickerView.setMType(travelTickerViewModel.getType());
+        tickerView.setTickerContent(travelTickerViewModel.getMessage());
+        tickerView.setTickerListener(new UnifyTickerView.UnifyTickerListener() {
+            @Override
+            public void OnTickerCloseClickListener() {
+
+            }
+        });
+        tickerView.buildView();
     }
 
     @Override
