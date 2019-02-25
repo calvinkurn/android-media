@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.component.ticker.TickerView;
 
@@ -13,6 +14,8 @@ import java.util.ArrayList;
  * @author by furqan on 25/02/19
  */
 public class TravelTickerUtils {
+    private static final int DEFAULT_POST_DELAYED_VALUE = 500;
+
     public static void buildTravelTicker(Context context, TravelTickerViewModel travelTickerViewModel, TickerView tickerView) {
         ArrayList<String> messages = new ArrayList<>();
         messages.add(travelTickerViewModel.getMessage());

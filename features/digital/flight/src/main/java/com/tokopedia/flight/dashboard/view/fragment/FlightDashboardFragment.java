@@ -94,7 +94,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
-    private static final int DEFAULT_POST_DELAYED_VALUE = 500;
 
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
@@ -612,7 +611,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        TravelTickerUtils.buildTravelTicker(getContext(), travelTickerViewModel, travelTicker);
+        TravelTickerUtils.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
     }
 
     @Override
