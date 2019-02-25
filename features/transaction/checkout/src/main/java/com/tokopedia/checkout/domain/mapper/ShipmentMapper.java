@@ -131,6 +131,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     userAddressResult.setProvinceId(groupAddress.getUserAddress().getProvinceId());
                     userAddressResult.setProvinceName(groupAddress.getUserAddress().getProvinceName());
                     userAddressResult.setReceiverName(groupAddress.getUserAddress().getReceiverName());
+                    userAddressResult.setCornerId(groupAddress.getUserAddress().getCornerId());
 
                     groupAddressResult.setUserAddress(userAddressResult);
                 }
@@ -239,7 +240,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductShopType(generateShopType(groupShop.getShop()));
                                 analyticsProductCheckoutData.setProductVariant("");
                                 analyticsProductCheckoutData.setProductBrand("");
-                                analyticsProductCheckoutData.setProductQuantity(String.valueOf(product.getProductQuantity()));
+                                analyticsProductCheckoutData.setProductQuantity(product.getProductQuantity());
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
                                 if (product.getErrors() != null) {

@@ -46,6 +46,7 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
@@ -105,6 +106,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    private ActivityStateListener activityStateListener;
 
     public static final long ONE_SECOND = 1000l;
     @Inject
@@ -308,11 +310,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
         notifyToolbarForAbTesting();
         presenter.onResume();
+        if(activityStateListener!=null){
+            activityStateListener.onResume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if(activityStateListener!=null) {
+            activityStateListener.onPause();
+        }
     }
 
     @Override
@@ -952,6 +960,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public boolean isHomeFragment() {
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
         return (fragment instanceof HomeFragment);
+    }
+
+    @Override
+    public void setActivityStateListener(ActivityStateListener activityStateListener) {
+        this.activityStateListener = activityStateListener;
     }
 
     @Override

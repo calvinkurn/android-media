@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.listener;
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 
 /**
@@ -48,4 +49,6 @@ public interface HomeCategoryListener {
     long getServerTimeOffset();
 
     boolean isHomeFragment();
+
+    void setActivityStateListener(ActivityStateListener activityStateListener);
 }
