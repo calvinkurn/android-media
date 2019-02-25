@@ -8,8 +8,8 @@
     <ImageView
         android:id="@+id/icon"
         app:srcCompat="@drawable/ic_play_dynamic_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/dp_44"
+        android:layout_height="@dimen/dp_44" />
 
     <ImageView
         android:id="@+id/notification"

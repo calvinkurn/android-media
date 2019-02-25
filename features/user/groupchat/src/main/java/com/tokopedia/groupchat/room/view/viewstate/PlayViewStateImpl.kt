@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
@@ -32,6 +33,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.text.BackEditText
+import com.tokopedia.design.widget.ViewTooltip
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
@@ -44,6 +46,8 @@ import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.common.analytics.EEPromotion
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
@@ -52,6 +56,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -106,6 +111,7 @@ class PlayViewStateImpl(
     lateinit var overlayDialog: CloseableBottomSheetDialog
     lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
     lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
+    lateinit var webviewDialog : PlayWebviewDialogFragment
 
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
@@ -223,8 +229,20 @@ class PlayViewStateImpl(
         }
     }
 
-    override fun onDynamicButtonUpdated(it: ButtonsPojo) {
-        dynamicButtonAdapter.setList(it.listDynamicButton)
+    override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
+       if(!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()){
+           it.floatingButton.run {
+               setFloatingIcon(linkUrl.trim(), imageUrl.trim())
+           }
+        }
+
+        if(!it.listDynamicButton.isEmpty()) {
+            dynamicButtonAdapter.setList(it.listDynamicButton)
+        }
+    }
+
+    override fun onErrorGetDynamicButtons() {
+        dynamicButtonAdapter.setList(ArrayList())
     }
 
     override fun onKeyboardHidden() {
@@ -275,20 +293,13 @@ class PlayViewStateImpl(
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
         initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
         setBottomView()
-
-//        setDynamicIcon("https://www.tokopedia.com/play/trivia-quiz?campaign=nakamatest")
-        setFloatingIcon("tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
-                ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih", "https://i.gifer.com/M8tf.gif")
-
+        setDynamicBackground()
         showBottomSheetFirstTime(it)
-
         showLoginButton(!userSession.isLoggedIn)
-
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
         }
 
-        onDynamicButtonUpdated(it.buttonsPojo)
         onBackgroundUpdated(it.backgroundViewModel)
         errorView.hide()
     }
@@ -315,7 +326,10 @@ class PlayViewStateImpl(
      */
     private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
         showInfoBottomSheet(it) {
-                showOverlayBottomSheet(it)
+            if(it.overlayViewModel!= null
+                    && it.overlayViewModel.interuptViewModel!= null
+                    && !it.overlayViewModel.interuptViewModel!!.btnLink!!.isBlank())
+            showOverlayBottomSheet(it)
         }
     }
 
@@ -435,7 +449,7 @@ class PlayViewStateImpl(
             pinnedMessageContainer.visibility = View.VISIBLE
 
             channelInfoViewModel.pinnedMessageViewModel?.let {
-                if(it.title.isBlank()) {
+                if (it.title.isBlank()) {
                     pinnedMessageContainer.visibility = View.GONE
                     return
                 }
@@ -478,10 +492,6 @@ class PlayViewStateImpl(
 
     }
 
-    private fun setChannelInfoBottomSheet() {
-        //TODO channel Info
-    }
-
     private fun showOverlayBottomSheet(channelInfoViewModel: ChannelInfoViewModel) {
         if (channelInfoViewModel.overlayViewModel == null) {
             return
@@ -516,7 +526,7 @@ class PlayViewStateImpl(
     private fun createOverlayView(channelInfoViewModel: ChannelInfoViewModel): View {
         val overlayView = activity.layoutInflater.inflate(R.layout.layout_interupt_page, null)
         val interruptViewModel = channelInfoViewModel.overlayViewModel.interuptViewModel
-        interruptViewModel?.let{
+        interruptViewModel?.let {
             if (!TextUtils.isEmpty(interruptViewModel.imageUrl)) {
                 ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
                 overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
@@ -769,7 +779,7 @@ class PlayViewStateImpl(
                                                 }
                                                 override fun onSeekTo(i: Int) {}
                                             })
-//
+
                                             it.setPlayerStateChangeListener(object : YouTubePlayer.PlayerStateChangeListener {
                                                 var TAG = "youtube"
                                                 override fun onLoading() {
@@ -870,20 +880,18 @@ class PlayViewStateImpl(
 
     }
 
-    private fun setDynamicIcon(redirectUrl: String) {
-//        if (redirectUrl.isBlank()) {
-//            return
-//        }
-//
-//        dynamicIcon.setOnClickListener {
-//            showWebviewBottomSheet(redirectUrl)
-//        }
-    }
-
     private fun showWebviewBottomSheet(url: String) {
 
-        val bottomSheetDialog = PlayWebviewDialogFragment.createInstance(url)
-        bottomSheetDialog.show(activity.supportFragmentManager, "Custom Bottom Sheet")
+        if(url.isBlank())
+            return
+
+        if(!::webviewDialog.isInitialized) {
+            webviewDialog = PlayWebviewDialogFragment.createInstance(url)
+        }else{
+            webviewDialog.setUrl(url)
+        }
+
+        webviewDialog.show(activity.supportFragmentManager, "Custom Bottom Sheet")
 
     }
 
@@ -958,15 +966,44 @@ class PlayViewStateImpl(
         scrollToBottom()
     }
 
+    override fun onReceiveOverlayMessageFromWebsocket(channelInfoViewModel: ChannelInfoViewModel) {
+        viewModel = channelInfoViewModel
+        viewModel?.let {
+
+            if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
+                welcomeInfoDialog.setOnDismissListener { onDismiss ->
+                    showOverlayBottomSheet(it)
+                }
+            } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
+                pinnedMessageDialog.setOnDismissListener { onDismiss ->
+                    showOverlayBottomSheet(it)
+                }
+            } else if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
+                overlayDialog.dismiss()
+                showOverlayBottomSheet(it)
+            } else {
+                showOverlayBottomSheet(it)
+            }
+
+        }
+    }
+
+    override fun onReceiveCloseOverlayMessageFromWebsocket() {
+        if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
+            overlayDialog.dismiss()
+        }
+    }
+
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
-                                    onDismiss : () ->Unit) {
+                                    onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
             welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
         }
 
         welcomeInfoDialog.setOnDismissListener {
             onDismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId) }
+            analytics.eventClickJoin(channelInfoViewModel.channelId)
+        }
 
         val welcomeInfoView = createWelcomeInfoView(channelInfoViewModel)
         welcomeInfoDialog.setOnShowListener() { dialog ->
@@ -1075,6 +1112,31 @@ class PlayViewStateImpl(
         chatRecyclerView.setPadding(0, space, 0, 0)
     }
 
+
+    override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
+        viewModel?.let{
+
+            it.overlayViewModel = OverlayViewModel(
+                    true,
+                    0,
+                    InteruptViewModel(
+                            "",
+                            button.contentText,
+                            button.contentImageUrl,
+                            button.contentLinkUrl,
+                            "Ayo!",
+                            button.contentLinkUrl
+                    )
+            )
+
+            showOverlayBottomSheet(it)
+        }
+
+    }
+
+    override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
+        showWebviewBottomSheet(it.linkUrl)
+    }
 
     override fun destroy() {
         youTubePlayer?.release()

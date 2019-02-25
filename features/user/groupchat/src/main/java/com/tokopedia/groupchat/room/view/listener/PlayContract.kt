@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
+import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -16,7 +18,6 @@ import com.tokopedia.user.session.UserSessionInterface
 interface PlayContract {
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
         fun onOpenWebSocket()
-        fun onMessageReceived(item: Visitable<*>, hideMessage: Boolean)
         fun setSnackBarConnectingWebSocket()
         fun setSnackBarRetryConnectingWebSocket()
         fun onLoginClicked(channelId: String?)
@@ -32,8 +33,8 @@ interface PlayContract {
         fun showOverlayDialog(it: OverlayViewModel)
         fun closeOverlayDialog()
         fun addIncomingMessage(it: Visitable<*>)
-        fun openOverlay(it: String)
-        fun updateDynamicButton(it: ButtonsPojo)
+        fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button)
+        fun updateDynamicButton(it: DynamicButtonsViewModel)
         fun onBackgroundUpdated(it: BackgroundViewModel)
         fun openRedirectUrl(generateLink: String)
         fun onRetryGetInfo()
@@ -47,5 +48,10 @@ interface PlayContract {
                 onSuccessSendMessage: (PendingChatViewModel) -> Unit,
                 onErrorSendMessage: (PendingChatViewModel, Exception?) -> Unit
         )
+
+        fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit,
+                        onErrorGetInfo: (String) -> Unit)
+        fun getDynamicButtons(channelId: String?, onSuccessGetDynamicButtons:
+        (DynamicButtonsViewModel) -> Unit, onErrorGetDynamicButtons: (String) -> Unit)
     }
 }

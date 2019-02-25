@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager

@@ -2,6 +2,7 @@ package com.tokopedia.groupchat.chatroom.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessageAssetPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
@@ -23,6 +24,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProduc
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 
@@ -84,9 +86,44 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getVideoLive(),
                 pojo.getChannel().getSettingGroupChat(),
                 convertOverlayModel(pojo.getChannel().getOverlayMessage()),
-                pojo.getChannel().getButton(),
+                convertDynamicButtons(pojo.getChannel().getButton()),
                 pojo.getChannel().getBackgroundViewModel()
         );
+    }
+
+    private DynamicButtonsViewModel convertDynamicButtons(ButtonsPojo button) {
+        DynamicButtonsViewModel dynamicButtonsViewModel = new DynamicButtonsViewModel();
+        if(button.getFloatingButton() != null){
+            dynamicButtonsViewModel.setFloatingButton(new DynamicButtonsViewModel.Button(
+                    button.getFloatingButton().getImageUrl(),
+                    button.getFloatingButton().getLinkUrl(),
+                    button.getFloatingButton().getContentType(),
+                    button.getFloatingButton().getContentText(),
+                    button.getFloatingButton().getContentLinkUrl(),
+                    button.getFloatingButton().getContentImageUrl(),
+                    button.getFloatingButton().getRedDot(),
+                    button.getFloatingButton().getTooltip()
+            ));
+        }
+
+        if(button.getListDynamicButton()!= null){
+            for(ButtonsPojo.Button buttonItem : button.getListDynamicButton()){
+                dynamicButtonsViewModel.getListDynamicButton().add(
+                        new DynamicButtonsViewModel.Button(
+                                buttonItem.getImageUrl(),
+                                buttonItem.getLinkUrl(),
+                                buttonItem.getContentType(),
+                                buttonItem.getContentText(),
+                                buttonItem.getContentLinkUrl(),
+                                buttonItem.getContentImageUrl(),
+                                buttonItem.getRedDot(),
+                                buttonItem.getTooltip()
+                                )
+                );
+            }
+        }
+
+        return dynamicButtonsViewModel;
     }
 
     private PinnedMessageViewModel mapToPinnedMessageViewModel(PinnedMessagePojo pinnedMessage) {

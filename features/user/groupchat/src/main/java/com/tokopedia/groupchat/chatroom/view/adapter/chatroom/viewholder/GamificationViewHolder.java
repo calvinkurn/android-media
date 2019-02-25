@@ -56,16 +56,16 @@ public class GamificationViewHolder extends AbstractViewHolder<GroupChatPointsVi
     private void setIcon(String type) {
         switch (type) {
             case GroupChatPointsViewModel.TYPE_POINTS:
-                loadIcon(R.drawable.ic_gratification_points);
+                loadIcon(R.drawable.ic_point);
                 break;
             case GroupChatPointsViewModel.TYPE_COUPON:
-                loadIcon(R.drawable.ic_gratification_coupon);
+                loadIcon(R.drawable.ic_coupon);
                 break;
             case GroupChatPointsViewModel.TYPE_LOYALTY:
-                loadIcon(R.drawable.ic_gratification_loyalty);
+                loadIcon(R.drawable.ic_loyalty);
                 break;
             default:
-                loadIcon(R.drawable.ic_gratification_loyalty);
+                loadIcon(R.drawable.ic_loyalty);
         }
     }
 

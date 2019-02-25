@@ -14,6 +14,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickRe
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 
 import java.util.ArrayList;
@@ -47,8 +48,8 @@ public class ChannelInfoViewModel implements Parcelable {
     private String videoId;
     private Boolean videoLive;
     private SettingGroupChat settingGroupChat;
-    private OverlayViewModel overlayViewModel;
-    private ButtonsPojo buttonsPojo;
+    public OverlayViewModel overlayViewModel;
+    private DynamicButtonsViewModel dynamicButtons;
     private BackgroundViewModel backgroundViewModel;
 
     @Nullable
@@ -99,7 +100,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.videoLive = false;
         this.settingGroupChat = null;
         this.overlayViewModel = null;
-        this.buttonsPojo = null;
+        this.dynamicButtons = null;
         this.backgroundViewModel = null;
     }
 
@@ -117,7 +118,7 @@ public class ChannelInfoViewModel implements Parcelable {
                                 List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel,
                                 String videoId, Boolean videoLive,
                                 SettingGroupChat settingGroupChat, OverlayViewModel overlayViewModel,
-                                ButtonsPojo buttonsPojo, BackgroundViewModel backgroundViewModel) {
+                                DynamicButtonsViewModel dynamicButtons, BackgroundViewModel backgroundViewModel) {
         this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
@@ -147,7 +148,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.videoLive = videoLive;
         this.settingGroupChat = settingGroupChat;
         this.overlayViewModel = overlayViewModel;
-        this.buttonsPojo = buttonsPojo;
+        this.dynamicButtons = dynamicButtons;
         this.backgroundViewModel = backgroundViewModel;
     }
 
@@ -322,12 +323,84 @@ public class ChannelInfoViewModel implements Parcelable {
         return overlayViewModel;
     }
 
-    public ButtonsPojo getButtonsPojo() {
-        return buttonsPojo;
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
     }
 
-    public void setButtonsPojo(ButtonsPojo buttonsPojo) {
-        this.buttonsPojo = buttonsPojo;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setChannelUrl(String channelUrl) {
+        this.channelUrl = channelUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
+    }
+
+    public void setBlurredBannerUrl(String blurredBannerUrl) {
+        this.blurredBannerUrl = blurredBannerUrl;
+    }
+
+    public void setBannerName(String bannerName) {
+        this.bannerName = bannerName;
+    }
+
+    public void setGroupChatToken(String groupChatToken) {
+        this.groupChatToken = groupChatToken;
+    }
+
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setAdminPicture(String adminPicture) {
+        this.adminPicture = adminPicture;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setChannelPartnerViewModels(List<ChannelPartnerViewModel> channelPartnerViewModels) {
+        this.channelPartnerViewModels = channelPartnerViewModels;
+    }
+
+    public void setBannedMessage(String bannedMessage) {
+        this.bannedMessage = bannedMessage;
+    }
+
+    public void setKickedMessage(String kickedMessage) {
+        this.kickedMessage = kickedMessage;
+    }
+
+    public void setFreeze(boolean freeze) {
+        isFreeze = freeze;
+    }
+
+    public void setSettingGroupChat(SettingGroupChat settingGroupChat) {
+        this.settingGroupChat = settingGroupChat;
+    }
+
+    public void setOverlayViewModel(OverlayViewModel overlayViewModel) {
+        this.overlayViewModel = overlayViewModel;
+    }
+
+    public void setExitMessage(@Nullable ExitMessage exitMessage) {
+        this.exitMessage = exitMessage;
+    }
+    public DynamicButtonsViewModel getDynamicButtons() {
+        return dynamicButtons;
+    }
+
+    public void setDynamicButtons(DynamicButtonsViewModel dynamicButtons) {
+        this.dynamicButtons = dynamicButtons;
     }
 
     public BackgroundViewModel getBackgroundViewModel() {
@@ -371,7 +444,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(this.pinnedMessageViewModel, flags);
         dest.writeParcelable(this.exitMessage, flags);
         dest.writeTypedList(this.quickRepliesViewModel);
-        dest.writeParcelable(this.buttonsPojo, flags);
+        dest.writeParcelable(this.dynamicButtons, flags);
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -405,7 +478,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.pinnedMessageViewModel = in.readParcelable(PinnedMessageViewModel.class.getClassLoader());
         this.exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
         this.quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
-        this.buttonsPojo = in.readParcelable(ButtonsPojo.class.getClassLoader());
+        this.dynamicButtons = in.readParcelable(DynamicButtonsViewModel.class.getClassLoader());
     }
 
     public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
@@ -419,4 +492,5 @@ public class ChannelInfoViewModel implements Parcelable {
             return new ChannelInfoViewModel[size];
         }
     };
+
 }

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.groupchat.chatroom.data.ChatroomApi
 import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.groupchat.common.di.qualifier.GroupChatQualifier
+import com.tokopedia.groupchat.common.network.PlayInterceptor
 import com.tokopedia.groupchat.common.network.StreamErrorResponse
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -82,12 +83,12 @@ class PlayModule {
     fun provideOkHttpClient(@ApplicationContext context : Context,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            accountsAuthorizationInterceptor: AccountsAuthorizationInterceptor):
+                            playInterceptor: PlayInterceptor):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(ErrorResponseInterceptor(StreamErrorResponse::class.java))
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(accountsAuthorizationInterceptor)
+                .addInterceptor(playInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools()))

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 
 /**
  * @author : Steven 13/02/19
@@ -37,11 +38,16 @@ interface PlayViewState {
     fun onQuickReplyClicked(text: String?)
     fun onKeyboardHidden()
     fun getChannelInfo(): ChannelInfoViewModel?
-    fun onDynamicButtonUpdated(it: ButtonsPojo)
+    fun onDynamicButtonUpdated(it: DynamicButtonsViewModel)
+    fun onErrorGetDynamicButtons()
     fun onInfoMenuClicked()
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
     fun onBackgroundUpdated(it: BackgroundViewModel)
     fun getDurationWatchVideo(): String?
     fun onErrorGetInfo(it: String)
+    fun onReceiveOverlayMessageFromWebsocket(it: ChannelInfoViewModel)
+    fun onReceiveCloseOverlayMessageFromWebsocket()
+    fun onShowOverlayCTAFromDynamicButton(it: DynamicButtonsViewModel.Button)
+    fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button)
     fun setBottomView()
 }

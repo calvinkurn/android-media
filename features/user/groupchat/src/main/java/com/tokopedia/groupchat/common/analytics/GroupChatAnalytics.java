@@ -4,9 +4,11 @@ import android.app.Activity;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -431,6 +433,33 @@ public class GroupChatAnalytics {
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
+
+    }
+
+    public void eventClickSprintSaleProduct(@Nullable SprintSaleProductViewModel productViewModel, Integer position, ChannelInfoViewModel viewModel) {
+        ArrayList<EEPromotion> list = new ArrayList<>();
+        list.add(new EEPromotion(productViewModel.getProductId(),
+                EEPromotion.NAME_GROUPCHAT,
+                position,
+                productViewModel.getProductName(),
+                productViewModel.getProductImage(),
+                generateTrackerAttribution(GroupChatAnalytics.ATTRIBUTE_FLASH_SALE,
+                        viewModel.getChannelUrl(), viewModel.getTitle())
+        ));
+
+        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+                EVENT_NAME, EVENT_NAME_PROMO_CLICK,
+                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + COMPONENT_FLASH_SALE,
+                EVENT_LABEL, GroupChatAnalytics.COMPONENT_FLASH_SALE + " " +  productViewModel.getProductName(),
+                ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
+                ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
+                        .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
+        ));
+
+        if(viewModel.getSprintSaleViewModel()!= null && viewModel.getSprintSaleViewModel().getCampaignName()!= null)
+        eventClickFlashSale(String.format("%s - %s", viewModel.getChannelId(),
+               viewModel.getSprintSaleViewModel().getCampaignName()));
 
     }
 }
