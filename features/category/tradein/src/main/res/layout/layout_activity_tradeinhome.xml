@@ -14,6 +14,7 @@
         android:theme="@style/Toolbar.White"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:elevation="@dimen/dp_4"
         app:subtitleTextAppearance="@style/SubTitleTextAppearance"
         app:titleTextAppearance="@style/TitleTextAppearance" />
 
@@ -24,14 +25,15 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/button_border_green"
+        android:background="@drawable/button_border_yellow"
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingTop="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_24"
         android:paddingRight="@dimen/dp_24"
         android:paddingBottom="@dimen/dp_12"
-        android:text="@string/product_not_elligible"
+        android:text="@string/not_elligible_price_high"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -43,6 +45,7 @@
         android:layout_margin="@dimen/dp_8"
         android:src="@drawable/ic_action_x"
         android:tint="@color/bg_corner_yellow"
+        android:visibility="gone"
         app:layout_constraintRight_toRightOf="@+id/tv_price_elligible"
         app:layout_constraintTop_toTopOf="@+id/tv_price_elligible" />
 
@@ -109,6 +112,23 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_header_price" />
+
+    <TextView
+        android:id="@+id/tv_indicative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:text="@string/depends_on_test"
+        android:textColor="#8a000000"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_initial_price" />
+
 
     <TextView
         android:id="@+id/tv_go_to_product_details"

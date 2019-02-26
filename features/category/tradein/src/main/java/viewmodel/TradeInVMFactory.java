@@ -36,6 +36,18 @@ public class TradeInVMFactory extends ViewModelProvider.NewInstanceFactory {
             } catch (InvocationTargetException e) {
                 throw new RuntimeException("Cannot create an instance of " + modelClass, e);
             }
+        } else if (TradeInHomeViewModel.class.isAssignableFrom(modelClass)) {
+            try {
+                return modelClass.getConstructor(FragmentActivity.class).newInstance(activityWeakReference.get());
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            }
         }
         return super.create(modelClass);
     }

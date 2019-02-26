@@ -1,0 +1,8 @@
+mutation getTradeInDeviceDiag($params:TradeInInsertDeviceDiagInput){
+ insertTradeInDeviceDiag(params:$params)
+ {
+    	IsEligible
+    	RemainingPrice
+    	Message
+  	}
+}

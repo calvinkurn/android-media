@@ -8,6 +8,9 @@ public class AccessRequestViewModel extends ViewModel implements IAccessRequestL
     // TODO: Implement the ViewModel
     private MutableLiveData<Boolean> permissionLiveData;
 
+    public AccessRequestViewModel(){
+        permissionLiveData = new MutableLiveData<>();
+    }
     public MutableLiveData<Boolean> getPermissionLiveData() {
         return permissionLiveData;
     }

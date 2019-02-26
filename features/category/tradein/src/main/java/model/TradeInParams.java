@@ -24,6 +24,7 @@ public class TradeInParams implements Parcelable {
     private int usedPrice;
     private int remainingPrice;
     private int useKyc;
+    private int isEligible;
 
     public int getProductId() {
         return productId;
@@ -105,6 +106,14 @@ public class TradeInParams implements Parcelable {
         this.useKyc = useKyc;
     }
 
+    public int getIsEligible() {
+        return isEligible;
+    }
+
+    public void setIsEligible(int isEligible) {
+        this.isEligible = isEligible;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -112,18 +121,22 @@ public class TradeInParams implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.price);
         dest.writeInt(this.usedPrice);
         dest.writeInt(this.remainingPrice);
         dest.writeInt(this.useKyc);
+        dest.writeInt(this.isEligible);
     }
 
     public TradeInParams() {
     }
 
     protected TradeInParams(Parcel in) {
+        this.price = in.readInt();
         this.usedPrice = in.readInt();
         this.remainingPrice = in.readInt();
         this.useKyc = in.readInt();
+        this.isEligible = in.readInt();
     }
 
     public static final Creator<TradeInParams> CREATOR = new Creator<TradeInParams>() {

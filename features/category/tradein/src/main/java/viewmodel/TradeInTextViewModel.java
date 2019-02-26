@@ -4,7 +4,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 
 import com.example.tradein.R;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -18,12 +17,14 @@ import java.util.Map;
 
 import model.TradeInParams;
 import model.ValidateTradeInResponse;
+import model.ValidateTradePDP;
 import rx.Subscriber;
 import view.viewcontrollers.AccessRequestFragment;
 
 public class TradeInTextViewModel extends ViewModel implements ITradeInParamReceiver {
     private MutableLiveData<ValidateTradeInResponse> responseData;
     private WeakReference<FragmentActivity> activityWeakReference;
+    private int newPrice;
 
     public TradeInTextViewModel(FragmentActivity activity) {
         activityWeakReference = new WeakReference<>(activity);
@@ -33,7 +34,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
     public void showAccessRequestDialog() {
         if (activityWeakReference.get() != null) {
             FragmentManager fragmentManager = activityWeakReference.get().getSupportFragmentManager();
-            AccessRequestFragment accessDialog = new AccessRequestFragment();
+            AccessRequestFragment accessDialog = AccessRequestFragment.newInstance(newPrice);
             accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         }
     }
@@ -47,14 +48,14 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
     }
 
     public void checkTradeIn(TradeInParams tradeInParams) {
-        if (tradeInParams.getUsedPrice() <= 0) {
+        if (tradeInParams.getIsEligible() == 0) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("params", tradeInParams);
             GraphqlUseCase gqlValidatetradeIn = new GraphqlUseCase();
             gqlValidatetradeIn.clearRequest();
             gqlValidatetradeIn.addRequest(new
                     GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
-                    R.raw.gql_validate_tradein), ValidateTradeInResponse.class, variables));
+                    R.raw.gql_validate_tradein), ValidateTradePDP.class, variables));
             gqlValidatetradeIn.execute(new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
@@ -69,14 +70,15 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                 @Override
                 public void onNext(GraphqlResponse graphqlResponse) {
                     if (graphqlResponse != null) {
-                        ValidateTradeInResponse tradeInResponse = graphqlResponse.getData(ValidateTradeInResponse.class);
+                        ValidateTradePDP tradePDP = graphqlResponse.getData(ValidateTradePDP.class);
+                        assert tradePDP != null;
+                        ValidateTradeInResponse tradeInResponse = tradePDP.getResponse();
                         if (tradeInResponse != null) {
                             responseData.setValue(tradeInResponse);
-                            if (tradeInResponse.isEligible() && tradeInResponse.isDiagnosed() && tradeInResponse.getUsedPrice() > 0) {
-                                tradeInParams.setUsedPrice(tradeInResponse.getUsedPrice());
-                                tradeInParams.setRemainingPrice(tradeInResponse.getRemainingPrice());
-                                tradeInParams.setUseKyc(tradeInResponse.isUseKyc() ? 1 : 0);
-                            }
+                            tradeInParams.setIsEligible(tradeInResponse.isEligible() ? 1 : 0);
+                            tradeInParams.setUsedPrice(tradeInResponse.getUsedPrice());
+                            tradeInParams.setRemainingPrice(tradeInResponse.getRemainingPrice());
+                            tradeInParams.setUseKyc(tradeInResponse.isUseKyc() ? 1 : 0);
                         }
                     }
                 }
@@ -84,10 +86,10 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
         } else {
             ValidateTradeInResponse response = new ValidateTradeInResponse();
             response.setEligible(true);
-            response.setDiagnosed(true);
             response.setRemainingPrice(tradeInParams.getRemainingPrice());
             response.setUsedPrice(tradeInParams.getUsedPrice());
             response.setUseKyc(tradeInParams.isUseKyc() != 0);
+            newPrice = tradeInParams.getPrice();
             responseData.setValue(response);
         }
     }

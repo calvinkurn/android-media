@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.tradein.R;
 
 import viewmodel.ITradeInParamReceiver;
+
 import viewmodel.TradeInResponseObserver;
 import viewmodel.TradeInTextViewModel;
 import viewmodel.TradeInVMFactory;

@@ -1,6 +1,8 @@
 package view.viewcontrollers;
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,9 +17,15 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 
-public abstract class BaseTradeInActivity extends BaseSimpleActivity implements TradeInBaseView {
+import viewmodel.TradeInVMFactory;
+
+public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpleActivity implements TradeInBaseView {
 
     abstract void initView();
+
+    abstract Class<T> getViewModelType();
+
+    abstract void setViewModel(ViewModel viewModel);
 
     abstract int getMenuRes();
 
@@ -30,10 +38,15 @@ public abstract class BaseTradeInActivity extends BaseSimpleActivity implements 
         super.onCreate(savedInstanceState);
         //executeInjector();
         NetworkClient.init(this);
-        //mPresenter = getPresenter(); //Todo:add code for getting default viewmodel
+        setViewModel(); //Todo:add code for getting default viewmodel
+
         initView();
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
         //mPresenter.attachView(this);
+    }
+
+    private void setViewModel() {
+        setViewModel(ViewModelProviders.of(this, TradeInVMFactory.getInstance(this)).get(getViewModelType()));
     }
 
     @Override
