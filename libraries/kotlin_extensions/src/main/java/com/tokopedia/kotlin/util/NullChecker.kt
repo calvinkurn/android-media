@@ -47,7 +47,7 @@ fun isContainNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }): Boole
     return if (firstNullOccurrence == null) {
         false
     } else {
-        whenNull(firstNullOccurrence.value)
+        whenNull("${firstNullOccurrence.value.trim()} in class ${`object`::class.java.name}")
         true
     }
 }
