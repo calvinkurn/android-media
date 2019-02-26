@@ -52,7 +52,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private CartItemAdapter cartItemAdapter;
     private CompositeSubscription compositeSubscription;
     private RecyclerView.RecycledViewPool viewPool;
-    private PromoMerchantBottomsheet promoMerchantBottomsheet;
 
     public CartShopViewHolder(View itemView, CartAdapter.ActionListener cartAdapterListener,
                               CartItemAdapter.ActionListener cartItemAdapterListener,
