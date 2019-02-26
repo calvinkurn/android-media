@@ -3,8 +3,10 @@ package com.tokopedia.groupchat.chatroom.domain.source;
 import com.tokopedia.groupchat.chatroom.data.ChatroomApi;
 import com.tokopedia.groupchat.chatroom.domain.mapper.ChannelInfoMapper;
 import com.tokopedia.groupchat.chatroom.domain.mapper.DynamicButtonsMapper;
+import com.tokopedia.groupchat.chatroom.domain.mapper.StickyComponentMapper;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel;
 
 import java.util.HashMap;
 
@@ -21,6 +23,7 @@ public class ChannelInfoSource {
     private ChatroomApi chatroomApi;
     private ChannelInfoMapper mapper;
     private DynamicButtonsMapper dynamicButtonsMapper;
+    private StickyComponentMapper stickyComponentMapper;
 
     @Inject
     public ChannelInfoSource(ChatroomApi chatroomApi, ChannelInfoMapper mapper,
@@ -40,5 +43,11 @@ public class ChannelInfoSource {
                                                                  HashMap<String, Object> requestParam) {
         return chatroomApi.getDynamicButtons(channelUuid, requestParam)
                 .map(dynamicButtonsMapper);
+    }
+
+    public Observable<StickyComponentViewModel> getStickyComponent(String channelUuid,
+                                                                   HashMap<String, Object> requestParam) {
+        return chatroomApi.getStickyComponent(channelUuid, requestParam)
+                .map(stickyComponentMapper);
     }
 }

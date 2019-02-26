@@ -152,6 +152,95 @@ public class ChannelInfoViewModel implements Parcelable {
         this.backgroundViewModel = backgroundViewModel;
     }
 
+    protected ChannelInfoViewModel(Parcel in) {
+        channelId = in.readString();
+        title = in.readString();
+        channelUrl = in.readString();
+        bannerUrl = in.readString();
+        blurredBannerUrl = in.readString();
+        adsImageUrl = in.readString();
+        adsLink = in.readString();
+        adsId = in.readString();
+        adsName = in.readString();
+        bannerName = in.readString();
+        groupChatToken = in.readString();
+        adminName = in.readString();
+        image = in.readString();
+        adminPicture = in.readString();
+        description = in.readString();
+        totalView = in.readString();
+        channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
+        bannedMessage = in.readString();
+        kickedMessage = in.readString();
+        isFreeze = in.readByte() != 0;
+        videoId = in.readString();
+        byte tmpVideoLive = in.readByte();
+        videoLive = tmpVideoLive == 0 ? null : tmpVideoLive == 1;
+        settingGroupChat = in.readParcelable(SettingGroupChat.class.getClassLoader());
+        overlayViewModel = in.readParcelable(OverlayViewModel.class.getClassLoader());
+        dynamicButtons = in.readParcelable(DynamicButtonsViewModel.class.getClassLoader());
+        backgroundViewModel = in.readParcelable(BackgroundViewModel.class.getClassLoader());
+        voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
+        sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
+        groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
+        pinnedMessageViewModel = in.readParcelable(PinnedMessageViewModel.class.getClassLoader());
+        exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
+        quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(channelId);
+        dest.writeString(title);
+        dest.writeString(channelUrl);
+        dest.writeString(bannerUrl);
+        dest.writeString(blurredBannerUrl);
+        dest.writeString(adsImageUrl);
+        dest.writeString(adsLink);
+        dest.writeString(adsId);
+        dest.writeString(adsName);
+        dest.writeString(bannerName);
+        dest.writeString(groupChatToken);
+        dest.writeString(adminName);
+        dest.writeString(image);
+        dest.writeString(adminPicture);
+        dest.writeString(description);
+        dest.writeString(totalView);
+        dest.writeTypedList(channelPartnerViewModels);
+        dest.writeString(bannedMessage);
+        dest.writeString(kickedMessage);
+        dest.writeByte((byte) (isFreeze ? 1 : 0));
+        dest.writeString(videoId);
+        dest.writeByte((byte) (videoLive == null ? 0 : videoLive ? 1 : 2));
+        dest.writeParcelable(settingGroupChat, flags);
+        dest.writeParcelable(overlayViewModel, flags);
+        dest.writeParcelable(dynamicButtons, flags);
+        dest.writeParcelable(backgroundViewModel, flags);
+        dest.writeParcelable(voteInfoViewModel, flags);
+        dest.writeParcelable(sprintSaleViewModel, flags);
+        dest.writeParcelable(groupChatPointsViewModel, flags);
+        dest.writeParcelable(pinnedMessageViewModel, flags);
+        dest.writeParcelable(exitMessage, flags);
+        dest.writeTypedList(quickRepliesViewModel);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
+        @Override
+        public ChannelInfoViewModel createFromParcel(Parcel in) {
+            return new ChannelInfoViewModel(in);
+        }
+
+        @Override
+        public ChannelInfoViewModel[] newArray(int size) {
+            return new ChannelInfoViewModel[size];
+        }
+    };
+
     public String getChannelId() {
         return channelId;
     }
@@ -406,91 +495,4 @@ public class ChannelInfoViewModel implements Parcelable {
     public BackgroundViewModel getBackgroundViewModel() {
         return backgroundViewModel;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.channelId);
-        dest.writeString(this.title);
-        dest.writeString(this.channelUrl);
-        dest.writeString(this.bannerUrl);
-        dest.writeString(this.blurredBannerUrl);
-        dest.writeString(this.adsImageUrl);
-        dest.writeString(this.adsLink);
-        dest.writeString(this.adsId);
-        dest.writeString(this.adsName);
-        dest.writeString(this.bannerName);
-        dest.writeString(this.groupChatToken);
-        dest.writeString(this.adminName);
-        dest.writeString(this.image);
-        dest.writeString(this.adminPicture);
-        dest.writeString(this.description);
-        dest.writeString(this.totalView);
-        dest.writeTypedList(this.channelPartnerViewModels);
-        dest.writeString(this.bannedMessage);
-        dest.writeString(this.kickedMessage);
-        dest.writeByte(this.isFreeze ? (byte) 1 : (byte) 0);
-        dest.writeString(this.videoId);
-        dest.writeByte(this.videoLive ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.settingGroupChat, flags);
-        dest.writeParcelable(this.overlayViewModel, flags);
-        dest.writeParcelable(this.voteInfoViewModel, flags);
-        dest.writeParcelable(this.sprintSaleViewModel, flags);
-        dest.writeParcelable(this.groupChatPointsViewModel, flags);
-        dest.writeParcelable(this.pinnedMessageViewModel, flags);
-        dest.writeParcelable(this.exitMessage, flags);
-        dest.writeTypedList(this.quickRepliesViewModel);
-        dest.writeParcelable(this.dynamicButtons, flags);
-    }
-
-    protected ChannelInfoViewModel(Parcel in) {
-        this.channelId = in.readString();
-        this.title = in.readString();
-        this.channelUrl = in.readString();
-        this.bannerUrl = in.readString();
-        this.blurredBannerUrl = in.readString();
-        this.adsImageUrl = in.readString();
-        this.adsLink = in.readString();
-        this.adsId = in.readString();
-        this.adsName = in.readString();
-        this.bannerName = in.readString();
-        this.groupChatToken = in.readString();
-        this.adminName = in.readString();
-        this.image = in.readString();
-        this.adminPicture = in.readString();
-        this.description = in.readString();
-        this.totalView = in.readString();
-        this.channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
-        this.bannedMessage = in.readString();
-        this.kickedMessage = in.readString();
-        this.isFreeze = in.readByte() != 0;
-        this.videoId = in.readString();
-        this.videoLive = in.readByte() != 0;
-        this.settingGroupChat = in.readParcelable(SettingGroupChat.class.getClassLoader());
-        this.overlayViewModel = in.readParcelable(OverlayViewModel.class.getClassLoader());
-        this.voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
-        this.sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
-        this.groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
-        this.pinnedMessageViewModel = in.readParcelable(PinnedMessageViewModel.class.getClassLoader());
-        this.exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
-        this.quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
-        this.dynamicButtons = in.readParcelable(DynamicButtonsViewModel.class.getClassLoader());
-    }
-
-    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
-        @Override
-        public ChannelInfoViewModel createFromParcel(Parcel source) {
-            return new ChannelInfoViewModel(source);
-        }
-
-        @Override
-        public ChannelInfoViewModel[] newArray(int size) {
-            return new ChannelInfoViewModel[size];
-        }
-    };
-
 }

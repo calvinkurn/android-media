@@ -1,4 +1,4 @@
-package com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.pinned
+package com.tokopedia.groupchat.room.view.viewmodel.pinned
 
 /**
  * @author by yfsx on 14/02/19.

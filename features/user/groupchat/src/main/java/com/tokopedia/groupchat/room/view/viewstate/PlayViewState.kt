@@ -8,6 +8,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 
 /**
  * @author : Steven 13/02/19
@@ -50,4 +51,6 @@ interface PlayViewState {
     fun onShowOverlayCTAFromDynamicButton(it: DynamicButtonsViewModel.Button)
     fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button)
     fun setBottomView()
+    fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel)
+    fun onErrorGetStickyComponent()
 }

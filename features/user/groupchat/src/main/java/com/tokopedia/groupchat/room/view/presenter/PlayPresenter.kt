@@ -6,9 +6,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
-import com.tokopedia.groupchat.chatroom.domain.usecase.GetDynamicButtonsUseCase
 import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
@@ -17,19 +15,22 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.chatroom.websocket.GroupChatWebSocketParam
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler
 import com.tokopedia.groupchat.room.domain.mapper.PlayWebSocketMessageMapper
+import com.tokopedia.groupchat.room.domain.usecase.GetDynamicButtonsUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
+import com.tokopedia.groupchat.room.domain.usecase.GetStickyComponentUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
-import okhttp3.WebSocket
-import okio.ByteString
-import rx.Subscriber
-import rx.subscriptions.CompositeSubscription
-import javax.inject.Inject
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketException
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import okhttp3.WebSocket
+import okio.ByteString
+import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
+import javax.inject.Inject
 
 /**
  * @author : Steven 13/02/19
@@ -38,6 +39,7 @@ import com.tokopedia.websocket.WebSocketSubscriber
 class PlayPresenter @Inject constructor(
         var getPlayInfoUseCase: GetPlayInfoUseCase,
         var getDynamicButtonsUseCase: GetDynamicButtonsUseCase,
+        var getStickyComponentUseCase: GetStickyComponentUseCase,
         var webSocketMessageMapper: PlayWebSocketMessageMapper)
     : BaseDaggerPresenter<PlayContract.View>(), PlayContract.Presenter {
 
@@ -69,7 +71,10 @@ class PlayPresenter @Inject constructor(
                         val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
                         val defaultMessage = view.context.getString(R.string.default_request_error_unknown)
                         val internalServerErrorMessage = "Internal Server Error"
-                        if (errorMessage == defaultMessage || errorMessage.equals(internalServerErrorMessage, ignoreCase = true)) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            onErrorGetInfo(e.toString())
+                        } else if (errorMessage == defaultMessage || errorMessage.equals
+                                (internalServerErrorMessage, ignoreCase = true)) {
                             onErrorGetInfo(view.context.getString(R.string.default_error_enter_channel))
                         } else {
                             onErrorGetInfo(errorMessage)
@@ -97,6 +102,30 @@ class PlayPresenter @Inject constructor(
                     override fun onError(e: Throwable?) {
                         val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
                         onErrorGetDynamicButtons(errorMessage)
+                    }
+                }
+        )
+    }
+
+    override fun getStickyComponents(channelId: String?,
+                                     onSuccessGetStickyComponent: (StickyComponentViewModel) -> Unit,
+                                     onErrorGetStickyComponent: (String) -> Unit) {
+
+        getStickyComponentUseCase.execute(
+                GetDynamicButtonsUseCase.createParams(channelId),
+                object : Subscriber<StickyComponentViewModel>() {
+                    override fun onNext(t: StickyComponentViewModel?) {
+                        if (t != null) {
+                            onSuccessGetStickyComponent(t)
+                        }
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
+                        onErrorGetStickyComponent(errorMessage)
                     }
                 }
         )
@@ -242,6 +271,7 @@ class PlayPresenter @Inject constructor(
         super.detachView()
         getPlayInfoUseCase.unsubscribe()
         getDynamicButtonsUseCase.unsubscribe()
+        getStickyComponentUseCase.unsubscribe()
         destroyWebSocket()
     }
 

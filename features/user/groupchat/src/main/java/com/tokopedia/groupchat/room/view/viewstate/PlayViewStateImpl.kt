@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
-import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
@@ -33,9 +32,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.text.BackEditText
-import com.tokopedia.design.widget.ViewTooltip
 import com.tokopedia.groupchat.R
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
@@ -53,10 +50,12 @@ import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
+import com.tokopedia.groupchat.room.view.customview.StickyComponentHelper
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -85,8 +84,10 @@ open class PlayViewStateImpl(
 
 ) : PlayViewState {
 
-    private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private var viewModel: ChannelInfoViewModel? = null
+    private var stickyComponentViewModel: StickyComponentViewModel? = null
+
+    private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
     private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
@@ -102,6 +103,7 @@ open class PlayViewStateImpl(
     private var sendButton: View = view.findViewById(R.id.button_send)
     private var dynamicButtonRecyclerView: RecyclerView = view.findViewById(R.id.buttons)
     private var liveIndicator: View = toolbar.findViewById(R.id.toolbar_live)
+    private var stickyComponent: View = view.findViewById(R.id.sticky_component)
 
     val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
 
@@ -111,7 +113,7 @@ open class PlayViewStateImpl(
     lateinit var overlayDialog: CloseableBottomSheetDialog
     lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
     lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
-    lateinit var webviewDialog : PlayWebviewDialogFragment
+    lateinit var webviewDialog: PlayWebviewDialogFragment
 
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
@@ -125,9 +127,9 @@ open class PlayViewStateImpl(
     private var layoutManager: LinearLayoutManager
 
     private var onPlayTime: Long = 0
-    private var onPauseTime:Long = 0
-    private var onEndTime:Long = 0
-    private var onLeaveTime:Long = 0
+    private var onPauseTime: Long = 0
+    private var onEndTime: Long = 0
+    private var onLeaveTime: Long = 0
     private val onTrackingTime: Long = 0
 
     var defaultBackground = arrayListOf(
@@ -230,19 +232,43 @@ open class PlayViewStateImpl(
     }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
-       if(!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()){
-           it.floatingButton.run {
-               setFloatingIcon(linkUrl.trim(), imageUrl.trim())
-           }
+        viewModel?.run {
+            dynamicButtons = it
         }
 
-        if(!it.listDynamicButton.isEmpty()) {
+        if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
+            it.floatingButton.run {
+                setFloatingIcon(linkUrl.trim(), imageUrl.trim())
+            }
+        }
+
+        if (!it.listDynamicButton.isEmpty()) {
             dynamicButtonAdapter.setList(it.listDynamicButton)
         }
     }
 
     override fun onErrorGetDynamicButtons() {
         dynamicButtonAdapter.setList(ArrayList())
+    }
+
+    override fun onStickyComponentUpdated(it: StickyComponentViewModel) {
+        stickyComponentViewModel = it
+        showStickyProduct(it)
+    }
+
+    override fun onErrorGetStickyComponent() {
+        hideStickyComponent()
+    }
+
+    private fun hideStickyComponent() {
+        stickyComponent.visibility = View.GONE
+    }
+
+    private fun showStickyProduct(it: StickyComponentViewModel?) {
+        it?.run {
+            stickyComponent.visibility = View.VISIBLE
+            StickyComponentHelper.setView(stickyComponent, this)
+        }
     }
 
     override fun onKeyboardHidden() {
@@ -255,7 +281,7 @@ open class PlayViewStateImpl(
 
     override fun setBottomView() {
         showLoginButton(!userSession.isLoggedIn)
-        if(userSession.isLoggedIn){
+        if (userSession.isLoggedIn) {
             onKeyboardHidden()
         }
     }
@@ -312,7 +338,7 @@ open class PlayViewStateImpl(
             background = defaultBackground[it.default]
             url = it.url
 
-            if(url.isBlank()){
+            if (url.isBlank()) {
                 activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
             } else {
                 ImageHandler.loadBackgroundImage(activity.window, url)
@@ -325,10 +351,10 @@ open class PlayViewStateImpl(
      */
     private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
         showInfoBottomSheet(it) {
-            if(it.overlayViewModel!= null
-                    && it.overlayViewModel.interuptViewModel!= null
+            if (it.overlayViewModel != null
+                    && it.overlayViewModel.interuptViewModel != null
                     && !it.overlayViewModel.interuptViewModel!!.btnLink!!.isBlank())
-            showOverlayBottomSheet(it)
+                showOverlayBottomSheet(it)
         }
     }
 
@@ -336,13 +362,15 @@ open class PlayViewStateImpl(
         return viewModel
     }
 
-    private fun showWidgetAboveInput(isUserLoggedIn: Boolean) {
-        if (isUserLoggedIn) {
+    private fun showWidgetAboveInput(isShow: Boolean) {
+        if (isShow) {
             viewModel?.let {
                 setPinnedMessage(it)
                 setQuickReply(it.quickRepliesViewModel)
+                showStickyProduct(stickyComponentViewModel)
             }
         } else {
+            hideStickyComponent()
             hidePinnedMessage()
             setQuickReply(null)
         }
@@ -636,14 +664,13 @@ open class PlayViewStateImpl(
         } else {
             sponsorLayout.visibility = View.VISIBLE
             ImageHandler.loadImage2(sponsorImage, adsImageUrl, R.drawable.loading_page)
-            viewModel?.let {
-                infoViewModel ->
+            viewModel?.let { infoViewModel ->
                 sponsorImage.setOnClickListener {
                     listener.openRedirectUrl(generateLink(
-                        infoViewModel.adsLink,
-                        GroupChatAnalytics.ATTRIBUTE_BANNER,
-                        infoViewModel.channelUrl,
-                        infoViewModel.title))
+                            infoViewModel.adsLink,
+                            GroupChatAnalytics.ATTRIBUTE_BANNER,
+                            infoViewModel.channelUrl,
+                            infoViewModel.title))
 
                     analytics.eventClickBanner(String.format(
                             "%s - %s",
@@ -687,6 +714,7 @@ open class PlayViewStateImpl(
         analytics.eventClickComponentEnhancedEcommerce(componentType, campaignName,
                 attributeName, viewModel?.channelUrl, viewModel?.title, list)
     }
+
     private fun eventViewComponentEnhancedEcommerce(
             componentType: String,
             campaignName: String?,
@@ -738,7 +766,7 @@ open class PlayViewStateImpl(
                 sponsorLayout.hide()
 
                 youTubePlayer?.let {
-                    liveIndicator.shouldShowWithAction(isVideoLive){}
+                    liveIndicator.shouldShowWithAction(isVideoLive) {}
                     setChatListHasSpaceOnTop(true)
                     it.cueVideo(videoId)
                     autoPlayVideo()
@@ -772,10 +800,13 @@ open class PlayViewStateImpl(
                                                 override fun onPaused() {
                                                     onPauseTime = System.currentTimeMillis() / 1000L
                                                 }
+
                                                 override fun onStopped() {
                                                 }
+
                                                 override fun onBuffering(b: Boolean) {
                                                 }
+
                                                 override fun onSeekTo(i: Int) {}
                                             })
 
@@ -784,19 +815,24 @@ open class PlayViewStateImpl(
                                                 override fun onLoading() {
                                                     Log.i(TAG, "onLoading: ")
                                                 }
+
                                                 override fun onLoaded(s: String) {
                                                     Log.i(TAG, "onLoaded: ")
                                                 }
+
                                                 override fun onAdStarted() {
                                                     Log.i(TAG, "onAdStarted: ")
                                                 }
+
                                                 override fun onVideoStarted() {
                                                     Log.i(TAG, "onVideoStarted: ")
                                                 }
+
                                                 override fun onVideoEnded() {
                                                     Log.i(TAG, "onVideoEnded: ")
                                                     onEndTime = System.currentTimeMillis() / 1000L
                                                 }
+
                                                 override fun onError(errorReason: YouTubePlayer.ErrorReason) {
                                                     Log.i(TAG, errorReason.declaringClass.toString() + " onError: " + errorReason.name)
                                                 }
@@ -821,7 +857,7 @@ open class PlayViewStateImpl(
     }
 
     override fun getDurationWatchVideo(): String? {
-        if(onPlayTime == 0L) return null
+        if (onPlayTime == 0L) return null
         if (onEndTime != 0L) {
             return (onEndTime - onPlayTime).toString()
         } else if (onPauseTime != 0L) {
@@ -881,12 +917,12 @@ open class PlayViewStateImpl(
 
     private fun showWebviewBottomSheet(url: String) {
 
-        if(url.isBlank())
+        if (url.isBlank())
             return
 
-        if(!::webviewDialog.isInitialized) {
+        if (!::webviewDialog.isInitialized) {
             webviewDialog = PlayWebviewDialogFragment.createInstance(url)
-        }else{
+        } else {
             webviewDialog.setUrl(url)
         }
 
@@ -971,25 +1007,40 @@ open class PlayViewStateImpl(
 
             if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
                 welcomeInfoDialog.setOnDismissListener { onDismiss ->
-                    showOverlayBottomSheet(it)
+                    checkShowWhichBottomSheet(channelInfoViewModel)
                 }
             } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
                 pinnedMessageDialog.setOnDismissListener { onDismiss ->
-                    showOverlayBottomSheet(it)
+                    checkShowWhichBottomSheet(channelInfoViewModel)
+
                 }
             } else if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
                 overlayDialog.dismiss()
-                showOverlayBottomSheet(it)
+                checkShowWhichBottomSheet(channelInfoViewModel)
+
             } else {
-                showOverlayBottomSheet(it)
+                checkShowWhichBottomSheet(channelInfoViewModel)
             }
 
+        }
+    }
+
+    private fun checkShowWhichBottomSheet(channelInfoViewModel: ChannelInfoViewModel) {
+        if (channelInfoViewModel.overlayViewModel == null)
+            return
+
+        when (channelInfoViewModel.overlayViewModel.type) {
+            OverlayViewModel.TYPE_CTA -> showOverlayBottomSheet(channelInfoViewModel)
+            OverlayViewModel.TYPE_WEBVIEW -> showWebviewBottomSheet(channelInfoViewModel
+                    .overlayViewModel.redirectUrl)
         }
     }
 
     override fun onReceiveCloseOverlayMessageFromWebsocket() {
         if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
             overlayDialog.dismiss()
+        } else if (::webviewDialog.isInitialized && webviewDialog.isVisible) {
+            webviewDialog.dismiss()
         }
     }
 
@@ -1088,7 +1139,7 @@ open class PlayViewStateImpl(
         return view
     }
 
-    private fun setEmptyState(imageResId: Int, titleText: String, bodyText: String, buttonText: String, action:()-> Unit){
+    private fun setEmptyState(imageResId: Int, titleText: String, bodyText: String, buttonText: String, action: () -> Unit) {
         val imageView = errorView.findViewById<ImageView>(R.id.image)
         val title = errorView.findViewById<TextView>(R.id.title)
         val body = errorView.findViewById<TextView>(R.id.body)
@@ -1107,13 +1158,13 @@ open class PlayViewStateImpl(
 
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
         var space = 0
-        if(hasSpace) space = view.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+        if (hasSpace) space = view.context.resources.getDimensionPixelSize(R.dimen.dp_48)
         chatRecyclerView.setPadding(0, space, 0, 0)
     }
 
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
-        viewModel?.let{
+        viewModel?.let {
 
             it.overlayViewModel = OverlayViewModel(
                     true,

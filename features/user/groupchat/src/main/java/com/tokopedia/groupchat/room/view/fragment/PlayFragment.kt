@@ -39,6 +39,7 @@ import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.kotlin.util.getParamInt
@@ -263,8 +264,38 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    private fun onSuccessGetStickyComponent(): (StickyComponentViewModel) -> Unit {
+        return {
+            viewState.onStickyComponentUpdated(it)
+        }
+    }
+
+    private fun onErrorGetStickyComponent(): (String) -> Unit {
+        return {
+//            viewState.onErrorGetStickyComponent()
+
+            viewState.onStickyComponentUpdated(
+                    StickyComponentViewModel(
+                            "product",
+                            "https://66.media.tumblr" +
+                                    ".com/24cd87cc477767ba344376b3aa1f6e8f/tumblr_p732bhKoSc1wpahsoo4_250.png",
+                            "TITLE",
+                            "SUBTITLE",
+                            "tokopedia://gamification",
+                            10
+                    )
+            )
+
+        }
+    }
+
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
+            presenter.getDynamicButtons(channelInfoViewModel.channelId, onSuccessGetDynamicButtons(),
+                    onErrorGetDynamicButtons())
+            presenter.getStickyComponents(channelInfoViewModel.channelId,
+                    onSuccessGetStickyComponent(), onErrorGetStickyComponent())
+
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
 
             (activity as PlayActivity).let {
@@ -569,8 +600,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun loadFirstTime() {
         presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
-        presenter.getDynamicButtons(channelInfoViewModel.channelId, onSuccessGetDynamicButtons(),
-                onErrorGetDynamicButtons())
     }
 
     override fun addIncomingMessage(it: Visitable<*>) {
