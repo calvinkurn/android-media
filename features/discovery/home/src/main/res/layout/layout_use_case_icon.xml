@@ -16,11 +16,11 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_56"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal|top"
-        android:lineSpacingExtra="2sp"
+        android:lineSpacingExtra="4sp"
         android:textColor="@color/black_70"
         android:textSize="10sp"
         android:textStyle="normal"
