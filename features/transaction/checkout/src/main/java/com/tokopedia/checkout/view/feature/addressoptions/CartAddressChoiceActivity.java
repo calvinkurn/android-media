@@ -134,12 +134,11 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 Intent intent = AddAddressActivity
-                        .createInstanceAddAddressFromSingleAddressFormWhenDefaultAddressIsEmpty(
+                        .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
                                 this, token);
                 startActivityForResult(intent,
                         LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 break;
-
             default:
         }
     }
