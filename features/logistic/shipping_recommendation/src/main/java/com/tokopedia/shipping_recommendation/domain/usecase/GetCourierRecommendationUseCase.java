@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -162,6 +163,9 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.CAT_ID, shippingParam.getCategoryIds());
         queryStringBuilder = setParam(queryStringBuilder, Param.LANG, Param.VALUE_LANG_ID);
         queryStringBuilder = setParam(queryStringBuilder, Param.USER_HISTORY, String.valueOf(codHistory));
+        queryStringBuilder = setParam(queryStringBuilder, Param.IS_BLACKBOX, String.valueOf(shippingParam.getIsBlackbox() ? 1 : 0));
+        queryStringBuilder = setParam(queryStringBuilder, Param.ADDRESS_ID, String.valueOf(shippingParam.getAddressId()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.PREORDER, String.valueOf(shippingParam.getIsPreorder() ? 1 : 0));
 
         return queryStringBuilder.toString();
     }
@@ -189,6 +193,9 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String LANG = "$lang";
         static final String USER_HISTORY = "$user_history";
         static final String CORNER_ID = "$corner_id";
+        static final String IS_BLACKBOX = "$is_blackbox";
+        static final String ADDRESS_ID = "$address_id";
+        static final String PREORDER = "$preorder";
 
         static final String VALUE_ANDROID = "android";
         static final String VALUE_CLIENT = "client";

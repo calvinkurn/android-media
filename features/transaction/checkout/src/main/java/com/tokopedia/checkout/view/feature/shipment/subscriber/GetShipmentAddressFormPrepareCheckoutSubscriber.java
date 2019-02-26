@@ -87,7 +87,7 @@ public class GetShipmentAddressFormPrepareCheckoutSubscriber extends Subscriber<
                 if (!cartShipmentAddressFormData.isMultiple() && shipmentPresenter.checkAddressHasChanged(recipientAddressModel, newRecipientAddressModel)) {
                     view.hideLoading();
                     view.showToastError(view.getActivityContext().getString(R.string.error_message_checkout_failed));
-                    shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
+                        shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
                     view.renderDataChanged();
                 } else if (shipmentPresenter.checkShipmentItemHasChanged(shipmentPresenter.getShipmentCartItemModelList(), shipmentCartItemModelList)) {
                     view.hideLoading();

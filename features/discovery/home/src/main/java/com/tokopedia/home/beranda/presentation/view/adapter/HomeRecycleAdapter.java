@@ -24,13 +24,11 @@ import java.util.List;
 public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     protected HomeAdapterFactory typeFactory;
-    private EmptyModel emptyModel;
     private RetryModel retryModel;
 
     public HomeRecycleAdapter(HomeAdapterFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
         this.typeFactory = adapterTypeFactory;
-        this.emptyModel = new EmptyModel();
         this.retryModel = new RetryModel();
     }
 
@@ -60,10 +58,6 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         notifyDataSetChanged();
     }
 
-    public void addItems(List<Visitable> items) {
-        this.visitables.addAll(items);
-    }
-
     public Visitable getItem(int pos) {
         return visitables.get(pos);
     }
@@ -74,30 +68,6 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     public void clearItems() {
         visitables.clear();
-    }
-
-    public void showEmpty() {
-        this.visitables.add(emptyModel);
-    }
-
-    public void removeEmpty() {
-        this.visitables.remove(emptyModel);
-    }
-
-    public void showRetry() {
-        int positionStart = getItemCount();
-        this.visitables.add(retryModel);
-        notifyItemRangeInserted(positionStart, 1);
-    }
-
-    public void removeRetry() {
-        int index = this.visitables.indexOf(retryModel);
-        this.visitables.remove(retryModel);
-        notifyItemRemoved(index);
-    }
-
-    public boolean isRetryShown() {
-        return visitables.contains(retryModel);
     }
 
     public int findFirstInspirationPosition() {
@@ -126,5 +96,21 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         clearItems();
         getItems().addAll(temporaryList);
         notifyDataSetChanged();
+    }
+
+    public void showRetry() {
+        int positionStart = getItemCount();
+        this.visitables.add(retryModel);
+        notifyItemRangeInserted(positionStart, 1);
+    }
+
+    public void removeRetry() {
+        int index = this.visitables.indexOf(retryModel);
+        this.visitables.remove(retryModel);
+        notifyItemRemoved(index);
+    }
+
+    public boolean isRetryShown() {
+        return visitables.contains(retryModel);
     }
 }

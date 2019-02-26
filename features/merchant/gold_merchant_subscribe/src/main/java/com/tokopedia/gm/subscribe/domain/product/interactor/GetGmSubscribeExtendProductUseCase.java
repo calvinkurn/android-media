@@ -1,7 +1,7 @@
 package com.tokopedia.gm.subscribe.domain.product.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.gm.subscribe.domain.product.GmSubscribeProductRepository;
@@ -20,8 +20,8 @@ public class GetGmSubscribeExtendProductUseCase extends UseCase<List<GmProductDo
     private final GmSubscribeProductRepository GmSubscribeProductRepository;
 
     @Inject
-    public GetGmSubscribeExtendProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeProductRepository GmSubscribeProductRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetGmSubscribeExtendProductUseCase(GmSubscribeProductRepository GmSubscribeProductRepository) {
+        super();
         this.GmSubscribeProductRepository = GmSubscribeProductRepository;
     }
 
