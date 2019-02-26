@@ -244,6 +244,12 @@
                         </LinearLayout>
                     </LinearLayout>
 
+                    <View
+                        android:layout_gravity="bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_10"
+                        android:background="@drawable/ic_rectangle"/>
+
                 </FrameLayout>
 
                 <android.support.v7.widget.Toolbar
