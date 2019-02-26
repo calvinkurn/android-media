@@ -27,7 +27,6 @@ import android.widget.RelativeLayout;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
@@ -67,6 +66,8 @@ import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -665,7 +666,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private String generateIdEmpotency(String requestId) {
         String userId = String.valueOf(Math.random());
         if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            UserSessionInterface userSession = new UserSession(getActivity());
             if (userSession != null) {
                 userId += userSession.getUserId();
             }
