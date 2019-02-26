@@ -37,6 +37,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 apply from: "$rootProject.projectDir/publish_local.gradle"

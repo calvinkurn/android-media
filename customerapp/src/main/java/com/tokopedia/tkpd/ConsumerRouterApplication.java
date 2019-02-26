@@ -22,6 +22,8 @@ import android.view.MotionEvent;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -611,6 +613,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Hansel.init(this);
         initializeDagger();
         initDaggerInjector();
+        initFirebase();
         initRemoteConfig();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
@@ -683,6 +686,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         dealsComponent = DaggerDealsComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
                 .build();
+    }
+
+    private void initFirebase() {
+        if (com.tokopedia.config.GlobalConfig.DEBUG) {
+            try {
+                FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
+                builder.setApplicationId("1:692092518182:android:f4cc247c743f7921");
+                FirebaseApp.initializeApp(this, builder.build());
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initRemoteConfig() {
