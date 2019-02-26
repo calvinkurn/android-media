@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.createpost.view.listener.SubmitPostNotificationManager
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
@@ -24,6 +25,8 @@ open class SubmitPostUseCase @Inject constructor(
         @ApplicationContext private val context: Context,
         private val uploadMultipleImageUseCase: UploadMultipleImageUseCase,
         private val graphqlUseCase: GraphqlUseCase) : UseCase<SubmitPostData>() {
+
+    val notificationManager: SubmitPostNotificationManager? = null
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<SubmitPostData> {
@@ -52,6 +55,8 @@ open class SubmitPostUseCase @Inject constructor(
 
     private fun submitPostToGraphql(requestParams: RequestParams): Func1<List<SubmitPostMedium>, Observable<SubmitPostData>> {
         return Func1 { mediumList ->
+            notificationManager?.onSubmitPost()
+
             val query = GraphqlHelper.loadRawString(
                     context.resources,
                     R.raw.mutation_af_submit_post

@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.feature.createpost.domain.usecase
 
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse
+import com.tokopedia.affiliate.feature.createpost.view.listener.SubmitPostNotificationManager
 import com.tokopedia.affiliate.util.urlIsFile
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -23,6 +24,8 @@ class UploadMultipleImageUseCase @Inject constructor(
         private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>,
         private val userSession: UserSessionInterface) : UseCase<List<SubmitPostMedium>>() {
 
+    val notificationManager: SubmitPostNotificationManager? = null
+
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<List<SubmitPostMedium>> {
         return Observable.from(requestParams.getObject(PARAM_URL_LIST) as List<SubmitPostMedium>)
@@ -35,9 +38,10 @@ class UploadMultipleImageUseCase @Inject constructor(
             if (urlIsFile(medium.mediaURL)) {
                 uploadImageUseCase.createObservable(createUploadParams(medium.mediaURL))
                         .map(mapToUrl(medium))
+                        .map(updateNotification())
                         .subscribeOn(Schedulers.io())
             } else {
-                Observable.just<SubmitPostMedium>(medium)
+                Observable.just<SubmitPostMedium>(medium).map(updateNotification())
             }
         }
     }
@@ -51,6 +55,13 @@ class UploadMultipleImageUseCase @Inject constructor(
             }
             medium.mediaURL = imageUrl
             medium
+        }
+    }
+
+    private fun updateNotification(): Func1<SubmitPostMedium, SubmitPostMedium> {
+        return Func1 {
+            notificationManager?.onAddProgress()
+            it
         }
     }
 
