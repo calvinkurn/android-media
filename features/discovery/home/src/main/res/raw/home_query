@@ -1,1 +1,79 @@
-{"query":"{ ticker { meta { total_data } tickers { id title message color } } slides(device: 32) { meta { total_data } slides { id title image_url redirect_url applink topads_view_url promo_code } } dynamicHomeIcon { dynamicIcon { id name url imageUrl applinks } } dynamicHomeChannel { channels { id name layout type header { id name url applink serverTime expiredTime backColor backImage } hero { id name url applink imageUrl attribution } grids { id name url applink price slashedPrice discount imageUrl label soldPercentage attribution productClickUrl impression cashback } } } }"}
+{
+  ticker {
+    meta {
+      total_data
+    }
+    tickers {
+      id
+      title
+      message
+      color
+    }
+  }
+  slides(device: 32) {
+    meta {
+      total_data
+    }
+    slides {
+      id
+      title
+      image_url
+      redirect_url
+      applink
+      topads_view_url
+      promo_code
+    }
+  }
+  dynamicHomeIcon {
+    dynamicIcon {
+      id
+      name
+      url
+      imageUrl
+      applinks
+    }
+  }
+  dynamicHomeChannel {
+    channels {
+      id
+      name
+      layout
+      type
+      header {
+        id
+        name
+        url
+        applink
+        serverTime
+        expiredTime
+        backColor
+        backImage
+      }
+      hero {
+        id
+        name
+        url
+        applink
+        imageUrl
+        attribution
+      }
+      grids {
+        id
+        name
+        url
+        applink
+        price
+        slashedPrice
+        discount
+        imageUrl
+        label
+        soldPercentage
+        attribution
+        productClickUrl
+        impression
+        cashback
+      }
+    }
+  }
+}
+
