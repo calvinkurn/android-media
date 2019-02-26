@@ -50,11 +50,10 @@ class ProductInstallmentViewModel @Inject constructor(
                 val gqlResponse = graphqlRepository.getReseponse(listOf(installmentRequest), cacheStrategy)
                 gqlResponse.getSuccessData<InstallmentResponse>().result
             }
-            result?.let {
-                if (it.response == STATUS_OK){
-                    installmentResp.value = Success(it.bank)
-                }
+            if (result.response == STATUS_OK){
+                installmentResp.value = Success(result.bank)
             }
+
         }){
             installmentResp.value = Fail(it)
         }

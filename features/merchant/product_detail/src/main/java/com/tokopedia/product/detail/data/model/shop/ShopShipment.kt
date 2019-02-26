@@ -4,9 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.detail.view.adapter.CourierTypeFactory
 
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 data class ShopShipment(
         @SerializedName("isAvailable")
         @Expose
@@ -43,7 +43,7 @@ data class ShopShipment(
         @SerializedName("product")
         @Expose
         val product: List<ShipmentProduct> = listOf()
-        ): Visitable<CourierTypeFactory>, Parcelable{
+        ): BlackBoxShipmentHolder(), Parcelable{
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class InstallmentResponse(
         @SerializedName("installmentCalculation")
         @Expose
-        val result: Result? = null
+        val result: Result = Result()
 ){
 
     data class Result(

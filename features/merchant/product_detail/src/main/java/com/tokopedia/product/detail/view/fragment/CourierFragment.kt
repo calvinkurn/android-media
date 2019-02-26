@@ -2,38 +2,59 @@ package com.tokopedia.product.detail.view.fragment
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.abstraction.AbstractionRouter
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.shop.BBInfo
+import com.tokopedia.product.detail.data.model.shop.BlackBoxShipmentHolder
 import com.tokopedia.product.detail.data.model.shop.ShopShipment
-import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.view.adapter.CourierTypeFactory
+import kotlinx.android.synthetic.main.fragment_courier_list_detail.view.*
 
-class CourierFragment: BaseListFragment<ShopShipment, CourierTypeFactory>() {
-
-    private val productDetailTracking: ProductDetailTracking by lazy {
-        ProductDetailTracking((context?.applicationContext as? AbstractionRouter)?.analyticTracker)
-    }
+class CourierFragment: BaseListFragment<BlackBoxShipmentHolder, CourierTypeFactory>() {
 
     companion object {
-        private const val ARGS_LIST: String = "ARGS_LIST"
+        private const val ARGS_PRODUCT_LIST: String = "LIST_PRODUCT"
+        private const val ARGS_BBINFO_LIST: String = "LIST_BBINFO"
         private const val ARGS_PRODUCT_ID: String = "ARGS_PRODUCT_ID"
 
         @JvmStatic
-        fun newInstance(productId: String, shipments: List<ShopShipment>) = CourierFragment().apply {
+        fun newInstance(productId: String, shipments: List<ShopShipment>,
+                        bbInfos: List<BBInfo>) = CourierFragment().apply {
             arguments = Bundle().also {
                 it.putString(ARGS_PRODUCT_ID, productId)
-                it.putParcelableArrayList(ARGS_LIST, ArrayList(shipments))
+                it.putParcelableArrayList(ARGS_PRODUCT_LIST, ArrayList(shipments))
+                it.putParcelableArrayList(ARGS_BBINFO_LIST, ArrayList(bbInfos))
             }
         }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_courier_list_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.resources?.configuration?.let { setUpByConfiguration(it) }
         arguments?.let {
-            val shipments: List<ShopShipment> = it.getParcelableArrayList(ARGS_LIST)
-            super.renderList(shipments, false)
+            val shipments: List<ShopShipment> = it.getParcelableArrayList(ARGS_PRODUCT_LIST) ?: listOf()
+            val bbInfos: List<BBInfo> = it.getParcelableArrayList(ARGS_BBINFO_LIST) ?: listOf()
+
+            if (bbInfos.isNotEmpty()){
+                activity?.setTitle(R.string.product_detail_courier)
+                super.renderList(bbInfos, false)
+                view.title_bbinfo.visible()
+            } else {
+                activity?.setTitle(R.string.courier_title)
+                super.renderList(shipments, false)
+                view.title_bbinfo.gone()
+            }
+
+
         }
     }
 
@@ -41,7 +62,7 @@ class CourierFragment: BaseListFragment<ShopShipment, CourierTypeFactory>() {
 
     override fun getAdapterTypeFactory(): CourierTypeFactory = CourierTypeFactory()
 
-    override fun onItemClicked(t: ShopShipment?) {}
+    override fun onItemClicked(t: BlackBoxShipmentHolder?) {}
 
     override fun getScreenName(): String? = null
 

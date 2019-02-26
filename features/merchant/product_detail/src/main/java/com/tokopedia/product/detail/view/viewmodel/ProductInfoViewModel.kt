@@ -224,10 +224,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
             if (gqlResponse.getError(InstallmentResponse::class.java)?.isNotEmpty() != true){
-                val resp = gqlResponse.getData<InstallmentResponse>(InstallmentResponse::class.java)?.result
-                resp?.let {
-                    productInfoP2.minInstallment = it.bank.flatMap { it.installmentList }.minBy { it.monthlyPrice }
-                }
+                val resp = gqlResponse.getData<InstallmentResponse>(InstallmentResponse::class.java).result
+                productInfoP2.minInstallment = resp.bank.flatMap { it.installmentList }.minBy { it.monthlyPrice }
             }
 
             productInfoP2

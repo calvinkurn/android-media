@@ -648,7 +648,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToProductDetail(Context context, String productUrl) {
-        startActivity(ProductDetailInternalRouter.getProductDetailIntent(context, productUrl));
+        context.startActivity(ProductDetailInternalRouter.getProductDetailIntent(context, productUrl));
     }
 
     @Override

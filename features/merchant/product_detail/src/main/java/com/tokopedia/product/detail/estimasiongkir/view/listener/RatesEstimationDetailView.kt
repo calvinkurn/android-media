@@ -6,5 +6,5 @@ import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationMod
 interface RatesEstimationDetailView : CustomerView {
     fun onErrorLoadRateEstimaion(throwable: Throwable)
 
-    fun onSuccesLoadRateEstimaion(ratesEstimationModel: RatesEstimationModel)
+    fun onSuccesLoadRateEstimaion(ratesEstimationModel: RatesEstimationModel, isBlackbox: Boolean)
 }

@@ -19,7 +19,7 @@ constructor(private val useCase: GetRateEstimationUseCase) : BaseDaggerPresenter
 
     fun getCostEstimation(rawQuery: String, productWeight: Float, shopDomain: String = "") {
         useCase.execute(GetRateEstimationUseCase.createRequestParams(rawQuery, productWeight, shopDomain),
-                object : Subscriber<RatesEstimationModel>() {
+                object : Subscriber<RatesEstimationModel.Data>() {
                     override fun onCompleted() {}
 
                     override fun onError(throwable: Throwable) {
@@ -27,8 +27,9 @@ constructor(private val useCase: GetRateEstimationUseCase) : BaseDaggerPresenter
                         view?.onErrorLoadRateEstimaion(throwable)
                     }
 
-                    override fun onNext(ratesEstimationModel: RatesEstimationModel) {
-                        view?.onSuccesLoadRateEstimaion(ratesEstimationModel)
+                    override fun onNext(data: RatesEstimationModel.Data) {
+                        val rateEstimation = data.ratesEstimation.firstOrNull() ?: return
+                        view?.onSuccesLoadRateEstimaion(rateEstimation, data.isBlackbox)
                     }
                 })
     }

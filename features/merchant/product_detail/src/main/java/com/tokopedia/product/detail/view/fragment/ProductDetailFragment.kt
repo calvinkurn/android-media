@@ -645,7 +645,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString()
-                        ?: "", shopInfo.shipments)
+                        ?: "", shopInfo.shipments, shopInfo.bbInfo)
             }
             if (productInfoP2.vouchers.isNotEmpty()) {
                 merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))

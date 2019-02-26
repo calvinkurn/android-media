@@ -99,4 +99,5 @@
     <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
     <string name="template_installment">Min. Pembelanjaan %1$s</string>
+    <string name="label_bb_info_desc">Durasi dihitung sejak barang diserahkan kekurir</string>
 </resources>
