@@ -36,6 +36,7 @@ import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
@@ -225,7 +226,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             if (gqlResponse.getError(InstallmentResponse::class.java)?.isNotEmpty() != true){
                 val resp = gqlResponse.getData<InstallmentResponse>(InstallmentResponse::class.java)?.result
                 resp?.let {
-                    productInfoP2.minInstallment = it.bank.flatMap { it.installmentList }.minBy { it.minAmount }
+                    productInfoP2.minInstallment = it.bank.flatMap { it.installmentList }.minBy { it.monthlyPrice }
                 }
             }
 
@@ -426,8 +427,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         private const val PARAM_RATE_EST_SHOP_DOMAIN = "domain"
         private const val PARAM_RATE_EST_WEIGHT = "weight"
-
-        private const val PARAM_PRICE = "price"
 
         private const val PARAM_PAGE = "page"
         private const val PARAM_USER_ID = "user_id"

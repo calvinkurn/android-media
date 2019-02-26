@@ -55,6 +55,7 @@ import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.detail.view.util.AppBarState
@@ -657,6 +658,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
                         (if(shopInfo.goldOS.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
                 label_desc_installment.visible()
+                label_desc_installment.setOnClickListener {
+                    activity?.let {
+                        startActivity(ProductInstallmentActivity.createIntent(it,
+                                shopInfo.goldOS.isOfficial == 1,
+                                (if (shouldShowCod) productInfo?.basic?.price
+                                else productInfo?.campaign?.discountedPrice) ?: 0f))
+                    }
+                }
                 if (label_min_wholesale.isVisible){
                     wholesale_divider.visible()
                 } else {

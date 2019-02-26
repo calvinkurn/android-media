@@ -6,10 +6,6 @@ object ProductDetailConstant {
     @JvmField
     var BASE_REST_URL = "https://ws.tokopedia.com/"
 
-    const val PRD_STATE_ACTIVE = 1
-    const val PRD_STATE_PENDING = -1
-    const val PRD_STATE_WAREHOUSE = 3
-
     const val MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads"
 
     @IntDef(BUY, ADD_TO_CART, BUY_NOW)
@@ -39,4 +35,6 @@ object ProductDetailConstant {
     //waarehouse product
     const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
     const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
+
+    const val PARAM_PRICE = "price"
 }
