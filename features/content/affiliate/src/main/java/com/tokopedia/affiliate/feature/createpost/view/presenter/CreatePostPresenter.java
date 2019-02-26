@@ -63,7 +63,7 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
                            int mainImageIndex) {
         getView().showLoading();
         submitPostUseCase.execute(
-                SubmitPostUseCase.createRequestParams(
+                SubmitPostUseCase.Companion.createRequestParams(
                         productId,
                         adId,
                         token,

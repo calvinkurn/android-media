@@ -31,8 +31,8 @@ public class EditPostUseCase extends SubmitPostUseCase {
     protected ContentSubmitInput getContentSubmitInput(RequestParams requestParams,
                                                        List<SubmitPostMedium> mediumList) {
         ContentSubmitInput input = new ContentSubmitInput();
-        input.setType(requestParams.getString(PARAM_TYPE, ""));
-        input.setToken(requestParams.getString(PARAM_TOKEN, ""));
+        input.setType(requestParams.getString(Companion.getPARAM_TYPE(), ""));
+        input.setToken(requestParams.getString(Companion.getPARAM_TOKEN(), ""));
         input.setActivityId(requestParams.getString(PARAM_POST_ID, ""));
         input.setAction(requestParams.getString(PARAM_ACTION, ""));
         input.setMedia(mediumList);
@@ -42,12 +42,12 @@ public class EditPostUseCase extends SubmitPostUseCase {
     public static RequestParams createRequestParams(String postId, String token,
                                                     List<String> imageList, int mainImageIndex) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(PARAM_TYPE, TYPE_AFFILIATE);
+        requestParams.putString(Companion.getPARAM_TYPE(), Companion.getTYPE_AFFILIATE());
         requestParams.putString(PARAM_POST_ID, postId);
-        requestParams.putString(PARAM_TOKEN, token);
+        requestParams.putString(Companion.getPARAM_TOKEN(), token);
         requestParams.putString(PARAM_ACTION, ACTION_UPDATE);
-        requestParams.putObject(PARAM_IMAGE_LIST, imageList);
-        requestParams.putInt(PARAM_MAIN_IMAGE_INDEX, mainImageIndex);
+        requestParams.putObject(Companion.getPARAM_IMAGE_LIST(), imageList);
+        requestParams.putInt(Companion.getPARAM_MAIN_IMAGE_INDEX(), mainImageIndex);
         return requestParams;
     }
 }
