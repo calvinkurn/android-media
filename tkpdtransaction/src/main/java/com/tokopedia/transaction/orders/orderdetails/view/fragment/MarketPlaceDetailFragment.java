@@ -238,7 +238,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
         }
         if (title.backgroundColor() != null && !title.backgroundColor().isEmpty()) {
-            Drawable drawable = getContext().getDrawable(R.drawable.background_deadline);
+            Drawable drawable = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                drawable = getContext().getDrawable(R.drawable.background_deadline);
+            }
             doubleTextView.setBottomTextBackground(drawable);
             doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10), getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10));
 
