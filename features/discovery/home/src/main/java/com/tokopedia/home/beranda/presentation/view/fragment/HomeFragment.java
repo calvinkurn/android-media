@@ -62,11 +62,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerViewDecorator;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.customview.HomeMainToolbar;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.DummyModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.constant.ConstantKey;
@@ -489,12 +491,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (offsetAlpha >= 2.55) {
                     offsetAlpha = 2.55f;
                     homeMainToolbar.switchToDarkToolbar();
-                    initStatusBarLight();
                 } else {
                     homeMainToolbar.switchToLightToolbar();
                     initStatusBarDark();
                 }
-;
+
                 homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
 
                 if (isAppBarFullyExpanded(offset)) {
@@ -561,6 +562,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         recyclerView.removeOnScrollListener(onEggScrollListener);
         recyclerView.addOnScrollListener(onEggScrollListener);
+        recyclerView.addItemDecoration(new HomeRecyclerViewDecorator(0,
+                0,
+                getActivity().getResources().getDimensionPixelSize(R.dimen.dp_10),
+                getActivity().getResources().getDimensionPixelSize(R.dimen.dp_20)
+                ));
     }
 
     private FloatingEggButtonFragment getFloatingEggButtonFragment() {
@@ -838,6 +844,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
             updateHeaderItem(dataHeader);
         }
+        Visitable dummyVisitable = new DummyModel();
+        items.add(1, dummyVisitable);
         adapter.setItems(items);
     }
 
@@ -1290,13 +1298,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation() && isAdded()) {
             getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
-    private void initStatusBarLight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation() && isAdded()) {
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.green_600));
         }
     }
 

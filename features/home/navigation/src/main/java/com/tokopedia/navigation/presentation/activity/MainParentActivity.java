@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -10,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
+import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
@@ -19,6 +21,7 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,8 +29,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -127,6 +134,7 @@ public class MainParentActivity extends BaseActivity implements
     private AbTestingOfficialStore abTestingOfficialStore;
 
     private Handler handler = new Handler();
+    private CoordinatorLayout fragmentContainer;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -223,6 +231,7 @@ public class MainParentActivity extends BaseActivity implements
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
+        fragmentContainer = findViewById(R.id.container);
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
@@ -326,12 +335,69 @@ public class MainParentActivity extends BaseActivity implements
             return false;
         }
 
+        if (position != HOME_MENU) {
+            fragmentContainer.setFitsSystemWindows(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                fragmentContainer.requestApplyInsets();
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                Window w = getWindow();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    w.setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
+                }
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Window window = getWindow();
+                window.setStatusBarColor(ContextCompat
+                        .getColor(this,R.color.green_600));
+            }
+        } else {
+            View viewGroup = findViewById(R.id.container);
+            viewGroup.setFitsSystemWindows(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                viewGroup.requestApplyInsets();
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                int flags = viewGroup.getSystemUiVisibility();
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                viewGroup.setSystemUiVisibility(flags);
+                getWindow().setStatusBarColor(Color.WHITE);
+            }
+
+            //make full transparent statusBar
+            if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+                setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+            }
+            if (Build.VERSION.SDK_INT >= 19) {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            }
+            if (Build.VERSION.SDK_INT >= 21) {
+                setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+                getWindow().setStatusBarColor(Color.TRANSPARENT);
+            }
+        }
+
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
         return true;
+    }
+
+
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
     private void selectFragment(Fragment fragment) {
