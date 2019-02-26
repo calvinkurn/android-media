@@ -13,7 +13,9 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,12 +24,14 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.*
+import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.component.Menus
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
@@ -44,7 +48,6 @@ import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
-import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.FollowingListActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
@@ -443,27 +446,27 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onSuccessFollowKol() {
-        if (profileHeader != null) {
-            profileHeader!!.isFollowed = !profileHeader!!.isFollowed
+        profileHeader?.let {
+            it.isFollowed = !it.isFollowed
 
             try {
-                var followers = profileHeader!!.followers.toInt()
-                followers += if (profileHeader!!.isFollowed) 1 else -1
-                profileHeader!!.followers = followers.toString()
+                var followers = it.followers.toInt()
+                followers += if (it.isFollowed) 1 else -1
+                it.followers = followers.toString()
             } catch (e: NumberFormatException) {
             }
 
-            if (profileHeader!!.isFollowed) {
+            if (it.isFollowed) {
                 ToasterNormal
                         .make(view,
                                 getString(R.string.follow_success_toast),
                                 BaseToaster.LENGTH_LONG)
                         .setAction(getString(R.string.follow_success_check_now),
-                                followSuccessOnClickListener(profileHeader!!))
+                                followSuccessOnClickListener(it))
                         .show()
             }
 
-            setProfileToolbar(profileHeader!!, false)
+            setProfileToolbar(it, false)
 
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
@@ -472,7 +475,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
                 resultIntent!!.putExtra(
                         ProfileActivity.PARAM_IS_FOLLOWING,
-                        if (profileHeader!!.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
+                        if (it.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
                         else ProfileActivity.IS_FOLLOWING_FALSE
                 )
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
@@ -568,7 +571,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         iv_image_collapse.loadImageRounded(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
         tv_name.text = element.name
-        var affName = "Profile"
+        var affName = context?.resources?.getString(R.string.title_profile)
         if (!element.affiliateName.equals("")) affName = element.affiliateName
         tv_name_parallax.text = affName
         tv_aff_name.text = affName
