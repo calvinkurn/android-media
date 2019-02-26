@@ -38,10 +38,10 @@ data class Variant (
 
     @SerializedName("Option")
     @Expose
-    val option: List<Option>? = null
+    val options: List<Option>? = null
 ) {
     val hasOption: Boolean
-        get() = with(option) {this!= null && this.isNotEmpty() }
+        get() = with(options) {this!= null && this.isNotEmpty() }
 }
 
 data class Option (

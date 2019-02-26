@@ -7,6 +7,8 @@ import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.adapter.VariantOptionAdapter
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
 import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
 
@@ -28,10 +30,10 @@ class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionL
                     if (key == element.variantId) {
                         for (option: OptionVariantViewModel in element.variantOptions) {
                             if (option.optionId == value) {
-                                option.currentState = option.STATE_SELECTED
+                                option.currentState = STATE_SELECTED
                                 element.variantSelectedValue = option.variantName
                             } else {
-                                option.currentState = option.STATE_NOT_SELECTED
+                                option.currentState = STATE_NOT_SELECTED
                             }
                         }
                         break

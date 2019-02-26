@@ -24,7 +24,6 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener
-import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
@@ -48,13 +47,13 @@ import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
+import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import rx.Observable
-import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
@@ -88,6 +87,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var action: Int = ATC_AND_BUY
 
     var selectedProductInfo: ProductInfo? = null
+    var originalProduct: ProductInfoAndVariant? = null
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -140,23 +140,53 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun onSuccessGetProductInfo(productInfoAndVariant: ProductInfoAndVariant) {
-        selectedProductInfo = getProductInfo(productInfoAndVariant, selectedVariantId)
-        selectedProductInfo?.let { it ->
-            val viewModels = ModelMapper.convertToModels(it, productInfoAndVariant.productVariant,
-                    notes, quantity)
-            fragmentViewModel.viewModels = viewModels
-            quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity ?: 0
-            adapter.clearAllElements()
-            adapter.addDataViewModel(viewModels)
-            adapter.notifyDataSetChanged()
-            renderActionButton(it)
-            renderTotalPrice(it)
+        originalProduct = productInfoAndVariant
+        if (selectedVariantId.isNullOrEmpty()) {
+            selectedVariantId = productInfoAndVariant.productVariant.defaultChildString
+        }
+        originalProduct?.run {
+            onProductChange(this, selectedVariantId)
         }
     }
 
     fun getProductInfo(productInfoAndVariant: ProductInfoAndVariant, selectedVariantId: String?): ProductInfo {
-        //TODO get product by selected variant
-        return productInfoAndVariant.productInfo
+        if (selectedVariantId.isNullOrEmpty() ||
+                selectedVariantId.equals(productInfoAndVariant.productInfo.basic.id.toString(), false)) {
+            return productInfoAndVariant.productInfo
+        } else {
+            val selectedVariant = productInfoAndVariant.productVariant.getVariant(selectedVariantId)
+            if (selectedVariant != null) {
+                if (selectedVariant.isBuyable) {
+                    return ModelMapper.convertToModels(originalProduct?.productInfo!!, selectedVariant)
+                } else {
+                    val child = getOtherSiblingProduct(originalProduct!!, selectedVariant.optionIds)
+                    if (child == null) {
+                        return productInfoAndVariant.productInfo
+                    } else {
+                        return ModelMapper.convertToModels(productInfoAndVariant.productInfo, child)
+                    }
+                }
+            } else {
+                return productInfoAndVariant.productInfo
+            }
+        }
+    }
+
+    private fun getOtherSiblingProduct(productInfoAndVariant: ProductInfoAndVariant?, optionId: List<Int>): Child? {
+        var selectedChild: Child? = null
+        // we need to reselect other variant
+        productInfoAndVariant?.run {
+            val optionsIdList = optionId
+            val optionPartialSize = optionsIdList.size - 1
+            val partialOptionIdList = optionsIdList.subList(0, optionPartialSize)
+            for (childLoop: Child in productVariant.children) {
+                if (childLoop.isBuyable && childLoop.optionIds.subList(0, optionPartialSize).equals(partialOptionIdList)) {
+                    selectedChild = childLoop
+                    break
+                }
+            }
+        }
+        return selectedChild
     }
 
     private fun renderActionButton(productInfo: ProductInfo) {
@@ -371,120 +401,59 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
-        val productViewModel = fragmentViewModel.getProductViewModel()
-        val quantityViewModel = fragmentViewModel.getQuantityViewModel()
-
-        if (productViewModel != null && productViewModel.productChildrenList.isNotEmpty()) {
-            var selectedKey = 0
-            for ((key, value) in productViewModel.selectedVariantOptionsIdMap) {
-                if (key == selectedOptionViewModel.variantId && value != selectedOptionViewModel.optionId) {
-                    selectedKey = key
+        val optionList = mutableListOf<Int>()
+        var variantSize = 0;
+        for (viewModel: Visitable<*> in fragmentViewModel.viewModels) {
+            if (viewModel is TypeVariantViewModel) {
+                viewModel.getSelectedOption()?.let {
+                    optionList.add(it)
                 }
+                variantSize++
             }
-            if (selectedKey != 0) {
-                productViewModel.selectedVariantOptionsIdMap[selectedKey] = selectedOptionViewModel.optionId
-            }
-
-            // Check is product child for selected variant is available
-            var newSelectedProductChild: ProductChild? = null
-            for (productChild: ProductChild in productViewModel.productChildrenList) {
-                var matchOptionId = 0
-                for ((_, value) in productViewModel.selectedVariantOptionsIdMap) {
-                    if (value in productChild.optionsId) {
-                        matchOptionId++
-                    }
-                }
-                if (matchOptionId == productViewModel.selectedVariantOptionsIdMap.size) {
-                    newSelectedProductChild = productChild
-                    break
-                }
-            }
-
-            if (newSelectedProductChild != null) {
-                for (productChild: ProductChild in productViewModel.productChildrenList) {
-                    productChild.isSelected = productChild.productId == newSelectedProductChild.productId
-                }
-                onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
-
-                val variantTypeViewModels = fragmentViewModel.getVariantTypeViewModel()
-                for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
-                    if (variantTypeViewModel.variantId == selectedOptionViewModel.variantId) {
-                        variantTypeViewModel.variantSelectedValue = selectedOptionViewModel.variantName
-                        onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
-                        break
-                    }
-                }
-
-                for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
-                    if (variantTypeViewModel.variantId != selectedOptionViewModel.variantId) {
-                        for (optionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
-
-                            // Get other variant type selected option id
-                            val otherVariantSelectedOptionIds = ArrayList<Int>()
-                            for (otherVariantViewModel: TypeVariantViewModel in variantTypeViewModels) {
-                                if (otherVariantViewModel.variantId != variantTypeViewModel.variantId &&
-                                        otherVariantViewModel.variantId != selectedOptionViewModel.variantId) {
-                                    for (otherVariantTypeOption: OptionVariantViewModel in otherVariantViewModel.variantOptions) {
-                                        if (otherVariantTypeOption.currentState == otherVariantTypeOption.STATE_SELECTED) {
-                                            otherVariantSelectedOptionIds.add(otherVariantTypeOption.optionId)
-                                            break
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Look for available child
-                            var hasAvailableChild = false
-                            for (productChild: ProductChild in productViewModel.productChildrenList) {
-                                hasAvailableChild = checkChildAvailable(productChild, optionViewModel.optionId, selectedOptionViewModel.optionId, otherVariantSelectedOptionIds)
-                                if (hasAvailableChild) break
-                            }
-
-                            // Set option id state with checking result
-                            if (!hasAvailableChild) {
-                                optionViewModel.hasAvailableChild = false
-                                optionViewModel.currentState = optionViewModel.STATE_NOT_AVAILABLE
-                            } else if (optionViewModel.currentState != optionViewModel.STATE_SELECTED) {
-                                optionViewModel.hasAvailableChild = true
-                                optionViewModel.currentState = optionViewModel.STATE_NOT_SELECTED
-                            }
+        }
+        //selection option might partial selected, we only care for full selection
+        if (optionList.isNotEmpty() && optionList.size == variantSize) {
+            originalProduct?.run {
+                if (productVariant.hasChildren) {
+                    var selectedChild: Child? = null
+                    for (childModel: Child in productVariant.children) {
+                        if (childModel.optionIds.equals(optionList)) {
+                            selectedChild = childModel
+                            break
                         }
-                        onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
                     }
-                }
-
-                if (quantityViewModel != null) {
-                    if (newSelectedProductChild.isAvailable && newSelectedProductChild.stock == 0) {
-                        quantityViewModel.maxOrderQuantity = MAX_QUANTITY
+                    if (selectedChild == null) {
+                        val child = getOtherSiblingProduct(this, optionList)
+                        if (child == null) {
+                            onProductChange(this, productInfo.basic.id.toString())
+                        } else {
+                            onProductChange(this, child.productId.toString())
+                        }
                     } else {
-                        quantityViewModel.maxOrderQuantity = newSelectedProductChild.stock
+                        onProductChange(this, selectedChild.productId.toString())
                     }
-                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
                 }
             }
+
             fragmentViewModel.isStateChanged = true
         }
     }
 
-    private fun checkChildAvailable(productChild: ProductChild,
-                                    optionViewModelId: Int,
-                                    currentChangedOptionId: Int,
-                                    otherVariantSelectedOptionIds: ArrayList<Int>): Boolean {
-
-        // Check is child with newly selected option id, other variant selected option ids,
-        // and current looping variant option id is available
-        var otherSelectedOptionIdCount = 0
-        for (optionId: Int in otherVariantSelectedOptionIds) {
-            if (optionId in productChild.optionsId) {
-                otherSelectedOptionIdCount++
-            }
+    private fun onProductChange(originalProduct: ProductInfoAndVariant, inputSelectedVariantId: String?) {
+        selectedVariantId = inputSelectedVariantId
+        selectedProductInfo = getProductInfo(originalProduct, selectedVariantId)
+        selectedProductInfo?.let { it ->
+            val viewModels = ModelMapper.convertToModels(it, originalProduct.productVariant,
+                    notes, quantity)
+            fragmentViewModel.viewModels = viewModels
+            quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                    ?: 0
+            adapter.clearAllElements()
+            adapter.addDataViewModel(viewModels)
+            adapter.notifyDataSetChanged()
+            renderActionButton(it)
+            renderTotalPrice(it)
         }
-
-        val otherSelectedOptionIdCountEqual = otherSelectedOptionIdCount == otherVariantSelectedOptionIds.size
-        val currentChangedOptionIdAvailable = currentChangedOptionId in productChild.optionsId
-        val optionViewModelIdAvailable = optionViewModelId in productChild.optionsId
-
-        return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
     }
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
@@ -531,7 +500,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         setOnboardingStateHasNotShown(activity, false)
     }
 
-    override fun onGetCompositeSubscriber() = CompositeSubscription()
+    override fun onGetCompositeSubscriber() = null
 
     override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {
         // TODO need update quantity?
@@ -542,10 +511,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onBindVariantUpdateProductViewModel() {
-        val productViewModel = fragmentViewModel.getProductViewModel()
-        if (productViewModel != null) {
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
-        }
+        // no op
     }
 
     override fun getScreenName(): String? {

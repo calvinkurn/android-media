@@ -37,17 +37,35 @@ data class ProductVariant(
 
         @SerializedName("Variant")
         @Expose
-        var variant: List<Variant>? = null,
+        var variant: List<Variant> = listOf(),
 
         @SerializedName("Children")
         @Expose
-        var children: List<Child>? = null
+        var children: List<Child> = listOf()
 ) {
-        val hasChildren: Boolean
-                get() = with(children) {this!= null && this.isNotEmpty() }
+    val hasChildren: Boolean
+        get() = with(children) {this.isNotEmpty() }
 
-        val hasVariant: Boolean
-                get() = with(variant) {this!= null && this.isNotEmpty() }
+    val hasVariant: Boolean
+        get() = with(variant) { this.isNotEmpty() }
+
+    val defaultChildString: String?
+        get() = if (defaultChild != null && defaultChild != 0) {
+            defaultChild.toString()
+        } else {
+            null
+        }
+
+    fun getVariant(selectedVariantId: String?): Child? {
+        if (hasChildren) {
+            for (child: Child in children) {
+                if (child.productId.toString().equals(selectedVariantId, false)) {
+                    return child
+                }
+            }
+        }
+        return null
+    }
 }
 
 data class Picture(

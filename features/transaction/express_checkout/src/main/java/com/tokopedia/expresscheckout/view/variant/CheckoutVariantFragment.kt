@@ -39,6 +39,9 @@ import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantCompon
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.logisticcommon.LogisticCommonConstant
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
@@ -345,7 +348,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                 if (otherVariantViewModel.variantId != variantTypeViewModel.variantId &&
                                         otherVariantViewModel.variantId != selectedOptionViewModel.variantId) {
                                     for (otherVariantTypeOption: OptionVariantViewModel in otherVariantViewModel.variantOptions) {
-                                        if (otherVariantTypeOption.currentState == otherVariantTypeOption.STATE_SELECTED) {
+                                        if (otherVariantTypeOption.currentState == STATE_SELECTED) {
                                             otherVariantSelectedOptionIds.add(otherVariantTypeOption.optionId)
                                             break
                                         }
@@ -363,10 +366,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                             // Set option id state with checking result
                             if (!hasAvailableChild) {
                                 optionViewModel.hasAvailableChild = false
-                                optionViewModel.currentState = optionViewModel.STATE_NOT_AVAILABLE
-                            } else if (optionViewModel.currentState != optionViewModel.STATE_SELECTED) {
+                                optionViewModel.currentState = STATE_NOT_AVAILABLE
+                            } else if (optionViewModel.currentState != STATE_SELECTED) {
                                 optionViewModel.hasAvailableChild = true
-                                optionViewModel.currentState = optionViewModel.STATE_NOT_SELECTED
+                                optionViewModel.currentState = STATE_NOT_SELECTED
                             }
                         }
                         onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))

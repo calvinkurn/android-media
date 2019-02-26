@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
 
     private var actionListener: CheckoutVariantActionListener
-    private lateinit var quantityChangeDebounceListener: QuantityChangeDebounceListener
+    private var quantityChangeDebounceListener: QuantityChangeDebounceListener? = null
     private lateinit var element: QuantityViewModel
 
     constructor(view: View, listener: CheckoutVariantActionListener) : super(view) {
@@ -36,7 +36,7 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
         val LAYOUT = R.layout.item_quantity_detail_product_page
     }
 
-    private val textWatcher by lazy{
+    private val textWatcher by lazy {
         object : TextWatcher {
             var previousQuantity: Int = element.orderQuantity
             override fun afterTextChanged(s: Editable?) {
@@ -56,7 +56,12 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
                     element.orderQuantity = 0
                 }
                 val quantityModel = QuantityModel(previousQuantity, newQuantity)
-                quantityChangeDebounceListener.onDoNext(quantityModel)
+                // if listener is null, do without debounce
+                if (quantityChangeDebounceListener == null) {
+                    onNextDebounce(quantityModel)
+                } else {
+                    quantityChangeDebounceListener!!.onDoNext(quantityModel)
+                }
             }
         }
     }
@@ -93,7 +98,7 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
         }
     }
 
-    fun updateQuantityText(element: QuantityViewModel){
+    fun updateQuantityText(element: QuantityViewModel) {
         itemView.et_qty.setText(element.orderQuantity.toString())
         itemView.et_qty.setSelection(itemView.et_qty.text.length)
         setupMinButton(element)
@@ -152,32 +157,40 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
     }
 
     private fun initUpdateShippingRatesDebouncer() {
-        actionListener.onGetCompositeSubscriber().add(Observable.create(Observable.OnSubscribe<QuantityModel> { subscriber ->
-            quantityChangeDebounceListener = object : QuantityChangeDebounceListener {
-                override fun onDoNext(quantityModel: QuantityModel) {
-                    subscriber.onNext(quantityModel)
+        val compositeSubscription = actionListener.onGetCompositeSubscriber()
+        compositeSubscription?.run {
+            add(Observable.create(Observable.OnSubscribe<QuantityModel> { subscriber ->
+                quantityChangeDebounceListener = object : QuantityChangeDebounceListener {
+                    override fun onDoNext(quantityModel: QuantityModel) {
+                        subscriber.onNext(quantityModel)
+                    }
                 }
-            }
-        }).debounce(500, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<QuantityModel>() {
-                    override fun onCompleted() {
+            }).debounce(500, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Subscriber<QuantityModel>() {
+                        override fun onCompleted() {
 
-                    }
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
-
-                    override fun onNext(quantityModel: QuantityModel) {
-                        if (quantityModel.newQuantity != quantityModel.previousQuantity) {
-                            textWatcher.previousQuantity = quantityModel.newQuantity
-                            element.orderQuantity = quantityModel.newQuantity
-                            commitQuantityChange(element)
                         }
-                    }
-                }))
+
+                        override fun onError(e: Throwable) {
+                            e.printStackTrace()
+                        }
+
+                        override fun onNext(quantityModel: QuantityModel) {
+                            onNextDebounce(quantityModel)
+                        }
+                    }))
+        }
+
+    }
+
+    private fun onNextDebounce(quantityModel: QuantityModel) {
+        if (quantityModel.newQuantity != quantityModel.previousQuantity) {
+            textWatcher.previousQuantity = quantityModel.newQuantity
+            element.orderQuantity = quantityModel.newQuantity
+            commitQuantityChange(element)
+        }
     }
 
     private interface QuantityChangeDebounceListener {
