@@ -85,7 +85,7 @@
                 android:id="@+id/collapsing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="@color/colorPrimary"
+                app:contentScrim="@color/white"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
                 android:fitsSystemWindows="true">
 
@@ -289,6 +289,7 @@
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_action_back"
                             android:layout_gravity="center"
+                            android:tint="@color/black_70"
                             />
 
                         <TextView
@@ -296,7 +297,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black_70"
                             android:textSize="@dimen/sp_17"
                             android:textStyle="bold"
                             android:layout_marginLeft="@dimen/dp_16"
@@ -308,6 +309,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/dp_16"
+                            android:tint="@color/black_70"
                             tools:src="@drawable/ic_share_white"
                             />
 
