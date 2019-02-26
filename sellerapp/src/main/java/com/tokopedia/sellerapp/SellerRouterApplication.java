@@ -2029,29 +2029,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refereshFcmTokenToCMNotif(String token) {
-
-    }
-
-    @Override
-    public void onLoginSuccess() {
-
-    }
-
-    @Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }
-
-    @Override
     public Intent getSaldoDepositIntent(Context context) {
         return null;
-    }
-
-    @Override
-    public void refereshFcmTokenToCMNotif(String token) {
-
     }
 
     @Override
@@ -2064,20 +2043,10 @@ public abstract class SellerRouterApplication extends MainApplication
         return false;
     }
 
-    @Override
-    public String getContactUsBaseURL() {
-        return TkpdBaseURL.ContactUs.URL_HELP;
-    }
-
     public void onLoginSuccess() {
     }
 
     @Override
     public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
-    }
-
-    @Override
-    public Intent getCheckoutIntent(Activity activity) {
-        return null;
     }
 }

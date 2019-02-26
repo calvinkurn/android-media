@@ -24,6 +24,9 @@ include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
 //include "features:fintech:saldo_details_no_op"
 
+include "features:im:common_promo"
+include "features:im:referral"
+
 include "features:logistic:district_recommendation"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticanalytics"
@@ -82,6 +85,7 @@ include "features:top_ads:top_ads_management_sourcetagging"
 
 include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
+include "features:transaction:express_checkout_common"
 
 include "features:user:attachproduct"
 include "features:user:bankdb"
