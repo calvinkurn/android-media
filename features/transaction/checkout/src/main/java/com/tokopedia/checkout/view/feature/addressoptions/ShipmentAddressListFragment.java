@@ -55,7 +55,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         ISearchAddressListView<List<RecipientAddressModel>>, SearchInputView.Listener,
         SearchInputView.ResetListener, ShipmentAddressListAdapter.ActionListener {
 
-    private static final int ORDER_ASC = 1;
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
     public static final String TAG_CORNER_BS = "TAG_CORNER_BS";
     public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";
@@ -354,7 +353,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onSearchReset() {
         if (getArguments() != null) {
-            mShipmentAddressListPresenter.resetAddressList(ORDER_ASC,
+            mShipmentAddressListPresenter.resetAddressList(
                     getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), isDisableCorner);
         }
     }
@@ -410,7 +409,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
                         newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
                         newRecipientAddressModel.setPostalCode(newAddress.getPostalCode());
-                        mShipmentAddressListPresenter.getAddressFromNewCreated(newRecipientAddressModel, isDisableCorner);
+                        mShipmentAddressListPresenter.resetAddressList(newRecipientAddressModel, isDisableCorner);
                     }
                     onSearchReset();
                     break;
@@ -455,11 +454,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
         if (getArguments() != null) {
             if (!query.isEmpty()) {
-                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, query,
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true, isDisableCorner);
+                mShipmentAddressListPresenter.getAddressList(query,
+                        getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true, isDisableCorner);
             } else {
-                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, "",
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage, isDisableCorner);
+                mShipmentAddressListPresenter.getAddressList("",
+                        getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage, isDisableCorner);
             }
         }
     }

@@ -34,29 +34,15 @@ public class ShipmentAddressListPresenter
         mGetPeopleAddressUseCase = getPeopleAddressUseCase;
     }
 
-    @Override
-    public void attachView(ISearchAddressListView<List<RecipientAddressModel>> mvpView) {
-        super.attachView(mvpView);
-    }
-
-    @Override
-    protected void checkViewAttached() {
-        super.checkViewAttached();
-    }
-
     public boolean hasNext() {
         return hasNext;
     }
 
-    public void resetAddressList(int order, RecipientAddressModel currentAddress, boolean isDisableCorner) {
-        getAddressList(order, DEFAULT_KEYWORD, currentAddress, true, isDisableCorner);
+    public void resetAddressList(RecipientAddressModel currentAddress, boolean isDisableCorner) {
+        getAddressList(DEFAULT_KEYWORD, currentAddress, true, isDisableCorner);
     }
 
-    public void getAddressFromNewCreated(final RecipientAddressModel newAddress, boolean isDisableCorner) {
-        getAddressList(1, "", newAddress, true, isDisableCorner);
-    }
-
-    public void getAddressList(int order, String query, final RecipientAddressModel currentAddress,
+    public void getAddressList(String query, final RecipientAddressModel currentAddress,
                                boolean resetPage, boolean isDisableCorner) {
         if (!TextUtils.isEmpty(query)) {
             resetPage = !lastQueryKeyword.equals(query);
@@ -70,7 +56,7 @@ public class ShipmentAddressListPresenter
         if (currentPage == 1 || hasNext) {
             getMvpView().showLoading();
             mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
-                            .getRequestParams(order, query, currentPage++),
+                            .getRequestParams(query, currentPage++),
                     new Subscriber<PeopleAddressModel>() {
                         @Override
                         public void onCompleted() {
