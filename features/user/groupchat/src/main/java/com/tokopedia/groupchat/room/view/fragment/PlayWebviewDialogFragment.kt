@@ -14,14 +14,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.common.data.GroupChatUrl
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.user.session.UserSession
@@ -48,6 +53,10 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     lateinit var webviewClient: TkpdWebViewClient
     lateinit var progressBar: ProgressBar
     lateinit var userSession : UserSessionInterface
+    lateinit var errorView: View
+    lateinit var errorImage: ImageView
+    lateinit var retryButton: View
+    lateinit var closeButton: View
 
     companion object {
         fun createInstance(bundle: Bundle): PlayWebviewDialogFragment {
@@ -91,6 +100,10 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.bottom_sheet_webview, container, false)
+        errorView = view.findViewById(R.id.error_layout)
+        errorImage = view.findViewById<ImageView>(R.id.error_image)
+        retryButton = view.findViewById(R.id.retry_button)
+        closeButton = view.findViewById(R.id.header)
         initWebview(view)
         return view
     }
@@ -98,6 +111,15 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadWebview()
+        ImageHandler.LoadImage(errorImage, GroupChatUrl.ERROR_WEBVIEW_IMAGE_URL)
+        retryButton.setOnClickListener {
+            webview.show()
+            errorView.hide()
+            loadWebview()
+        }
+        closeButton.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun loadWebview() {
@@ -218,6 +240,14 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     private fun getWebviewClient(): WebViewClient? {
         return object : WebViewClient() {
+
+            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                super.onReceivedError(view, request, error)
+                webview.hide()
+                errorView.show()
+
+            }
+
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 val PARAM_WEBVIEW_BACK = "tokopedia://back"
 

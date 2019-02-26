@@ -41,6 +41,7 @@ class DynamicButtonsMapper @Inject constructor() : Func1<Response<DataResponse<B
                         pojo.linkUrl,
                         pojo.contentType,
                         pojo.contentText,
+                        pojo.contentButtonText,
                         pojo.contentLinkUrl,
                         pojo.contentImageUrl,
                         pojo.redDot,
@@ -57,6 +58,7 @@ class DynamicButtonsMapper @Inject constructor() : Func1<Response<DataResponse<B
             button.imageUrl = it.imageUrl
             button.linkUrl = it.linkUrl
             button.contentText = it.contentText
+            button.contentButtonText = it.contentButtonText
             button.contentImageUrl = it.contentImageUrl
             button.contentLinkUrl = it.contentLinkUrl
         }

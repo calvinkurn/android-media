@@ -9,6 +9,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -54,5 +55,8 @@ interface PlayContract {
                         onErrorGetInfo: (String) -> Unit)
         fun getDynamicButtons(channelId: String?, onSuccessGetDynamicButtons:
         (DynamicButtonsViewModel) -> Unit, onErrorGetDynamicButtons: (String) -> Unit)
+
+        fun getStickyComponents(channelId: String?, onSuccessGetStickyComponent:
+        (StickyComponentViewModel) -> Unit, onErrorGetStickyComponent: (String) -> Unit)
     }
 }

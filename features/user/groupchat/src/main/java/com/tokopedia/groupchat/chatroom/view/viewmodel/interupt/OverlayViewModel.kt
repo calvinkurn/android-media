@@ -12,6 +12,13 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
  * @author by yfsx on 14/12/18.
  */
  data class OverlayViewModel (
+        @SerializedName("type")
+        @Expose
+        var type: String = "",
+        //For Webview
+        @SerializedName("link_url")
+        @Expose
+        var redirectUrl: String = "",
         @SerializedName("closeable")
         @Expose
         var isCloseable: Boolean = true,
@@ -23,30 +30,24 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
         var interuptViewModel: InteruptViewModel? = null
 ) : BaseGroupChatPojo(), Visitable<GroupChatTypeFactory>, Parcelable {
 
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readInt(),
+            parcel.readParcelable(InteruptViewModel::class.java.classLoader)) {
+    }
+
     override fun type(typeFactory: GroupChatTypeFactory): Int {
         return typeFactory.type(this)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeByte(if (this.isCloseable) 1.toByte() else 0.toByte())
-        dest.writeInt(this.status)
-        dest.writeParcelable(this.interuptViewModel, flags)
-    }
-
-    protected constructor(`in`: Parcel) : this() {
-        this.isCloseable = `in`.readByte().toInt() != 0
-        this.status = `in`.readInt()
-        this.interuptViewModel = `in`.readParcelable(InteruptViewModel::class.java.classLoader)
     }
 
     companion object {
 
 
         const val TYPE = "overlay_message"
+        const val TYPE_CTA = "cta"
+        const val TYPE_WEBVIEW = "webview"
 
         @JvmField
         val CREATOR: Parcelable.Creator<OverlayViewModel> = object : Parcelable.Creator<OverlayViewModel> {
@@ -59,4 +60,17 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
             }
         }
     }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(type)
+        parcel.writeString(redirectUrl)
+        parcel.writeByte(if (isCloseable) 1 else 0)
+        parcel.writeInt(status)
+        parcel.writeParcelable(interuptViewModel, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
 }
