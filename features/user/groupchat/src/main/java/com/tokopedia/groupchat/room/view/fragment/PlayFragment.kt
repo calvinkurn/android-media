@@ -272,19 +272,19 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorGetStickyComponent(): (String) -> Unit {
         return {
-//            viewState.onErrorGetStickyComponent()
+            viewState.onErrorGetStickyComponent()
 
-            viewState.onStickyComponentUpdated(
-                    StickyComponentViewModel(
-                            "product",
-                            "https://66.media.tumblr" +
-                                    ".com/24cd87cc477767ba344376b3aa1f6e8f/tumblr_p732bhKoSc1wpahsoo4_250.png",
-                            "TITLE",
-                            "SUBTITLE",
-                            "tokopedia://gamification",
-                            10
-                    )
-            )
+//            viewState.onStickyComponentUpdated(
+//                    StickyComponentViewModel(
+//                            "product",
+//                            "https://66.media.tumblr" +
+//                                    ".com/24cd87cc477767ba344376b3aa1f6e8f/tumblr_p732bhKoSc1wpahsoo4_250.png",
+//                            "TITLE",
+//                            "SUBTITLE",
+//                            "tokopedia://gamification",
+//                            10
+//                    )
+//            )
 
         }
     }

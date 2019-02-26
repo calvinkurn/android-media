@@ -88,6 +88,11 @@ open class PlayViewStateImpl(
 
     private var viewModel: ChannelInfoViewModel? = null
     private var stickyComponentViewModel: StickyComponentViewModel? = null
+    private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
+
+    private var quickReplyAdapter: QuickReplyAdapter
+    private var dynamicButtonAdapter: DynamicButtonAdapter
+    private var adapter: GroupChatAdapter
 
     private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
@@ -106,28 +111,19 @@ open class PlayViewStateImpl(
     private var dynamicButtonRecyclerView: RecyclerView = view.findViewById(R.id.buttons)
     private var liveIndicator: View = toolbar.findViewById(R.id.toolbar_live)
     private var stickyComponent: View = view.findViewById(R.id.sticky_component)
+    private val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
+    private var errorView: View = view.findViewById(R.id.card_retry)
+    private var loadingView: View = view.findViewById(R.id.loading_view)
 
-    val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
-
-    var errorView: View = view.findViewById(R.id.card_retry)
-    var loadingView: View = view.findViewById(R.id.loading_view)
-
-    lateinit var overlayDialog: CloseableBottomSheetDialog
-    lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
-    lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
-    lateinit var webviewDialog: PlayWebviewDialogFragment
-
-    private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
-
-    private var quickReplyAdapter: QuickReplyAdapter
-    private var dynamicButtonAdapter: DynamicButtonAdapter
-    private var adapter: GroupChatAdapter
-    private var newMessageCounter: Int = 0
+    private lateinit var overlayDialog: CloseableBottomSheetDialog
+    private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
+    private lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
+    private lateinit var webviewDialog: PlayWebviewDialogFragment
 
     private var youtubeRunnable: Handler = Handler()
-
     private var layoutManager: LinearLayoutManager
 
+    private var newMessageCounter: Int = 0
     private var onPlayTime: Long = 0
     private var onPauseTime: Long = 0
     private var onEndTime: Long = 0
@@ -150,11 +146,11 @@ open class PlayViewStateImpl(
 
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory, listMessage)
         layoutManager = LinearLayoutManager(view.context)
-        layoutManager.setReverseLayout(true)
-        layoutManager.setStackFromEnd(true)
+        layoutManager.reverseLayout = true
+        layoutManager.stackFromEnd = true
         chatRecyclerView.layoutManager = layoutManager
         chatRecyclerView.adapter = adapter
-        var itemDecoration = SpaceItemDecoration(view.context
+        val itemDecoration = SpaceItemDecoration(view.context
                 .getResources().getDimension(R.dimen.space_play_chat).toInt())
         chatRecyclerView.addItemDecoration(itemDecoration)
 
@@ -189,7 +185,7 @@ open class PlayViewStateImpl(
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        var buttonSpace = SpaceItemDecoration(activity.getResources()
+        val buttonSpace = SpaceItemDecoration(activity.getResources()
                 .getDimension(R.dimen.dp_4).toInt(), 2)
         dynamicButtonAdapter = DynamicButtonAdapter(activity, listener)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
@@ -221,7 +217,7 @@ open class PlayViewStateImpl(
         }
 
         sendButton.setOnClickListener {
-            var emp = !TextUtils.isEmpty(replyEditText.text.toString().trim { it <= ' ' })
+            val emp = !TextUtils.isEmpty(replyEditText.text.toString().trim { it <= ' ' })
             if (emp) {
                 val pendingChatViewModel = PendingChatViewModel(checkText(replyEditText.text.toString()),
                         userSession.userId,
@@ -253,9 +249,9 @@ open class PlayViewStateImpl(
         dynamicButtonAdapter.setList(ArrayList())
     }
 
-    override fun onStickyComponentUpdated(it: StickyComponentViewModel) {
-        stickyComponentViewModel = it
-        showStickComponent(it)
+    override fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel) {
+        this.stickyComponentViewModel = stickyComponentViewModel
+        showStickComponent(stickyComponentViewModel)
     }
 
     override fun onErrorGetStickyComponent() {
@@ -438,7 +434,7 @@ open class PlayViewStateImpl(
             val myAlertDialog = AlertDialog.Builder(view.context)
             myAlertDialog.setTitle(getStringResource(R.string.channel_not_found))
             myAlertDialog.setMessage(getStringResource(R.string.channel_deactivated))
-            myAlertDialog.setPositiveButton(getStringResource(R.string.exit_group_chat_ok)) { dialogInterface, i ->
+            myAlertDialog.setPositiveButton(getStringResource(R.string.exit_group_chat_ok)) { _, _ ->
                 listener.backToChannelList()
             }
             myAlertDialog.setCancelable(false)
@@ -954,7 +950,7 @@ open class PlayViewStateImpl(
             webviewDialog.setUrl(url)
         }
 
-        webviewDialog.show(activity.supportFragmentManager, "Custom Bottom Sheet")
+        webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
 
     }
 
@@ -1019,7 +1015,7 @@ open class PlayViewStateImpl(
 
     override fun onInfoMenuClicked() {
         viewModel?.run {
-            showInfoBottomSheet(this) {}
+            showWebviewBottomSheet(infoUrl)
         }
     }
 

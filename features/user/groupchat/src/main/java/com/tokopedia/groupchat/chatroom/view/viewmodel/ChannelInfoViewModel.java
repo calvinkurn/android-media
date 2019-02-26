@@ -47,6 +47,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private boolean isFreeze;
     private String videoId;
     private Boolean videoLive;
+    private String infoUrl;
     private SettingGroupChat settingGroupChat;
     public OverlayViewModel overlayViewModel;
     private DynamicButtonsViewModel dynamicButtons;
@@ -98,6 +99,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.quickRepliesViewModel = null;
         this.videoId = "";
         this.videoLive = false;
+        this.infoUrl = "";
         this.settingGroupChat = null;
         this.overlayViewModel = null;
         this.dynamicButtons = null;
@@ -116,7 +118,7 @@ public class ChannelInfoViewModel implements Parcelable {
                                 @Nullable PinnedMessageViewModel pinnedMessageViewModel,
                                 @Nullable ExitMessage exitMessage,
                                 List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel,
-                                String videoId, Boolean videoLive,
+                                String videoId, Boolean videoLive, String infoUrl,
                                 SettingGroupChat settingGroupChat, OverlayViewModel overlayViewModel,
                                 DynamicButtonsViewModel dynamicButtons, BackgroundViewModel backgroundViewModel) {
         this.channelId = channelId;
@@ -146,6 +148,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.quickRepliesViewModel = quickRepliesViewModel;
         this.videoId = videoId;
         this.videoLive = videoLive;
+        this.infoUrl = infoUrl;
         this.settingGroupChat = settingGroupChat;
         this.overlayViewModel = overlayViewModel;
         this.dynamicButtons = dynamicButtons;
@@ -176,6 +179,7 @@ public class ChannelInfoViewModel implements Parcelable {
         videoId = in.readString();
         byte tmpVideoLive = in.readByte();
         videoLive = tmpVideoLive == 0 ? null : tmpVideoLive == 1;
+        infoUrl = in.readString();
         settingGroupChat = in.readParcelable(SettingGroupChat.class.getClassLoader());
         overlayViewModel = in.readParcelable(OverlayViewModel.class.getClassLoader());
         dynamicButtons = in.readParcelable(DynamicButtonsViewModel.class.getClassLoader());
@@ -212,6 +216,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeByte((byte) (isFreeze ? 1 : 0));
         dest.writeString(videoId);
         dest.writeByte((byte) (videoLive == null ? 0 : videoLive ? 1 : 2));
+        dest.writeString(infoUrl);
         dest.writeParcelable(settingGroupChat, flags);
         dest.writeParcelable(overlayViewModel, flags);
         dest.writeParcelable(dynamicButtons, flags);
@@ -494,5 +499,13 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public BackgroundViewModel getBackgroundViewModel() {
         return backgroundViewModel;
+    }
+
+    public String getInfoUrl() {
+        return infoUrl;
+    }
+
+    public void setInfoUrl(String infoUrl) {
+        this.infoUrl = infoUrl;
     }
 }
