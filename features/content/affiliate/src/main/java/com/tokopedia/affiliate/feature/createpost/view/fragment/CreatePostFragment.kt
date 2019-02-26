@@ -27,10 +27,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CreatePostFragment : BaseDaggerFragment(),
@@ -104,7 +106,8 @@ class CreatePostFragment : BaseDaggerFragment(),
         initView()
         if (userSession.isLoggedIn) {
             if (!viewModel.isEdit) {
-                presenter.fetchContentForm(viewModel.productId, viewModel.adId)
+                //TODO milhamj handle multiple product or ad id
+                presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull())
             } else {
                 presenter.fetchEditContentForm(viewModel.postId)
             }
@@ -135,7 +138,7 @@ class CreatePostFragment : BaseDaggerFragment(),
                 updateThumbnail()
             }
             REQUEST_EXAMPLE -> goToImagePicker()
-            REQUEST_LOGIN -> presenter.fetchContentForm(viewModel.productId, viewModel.adId)
+            REQUEST_LOGIN -> presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull())
             REQUEST_ATTACH_PRODUCT -> if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
                 val products = data?.getParcelableArrayListExtra<ResultProduct>(
                         AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
@@ -172,7 +175,7 @@ class CreatePostFragment : BaseDaggerFragment(),
 
     override fun onErrorGetContentForm(message: String) {
         NetworkErrorHelper.showEmptyState(context, mainView, message
-        ) { presenter.fetchContentForm(viewModel.productId, viewModel.adId) }
+        ) { presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull()) }
     }
 
     override fun onErrorGetEditContentForm(message: String) {
@@ -184,7 +187,7 @@ class CreatePostFragment : BaseDaggerFragment(),
         activity?.let {
             val taskStackBuilder = TaskStackBuilder.create(it)
 
-            val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel.productId
+            val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel.productIdList.firstOrNull()
             val onboardingIntent = RouteManager.getIntent(it, onboardingApplink)
             onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             taskStackBuilder.addNextIntent(onboardingIntent)
@@ -229,8 +232,8 @@ class CreatePostFragment : BaseDaggerFragment(),
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
         } else if (arguments != null) {
-            viewModel.productId = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
-            viewModel.adId = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "")
+            viewModel.productIdList.add(arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, ""))
+            viewModel.adIdList.add(arguments!!.getString(CreatePostActivity.PARAM_AD_ID, ""))
             viewModel.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
             viewModel.isEdit = arguments!!.getBoolean(CreatePostActivity.PARAM_IS_EDIT, false)
         }
@@ -240,7 +243,7 @@ class CreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.adapter = adapter
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productId)
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
 //            if (!viewModel.isEdit) {
 //                submitPost()
 //            } else {
@@ -248,7 +251,7 @@ class CreatePostFragment : BaseDaggerFragment(),
 //            }
         }
         addImageBtn.setOnClickListener {
-            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productId)
+            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
             goToImagePicker()
         }
         relatedAddBtn.setOnClickListener {
@@ -295,12 +298,23 @@ class CreatePostFragment : BaseDaggerFragment(),
 
     private fun submitPost() {
         presenter.submitPost(
-                viewModel.productId,
-                viewModel.adId,
+                viewModel.productIdList.firstOrNull(),
+                viewModel.productIdList.firstOrNull(),
                 viewModel.token,
                 viewModel.completeImageList,
                 viewModel.mainImageIndex
         )
+    }
+
+    private fun saveDraft() {
+        context?.let {
+            showLoading()
+
+            val cacheManager = PersistentCacheManager(it, true)
+            cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
+
+            hideLoading()
+        }
     }
 
     private fun editPost() {

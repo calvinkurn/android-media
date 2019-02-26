@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.createpost.domain.usecase;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse;
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
+import com.tokopedia.affiliate.util.FileCheckerKt;
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
@@ -57,7 +57,7 @@ public class UploadMultipleImageUseCase extends UseCase<List<SubmitPostMedium>> 
 
     private Func1<SubmitPostMedium, Observable<SubmitPostMedium>> uploadSingleImage() {
         return medium -> {
-            if (CreatePostViewModel.Companion.urlIsFile(medium.getMediaURL())) {
+            if (FileCheckerKt.urlIsFile(medium.getMediaURL())) {
                 return uploadImageUseCase.createObservable(createUploadParams(medium.getMediaURL()))
                         .map(mapToUrl(medium))
                         .subscribeOn(Schedulers.io());
