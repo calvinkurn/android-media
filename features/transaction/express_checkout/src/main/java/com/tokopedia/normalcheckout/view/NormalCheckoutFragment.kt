@@ -27,6 +27,7 @@ import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
@@ -141,7 +142,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun onVariantGuidelineClick(variantGuideline: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        context?.run {
+            startActivity(ImagePreviewActivity.getCallingIntent(context!!,
+                    arrayListOf(variantGuideline),
+                    null, 0))
+        }
     }
 
     /**

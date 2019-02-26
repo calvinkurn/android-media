@@ -41,7 +41,9 @@
         android:textColor="@color/text_green"
         android:textSize="@dimen/sp_13"
         android:textStyle="normal"
-        tools:text="Panduan Ukuran" />
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:text="@string/sizechart_guideline" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_variant_options"

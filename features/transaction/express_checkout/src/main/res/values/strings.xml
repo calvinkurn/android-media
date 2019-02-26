@@ -39,5 +39,6 @@
     <string name="label_button_preorder">Preorder</string>
     <string name="add_to_cart">Tambah ke Keranjang</string>
     <string name="label_discount_percentage">%1$d%%OFF</string>
+    <string name="sizechart_guideline">Panduan Ukuran</string>
 
 </resources>

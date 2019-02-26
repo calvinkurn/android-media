@@ -42,6 +42,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.logisticcommon.LogisticCommonConstant
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
@@ -237,6 +238,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
+    override fun onVariantGuidelineClick(variantGuideline: String) {
+        context?.run {
+            startActivity(ImagePreviewActivity.getCallingIntent(context!!,
+                    arrayListOf(variantGuideline),
+                    null, 0))
+        }
+    }
+
     override fun onClickEditProfile() {
         if (!checkoutProfileBottomSheet.isAdded) {
             checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
@@ -325,7 +334,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
 
                 if (summaryViewModel != null) {
-                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice.toLong()) ?: 0
+                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice.toLong())
+                            ?: 0
                     onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
                 }
 
@@ -430,7 +440,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     }
                 }
                 if (!eligibleForWholesalePrice) {
-                    productViewModel?.productPrice = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice ?: 0
+                    productViewModel?.productPrice = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice
+                            ?: 0
                 }
             }
         }
@@ -443,7 +454,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
         } else {
-            summaryViewModel?.itemPrice = productViewModel?.productPrice?.toLong()?.times(quantityViewModel.orderQuantity) ?: 0
+            summaryViewModel?.itemPrice = productViewModel?.productPrice?.toLong()?.times(quantityViewModel.orderQuantity)
+                    ?: 0
         }
 
         if (summaryViewModel != null) {

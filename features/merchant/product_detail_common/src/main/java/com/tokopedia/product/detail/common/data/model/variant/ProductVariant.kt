@@ -21,7 +21,7 @@ data class ProductVariant(
 
         @SerializedName("SizeChart")
         @Expose
-        var sizechart: String? = null,
+        var sizeChart: String = "",
 
         @SerializedName("Enabled")
         @Expose

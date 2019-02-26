@@ -141,16 +141,15 @@ object ModelMapper {
     fun convertToProductVariantViewModel(productVariant: ProductVariant,
                                          selectedProduct: ProductInfo): List<TypeVariantViewModel>? {
         val variantViewModelList = ArrayList<TypeVariantViewModel>()
-        val variantChildrenValidation = validateVariantChildren(productVariant.children!!, productVariant.variant?.size
+        val variantChildrenValidation = validateVariantChildren(productVariant.children, productVariant.variant?.size
                 ?: 0)
         if (!variantChildrenValidation) {
             return null
         }
-        val children = productVariant.children ?: return null
-        val variantModels = productVariant.variant ?: return null
+        val variantModels = productVariant.variant
         var level = 0
         for (variantModel: Variant in variantModels) {
-            val typeVariantViewModel = convertToTypeVariantViewModel(variantModel, children, selectedProduct, level)
+            val typeVariantViewModel = convertToTypeVariantViewModel(productVariant, variantModel, selectedProduct, level)
                     ?: continue
             level++
             variantViewModelList.add(typeVariantViewModel)
@@ -189,10 +188,11 @@ object ModelMapper {
      * Convert to the same variant (for example color)
      * Convert variant red + child({red,S}, {red,M}, blue{s}, blue{M}) to {red,S}, {red,M}
      */
-    fun convertToTypeVariantViewModel(variantModel: Variant, childrenModel: List<Child>,
+    fun convertToTypeVariantViewModel(productVariant: ProductVariant, variantModel: Variant,
                                       selectedProduct: ProductInfo,
                                       variantLevel: Int): TypeVariantViewModel? {
         val typeVariantViewModel = TypeVariantViewModel()
+        val childrenModel = productVariant.children
 
         val optionVariantViewModels = ArrayList<OptionVariantViewModel>()
         val optionModels = variantModel.options
@@ -208,7 +208,12 @@ object ModelMapper {
         typeVariantViewModel.variantId = variantModel.v ?: 0
         typeVariantViewModel.variantOptions = optionVariantViewModels
         typeVariantViewModel.variantName = variantModel.name ?: ""
-
+        typeVariantViewModel.variantGuideline =
+                if (variantModel.isSizeIdentifier && productVariant.sizeChart.isNotEmpty()) {
+                    productVariant.sizeChart
+                } else {
+                    ""
+                }
         return typeVariantViewModel
     }
 
@@ -254,11 +259,11 @@ object ModelMapper {
                         // no need to check more. This will be enabled
                         optionVariantViewModel.currentState = STATE_NOT_SELECTED
                     } else {
-                        val childOptionId = childModel.optionIds.getOrNull(variantLevel )
+                        val childOptionId = childModel.optionIds.getOrNull(variantLevel)
                         if (childOptionId != null) {
                             var selectedCounter = 0
                             for (selectedOptionId: Int in partialSelectedListByLevel) {
-                                if (childModel.optionIds.contains(selectedOptionId)){
+                                if (childModel.optionIds.contains(selectedOptionId)) {
                                     selectedCounter++
                                 }
                             }
