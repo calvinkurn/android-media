@@ -24,7 +24,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         PostImageAdapter()
     }
     private val productAdapter: RelatedProductAdapter by lazy {
-        RelatedProductAdapter()
+        RelatedProductAdapter(null, RelatedProductAdapter.TYPE_PREVIEW)
     }
 
     companion object {
@@ -62,10 +62,10 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         mediaViewPager.offscreenPageLimit = imageAdapter.count
         tabLayout.setupWithViewPager(mediaViewPager)
 
-        if (viewModel.relatedProducts.isNotEmpty()) {
-            productAdapter.setType(RelatedProductAdapter.TYPE_PREVIEW)
-            productAdapter.setList(viewModel.relatedProducts)
-            relatedProductRv.adapter = productAdapter
-        }
+        val relatedProducts = ArrayList(viewModel.relatedProducts)
+        productAdapter.setList(relatedProducts)
+        productAdapter.removeEmpty()
+        relatedProductRv.adapter = productAdapter
+        relatedProductRv.setHasFixedSize(true)
     }
 }

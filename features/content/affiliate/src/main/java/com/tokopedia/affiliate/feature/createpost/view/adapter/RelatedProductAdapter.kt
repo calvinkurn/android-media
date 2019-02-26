@@ -12,14 +12,18 @@ import kotlinx.android.synthetic.main.item_af_related_product.view.*
 /**
  * @author by milhamj on 21/02/19.
  */
-class RelatedProductAdapter(val listener: RelatedProductListener?)
+class RelatedProductAdapter(val listener: RelatedProductListener? = null, val type: String = "")
     : RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
 
-    constructor() : this(null)
-
     private val emptyItem: RelatedProductItem = RelatedProductItem(EMPTY_ITEM_ID)
-    private var list: MutableList<RelatedProductItem> = arrayListOf(emptyItem)
-    private var type: String = ""
+    private var list: MutableList<RelatedProductItem> = arrayListOf()
+
+    init {
+        setHasStableIds(true)
+        if (shouldAddEmpty()) {
+            list.add(emptyItem)
+        }
+    }
 
     companion object {
         private const val EMPTY_ITEM_ID = "-1"
@@ -33,10 +37,6 @@ class RelatedProductAdapter(val listener: RelatedProductListener?)
     }
 
     override fun getItemCount(): Int = list.size
-
-    override fun setHasStableIds(hasStableIds: Boolean) {
-        super.setHasStableIds(true)
-    }
 
     override fun getItemId(position: Int): Long {
         return list[position].id.toLongOrNull() ?: RecyclerView.NO_ID
@@ -66,7 +66,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener?)
             list.removeAt(holder.adapterPosition)
             notifyItemRemoved(holder.adapterPosition)
 
-            if (list.isEmpty()) {
+            if (list.isEmpty() && shouldAddEmpty()) {
                 list.add(emptyItem)
                 notifyItemInserted(list.size)
             }
@@ -74,16 +74,21 @@ class RelatedProductAdapter(val listener: RelatedProductListener?)
     }
 
     fun setList(list: MutableList<RelatedProductItem>) {
-        if (list.isEmpty()) {
+        if (list.isEmpty() && shouldAddEmpty()) {
             list.add(emptyItem)
         }
         this.list = list
         notifyDataSetChanged()
     }
 
-    fun setType(type: String) {
-        this.type = type
+    fun removeEmpty() {
+        val position = this.list.indexOf(emptyItem)
+        if (this.list.remove(emptyItem)) {
+            notifyItemRemoved(position)
+        }
     }
+
+    private fun shouldAddEmpty() = type != TYPE_PREVIEW
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v)
 

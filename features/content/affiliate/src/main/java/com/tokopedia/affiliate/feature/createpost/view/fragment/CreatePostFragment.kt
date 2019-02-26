@@ -238,6 +238,7 @@ class CreatePostFragment : BaseDaggerFragment(),
 
     private fun initView() {
         relatedProductRv.adapter = adapter
+        relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
             affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productId)
 //            if (!viewModel.isEdit) {
