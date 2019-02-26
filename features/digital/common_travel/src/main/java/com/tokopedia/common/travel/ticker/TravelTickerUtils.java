@@ -14,30 +14,25 @@ import java.util.ArrayList;
  * @author by furqan on 25/02/19
  */
 public class TravelTickerUtils {
-    private static final int DEFAULT_POST_DELAYED_VALUE = 500;
+    private static final int ANNOUNCEMENT_TYPE = 1;
+    private static final int DANGER_TYPE = 2;
 
     public static void buildTravelTicker(Context context, TravelTickerViewModel travelTickerViewModel, TickerView tickerView) {
         ArrayList<String> messages = new ArrayList<>();
         messages.add(travelTickerViewModel.getMessage());
-        tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
-        if (travelTickerViewModel.getType() == 1) {
+        tickerView.setItemTextAppearance(R.style.TextView_Micro);
+        if (travelTickerViewModel.getType() == ANNOUNCEMENT_TYPE) {
             tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.tkpd_main_green));
             tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.light_green));
             tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.light_green));
-        } else if (travelTickerViewModel.getType() == 2) {
+        } else if (travelTickerViewModel.getType() == DANGER_TYPE) {
             tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.snackbar_border_error));
             tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.colorPink));
             tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.colorPink));
         }
 
         tickerView.buildView();
-
-        tickerView.postDelayed(() -> {
-            if (tickerView != null) {
-                tickerView.setItemTextAppearance(R.style.TextView_Micro);
-                tickerView.setVisibility(View.VISIBLE);
-            }
-        }, DEFAULT_POST_DELAYED_VALUE);
+        tickerView.setVisibility(View.VISIBLE);
     }
 }
