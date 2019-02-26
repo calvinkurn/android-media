@@ -204,6 +204,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/relatedAddBtn"
                 app:reverseLayout="false"
                 tools:listitem="@layout/item_af_related_product" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_72"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/relatedProductRv" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
 
@@ -212,7 +218,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@drawable/card_shadow_top"
         android:orientation="horizontal">
 
         <com.tokopedia.design.component.ButtonCompat
