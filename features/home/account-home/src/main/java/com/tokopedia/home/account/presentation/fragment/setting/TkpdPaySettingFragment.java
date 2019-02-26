@@ -116,7 +116,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
             switch (settingId) {
                 case SettingConstant.SETTING_BANK_ACCOUNT_ID:
                     accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
-                    if (userSession.isHasPassword()) {
+                    if (userSession.hasPassword()) {
                         startActivity(router.getSettingBankIntent(getActivity()));
                     } else {
                         showNoPasswordDialog();

@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -23,6 +22,9 @@ import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
 import com.tokopedia.saldodetails.usecase.GetSaldoBalanceUseCase;
 import com.tokopedia.saldodetails.usecase.GetTickerWithdrawalMessageUseCase;
 import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus;
+import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -192,8 +194,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             return;
         }
         Context context = getView().getContext();
-        UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
-        if (session.isHasPassword()) {
+        UserSessionInterface userSession = new UserSession(context);
+        if (userSession.hasPassword()) {
 
             float sellerBalance = getView().getSellerSaldoBalance();
             float buyerBalance = getView().getBuyerSaldoBalance();

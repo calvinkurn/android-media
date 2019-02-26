@@ -17,6 +17,7 @@ import com.tokopedia.navigation_common.model.TokopointsModel;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.user_identification_common.pojo.KycStatusPojo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,51 +29,52 @@ public class AccountModel {
     private Integer isAuthenticated;
     @SerializedName("balance")
     @Expose
-    private DepositModel deposit;
+    private DepositModel deposit = new DepositModel();
     @SerializedName("affiliateCheck")
     @Expose
-    private AffiliateModel affiliateModel;
+    private AffiliateModel affiliateModel = new AffiliateModel();
     @SerializedName("wallet")
     @Expose
-    private WalletModel wallet;
+    private WalletModel wallet = new WalletModel();
     @SerializedName("profile")
     @Expose
-    private ProfileModel profile;
+    private ProfileModel profile = new ProfileModel();
     @SerializedName("userShopInfo")
     @Expose
-    private UserShopInfoModel shopInfo;
+    private UserShopInfoModel shopInfo = new UserShopInfoModel();
     @SerializedName("tokopoints")
     @Expose
-    private TokopointsModel tokopoints;
+    private TokopointsModel tokopoints = new TokopointsModel();
     @SerializedName("notifications")
     @Expose
-    private NotificationsModel notifications;
+    private NotificationsModel notifications = new NotificationsModel();
     @SerializedName("reputation_shops")
     @Expose
-    private List<ReputationShop> reputationShops;
+    private List<ReputationShop> reputationShops = new ArrayList<>();
     @SerializedName("tokopointsSumCoupon")
     @Expose
-    private TokopointsSumCoupon tokopointsSumCoupon;
+    private TokopointsSumCoupon tokopointsSumCoupon = new TokopointsSumCoupon();
     @SerializedName("le_preapprove")
     @Expose
-    private LePreapproveModel lePreapprove;
+    private LePreapproveModel lePreapprove = new LePreapproveModel();
 
     @SerializedName("vcc_user_status")
-    private VccUserStatus vccUserStatus;
+    private VccUserStatus vccUserStatus = new VccUserStatus();
 
     @SerializedName("vcc_user_balance")
-    private VccUserBalance vccUserBalance;
+    private VccUserBalance vccUserBalance = new VccUserBalance();
 
     @SerializedName("kycStatus")
-    private KycStatusPojo kycStatusPojo;
+    private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
-    private PendingCashbackModel pendingCashbackModel;
+    private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();
 
     public Integer getIsAuthenticated() {
         return isAuthenticated;
     }
 
     public void setIsAuthenticated(Integer isAuthenticated) {
+
         this.isAuthenticated = isAuthenticated;
     }
 

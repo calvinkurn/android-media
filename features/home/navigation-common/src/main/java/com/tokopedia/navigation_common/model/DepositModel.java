@@ -10,10 +10,10 @@ public class DepositModel {
 
     @SerializedName("buyer_usable")
     @Expose
-    private long buyerUsable;
+    private long buyerUsable = 0;
     @SerializedName("seller_usable")
     @Expose
-    private long sellerUsable;
+    private long sellerUsable = 0;
 
     public long getBuyerUsable() {
         return buyerUsable;

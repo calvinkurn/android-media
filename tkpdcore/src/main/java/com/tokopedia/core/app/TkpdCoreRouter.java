@@ -197,4 +197,8 @@ public interface TkpdCoreRouter {
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent getAutomaticResetPasswordIntent(Context context, String email);
+
+    Intent getCreateResCenterActivityIntent(Context context, String orderId);
+
+    Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId);
 }
