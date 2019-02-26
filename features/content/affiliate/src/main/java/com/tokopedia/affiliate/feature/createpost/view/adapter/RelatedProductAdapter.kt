@@ -6,10 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadDrawable
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_af_related_product.view.*
 
 /**
@@ -22,9 +19,12 @@ class RelatedProductAdapter(val listener: RelatedProductListener?)
 
     private val emptyItem: RelatedProductItem = RelatedProductItem(EMPTY_ITEM_ID)
     private var list: MutableList<RelatedProductItem> = arrayListOf(emptyItem)
+    private var type: String = ""
 
     companion object {
         private const val EMPTY_ITEM_ID = "-1"
+
+        const val TYPE_PREVIEW = "preview"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -55,7 +55,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener?)
             }
         } else {
             holder.itemView.thumbnail.loadImageRounded(element.image, 25f)
-            holder.itemView.delete.show()
+            holder.itemView.delete.showWithCondition(type != TYPE_PREVIEW)
             holder.itemView.separatorBottom.show()
             holder.itemView.separatorBottomEmpty.hide()
             holder.itemView.setOnClickListener { }
@@ -79,6 +79,10 @@ class RelatedProductAdapter(val listener: RelatedProductListener?)
         }
         this.list = list
         notifyDataSetChanged()
+    }
+
+    fun setType(type: String) {
+        this.type = type
     }
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v)

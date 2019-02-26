@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking
-import com.tokopedia.affiliate.common.preference.AffiliatePreference
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
@@ -40,9 +39,6 @@ class CreatePostFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var presenter: CreatePostContract.Presenter
-
-    @Inject
-    lateinit var affiliatePreference: AffiliatePreference
 
     @Inject
     lateinit var affiliateAnalytics: AffiliateAnalytics
@@ -329,7 +325,7 @@ class CreatePostFragment : BaseDaggerFragment(),
                 userSession.shopId,
                 "",
                 true,
-                AttachProductActivity.SOURCE_TALK)
+                "")
         startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
     }
 

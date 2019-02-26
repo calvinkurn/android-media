@@ -63,6 +63,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         tabLayout.setupWithViewPager(mediaViewPager)
 
         if (viewModel.relatedProducts.isNotEmpty()) {
+            productAdapter.setType(RelatedProductAdapter.TYPE_PREVIEW)
             productAdapter.setList(viewModel.relatedProducts)
             relatedProductRv.adapter = productAdapter
         }
