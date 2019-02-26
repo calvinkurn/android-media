@@ -21,6 +21,7 @@ public interface Constants {
         String TAG_CAMERA_PAGE = "card_id_camera";
         String SUCCESS = "success";
         int MAIDEN_NAME_LENGTH = 30;
+        String WEB_VIEW_TITLE = "Sayarat dan Ketentuan";
     }
     interface AppLinks{
         String OVOUPGRADE = "tokopedia://ovoupgrade";
@@ -51,9 +52,17 @@ public interface Constants {
     interface URLs{
         String KYC_UPLOAD_IMAGE = "https://goalapi-staging.tokopedia.com/api/v1/kyc/upload_document";
         String KYC_CONFIRM = "https://goal.tokopedia.com/api/v1/kyc/confirm";
+        String OVO_TNC_PAGE = "https://www.ovo.id/tnc";
     }
 
     interface RegEx{
         String name = "^[a-zA-Z\\s]+";
+    }
+
+    interface ERROR_MSG{
+        String KTP_NUMBER = "Nomor KTP harus 16 digit";
+        String MOTHERS_NAME = "Nama gadis ibu kandung maksimal 30 karakter";
+        String PASSPORT_NUMBER = "Passport number is not valid";
+        String FORIEGNER_MOTHERS_NAME = "Mother's maiden name is not valid";
     }
 }

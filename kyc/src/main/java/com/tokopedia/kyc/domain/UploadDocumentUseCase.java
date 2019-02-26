@@ -12,6 +12,8 @@ import com.tokopedia.usecase.RequestParams;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +39,14 @@ public class UploadDocumentUseCase extends RestRequestSupportInterceptorUseCase 
     private HashMap<String, Object> generateRequestParams(String imagePath, String docType, int kycReqId) {
         HashMap<String, Object> requestBodyMap = new HashMap<>();
         RequestBody reqImgFile = RequestBody.create(MediaType.parse("image/*"), new File(imagePath));
-        requestBodyMap.put(Constants.Keys.DOCUMENT_FILE, reqImgFile);
+
+        try {
+            requestBodyMap.put(Constants.Keys.DOCUMENT_FILE+"\"; filename=\""+ URLEncoder.encode(imagePath,"UTF-8") , reqImgFile);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         requestBodyMap.put(Constants.Keys.DOCUMENT_TYPE,  RequestBody.create(MediaType.parse("text/plain"),docType));
-        requestBodyMap.put(Constants.Keys.KYC_REQUEST_ID,RequestBody.create(MediaType.parse("text/plain"), kycReqId+""));
+        requestBodyMap.put(Constants.Keys.KYC_REQUEST_ID,RequestBody.create(MediaType.parse("text/plain"), String.valueOf(kycReqId)));
         return requestBodyMap;
     }
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_30"
+    android:paddingRight="@dimen/dp_30">
+    <TextView
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#4c2a86"
+        android:text="Perhatian"
+        />
+
+    <TextView
+        android:layout_marginTop="@dimen/dp_25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#2d263b"
+        android:text="Gagal mengupload foto. Silahkan ulangi kembali"
+        />
+
+    <Button
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:text="KONFIRMASI"
+        android:background="@drawable/btn_bg_rounded_corners"
+        android:layout_marginBottom="@dimen/dp_14"
+        />
+</LinearLayout>
