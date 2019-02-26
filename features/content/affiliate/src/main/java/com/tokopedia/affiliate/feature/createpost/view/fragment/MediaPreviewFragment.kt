@@ -67,5 +67,26 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         productAdapter.removeEmpty()
         relatedProductRv.adapter = productAdapter
         relatedProductRv.setHasFixedSize(true)
+
+        deleteMediaBtn.setOnClickListener {
+            if (viewModel.mainImageIndex == tabLayout.selectedTabPosition
+                    && tabLayout.selectedTabPosition == imageAdapter.count - 2) {
+                if (tabLayout.selectedTabPosition - 1 > 0) {
+                    viewModel.mainImageIndex = tabLayout.selectedTabPosition - 1
+                } else {
+                    viewModel.mainImageIndex = 0
+                }
+            }
+
+            if (tabLayout.selectedTabPosition < viewModel.fileImageList.size) {
+                viewModel.fileImageList.removeAt(tabLayout.selectedTabPosition)
+            } else {
+                viewModel.fileImageList.removeAt(
+                        tabLayout.selectedTabPosition - viewModel.fileImageList.size
+                )
+            }
+            imageAdapter.imageList.removeAt(tabLayout.selectedTabPosition)
+            imageAdapter.notifyDataSetChanged()
+        }
     }
 }
