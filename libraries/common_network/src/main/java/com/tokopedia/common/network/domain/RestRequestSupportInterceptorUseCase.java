@@ -2,20 +2,24 @@ package com.tokopedia.common.network.domain;
 
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.common.network.BuildConfig;
 import com.tokopedia.common.network.data.ObservableFactory;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.Interceptor;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Rest api call UseCase
@@ -38,7 +42,28 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
 
     @Override
     public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
-        return ObservableFactory.create(buildRequest(requestParams), mInterceptors, mContext);
+        return ObservableFactory.create(buildRequest(requestParams), mInterceptors, mContext).map(checkForNull());
+    }
+
+    private Func1<Map<Type, RestResponse>, Map<Type, RestResponse>> checkForNull() {
+        return responseMap -> {
+            for (Map.Entry<Type, RestResponse> pair : responseMap.entrySet()) {
+                if (isCheckNull()) {
+                    NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
+                        String message = String.format("Found %s in %s",
+                                errorMessage,
+                                RestRequestSupportInterceptorUseCase.class.getSimpleName()
+                        );
+                        ContainNullException exception = new ContainNullException(message);
+                        if (!BuildConfig.DEBUG) {
+                            Crashlytics.logException(exception);
+                        }
+                        throw exception;
+                    });
+                }
+            }
+            return responseMap;
+        };
     }
 
     /**
@@ -94,4 +119,15 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
      * @return List of RestRequest object which may or may not contain above parameter
      */
     protected abstract List<RestRequest> buildRequest(RequestParams requestParams);
+
+    /**
+     * A function to indicate whether the use case needs to check for null variables
+     * in the responses.
+     *
+     * Please override this function and return `false`
+     * if you want the use case to _NOT_ check for null values.
+     **/
+    protected boolean isCheckNull() {
+        return true;
+    }
 }

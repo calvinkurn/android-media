@@ -9,19 +9,19 @@ import com.google.gson.annotations.SerializedName;
 public class ProfileModel {
     @SerializedName("full_name")
     @Expose
-    private String fullName;
+    private String fullName = "";
     @SerializedName("completion")
     @Expose
-    private Integer completion;
+    private Integer completion = 0;
     @SerializedName("user_id")
     @Expose
-    private String userId;
+    private String userId = "";
     @SerializedName("profilePicture")
     @Expose
-    private String profilePicture;
+    private String profilePicture = "";
     @SerializedName("phone_verified")
     @Expose
-    private boolean isPhoneVerified;
+    private boolean isPhoneVerified = false;
 
     public String getFullName() {
         return fullName;
