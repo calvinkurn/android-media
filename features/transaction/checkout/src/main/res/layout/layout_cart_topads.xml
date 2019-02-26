@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.topads.sdk.widget.TopAdsCarouselView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/topads"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:ads_offset="@dimen/dp_128"
-    app:ads_title="@string/recomendasi_untuk_anda"
-    android:visibility="gone"/>
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/topads_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_5"
+        android:background="@color/separator_color" />
+
+    <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
+        android:id="@+id/topads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ads_offset="@dimen/dp_128"
+        app:ads_title="@string/recomendasi_untuk_anda"
+        android:visibility="gone"/>
+
+</LinearLayout>

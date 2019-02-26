@@ -44,6 +44,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
+    private ImageView promoShop;
 
     private CartAdapter.ActionListener cartAdapterListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
@@ -74,6 +75,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
+        promoShop = itemView.findViewById(R.id.promo_shop);
     }
 
     public void bindData(CartShopHolderData cartShopHolderData, Map<Integer, Boolean> checkedItemState) {
@@ -109,6 +111,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setEnabled(!cartShopHolderData.getShopGroupData().isError());
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
+
+        promoShop.setOnClickListener(promoShopClickListener());
     }
 
     private void renderErrorItemHeader(CartShopHolderData data) {
@@ -176,6 +180,10 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         };
+    }
+
+    private View.OnClickListener promoShopClickListener() {
+        return v -> System.out.println("++ PROMO SHOP CLICKED!!");
     }
 
 }

@@ -14,8 +14,6 @@
         android:id="@+id/ll_shop_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:orientation="vertical">
 
         <include
@@ -92,6 +90,7 @@
 
         <!--sementara imageview, nanti ganti dgn cardview-->
         <ImageView
+            android:id="@+id/promo_shop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/use_coupon"
