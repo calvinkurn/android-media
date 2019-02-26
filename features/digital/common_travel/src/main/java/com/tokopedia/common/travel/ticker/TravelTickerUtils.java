@@ -35,9 +35,5 @@ public class TravelTickerUtils {
 
         tickerView.buildView();
         tickerView.setVisibility(View.VISIBLE);
-
-        tickerView.postDelayed(() -> {
-            tickerView.setItemTextAppearance(R.style.TextView_Micro);
-        }, DEFAULT_POST_DELAYED_VALUE);
     }
 }
