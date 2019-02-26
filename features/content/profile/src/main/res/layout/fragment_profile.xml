@@ -309,7 +309,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/dp_16"
-                            android:tint="@color/black_70"
+                            android:tint="#52565E"
                             tools:src="@drawable/ic_share_white"
                             />
 
