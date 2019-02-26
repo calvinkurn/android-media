@@ -18,6 +18,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.Favori
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.subscriber.ToggleFavoriteActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
     @Inject
-    ToggleFavoriteActionUseCase toggleFavoriteActionUseCase;
+    ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private ShopListFragmentView viewListener;
     private FavoriteActionListener favoriteActionListener;
     private Context context;
@@ -64,9 +65,9 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
             viewListener.disableFavoriteButton(adapterPosition);
             Log.d(this.toString(),
                     "Toggle favorite " + shopItem.getShopId() + " " + Boolean.toString(!shopItem.isFavorited()));
-            toggleFavoriteActionUseCase.execute(
-                    ToggleFavoriteActionUseCase
-                            .generateParam(shopItem.getShopId(), shopItem.getShopDomain()),
+            toggleFavouriteShopUseCase.execute(
+                    ToggleFavouriteShopUseCase
+                            .createRequestParam(shopItem.getShopId()),
                     new ToggleFavoriteActionSubscriber(favoriteActionListener,
                             adapterPosition, !shopItem.isFavorited())
             );
@@ -138,7 +139,7 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
         super.detachView();
         getShopUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
-        toggleFavoriteActionUseCase.unsubscribe();
+        toggleFavouriteShopUseCase.unsubscribe();
     }
 
 }

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_shipment_blackbox_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/ll_courier_blackbox_state_loading"
+        layout="@layout/partial_shimmering_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16" />
+
+    <LinearLayout
+        android:id="@+id/ll_select_shipment_blackbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8">
+
+        <TextView
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:text="@string/label_shipping" />
+
+        <TextView
+            android:id="@+id/tv_choose_courier_blackbox"
+            style="@style/TextSmallMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/green_button_rounded_unify"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="@dimen/dp_9"
+            android:paddingLeft="@dimen/dp_27"
+            android:paddingRight="@dimen/dp_27"
+            android:paddingTop="@dimen/dp_9"
+            android:text="@string/label_button_choose_courier_blackbox"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_selected_shipment_blackbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_selected_courier_blackbox_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_16">
+
+                <TextView
+                    android:id="@+id/tv_selected_courier_blackbox"
+                    style="@style/TextMidMediumBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Instant (3 Jam)" />
+
+                <TextView
+                    android:id="@+id/tv_selected_price_blackbox"
+                    style="@style/TextSmallNormalBlack54"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Rp10.000" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_change_selected_courier_blackbox"
+                android:layout_width="@dimen/dp_145"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="@drawable/bg_grey_round"
+                android:foreground="?selectableItemBackground"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dp_9"
+                android:paddingLeft="@dimen/dp_27"
+                android:paddingRight="@dimen/dp_27"
+                android:paddingTop="@dimen/dp_9"
+                android:text="@string/label_button_change_shipping"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/sp_11"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_shipment_blackbox_info_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/border_rectangle_grey_no_border"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent"
+            tools:visbility="visible">
+
+            <ImageView
+                android:id="@+id/img_bulb"
+                android:layout_width="@dimen/dp_35"
+                android:layout_height="@dimen/dp_35"
+                android:foregroundGravity="center_vertical"
+                android:padding="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:src="@drawable/ic_bulb_yellow"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/tv_shipment_blackbox_ticker_info"
+                style="@style/TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_3"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_gravity="center_vertical"
+                android:lineSpacingExtra="3sp"
+                tools:text="@string/label_hardcoded_courier_blackbox_ticker" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/grey_300" />
+
+</LinearLayout>

@@ -50,5 +50,9 @@ public interface HomeCategoryListener {
 
     boolean isHomeFragment();
 
+    void onPromoDragStart();
+
+    void onPromoDragEnd();
+
     void setActivityStateListener(ActivityStateListener activityStateListener);
 }

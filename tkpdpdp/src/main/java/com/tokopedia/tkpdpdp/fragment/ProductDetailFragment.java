@@ -63,6 +63,7 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpdpdp.DescriptionActivityNew;
 import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
@@ -403,6 +404,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     GraphqlUseCase graphqlUseCase;
 
     @Inject
+    ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
+
+    @Inject
     GetImageReviewUseCase getImageReviewUseCase;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
@@ -474,7 +478,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 new CacheInteractorImpl(),
                 getAffiliateProductDataUseCase,
                 getImageReviewUseCase,
-                getMostHelpfulReviewUseCase);
+                getMostHelpfulReviewUseCase,
+                toggleFavouriteShopUseCase);
         this.presenter.initGetRateEstimationUseCase();
     }
 

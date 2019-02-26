@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implements BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
-        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, ActivityStateListener {
+        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener{
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;
@@ -43,6 +43,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         bannerView.setOnPromoClickListener(this);
         bannerView.setOnPromoScrolledListener(this);
         bannerView.setOnPromoLoadedListener(this);
+        bannerView.setOnPromoDragListener(this);
         listener.setActivityStateListener(this);
     }
 
@@ -106,6 +107,16 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
             HomePageTracking.eventPromoImpression(context, promotionList);
             hasSendBannerImpression = true;
         }
+    }
+
+    @Override
+    public void onPromoDragStart() {
+        listener.onPromoDragStart();
+    }
+
+    @Override
+    public void onPromoDragEnd() {
+        listener.onPromoDragEnd();
     }
 
     @Override

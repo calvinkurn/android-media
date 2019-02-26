@@ -9,37 +9,37 @@ import com.google.gson.annotations.SerializedName;
 public class WalletModel {
     @SerializedName("text")
     @Expose
-    private String text;
+    private String text = "";
     @SerializedName("linked")
     @Expose
-    private boolean linked;
+    private boolean linked = false;
     @SerializedName("rawBalance")
     @Expose
-    private Double rawBalance;
+    private Double rawBalance = 0.0;
     @SerializedName("balance")
     @Expose
-    private String balance;
+    private String balance = "";
     @SerializedName("redirect_url")
     @Expose
-    private String redirectUrl;
+    private String redirectUrl = "";
     @SerializedName("applinks")
     @Expose
-    private String applink;
+    private String applink = "";
     @SerializedName("action")
     @Expose
-    private WalletAction action;
+    private WalletAction action = new WalletAction();
     @SerializedName("point_balance")
     @Expose
-    private String pointBalance;
+    private String pointBalance = "";
     @SerializedName("cash_balance")
     @Expose
-    private String cashBalance;
+    private String cashBalance = "";
     @SerializedName("wallet_type")
     @Expose
-    private String walletType;
+    private String walletType = "";
 
-    private String pendingCashback;
-    private int amountPendingCashback;
+    private String pendingCashback = "";
+    private int amountPendingCashback = 0;
 
     public String getText() {
         return text;
