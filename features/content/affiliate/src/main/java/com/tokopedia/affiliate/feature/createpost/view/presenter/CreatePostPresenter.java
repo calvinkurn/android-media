@@ -78,7 +78,7 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
     public void editPost(String postId, String token, List<String> imageList, int mainImageIndex) {
         getView().showLoading();
         editPostUseCase.execute(
-                EditPostUseCase.createRequestParams(
+                EditPostUseCase.Companion.createRequestParams(
                         postId,
                         token,
                         imageList,

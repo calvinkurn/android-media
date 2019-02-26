@@ -20,10 +20,10 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 10/1/18.
  */
-open class SubmitPostUseCase @Inject
-internal constructor(@ApplicationContext private val context: Context,
-                     private val uploadMultipleImageUseCase: UploadMultipleImageUseCase,
-                     private val graphqlUseCase: GraphqlUseCase) : UseCase<SubmitPostData>() {
+open class SubmitPostUseCase @Inject constructor(
+        @ApplicationContext private val context: Context,
+        private val uploadMultipleImageUseCase: UploadMultipleImageUseCase,
+        private val graphqlUseCase: GraphqlUseCase) : UseCase<SubmitPostData>() {
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<SubmitPostData> {
@@ -93,7 +93,7 @@ internal constructor(@ApplicationContext private val context: Context,
         internal const val PARAM_TOKEN = "token"
         internal const val PARAM_IMAGE_LIST = "image_list"
         internal const val PARAM_MAIN_IMAGE_INDEX = "main_image_index"
-        private const val TYPE_AFFILIATE = "affiliate"
+        internal const val TYPE_AFFILIATE = "affiliate"
 
         private const val PARAM_AD_ID = "adID"
         private const val PARAM_PRODUCT_ID = "productID"
