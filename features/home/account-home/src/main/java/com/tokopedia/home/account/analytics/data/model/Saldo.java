@@ -8,10 +8,10 @@ public class Saldo {
 
     @SerializedName("deposit_fmt")
     @Expose
-    private String depositFmt;
+    private String depositFmt = "";
     @SerializedName("deposit")
     @Expose
-    private Integer deposit;
+    private Integer deposit = 0;
 
     public String getDepositFmt() {
         return depositFmt;
