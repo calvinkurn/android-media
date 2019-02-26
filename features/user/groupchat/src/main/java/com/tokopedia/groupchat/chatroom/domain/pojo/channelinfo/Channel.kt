@@ -85,9 +85,30 @@ data class Channel(
         @SerializedName("banned_msg")
         @Expose
         val bannedMessage: String = "",
+        @SerializedName("banned_title")
+        @Expose
+        val bannedTitle: String = "",
+        @SerializedName("banned_button_title")
+        @Expose
+        val bannedButtonTitle: String = "",
+        @SerializedName("banned_button_url")
+        @Expose
+        val bannedButtonUrl: String = "",
         @SerializedName("kick_msg")
         @Expose
         val kickedMessage: String = "",
+        @SerializedName("kick_title")
+        @Expose
+        val kickedTitle: String = "",
+        @SerializedName("kick_button_title")
+        @Expose
+        val kickedButtonTitle: String = "",
+        @SerializedName("kick_button_url")
+        @Expose
+        val kickedButtonUrl: String = "",
+        @SerializedName("kick_duration")
+        @Expose
+        val kickDuration: Long = 0L,
         @SerializedName("pinned_message")
         @Expose
         val pinnedMessage: PinnedMessagePojo? = null,

@@ -16,9 +16,11 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.Option;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BanViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.KickViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -76,8 +78,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 convertChannelPartner(pojo.getChannel()),
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToSprintSaleViewModel(pojo.getChannel().getFlashsale()),
-                pojo.getChannel().getBannedMessage() != null ? pojo.getChannel().getBannedMessage() : "",
-                pojo.getChannel().getKickedMessage() != null ? pojo.getChannel().getKickedMessage() : "",
+                mapToBannedViewModel(pojo.getChannel()),
+                mapToKickedViewModel(pojo.getChannel()),
                 pojo.getChannel().isIsFreeze(),
                 mapToPinnedMessageViewModel(pojo.getChannel().getPinnedMessage()),
                 pojo.getChannel().getExitMessage(),
@@ -330,4 +332,24 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getBtnLink()
         );
     }
+
+    private BanViewModel mapToBannedViewModel(Channel channel) {
+        return new BanViewModel(
+                channel.getBannedMessage(),
+                channel.getBannedTitle(),
+                channel.getBannedButtonTitle(),
+                channel.getBannedButtonUrl()
+        );
+    }
+
+    private KickViewModel mapToKickedViewModel(Channel channel) {
+        return new KickViewModel(
+                channel.getKickedMessage(),
+                channel.getKickedTitle(),
+                channel.getKickedButtonTitle(),
+                channel.getKickedButtonUrl(),
+                channel.getKickDuration()
+        );
+    }
+
 }

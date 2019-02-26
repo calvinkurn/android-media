@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
@@ -20,7 +19,6 @@ interface PlayViewState {
     fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?)
     fun getToolbar(): Toolbar?
     fun onBackPressed() : Boolean
-
     fun onSuccessLogin()
     fun onTotalViewChanged(channelId: String, totalView: String)
     fun onAdsUpdated(it: AdsViewModel)
