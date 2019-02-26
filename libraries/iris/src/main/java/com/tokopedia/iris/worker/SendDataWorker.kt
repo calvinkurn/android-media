@@ -24,19 +24,22 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
         val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
 
         if (trackings.isNotEmpty()) {
+            try {
+                val request: String = TrackingMapper().transformListEvent(trackings)
 
-            val request: String = TrackingMapper().transformListEvent(trackings)
+                val service = ApiService(context).makeRetrofitService()
 
-            val service = ApiService(context).makeRetrofitService()
+                val response = runBlocking {
+                    val requestBody = ApiService.parse(request)
+                    val response = service.sendMultiEvent(requestBody)
+                    response.await()
+                }
 
-            val response = runBlocking {
-                val requestBody = ApiService.parse(request)
-                val response = service.sendMultiEvent(requestBody)
-                response.await()
-            }
-
-            if (response.isSuccessful && response.code() == 200) {
-                trackingRepository.delete(trackings)
+                if (response.isSuccessful && response.code() == 200) {
+                    trackingRepository.delete(trackings)
+                }
+            } catch (e: Exception) {
+                // no op
             }
         }
         return Result.SUCCESS
