@@ -13,7 +13,9 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,12 +24,14 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.*
+import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.component.Menus
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
@@ -80,6 +84,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var isOwner: Boolean = false
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
+    private var profileHeader:ProfileHeaderViewModel? = null
 
     override lateinit var profileRouter: ProfileModuleRouter
 
@@ -103,6 +108,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val ONBOARDING_CODE = 10
         private const val EDIT_POST_CODE = 1310
         private const val LOGIN_CODE = 1383
+        private const val LOGIN_FOLLOW_CODE = 1384
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -148,6 +154,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
                 }
+            }
+            LOGIN_FOLLOW_CODE -> {
+                doFollowAfterLogin()
             }
             SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE, LOGIN_CODE -> {
                 onSwipeRefresh()
@@ -202,7 +211,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun loadData(page: Int) {
         if (isLoadingInitialData) {
-            presenter.getProfileFirstPage(userId)
+            presenter.getProfileFirstPage(userId, false)
         } else {
             presenter.getProfilePost(userId)
         }
@@ -219,7 +228,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel) {
+    override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel, isFromLogin: Boolean) {
         presenter.cursor = firstPageViewModel.lastCursor
         onlyOnePost = firstPageViewModel.visitableList.size == 1
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
@@ -233,7 +242,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             )
         }
 
-        setProfileToolbar(firstPageViewModel.profileHeaderViewModel)
+        setProfileToolbar(firstPageViewModel.profileHeaderViewModel, isFromLogin)
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         if (!firstPageViewModel.visitableList.isEmpty()) {
@@ -262,7 +271,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         } else if (afterEdit) {
             showAfterEditToaster()
             afterEdit = false
-
         }
     }
 
@@ -287,7 +295,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 profileAnalytics.eventClickUnfollow(userId.toString())
             }
         } else {
-            goToLogin()
+            followAfterLogin()
         }
     }
 
@@ -439,27 +447,27 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onSuccessFollowKol() {
-        if (adapter.dataSize > 0 && adapter.data.first() is ProfileHeaderViewModel) {
-            val profileHeaderViewModel = adapter.data.first() as ProfileHeaderViewModel
-            profileHeaderViewModel.isFollowed = !profileHeaderViewModel.isFollowed
+        profileHeader?.let {
+            it.isFollowed = !it.isFollowed
 
             try {
-                var followers = profileHeaderViewModel.followers.toInt()
-                followers += if (profileHeaderViewModel.isFollowed) 1 else -1
-                profileHeaderViewModel.followers = followers.toString()
+                var followers = it.followers.toInt()
+                followers += if (it.isFollowed) 1 else -1
+                it.followers = followers.toString()
             } catch (e: NumberFormatException) {
             }
 
-            if (profileHeaderViewModel.isFollowed) {
+            if (it.isFollowed) {
                 ToasterNormal
                         .make(view,
                                 getString(R.string.follow_success_toast),
                                 BaseToaster.LENGTH_LONG)
                         .setAction(getString(R.string.follow_success_check_now),
-                                followSuccessOnClickListener(profileHeaderViewModel))
+                                followSuccessOnClickListener(it))
                         .show()
             }
-            adapter.notifyItemChanged(0, ProfileHeaderViewHolder.PAYLOAD_FOLLOW)
+
+            setProfileToolbar(it, false)
 
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
@@ -468,7 +476,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
                 resultIntent!!.putExtra(
                         ProfileActivity.PARAM_IS_FOLLOWING,
-                        if (profileHeaderViewModel.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
+                        if (it.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
                         else ProfileActivity.IS_FOLLOWING_FALSE
                 )
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
@@ -558,13 +566,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun setProfileToolbar(element: ProfileHeaderViewModel) {
+    private fun setProfileToolbar(element: ProfileHeaderViewModel, isFromLogin: Boolean) {
+        this.profileHeader = element
         app_bar_layout.visibility = View.VISIBLE
         iv_image_collapse.loadImageRounded(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
         tv_name.text = element.name
-        tv_name_parallax.text = element.affiliateName
-        tv_aff_name.text = element.affiliateName
+        var affName = context?.resources?.getString(R.string.title_profile)
+        if (!element.affiliateName.equals("")) affName = element.affiliateName
+        tv_name_parallax.text = affName
+        tv_aff_name.text = affName
         iv_back_parallax.setOnClickListener{
             activity?.finish()
         }
@@ -574,12 +585,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                val offset = Math.abs(verticalOffset);
-                if (offset >= appBarLayout.totalScrollRange) {
-                    toolbar.visibility = View.VISIBLE
+                if (verticalOffset == 0) {
+//                    toolbar_parallax.visibility = View.INVISIBLE
+                } else if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+
                 } else {
-                    toolbar.visibility = View.GONE
+//                    toolbar_parallax.visibility = View.VISIBLE
                 }
+
             }
         })
 
@@ -597,9 +610,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 goToDashboard()
             }
         }
+        if (!element.isAffiliate) {
+            iv_action_parallax.visibility = View.GONE
+            iv_action.visibility = View.GONE
+        }
         iv_action.setOnClickListener(action)
         iv_action_parallax.setOnClickListener(action)
-
 
         if (element.isKol || element.isAffiliate) {
             kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE
@@ -618,6 +634,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         followUnfollowUser(element.userId, !element.isFollowed)
                     }
                     updateButtonState(element.isFollowed)
+                    if (isFromLogin) {
+                        followBtn.performClick()
+                    }
                 } else {
                     editButton.visibility = View.VISIBLE
                     followBtn.visibility = View.GONE
@@ -913,6 +932,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToLogin() {
         startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_CODE)
+    }
+
+    private fun followAfterLogin() {
+        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_FOLLOW_CODE)
+    }
+
+    private fun doFollowAfterLogin() {
+        swipeToRefresh.isRefreshing = true
+        footerOwn.visibility = View.GONE
+        app_bar_layout.visibility = View.GONE
+        presenter.getProfileFirstPage(userId, true)
     }
 
     private fun showError(message: String) {
