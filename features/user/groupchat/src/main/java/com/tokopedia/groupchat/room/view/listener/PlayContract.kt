@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
@@ -39,6 +38,8 @@ interface PlayContract {
         fun onBackgroundUpdated(it: BackgroundViewModel)
         fun openRedirectUrl(generateLink: String)
         fun onRetryGetInfo()
+        fun onFinish()
+        fun onToolbarEnabled(b: Boolean)
     }
 
     interface Presenter: CustomerPresenter<View> {

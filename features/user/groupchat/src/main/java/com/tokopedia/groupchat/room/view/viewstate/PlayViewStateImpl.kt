@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
@@ -33,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
@@ -130,7 +130,7 @@ open class PlayViewStateImpl(
     private var onLeaveTime: Long = 0
     private val onTrackingTime: Long = 0
 
-    var defaultBackground = arrayListOf(
+    private var defaultBackground = arrayListOf(
             R.drawable.bg_play_1,
             R.drawable.bg_play_2,
             R.drawable.bg_play_3
@@ -185,8 +185,8 @@ open class PlayViewStateImpl(
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        val buttonSpace = SpaceItemDecoration(activity.getResources()
-                .getDimension(R.dimen.dp_4).toInt(), 2)
+        var buttonSpace = SpaceItemDecoration(activity.getResources()
+                .getDimension(R.dimen.dp_8).toInt(), 2)
         dynamicButtonAdapter = DynamicButtonAdapter(activity, listener)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
         dynamicButtonRecyclerView.addItemDecoration(buttonSpace)
@@ -336,9 +336,17 @@ open class PlayViewStateImpl(
     }
 
     override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
+
         viewModel = it
 
         loadingView.hide()
+
+        if(it.isFreeze){
+            onChannelFrozen(it.channelId)
+            listener.onToolbarEnabled(false)
+            return
+        }
+
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
         initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
@@ -430,15 +438,16 @@ open class PlayViewStateImpl(
     }
 
     override fun onChannelFrozen(channelId: String) {
+        var channelName = viewModel?.title
         if (channelId == viewModel?.channelId) {
-            val myAlertDialog = AlertDialog.Builder(view.context)
-            myAlertDialog.setTitle(getStringResource(R.string.channel_not_found))
-            myAlertDialog.setMessage(getStringResource(R.string.channel_deactivated))
-            myAlertDialog.setPositiveButton(getStringResource(R.string.exit_group_chat_ok)) { _, _ ->
-                listener.backToChannelList()
-            }
-            myAlertDialog.setCancelable(false)
-            myAlertDialog.show()
+            setEmptyState(R.drawable.ic_play_dynamic_icon,
+                    view.context.resources.getString((R.string.play_has_end), channelName),
+                    getStringResource(R.string.play_next_event),
+                    getStringResource(R.string.play_start_shopping),
+                    listener::onFinish)
+            loadingView.hide()
+            errorView.show()
+            setToolbarWhite()
         }
     }
 
@@ -448,34 +457,17 @@ open class PlayViewStateImpl(
 
     override fun banUser(userId: String) {
         if (userId == userSession.userId) {
-            val errorMessage = getStringResource(R.string.user_is_banned)
-            try {
-                val builder = AlertDialog.Builder(view.context)
-                builder.setTitle(R.string.default_banned_title)
-
-                builder.setMessage(errorMessage)
-
-                viewModel?.bannedMessage?.let {
-                    builder.setMessage(it)
-                }
-
-                builder.setPositiveButton(R.string.title_ok) { dialogInterface, i ->
-                    dialogInterface.dismiss()
-                    val intent = Intent()
-//                    if (viewModel != null) {
-//                        intent.putExtra(TOTAL_VIEW, viewModel?.totalView)
-//                        intent.putExtra(EXTRA_POSITION, viewModel?.getChannelPosition())
-//                    }
-//                    setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent)
+            viewModel?.banViewModel?.let {
+                var dialog = Dialog(activity, Dialog.Type.RETORIC)
+                dialog.setTitle(it.bannedTitle)
+                dialog.setDesc(it.bannedMessage)
+                dialog.setBtnOk(it.bannedButtonTitle)
+                dialog.setOnOkClickListener {
                     listener.backToChannelList()
+                    dialog.dismiss()
                 }
-                val dialog = builder.create()
-                dialog.setCancelable(false)
                 dialog.show()
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
-
         }
     }
 
@@ -788,10 +780,9 @@ open class PlayViewStateImpl(
             videoFragment.run {
                 videoContainer.show()
                 sponsorLayout.hide()
-
+                setChatListHasSpaceOnTop(false)
+                liveIndicator.shouldShowWithAction(isVideoLive){}
                 youTubePlayer?.let {
-                    liveIndicator.shouldShowWithAction(isVideoLive) {}
-                    setChatListHasSpaceOnTop(false)
                     it.cueVideo(videoId)
                     autoPlayVideo()
                 }

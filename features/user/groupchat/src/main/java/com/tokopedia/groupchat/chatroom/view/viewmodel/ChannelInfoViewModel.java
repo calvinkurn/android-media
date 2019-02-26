@@ -4,13 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BanViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.KickViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
@@ -42,8 +43,8 @@ public class ChannelInfoViewModel implements Parcelable {
     private String description;
     private String totalView;
     private List<ChannelPartnerViewModel> channelPartnerViewModels;
-    private String bannedMessage;
-    private String kickedMessage;
+    private BanViewModel banViewModel;
+    private KickViewModel kickViewModel;
     private boolean isFreeze;
     private String videoId;
     private Boolean videoLive;
@@ -91,8 +92,8 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelPartnerViewModels = new ArrayList<>();
         this.voteInfoViewModel = null;
         this.sprintSaleViewModel = null;
-        this.bannedMessage = "";
-        this.kickedMessage = "";
+        this.banViewModel = null;
+        this.kickViewModel = null;
         this.isFreeze = false;
         this.pinnedMessageViewModel = null;
         this.exitMessage = null;
@@ -114,7 +115,7 @@ public class ChannelInfoViewModel implements Parcelable {
                                 List<ChannelPartnerViewModel> channelPartnerViewModels,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
                                 @Nullable SprintSaleViewModel sprintSaleViewModel,
-                                String bannedMessage, String kickedMessage, boolean isFreeze,
+                                BanViewModel banViewModel, KickViewModel kickViewModel, boolean isFreeze,
                                 @Nullable PinnedMessageViewModel pinnedMessageViewModel,
                                 @Nullable ExitMessage exitMessage,
                                 List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel,
@@ -140,8 +141,8 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelPartnerViewModels = channelPartnerViewModels;
         this.voteInfoViewModel = voteInfoViewModel;
         this.sprintSaleViewModel = sprintSaleViewModel;
-        this.bannedMessage = bannedMessage;
-        this.kickedMessage = kickedMessage;
+        this.banViewModel = banViewModel;
+        this.kickViewModel = kickViewModel;
         this.isFreeze = isFreeze;
         this.pinnedMessageViewModel = pinnedMessageViewModel;
         this.exitMessage = exitMessage;
@@ -173,8 +174,8 @@ public class ChannelInfoViewModel implements Parcelable {
         description = in.readString();
         totalView = in.readString();
         channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
-        bannedMessage = in.readString();
-        kickedMessage = in.readString();
+        banViewModel = in.readParcelable(BanViewModel.class.getClassLoader());
+        kickViewModel = in.readParcelable(KickViewModel.class.getClassLoader());
         isFreeze = in.readByte() != 0;
         videoId = in.readString();
         byte tmpVideoLive = in.readByte();
@@ -211,8 +212,8 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeString(description);
         dest.writeString(totalView);
         dest.writeTypedList(channelPartnerViewModels);
-        dest.writeString(bannedMessage);
-        dest.writeString(kickedMessage);
+        dest.writeParcelable(banViewModel, flags);
+        dest.writeParcelable(kickViewModel, flags);
         dest.writeByte((byte) (isFreeze ? 1 : 0));
         dest.writeString(videoId);
         dest.writeByte((byte) (videoLive == null ? 0 : videoLive ? 1 : 2));
@@ -362,11 +363,19 @@ public class ChannelInfoViewModel implements Parcelable {
     }
 
     public String getBannedMessage() {
-        return bannedMessage;
+        return "";
     }
 
     public String getKickedMessage() {
-        return kickedMessage;
+        return "";
+    }
+
+    public BanViewModel getBanViewModel() {
+        return banViewModel;
+    }
+
+    public KickViewModel getKickViewModel() {
+        return kickViewModel;
     }
 
     public boolean isFreeze() {
@@ -464,14 +473,6 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public void setChannelPartnerViewModels(List<ChannelPartnerViewModel> channelPartnerViewModels) {
         this.channelPartnerViewModels = channelPartnerViewModels;
-    }
-
-    public void setBannedMessage(String bannedMessage) {
-        this.bannedMessage = bannedMessage;
-    }
-
-    public void setKickedMessage(String kickedMessage) {
-        this.kickedMessage = kickedMessage;
     }
 
     public void setFreeze(boolean freeze) {

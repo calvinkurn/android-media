@@ -13,7 +13,6 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -212,7 +211,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorGetDynamicButtons(): (String) -> Unit {
         return {
-                        viewState.onErrorGetDynamicButtons()
+            viewState.onErrorGetDynamicButtons()
 
             //TODO DELETE THIS
 //            val listDynamic = ArrayList<DynamicButtonsViewModel.Button>()
@@ -291,18 +290,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
+
+            onToolbarEnabled(true)
+
             presenter.getDynamicButtons(channelInfoViewModel.channelId, onSuccessGetDynamicButtons(),
                     onErrorGetDynamicButtons())
             presenter.getStickyComponents(channelInfoViewModel.channelId,
                     onSuccessGetStickyComponent(), onErrorGetStickyComponent())
 
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
-
-            (activity as PlayActivity).let {
-                it.changeHomeDrawableColor(R.color.white)
-                optionsMenuEnable = true
-            }
-
             saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
             presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
@@ -314,12 +310,20 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun onErrorGetInfo(): (String) -> Unit {
         return {
             viewState.onErrorGetInfo(it)
+            onToolbarEnabled(false)
+        }
+    }
 
-            (activity as PlayActivity).let {
-                it.changeHomeDrawableColor(R.color.black_70)
-                it.setSwipeable(false)
-                optionsMenuEnable = false
+    override fun onToolbarEnabled(isEnabled: Boolean) {
+        optionsMenuEnable = isEnabled
+
+        (activity as PlayActivity).let {
+            var color: Int
+            color = when {
+                isEnabled -> R.color.white
+                else -> R.color.black_70
             }
+            it.changeHomeDrawableColor(color)
         }
     }
 
@@ -454,8 +458,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onSprintSaleComponentClicked(sprintSaleAnnouncementViewModel: SprintSaleAnnouncementViewModel?) {
-        sprintSaleAnnouncementViewModel?.let{
-            if((it.redirectUrl?:"").isBlank()){
+        sprintSaleAnnouncementViewModel?.let {
+            if ((it.redirectUrl ?: "").isBlank()) {
                 return
             }
 
@@ -480,7 +484,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun openRedirectUrl(generateLink: String) {
-        if(generateLink.isBlank())
+        if (generateLink.isBlank())
             return
 
         (activity?.applicationContext as GroupChatModuleRouter).openRedirectUrl(activity, generateLink)
@@ -544,6 +548,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    override fun onFinish() {
+        activity?.finish()
+    }
+
     override fun showOverlayDialog(it: OverlayViewModel) {
         channelInfoViewModel.overlayViewModel = it
         viewState.onReceiveOverlayMessageFromWebsocket(channelInfoViewModel)
@@ -582,7 +590,13 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry)) {
                     viewState.getChannelInfo()?.let { channelInfo ->
-                        presenter.getPlayInfo(channelInfo.channelId, onSuccessGetInfo(), onErrorGetInfo())
+                        //                        presenter.getPlayInfo(channelInfo.channelId, onSuccessGetInfo(), onErrorGetInfo()
+                        presenter.openWebSocket(
+                                userSession,
+                                channelInfo.channelId,
+                                channelInfo.groupChatToken,
+                                channelInfo.settingGroupChat
+                        )
                         setSnackBarConnectingWebSocket()
                     }
                 }
@@ -702,28 +716,34 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun kickIfIdleForTooLong() {
         Log.i("play pause", timeStampAfterPause.toString())
         Log.i("play pause now", System.currentTimeMillis().toString())
+        var duration = PlayActivity.KICK_THRESHOLD_TIME
+        viewState.getChannelInfo()?.kickViewModel?.kickDuration?.let {
+            if (it > 0) duration = it
+        }
         if (timeStampAfterPause > 0
-                && System.currentTimeMillis() - timeStampAfterPause > PlayActivity.KICK_THRESHOLD_TIME) {
+                && System.currentTimeMillis() - timeStampAfterPause > duration && duration > 0) {
             showKickUser()
         }
     }
 
     private fun showKickUser() {
         val dialog = Dialog(activity, Dialog.Type.RETORIC)
-        dialog.setTitle(getString(R.string.you_have_been_kicked))
-        dialog.setDesc(getString(R.string.you_have_been_idle_for_too_long))
-        dialog.setBtnOk(getString(R.string.title_ok))
-        dialog.setOnOkClickListener {
-            dialog.dismiss()
-            val intent = Intent()
-            viewState.getChannelInfo()?.let {
-                intent.putExtra(PlayActivity.TOTAL_VIEW, it.totalView)
-                intent.putExtra(PlayActivity.EXTRA_POSITION, position)
+        viewState.getChannelInfo()?.kickViewModel?.let {
+            dialog.setTitle(it.kickTitle)
+            dialog.setDesc(it.kickMessage)
+            dialog.setBtnOk(it.kickButtonTitle)
+            dialog.setOnOkClickListener {
+                dialog.dismiss()
+                val intent = Intent()
+                viewState.getChannelInfo()?.let {
+                    intent.putExtra(PlayActivity.TOTAL_VIEW, it.totalView)
+                    intent.putExtra(PlayActivity.EXTRA_POSITION, position)
+                }
+                activity?.setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent)
+                activity?.finish()
             }
-            activity?.setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent)
-            activity?.finish()
+            dialog.show()
         }
-        dialog.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -16,10 +16,8 @@
     tools:background="@color/yellow_200">
         <com.tokopedia.design.text.BackEditText
             android:id="@+id/reply_edit_text"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
             android:background="@drawable/bg_rounded_chat_input"
             android:hint="@string/chat_hint"
             android:inputType="textMultiLine"
@@ -56,14 +54,14 @@
         android:id="@+id/button_send"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_40"
+        android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
         android:visibility="gone"
         android:layout_gravity="bottom"
         app:srcCompat="@drawable/ic_send_24dp_green"
-        tools:visibility="gone"
-        android:paddingStart="@dimen/dp_16" />
+        tools:visibility="gone" />
 
 
 </LinearLayout>
