@@ -11,6 +11,7 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActi
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
+import com.tokopedia.kotlin.extensions.view.hide
 import kotlinx.android.synthetic.main.fragment_af_media_preview.*
 
 /**
@@ -53,7 +54,8 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun initVar() {
-        viewModel = arguments?.getParcelable(MediaPreviewActivity.CREATE_POST_MODEL) ?: CreatePostViewModel()
+        viewModel = arguments?.getParcelable(MediaPreviewActivity.CREATE_POST_MODEL)
+                ?: CreatePostViewModel()
     }
 
     private fun initView() {
@@ -70,23 +72,26 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
         deleteMediaBtn.setOnClickListener {
             if (viewModel.mainImageIndex == tabLayout.selectedTabPosition
-                    && tabLayout.selectedTabPosition == imageAdapter.count - 2) {
-                if (tabLayout.selectedTabPosition - 1 > 0) {
-                    viewModel.mainImageIndex = tabLayout.selectedTabPosition - 1
-                } else {
-                    viewModel.mainImageIndex = 0
-                }
+                    && tabLayout.selectedTabPosition == imageAdapter.count - 2
+                    && tabLayout.selectedTabPosition - 1 > 0) {
+                viewModel.mainImageIndex = tabLayout.selectedTabPosition - 1
+            } else {
+                viewModel.mainImageIndex = 0
             }
 
             if (tabLayout.selectedTabPosition < viewModel.fileImageList.size) {
                 viewModel.fileImageList.removeAt(tabLayout.selectedTabPosition)
             } else {
-                viewModel.fileImageList.removeAt(
+                viewModel.urlImageList.removeAt(
                         tabLayout.selectedTabPosition - viewModel.fileImageList.size
                 )
             }
             imageAdapter.imageList.removeAt(tabLayout.selectedTabPosition)
             imageAdapter.notifyDataSetChanged()
+
+            if (imageAdapter.imageList.isEmpty()) {
+                deleteMediaBtn.hide()
+            }
         }
     }
 }
