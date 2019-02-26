@@ -76,19 +76,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private boolean isDisableCorner;
     private RecipientAddressModel mCurrAddress;
 
-    private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
-
     private PerformanceMonitoring chooseAddressTracePerformance;
     private boolean isChooseAddressTraceStopped;
 
-    @Inject
-    ShipmentAddressListAdapter mShipmentAddressListAdapter;
-
-    @Inject
-    ShipmentAddressListPresenter mShipmentAddressListPresenter;
-
-    @Inject
-    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    @Inject ShipmentAddressListAdapter mShipmentAddressListAdapter;
+    @Inject ShipmentAddressListPresenter mShipmentAddressListPresenter;
+    @Inject CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     private Token token;
 
@@ -181,7 +174,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initView(View view) {
-        mCartAddressChoiceListener.setToolbarTitle(getActivity().getString(R.string.checkout_module_title_shipping_dest_multiple_address));
+        mCartAddressChoiceActivityListener.setToolbarTitle(getActivity().getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         checkoutAnalyticsChangeAddress.eventViewAtcCartChangeAddressImpressionChangeAddress();
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
@@ -484,12 +477,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             }
         }
 
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) context;
     }
 
     @Override

@@ -131,8 +131,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 Intent intent = ((ICheckoutModuleRouter) getApplication()).getAddAddressIntent(
                         this, null, token, false, true);
-                startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 break;
 
             default:
