@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.feature.createpost.view.listener.SubmitPostNotificationManager
+import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
@@ -26,12 +26,13 @@ open class SubmitPostUseCase @Inject constructor(
         private val uploadMultipleImageUseCase: UploadMultipleImageUseCase,
         private val graphqlUseCase: GraphqlUseCase) : UseCase<SubmitPostData>() {
 
-    val notificationManager: SubmitPostNotificationManager? = null
+    var notificationManager: SubmitPostNotificationManager? = null
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<SubmitPostData> {
         val imageList = requestParams.getObject(PARAM_IMAGE_LIST) as List<String>
         val mainImageIndex = requestParams.getInt(PARAM_MAIN_IMAGE_INDEX, 0)
+        uploadMultipleImageUseCase.notificationManager = notificationManager
         return uploadMultipleImageUseCase
                 .createObservable(
                         UploadMultipleImageUseCase.createRequestParams(

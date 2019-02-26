@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.feature.createpost.view.listener
+package com.tokopedia.affiliate.feature.createpost.view.util
 
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,9 +13,8 @@ import com.tokopedia.affiliate.R
 abstract class SubmitPostNotificationManager(
         private val id: Int,
         private val maxCount: Int,
-        private val draftId: String,
         private val notificationManager: NotificationManager,
-        private val context: Context) {
+        protected val context: Context) {
 
     companion object {
         private val TAG = SubmitPostNotificationManager::class.java.simpleName
@@ -76,7 +75,7 @@ abstract class SubmitPostNotificationManager(
         notificationManager.notify(TAG, id, notification)
     }
 
-    abstract fun getSuccessIntent() : PendingIntent
+    protected abstract fun getSuccessIntent() : PendingIntent
 
-    abstract fun getFailedIntent() : PendingIntent
+    protected abstract fun getFailedIntent() : PendingIntent
 }
