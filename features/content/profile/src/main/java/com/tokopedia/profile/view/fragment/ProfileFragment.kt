@@ -156,7 +156,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
             }
             LOGIN_FOLLOW_CODE -> {
-                doFollowAfterLogin()
+                if (resultCode == Activity.RESULT_OK)
+                    doFollowAfterLogin()
             }
             SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE, LOGIN_CODE -> {
                 onSwipeRefresh()
