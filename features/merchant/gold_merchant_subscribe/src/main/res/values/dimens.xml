@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gmsubscribe_line_height_textview">5dp</dimen>
+    <dimen name="gmsubscribe_height_widget_sub_feature">110dp</dimen>
+
+</resources>
