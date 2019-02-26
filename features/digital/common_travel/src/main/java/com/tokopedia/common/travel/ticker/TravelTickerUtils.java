@@ -26,11 +26,13 @@ public class TravelTickerUtils {
             tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.light_green));
             tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.light_green));
             tickerView.setBackGroundColor(ContextCompat.getColor(context, R.color.light_green));
+            tickerView.setBackgroundResource(R.color.light_green);
         } else if (travelTickerViewModel.getType() == 2) {
             tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.snackbar_border_error));
             tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.colorPink));
             tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.colorPink));
             tickerView.setBackGroundColor(ContextCompat.getColor(context, R.color.colorPink));
+            tickerView.setBackgroundResource(R.color.colorPink);
         }
 
         tickerView.buildView();
