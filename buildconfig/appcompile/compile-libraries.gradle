@@ -20,7 +20,7 @@ include "libraries:image_picker"
 include 'libraries:imageuploader'
 include "libraries:kotlin_extensions"
 include 'libraries:locationmanager'
-include 'libraries:iris'
+//include 'libraries:iris'
 include 'libraries:iris_no_op'
 include "libraries:network"
 include "libraries:pagination"
