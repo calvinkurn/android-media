@@ -689,9 +689,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initFirebase() {
-        FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
-        builder.setApplicationId("1:692092518182:android:f4cc247c743f7921");
-        FirebaseApp.initializeApp(this, builder.build());
+        if (com.tokopedia.config.GlobalConfig.DEBUG) {
+            try {
+                FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
+                builder.setApplicationId("1:692092518182:android:f4cc247c743f7921");
+                FirebaseApp.initializeApp(this, builder.build());
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initRemoteConfig() {
