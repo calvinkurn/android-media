@@ -584,11 +584,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                val offset = Math.abs(verticalOffset);
-                if (offset >= appBarLayout.totalScrollRange) {
-                    toolbar.visibility = View.VISIBLE
-                } else {
-                    toolbar.visibility = View.GONE
+//                val offset = Math.abs(verticalOffset);
+//                if (offset >= appBarLayout.totalScrollRange) {
+//                    toolbar.visibility = View.VISIBLE
+//                } else {
+//                    toolbar.visibility = View.GONE
+//                }
+                when(verticalOffset) {
+                    0 -> toolbar_parallax.visibility = View.INVISIBLE
+                    else -> toolbar_parallax.visibility = View.VISIBLE
                 }
             }
         })

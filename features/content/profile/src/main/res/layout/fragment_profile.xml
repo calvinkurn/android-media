@@ -117,6 +117,7 @@
                             android:layout_height="@dimen/dp_24"/>
 
                         <LinearLayout
+                            android:id="@+id/toolbar_parallax"
                             android:layout_width="match_parent"
                             android:layout_height="?attr/actionBarSize"
                             android:orientation="horizontal"
