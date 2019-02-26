@@ -3,8 +3,6 @@ package com.tokopedia.groupchat.chatroom.domain.mapper;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
-import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessageAssetPojo;
-import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
@@ -22,8 +20,6 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickRe
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
@@ -85,7 +81,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getVideoId(),
                 pojo.getChannel().getVideoLive(),
                 pojo.getChannel().getSettingGroupChat(),
-                convertOverlayModel(pojo.getChannel().getOverlayMessage()),
+                pojo.getChannel().getOverlayMessage(),
                 convertDynamicButtons(pojo.getChannel().getButton()),
                 pojo.getChannel().getBackgroundViewModel()
         );
@@ -93,7 +89,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
     private DynamicButtonsViewModel convertDynamicButtons(ButtonsPojo button) {
         DynamicButtonsViewModel dynamicButtonsViewModel = new DynamicButtonsViewModel();
-        if(button.getFloatingButton() != null){
+        if (button.getFloatingButton() != null) {
             dynamicButtonsViewModel.setFloatingButton(new DynamicButtonsViewModel.Button(
                     button.getFloatingButton().getImageUrl(),
                     button.getFloatingButton().getLinkUrl(),
@@ -106,8 +102,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
             ));
         }
 
-        if(button.getListDynamicButton()!= null){
-            for(ButtonsPojo.Button buttonItem : button.getListDynamicButton()){
+        if (button.getListDynamicButton() != null) {
+            for (ButtonsPojo.Button buttonItem : button.getListDynamicButton()) {
                 dynamicButtonsViewModel.getListDynamicButton().add(
                         new DynamicButtonsViewModel.Button(
                                 buttonItem.getImageUrl(),
@@ -118,7 +114,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                                 buttonItem.getContentImageUrl(),
                                 buttonItem.getRedDot(),
                                 buttonItem.getTooltip()
-                                )
+                        )
                 );
             }
         }
@@ -127,9 +123,9 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     }
 
     private PinnedMessageViewModel mapToPinnedMessageViewModel(PinnedMessagePojo pinnedMessage) {
-        if(hasPinnedMessage(pinnedMessage)) {
+        if (hasPinnedMessage(pinnedMessage)) {
             return new PinnedMessageViewModel(pinnedMessage.getMessage(), pinnedMessage.getTitle(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());
-        }else {
+        } else {
             return null;
         }
     }
@@ -312,22 +308,24 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         return childViewModelList;
     }
 
-    private OverlayViewModel convertOverlayModel(OverlayMessagePojo pojo) {
-        return new OverlayViewModel(
-                pojo.isCloseable(),
-                pojo.getStatus(),
-                convertInteruptViewModel(pojo.getAssets())
-        );
-    }
-
-    private InteruptViewModel convertInteruptViewModel(OverlayMessageAssetPojo pojo) {
-        return new InteruptViewModel(
-                pojo.getTitle(),
-                pojo.getDescription(),
-                pojo.getImageUrl(),
-                pojo.getImageLink(),
-                pojo.getBtnTitle(),
-                pojo.getBtnLink()
-        );
-    }
+//    private OverlayViewModel convertOverlayModel(OverlayMessagePojo pojo) {
+//        return new OverlayViewModel(
+//                pojo.getTypeMessage(),
+//                pojo.get
+//                pojo.isCloseable(),
+//                pojo.getStatus(),
+//                convertInteruptViewModel(pojo.getAssets())
+//        );
+//    }
+//
+//    private InteruptViewModel convertInteruptViewModel(OverlayMessageAssetPojo pojo) {
+//        return new InteruptViewModel(
+//                pojo.getTitle(),
+//                pojo.getDescription(),
+//                pojo.getImageUrl(),
+//                pojo.getImageLink(),
+//                pojo.getBtnTitle(),
+//                pojo.getBtnLink()
+//        );
+//    }
 }

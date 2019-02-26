@@ -1,5 +1,7 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -253,7 +255,7 @@ open class PlayViewStateImpl(
 
     override fun onStickyComponentUpdated(it: StickyComponentViewModel) {
         stickyComponentViewModel = it
-        showStickyProduct(it)
+        showStickComponent(it)
     }
 
     override fun onErrorGetStickyComponent() {
@@ -264,10 +266,36 @@ open class PlayViewStateImpl(
         stickyComponent.visibility = View.GONE
     }
 
-    private fun showStickyProduct(it: StickyComponentViewModel?) {
-        it?.run {
-            stickyComponent.visibility = View.VISIBLE
-            StickyComponentHelper.setView(stickyComponent, this)
+    private fun showStickComponent(item: StickyComponentViewModel?) {
+        item?.run {
+
+            StickyComponentHelper.setView(stickyComponent, item)
+            stickyComponent.setOnClickListener {
+                RouteManager.route(activity, item.redirectUrl)
+            }
+
+            stickyComponent.animate().setDuration(200)
+                    .alpha(1f)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            stickyComponent.show()
+                        }
+                    })
+
+            if (item.stickyTime != 0) {
+                Observable.timer(item.stickyTime.toLong(), TimeUnit.SECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            stickyComponent.animate().setDuration(200)
+                                    .alpha(0f)
+                                    .setListener(object : AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator) {
+                                            stickyComponent.hide()
+                                            stickyComponentViewModel = null
+                                        }
+                                    })
+                        }
+            }
         }
     }
 
@@ -367,7 +395,7 @@ open class PlayViewStateImpl(
             viewModel?.let {
                 setPinnedMessage(it)
                 setQuickReply(it.quickRepliesViewModel)
-                showStickyProduct(stickyComponentViewModel)
+                showStickComponent(stickyComponentViewModel)
             }
         } else {
             hideStickyComponent()
@@ -1169,6 +1197,8 @@ open class PlayViewStateImpl(
         viewModel?.let {
 
             it.overlayViewModel = OverlayViewModel(
+                    OverlayViewModel.TYPE_CTA,
+                    button.contentLinkUrl,
                     true,
                     0,
                     InteruptViewModel(

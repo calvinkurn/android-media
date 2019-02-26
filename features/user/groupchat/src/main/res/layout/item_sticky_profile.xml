@@ -1,68 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/dp_160"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minWidth="@dimen/dp_160">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginRight="@dimen/dp_8">
+        android:layout_height="match_parent">
 
-
-        <FrameLayout
+        <android.support.v7.widget.CardView
             android:id="@+id/layout_image"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            app:cardCornerRadius="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_2"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.design.image.SquareImageView
                 android:id="@+id/iv_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:background="@color/red_400"/>
+        </android.support.v7.widget.CardView>
 
-            <ImageView
-                android:id="@+id/iv_byme"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
-                android:layout_gravity="bottom|right"
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:src="@drawable/ic_byme_card"/>
-        </FrameLayout>
+        <ImageView
+            android:id="@+id/iv_byme"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:src="@drawable/ic_byme_card"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/layout_image"
+            app:layout_constraintRight_toRightOf="@id/layout_image"
+            tools:visibility="visible"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/layout_image"
-            app:layout_constraintTop_toTopOf="@+id/layout_image"
+            app:layout_constraintLeft_toRightOf="@id/layout_image"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/layout_image">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_10"
-                android:maxLines="1"
                 android:ellipsize="end"
-                android:text="@string/recommendation_from" />
+                android:maxLines="1"
+                android:text="@string/recommendation_from"
+                android:textSize="@dimen/sp_10"/>
 
             <TextView
                 android:id="@+id/tv_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:textSize="@dimen/sp_16"
-                android:ellipsize="end"
-                tools:text="asdasdasdasdasdasdasd" />
+                tools:text="asdasdasdasdasdasdasd"/>
 
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>

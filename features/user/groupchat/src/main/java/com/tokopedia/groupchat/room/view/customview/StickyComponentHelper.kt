@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.kotlin.extensions.view.hide
 
 /**
  * @author by nisie on 25/02/19.
@@ -30,7 +31,7 @@ class StickyComponentHelper {
         }
 
         private fun setProduct(stickyComponentViewModel: StickyComponentViewModel, title: TextView, subtitle: TextView, image: ImageView, byMeIcon: ImageView) {
-            byMeIcon.visibility = View.GONE
+            byMeIcon.hide()
 
             ImageHandler.LoadImage(image, stickyComponentViewModel.imageUrl)
 

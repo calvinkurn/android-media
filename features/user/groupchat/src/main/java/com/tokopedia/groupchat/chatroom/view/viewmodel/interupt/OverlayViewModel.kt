@@ -73,14 +73,4 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<OverlayViewModel> {
-        override fun createFromParcel(parcel: Parcel): OverlayViewModel {
-            return OverlayViewModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<OverlayViewModel?> {
-            return arrayOfNulls(size)
-        }
-    }
-
 }
