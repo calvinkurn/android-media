@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.imagePreview)
 
     implementation project(rootProject.ext.features.expressCheckoutCommon)
     implementation project(rootProject.ext.features.transactiondata)
