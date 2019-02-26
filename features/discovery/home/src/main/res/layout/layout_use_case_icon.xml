@@ -9,28 +9,17 @@
     android:layout_marginBottom="@dimen/dp_16"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_64"
-            app:srcCompat="@drawable/ic_squircle" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/icon"
-            android:layout_width="@dimen/dp_39"
-            android:layout_height="@dimen/dp_39"
-            android:layout_gravity="center"/>
-    </FrameLayout>
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"/>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:gravity="center_horizontal"
+        android:gravity="center_horizontal|top"
         android:lineSpacingExtra="2sp"
         android:textColor="@color/black_70"
         android:textSize="10sp"

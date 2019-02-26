@@ -40,7 +40,7 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
         adapter = new DynamicIconAdapter(itemView.getContext(), listener);
         recyclerView = itemView.findViewById(R.id.list);
         int edgeMargin = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
-        int spacingBetween = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_24);
+        int spacingBetween = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8);
         recyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(spacingBetween, edgeMargin));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(),

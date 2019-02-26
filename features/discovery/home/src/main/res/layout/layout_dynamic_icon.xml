@@ -14,14 +14,14 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_52"
+            android:layout_height="@dimen/dp_52"
             app:srcCompat="@drawable/ic_squircle" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/icon"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
             android:layout_gravity="center"/>
     </FrameLayout>
 
@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:gravity="center_horizontal"
+        android:gravity="center_horizontal|top"
         android:lineSpacingExtra="2sp"
         android:textColor="@color/black_70"
         android:textSize="10sp"
