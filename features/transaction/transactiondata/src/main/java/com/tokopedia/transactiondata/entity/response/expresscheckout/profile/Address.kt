@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.data.entity.response.profile
+package com.tokopedia.transactiondata.entity.response.expresscheckout.profile
 
 import com.google.gson.annotations.SerializedName
 
