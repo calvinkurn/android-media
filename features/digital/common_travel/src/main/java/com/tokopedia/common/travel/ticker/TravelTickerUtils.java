@@ -30,6 +30,7 @@ public class TravelTickerUtils {
             tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.snackbar_border_error));
             tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.colorPink));
             tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.colorPink));
+            tickerView.hideCloseButton();
         }
 
         tickerView.buildView();
