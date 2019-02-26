@@ -692,6 +692,7 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
                 handleErrorinitCartList(e);
+                view.stopTrace();
             }
 
             @Override
@@ -699,9 +700,11 @@ public class CartListPresenter implements ICartListPresenter {
                 CartListPresenter.this.cartListData = cartListData;
                 view.renderLoadGetCartDataFinish();
                 if (cartListData.getShopGroupDataList().isEmpty()) {
+                    view.stopTrace();
                     view.renderEmptyCartData(cartListData);
                 } else {
                     view.renderInitialGetCartListDataSuccess(cartListData);
+                    view.stopTrace();
                 }
             }
         };
