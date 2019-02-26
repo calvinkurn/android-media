@@ -26,6 +26,9 @@ public class GraphqlRequest {
     /*transient by nature hence it will not be part of request body*/
     private transient Type typeOfT; /*Mandatory parameter*/
 
+    /*transient by nature hence it will not be part of request body*/
+    private transient boolean checkNull = true; /*Optional parameter*/
+
     public GraphqlRequest(String query, Type typeOfT) {
         this.query = query;
         this.typeOfT = typeOfT;
@@ -36,9 +39,22 @@ public class GraphqlRequest {
         this.variables = variables;
     }
 
-    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables, String operationName) {
+    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
+                          boolean checkNull) {
+        this(query, typeOfT, variables);
+        this.checkNull = checkNull;
+    }
+
+    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
+                          String operationName) {
         this(query, typeOfT, variables);
         this.operationName = operationName;
+    }
+
+    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
+                          String operationName, boolean checkNull) {
+        this(query, typeOfT, variables, operationName);
+        this.checkNull = checkNull;
     }
 
     public String getQuery() {
@@ -61,6 +77,13 @@ public class GraphqlRequest {
         return typeOfT;
     }
 
+    public boolean isCheckNull() {
+        return checkNull;
+    }
+
+    public void setCheckNull(boolean checkNull) {
+        this.checkNull = checkNull;
+    }
 
     //Do not rewrite on remove it
     @Override
@@ -70,6 +93,7 @@ public class GraphqlRequest {
                 ", variables=" + variables +
                 ", operationName='" + operationName + '\'' +
                 ", typeOfT=" + typeOfT +
+                ", checkNull=" + checkNull +
                 '}';
     }
 }

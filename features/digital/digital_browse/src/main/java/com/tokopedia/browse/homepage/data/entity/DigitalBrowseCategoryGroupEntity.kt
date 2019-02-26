@@ -10,13 +10,13 @@ import com.google.gson.annotations.SerializedName
 class DigitalBrowseCategoryGroupEntity(
         @SerializedName("id")
         @Expose
-        val id: Int,
+        val id: Int = 0,
         @SerializedName("title")
         @Expose
-        val title: String,
+        val title: String = "",
         @SerializedName("desc")
         @Expose
-        val desc: String,
+        val desc: String = "",
         @SerializedName("categoryRows")
         @Expose
-        val categoryRow: List<DigitalBrowseCategoryRowEntity>)
+        val categoryRow: List<DigitalBrowseCategoryRowEntity> = arrayListOf())

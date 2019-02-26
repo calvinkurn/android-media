@@ -29,6 +29,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private Donation donation;
     private CodModel cod;
     private boolean useCourierRecommendation;
+    private boolean isBlackbox;
     private CartPromoSuggestion cartPromoSuggestion;
     private AutoApplyData autoApplyData;
     private EgoldAttributeModel egoldAttributes;
@@ -119,6 +120,14 @@ public class CartShipmentAddressFormData implements Parcelable {
 
     public void setUseCourierRecommendation(boolean useCourierRecommendation) {
         this.useCourierRecommendation = useCourierRecommendation;
+    }
+
+    public boolean getIsBlackbox() {
+        return isBlackbox;
+    }
+
+    public void setIsBlackbox(boolean blackbox) {
+        this.isBlackbox = blackbox;
     }
 
     public CartPromoSuggestion getCartPromoSuggestion() {

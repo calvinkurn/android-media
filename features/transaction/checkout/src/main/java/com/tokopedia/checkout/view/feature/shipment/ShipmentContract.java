@@ -175,8 +175,7 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnCourierChanged(String agent, String service);
 
-
-        void sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation();
+        void sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(String isBlackbox);
 
         void sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration();
 
