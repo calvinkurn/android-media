@@ -244,7 +244,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showList(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
-        mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
 
@@ -293,7 +292,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showListEmpty() {
         mShipmentAddressListAdapter.setAddressList(new ArrayList<>());
-        mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.VISIBLE);

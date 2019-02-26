@@ -71,6 +71,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
     public void setAddressList(List<RecipientAddressModel> addressModelList) {
         mAddressModelList.clear();
         mAddressModelList.addAll(addressModelList);
+        notifyDataSetChanged();
     }
 
     public void updateAddressList(List<RecipientAddressModel> addressModelList) {
