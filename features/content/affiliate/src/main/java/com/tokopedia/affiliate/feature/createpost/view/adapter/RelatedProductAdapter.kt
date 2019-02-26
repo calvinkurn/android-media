@@ -34,6 +34,14 @@ class RelatedProductAdapter(val listener: RelatedProductListener?)
 
     override fun getItemCount(): Int = list.size
 
+    override fun setHasStableIds(hasStableIds: Boolean) {
+        super.setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        return list[position].id.toLongOrNull() ?: RecyclerView.NO_ID
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val element = list[position]
 
