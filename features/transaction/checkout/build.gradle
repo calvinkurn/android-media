@@ -49,6 +49,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdistrictrecommendation)
     implementation project(rootProject.ext.features.logisticinsurance)
     implementation project(rootProject.ext.features.logisticanalytics)
+    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.shippingRecommendation)
 

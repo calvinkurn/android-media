@@ -32,6 +32,7 @@ import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -476,7 +477,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressModelMapper mapper = new AddressModelMapper();
 
         if (getActivity() != null) {
-            Intent intent = ((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
+            Intent intent = AddAddressActivity.createInstanceFromCartCheckout(
                     getActivity(), mapper.transform(model), token, true, false
             );
             startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
@@ -531,14 +532,21 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getActivity() != null) {
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
-            }else {
+                startActivity(AddAddressActivity.createInstanceAddAddressFromMultipleAddressForm(
+                        getActivity(), token
+                ));
+            } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
+                startActivityForResult(
+                        AddAddressActivity.createInstanceFromCartCheckout(
+                                getActivity(), null, token, false, false
+                        ),
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
+                );
             }
 
-            startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
-                    getActivity(), null, token, false, false),
-                    LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+
         }
     }
 

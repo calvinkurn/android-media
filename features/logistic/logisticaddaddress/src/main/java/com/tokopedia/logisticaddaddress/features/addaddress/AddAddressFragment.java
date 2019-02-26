@@ -61,7 +61,10 @@ import javax.inject.Inject;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
+import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_EDIT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
@@ -134,6 +137,8 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Inject
     PerformanceMonitoring performanceMonitoring;
 
+    private int instanceType;
+
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
         AddAddressFragment fragment = new AddAddressFragment();
@@ -153,6 +158,7 @@ public class AddAddressFragment extends BaseDaggerFragment
             this.address = arguments.getParcelable(EDIT_PARAM);
             this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
             this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
+            this.instanceType = arguments.getInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_DEFAULT);
         }
 
         if (token == null) {
