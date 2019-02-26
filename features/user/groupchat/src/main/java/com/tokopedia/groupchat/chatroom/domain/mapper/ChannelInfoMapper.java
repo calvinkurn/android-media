@@ -80,7 +80,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 convertChannelQuickReply(pojo.getChannel()),
                 pojo.getChannel().getVideoId(),
                 pojo.getChannel().getVideoLive(),
-                "",
+                "https://www.tokopedia.com/",
                 pojo.getChannel().getSettingGroupChat(),
                 pojo.getChannel().getOverlayMessage(),
                 convertDynamicButtons(pojo.getChannel().getButton()),

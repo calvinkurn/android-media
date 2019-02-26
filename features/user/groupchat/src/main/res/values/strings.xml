@@ -103,5 +103,7 @@
     <string name="see">Lihat</string>
     <string name="live">LIVE</string>
     <string name="try_again_later">Silakan coba beberapa saat lagi</string>
+    <string name="please_try_again">Silakan coba kembali</string>
+    <string name="failed_to_load_content">Gagal memuat konten</string>
 
 </resources>
