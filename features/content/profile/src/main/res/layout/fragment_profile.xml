@@ -85,7 +85,7 @@
                 android:id="@+id/collapsing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="?attr/colorPrimary"
+                app:contentScrim="@color/colorPrimary"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
                 android:fitsSystemWindows="true">
 
@@ -264,7 +264,6 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="@drawable/gradient_profile"
                     android:contentInsetLeft="0dp"
                     android:contentInsetStart="0dp"
                     app:contentInsetLeft="0dp"
