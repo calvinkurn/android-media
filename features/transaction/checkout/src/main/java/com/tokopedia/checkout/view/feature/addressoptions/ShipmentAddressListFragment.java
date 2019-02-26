@@ -427,6 +427,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     private void performSearch(String query, boolean resetPage) {
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
+        checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
         if (getArguments() != null) {
             if (!query.isEmpty()) {
                 mShipmentAddressListPresenter.getAddressList(ORDER_ASC, query,

@@ -415,4 +415,13 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
         );
     }
 
+
+    public void eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
+        );
+    }
+
 }
