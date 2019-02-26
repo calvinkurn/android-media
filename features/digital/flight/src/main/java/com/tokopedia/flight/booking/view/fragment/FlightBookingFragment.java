@@ -282,6 +282,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             hideFullPageLoading();
             presenter.renderUi(flightBookingCartData, true);
         }
+
+        presenter.fetchTickerData();
     }
 
     @Override
