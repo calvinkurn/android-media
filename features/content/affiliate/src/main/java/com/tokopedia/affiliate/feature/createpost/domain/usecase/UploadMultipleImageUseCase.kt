@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.feature.createpost.domain.usecase
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.affiliate.util.urlIsFile
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
@@ -8,6 +7,7 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import rx.Observable
@@ -21,7 +21,7 @@ import javax.inject.Inject
  */
 class UploadMultipleImageUseCase @Inject constructor(
         private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>,
-        private val userSession: UserSession) : UseCase<List<SubmitPostMedium>>() {
+        private val userSession: UserSessionInterface) : UseCase<List<SubmitPostMedium>>() {
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<List<SubmitPostMedium>> {
