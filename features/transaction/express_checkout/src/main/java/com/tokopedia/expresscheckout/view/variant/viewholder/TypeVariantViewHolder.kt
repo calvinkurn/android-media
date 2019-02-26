@@ -10,6 +10,8 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewMod
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
 
 /**
@@ -52,6 +54,15 @@ class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionL
             itemView.rv_variant_options.isNestedScrollingEnabled = false
             itemView.rv_variant_options.layoutManager = chipsLayoutManager
             itemView.rv_variant_options.adapter = variantOptionAdapter
+
+            if (element.variantGuideline.isEmpty()) {
+                itemView.tv_variant_guideline.hide()
+            } else {
+                itemView.tv_variant_guideline.setOnClickListener {
+                    listener.onVariantGuidelineClick(element.variantGuideline)
+                }
+                itemView.tv_variant_guideline.visible()
+            }
 
             listener.onBindVariantUpdateProductViewModel()
         }

@@ -2,7 +2,7 @@
   "GetProductVariant": {
     "ParentID": "15212348",
     "DefaultChild": "15212348",
-    "SizeChart": "",
+    "SizeChart": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/2/19/3045010/3045010_0eaa1ec2-1183-4e9d-9e61-d03e32449eb9_511_450.png",
     "Enabled": true,
     "AlwaysAvailable": true,
     "Stock": 0,

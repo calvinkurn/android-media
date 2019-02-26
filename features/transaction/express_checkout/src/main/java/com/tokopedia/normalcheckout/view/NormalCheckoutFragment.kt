@@ -7,7 +7,6 @@ import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
@@ -22,14 +21,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -69,10 +65,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     val fragmentViewModel: FragmentViewModel by lazy {
         FragmentViewModel()
     }
-    val errorBottomsheets: ErrorBottomsheets by lazy {
-        ErrorBottomsheets()
-    }
-
     private lateinit var router: NormalCheckoutRouter
     private lateinit var adapter: CheckoutVariantAdapter
 
@@ -82,7 +74,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var quantity: Int = 0
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
-    lateinit var recyclerView: RecyclerView
     @ProductAction
     var action: Int = ATC_AND_BUY
 
@@ -149,7 +140,17 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    fun getProductInfo(productInfoAndVariant: ProductInfoAndVariant, selectedVariantId: String?): ProductInfo {
+    override fun onVariantGuidelineClick(variantGuideline: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /**
+     * selectedVariantId comes from the parameter of the fragment or might come from the user input
+     * This function will get the product corresponding to the id.
+     * If the id is not given, then the default product is return
+     * If the id exists, it will search for the variant in the product and then return the mapping
+     */
+    fun getSelectedProductInfo(productInfoAndVariant: ProductInfoAndVariant, selectedVariantId: String?): ProductInfo {
         if (selectedVariantId.isNullOrEmpty() ||
                 selectedVariantId.equals(productInfoAndVariant.productInfo.basic.id.toString(), false)) {
             return productInfoAndVariant.productInfo
@@ -172,6 +173,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
+    /**
+     * When the optionId given is actually not n the children of the variant, we want to switch to another product
+     * For example, option ID for [101,201,301] is not found as a children for variant,
+     * So, another first product is searched: [101,201,**] that is buyable. The first item found is returned.
+     */
     private fun getOtherSiblingProduct(productInfoAndVariant: ProductInfoAndVariant?, optionId: List<Int>): Child? {
         var selectedChild: Child? = null
         // we need to reselect other variant
@@ -223,7 +229,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun renderTotalPrice(productInfo: ProductInfo) {
         // if it has campaign, use campaign price
-        var totalString: String = ""
+        var totalString = ""
         if (productInfo.campaign.activeAndHasId) {
             totalString = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     productInfo.campaign.discountedPrice.toDouble() * quantity, true)
@@ -269,19 +275,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private fun onErrorGetProductInfo(throwable: Throwable) {
         ToasterError.make(activity!!.findViewById(android.R.id.content),
                 ErrorHandler.getErrorMessage(context, throwable)).show()
-    }
-
-
-    override fun onClickEditProfile() {
-        //no op
-    }
-
-    override fun onClickEditDuration() {
-        //no op
-    }
-
-    override fun onClickEditCourier() {
-        //no op
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -336,9 +329,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         //TODO add to cart
     }
 
-    override fun showData(viewModels: ArrayList<Visitable<*>>) {
-        // no op, we use onSuccess
-    }
+    override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */}
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -358,51 +349,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         return NormalCheckoutAdapterTypeFactory(this)
     }
 
-    override fun onItemClicked(t: Visitable<*>?) {
-        // no op
-    }
-
     override fun loadData(page: Int) {
         viewModel.getProductInfo(ProductParams(productId, null, null), resources)
     }
 
-    override fun onNeedToNotifySingleItem(position: Int) {
-        if (recyclerView.isComputingLayout) {
-            recyclerView.post {
-                adapter.notifyItemChanged(position)
-            }
-        } else {
-            adapter.notifyItemChanged(position)
-        }
-    }
-
-    override fun onNeedToRemoveSingleItem(position: Int) {
-        if (recyclerView.isComputingLayout) {
-            recyclerView.post {
-                adapter.notifyItemRemoved(position)
-            }
-        } else {
-            adapter.notifyItemRemoved(position)
-        }
-    }
-
-    override fun onNeedToNotifyAllItem() {
-        if (recyclerView.isComputingLayout) {
-            recyclerView.post {
-                adapter.notifyDataSetChanged()
-            }
-        } else {
-            adapter.notifyDataSetChanged()
-        }
-    }
-
-    override fun onClickInsuranceInfo(insuranceInfo: String) {
-        // no op
-    }
-
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
         val optionList = mutableListOf<Int>()
-        var variantSize = 0;
+        var variantSize = 0
         for (viewModel: Visitable<*> in fragmentViewModel.viewModels) {
             if (viewModel is TypeVariantViewModel) {
                 viewModel.getSelectedOption()?.let {
@@ -441,7 +394,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onProductChange(originalProduct: ProductInfoAndVariant, inputSelectedVariantId: String?) {
         selectedVariantId = inputSelectedVariantId
-        selectedProductInfo = getProductInfo(originalProduct, selectedVariantId)
+        selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
         selectedProductInfo?.let { it ->
             val viewModels = ModelMapper.convertToModels(it, originalProduct.productVariant,
                     notes, quantity)
@@ -472,19 +425,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
-        //no op. does not have summary
-    }
-
-    override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {
-        //no-op
-    }
-
-    override fun onNeedToValidateButtonBuyVisibility() {
-        //no op
-    }
-
-    fun hasError(): Boolean {
+    private fun hasError(): Boolean {
         var hasError = false
         when {
             fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
@@ -492,31 +433,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         return hasError
     }
 
-    override fun onNeedToRecalculateRatesAfterChangeTemplate() {
-        // no op. no rates
-    }
-
-    override fun onNeedToUpdateOnboardingStatus() {
-        setOnboardingStateHasNotShown(activity, false)
-    }
-
     override fun onGetCompositeSubscriber() = null
 
-    override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {
-        // TODO need update quantity?
-    }
+    override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {}
 
     override fun onBindVariantGetProductViewModel(): ProductViewModel? {
         return fragmentViewModel.getProductViewModel()
     }
 
-    override fun onBindVariantUpdateProductViewModel() {
-        // no op
-    }
-
-    override fun getScreenName(): String? {
-        return null
-    }
+    override fun getScreenName(): String? = null
 
     override fun showToasterError(message: String?) {
         ToasterError.make(view, message
@@ -539,34 +464,29 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         return router.addToCartProduct(addToCartRequest, true)
     }
 
-    override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {
-        errorBottomsheets.setData(title, message, action, enableRetry)
-        if (errorBottomsheets.isVisible) {
-            errorBottomsheets.dismiss()
-        }
-        errorBottomsheets.show(fragmentManager, title)
-        fragmentViewModel.isStateChanged = true
-    }
-
-    override fun showErrorNotAvailable(message: String) {
-        showBottomSheetError(getString(R.string.bottomsheet_title_product_not_available), message, getString(R.string.bottomsheet_action_close), false)
-        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
-            override fun onActionButtonClicked() {
-                errorBottomsheets.dismiss()
-            }
-        }
-        fragmentViewModel.isStateChanged = true
-    }
-
-    override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {
-        fragmentViewModel.atcResponseModel = atcResponseModel
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
         outState.putInt(EXTRA_QUANTITY, quantity)
         outState.putString(EXTRA_NOTES, notes)
     }
+
+    override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {}
+    override fun showErrorNotAvailable(message: String) {}
+    override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {}
+    override fun onNeedToNotifySingleItem(position: Int) {}
+    override fun onItemClicked(t: Visitable<*>?) {}
+    override fun onClickEditProfile() {}
+    override fun onClickEditDuration() {}
+    override fun onClickEditCourier() {}
+    override fun onNeedToRemoveSingleItem(position: Int) {}
+    override fun onNeedToNotifyAllItem() {}
+    override fun onClickInsuranceInfo(insuranceInfo: String) {}
+    override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {}
+    override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {}
+    override fun onNeedToValidateButtonBuyVisibility() {}
+    override fun onNeedToRecalculateRatesAfterChangeTemplate() {}
+    override fun onNeedToUpdateOnboardingStatus() {}
+    override fun onBindVariantUpdateProductViewModel() {}
 
 }

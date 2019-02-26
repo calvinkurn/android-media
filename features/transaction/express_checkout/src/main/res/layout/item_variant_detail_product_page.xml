@@ -33,7 +33,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_toEndOf="@+id/tv_variant_value"
         android:layout_toRightOf="@+id/tv_variant_value"
         android:fontFamily="sans-serif"
