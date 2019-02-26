@@ -8,10 +8,11 @@ import rx.Subscriber
 /**
  * @author by milhamj on 9/21/18.
  */
-class GetProfileFirstPageSubscriber(private val view: ProfileContract.View)
+class GetProfileFirstPageSubscriber(private val view: ProfileContract.View,
+                                    private val fromLogin: Boolean)
     : Subscriber<ProfileFirstPageViewModel>() {
     override fun onNext(t: ProfileFirstPageViewModel) {
-        view.onSuccessGetProfileFirstPage(t)
+        view.onSuccessGetProfileFirstPage(t, fromLogin)
     }
 
     override fun onCompleted() {
