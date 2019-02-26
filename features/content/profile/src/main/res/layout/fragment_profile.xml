@@ -85,7 +85,7 @@
                 android:id="@+id/collapsing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="@color/white"
+                app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
                 android:fitsSystemWindows="true">
 
@@ -93,7 +93,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
-                    app:layout_collapseMode="parallax">
+                    app:layout_collapseMode="parallax"
+                    android:minHeight="@dimen/dp_100">
 
                     <ImageView
                         android:id="@+id/iv_image_collapse"
@@ -246,7 +247,7 @@
                     <View
                         android:layout_gravity="bottom"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_5"
+                        android:layout_height="@dimen/dp_10"
                         android:background="@drawable/ic_rectangle"/>
 
                 </FrameLayout>
