@@ -214,7 +214,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
 
         pojo.user?.let {
             return SprintSaleAnnouncementViewModel(
-                    if (pojo.campaignId != null) pojo.campaignId else "",
+                    pojo.campaignId,
                     pojo.timestamp!!,
                     pojo.timestamp!!,
                     pojo.messageId.toString(),

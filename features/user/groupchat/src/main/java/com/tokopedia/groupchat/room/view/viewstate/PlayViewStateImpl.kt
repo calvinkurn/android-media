@@ -756,7 +756,7 @@ open class PlayViewStateImpl(
     fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
-        setChatListHasSpaceOnTop(false)
+        setChatListHasSpaceOnTop(true)
         videoId.let {
             if (it.isEmpty()) return
 
@@ -767,7 +767,7 @@ open class PlayViewStateImpl(
 
                 youTubePlayer?.let {
                     liveIndicator.shouldShowWithAction(isVideoLive) {}
-                    setChatListHasSpaceOnTop(true)
+                    setChatListHasSpaceOnTop(false)
                     it.cueVideo(videoId)
                     autoPlayVideo()
                 }
@@ -1157,8 +1157,10 @@ open class PlayViewStateImpl(
     }
 
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
-        var space = 0
-        if (hasSpace) space = view.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+        var space = when {
+            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
+        }
         chatRecyclerView.setPadding(0, space, 0, 0)
     }
 

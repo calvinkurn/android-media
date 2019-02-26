@@ -21,18 +21,15 @@ class PlayChatViewHolder(itemView: View) : AbstractViewHolder<ChatViewModel>(ite
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.play_chat_view_holder
-        val MAX_LENGTH = 8
+        const val MAX_LENGTH = 10
+        const val extension= ".."
     }
 
-    private val message: TextView
-
-    init {
-        message = itemView.findViewById(R.id.text)
-    }
+    private val message: TextView = itemView.findViewById(R.id.text)
 
     override fun bind(element: ChatViewModel) {
         message.text = ""
-        var userName = getUserName(element.senderName, element.isAdministrator)
+        val userName = getUserName(element.senderName, element.isAdministrator)
         message.append(userName)
         message.append(" ")
         message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, R.color.white)))
@@ -46,11 +43,18 @@ class PlayChatViewHolder(itemView: View) : AbstractViewHolder<ChatViewModel>(ite
     }
 
     private fun getTrimmedName(senderName: String?): String? {
-        return ("${senderName?.take(MAX_LENGTH)}..")
+        senderName?.length?.let {
+            return when {
+                it <= MAX_LENGTH -> senderName
+                else -> ("${senderName.take(MAX_LENGTH - extension.length)}$extension")
+            }
+        }
+        return senderName
+
     }
 
-    fun getColoredString(mString: String?, colorId:Int): Spannable {
-        var spannable = SpannableString(MethodChecker.fromHtml(mString))
+    private fun getColoredString(mString: String?, colorId:Int): Spannable {
+        val spannable = SpannableString(MethodChecker.fromHtml(mString))
         spannable.setSpan(ForegroundColorSpan(colorId), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return spannable
     }
