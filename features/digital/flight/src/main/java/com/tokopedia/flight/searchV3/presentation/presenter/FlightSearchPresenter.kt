@@ -1,6 +1,10 @@
 package com.tokopedia.flight.searchV3.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
@@ -33,7 +37,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                                                 private val flightDeleteAllFlightSearchDataUseCase: FlightDeleteAllFlightSearchDataUseCase,
                                                 private val flightDeleteFlightSearchReturnDataUseCase: FlightDeleteFlightSearchReturnDataUseCase,
                                                 private val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
-                                                private val flightAnalytics: FlightAnalytics) :
+                                                private val flightAnalytics: FlightAnalytics,
+                                                private val travelTickerUseCase: TravelTickerUseCase) :
         BaseDaggerPresenter<FlightSearchContract.View>(), FlightSearchContract.Presenter {
 
     private var compositeSubscription = CompositeSubscription()
@@ -314,6 +319,29 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     }
                 }
         )
+    }
+
+    override fun fetchTickerData() {
+        compositeSubscription.add(travelTickerUseCase.createObservable(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.SEARCH))
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<TravelTickerViewModel>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(travelTickerViewModel: TravelTickerViewModel?) {
+                        if (travelTickerViewModel != null && travelTickerViewModel.message.length > 0) {
+                            view.renderTickerView(travelTickerViewModel)
+                        }
+                    }
+                }))
     }
 
     override fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel) {

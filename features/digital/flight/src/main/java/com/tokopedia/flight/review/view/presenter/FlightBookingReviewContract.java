@@ -3,6 +3,7 @@ package com.tokopedia.flight.review.view.presenter;
 import android.content.Context;
 import android.support.annotation.StringRes;
 
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public interface FlightBookingReviewContract {
 
-    interface View extends FlightBaseBookingContact.View{
+    interface View extends FlightBaseBookingContact.View {
 //
 //        void onErrorCheckVoucherCode(Throwable t);
 //
@@ -79,12 +80,14 @@ public interface FlightBookingReviewContract {
 
         void renderVoucherInfoData();
 
+        void renderTickerView(TravelTickerViewModel travelTickerViewModel);
+
         String getComboKey();
 
         void stopTrace();
     }
 
-    interface Presenter extends FlightBaseBookingContact.Presenter<View>{
+    interface Presenter extends FlightBaseBookingContact.Presenter<View> {
 
         void onViewCreated();
 
@@ -99,5 +102,8 @@ public interface FlightBookingReviewContract {
         void onPaymentCancelled();
 
         void onCancelAppliedVoucher();
+
+        void fetchTickerData();
+
     }
 }

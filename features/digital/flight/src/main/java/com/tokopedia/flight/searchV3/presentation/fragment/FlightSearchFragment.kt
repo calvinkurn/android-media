@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
+import com.tokopedia.common.travel.ticker.TravelTickerUtils
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
@@ -108,6 +110,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.initialize(true)
 
         searchFlightData()
+        flightSearchPresenter.fetchTickerData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -227,6 +230,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     open fun getLayout(): Int = R.layout.fragment_search_flight
 
     override fun onDestroyView() {
+        flightSearchPresenter.unsubscribeAll()
         super.onDestroyView()
         this.clearFindViewByIdCache()
     }
@@ -274,6 +278,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (list.isNotEmpty()) {
             showFilterAndSortView()
         }
+    }
+
+    override fun renderTickerView(travelTickerViewModel: TravelTickerViewModel) {
+        TravelTickerUtils.buildTravelTicker(context, travelTickerViewModel, flight_ticker_view)
     }
 
     override fun addToolbarElevation() {

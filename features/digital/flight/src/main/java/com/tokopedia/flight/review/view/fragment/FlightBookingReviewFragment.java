@@ -27,7 +27,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.ticker.TravelTickerUtils;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -115,6 +118,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private TextView reviewDiscountPrice;
     private AppCompatTextView reviewFinalTotalPrice;
     private Button buttonSubmit;
+    private TickerView tickerView;
     private VoucherCartHachikoView voucherCartView;
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
@@ -190,6 +194,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
         voucherCartView = (VoucherCartHachikoView) view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
+        tickerView = view.findViewById(R.id.flight_ticker_view);
+
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
@@ -407,7 +413,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public String getComboKey() {
-        if (getArguments() != null){
+        if (getArguments() != null) {
             return getArguments().getString(EXTRA_COMBO_KEY);
         }
         return null;
@@ -771,6 +777,11 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void setNeedToRefreshOnPassengerInfo() {
         isPassengerInfoPageNeedToRefresh = true;
+    }
+
+    @Override
+    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
+        TravelTickerUtils.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
     }
 
     private void setVoucherValue(AttributesVoucher voucherValue, int isCoupon, String couponTitle) {
