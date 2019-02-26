@@ -173,7 +173,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initView(View view) {
-        mCartAddressChoiceActivityListener.setToolbarTitle(getActivity().getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         checkoutAnalyticsChangeAddress.eventViewAtcCartChangeAddressImpressionChangeAddress();
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
@@ -498,5 +497,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 openSoftKeyboard();
             }
         };
+    }
+
+    public interface ICartAddressChoiceActivityListener {
+
+        void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult);
+
     }
 }
