@@ -18,6 +18,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.promostacking.PromoMerchantBottomsheet;
 
 import java.util.Map;
 
@@ -44,13 +45,14 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
-    private ImageView promoShop;
+    private ImageView promoMerchant;
 
     private CartAdapter.ActionListener cartAdapterListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
     private CartItemAdapter cartItemAdapter;
     private CompositeSubscription compositeSubscription;
     private RecyclerView.RecycledViewPool viewPool;
+    private PromoMerchantBottomsheet promoMerchantBottomsheet;
 
     public CartShopViewHolder(View itemView, CartAdapter.ActionListener cartAdapterListener,
                               CartItemAdapter.ActionListener cartItemAdapterListener,
@@ -75,7 +77,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
-        promoShop = itemView.findViewById(R.id.promo_shop);
+        promoMerchant = itemView.findViewById(R.id.promo_merchant);
     }
 
     public void bindData(CartShopHolderData cartShopHolderData, Map<Integer, Boolean> checkedItemState) {
@@ -112,7 +114,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
 
-        promoShop.setOnClickListener(promoShopClickListener());
+        promoMerchant.setOnClickListener(promoShopClickListener());
     }
 
     private void renderErrorItemHeader(CartShopHolderData data) {
@@ -183,7 +185,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     }
 
     private View.OnClickListener promoShopClickListener() {
-        return v -> System.out.println("++ PROMO SHOP CLICKED!!");
+        return v -> cartAdapterListener.onPromoMerchantClicked();
     }
 
 }

@@ -536,5 +536,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         void onShopItemCheckChanged(int itemPosition, boolean checked);
 
         void onTopAdsItemClicked(Product product);
+
+        void onPromoMerchantClicked();
     }
 }

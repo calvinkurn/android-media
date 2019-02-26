@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/dp_3">
+
+        <LinearLayout
+            android:background="@color/white"
+            android:id="@+id/header_product_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <!--<android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                app:cardCornerRadius="@dimen/dp_4"
+                app:cardElevation="@dimen/dp_3">-->
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16">
+
+                    <com.tokopedia.design.text.TkpdHintTextInputLayout
+                        android:id="@+id/textInputLayoutCoupon"
+                        style="@style/HintTextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/buttonUse"
+                        android:hint="@string/hint_promo_code"
+                        app:hintEnabled="true">
+
+                        <EditText
+                            android:id="@+id/textInputCoupon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_promo_code"
+                            android:inputType="text"
+                            android:textColor="@color/tkpd_main_orange" />
+
+                    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+                    <TextView
+                        style="@style/TextView.Micro.WhitePrimary"
+                        android:id="@+id/buttonUse"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:background="@drawable/green_button_rounded"
+                        android:paddingTop="@dimen/dp_8"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_16"
+                        android:text="@string/use_promo_label_button" />
+
+                </RelativeLayout>
+            <!--</android.support.v7.widget.CardView>-->
+
+            <!--<LinearLayout
+                android:id="@+id/containerLastSeen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_margin="@dimen/dp_16"
+                    android:text="@string/promo_title_last_seen" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerViewLastSeenPromo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_promo_last_seen" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/TextView.Micro.BlackSecondary"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:text="@string/promo_label_my_coupon" />-->
+
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <!--<android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dp_16"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/item_list_promo_checkout"
+        tools:visibility="gone" />-->
+
+
+</android.support.design.widget.CoordinatorLayout>

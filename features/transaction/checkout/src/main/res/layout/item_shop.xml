@@ -90,7 +90,7 @@
 
         <!--sementara imageview, nanti ganti dgn cardview-->
         <ImageView
-            android:id="@+id/promo_shop"
+            android:id="@+id/promo_merchant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/use_coupon"
