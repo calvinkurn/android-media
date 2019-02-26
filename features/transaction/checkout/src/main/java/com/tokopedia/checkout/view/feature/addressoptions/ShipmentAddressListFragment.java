@@ -341,36 +341,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         return getActivity();
     }
 
-    private void initSearchView() {
-        mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
-        mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());
-
-        mSvAddressSearchBox.setListener(this);
-        mSvAddressSearchBox.setResetListener(this);
-        mSvAddressSearchBox.setSearchHint(getString(R.string.label_hint_search_address));
-    }
-
-    private View.OnTouchListener onSearchViewTouchListener() {
-        return new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
-                openSoftKeyboard();
-                return false;
-            }
-        };
-    }
-
-    private View.OnClickListener onSearchViewClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
-                openSoftKeyboard();
-            }
-        };
-    }
-
     @Override
     public void onSearchSubmitted(String text) {
         performSearch(text, true);
@@ -386,26 +356,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getArguments() != null) {
             mShipmentAddressListPresenter.resetAddressList(ORDER_ASC,
                     getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), isDisableCorner);
-        }
-    }
-
-    private void performSearch(String query, boolean resetPage) {
-        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
-        if (getArguments() != null) {
-            if (!query.isEmpty()) {
-                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, query,
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true, isDisableCorner);
-            } else {
-                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, "",
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage, isDisableCorner);
-            }
-        }
-    }
-
-    private void openSoftKeyboard() {
-        if (mInputMethodManager != null) {
-            mInputMethodManager.showSoftInput(
-                    mSvAddressSearchBox.getSearchTextView(), InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
@@ -428,11 +378,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         } else {
             showError(getString(R.string.technical_problem_text));
         }
-    }
-
-    private void sendAnalyticsOnAddressSelectionClicked() {
-        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
-        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya();
     }
 
     @Override
@@ -499,5 +444,60 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onCornerButtonClicked() {
         showCornerBottomSheet();
+    }
+
+    private void sendAnalyticsOnAddressSelectionClicked() {
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya();
+    }
+
+    private void performSearch(String query, boolean resetPage) {
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
+        if (getArguments() != null) {
+            if (!query.isEmpty()) {
+                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, query,
+                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true, isDisableCorner);
+            } else {
+                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, "",
+                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage, isDisableCorner);
+            }
+        }
+    }
+
+    private void openSoftKeyboard() {
+        if (mInputMethodManager != null) {
+            mInputMethodManager.showSoftInput(
+                    mSvAddressSearchBox.getSearchTextView(), InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    private void initSearchView() {
+        mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
+        mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());
+
+        mSvAddressSearchBox.setListener(this);
+        mSvAddressSearchBox.setResetListener(this);
+        mSvAddressSearchBox.setSearchHint(getString(R.string.label_hint_search_address));
+    }
+
+    private View.OnTouchListener onSearchViewTouchListener() {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+                openSoftKeyboard();
+                return false;
+            }
+        };
+    }
+
+    private View.OnClickListener onSearchViewClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+                openSoftKeyboard();
+            }
+        };
     }
 }

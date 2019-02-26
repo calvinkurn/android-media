@@ -25,9 +25,6 @@ public class CornerBottomSheet extends BottomSheetDialogFragment implements Corn
 
     private static final String ARGUMENTS_BRANCH_LIST = "ARGUMENTS_BRANCH_LIST";
 
-    private RecyclerView mRvCorner;
-    private CornerAdapter mAdapter;
-    private TextView mTvCornerName;
     private List<CornerAddressModel> mBranchList;
     private BranchChosenListener mListener;
 
@@ -62,9 +59,9 @@ public class CornerBottomSheet extends BottomSheetDialogFragment implements Corn
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mTvCornerName = view.findViewById(R.id.text_view_corner_name);
-        mRvCorner = view.findViewById(R.id.rv_corner_list);
-        mAdapter = new CornerAdapter(mBranchList, this);
+        TextView mTvCornerName = view.findViewById(R.id.text_view_corner_name);
+        RecyclerView mRvCorner = view.findViewById(R.id.rv_corner_list);
+        CornerAdapter mAdapter = new CornerAdapter(mBranchList, this);
 
         mRvCorner.setHasFixedSize(true);
         mRvCorner.setLayoutManager(new LinearLayoutManager(getContext()));
