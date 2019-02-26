@@ -1,19 +1,20 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.DimenRes
 import android.support.annotation.StringRes
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.extensions.R
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * @author by milhamj on 30/11/18.
@@ -125,4 +126,75 @@ fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
 
 fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
+}
+
+fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
+    impressHolder = holder;
+    hintListener = listener;
+    this.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener{
+        override fun onViewAttachedToWindow(v: View?) {
+            if (impressHolder != null && !impressHolder!!.isInvoke) {
+                invoke(v)
+            }
+        }
+
+        override fun onViewDetachedFromWindow(v: View?) {
+            if (impressHolder != null && impressHolder!!.isInvoke) {
+                revoke(v)
+            }
+        }
+    })
+}
+
+private var hintListener: ViewHintListener? = null
+private var scrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
+private var impressHolder: ImpressHolder? = null
+
+private fun invoke(view: View?) {
+    view!!.viewTreeObserver.addOnScrollChangedListener(
+            object : ViewTreeObserver.OnScrollChangedListener {
+                override fun onScrollChanged() {
+                    scrollChangedListener = this
+                    if (isVisible(view)) {
+                        if (impressHolder != null && !impressHolder!!.isInvoke) {
+                            if (hintListener != null) {
+                                hintListener!!.onViewHint()
+                            }
+                            impressHolder!!.invoke()
+                        }
+                        revoke(view)
+                    }
+                }
+            })
+}
+
+private fun revoke(view: View?) {
+    view!!.viewTreeObserver.removeOnScrollChangedListener(scrollChangedListener)
+}
+
+interface ViewHintListener {
+    fun onViewHint()
+}
+
+private fun isVisible(view: View?): Boolean {
+    if (view == null) {
+        return false
+    }
+    if (!view.isShown) {
+        return false
+    }
+    val screenWidth: Int = Resources.getSystem().displayMetrics.widthPixels
+    val screenHeight: Int = Resources.getSystem().displayMetrics.heightPixels
+    val screen = Rect(0, 0, screenWidth, screenHeight)
+
+    val location = IntArray(2)
+    view.getLocationOnScreen(location)
+    val X = location[0].toFloat()
+    val Y = location[1].toFloat()
+    return if (screen.top <= Y && screen.bottom >= Y &&
+            screen.left <= X && screen.right >= X) {
+        true
+    } else {
+        false
+    }
 }
