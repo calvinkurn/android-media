@@ -1193,7 +1193,7 @@ open class PlayViewStateImpl(
                             button.contentText,
                             button.contentImageUrl,
                             button.contentLinkUrl,
-                            "Ayo!",
+                            button.contentButtonText,
                             button.contentLinkUrl
                     )
             )
