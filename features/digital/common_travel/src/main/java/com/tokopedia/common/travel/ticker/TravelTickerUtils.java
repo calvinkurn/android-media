@@ -14,6 +14,7 @@ import java.util.ArrayList;
  * @author by furqan on 25/02/19
  */
 public class TravelTickerUtils {
+    private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int ANNOUNCEMENT_TYPE = 1;
     private static final int DANGER_TYPE = 2;
 
@@ -21,7 +22,6 @@ public class TravelTickerUtils {
         ArrayList<String> messages = new ArrayList<>();
         messages.add(travelTickerViewModel.getMessage());
         tickerView.setListMessage(messages);
-        tickerView.setItemTextAppearance(R.style.TextView_Micro);
         if (travelTickerViewModel.getType() == ANNOUNCEMENT_TYPE) {
             tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.tkpd_main_green));
             tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.light_green));
@@ -34,5 +34,9 @@ public class TravelTickerUtils {
 
         tickerView.buildView();
         tickerView.setVisibility(View.VISIBLE);
+
+        tickerView.postDelayed(() -> {
+            tickerView.setItemTextAppearance(R.style.TextView_Micro);
+        }, DEFAULT_POST_DELAYED_VALUE);
     }
 }
