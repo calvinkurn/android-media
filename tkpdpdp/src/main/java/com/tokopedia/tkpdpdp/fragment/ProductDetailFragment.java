@@ -2645,14 +2645,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
 
     private String generateCategoryId(List<ProductBreadcrumb> breadcrumb) {
-        Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
-            @Override
-            public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
-                return productBreadcrumb.getDepartmentTree().compareTo(t1.getDepartmentTree());
-            }
-        });
-
-        return breadcrumb.get(breadcrumb.size() - 1).getDepartmentId();
+        if(breadcrumb!=null && !breadcrumb.isEmpty()){
+            Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
+                @Override
+                public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
+                    return productBreadcrumb.getDepartmentTree().compareTo(t1.getDepartmentTree());
+                }
+            });
+            return breadcrumb.get(breadcrumb.size() - 1).getDepartmentId();
+        }else {
+          return   EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
+        }
     }
 
     private void startShowCase() {
