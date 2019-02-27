@@ -256,7 +256,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     if(responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1){
                         getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }else{
-                        getView().showSucessMessage( StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),","));
+                        getView().showErrorMessage( StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),","));
                     }
                 }
 
