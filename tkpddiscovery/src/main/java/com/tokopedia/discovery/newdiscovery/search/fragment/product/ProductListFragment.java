@@ -581,13 +581,53 @@ public class ProductListFragment extends SearchSectionFragment
         }
         getSelectedFilter().put(option.getKey(), mapValue);
         clearDataFilterSort();
+        if (option.isCategoryOption()) {
+            if (isQuickFilterSelected) {
+                getSearchParameter().setDepartmentId(option.getValue());
+            } else {
+                getSearchParameter().setDepartmentId("");
+            }
+        }
+        if (option.isOfficialOption()) {
+            getSearchParameter().setOfficial(isQuickFilterSelected);
+        }
         reloadData();
         UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
     }
 
     @Override
+    public void setSelectedFilter(HashMap<String, String> selectedFilter) {
+        super.setSelectedFilter(selectedFilter);
+        if (selectedFilter == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(selectedFilter.get(BrowseApi.OFFICIAL))) {
+            getSearchParameter().setOfficial(false);
+        } else {
+            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get(BrowseApi.OFFICIAL)));
+        }
+        if (TextUtils.isEmpty(selectedFilter.get(BrowseApi.SC))) {
+            getSearchParameter().setDepartmentId("");
+        } else {
+            getSearchParameter().setDepartmentId(selectedFilter.get(BrowseApi.SC));
+        }
+    }
+
+    @Override
     public void onSelectedFilterRemoved(String uniqueId) {
         removeSelectedFilter(uniqueId);
+    }
+
+    @Override
+    protected void removeSelectedFilter(String uniqueId) {
+        String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
+
+        if (Option.KEY_CATEGORY.equals(optionKey)) {
+            getSearchParameter().setDepartmentId("");
+        } else if (Option.KEY_OFFICIAL.equals(optionKey)) {
+            getSearchParameter().setOfficial(false);
+        }
+        super.removeSelectedFilter(uniqueId);
     }
 
     @Override
