@@ -6,8 +6,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
 
 /**

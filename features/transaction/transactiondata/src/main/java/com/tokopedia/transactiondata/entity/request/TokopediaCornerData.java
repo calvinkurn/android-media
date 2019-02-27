@@ -13,7 +13,7 @@ public class TokopediaCornerData {
     private boolean isTokopediaCorner;
     @SerializedName("user_corner_id")
     @Expose
-    private int userCornerId;
+    private String userCornerId;
     @SerializedName("corner_id")
     @Expose
     private int cornerId;
@@ -21,8 +21,8 @@ public class TokopediaCornerData {
     public TokopediaCornerData() {
     }
 
-    public TokopediaCornerData(boolean isTokopediaCorner, int userCornerId, int cornerId) {
-        this.isTokopediaCorner = isTokopediaCorner;
+    public TokopediaCornerData(String userCornerId, int cornerId) {
+        this.isTokopediaCorner = true;
         this.userCornerId = userCornerId;
         this.cornerId = cornerId;
     }
@@ -35,11 +35,11 @@ public class TokopediaCornerData {
         isTokopediaCorner = tokopediaCorner;
     }
 
-    public int getUserCornerId() {
+    public String getUserCornerId() {
         return userCornerId;
     }
 
-    public void setUserCornerId(int userCornerId) {
+    public void setUserCornerId(String userCornerId) {
         this.userCornerId = userCornerId;
     }
 

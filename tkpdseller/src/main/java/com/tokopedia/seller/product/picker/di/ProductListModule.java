@@ -17,7 +17,6 @@ import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.GetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
-import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
@@ -86,12 +85,8 @@ public class ProductListModule {
 
     @ProductListScope
     @Provides
-    public UserSession provideUserSessionAbstract(@ApplicationContext Context context) {
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context).getSession();
-        }else{
-            return null;
-        }
+    public UserSession provideUserSessionAbstract(AbstractionRouter abstractionRouter) {
+        return abstractionRouter.getSession();
     }
 
     @Provides
