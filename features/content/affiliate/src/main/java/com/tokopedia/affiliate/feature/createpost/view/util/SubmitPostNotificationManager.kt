@@ -64,18 +64,18 @@ abstract class SubmitPostNotificationManager(
         notificationManager.notify(TAG, id, notification)
     }
 
-    fun onFailedPost() {
+    fun onFailedPost(errorMessage: String) {
         val notification = notificationBuilder.setContentText("Gagal mengunggah, silakan coba lagi.")
                 .setStyle(NotificationCompat.BigTextStyle().bigText("Gagal mengunggah, silakan coba lagi."))
                 .setProgress(0, 0, false)
                 .setOngoing(false)
                 .setAutoCancel(true)
-                .setContentIntent(getFailedIntent())
+                .setContentIntent(getFailedIntent(errorMessage))
                 .build()
         notificationManager.notify(TAG, id, notification)
     }
 
     protected abstract fun getSuccessIntent() : PendingIntent
 
-    protected abstract fun getFailedIntent() : PendingIntent
+    protected abstract fun getFailedIntent(errorMessage: String) : PendingIntent
 }

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking
+import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
@@ -106,12 +107,8 @@ class CreatePostFragment : BaseDaggerFragment(),
         presenter.attachView(this)
         initView()
         if (userSession.isLoggedIn) {
-            if (!viewModel.isEdit) {
-                //TODO milhamj handle multiple product or ad id
-                presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull())
-            } else {
-                presenter.fetchEditContentForm(viewModel.postId)
-            }
+            //TODO milhamj handle multiple product or ad id
+            presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull())
         } else {
             context?.let {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQUEST_LOGIN)
@@ -148,7 +145,8 @@ class CreatePostFragment : BaseDaggerFragment(),
                 viewModel.relatedProducts.addAll(convertAttachProduct(products))
                 updateRelatedProduct()
             }
-            else -> { }
+            else -> {
+            }
         }
     }
 
@@ -177,11 +175,6 @@ class CreatePostFragment : BaseDaggerFragment(),
     override fun onErrorGetContentForm(message: String) {
         NetworkErrorHelper.showEmptyState(context, mainView, message
         ) { presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull()) }
-    }
-
-    override fun onErrorGetEditContentForm(message: String) {
-        NetworkErrorHelper.showEmptyState(context, mainView, message
-        ) { presenter.fetchEditContentForm(viewModel.postId) }
     }
 
     override fun onErrorNotAffiliate() {
@@ -221,10 +214,6 @@ class CreatePostFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showEmptyState(context, mainView, message) { this.submitPost() }
     }
 
-    override fun onErrorEditPost(message: String) {
-        NetworkErrorHelper.showEmptyState(context, mainView, message) { this.editPost() }
-    }
-
     override fun onEmptyProductClick() {
         goToAttachProduct()
     }
@@ -233,10 +222,32 @@ class CreatePostFragment : BaseDaggerFragment(),
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
         } else if (arguments != null) {
-            viewModel.productIdList.add(arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, ""))
-            viewModel.adIdList.add(arguments!!.getString(CreatePostActivity.PARAM_AD_ID, ""))
-            viewModel.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
-            viewModel.isEdit = arguments!!.getBoolean(CreatePostActivity.PARAM_IS_EDIT, false)
+            if (arguments!!.getString(DRAFT_ID) != null) {
+                initDraft(arguments!!)
+            } else {
+                viewModel.productIdList.add(arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, ""))
+                viewModel.adIdList.add(arguments!!.getString(CreatePostActivity.PARAM_AD_ID, ""))
+                viewModel.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
+            }
+        } else {
+            activity?.finish()
+        }
+    }
+
+    private fun initDraft(arguments: Bundle) {
+        activity?.let {
+            val draftId = arguments.getString(DRAFT_ID)
+            val cacheManager = PersistentCacheManager(it, draftId)
+            val draft: CreatePostViewModel? = cacheManager.get(
+                    CreatePostViewModel.TAG,
+                    CreatePostViewModel::class.java
+            )
+
+            if (draft != null) {
+                viewModel = draft
+            } else {
+                it.finish()
+            }
         }
     }
 
@@ -245,12 +256,7 @@ class CreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
             affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
-            if (!viewModel.isEdit) {
-                saveDraftAndSubmit()
-            }
-//            else {
-//                editPost()
-//            }
+            saveDraftAndSubmit()
         }
         addImageBtn.setOnClickListener {
             affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
@@ -263,6 +269,7 @@ class CreatePostFragment : BaseDaggerFragment(),
             goToMediaPreview()
         }
     }
+
     private fun goToImagePicker() {
         activity?.let {
             startActivityForResult(
@@ -277,10 +284,7 @@ class CreatePostFragment : BaseDaggerFragment(),
 
     private fun goToProfile() {
         activity?.let {
-            var profileApplink = if (viewModel.isEdit)
-                ApplinkConst.PROFILE_AFTER_EDIT
-            else
-                ApplinkConst.PROFILE_AFTER_POST
+            var profileApplink = ApplinkConst.PROFILE_AFTER_POST
             profileApplink = profileApplink.replace(PARAM_USER_ID, userSession.userId)
             val intent = RouteManager.getIntent(
                     it,
@@ -322,15 +326,6 @@ class CreatePostFragment : BaseDaggerFragment(),
             goToProfile()
             it.finish()
         }
-    }
-
-    private fun editPost() {
-        presenter.editPost(
-                viewModel.postId,
-                viewModel.token,
-                viewModel.completeImageList,
-                viewModel.mainImageIndex
-        )
     }
 
     private fun updateThumbnail() {

@@ -48,7 +48,7 @@ public class SubmitPostSubscriber extends Subscriber<SubmitPostData> {
         view.onSuccessSubmitPost();
     }
 
-    protected void showError(String message) {
+    private void showError(String message) {
         view.onErrorSubmitPost(message);
     }
 }

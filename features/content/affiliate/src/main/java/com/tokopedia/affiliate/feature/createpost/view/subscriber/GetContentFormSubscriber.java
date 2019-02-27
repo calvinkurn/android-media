@@ -18,15 +18,9 @@ import rx.Subscriber;
 public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
 
     private CreatePostContract.View view;
-    private boolean isEdit = false;
 
     public GetContentFormSubscriber(CreatePostContract.View view) {
-       this.view = view;
-    }
-
-    public GetContentFormSubscriber(CreatePostContract.View view, boolean isEdit) {
         this.view = view;
-        this.isEdit = isEdit;
     }
 
     @Override
@@ -43,12 +37,8 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
         if (e != null && e.getLocalizedMessage().contains(
                 view.getContext().getString(R.string.error_default_non_affiliate))) {
             view.onErrorNotAffiliate();
-        } else if (!isEdit){
-            view.onErrorGetContentForm(
-                    ErrorHandler.getErrorMessage(view.getContext(), e)
-            );
         } else {
-            view.onErrorGetEditContentForm(
+            view.onErrorGetContentForm(
                     ErrorHandler.getErrorMessage(view.getContext(), e)
             );
         }
@@ -66,17 +56,14 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
             return;
         }
 
-        if (!isEdit) {
-            CheckQuotaQuery checkQuotaQuery = graphqlResponse.getData(CheckQuotaQuery.class);
-            if (checkQuotaQuery == null || checkQuotaQuery.getData() == null) {
-                onError(new RuntimeException());
-                return;
-            }
-            if (checkQuotaQuery.getData().getNumber() == 0) {
-                view.onErrorNoQuota();
-                return;
-            }
-
+        CheckQuotaQuery checkQuotaQuery = graphqlResponse.getData(CheckQuotaQuery.class);
+        if (checkQuotaQuery == null || checkQuotaQuery.getData() == null) {
+            onError(new RuntimeException());
+            return;
+        }
+        if (checkQuotaQuery.getData().getNumber() == 0) {
+            view.onErrorNoQuota();
+            return;
         }
 
         view.hideLoading();

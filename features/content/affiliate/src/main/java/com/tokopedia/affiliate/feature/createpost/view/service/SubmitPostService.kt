@@ -7,11 +7,16 @@ import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.affiliate.feature.createpost.CREATE_POST_ERROR_MSG
+import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
+import com.tokopedia.affiliate.feature.createpost.DRAFT_ID_PARAM
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.user.session.UserSession
@@ -31,7 +36,6 @@ class SubmitPostService : IntentService(TAG) {
 
     companion object {
         private val TAG = SubmitPostService::class.java.simpleName
-        private const val DRAFT_ID = "draft_id"
 
         fun createIntent(context: Context, draftId: String): Intent {
             return Intent(context, SubmitPostService::class.java).apply {
@@ -52,8 +56,8 @@ class SubmitPostService : IntentService(TAG) {
                 CreatePostViewModel.TAG,
                 CreatePostViewModel::class.java
         ) ?: return
-        val notificationId = Random().nextInt()
-        notificationManager = getNotificationManager(notificationId, viewModel.completeImageList.size)
+        val notifId = Random().nextInt()
+        notificationManager = getNotificationManager(id, notifId, viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
         submitPostUseCase.execute(
                 SubmitPostUseCase.createRequestParams(
@@ -75,19 +79,24 @@ class SubmitPostService : IntentService(TAG) {
                 .inject(this)
     }
 
-    private fun getNotificationManager(id: Int, maxCount: Int): SubmitPostNotificationManager {
+    private fun getNotificationManager(draftId: String, notifId: Int, maxCount: Int): SubmitPostNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val userSession = UserSession(this)
-        return object : SubmitPostNotificationManager(id, maxCount, manager, this@SubmitPostService) {
+        return object : SubmitPostNotificationManager(notifId, maxCount, manager, this@SubmitPostService) {
             override fun getSuccessIntent(): PendingIntent {
                 //TODO milhamj handle intent
                 val intent = RouteManager.getIntent(context, "tokopedia://people/${userSession.userId}")
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 
-            override fun getFailedIntent(): PendingIntent {
-                //TODO milhamj handle intent
-                val intent = RouteManager.getIntent(context, "tokopedia://people/${userSession.userId}")
+            override fun getFailedIntent(errorMessage: String): PendingIntent {
+                val intent = RouteManager.getIntent(
+                        context,
+                        ApplinkConst.AFFILIATE_DRAFT_POST
+                                .replace(DRAFT_ID_PARAM, draftId)
+                                .plus("?$CREATE_POST_ERROR_MSG=$errorMessage")
+                )
+
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
         }
@@ -98,10 +107,13 @@ class SubmitPostService : IntentService(TAG) {
             override fun onNext(submitPostData: SubmitPostData?) {
                 if (submitPostData == null
                         || submitPostData.feedContentSubmit.success != SubmitPostData.SUCCESS) {
-                    notificationManager?.onFailedPost()
+                    notificationManager?.onFailedPost(ErrorHandler.getErrorMessage(
+                            this@SubmitPostService,
+                            RuntimeException()
+                    ))
                     return
                 } else if (!TextUtils.isEmpty(submitPostData.feedContentSubmit.error)) {
-                    notificationManager?.onFailedPost()
+                    notificationManager?.onFailedPost(submitPostData.feedContentSubmit.error)
                     return
                 }
                 notificationManager?.onSuccessPost()
@@ -111,7 +123,10 @@ class SubmitPostService : IntentService(TAG) {
             }
 
             override fun onError(e: Throwable?) {
-                notificationManager?.onFailedPost()
+                notificationManager?.onFailedPost(ErrorHandler.getErrorMessage(
+                        this@SubmitPostService,
+                        e
+                ))
             }
         }
     }
