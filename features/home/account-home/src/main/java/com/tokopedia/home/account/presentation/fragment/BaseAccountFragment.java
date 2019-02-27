@@ -20,7 +20,6 @@ import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
-import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -32,6 +31,8 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
@@ -47,6 +48,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
  * @author okasurya on 7/26/18.
@@ -59,6 +61,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
+    private RemoteConfig remoteConfig;
     UserSession userSession;
 
     abstract void notifyItemChanged(int position);
@@ -282,11 +285,17 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     private void openSladoPage(String applink) {
-        if (userSession.hasShownSaldoIntroScreen()) {
-            openApplink(applink);
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+            if (userSession.hasShownSaldoIntroScreen()) {
+                openApplink(applink);
+            } else {
+                userSession.setSaldoIntroPageStatus(true);
+                openApplink(ApplinkConst.SALDO_INTRO);
+            }
         } else {
-            userSession.setSaldoIntroPageStatus(true);
-            openApplink(ApplinkConst.SALDO_INTRO);
+            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
     }
 
