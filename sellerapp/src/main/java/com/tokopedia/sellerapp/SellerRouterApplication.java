@@ -34,6 +34,7 @@ import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
+import com.tokopedia.iris.Iris;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -235,6 +236,7 @@ import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
@@ -845,7 +847,7 @@ public abstract class SellerRouterApplication extends MainApplication
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
     }
 
 
@@ -853,7 +855,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
 
         return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
 
     }
 
@@ -2048,5 +2050,35 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
+    }
+
+    @Override
+    public Iris getIris() {
+        return null;
+    }
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+
+    }
+
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+
+    }
+
+    @Override
+    public void refreshFCMTokenFromForegroundToCM() {
+
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam) {
+        return null;
     }
 }
