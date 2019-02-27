@@ -5,6 +5,6 @@ package com.tokopedia.browse.common.data
  */
 
 class DigitalBrowsePopularAnalyticsModel(
-        val bannerId: Long,
-        val brandName: String,
-        val position: Int)
+        val bannerId: Long = 0,
+        val brandName: String = "",
+        val position: Int = 0)
