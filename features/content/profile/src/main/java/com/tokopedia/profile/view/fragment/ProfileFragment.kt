@@ -496,14 +496,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             bindCurationQuota(it)
         }
 
-
         val snackbar = ToasterNormal.make(view,
                 getString(R.string.profile_post_deleted),
                 BaseToaster.LENGTH_LONG
         )
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
 
-        if (adapter.data.last() is ProfileHeaderViewModel) {
+        if (adapter.data.isEmpty()) {
             onSwipeRefresh()
         }
     }
