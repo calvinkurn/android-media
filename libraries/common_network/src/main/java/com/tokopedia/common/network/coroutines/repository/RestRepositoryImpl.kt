@@ -29,10 +29,11 @@ class RestRepositoryImpl(private val mCloud: RestCloudDataStore,
         } else if (cacheStrategy.type == CacheType.CACHE_ONLY) {
             getCachedResponse(request)
         } else { // CACHE FIRST
-            try {
-                getCachedResponse(request)
-            } catch (e: Exception) {
+            val cache = getCachedResponse(request)
+            if (cache.isError){
                 getCloudResponse(request)
+            } else {
+                cache
             }
         }
     }

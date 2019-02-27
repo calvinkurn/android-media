@@ -391,7 +391,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
         launchCatchError(block = {
             val bodyMap = AuthUtil.generateParamsNetwork(userId, userSessionInterface.deviceId,
-                    mapOf("shop_id" to shopID))
+                    mutableMapOf("shop_id" to shopID))
             val request = RestRequest.Builder(ProductDetailConstant.BASE_REST_URL+ProductDetailConstant.PATH_FAVORITE_SHOP_ACTION,
                     object :TypeToken<DataResponse<PostRestResponse>>() {}.type)
                     .setRequestType(RequestType.POST)
