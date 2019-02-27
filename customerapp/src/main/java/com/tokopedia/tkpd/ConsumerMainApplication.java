@@ -537,14 +537,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initFirebase() {
-        try {
-            if (GlobalConfig.DEBUG) {
+        if (GlobalConfig.DEBUG) {
                 FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
                 builder.setApplicationId("1:692092518182:android:f4cc247c743f7921");
                 FirebaseApp.initializeApp(this, builder.build());
-            }
-        }catch (IllegalStateException e) {
-
         }
     }
 
