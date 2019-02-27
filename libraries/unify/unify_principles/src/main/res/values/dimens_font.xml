@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fontSize_lvl10" category="font-size">8sp</dimen>
+    <dimen name="fontSize_lvl1" category="font-size">10sp</dimen>
+    <dimen name="fontSize_lvl2" category="font-size">12sp</dimen>
+    <dimen name="fontSize_lvl3" category="font-size">14sp</dimen>
+    <dimen name="fontSize_lvl4" category="font-size">16sp</dimen>
+    <dimen name="fontSize_lvl5" category="font-size">18sp</dimen>
+    <dimen name="fontSize_lvl6" category="font-size">20sp</dimen>
+    <dimen name="fontSize_lvl7" category="font-size">24sp</dimen>
+    <dimen name="fontSize_lvl8" category="font-size">28sp</dimen>
+    <dimen name="fontSize_lvl9" category="font-size">34sp</dimen>
+</resources>
