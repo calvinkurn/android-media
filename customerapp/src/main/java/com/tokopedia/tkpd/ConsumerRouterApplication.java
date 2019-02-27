@@ -3682,7 +3682,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @NotNull
-    public Intent getIntermediaryIntent(@NotNull Context context, int categoryId) {
+    @Override
+    public Intent getIntermediaryIntent(@NonNull Context context, String categoryId) {
         return null;
     }
 
