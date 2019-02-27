@@ -46,5 +46,5 @@ include "libraries:linker"
 include "libraries:unify:unify_icon"
 include "libraries:unify:unify_principles"
 include "libraries:unify:unify_components"
-include "libraries:unify:unify_compositions"
+include "libraries:unify:unify_compositions:coach_mark"
 

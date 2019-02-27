@@ -81,6 +81,6 @@ ext {
             unifyIcon         : ":libraries:unify:unify_icon",
             unifyPrinciples   : ":libraries:unify:unify_principles",
             unifyComponents   : ":libraries:unify:unify_components",
-            unifyCompositions : ":libraries:unify:unify_compositions"
+            coachMark         : ":libraries:unify:unify_compositions:coach_mark"
     ]
 }
