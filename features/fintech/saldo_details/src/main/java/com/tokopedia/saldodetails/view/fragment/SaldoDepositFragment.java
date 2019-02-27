@@ -50,6 +50,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
 
+    private final long animation_duration = 300;
+
     public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
     public static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int";
 
@@ -214,12 +216,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saldoBalanceSeparator = view.findViewById(R.id.saldo_balance_separator);
         saldoDepositExpandIV = view.findViewById(R.id.saldo_deposit_layout_expand);
         saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
+        saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
 
         if (expandLayout) {
-            saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
             saldoTypeLL.setVisibility(View.VISIBLE);
         } else {
-            saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_down_grey));
+            saldoDepositExpandIV.animate().rotation(180).setDuration(animation_duration);
             saldoTypeLL.setVisibility(View.GONE);
         }
 
@@ -230,12 +232,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         saldoDepositExpandIV.setOnClickListener(v -> {
             if (expandLayout) {
+                saldoDepositExpandIV.animate().rotation(180).setDuration(animation_duration);
                 expandLayout = false;
-                saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_down_grey));
                 saldoTypeLL.setVisibility(View.GONE);
             } else {
+                saldoDepositExpandIV.animate().rotation(0).setDuration(animation_duration);
                 expandLayout = true;
-                saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
                 saldoTypeLL.setVisibility(View.VISIBLE);
             }
 
