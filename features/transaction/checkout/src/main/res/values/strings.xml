@@ -151,12 +151,14 @@
     <string name="label_change_address_failed">Gagal mengubah alamat</string>
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
     <string name="label_title_showcase_shipment">Pilih Kurir Pengiriman</string>
+    <string name="label_title_showcase_shipment_blackbox">Pilih Pengiriman</string>
     <string name="label_title_showcase_shipment_courier_recommendation">Pilih Durasi Pengiriman</string>
     <string name="label_message_showcase_shipment">Gunakan layanan jasa pengiriman yang didukung oleh toko ini.</string>
     <string name="label_dialog_action_delete_and_add_to_wishlist"><![CDATA[Hapus Terpilih & Tambah Wishlist]]></string>
     <string name="label_dialog_title_delete_item">Hapus Barang Terpilih?</string>
     <string name="label_dialog_action_delete">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020Hapus Terpilih</string>
     <string name="label_message_showcase_shipment_courier_recommendation">Pilih jangka waktu pengiriman yang didukung oleh toko ini.</string>
+    <string name="label_message_showcase_shipment_courier_recommendation_blackbox">Pilih tipe pengiriman yang didukung oleh toko ini.</string>
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
     <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja Anda</string>
     <string name="label_dialog_message_remove_cart_multiple_item" formatted="false">Barang yang terpilih (%s) akan dihapus dari keranjang Anda</string>
