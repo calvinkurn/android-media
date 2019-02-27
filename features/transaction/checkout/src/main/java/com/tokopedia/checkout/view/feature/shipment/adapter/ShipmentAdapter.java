@@ -416,7 +416,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentDonationModel != null) {
             shipmentDonationModel.setChecked(checked);
             updateShipmentCostModel();
-            notifyItemChanged(getBuyEmasPosition());
             notifyItemChanged(getShipmentCostPosition());
         }
     }
@@ -732,7 +731,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 totalPrice += egoldAttributeModel.getBuyEgoldValue();
                 shipmentCostModel.setTotalPrice(totalPrice);
                 shipmentCostModel.setEmasPrice(egoldAttributeModel.getBuyEgoldValue());
+            } else if (shipmentCostModel.getEmasPrice() > 0) {
+                shipmentCostModel.setEmasPrice(0);
             }
+            notifyDataSetChanged();
         }
 
         updateCheckoutButtonData(null);
