@@ -1741,8 +1741,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showForceLogoutDialog(Response response) {
-        ServerErrorHandler.showForceLogoutDialog();
+    public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
