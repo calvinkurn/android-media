@@ -827,8 +827,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         ShopInfo.FavoriteData(0, favorite.totalFavorite - 1)
                     else
                         ShopInfo.FavoriteData(1, favorite.totalFavorite + 1)
-            shopInfo = shopInfo?.copy(favoriteData =
-                favorite.copy(alreadyFavorited = if (favorite.alreadyFavorited == 1) 0 else 1))
+            shopInfo = shopInfo?.copy(favoriteData = newFavorite)
             productShopView.updateFavorite(favorite.alreadyFavorited != 1)
             productShopView.toggleClickableFavoriteBtn(true)
         }
@@ -837,6 +836,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun onFailFavoriteShop(t: Throwable){
         context?.let { ToasterError.make(view, ErrorHandler.getErrorMessage(it, t))
                 .setAction(R.string.retry_label){ onShopFavoriteClick() }}
+        productShopView.toggleClickableFavoriteBtn(true)
     }
 
     @SuppressLint("Range")

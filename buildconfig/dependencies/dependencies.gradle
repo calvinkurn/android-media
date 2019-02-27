@@ -89,7 +89,8 @@ ext {
             constraintLayout    : "com.android.support.constraint:constraint-layout:1.0.2",
             preferenceV7        : "com.android.support:preference-v7:${supportLibraryVersion}",
             kotlinSupport       : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
-            kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}"
+            kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
+            kotlinReflection    : "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     ]
 
     playServicesDependencies = [
