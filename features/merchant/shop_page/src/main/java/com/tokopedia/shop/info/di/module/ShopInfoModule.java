@@ -3,7 +3,6 @@ package com.tokopedia.shop.info.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
@@ -23,7 +22,6 @@ import com.tokopedia.shop.note.data.source.ShopNoteDataSource;
 import com.tokopedia.shop.note.domain.repository.ShopNoteRepository;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 import com.tokopedia.shop.page.di.ShopInfoReputationSpeedQualifier;
-import com.tokopedia.shop.page.di.scope.ShopPageScope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,9 +34,8 @@ import retrofit2.Retrofit;
 public class ShopInfoModule {
     @Provides
     public ReputationAuthInterceptor provideReputationAuthInterceptor(@ApplicationContext Context context,
-                                                                      AbstractionRouter abstractionRouter,
-                                                                      UserSession userSession) {
-        return new ReputationAuthInterceptor(context, abstractionRouter, userSession);
+                                                                      AbstractionRouter abstractionRouter) {
+        return new ReputationAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopInfoReputationSpeedQualifier

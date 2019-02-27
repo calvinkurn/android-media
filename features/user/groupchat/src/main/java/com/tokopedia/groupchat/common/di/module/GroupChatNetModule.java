@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.common.di.module;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -34,9 +33,8 @@ public class GroupChatNetModule {
 
     @GroupChatScope
     @Provides
-    public AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor(UserSession
-                                                                                            userSession) {
-        return new AccountsAuthorizationInterceptor(userSession);
+    public AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor(@ApplicationContext Context context) {
+        return new AccountsAuthorizationInterceptor(context);
     }
 
     @GroupChatScope

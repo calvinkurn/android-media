@@ -110,9 +110,8 @@ public class ImageUploaderModule {
     @ImageUploaderQualifier
     @Provides
     public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ImageUploaderQualifier Context context,
-                                                          @ImageUploaderQualifier AbstractionRouter abstractionRouter,
-                                                          @ImageUploaderQualifier UserSession userSession) {
-        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+                                                          @ImageUploaderQualifier AbstractionRouter abstractionRouter) {
+        return new TkpdAuthInterceptor(context, abstractionRouter);
     }
 
     @ImageUploaderQualifier

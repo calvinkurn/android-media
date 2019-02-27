@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
@@ -44,9 +43,8 @@ public class TopAdsModule {
     @TopAdsScope
     @Provides
     public TopAdsAuthInterceptor provideTopAdsAuthTempInterceptor(@ApplicationContext Context context,
-                                                                  AbstractionRouter abstractionRouter,
-                                                                  UserSession userSession){
-        return new TopAdsAuthInterceptor(context, abstractionRouter, userSession);
+                                                                  AbstractionRouter abstractionRouter){
+        return new TopAdsAuthInterceptor(context, abstractionRouter);
     }
 
     @TopAdsScope

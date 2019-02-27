@@ -3,7 +3,6 @@ package com.tokopedia.shop.product.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
@@ -57,9 +56,8 @@ public class ShopProductModule {
 
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                                      AbstractionRouter abstractionRouter,
-                                                      UserSession userSession) {
-        return new GMAuthInterceptor(context, abstractionRouter, userSession);
+                                                      AbstractionRouter abstractionRouter) {
+        return new GMAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductGMFeaturedQualifier
@@ -117,9 +115,8 @@ public class ShopProductModule {
     // WishList
     @Provides
     public WishListAuthInterceptor provideWishListAuthInterceptor(@ApplicationContext Context context,
-                                                                  AbstractionRouter abstractionRouter,
-                                                                  UserSession userSession) {
-        return new WishListAuthInterceptor(context, abstractionRouter, userSession);
+                                                                  AbstractionRouter abstractionRouter) {
+        return new WishListAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductWishListFeaturedQualifier
@@ -193,9 +190,8 @@ public class ShopProductModule {
     // Product
     @Provides
     public ShopOfficialStoreAuthInterceptor provideShopOfficialStoreAuthInterceptor(@ApplicationContext Context context,
-                                                                                    AbstractionRouter abstractionRouter,
-                                                                                    UserSession userSession) {
-        return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter, userSession);
+                                                                                    AbstractionRouter abstractionRouter) {
+        return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductQualifier

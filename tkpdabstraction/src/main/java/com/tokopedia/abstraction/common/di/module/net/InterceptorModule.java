@@ -37,9 +37,8 @@ public class InterceptorModule {
     @ApplicationScope
     @Provides
     TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
-                                                   AbstractionRouter abstractionRouter,
-                                                   UserSession userSession){
-        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+                                                   AbstractionRouter abstractionRouter){
+        return new TkpdAuthInterceptor(context, abstractionRouter);
     }
 
     @ApplicationScope

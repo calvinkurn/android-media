@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -47,9 +46,8 @@ public class RecentViewModule {
     @RecentViewScope
     @Provides
     MojitoInterceptor provideMojitoInterceptor(@ApplicationContext Context context,
-                                               AbstractionRouter abstractionRouter,
-                                               UserSession userSession) {
-        return new MojitoInterceptor(context, abstractionRouter, userSession);
+                                               AbstractionRouter abstractionRouter) {
+        return new MojitoInterceptor(context, abstractionRouter);
     }
 
     @RecentViewScope

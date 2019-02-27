@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -65,8 +64,8 @@ public class DigitalModule {
     @Provides
     @DigitalScope
     DigitalInterceptor provideDigitalInterceptor(@ApplicationContext Context context,
-                                                 AbstractionRouter networkRouter, com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
-        return new DigitalInterceptor(context, networkRouter, userSession);
+                                                 AbstractionRouter networkRouter) {
+        return new DigitalInterceptor(context, networkRouter);
     }
 
     @Provides
