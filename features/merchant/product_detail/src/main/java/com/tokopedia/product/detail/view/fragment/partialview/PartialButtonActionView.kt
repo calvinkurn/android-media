@@ -9,13 +9,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.PreOrder
-import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 class PartialButtonActionView private constructor(private val view: View){
     var promoTopAdsClick: (() -> Unit)? = null
     var buyNowClick: (()-> Unit)? = null
-    var addToChartClick: (()-> Unit)? = null
+    var addToCartClick: (()-> Unit)? = null
     var topchatClick: (() -> Unit)? = null
     var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
     var visibility: Boolean = false
@@ -63,7 +62,7 @@ class PartialButtonActionView private constructor(private val view: View){
             btn_add_to_cart.visibility = View.VISIBLE
 
             btn_buy_now.setOnClickListener { buyNowClick?.invoke() }
-            btn_add_to_cart.setOnClickListener { addToChartClick?.invoke() }
+            btn_add_to_cart.setOnClickListener { addToCartClick?.invoke() }
             btn_topchat.setOnClickListener { topchatClick?.invoke()  }
         }
     }

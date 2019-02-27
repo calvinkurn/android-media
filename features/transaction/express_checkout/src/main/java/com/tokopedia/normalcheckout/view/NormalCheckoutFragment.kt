@@ -1,9 +1,11 @@
 package com.tokopedia.normalcheckout.view
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -89,6 +91,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
         const val EXTRA_ACTION = "action"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
+
+        const val RESULT_PRODUCT_DATA = "product_data"
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
@@ -219,7 +223,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         if (GlobalConfig.isCustomerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
                 productInfo.basic.isActive()) {
             button_buy_full.gone()
-            button_buy_partial.visible()
             rl_bottom_action_container.visible()
             if (action == ATC_AND_SELECT || action == ATC_AND_BUY) {
                 button_cart.visible()
@@ -230,6 +233,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 getString(R.string.add_to_cart)
             } else if (productInfo.isPreorderActive) {
                 getString(R.string.label_button_preorder)
+            } else if (action == ATC_AND_SELECT) {
+                getString(R.string.label_button_buy)
             } else {
                 getString(R.string.label_button_buy)
             }
@@ -333,7 +338,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (action == ATC_ONLY) {
                 addToCart()
             } else {
-                // TODO buy or preorder
+                // TODO select or buy or preorder
+                if (action == ATC_AND_SELECT) {
+                    selectVariant()
+                } else {
+                    doBuyOrPreorder()
+                }
             }
         }
         button_cart.setOnClickListener {
@@ -343,6 +353,29 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun addToCart() {
         //TODO add to cart
+    }
+
+    /**
+     * called when click button select (when action is ATC_AND_SELECT) or when backpressed
+     */
+    fun selectVariant() {
+        activity?.run {
+            if (fragmentViewModel.isStateChanged == true) {
+
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    if (!selectedVariantId.isNullOrEmpty()) {
+                        putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+                    }
+                    putExtra(EXTRA_QUANTITY, quantity)
+                })
+            } else {
+                onBackPressed()
+            }
+        }
+    }
+
+    private fun doBuyOrPreorder() {
+        //TODO do buy or preorder
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */

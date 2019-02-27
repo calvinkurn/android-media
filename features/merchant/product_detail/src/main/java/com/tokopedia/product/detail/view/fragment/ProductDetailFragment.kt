@@ -323,6 +323,33 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
+        actionButtonView.promoTopAdsClick = {
+            shopInfo?.let { shopInfo ->
+                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productInfo?.basic?.id?.toString())
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
+
+                context?.let { RouteManager.route(it, applink) }
+            }
+        }
+        actionButtonView.addToCartClick = {
+            // TODO add to cart click
+        }
+        actionButtonView.buyNowClick = {
+            // TODO buy now / buy / preorder
+            if (productInfoViewModel.isUserSessionActive()) {
+                //TODO tracking
+                //TODO go to normal checkout or express checkout activity
+            } else { // not login
+                //TODO tracking
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN)
+                }
+            }
+        }
         loadProductData()
     }
 
@@ -648,17 +675,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
                             || shopInfo.allowManage),
                     data.preorder)
-
-            actionButtonView.promoTopAdsClick = {
-
-                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productInfo?.basic?.id?.toString())
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
-                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
-
-                context?.let { RouteManager.route(it, applink) }
-            }
             actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
             view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status

@@ -11,7 +11,7 @@
       "description": "Ini adalah contoh dekripsi\r\n\r\n script   script   br /   br / \r\n\r\nTest deskripsi & test",
       "minOrder": 100,
       "maxOrder": 0,
-      "status": "WAREHOUSE",
+      "status": "ACTIVE",
       "weight": 500,
       "weightUnit": "KILOGRAM",
       "condition": "NEW",

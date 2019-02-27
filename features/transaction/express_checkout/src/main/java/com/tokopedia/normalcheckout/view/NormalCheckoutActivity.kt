@@ -70,8 +70,9 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        //TODO set user input
+        fragment?.run {
+            (this as NormalCheckoutFragment).selectVariant()
+        }
         overridePendingTransition(0, R.anim.push_down)
     }
 }

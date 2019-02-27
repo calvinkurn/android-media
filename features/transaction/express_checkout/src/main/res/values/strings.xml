@@ -20,6 +20,7 @@
     <string name="label_error_shop_closed">Toko ini sedang tutup. Silakan gunakan toko lain.</string>
     <string name="label_continue_without_template">Lanjutkan Tanpa Template</string>
     <string name="label_button_buy">Beli</string>
+    <string name="label_button_buy_now">Beli Sekarang</string>
     <string name="label_wording_payment_total">Total Tagihan</string>
     <string name="label_insurance">Asuransi Pengiriman</string>
     <string name="label_note_for_seller">Catatan untuk Penjual (Opsional)</string>
