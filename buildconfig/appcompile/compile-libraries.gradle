@@ -42,3 +42,9 @@ include "libraries:trackinterface"
 include "libraries:graph_view"
 
 include "libraries:linker"
+
+include "libraries:unify:unify_icon"
+include "libraries:unify:unify_principles"
+include "libraries:unify:unify_components"
+include "libraries:unify:unify_compositions"
+

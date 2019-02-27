@@ -77,6 +77,10 @@ ext {
             trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
-//            iris              : ":libraries:iris_no_op"
+//            iris              : ":libraries:iris_no_op",
+            unifyIcon         : ":libraries:unify:unify_icon",
+            unifyPrinciples   : ":libraries:unify:unify_principles",
+            unifyComponents   : ":libraries:unify:unify_components",
+            unifyCompositions : ":libraries:unify:unify_compositions"
     ]
 }
