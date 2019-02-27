@@ -71,6 +71,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        <service
+            android:name=".feature.createpost.view.service.SubmitPostService"
+            android:enabled="true" />
         <activity android:name=".feature.tracking.view.activity.AffiliateTrackingActivity" >
             <intent-filter android:order="1">
                 <action android:name="android.intent.action.VIEW" />

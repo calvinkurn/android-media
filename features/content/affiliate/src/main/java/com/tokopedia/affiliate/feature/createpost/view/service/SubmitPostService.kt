@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
@@ -38,13 +40,17 @@ class SubmitPostService : IntentService(TAG) {
         }
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        initInjector()
+    }
+
     override fun onHandleIntent(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
         val cacheManager = PersistentCacheManager(baseContext, id)
         val viewModel: CreatePostViewModel = cacheManager.get(
                 CreatePostViewModel.TAG,
-                CreatePostViewModel::class.java,
-                null
+                CreatePostViewModel::class.java
         ) ?: return
         val notificationId = Random().nextInt()
         notificationManager = getNotificationManager(notificationId, viewModel.completeImageList.size)
@@ -59,6 +65,14 @@ class SubmitPostService : IntentService(TAG) {
                 ),
                 getSubscriber()
         )
+    }
+
+    private fun initInjector() {
+        val baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent
+        DaggerCreatePostComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun getNotificationManager(id: Int, maxCount: Int): SubmitPostNotificationManager {

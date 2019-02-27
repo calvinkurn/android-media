@@ -21,6 +21,7 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImageP
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
+import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.applink.ApplinkConst
@@ -244,9 +245,10 @@ class CreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
             affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
-//            if (!viewModel.isEdit) {
-//                submitPost()
-//            } else {
+            if (!viewModel.isEdit) {
+                saveDraftAndSubmit()
+            }
+//            else {
 //                editPost()
 //            }
         }
@@ -306,14 +308,19 @@ class CreatePostFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun saveDraft() {
-        context?.let {
+    private fun saveDraftAndSubmit() {
+        activity?.let {
             showLoading()
 
             val cacheManager = PersistentCacheManager(it, true)
             cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
 
+            val intent = SubmitPostService.createIntent(it, cacheManager.id!!)
+            it.startService(intent)
+
             hideLoading()
+            goToProfile()
+            it.finish()
         }
     }
 
