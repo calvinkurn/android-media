@@ -205,15 +205,6 @@ class CreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onSuccessSubmitPost() {
-        goToProfile()
-        activity?.finish()
-    }
-
-    override fun onErrorSubmitPost(message: String) {
-        NetworkErrorHelper.showEmptyState(context, mainView, message) { this.submitPost() }
-    }
-
     override fun onEmptyProductClick() {
         goToAttachProduct()
     }
@@ -301,16 +292,6 @@ class CreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-
-    private fun submitPost() {
-        presenter.submitPost(
-                viewModel.productIdList.firstOrNull(),
-                viewModel.productIdList.firstOrNull(),
-                viewModel.token,
-                viewModel.completeImageList,
-                viewModel.mainImageIndex
-        )
-    }
 
     private fun saveDraftAndSubmit() {
         activity?.let {

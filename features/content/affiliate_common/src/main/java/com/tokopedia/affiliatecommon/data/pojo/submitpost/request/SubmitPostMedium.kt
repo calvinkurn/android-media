@@ -12,11 +12,11 @@ data class SubmitPostMedium(
         @Expose
         var order: Int? = null) {
 
-    @SerializedName("type")
-    @Expose
-    var type: String = TYPE_IMAGE
+        @SerializedName("type")
+        @Expose
+        var type: String = TYPE_IMAGE
 
     companion object {
-        private val TYPE_IMAGE = "image"
+        private const val TYPE_IMAGE = "image"
     }
 }

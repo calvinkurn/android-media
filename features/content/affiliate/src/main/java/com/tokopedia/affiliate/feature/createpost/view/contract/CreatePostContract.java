@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm;
 
-import java.util.List;
-
 /**
  * @author by milhamj on 9/26/18.
  */
@@ -26,15 +24,8 @@ public interface CreatePostContract {
         void onErrorNotAffiliate();
 
         void onErrorNoQuota();
-
-        void onSuccessSubmitPost();
-
-        void onErrorSubmitPost(String message);
     }
     interface Presenter extends CustomerPresenter<View> {
         void fetchContentForm(String productId, String adId);
-
-        void submitPost(String productId, String adId, String token, List<String> imageList,
-                        int mainImageIndex);
     }
 }

@@ -5,7 +5,6 @@ import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormU
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
-import com.tokopedia.affiliate.feature.createpost.view.subscriber.SubmitPostSubscriber
 import javax.inject.Inject
 
 /**
@@ -26,21 +25,6 @@ class CreatePostPresenter @Inject constructor(
         getContentFormUseCase.execute(
                 GetContentFormUseCase.createRequestParams(productId, adId),
                 GetContentFormSubscriber(view)
-        )
-    }
-
-    override fun submitPost(productId: String, adId: String, token: String, imageList: List<String>,
-                            mainImageIndex: Int) {
-        view.showLoading()
-        submitPostUseCase.execute(
-                SubmitPostUseCase.createRequestParams(
-                        productId,
-                        adId,
-                        token,
-                        imageList,
-                        mainImageIndex
-                ),
-                SubmitPostSubscriber(view)
         )
     }
 }
