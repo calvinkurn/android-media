@@ -61,7 +61,7 @@ class ChannelInfoMapper @Inject constructor() : Func1<Response<DataResponse<Chan
                     convertChannelQuickReply(it),
                     it.videoId,
                     it.settingGroupChat,
-                    convertOverlayModel(it.overlayMessage)
+                    it.overlayMessage
             )
         }
     }
@@ -255,26 +255,26 @@ class ChannelInfoMapper @Inject constructor() : Func1<Response<DataResponse<Chan
         }
     }
 
-    private fun convertOverlayModel(pojo: OverlayMessagePojo): OverlayViewModel {
-        return pojo.let {
-            OverlayViewModel(
-                    it.isCloseable,
-                    it.status,
-                    convertInteruptViewModel(it.assets)
-            )
-        }
-    }
-
-    private fun convertInteruptViewModel(pojo: OverlayMessageAssetPojo): InteruptViewModel {
-        return pojo.let {
-            InteruptViewModel(
-                    it.title,
-                    it.description,
-                    it.imageUrl,
-                    it.imageLink,
-                    it.btnTitle,
-                    it.btnLink
-            )
-        }
-    }
+//    private fun convertOverlayModel(pojo: OverlayMessagePojo): OverlayViewModel {
+//        return pojo.let {
+//            OverlayViewModel(
+//                    it.isCloseable,
+//                    it.status,
+//                    convertInteruptViewModel(it.assets)
+//            )
+//        }
+//    }
+//
+//    private fun convertInteruptViewModel(pojo: OverlayMessageAssetPojo): InteruptViewModel {
+//        return pojo.let {
+//            InteruptViewModel(
+//                    it.title,
+//                    it.description,
+//                    it.imageUrl,
+//                    it.imageLink,
+//                    it.btnTitle,
+//                    it.btnLink
+//            )
+//        }
+//    }
 }

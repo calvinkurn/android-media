@@ -9,6 +9,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.FreezeViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 
 data class Channel(
         @SerializedName("channel_id")
@@ -130,7 +131,7 @@ data class Channel(
         val settingGroupChat: SettingGroupChat = SettingGroupChat(),
         @SerializedName("overlay_message")
         @Expose
-        val overlayMessage: OverlayMessagePojo = OverlayMessagePojo(),
+        val overlayMessage: OverlayViewModel = OverlayViewModel(),
         @SerializedName("button")
         @Expose
         val button: ButtonsPojo = ButtonsPojo(),

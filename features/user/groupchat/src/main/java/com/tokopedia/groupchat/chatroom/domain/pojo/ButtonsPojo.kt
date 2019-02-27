@@ -37,6 +37,9 @@ class ButtonsPojo() {
         @SerializedName("content_image_url")
         @Expose
         var contentImageUrl: String = ""
+        @SerializedName("content_button_title")
+        @Expose
+        var contentButtonText: String = ""
         @SerializedName("content_text")
         @Expose
         var contentText: String = ""
