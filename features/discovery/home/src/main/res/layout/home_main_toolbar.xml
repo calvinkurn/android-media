@@ -78,12 +78,26 @@
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/btn_notification"
+            android:layout_toLeftOf="@+id/btn_inbox"
             android:scaleType="center"
             android:src="@drawable/ic_searchbar_wishlist_white"
             app:layout_constraintBottom_toBottomOf="@+id/layout_search"
-            app:layout_constraintEnd_toStartOf="@+id/btn_notification"
+            app:layout_constraintEnd_toStartOf="@+id/btn_inbox"
             app:layout_constraintTop_toTopOf="@+id/layout_search" />
+
+        <ImageView
+            android:id="@+id/btn_inbox"
+            android:layout_width="40dp"
+            android:layout_height="@dimen/icon_toolbar"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="center"
+            android:src="@drawable/ic_inbox_searcbar"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_wishlist"
+            app:layout_constraintEnd_toStartOf="@+id/btn_notification"
+            app:layout_constraintTop_toTopOf="@+id/btn_wishlist"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/btn_notification"
@@ -94,9 +108,9 @@
             android:layout_centerVertical="true"
             android:scaleType="center"
             android:src="@drawable/ic_searchbar_notif_white"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_wishlist"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_inbox"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_wishlist" />
+            app:layout_constraintTop_toTopOf="@+id/btn_inbox" />
 
     </android.support.constraint.ConstraintLayout>
 

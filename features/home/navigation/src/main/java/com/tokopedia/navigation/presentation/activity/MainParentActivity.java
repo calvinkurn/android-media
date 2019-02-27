@@ -335,48 +335,10 @@ public class MainParentActivity extends BaseActivity implements
             return false;
         }
 
-        if (position != HOME_MENU) {
-            fragmentContainer.setFitsSystemWindows(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-                fragmentContainer.requestApplyInsets();
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                Window w = getWindow();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    w.setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
-                }
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Window window = getWindow();
-                window.setStatusBarColor(ContextCompat
-                        .getColor(this,R.color.green_600));
-            }
+        if (position == HOME_MENU) {
+            setHomeStatusBar();
         } else {
-            View viewGroup = findViewById(R.id.container);
-            viewGroup.setFitsSystemWindows(false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-                viewGroup.requestApplyInsets();
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                int flags = viewGroup.getSystemUiVisibility();
-                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                viewGroup.setSystemUiVisibility(flags);
-                getWindow().setStatusBarColor(Color.WHITE);
-            }
-
-            //make full transparent statusBar
-            if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-                setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
-            }
-            if (Build.VERSION.SDK_INT >= 19) {
-                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            }
-            if (Build.VERSION.SDK_INT >= 21) {
-                setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-                getWindow().setStatusBarColor(Color.TRANSPARENT);
-            }
+            setDefaultStatusBar();
         }
 
         Fragment fragment = fragmentList.get(position);
@@ -387,7 +349,54 @@ public class MainParentActivity extends BaseActivity implements
         return true;
     }
 
+    private void setHomeStatusBar() {
+        //apply inset to allow recyclerview scrolling behind status bar
+        fragmentContainer.setFitsSystemWindows(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            fragmentContainer.requestApplyInsets();
+        }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = fragmentContainer.getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            fragmentContainer.setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
+
+        //make full transparent statusBar
+        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+        }
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    private void setDefaultStatusBar() {
+        fragmentContainer.setFitsSystemWindows(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            fragmentContainer.requestApplyInsets();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                w.setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.setStatusBarColor(ContextCompat
+                    .getColor(this,R.color.green_600));
+        }
+    }
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
         Window win = activity.getWindow();

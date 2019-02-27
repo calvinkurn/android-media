@@ -28,10 +28,10 @@ public class MainToolbar extends Toolbar {
     protected ImageView btnWishlist;
     protected BadgeView badgeView;
 
-    private SearchBarAnalytics searchBarAnalytics;
-    private UserSessionInterface userSession;
+    protected SearchBarAnalytics searchBarAnalytics;
+    protected UserSessionInterface userSession;
 
-    private String screenName = "";
+    protected String screenName = "";
 
     public MainToolbar(Context context) {
         super(context);

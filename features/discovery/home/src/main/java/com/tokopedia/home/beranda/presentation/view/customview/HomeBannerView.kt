@@ -40,13 +40,15 @@ class HomeBannerView : BannerView {
     override fun buildView() {
         super.buildView()
         setBackgroundImage()
-        bannerRecyclerView.addItemDecoration(
-                HomeBannerViewDecorator(
-                        context.resources.getDimensionPixelSize(R.dimen.dp_5),
-                        0,
-                        0,
-                        0)
-        )
+        if (bannerRecyclerView.itemDecorationCount == 0) {
+            bannerRecyclerView.addItemDecoration(
+                    HomeBannerViewDecorator(
+                            context.resources.getDimensionPixelSize(R.dimen.dp_5),
+                            0,
+                            0,
+                            0)
+            )
+        }
         bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             internal var currentImagePosition = currentPosition
 

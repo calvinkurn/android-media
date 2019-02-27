@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/img_banner_background"
         android:layout_width="match_parent"
-        tools:src="@drawable/ic_icon_market_toped"
-        android:scaleType="centerCrop"
         android:layout_height="@dimen/dp_230"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_icon_market_toped" />
 
     <View
         android:id="@+id/overlay"
         android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_marginTop="210dp"
-        android:layout_height="20dp"
         android:background="@drawable/background_banner_image_mask"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/dp_72" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="@dimen/dp_72"
         android:id="@+id/viewpager_banner_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:layout_height="wrap_content" />
 
     <LinearLayout
@@ -43,9 +49,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="left|bottom"
-        android:layout_marginBottom="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/dp_5"
         android:layout_weight="1"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/dp_5"
@@ -61,11 +67,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginRight="@dimen/dp_16"
         android:clickable="true"
         android:focusableInTouchMode="false"
         android:gravity="center_horizontal|center_vertical"
         android:paddingLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_16"
         android:text="@string/all_promo"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"

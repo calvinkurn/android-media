@@ -6,9 +6,13 @@ import android.graphics.drawable.Drawable
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 
 import com.tokopedia.home.R
 import com.tokopedia.searchbar.MainToolbar
+import com.tokopedia.searchbar.SearchBarConstant
+import com.tokopedia.searchbar.SearchBarRouter
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 
 class HomeMainToolbar : MainToolbar {
@@ -32,6 +36,16 @@ class HomeMainToolbar : MainToolbar {
         setBackgroundAlpha(0f)
         toolbarType = TOOLBAR_LIGHT_TYPE
         switchToLightToolbar()
+
+        btn_inbox.setOnClickListener { v ->
+            if (userSession.isLoggedIn) {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
+                getContext().startActivity((this.context.applicationContext as SearchBarRouter)
+                        .gotoInboxMainPage(getContext()))
+            } else {
+                RouteManager.route(context, ApplinkConst.LOGIN)
+            }
+        }
     }
 
     override fun inflateResource(context: Context) {
@@ -49,6 +63,7 @@ class HomeMainToolbar : MainToolbar {
         if (toolbarType != TOOLBAR_DARK_TYPE) {
             btnWishlist.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_wishlist_grey)
             btnNotification.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_notif_grey)
+            btn_inbox.setImageResource(R.drawable.ic_inbox_searcbar);
             toolbarType = TOOLBAR_DARK_TYPE
         }
     }
@@ -57,6 +72,7 @@ class HomeMainToolbar : MainToolbar {
         if (toolbarType != TOOLBAR_LIGHT_TYPE) {
             btnWishlist.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_wishlist_white)
             btnNotification.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_notif_white)
+            btn_inbox.setImageResource(R.drawable.ic_inbox_searcbar);
             toolbarType = TOOLBAR_LIGHT_TYPE
         }
     }
