@@ -923,7 +923,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         startActivity(intent);
     }
 
-    private String getFeedAnalyticsHeader(int page, int rfowNumber) {
+    private String getFeedAnalyticsHeader(int page, int rowNumber) {
         return page + "." + rowNumber + " ";
     }
 
