@@ -601,10 +601,10 @@ public class ProductListFragment extends SearchSectionFragment
         if (selectedFilter == null) {
             return;
         }
-        if (TextUtils.isEmpty(selectedFilter.get(BrowseApi.OFFICIAL))) {
+        if (TextUtils.isEmpty(selectedFilter.get("official"))) {
             getSearchParameter().setOfficial(false);
         } else {
-            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get(BrowseApi.OFFICIAL)));
+            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get("official")));
         }
         if (TextUtils.isEmpty(selectedFilter.get(BrowseApi.SC))) {
             getSearchParameter().setDepartmentId("");

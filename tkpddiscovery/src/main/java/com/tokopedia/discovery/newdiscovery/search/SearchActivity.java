@@ -23,7 +23,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
@@ -123,8 +122,8 @@ public class SearchActivity extends DiscoveryActivity
 
     @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        String departmentId = bundle.getString(BrowseApi.SC);
-        boolean isOfficial = bundle.getBoolean(BrowseApi.OFFICIAL, false);
+        String departmentId = bundle.getString("sc");
+        boolean isOfficial = bundle.getBoolean("official", false);
         Intent intent = new Intent(context, SearchActivity.class);
 
         if (!TextUtils.isEmpty(departmentId)) {
@@ -133,7 +132,7 @@ public class SearchActivity extends DiscoveryActivity
 
         intent.putExtra(EXTRA_OFFICIAL, isOfficial);
 
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
+        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString("q", bundle.getString("keyword", "")));
         intent.putExtras(bundle);
         return intent;
     }

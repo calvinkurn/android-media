@@ -103,7 +103,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, searchParameter.getDepartmentId());
         }
         if (searchParameter.isOfficial()) {
-            requestParams.putString(BrowseApi.OFFICIAL, "true");
+            requestParams.putString("official", "true");
         }
         return requestParams;
     }
