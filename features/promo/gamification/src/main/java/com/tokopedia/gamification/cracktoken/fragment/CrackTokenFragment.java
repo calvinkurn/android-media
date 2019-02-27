@@ -578,9 +578,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
-                widgetTokenView.stopShaking();
-                setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
-                widgetCrackResult.showCrackResult(crackResult);
+                if(getContext()!=null) {
+                    widgetTokenView.stopShaking();
+                    setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
+                    widgetCrackResult.showCrackResult(crackResult);
+                }
             }
         }, 1000);
     }

@@ -84,6 +84,10 @@ public class WidgetTokenView extends FrameLayout {
     private MediaPlayer crackMediaPlayer;
     private volatile boolean isAnimatedFirstTime = true;
     private volatile long animationStartTime;
+    private AnimatorSet bounceAnimatorSet;
+    private Animation rotateRightAnimation;
+    private Animation rotateLeftAnimation;
+    private AnimatorSet quickBounceAnimatorSet;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -396,18 +400,6 @@ public class WidgetTokenView extends FrameLayout {
     private void initCracking3() {
         if (crackingAnimationSet3 == null) {
             crackingAnimationSet3 = new AnimatorSet();
-//            PropertyValuesHolder pvhShake =
-//                    PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP3_DEGREE, 0, CRACK_STEP3_DEGREE, 0);
-//            ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
-//            shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
-//            shakeAnimatorFull.setRepeatCount(ValueAnimator.INFINITE);
-//            shakeAnimatorFull.setDuration(CRACK_STEP3_DURATION);
-//
-//            ObjectAnimator shakeAnimatorCrack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhShake);
-//            shakeAnimatorCrack.setRepeatMode(ValueAnimator.REVERSE);
-//            shakeAnimatorCrack.setRepeatCount(ValueAnimator.INFINITE);
-//            shakeAnimatorCrack.setDuration(CRACK_STEP3_DURATION);
-
             PropertyValuesHolder pvhMaskedCrack =
                     PropertyValuesHolder.ofInt(MaskedHeightImageView.MASKED_PERCENT, STEP2_END_MASKED_PERCENT, 0);
             ObjectAnimator maskCrackAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, pvhMaskedCrack);
@@ -432,7 +424,8 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     public void split(CrackResultEntity crackResult) {
-        AnimatorSet bounceAnimatorSet = new AnimatorSet();
+
+        bounceAnimatorSet = new AnimatorSet();
         imageViewFull.setVisibility(View.GONE);
         imageViewCracked.setPivotY(imageViewFull.getHeight());
         imageViewCracked.setPivotX(imageViewFull.getWidth() * 0.5f);
@@ -470,8 +463,8 @@ public class WidgetTokenView extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                Animation rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
-                Animation rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_left_and_translate);
+                rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
+                rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_left_and_translate);
                 imageViewRight.startAnimation(rotateRightAnimation);
                 imageViewLeft.startAnimation(rotateLeftAnimation);
                 imageViewCracked.setVisibility(View.GONE);
@@ -512,7 +505,7 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     private void quickBounce() {
-        AnimatorSet quickBounceAnimatorSet = new AnimatorSet();
+        quickBounceAnimatorSet = new AnimatorSet();
         PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f);
         PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f);
         ObjectAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex, scaley);
@@ -543,7 +536,7 @@ public class WidgetTokenView extends FrameLayout {
         shake();
     }
 
-    public void clearTokenAnimation(){
+    public void clearTokenAnimation() {
         if (initialBounceAnimatorSet != null) {
             initialBounceAnimatorSet.removeListener(bounceListener);
             initialBounceAnimatorSet.cancel();
@@ -551,6 +544,18 @@ public class WidgetTokenView extends FrameLayout {
         }
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
+        }
+        if (bounceAnimatorSet != null) {
+            bounceAnimatorSet.cancel();
+        }
+        if (rotateLeftAnimation != null) {
+            rotateLeftAnimation.cancel();
+        }
+        if (rotateRightAnimation != null) {
+            rotateRightAnimation.cancel();
+        }
+        if (quickBounceAnimatorSet != null) {
+            quickBounceAnimatorSet.cancel();
         }
     }
 

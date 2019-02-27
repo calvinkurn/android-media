@@ -193,13 +193,15 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     private void startImageResultAnimation(ImageView imageViewCrack, AnimationSet animationCrackResult) {
-        new Handler().postDelayed(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
-                imageViewCrack.startAnimation(animationCrackResult);
-                imageViewCrack.setVisibility(View.VISIBLE);
+                if (getContext() != null) {
+                    imageViewCrack.startAnimation(animationCrackResult);
+                    imageViewCrack.setVisibility(View.VISIBLE);
+                }
             }
-        }, 100);
+        });
     }
 
     private void showCrackResultBackgroundAnimation() {
@@ -243,15 +245,17 @@ public class WidgetCrackResult extends RelativeLayout {
                             textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
 
                             String finalRewardStr = rewardStr;
-                            new Handler().postDelayed(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    float frontWidth = measureFrontTextWidth(textView.getTextSize(),
-                                            String.format(getContext().getString(R.string.rewards_increased_points_front_text), String.valueOf(rewardText.getValueBefore())));
-                                    slideAnimationLeftToRight(textView, rewardText, frontWidth);
-                                    initCountAnimation(textView, rewardText.getValueBefore(), rewardText.getValueAfter(), finalRewardStr);
+                                    if (getContext() != null) {
+                                        float frontWidth = measureFrontTextWidth(textView.getTextSize(),
+                                                String.format(getContext().getString(R.string.rewards_increased_points_front_text), String.valueOf(rewardText.getValueBefore())));
+                                        slideAnimationLeftToRight(textView, rewardText, frontWidth);
+                                        initCountAnimation(textView, rewardText.getValueBefore(), rewardText.getValueAfter(), finalRewardStr);
+                                    }
                                 }
-                            }, 100);
+                            });
                         }
                         childPosition++;
 
@@ -299,14 +303,15 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     private void startCounterAnimation(int rewardsCount) {
-        new Handler().postDelayed(new Runnable() {
+        postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                if (animationList != null && animationList.size() > 0) {
-                    counterAnimatorSet = new AnimatorSet();
-                    counterAnimatorSet.playTogether(animationList);
-                    counterAnimatorSet.start();
+                if (getContext() != null) {
+                    if (animationList != null && animationList.size() > 0) {
+                        counterAnimatorSet = new AnimatorSet();
+                        counterAnimatorSet.playTogether(animationList);
+                        counterAnimatorSet.start();
+                    }
                 }
             }
         }, rewardsCount * 150);
@@ -442,8 +447,12 @@ public class WidgetCrackResult extends RelativeLayout {
                 textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), animation.getAnimatedValue().toString(), text));
             }
         });
-        animationList = new ArrayList<>();
-        animationList.add(animator);
+        if (animationList == null) {
+            animationList = new ArrayList<>();
+        } else {
+            animationList.clear();
+            animationList.add(animator);
+        }
     }
 
 
@@ -517,6 +526,12 @@ public class WidgetCrackResult extends RelativeLayout {
                 listCrackResultParent.removeView(tvTierInfoList);
             }
             tvTierInfoList.clear();
+        }
+        if(counterAnimatorSet!=null){
+            counterAnimatorSet.cancel();
+        }
+        if (animationList != null) {
+            animationList.clear();
         }
     }
 

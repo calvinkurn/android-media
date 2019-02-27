@@ -41,7 +41,6 @@ public class WidgetRewardCrackResult extends FrameLayout {
     private static final long NUMBER_COUNTER_DURATION = 1500;
     private static final long REWARDS_VIEW_SCALE_DOWN_DURATION = 150;
     private static final float BACKGROUND_SCALE_FACTOR_BOUND = 0.4f;
-    private Context context;
     private RelativeLayout rlPoints, rlLoyalty, rlCoupons;
     private TextView tvPoints, tvLoyalty, tvCoupons;
     private LinearLayout llRewards;
@@ -60,19 +59,16 @@ public class WidgetRewardCrackResult extends FrameLayout {
 
     public WidgetRewardCrackResult(@NonNull Context context) {
         super(context);
-        this.context = context;
         init();
     }
 
     public WidgetRewardCrackResult(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
         init();
     }
 
     public WidgetRewardCrackResult(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.context = context;
         init();
     }
 
@@ -276,18 +272,24 @@ public class WidgetRewardCrackResult extends FrameLayout {
     }
 
     private void clearDummyViews() {
-        for (TextView tv : tvPointsList) {
-            llRewards.removeView(tv);
+        if (tvPointsList != null) {
+            for (TextView tv : tvPointsList) {
+                llRewards.removeView(tv);
+            }
+            tvPointsList.clear();
         }
-        for (TextView tv : tvLoyaltyList) {
-            llRewards.removeView(tv);
+        if (tvLoyaltyList != null) {
+            for (TextView tv : tvLoyaltyList) {
+                llRewards.removeView(tv);
+            }
+            tvLoyaltyList.clear();
         }
-        for (TextView tv : tvCouponsList) {
-            llRewards.removeView(tv);
+        if (tvCouponsList != null) {
+            for (TextView tv : tvCouponsList) {
+                llRewards.removeView(tv);
+            }
+            tvCouponsList.clear();
         }
-        tvPointsList.clear();
-        tvLoyaltyList.clear();
-        tvCouponsList.clear();
     }
 
     public void setRewards(int points, int coupons, int loyalty) {
