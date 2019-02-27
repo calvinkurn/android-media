@@ -115,7 +115,8 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
                         );
                         clickListener.onItemSearchClicked(
                                 item.getKeyword(),
-                                item.getCategoryId()
+                                item.getCategoryId(),
+                                item.getIsOfficial()
                         );
                     }
                 });

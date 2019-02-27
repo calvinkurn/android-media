@@ -234,12 +234,12 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     @Override
-    public void onItemSearchClicked(String keyword, String categoryId) {
+    public void onItemSearchClicked(String keyword, String categoryId, boolean isOfficial) {
         dropKeyBoard();
         if (!TextUtils.isEmpty(categoryId)) {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId);
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId, isOfficial);
         } else {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword);
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, isOfficial);
         }
     }
 

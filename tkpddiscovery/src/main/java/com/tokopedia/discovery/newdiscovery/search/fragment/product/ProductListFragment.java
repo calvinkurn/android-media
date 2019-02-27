@@ -800,19 +800,20 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     protected void openBottomSheetFilter() {
-        addPreFilteredCategory();
+        addPreFilteredCategoryAndIsOfficial();
         super.openBottomSheetFilter();
     }
 
     @Override
     protected void openFilterPage() {
-        addPreFilteredCategory();
+        addPreFilteredCategoryAndIsOfficial();
         super.openFilterPage();
     }
 
-    private void addPreFilteredCategory() {
+    private void addPreFilteredCategoryAndIsOfficial() {
         String preFilteredSc = getSearchParameter().getDepartmentId();
-        if (TextUtils.isEmpty(preFilteredSc)) {
+        boolean isOfficial = getSearchParameter().isOfficial();
+        if (TextUtils.isEmpty(preFilteredSc) && !isOfficial) {
             return;
         }
         if (getFlagFilterHelper() == null) {
@@ -820,6 +821,9 @@ public class ProductListFragment extends SearchSectionFragment
             getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
             getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
             FilterHelper.populateWithSelectedCategory(getFilters(), getFlagFilterHelper(), preFilteredSc);
+            if (isOfficial) {
+                FilterHelper.addPreFilteredIsOfficial(getFilters(), getFlagFilterHelper());
+            }
         }
     }
 

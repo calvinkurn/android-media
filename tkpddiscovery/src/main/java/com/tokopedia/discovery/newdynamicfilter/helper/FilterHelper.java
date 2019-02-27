@@ -4,6 +4,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.LevelThreeCategory;
 import com.tokopedia.core.discovery.model.LevelTwoCategory;
 import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,5 +69,15 @@ public class FilterHelper {
             }
         }
         return null;
+    }
+
+    public static void addPreFilteredIsOfficial(List<Filter> filters, FilterFlagSelectedModel selectedModel) {
+        for (Filter filter : filters) {
+            for (Option option : filter.getOptions()) {
+                if (BrowseApi.OFFICIAL.equals(option.getKey())) {
+                    selectedModel.getSavedCheckedState().put(option.getUniqueId(), true);
+                }
+            }
+        }
     }
 }

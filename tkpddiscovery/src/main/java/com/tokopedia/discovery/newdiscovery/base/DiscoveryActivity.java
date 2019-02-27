@@ -295,7 +295,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    public void onSuggestionProductClick(String keyword, String categoryID) {
+    public void onSuggestionProductClick(String keyword, String categoryID, boolean isOfficial) {
         SearchParameter parameter = new SearchParameter();
         parameter.setQueryKey(keyword);
         parameter.setUniqueID(
@@ -309,19 +309,24 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                         null
         );
         parameter.setDepartmentId(categoryID);
+        parameter.setOfficial(isOfficial);
         onSearchingStart(keyword);
         setForceSearch(false);
         getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
     }
 
-    public void onSuggestionProductClick(String keyword) {
+    public void onSuggestionProductClick(String keyword, boolean isOfficial) {
         setForceSwipeToShop(false);
         setForceSearch(false);
         setRequestOfficialStoreBanner(true);
-        performRequestProduct(keyword);
+        performRequestProduct(keyword, isOfficial);
     }
 
     protected void performRequestProduct(String keyword) {
+        performRequestProduct(keyword, false);
+    }
+
+    protected void performRequestProduct(String keyword, boolean isOfficial) {
         SearchParameter parameter = new SearchParameter();
         parameter.setQueryKey(keyword);
         parameter.setUniqueID(
@@ -334,6 +339,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                         userSession.getUserId() :
                         null
         );
+        parameter.setOfficial(isOfficial);
         onSearchingStart(keyword);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
         getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());

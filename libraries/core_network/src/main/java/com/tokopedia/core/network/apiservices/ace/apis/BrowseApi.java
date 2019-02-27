@@ -73,6 +73,7 @@ public interface BrowseApi {
     String ROWS = "rows";
     String IMAGE = "image";
     String SC = "sc"; //  (category id)
+    String OFFICIAL = "official"; //  (category id)
     String DEFAULT_SC = "default_sc"; //  (category id)
     String FLOC = "floc"; // (location id)
     String SHIPPING = "shipping"; // (shipping id)

@@ -24,6 +24,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -82,6 +83,7 @@ public class SearchActivity extends DiscoveryActivity
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
     private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
+    private static final String EXTRA_OFFICIAL = "EXTRA_OFFICIAL";
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
@@ -122,11 +124,14 @@ public class SearchActivity extends DiscoveryActivity
     @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
         String departmentId = bundle.getString(BrowseApi.SC);
+        boolean isOfficial = bundle.getBoolean(BrowseApi.OFFICIAL, false);
         Intent intent = new Intent(context, SearchActivity.class);
 
         if (!TextUtils.isEmpty(departmentId)) {
             intent.putExtra(DEPARTMENT_ID, departmentId);
         }
+
+        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
 
         intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
         intent.putExtras(bundle);
@@ -182,6 +187,7 @@ public class SearchActivity extends DiscoveryActivity
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
+        boolean isOfficial = getIntent().getBooelanExtra(EXTRA_OFFICIAL, false);
 
         if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
             moveTaskToBack(true);
@@ -194,9 +200,9 @@ public class SearchActivity extends DiscoveryActivity
             bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         } else if (!TextUtils.isEmpty(searchQuery)) {
             if (!TextUtils.isEmpty(categoryId)) {
-                onSuggestionProductClick(searchQuery, categoryId);
+                onSuggestionProductClick(searchQuery, categoryId, isOfficial);
             } else {
-                onSuggestionProductClick(searchQuery);
+                onSuggestionProductClick(searchQuery, isOfficial);
             }
         } else {
             searchView.showSearch(true, false);

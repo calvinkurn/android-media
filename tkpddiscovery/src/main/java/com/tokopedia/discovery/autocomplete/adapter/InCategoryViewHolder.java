@@ -74,7 +74,8 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
                 );
                 listener.onItemSearchClicked(
                         element.getKeyword(),
-                        element.getCategoryId()
+                        element.getCategoryId(),
+                        element.getIsOfficial()
                 );
             }
         });

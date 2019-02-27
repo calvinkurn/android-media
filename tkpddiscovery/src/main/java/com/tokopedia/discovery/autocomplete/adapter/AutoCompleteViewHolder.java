@@ -67,7 +67,8 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
                 );
                 listener.onItemSearchClicked(
                         element.getKeyword(),
-                        element.getCategoryId()
+                        element.getCategoryId(),
+                        element.getIsOfficial()
                 );
             }
         });

@@ -109,7 +109,8 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
                         );
                         clickListener.onItemSearchClicked(
                                 item.getKeyword(),
-                                item.getCategoryId()
+                                item.getCategoryId(),
+                                item.getIsOfficial()
                         );
                     }
                 });

@@ -13,6 +13,7 @@ public class BaseItemAutoCompleteSearch {
     private String searchTerm;
     private String productId;
     private String productPrice;
+    private boolean isOfficial;
 
     public String getProductId() {
         return productId;
@@ -100,5 +101,13 @@ public class BaseItemAutoCompleteSearch {
 
     public void setSearchTerm(String searchTerm) {
         this.searchTerm = searchTerm;
+    }
+
+    public boolean getIsOfficial() {
+        return isOfficial;
+    }
+
+    public void setIsOfficial(boolean isOfficial) {
+        this.isOfficial = isOfficial;
     }
 }
