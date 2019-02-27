@@ -5,6 +5,15 @@ import com.tokopedia.checkout.R
 import com.tokopedia.design.component.BottomSheets
 
 class PromoMerchantBottomsheet : BottomSheets(), PromoMerchantListener {
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): PromoMerchantBottomsheet {
+            val promoMerchantBottomsheet = PromoMerchantBottomsheet()
+            return promoMerchantBottomsheet
+        }
+    }
+
     override fun onPromoMerchantShown() {
         println("++ PROMO MERCHANT IS SHOWN!")
         this.showsDialog = true
@@ -18,5 +27,4 @@ class PromoMerchantBottomsheet : BottomSheets(), PromoMerchantListener {
     override fun initView(view: View?) {
         // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
 }

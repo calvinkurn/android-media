@@ -54,6 +54,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.promostacking.PromoMerchantBottomsheet;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -121,6 +122,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private LinearLayout llNetworkErrorView;
     private LinearLayout emptyCartContainer;
     private TopAdsCarouselView topAdsCarouselView;
+    private PromoMerchantBottomsheet promoMerchantBottomsheet;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -1607,8 +1609,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onPromoMerchantClicked() {
         System.out.println("++ PROMO SHOP CLICKED!!");
-        /*if (getActivity() instanceof PromoMerchantListener) {
-            ((PromoMerchantListener) getActivity()).onPromoMerchantShown();
-        }*/
+        promoMerchantBottomsheet = PromoMerchantBottomsheet.newInstance();
+
+        if (getActivity() != null) {
+            promoMerchantBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+        }
     }
 }
