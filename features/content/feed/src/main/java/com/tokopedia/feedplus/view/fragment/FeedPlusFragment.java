@@ -383,7 +383,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
-        triggerClearNewFeedNotification();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }
@@ -571,6 +570,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         adapter.setEndlessScrollListener();
+        triggerClearNewFeedNotification();
     }
 
     @Override
@@ -580,6 +580,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         adapter.unsetEndlessScrollListener();
+        triggerClearNewFeedNotification();
     }
 
     @Override
@@ -829,7 +830,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
-        triggerClearNewFeedNotification();
     }
 
     private void triggerClearNewFeedNotification() {
@@ -923,7 +923,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         startActivity(intent);
     }
 
-    private String getFeedAnalyticsHeader(int page, int rowNumber) {
+    private String getFeedAnalyticsHeader(int page, int rfowNumber) {
         return page + "." + rowNumber + " ";
     }
 
