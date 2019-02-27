@@ -22,7 +22,11 @@ data class PreOrder(
         @SerializedName("timeUnit")
         @Expose
         val timeUnit: String = TimeUnitTypeDef.UNKNOWN
-)
+) {
+    fun isPreOrderActive(): Boolean {
+        return (isActive && duration > 0)
+    }
+}
 
 data class Wholesale(
 

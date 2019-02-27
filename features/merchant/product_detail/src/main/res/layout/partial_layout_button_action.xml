@@ -54,7 +54,7 @@
         android:textColor="@color/color_href_link"
         android:background="@drawable/btn_buy"
         android:visibility="gone"
-        tools:visibility="visible"
+        tools:visibility="gone"
         app:fontSize="title"
         app:weight="medium"
         app:layout_constraintLeft_toRightOf="@+id/btn_buy"
@@ -118,6 +118,7 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:background="@drawable/bg_rounded_orange_red_outline"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintLeft_toRightOf="@+id/btn_topchat"
         app:layout_constraintStart_toEndOf="@+id/btn_topchat"
         app:layout_constraintTop_toTopOf="parent"
@@ -144,7 +145,7 @@
             android:layout_height="19dp"
             android:layout_gravity="center"
             android:indeterminateTint="@color/orange_red"
-            tools:visibility="visible"
+            tools:visibility="gone"
             android:visibility="gone" />
 
     </FrameLayout>
@@ -158,6 +159,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:background="@drawable/bg_btn_add_to_cart"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintLeft_toRightOf="@+id/btn_buy_now"
         app:layout_constraintStart_toEndOf="@+id/btn_buy_now"
         app:layout_constraintTop_toTopOf="parent"

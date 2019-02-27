@@ -4,45 +4,76 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductDetailVariantResponse(
-        @SerializedName("getPDPVariantInfo")
+        @SerializedName("GetProductVariant")
         @Expose
-        val data: ProductVariant = ProductVariant()
+        val data: ProductVariant? = ProductVariant()
 )
 
 data class ProductVariant(
 
-        @SerializedName("parent_id")
+        @SerializedName("ParentID")
         @Expose
         var parentId: Int? = null,
-        @SerializedName("default_child")
+
+        @SerializedName("DefaultChild")
         @Expose
         var defaultChild: Int? = null,
-        @SerializedName("variant")
+
+        @SerializedName("SizeChart")
         @Expose
-        var variant: List<Variant>? = null,
-        @SerializedName("children")
-        @Expose
-        var children: List<Child>? = null,
-        @SerializedName("sizechart")
-        @Expose
-        var sizechart: String? = null,
-        @SerializedName("enabled")
+        var sizeChart: String = "",
+
+        @SerializedName("Enabled")
         @Expose
         var enabled: Boolean? = null,
-        @SerializedName("always_available")
+
+        @SerializedName("AlwaysAvailable")
         @Expose
         var alwaysAvailable: Boolean? = null,
-        @SerializedName("stock")
+
+        @SerializedName("Stock")
         @Expose
-        var stock: Int? = null
-)
+        var stock: Int? = null,
+
+        @SerializedName("Variant")
+        @Expose
+        var variant: List<Variant> = listOf(),
+
+        @SerializedName("Children")
+        @Expose
+        var children: List<Child> = listOf()
+) {
+    val hasChildren: Boolean
+        get() = with(children) {this.isNotEmpty() }
+
+    val hasVariant: Boolean
+        get() = with(variant) { this.isNotEmpty() }
+
+    val defaultChildString: String?
+        get() = if (defaultChild != null && defaultChild != 0) {
+            defaultChild.toString()
+        } else {
+            null
+        }
+
+    fun getVariant(selectedVariantId: String?): Child? {
+        if (hasChildren) {
+            for (child: Child in children) {
+                if (child.productId.toString().equals(selectedVariantId, false)) {
+                    return child
+                }
+            }
+        }
+        return null
+    }
+}
 
 data class Picture(
 
-        @SerializedName("original")
+        @SerializedName("URL")
         @Expose
         var original: String? = null,
-        @SerializedName("thumbnail")
+        @SerializedName("URL200")
         @Expose
         var thumbnail: String? = null
 

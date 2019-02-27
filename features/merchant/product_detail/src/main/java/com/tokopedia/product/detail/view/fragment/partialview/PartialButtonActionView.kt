@@ -39,8 +39,8 @@ class PartialButtonActionView private constructor(private val view: View){
         }
     }
 
-    fun renderData(productStatus: String, hasShopAuthority: Boolean, preOrder: PreOrder?){
-        if (productStatus == ProductStatusTypeDef.WAREHOUSE) {
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?){
+        if (isWarehouseProduct) {
             showNoStockButton()
         } else if (hasShopAuthority){
             showShopManageButton()
@@ -56,7 +56,7 @@ class PartialButtonActionView private constructor(private val view: View){
             btn_promote_topads.visibility = View.GONE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
-            tv_buy_now.text = context.getString(if (preOrder?.isActive == true && preOrder.duration > 0){
+            tv_buy_now.text = context.getString(if (preOrder?.isPreOrderActive() == true){
                 R.string.action_preorder
             } else R.string.buy)
             btn_buy_now.visibility = View.VISIBLE
@@ -83,7 +83,7 @@ class PartialButtonActionView private constructor(private val view: View){
     private fun showNoStockButton() {
         with(view) {
             tv_buy.setTextColor(ContextCompat.getColor(context, R.color.black_38))
-            btn_buy.setBackgroundResource(R.drawable.btn_buy_grey)
+            btn_buy.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300))
             tv_buy.text = context.getString(R.string.no_stock)
             btn_buy.isEnabled = false
             btn_buy.visibility = View.VISIBLE

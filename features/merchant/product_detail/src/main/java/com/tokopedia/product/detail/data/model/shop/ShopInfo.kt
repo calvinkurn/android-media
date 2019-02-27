@@ -110,4 +110,6 @@ data class ShopInfo(
             @Expose
             val isOfficial: Int = 0
     )
+
+    var allowManage: Boolean = (isAllowManage == 1)
 }

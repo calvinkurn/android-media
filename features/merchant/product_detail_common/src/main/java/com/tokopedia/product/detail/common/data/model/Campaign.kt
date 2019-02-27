@@ -55,4 +55,7 @@ data class Campaign(
         @SerializedName("campaignType")
         @Expose
         val type: Int = 0
-)
+) {
+    val activeAndHasId
+        get() = isActive && (id.toIntOrNull() ?: 0) > 0
+}

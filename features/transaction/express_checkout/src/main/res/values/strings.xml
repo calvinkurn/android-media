@@ -34,5 +34,11 @@
     <string name="label_duration_with_value"><![CDATA[Durasi <b>%1$s</b>]]></string>
     <string name="label_courier_with_value"><![CDATA[Kurir <b>%1$s</b>]]></string>
     <string name="label_address_with_value"><![CDATA[<b>%1$s</b> %2$s]]></string>
+    <string name="label_total_price">Total Harga</string>
+    <string name="no_stock">Stok Kosong</string>
+    <string name="label_button_preorder">Preorder</string>
+    <string name="add_to_cart">Tambah ke Keranjang</string>
+    <string name="label_discount_percentage">%1$d%%OFF</string>
+    <string name="sizechart_guideline">Panduan Ukuran</string>
 
 </resources>

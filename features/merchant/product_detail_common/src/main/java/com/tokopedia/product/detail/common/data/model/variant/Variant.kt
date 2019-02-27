@@ -6,48 +6,62 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by hendry on 01/02/19.
  */
-data class Variant (
+data class Variant(
 
-    @SerializedName("pv")
-    @Expose
-    val pv: Int? = null,
-    @SerializedName("v")
-    @Expose
-    val v: Int? = null,
-    @SerializedName("vu")
-    @Expose
-    val vu: Int? = null,
-    @SerializedName("name")
-    @Expose
-    val name: String? = null,
-    @SerializedName("identifier")
-    @Expose
-    val identifier: String? = null,
-    @SerializedName("unit_name")
-    @Expose
-    val unitName: String? = null,
-    @SerializedName("position")
-    @Expose
-    val position: Int? = null,
-    @SerializedName("option")
-    @Expose
-    val option: List<Option>? = null
-)
+        @SerializedName("ProductVariantID")
+        @Expose
+        val pv: Int? = null, //ex: 6528
 
-data class Option (
+        @SerializedName("VariantID")
+        @Expose
+        val v: Int? = null, //ex:1
 
-        @SerializedName("id")
+        @SerializedName("VariantUnitID")
+        @Expose
+        val vu: Int? = null, // ex: 0
+
+        @SerializedName("Name")
+        @Expose
+        val name: String? = null, //ex:Warna
+
+        @SerializedName("Identifier")
+        @Expose
+        val identifier: String? = null, // ex: colour
+
+        @SerializedName("UnitName")
+        @Expose
+        val unitName: String? = null, //example: International
+
+        @SerializedName("Position")
+        @Expose
+        val position: Int? = null, //start from 1
+
+        @SerializedName("Option")
+        @Expose
+        val options: List<Option>? = null
+) {
+    val isSizeIdentifier: Boolean
+        get() = "size".equals(identifier, false)
+}
+
+data class Option(
+
+        @SerializedName("ProductVariantOptionID") // ex:23454
         @Expose
         val id: Int? = null,
-        @SerializedName("vuv")
+
+        @SerializedName("VariantUnitValueID") //ex: 1
         @Expose
         val vuv: Int? = null,
-        @SerializedName("value")
+
+        @SerializedName("Value")
         @Expose
-        val value: String? = null,
-        @SerializedName("hex")
+        val value: String? = null, // example: "White"
+
+        @SerializedName("Hex")
         @Expose
-        val hex: String? = null,
+        val hex: String? = null, // ex:#ff3303
+
         @SerializedName("picture")
         @Expose
         val picture: Picture? = null

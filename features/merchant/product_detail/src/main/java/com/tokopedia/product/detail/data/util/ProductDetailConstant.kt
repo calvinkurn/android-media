@@ -8,14 +8,6 @@ object ProductDetailConstant {
 
     const val MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads"
 
-    @IntDef(BUY, ADD_TO_CART, BUY_NOW)
-    @Retention(AnnotationRetention.SOURCE)
-    annotation class ProductAction {}
-
-    const val BUY = 0
-    const val ADD_TO_CART = 1
-    const val BUY_NOW = 2
-
     //report product
     const val PATH_PRODUCT_TYPE = "v4/product/"
     const val PATH_REPORT_TYPE = "get_product_report_type.pl"

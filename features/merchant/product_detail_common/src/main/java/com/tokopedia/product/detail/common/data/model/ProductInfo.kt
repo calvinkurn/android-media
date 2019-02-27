@@ -30,7 +30,7 @@ data class ProductInfo(
 
         @SerializedName("pictures")
         @Expose
-        val pictures: List<Picture> = listOf(),
+        val pictures: List<Picture>? = listOf(),
 
         @SerializedName("preorder")
         @Expose
@@ -50,7 +50,7 @@ data class ProductInfo(
 
         @SerializedName("wholesale")
         @Expose
-        val wholesale: List<Wholesale> = listOf(),
+        val wholesale: List<Wholesale>? = listOf(),
 
         @SerializedName("variant")
         @Expose
@@ -60,15 +60,53 @@ data class ProductInfo(
         @Expose
         val stock: Stock = Stock()
 ) {
-        data class Response(
-                @SerializedName("getPDPInfo")
-                @Expose
-                val data: ProductInfo? = null
-        )
+    data class Response(
+            @SerializedName("getPDPInfo")
+            @Expose
+            val data: ProductInfo? = null
+    )
 
-        data class WishlistStatus(
-                @SerializedName("ProductWishlistQuery")
-                @Expose
-                var isWishlisted: Boolean? = null
-        )
+    data class WishlistStatus(
+            @SerializedName("ProductWishlistQuery")
+            @Expose
+            var isWishlisted: Boolean? = null
+    )
+
+    val parentProductId: String
+        get() =
+            if (variant.isVariant && variant.parentID.isNotEmpty() && variant.parentID.toInt() > 0) {
+                variant.parentID
+            } else {
+                basic.id.toString()
+            }
+
+    val shouldShowCod: Boolean
+        get() = (!campaign.activeAndHasId) && basic.isEligibleCod
+
+    val hasActiveCampaign: Boolean
+        get() = campaign.activeAndHasId
+
+    val isPreorderActive: Boolean
+        get() = with(preorder) { isActive && duration > 0 }
+
+    val hasWholesale: Boolean
+        get() = wholesale!= null && wholesale.size > 0
+
+    val firstThumbnailPicture: String
+        get() {
+            if (pictures!= null && pictures.size > 0) {
+                if (pictures[0].urlThumbnail.isNotEmpty()){
+                    return pictures[0].urlThumbnail
+                } else if (pictures[0].url300.isNotEmpty()){
+                    return pictures[0].url300
+                } else if (pictures[0].urlOriginal.isNotEmpty()){
+                    return pictures[0].urlOriginal
+                } else {
+                    return ""
+                }
+            } else {
+                return ""
+            }
+        }
+
 }
