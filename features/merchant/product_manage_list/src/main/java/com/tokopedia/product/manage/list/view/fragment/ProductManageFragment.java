@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -23,17 +21,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
@@ -46,18 +39,13 @@ import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.product.share.ProductData;
-import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
@@ -70,13 +58,14 @@ import com.tokopedia.product.manage.list.constant.CashbackOption;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
-import com.tokopedia.product.manage.list.utils.ProductManageImageSticker;
 import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity;
 import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageListAdapter;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
+import com.tokopedia.product.share.ProductData;
+import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
@@ -92,8 +81,9 @@ import com.tokopedia.topads.common.data.model.FreeDeposit;
 import com.tokopedia.topads.freeclaim.data.constant.TopAdsFreeClaimConstantKt;
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,7 +121,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private Boolean goldMerchant;
     private boolean isOfficialStore;
     private String shopDomain;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -245,7 +235,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         productManageFilterModel.reset();
         hasNextPage = false;
 
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity());
         productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
     }
 

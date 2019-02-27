@@ -124,6 +124,11 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (interactionListener == null) {
+            if (getParentFragment() instanceof InteractionListener) {
+                interactionListener = (InteractionListener) getParentFragment();
+            }
+        }
         presenter.attachView(this);
         presenter.onDealsCheckout();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -303,7 +308,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         );
-                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_8), 0 , 0);
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_8), 0, 0);
                         containerLayout.setLayoutParams(
                                 layoutParams
                         );

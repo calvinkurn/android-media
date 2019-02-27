@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class ShopOwnerModel {
     @SerializedName("is_gold_merchant")
     @Expose
-    private Boolean isGoldMerchant;
+    private Boolean isGoldMerchant = false;
 
     public Boolean getGoldMerchant() {
         return isGoldMerchant;
