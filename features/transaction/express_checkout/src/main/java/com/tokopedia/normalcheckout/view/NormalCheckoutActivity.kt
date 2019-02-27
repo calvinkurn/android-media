@@ -8,8 +8,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ProductAction
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.EXTRA_MESSAGES_ERROR
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.RESULT_CODE_ERROR
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -71,7 +69,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         fragment?.run {
-            (this as NormalCheckoutFragment).selectVariant()
+            (this as NormalCheckoutFragment).selectVariantAndFinish()
         }
         overridePendingTransition(0, R.anim.push_down)
     }

@@ -162,20 +162,21 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
      * If the id exists, it will search for the variant in the product and then return the mapping
      */
     fun getSelectedProductInfo(productInfoAndVariant: ProductInfoAndVariant, selectedVariantId: String?): ProductInfo {
-        if (selectedVariantId.isNullOrEmpty() ||
-                selectedVariantId.equals(productInfoAndVariant.productInfo.basic.id.toString(), false)) {
+        if (selectedVariantId.isNullOrEmpty()) {
             return productInfoAndVariant.productInfo
         } else {
             val selectedVariant = productInfoAndVariant.productVariant.getVariant(selectedVariantId)
             if (selectedVariant != null) {
                 if (selectedVariant.isBuyable) {
-                    return ModelMapper.convertVariantToModels(originalProduct?.productInfo!!, selectedVariant)
+                    return ModelMapper.convertVariantToModels(originalProduct?.productInfo!!, selectedVariant,
+                            productInfoAndVariant.productVariant.variant)
                 } else {
                     val child = getOtherSiblingProduct(originalProduct!!, selectedVariant.optionIds)
-                    if (child == null) {
-                        return productInfoAndVariant.productInfo
+                    return if (child == null) {
+                        productInfoAndVariant.productInfo
                     } else {
-                        return ModelMapper.convertVariantToModels(productInfoAndVariant.productInfo, child)
+                        ModelMapper.convertVariantToModels(productInfoAndVariant.productInfo, child,
+                                productInfoAndVariant.productVariant.variant)
                     }
                 }
             } else {
@@ -297,7 +298,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
         ToasterError.make(activity!!.findViewById(android.R.id.content),
-                ErrorHandler.getErrorMessage(context, throwable)).show()
+                ErrorHandler.getErrorMessage(context, throwable))
+            .setAction(R.string.retry_label){
+                loadInitialData()
+            }
+            .show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -336,13 +341,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (hasError()) {
                 return@setOnClickListener
             }
-            //TODO buy
             if (action == ATC_ONLY) {
                 addToCart()
             } else {
-                // TODO select or buy or preorder
                 if (action == ATC_AND_SELECT) {
-                    selectVariant()
+                    selectVariantAndFinish()
                 } else {
                     doBuyOrPreorder()
                 }
@@ -353,14 +356,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    private fun addToCart() {
-        //TODO add to cart
-    }
-
     /**
      * called when click button select (when action is ATC_AND_SELECT) or when backpressed
      */
-    fun selectVariant() {
+    fun selectVariantAndFinish() {
         activity?.run {
             if (fragmentViewModel.isStateChanged == true) {
                 setResult(Activity.RESULT_OK, Intent().apply {
@@ -378,12 +377,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putExtra(EXTRA_NOTES, notes)
                 })
             }
-            onBackPressed()
+            finish()
         }
     }
 
     private fun doBuyOrPreorder() {
         //TODO do buy or preorder
+    }
+
+    private fun addToCart() {
+        //TODO add to cart
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */
@@ -484,6 +487,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         if (fragmentViewModel.isStateChanged == false && noteViewModel.note.isNotEmpty()) {
             fragmentViewModel.isStateChanged = true
         }
+        notes = noteViewModel.note
     }
 
     private fun hasError(): Boolean {

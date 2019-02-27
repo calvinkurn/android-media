@@ -20,16 +20,11 @@ import java.util.concurrent.TimeUnit
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
+class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : AbstractViewHolder<QuantityViewModel>(view) {
 
-    private var actionListener: CheckoutVariantActionListener
+    private var actionListener: CheckoutVariantActionListener = listener
     private var quantityChangeDebounceListener: QuantityChangeDebounceListener? = null
     private lateinit var element: QuantityViewModel
-
-    constructor(view: View, listener: CheckoutVariantActionListener) : super(view) {
-        this.actionListener = listener
-        initUpdateShippingRatesDebouncer()
-    }
 
     companion object {
         const val QUANTITY_PLACEHOLDER = "{{value}}"
@@ -201,5 +196,9 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
             var previousQuantity: Int,
             var newQuantity: Int
     )
+
+    init {
+        initUpdateShippingRatesDebouncer()
+    }
 
 }

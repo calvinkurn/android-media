@@ -18,21 +18,26 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
         fun build(_view: View) = PartialVariantAndRateEstView(_view)
     }
 
-    fun renderData(productVariant: ProductVariant?, onVariantClickedListener: (()->Unit)? = null) {
+    fun renderData(productVariant: ProductVariant?, selectedOptionString: String, onVariantClickedListener: (() -> Unit)? = null) {
         with(view) {
             if (productVariant != null) {
                 label_variant.visible()
                 label_choose_variant.visible()
-                if (txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible){
+                if (txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible) {
                     variant_divider.visible()
                 } else {
                     variant_divider.gone()
                 }
                 label_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 label_choose_variant.setOnClickListener { onVariantClickedListener?.invoke() }
-                val chooseString = "${view.context.getString(R.string.choose)} " +
-                        "${productVariant.variant?.map { it.name }?.joinToStringWithLast(separator = ", ",
-                                lastSeparator = " ${view.context.getString(R.string.and)} ")}"
+                val chooseString =
+                    if (selectedOptionString.isEmpty()) {
+                        "${view.context.getString(R.string.choose)} " +
+                            productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
+                                lastSeparator = " ${view.context.getString(R.string.and)} ")
+                    } else {
+                        selectedOptionString
+                    }
                 label_choose_variant.text = chooseString
                 visible()
             } else {
@@ -44,10 +49,10 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     }
 
-    fun renderRateEstimation(ratesModel: RatesModel, shopLocation: String, onRateEstimationClicked: (()-> Unit)? = null) {
+    fun renderRateEstimation(ratesModel: RatesModel, shopLocation: String, onRateEstimationClicked: (() -> Unit)? = null) {
         if (ratesModel.id.isBlank()) return
 
-        with(view){
+        with(view) {
             txt_rate_estimation_start.text = MethodChecker.fromHtml(ratesModel.texts.textMinPrice)
             txt_rate_estimation_start.visible()
             icon_shop_location.visible()
@@ -57,7 +62,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             txt_courier_dest.text = ratesModel.texts.textDestination
             txt_courier_dest.visible()
 
-            if (label_variant.isVisible){
+            if (label_variant.isVisible) {
                 variant_divider.visible()
             } else {
                 variant_divider.gone()
@@ -68,9 +73,9 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
     }
 
     fun renderPriorityOrder(shopCommitment: ShopCommitment) {
-        with(view){
-            if (shopCommitment.isNowActive){
-                if (label_variant.isVisible || txt_courier_dest.isVisible){
+        with(view) {
+            if (shopCommitment.isNowActive) {
+                if (label_variant.isVisible || txt_courier_dest.isVisible) {
                     priority_order_divider.visible()
                 } else {
                     priority_order_divider.gone()
