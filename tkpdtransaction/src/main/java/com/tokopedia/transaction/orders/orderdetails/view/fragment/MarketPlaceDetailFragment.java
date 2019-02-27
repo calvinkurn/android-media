@@ -221,10 +221,18 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_9));
-        shape.setColor(android.graphics.Color.parseColor(conditionalInfo.color().background()));
-        shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), android.graphics.Color.parseColor(conditionalInfo.color().border()));
+        if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
+            shape.setColor(Color.parseColor(conditionalInfo.color().background()));
+        }
+        if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
+            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+        }
         conditionalInfoText.setBackground(shape);
+        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
         conditionalInfoText.setText(conditionalInfo.text());
+        if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
+            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
+        }
 
     }
 
