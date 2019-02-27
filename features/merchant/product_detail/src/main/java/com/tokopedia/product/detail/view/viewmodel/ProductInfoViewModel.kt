@@ -90,7 +90,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val productInfoP1 = ProductInfoP1()
 
             // for unsigned in jenkins
-            /*val error = data.getError(ProductInfo.Response::class.java)
+            val error = data.getError(ProductInfo.Response::class.java)
             if (error == null || error.isEmpty()){
                 data.getData<ProductInfo.Response>(ProductInfo.Response::class.java).data?.let {
                     productInfoP1.productInfo =  it
@@ -98,13 +98,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 }
             } else {
                 throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-            }*/
+            }
 
             // for signed
-            data.getSuccessData<ProductInfo.Response>().data?.let {
+            /*data.getSuccessData<ProductInfo.Response>().data?.let {
                 productInfoP1.productInfo =  it
                 productInfoP1Resp.value = Success(productInfoP1)
-            }
+            }*/
 
             //if fail, will not interrupt the product info
             val variantJob = async {
@@ -134,6 +134,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
         }) {
             //productInfoP1Resp.value = Fail(it)
+            it.printStackTrace()
             // for testing
             val gson = Gson()
             val productInfoP1 = ProductInfoP1()
