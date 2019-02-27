@@ -123,15 +123,11 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         isSeller = userSession.hasShop() || userSession.isAffiliate();
         TextView saldoHelp = findViewById(R.id.toolbar_saldo_help);
 
-        if (isSeller) {
-            saldoHelp.setVisibility(View.VISIBLE);
-            saldoHelp.setOnClickListener(v -> {
-                RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                        SaldoDetailsConstants.SALDO_HELP_URL));
-            });
-        } else {
-            saldoHelp.setVisibility(View.GONE);
-        }
+        saldoHelp.setVisibility(View.VISIBLE);
+        saldoHelp.setOnClickListener(v -> {
+            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    SaldoDetailsConstants.SALDO_HELP_URL));
+        });
     }
 
     @Override

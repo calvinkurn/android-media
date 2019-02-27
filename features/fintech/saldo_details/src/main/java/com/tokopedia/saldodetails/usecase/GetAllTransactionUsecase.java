@@ -65,7 +65,4 @@ public class GetAllTransactionUsecase {
         this.isRequesting = isRequesting;
     }
 
-    public void setIsSeller(boolean seller) {
-        boolean isSeller = seller;
-    }
 }

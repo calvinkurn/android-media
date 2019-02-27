@@ -45,7 +45,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     GetAllTransactionUsecase getAllTransactionUsecase;
 
     private PagingHandler paging;
-//    private DepositCacheInteractor depositCacheInteractor;
 
     private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
     private static final long MAX_DAYS_DIFFERENCE = 31;
@@ -55,11 +54,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     private String paramStartDate;
     private String paramEndDate;
     private static final String DATE_FORMAT_WS = "yyyy/MM/dd";
-    private boolean isSeller;
 
     @Inject
     public SaldoHistoryPresenter(@ApplicationContext Context context) {
-//        depositCacheInteractor = new DepositCacheInteractorImpl(context);
         this.paging = new PagingHandler();
     }
 
@@ -247,7 +244,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             showLoading();
             getView().setActionsEnabled(false);
 
-            getDepositSummaryUseCase.setIsSeller(isSeller());
             getDepositSummaryUseCase.setRequesting(true);
             getDepositSummaryUseCase.setRequestVariables(getSummaryDepositParam());
 
@@ -298,102 +294,63 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
         }
         getView().setActionsEnabled(true);
 
-        if (isSeller()) {
-            if (graphqlResponse != null &&
-                    graphqlResponse.getData(GqlAllDepositSummaryResponse.class) != null) {
+        if (graphqlResponse != null &&
+                graphqlResponse.getData(GqlAllDepositSummaryResponse.class) != null) {
 
-                GqlAllDepositSummaryResponse gqlDepositSummaryResponse =
-                        graphqlResponse.getData(GqlAllDepositSummaryResponse.class);
+            GqlAllDepositSummaryResponse gqlDepositSummaryResponse =
+                    graphqlResponse.getData(GqlAllDepositSummaryResponse.class);
 
-                if (gqlDepositSummaryResponse != null &&
-                        !gqlDepositSummaryResponse.getAllDepositHistory().isHaveError()) {
+            if (gqlDepositSummaryResponse != null &&
+                    !gqlDepositSummaryResponse.getAllDepositHistory().isHaveError()) {
 
-                    if (paging.getPage() == 1) {
-                        getView().getAllHistoryAdapter().clearAllElements();
-                        getView().getBuyerHistoryAdapter().clearAllElements();
-                        getView().getSellerHistoryAdapter().clearAllElements();
-                    }
-                    setData(gqlDepositSummaryResponse);
-                } else {
-                    if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
-                            getAllDepositHistory() != null) {
-                        if (getView().getAllHistoryAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(gqlDepositSummaryResponse.
-                                    getAllDepositHistory().getMessage());
-                        } else {
-                            getView().setRetry(gqlDepositSummaryResponse.
-                                    getAllDepositHistory().getMessage());
-                        }
-                    }
-
-                    if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
-                            getBuyerDepositHistory() != null) {
-                        if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(gqlDepositSummaryResponse.
-                                    getBuyerDepositHistory().getMessage());
-                        } else {
-                            getView().setRetry(gqlDepositSummaryResponse.
-                                    getBuyerDepositHistory().getMessage());
-                        }
-                    }
-
-                    if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
-                            getSellerDepositHistory() != null) {
-                        if (getView().getSellerHistoryAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(gqlDepositSummaryResponse.
-                                    getSellerDepositHistory().getMessage());
-                        } else {
-                            getView().setRetry(gqlDepositSummaryResponse.
-                                    getSellerDepositHistory().getMessage());
-                        }
-                    }
+                if (paging.getPage() == 1) {
+                    getView().getAllHistoryAdapter().clearAllElements();
+                    getView().getBuyerHistoryAdapter().clearAllElements();
+                    getView().getSellerHistoryAdapter().clearAllElements();
                 }
-
+                setData(gqlDepositSummaryResponse);
             } else {
-                if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
-                    getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
-                } else {
-                    getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
+                        getAllDepositHistory() != null) {
+                    if (getView().getAllHistoryAdapter().getItemCount() == 0) {
+                        getView().showEmptyState(gqlDepositSummaryResponse.
+                                getAllDepositHistory().getMessage());
+                    } else {
+                        getView().setRetry(gqlDepositSummaryResponse.
+                                getAllDepositHistory().getMessage());
+                    }
                 }
 
+                if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
+                        getBuyerDepositHistory() != null) {
+                    if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
+                        getView().showEmptyState(gqlDepositSummaryResponse.
+                                getBuyerDepositHistory().getMessage());
+                    } else {
+                        getView().setRetry(gqlDepositSummaryResponse.
+                                getBuyerDepositHistory().getMessage());
+                    }
+                }
+
+                if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
+                        getSellerDepositHistory() != null) {
+                    if (getView().getSellerHistoryAdapter().getItemCount() == 0) {
+                        getView().showEmptyState(gqlDepositSummaryResponse.
+                                getSellerDepositHistory().getMessage());
+                    } else {
+                        getView().setRetry(gqlDepositSummaryResponse.
+                                getSellerDepositHistory().getMessage());
+                    }
+                }
             }
+
         } else {
-            if (graphqlResponse != null &&
-                    graphqlResponse.getData(GqlBuyerDepositSummaryResponse.class) != null) {
-
-                GqlBuyerDepositSummaryResponse gqlDepositSummaryResponse =
-                        graphqlResponse.getData(GqlBuyerDepositSummaryResponse.class);
-
-                if (gqlDepositSummaryResponse != null &&
-                        !gqlDepositSummaryResponse.getBuyerDepositHistory().isHaveError()) {
-
-                    if (paging.getPage() == 1) {
-                        getView().getSingleTabAdapter().clearAllElements();
-                    }
-                    paging.setHasNext(gqlDepositSummaryResponse.getBuyerDepositHistory()
-                            .isHaveNextPage());
-                    setData(gqlDepositSummaryResponse);
-                } else {
-                    if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
-                            getBuyerDepositHistory() != null) {
-                        if (getView().getSingleTabAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(gqlDepositSummaryResponse.
-                                    getBuyerDepositHistory().getMessage());
-                        } else {
-                            getView().setRetry(gqlDepositSummaryResponse.
-                                    getBuyerDepositHistory().getMessage());
-                        }
-                    }
-                }
-
+            if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
+                getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
             } else {
-                if (getView().getSingleTabAdapter() != null && getView().getSingleTabAdapter().getItemCount() == 0) {
-                    getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
-                } else {
-                    getView().setRetry(getView().getString(R.string.sp_empty_state_error));
-                }
-
+                getView().setRetry(getView().getString(R.string.sp_empty_state_error));
             }
+
         }
 
         finishLoading();
@@ -429,7 +386,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
         }
 
         param.setPage(paging.getPage());
-        param.setSeller(isSeller());
         return param.getParamSummaryDeposit();
 
     }
@@ -453,16 +409,8 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
     }
 
-    public boolean isSeller() {
-        return isSeller;
-    }
-
-    public void setSeller(boolean seller) {
-        isSeller = seller;
-    }
-
     private boolean isValid() {
-        Boolean isValid = true;
+        boolean isValid = true;
 
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
         try {
@@ -494,7 +442,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     }
 
     public void loadMoreAllTransaction(int lastItemPosition, int type) {
-        // TODO: 12/2/19 update scroll listener state
         if (!isViewAttached()) {
             return;
         }
@@ -503,7 +450,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             showLoading();
             getView().setActionsEnabled(false);
 
-            getAllTransactionUsecase.setIsSeller(isSeller());
             getAllTransactionUsecase.setRequesting(true);
             getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type));
             getAllTransactionUsecase.execute(new Subscriber<GraphqlResponse>() {
@@ -587,7 +533,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     }
 
     public void loadMoreSellerTransaction(int lastItemPosition, int type) {
-        // TODO: 12/2/19 update scroll listener state
         if (!isViewAttached()) {
             return;
         }
@@ -596,7 +541,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             showLoading();
             getView().setActionsEnabled(false);
 
-            getAllTransactionUsecase.setIsSeller(isSeller());
             getAllTransactionUsecase.setRequesting(true);
             getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type));
             getAllTransactionUsecase.execute(new Subscriber<GraphqlResponse>() {
@@ -686,7 +630,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     }
 
     public void loadMoreBuyerTransaction(int lastItemPosition, int type) {
-// TODO: 12/2/19 update scroll listener state
         if (!isViewAttached()) {
             return;
         }
@@ -695,7 +638,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             showLoading();
             getView().setActionsEnabled(false);
 
-            getAllTransactionUsecase.setIsSeller(isSeller());
             getAllTransactionUsecase.setRequesting(true);
             getAllTransactionUsecase.setRequestVariables(getSummaryDepositParam(lastItemPosition, type));
             getAllTransactionUsecase.execute(new Subscriber<GraphqlResponse>() {

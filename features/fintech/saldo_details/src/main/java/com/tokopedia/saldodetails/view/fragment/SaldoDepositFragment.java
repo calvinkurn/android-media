@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -33,7 +32,6 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
-import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -91,6 +89,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private float sellerSaldoBalance;
     private float buyerSaldoBalance;
     private float totalSaldoBalance;
+    private LinearLayout saldoTypeLL;
+
+    private ImageView saldoDepositExpandIV;
+    private boolean expandLayout;
 
     public SaldoDepositFragment() {
     }
@@ -187,6 +189,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             isSellerEnabled = getArguments().getBoolean(IS_SELLER_ENABLED);
         }
+
+        expandLayout = isSellerEnabled;
+
         totalBalanceTitle = view.findViewById(R.id.saldo_deposit_text);
         totalBalanceInfo = view.findViewById(R.id.saldo_deposit_text_info);
 
@@ -207,11 +212,35 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         buyerSaldoBalanceRL = view.findViewById(R.id.saldo_buyer_balance_rl);
         sellerSaldoBalanceRL = view.findViewById(R.id.saldo_seller_balance_rl);
         saldoBalanceSeparator = view.findViewById(R.id.saldo_balance_separator);
+        saldoDepositExpandIV = view.findViewById(R.id.saldo_deposit_layout_expand);
+        saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
+
+        if (expandLayout) {
+            saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
+            saldoTypeLL.setVisibility(View.VISIBLE);
+        } else {
+            saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_down_grey));
+            saldoTypeLL.setVisibility(View.GONE);
+        }
 
         saldoHistoryFragment = (SaldoTransactionHistoryFragment) getChildFragmentManager().findFragmentById(R.id.saldo_history_layout);
     }
 
     private void initListeners() {
+
+        saldoDepositExpandIV.setOnClickListener(v -> {
+            if (expandLayout) {
+                expandLayout = false;
+                saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_down_grey));
+                saldoTypeLL.setVisibility(View.GONE);
+            } else {
+                expandLayout = true;
+                saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
+                saldoTypeLL.setVisibility(View.VISIBLE);
+            }
+
+        });
+
         drawButton.setOnClickListener(v -> {
             try {
                 if (!userSession.isMsisdnVerified()) {
@@ -257,8 +286,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void goToWithdrawActivity() {
-        Intent intent = ((SaldoDetailsRouter) Objects.requireNonNull(getActivity()).getApplication()).getWithdrawIntent(context, isSellerEnabled());
-        saldoDetailsPresenter.onDrawClicked(intent);
+        if (getActivity() != null) {
+            Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
+            saldoDetailsPresenter.onDrawClicked(intent);
+        }
+
     }
 
     private void showSaldoWarningDialog() {
@@ -293,7 +325,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
-        if (isSellerEnabled && getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
                     .isSaldoNativeEnabled()) {
@@ -324,12 +356,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         if (isSellerClicked) {
             userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_seller_desc));
             userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_seller));
-        } else if (isSellerEnabled) {
-            userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_buyer_desc));
-            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_buyer));
         } else {
             userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_buyer_desc));
-            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_text));
+            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_buyer));
         }
 
         userStatusInfoBottomSheet.setButtonText(getString(R.string.sp_saldo_withdraw_warning_positiv_button));

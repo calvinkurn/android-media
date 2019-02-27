@@ -16,7 +16,6 @@ public class SummaryDepositParam {
     private int page;
     private int perPage = 25;
     private String startDate;
-    private boolean isSeller;
     private int saldoType;
 
     public String getEndDate() {
@@ -49,14 +48,6 @@ public class SummaryDepositParam {
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
-    }
-
-    public boolean isSeller() {
-        return isSeller;
-    }
-
-    public void setSeller(boolean seller) {
-        isSeller = seller;
     }
 
     public void setSaldoType(int type) {

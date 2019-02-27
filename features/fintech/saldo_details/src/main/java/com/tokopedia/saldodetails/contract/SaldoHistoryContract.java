@@ -69,8 +69,6 @@ public class SaldoHistoryContract {
 
         void setRetry(String error);
 
-        boolean isSellerEnabled();
-
     }
 
     public interface Presenter extends CustomerPresenter<SaldoHistoryContract.View> {

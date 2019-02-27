@@ -65,7 +65,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     private SaldoDatePickerUtil datePicker;
     protected Bundle savedState;
 
-    private boolean isSeller;
     private List<SaldoHistoryTabItem> saldoTabItems = new ArrayList<>();
     private SaldoHistoryTabItem singleTabItem;
     private int activePosition = -1;
@@ -130,14 +129,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
     private void initialVar() {
 
-        isSeller = userSession.hasShop() || userSession.isAffiliate();
-        if (isSeller) {
-            loadMultipleTabItem();
-        } else {
-            loadOneTabItem();
-        }
-
-        saldoHistoryPresenter.setSeller(isSeller);
+        loadMultipleTabItem();
         SaldoHistoryPagerAdapter saldoHistoryPagerAdapter = new SaldoHistoryPagerAdapter(getChildFragmentManager());
         saldoHistoryPagerAdapter.setItems(saldoTabItems);
         depositHistoryViewPager.setOffscreenPageLimit(2);
@@ -279,11 +271,6 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     }
 
     @Override
-    public boolean isSellerEnabled() {
-        return isSeller;
-    }
-
-    @Override
     public void setStartDate(String date) {
         startDateTV.setText(date);
     }
@@ -422,9 +409,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
     @Override
     public SaldoDepositAdapter getAdapter() {
-        if (!isSellerEnabled()) {
-            return ((SaldoHistoryListFragment) singleTabItem.getFragment()).getAdapter();
-        } else if (activePosition == 0) {
+        if (activePosition == 0) {
             return ((SaldoHistoryListFragment) allSaldoHistoryTabItem.getFragment()).getAdapter();
         } else if (activePosition == 1) {
             return ((SaldoHistoryListFragment) buyerSaldoHistoryTabItem.getFragment()).getAdapter();

@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse;
-import com.tokopedia.saldodetails.response.model.GqlBuyerDepositSummaryResponse;
 
 import java.util.Map;
 
@@ -24,7 +23,6 @@ public class GetDepositSummaryUseCase {
     private Context context;
     private boolean isRequesting;
     private Map<String, Object> variables;
-    private boolean isSeller;
 
     @Inject
     public GetDepositSummaryUseCase(@ApplicationContext Context context) {
@@ -48,19 +46,11 @@ public class GetDepositSummaryUseCase {
 
         String query;
         GraphqlRequest graphqlRequest;
+        query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_details_for_all);
 
-        if (isSeller) {
-            query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_details_for_all);
-
-            graphqlRequest = new GraphqlRequest(
-                    query, GqlAllDepositSummaryResponse.class,
-                    variables, GET_SUMMARY_DEPOSIT);
-        } else {
-            query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_details_for_buyer);
-            graphqlRequest = new GraphqlRequest(
-                    query, GqlBuyerDepositSummaryResponse.class,
-                    variables, GET_SUMMARY_DEPOSIT);
-        }
+        graphqlRequest = new GraphqlRequest(
+                query, GqlAllDepositSummaryResponse.class,
+                variables, GET_SUMMARY_DEPOSIT);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
@@ -74,7 +64,4 @@ public class GetDepositSummaryUseCase {
         this.isRequesting = isRequesting;
     }
 
-    public void setIsSeller(boolean seller) {
-        this.isSeller = seller;
-    }
 }
