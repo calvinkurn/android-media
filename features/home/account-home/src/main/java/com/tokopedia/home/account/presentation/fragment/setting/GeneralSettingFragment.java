@@ -178,7 +178,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 break;
             case SettingConstant.SETTING_TEMPLATE_ID:
                 if (getActivity() != null) {
-                    String url = "http://m-beta.tokopedia.com/user/settings/express-checkout";
+                    String url = "https://lite-beta.tokopedia.com/user/settings/express-checkout/";
                     String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url);
                     RouteManager.route(getActivity(), applink);
                 }
