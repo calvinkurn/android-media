@@ -496,14 +496,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             bindCurationQuota(it)
         }
 
-
         val snackbar = ToasterNormal.make(view,
                 getString(R.string.profile_post_deleted),
                 BaseToaster.LENGTH_LONG
         )
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
 
-        if (adapter.data.last() is ProfileHeaderViewModel) {
+        if (adapter.data.isEmpty()) {
             onSwipeRefresh()
         }
     }
@@ -587,9 +586,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                    toolbar_menu.visibility = View.VISIBLE
+                    toolbar.visibility = View.VISIBLE
                 } else {
-                    toolbar_menu.visibility = View.GONE
+                    toolbar.visibility = View.GONE
                 }
 
             }
