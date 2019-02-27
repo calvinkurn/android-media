@@ -3682,7 +3682,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @NotNull
-    @Override
     public Intent getIntermediaryIntent(@NotNull Context context, int categoryId) {
         return null;
     }
@@ -3813,5 +3812,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
         return CheckLoginPhoneNumberActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public void openImagePreviewFromChat(@NotNull Context context, @NotNull ArrayList<String> listImage, @NotNull ArrayList<String> imageDesc, @NotNull String title, @NotNull String date) {
+
     }
 }
