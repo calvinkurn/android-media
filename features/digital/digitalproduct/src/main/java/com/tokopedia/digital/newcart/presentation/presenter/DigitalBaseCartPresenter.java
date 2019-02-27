@@ -70,6 +70,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
     private String PROMO_CODE = "promoCode";
+    public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
+    public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
 
 
     public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
@@ -304,8 +306,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     private void branchAutoApplyCouponIfAvailable() {
         PersistentCacheManager persistentCacheManager =
-                new PersistentCacheManager(getView().getActivity(), TkpdCache.CACHE_PROMO_CODE);
-        String savedCoupon = persistentCacheManager.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
+                new PersistentCacheManager(getView().getActivity(), CACHE_PROMO_CODE);
+        String savedCoupon = persistentCacheManager.getString(KEY_CACHE_PROMO_CODE, "");
         applyPromoCode(savedCoupon);
         if (savedCoupon != null && savedCoupon.length() > 0) {
             getView().hideCartView();
