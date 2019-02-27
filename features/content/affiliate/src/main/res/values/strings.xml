@@ -70,6 +70,12 @@
     <string name="af_caption_hint">Tulis caption yuk…</string>
     <string name="af_related_product">Produk Terkait</string>
     <string name="af_add_product_tag">Pilih Tag</string>
+    <string name="af_error_create_post">Gagal mengunggah post</string>
+    <string name="af_notif_uploading">"Mengunggah post"</string>
+    <string name="af_notif_media" formatted="false">%d dari %d Media…</string>
+    <string name="af_notif_submit">Menyiapkan post…</string>
+    <string name="af_notif_success">Klik untuk melihat post</string>
+    <string name="af_notif_error">Gagal mengunggah post, klik untuk coba lagi</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>

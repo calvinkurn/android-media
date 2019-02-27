@@ -8,6 +8,7 @@ import android.content.Intent
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID_PARAM
@@ -90,11 +91,17 @@ class SubmitPostService : IntentService(TAG) {
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
+                val message = if (errorMessage != context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
+                    errorMessage
+                else
+                    context.getString(R.string.af_error_create_post)
+
+
                 val intent = RouteManager.getIntent(
                         context,
                         ApplinkConst.AFFILIATE_DRAFT_POST
                                 .replace(DRAFT_ID_PARAM, draftId)
-                                .plus("?$CREATE_POST_ERROR_MSG=$errorMessage")
+                                .plus("?$CREATE_POST_ERROR_MSG=$message")
                 )
 
                 return PendingIntent.getActivity(context, 0, intent, 0)

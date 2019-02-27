@@ -23,7 +23,7 @@ abstract class SubmitPostNotificationManager(
     }
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
-        setContentTitle("Mengunggah post di Tokopedia")
+        setContentTitle(context.getString(R.string.af_notif_uploading))
         setSmallIcon(R.drawable.ic_loading_toped)
         setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_icon_toped_announce))
         setGroup(NOTIFICATION_GROUP)
@@ -34,8 +34,10 @@ abstract class SubmitPostNotificationManager(
     fun onAddProgress() {
         currentProgress++
 
-        val notification = notificationBuilder.setContentText("Sedang mengunggah $currentProgress dari $maxCount media")
-                .setStyle(NotificationCompat.BigTextStyle().bigText("Sedang mengunggah $currentProgress dari $maxCount media"))
+        val format = context.getString(R.string.af_notif_media)
+        val text = String.format(format, currentProgress, maxCount)
+        val notification = notificationBuilder.setContentText(text)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(maxCount, currentProgress, false)
                 .setOngoing(true)
                 .setAutoCancel(false)
@@ -44,8 +46,9 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onSubmitPost() {
-        val notification = notificationBuilder.setContentText("Sedang submit. Post Anda akan live dalam beberapa saat.")
-                .setStyle(NotificationCompat.BigTextStyle().bigText("Sedang submit. Post Anda akan live dalam beberapa saat."))
+        val text = context.getString(R.string.af_notif_submit)
+        val notification = notificationBuilder.setContentText(text)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, true)
                 .setOngoing(true)
                 .setAutoCancel(false)
@@ -54,8 +57,9 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onSuccessPost() {
-        val notification = notificationBuilder.setContentText("Post Anda sudah live.")
-                .setStyle(NotificationCompat.BigTextStyle().bigText("Post Anda sudah live."))
+        val text = context.getString(R.string.af_notif_success)
+        val notification = notificationBuilder.setContentText(text)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
                 .setOngoing(false)
                 .setAutoCancel(true)
@@ -65,8 +69,9 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onFailedPost(errorMessage: String) {
-        val notification = notificationBuilder.setContentText("Gagal mengunggah, silakan coba lagi.")
-                .setStyle(NotificationCompat.BigTextStyle().bigText("Gagal mengunggah, silakan coba lagi."))
+        val text = context.getString(R.string.af_notif_error)
+        val notification = notificationBuilder.setContentText(text)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
                 .setOngoing(false)
                 .setAutoCancel(true)
