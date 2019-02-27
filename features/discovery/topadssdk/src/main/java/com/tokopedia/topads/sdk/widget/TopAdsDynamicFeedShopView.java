@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -48,6 +49,7 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
 
         recommendationRv = findViewById(R.id.recommendationRv);
         recommendationRv.setAdapter(adapter);
+        ((DefaultItemAnimator) recommendationRv.getItemAnimator()).setSupportsChangeAnimations(false);
     }
 
     public void bind(List<Data> dataList) {

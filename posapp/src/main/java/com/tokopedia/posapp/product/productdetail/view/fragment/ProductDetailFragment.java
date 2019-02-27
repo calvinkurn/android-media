@@ -26,11 +26,11 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.cart.view.AddToCart;
@@ -352,7 +352,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductShareClicked(@NonNull ShareData data) {
+    public void onProductShareClicked(@NonNull LinkerData data) {
 
     }
 

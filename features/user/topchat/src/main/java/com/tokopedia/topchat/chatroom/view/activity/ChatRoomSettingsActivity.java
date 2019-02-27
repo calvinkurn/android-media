@@ -17,9 +17,10 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity {
 
     public static Intent getIntent(Context context, String messageId,
                                    ChatSettingsResponse chatSettingsResponse,
-                                   boolean isChatEnabled, String role, String senderName) {
+                                   boolean isChatEnabled, String role, String senderName, int shopId) {
         Intent intent = new Intent(context, ChatRoomSettingsActivity.class);
         intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId);
+        intent.putExtra(ApplinkConst.Chat.SHOP_ID, shopId);
         intent.putExtra(InboxChatConstant.CHATRESPONSEMODEL, chatSettingsResponse);
         intent.putExtra(InboxChatConstant.CHAT_ENABLED, isChatEnabled);
         intent.putExtra(InboxChatConstant.CHAT_ROLE, role);

@@ -50,6 +50,7 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
@@ -71,8 +72,8 @@ import com.tokopedia.home.beranda.presentation.view.customview.HomeMainToolbar;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.DummyModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.constant.BerandaUrl;
+import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
@@ -80,6 +81,7 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -91,6 +93,7 @@ import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -109,7 +112,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener,
         NotificationListener, FragmentListener, HomeEggListener,
-        HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
+        InboxNotificationListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -119,14 +122,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    private ActivityStateListener activityStateListener;
 
     public static final long ONE_SECOND = 1000l;
     @Inject
     HomePresenter presenter;
 
-    @Inject
-    UserSessionInterface userSession;
-
+    private UserSessionInterface userSession;
     private View fragmentRootView;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
@@ -180,6 +182,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         abTestingOfficialStore = new AbTestingOfficialStore(getContext());
+        userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
     }
 
@@ -434,12 +437,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
         notifyToolbarForAbTesting();
         presenter.onResume();
+        if(activityStateListener!=null){
+            activityStateListener.onResume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         trackingQueue.sendAll();
+        if(activityStateListener!=null) {
+            activityStateListener.onPause();
+        }
     }
 
     @Override
@@ -1076,6 +1085,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void setActivityStateListener(ActivityStateListener activityStateListener) {
+        this.activityStateListener = activityStateListener;
+    }
+
+    @Override
     public void onScrollToTop() {
         if (appBarLayout != null) {
             appBarLayout.setExpanded(true);
@@ -1255,6 +1269,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void notifyToolbarForAbTesting() {
         if (homeMainToolbar != null) {
             homeMainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
+        }
+    }
+
+    @Override
+    public void onNotifyBadgeInboxNotification(int number) {
+        if (mainToolbar != null) {
+            mainToolbar.setInboxNumber(number);
         }
     }
 

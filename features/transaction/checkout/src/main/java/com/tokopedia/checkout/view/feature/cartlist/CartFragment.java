@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -75,8 +74,9 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -135,11 +135,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Inject
     Context context;
     @Inject
-    UserSession userSession;
-    @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
     private RefreshHandler refreshHandler;
+    private UserSessionInterface userSession;
 
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
@@ -170,6 +169,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
+        userSession = new UserSession(getActivity());
         performanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
     }
 
@@ -1004,22 +1004,44 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData, int checklistCondition) {
+    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData,
+                                            boolean checkoutProductEligibleForCashOnDelivery,
+                                            int checklistCondition) {
         switch (checklistCondition) {
             case CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES:
-                sendAnalyticsOnSuccessToCheckoutDefault(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutDefault(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES:
-                sendAnalyticsOnSuccessToCheckoutCheckAll(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutCheckAll(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP:
-                sendAnalyticsOnSuccessToCheckoutPartialShop(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialShop(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM:
-                sendAnalyticsOnSuccessToCheckoutPartialProduct(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialProduct(eeCheckoutData);
+                }
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM:
-                sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
+                if (checkoutProductEligibleForCashOnDelivery) {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(eeCheckoutData);
+                } else {
+                    sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
+                }
                 break;
         }
         renderToAddressChoice();
@@ -1462,6 +1484,31 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData) {
         cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefaultEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAllEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProductEligibleCod(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProductEligibleCod(eeData);
     }
 
     @Override

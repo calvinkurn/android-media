@@ -96,7 +96,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                     mView.setAddress(address);
                 }
                 mView.successSaveAddress();
-                if (!isEditOperation) mView.onAddAddressSubmitSuccessRendered();
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
                 mView.finishActivity();
             }
 
@@ -105,6 +105,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorSnackbar("");
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -112,6 +113,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorSnackbar(error);
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -119,6 +121,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorSnackbar("");
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -126,6 +129,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorSnackbar("");
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
         };
     }

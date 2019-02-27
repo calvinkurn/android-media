@@ -3,6 +3,7 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
@@ -41,8 +43,11 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -94,6 +99,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
+import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
+import static com.tokopedia.core.home.presenter.HotList.SEARCH;
+import static com.tokopedia.core.home.presenter.HotList.TOPPICKS_KEY;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
@@ -104,7 +113,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALU
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
         CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
         IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener,
-        BannerPagerAdapter.OnPromoClickListener,
+        BannerPagerAdapter.OnPromoClickListener, HotListItemAdapter.HotlistItemListener,
         WishListActionListener {
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
@@ -145,11 +154,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     private String departmentId = "";
     private String trackerAttribution = "";
+    private String parentCategoryName;
+    private String parentCategory;
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryBrandsAdapter brandsAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
     private IntermediaryBrandsAdapter.BrandListener brandListener;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
+    private List<BannerModel> bannerModelList;
     private boolean isUsedUnactiveChildren = false;
     private CurationAdapter curationAdapter;
     private IntermediaryContract.Presenter presenter;
@@ -157,7 +169,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
-    private static final String SHOP = "SHOP";
+    private static final String SHOP = "shop";
 
     public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
@@ -268,6 +280,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void renderHeader(HeaderModel headerModel) {
+        parentCategoryName = headerModel.getCategoryName();
+        parentCategory = parentCategoryName.replace(" ", "-");
         ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
@@ -366,7 +380,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventExpandCategoryIntermediary(getActivity(),departmentId);
+                    UnifyTracking.eventExpandCategoryIntermediary(getActivity(), departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9, childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
@@ -418,6 +432,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,
                 getCategoryWidth(), getActivity(), departmentId);
+        hotListItemAdapter.registerListener(this);
 
         hotListRecyclerView.setHasFixedSize(true);
         hotListRecyclerView.setNestedScrollingEnabled(false);
@@ -432,6 +447,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderBanner(List<BannerModel> bannerModelList) {
         bannerHandler = new Handler();
         incrementPage = runnableIncrement();
+        this.bannerModelList = bannerModelList;
         bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList, departmentId, this);
         banner = getActivity().getLayoutInflater().inflate(R.layout.banner_intermediary, bannerContainer);
         bannerViewPager = (ViewPager) banner.findViewById(R.id.view_pager_intermediary);
@@ -460,6 +476,28 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
             @Override
             public void onPageSelected(int position) {
+                BannerModel model = bannerModelList.get(position);
+                if (!model.isTracked()) {
+                    trackEventEnhance(DataLayer.mapOf(
+                            "event", "promoView",
+                            "eventCategory", "intermediary page",
+                            "eventAction", "banner impression - " + departmentId,
+                            "eventLabel", model.getTitle() + " - " + model.getApplink(),
+                            "ecommerce", DataLayer.mapOf(
+                                    "promoView", DataLayer.mapOf(
+                                            "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                                    "id", model.getTitle(),
+                                                    "name", "/intermediary/" + model.getCategoryName() + " - p1 - slider banner",
+                                                    "position", model.getPosition(),
+                                                    "creative", model.getTitle(),
+                                                    "creative_url", model.getApplink(),
+                                                    "category", model.getCategoryName()
+                                            ))
+                                    )
+
+                            )));
+                    model.setTracked(true);
+                }
                 stopSlide();
                 startSlide();
             }
@@ -511,7 +549,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
                 .equals(YouTubeInitializationResult.SUCCESS)) {
 
-            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl(), departmentId, youTubeThumbnailLoadInProcessListener));
+            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl(), videoModel.getTitle(), departmentId, youTubeThumbnailLoadInProcessListener));
 
         } else {
             placeHolderVideo.addView(new YoutubeWebViewThumbnail(getContext(), videoModel.getVideoUrl()));
@@ -623,13 +661,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     public void viewAllCategory() {
-/*        BrowseProductActivity.moveTo(
-                getActivity(),
-                departmentId,
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                ((IntermediaryActivity) getActivity()).getCategoryName()
-        );*/
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "clickIntermediary",
+                "eventCategory", "intermediary page",
+                "eventAction", "click see all - " + departmentId,
+                "eventLabel", parentCategoryName));
         CategoryActivity.moveTo(
                 getActivity(),
                 departmentId,
@@ -655,17 +691,16 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        UnifyTracking.eventCuratedIntermediary(getActivity(),departmentId,
+        UnifyTracking.eventCuratedIntermediary(getActivity(), departmentId,
                 curatedName, productModel.getName());
     }
 
     private Map<String, Object> createClickProductDataLayer(ProductModel product) {
         return DataLayer.mapOf("event", "productClick",
                 "eventCategory", "intermediary page",
-                "eventAction", "click product curation",
-                "eventLabel", "",
+                "eventAction", "click product list - " + departmentId,
+                "eventLabel", String.valueOf(product.getId()),
                 "ecommerce", DataLayer.mapOf(
-                        "currencyCode", "IDR",
                         "click", DataLayer.mapOf(
                                 "actionField", DataLayer.mapOf("list", product.getTrackerListName()),
                                 "products", DataLayer.listOf(
@@ -715,14 +750,54 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onCategoryRevampClick(ChildCategoryModel child) {
+    public void onCategoryRevampClick(ChildCategoryModel child, int pos) {
         CategoryActivity.moveToDestroyIntermediary(
                 getActivity(),
                 child.getCategoryId(),
                 child.getCategoryName(),
                 true
         );
-        UnifyTracking.eventLevelCategoryIntermediary(getActivity(),departmentId, child.getCategoryId());
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click subcategory",
+                "eventLabel", child.getCategoryId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", child.getCategoryId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + (pos + 1) + " - subcategory",
+                                        "position", String.valueOf(pos + 1),
+                                        "creative", child.getCategoryName(),
+                                        "creative_url", child.getCategoryImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+        UnifyTracking.eventLevelCategoryIntermediary(getActivity(), departmentId, child.getCategoryId());
+    }
+
+    @Override
+    public void sendCategoryImpressionTracking(ChildCategoryModel child, int pos) {
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "intermediary page",
+                "eventAction", "subcategory impression",
+                "eventLabel", child.getCategoryId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", child.getCategoryId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + (pos + 1) + " - subcategory",
+                                        "position", String.valueOf(pos + 1),
+                                        "creative", child.getCategoryName(),
+                                        "creative_url", child.getCategoryImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
     }
 
     public String getDepartmentId() {
@@ -787,15 +862,73 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onBrandClick(BrandModel brandModel) {
-        UnifyTracking.eventOfficialStoreIntermediary(getActivity(),departmentId, brandModel.getBrandName());
+    public void onBrandClick(BrandModel brandModel, int position) {
+        UnifyTracking.eventOfficialStoreIntermediary(getActivity(), departmentId, brandModel.getBrandName());
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), brandModel.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click official store - " + departmentId,
+                "eventLabel", brandModel.getId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", brandModel.getId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + position + 1 + " - slider banner",
+                                        "position", String.valueOf(position + 1),
+                                        "creative", brandModel.getBrandName(),
+                                        "creative_url", brandModel.getImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
     }
 
     @Override
-    public void onPromoClick(String applink, String url) {
+    public void sendBrandImpressionEvent(BrandModel model, int pos) {
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "intermediary page",
+                "eventAction", "official store impression - " + departmentId,
+                "eventLabel", model.getId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", model.getId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + (pos + 1) + " - hotlist",
+                                        "position", String.valueOf(pos + 1),
+                                        "creative", model.getBrandName(),
+                                        "creative_url", model.getImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+    }
+
+    @Override
+    public void onPromoClick(int pos, String categoryName, String name, String applink, String url, String imgurl) {
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click banner - " + departmentId,
+                "eventLabel", name + " - " + applink,
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", name,
+                                        "name", "/intermediary/" + parentCategory + " - p" + pos + " - slider banner",
+                                        "position", String.valueOf(pos),
+                                        "creative", name,
+                                        "creative_url", imgurl,
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && !TextUtils.isEmpty(applink)
@@ -823,9 +956,92 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     public void viewAllOfficialStores() {
-        if(getActivity() != null){
+        if (getActivity() != null) {
             RouteManager.route(getActivity(), ApplinkConst.OFFICIAL_STORES);
         }
+    }
+
+    @Override
+    public void sendHotlistImpressionEvent(HotListModel model, int pos) {
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "intermediary page",
+                "eventAction", "hotlist curation impression - " + departmentId,
+                "eventLabel", model.getTitle() + " - " + model.getUrl(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", model.getId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + (pos + 1) + " - hotlist",
+                                        "position", pos + 1,
+                                        "creative", model.getTitle(),
+                                        "creative_url", model.getImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+    }
+
+    @Override
+    public void sendHotlistClickEvent(HotListModel hotListModel, int pos) {
+        UnifyTracking.eventHotlistIntermediary(getContext(), departmentId, hotListModel.getTitle());
+        String url = hotListModel.getUrl();
+        URLParser urlParser = new URLParser(url);
+        switch (urlParser.getType()) {
+            case HOT_KEY:
+                startActivity(
+                        BrowseProductRouter.getHotlistIntent(getContext(), url));
+            case CATALOG_KEY:
+                startActivity(
+                        DetailProductRouter.getCatalogDetailActivity(getContext(), urlParser.getHotAlias()));
+                break;
+            case TOPPICKS_KEY:
+                if (!TextUtils.isEmpty(url)) {
+                    startActivity(TopPicksWebView.newInstance(getContext(), url));
+                }
+                break;
+            case SEARCH:
+                Uri uriData = Uri.parse(url);
+                Bundle bundle = new Bundle();
+
+                String departmentId = uriData.getQueryParameter("sc");
+                String searchQuery = uriData.getQueryParameter("q");
+
+                bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+                bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
+
+                Intent intent = BrowseProductRouter.getSearchProductIntent(getContext());
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+                break;
+            default:
+                CategoryActivity.moveTo(
+                        getContext(),
+                        url
+                );
+                break;
+        }
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click hotlist curation - " + departmentId,
+                "eventLabel", hotListModel.getTitle() + " - " + hotListModel.getUrl(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", hotListModel.getId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + pos + 1 + " - hotlist",
+                                        "position", String.valueOf(pos + 1),
+                                        "creative", hotListModel.getTitle(),
+                                        "creative_url", hotListModel.getImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+
     }
 
     private class SeeAllOfficialOnClickListener implements View.OnClickListener {

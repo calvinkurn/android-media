@@ -20,5 +20,7 @@ public interface ITransactionOrderDetailRouter {
 
     Intent getCartIntent(Activity activity);
 
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
     boolean isToggleBuyAgainOn();
 }
