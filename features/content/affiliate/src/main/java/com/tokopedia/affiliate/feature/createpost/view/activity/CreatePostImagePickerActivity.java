@@ -74,4 +74,9 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
                 imagePickerBuilder.getRatioOptionList());
     }
 
+    //TODO milhamj
+    @Override
+    protected void onDoneClicked() {
+        super.onDoneClicked();
+    }
 }
