@@ -34,7 +34,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     api rootProject.ext.miscDependencies.coroutineCore
-    implementation "android.arch.work:work-runtime-ktx:1.1.1"
+    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha10"
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
