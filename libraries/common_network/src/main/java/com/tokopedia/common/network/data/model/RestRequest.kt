@@ -147,7 +147,7 @@ class RestRequest private constructor(builder: Builder) {
             return this
         }
 
-        fun setBody(body: Any): Builder {
+        fun setBody(body: Any?): Builder {
             this._body = body
             return this
         }
