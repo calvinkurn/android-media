@@ -4,9 +4,13 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.res.Resources
 import android.util.SparseArray
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
+import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -18,6 +22,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
@@ -25,10 +32,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRO
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
 import com.tokopedia.product.detail.common.data.model.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.data.model.ProductInfoP1
-import com.tokopedia.product.detail.data.model.ProductInfoP2
-import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.TopAdsDisplayResponse
+import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
@@ -36,6 +40,7 @@ import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
@@ -54,6 +59,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class ProductInfoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                               private val restRepository: RestRepository,
                                                private val userSessionInterface: UserSessionInterface,
                                                private val rawQueries: Map<String, String>,
                                                private val addWishListUseCase: AddWishListUseCase,
@@ -368,6 +374,22 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         productInfoP3
     }
 
+    fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
+        launchCatchError(block = {
+            val bodyMap = AuthUtil.generateParamsNetwork(userId, userSessionInterface.deviceId,
+                    mapOf("shop_id" to shopID))
+            val request = RestRequest.Builder(ProductDetailConstant.BASE_REST_URL+ProductDetailConstant.PATH_FAVORITE_SHOP_ACTION,
+                    object :TypeToken<DataResponse<PostRestResponse>>() {}.type)
+                    .setRequestType(RequestType.POST)
+                    .setBody(bodyMap).build()
+            val result = withContext(Dispatchers.IO){ restRepository.getResponse(request)}
+            if (result.isError)
+                throw MessageErrorException(result.errorBody)
+            else
+                onSuccess(result.getData<DataResponse<PostRestResponse>>().data.isSuccess)
+        }){ onError(it)}
+    }
+
     fun removeWishList(productId: String,
                        onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
                        onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
@@ -465,6 +487,5 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         removeWishlistUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
     }
-
 
 }

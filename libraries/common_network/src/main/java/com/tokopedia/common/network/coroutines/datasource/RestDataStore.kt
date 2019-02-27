@@ -1,10 +1,8 @@
 package com.tokopedia.common.network.coroutines.datasource
 
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.data.model.RestResponseIntermediate
-
-import rx.Observable
+import com.tokopedia.common.network.data.model.RestResponse
 
 interface RestDataStore {
-    suspend fun getResponse(request: RestRequest): RestResponseIntermediate?
+    suspend fun getResponse(request: RestRequest): RestResponse
 }

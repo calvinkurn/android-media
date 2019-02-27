@@ -23,7 +23,7 @@ data class RatesEstimationModel (
 
         @SerializedName("is_blackbox")
         @Expose
-        val isBlackbox: Boolean = true
+        val isBlackbox: Boolean = false
     )
 
     data class Response (

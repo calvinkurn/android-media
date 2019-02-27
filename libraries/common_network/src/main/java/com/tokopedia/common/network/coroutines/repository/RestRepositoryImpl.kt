@@ -14,22 +14,14 @@ import okhttp3.Interceptor
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class RestRepositoryImpl : RestRepository {
+class RestRepositoryImpl(private val mCloud: RestCloudDataStore,
+                         private val mCache: RestCacheDataStore) : RestRepository {
 
-    private var mCloud: RestCloudDataStore
-    private var mCache: RestCacheDataStore
-
-    constructor() {
-        this.mCloud = RestCloudDataStore()
-        this.mCache = RestCacheDataStore()
+    fun updateInterceptors(interceptors: List<Interceptor>, context: Context){
+        mCloud.updateInterceptor(interceptors, context)
     }
 
-    constructor(interceptors: List<Interceptor>, context: Context) {
-        this.mCloud = RestCloudDataStore(interceptors, context)
-        this.mCache = RestCacheDataStore()
-    }
-
-    override suspend fun getResponse(request: RestRequest): RestResponse? {
+    override suspend fun getResponse(request: RestRequest): RestResponse {
         val cacheStrategy = request.cacheStrategy
         return if (cacheStrategy.type == CacheType.NONE
                 || cacheStrategy.type == CacheType.ALWAYS_CLOUD) {
@@ -38,51 +30,32 @@ class RestRepositoryImpl : RestRepository {
             getCachedResponse(request)
         } else { // CACHE FIRST
             try {
-                val response = getCachedResponse(request)
-                if (response == null) {
-                    throw NullPointerException()
-                } else {
-                    return response
-                }
+                getCachedResponse(request)
             } catch (e: Exception) {
                 getCloudResponse(request)
             }
         }
     }
 
-    private suspend fun getCloudResponse(requests: RestRequest): RestResponse? {
-        return mCloud.getResponse(requests).toRestResponse()
+    private suspend fun getCloudResponse(requests: RestRequest): RestResponse {
+        return mCloud.getResponse(requests)
     }
 
-    private suspend fun getCachedResponse(requests: RestRequest): RestResponse? {
-        return mCache.getResponse(requests).toRestResponse()
-    }
-
-    private fun RestResponseIntermediate?.toRestResponse(): RestResponse? {
-        if (this == null) {
-            return null
-        }
-        return RestResponse(originalResponse, code, isCached).apply {
-            this.isError = isError
-            this.errorBody = errorBody
-        }
+    private suspend fun getCachedResponse(requests: RestRequest): RestResponse {
+        return mCache.getResponse(requests)
     }
 
     /**
      * will parallel request to server/cache
      */
-    override suspend fun getResponses(requests: List<RestRequest>): Map<Type, RestResponse?>? {
+    override suspend fun getResponses(requests: List<RestRequest>): Map<Type, RestResponse> {
         return withContext(Dispatchers.IO) {
-            val resultMap = mutableMapOf<Type, RestResponse?>()
             requests.map {
                 async {
                     // it will do parallel even though the getResponse is await()
                     getResponse(it)
                 }
-            }.map { it.await() }
-                    .mapNotNull { it }
-                    .map { resultMap.put(it.type, it) }
-            resultMap
+            }.map { it.await() }.groupBy { it.type }.mapValues { it.value.first() }
         }
     }
 }

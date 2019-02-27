@@ -23,6 +23,8 @@ object ProductDetailConstant {
     const val PATH_PRODUCT_ACTION = "v4/action/product/"
     const val PATH_REPORT = "report_product.pl"
 
+    const val PATH_FAVORITE_SHOP_ACTION = "v4/action/favorite-shop/fav_shop.pl"
+
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_REPORT_TYPE = "report_type"
     const val PARAM_TEXT_MESSAGE = "text_message"
