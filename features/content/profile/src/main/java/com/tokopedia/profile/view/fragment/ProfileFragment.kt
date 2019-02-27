@@ -156,7 +156,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
             }
             LOGIN_FOLLOW_CODE -> {
-                doFollowAfterLogin()
+                if (resultCode == Activity.RESULT_OK)
+                    doFollowAfterLogin()
             }
             SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE, LOGIN_CODE -> {
                 onSwipeRefresh()
@@ -585,12 +586,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                val offset = Math.abs(verticalOffset);
-                if (offset >= appBarLayout.totalScrollRange) {
-                    toolbar.visibility = View.VISIBLE
+                if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+                    toolbar_menu.visibility = View.VISIBLE
                 } else {
-                    toolbar.visibility = View.GONE
+                    toolbar_menu.visibility = View.GONE
                 }
+
             }
         })
 
