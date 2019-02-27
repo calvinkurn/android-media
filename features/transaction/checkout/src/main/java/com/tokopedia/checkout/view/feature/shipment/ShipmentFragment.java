@@ -1575,9 +1575,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     serviceData.getServiceName(), (serviceData.getCodData().getIsCod() == 1)
             );
         }
-        /*if (flagNeedToSetPinpoint) {
+        if (flagNeedToSetPinpoint) {
             // If instant courier and has not set pinpoint
-            if (getActivity() != null) {
+            shipmentAdapter.setLastServiceId(selectedServiceId);
+            setPinpoint(cartItemPosition);
+            /*if (getActivity() != null) {
                 Tooltip tooltip = new Tooltip(getActivity());
                 tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
                 tooltip.setDesc(getActivity().getString(R.string.label_hardcoded_shipping_duration_info));
@@ -1592,8 +1594,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 });
                 tooltip.show();
-            }
-        } else*/ if (recommendedCourier == null) {
+            }*/
+        } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
             List<ShopShipment> shopShipments = shipmentCartItemModel.getShopShipmentList();
