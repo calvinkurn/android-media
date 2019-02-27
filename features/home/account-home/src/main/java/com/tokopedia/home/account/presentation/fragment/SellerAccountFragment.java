@@ -1,9 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -29,7 +26,9 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 
@@ -53,6 +52,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Inject
     SellerAccount.Presenter presenter;
     private boolean isLoaded = false;
+    private RemoteConfig remoteConfig;
 
     public static SellerAccountFragment newInstance() {
         SellerAccountFragment fragment = new SellerAccountFragment();
@@ -105,8 +105,18 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
 
     private void getData() {
+        String saldoQuery = "";
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT,
+                false)) {
+            saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                    .new_query_saldo_balance);
+        } else {
+            saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                    .old_query_saldo_balance);
+        }
         presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
-                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit));
+                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit), saldoQuery);
     }
 
     @Override

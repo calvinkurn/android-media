@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 import static com.tokopedia.home.account.AccountConstants.QUERY;
+import static com.tokopedia.home.account.AccountConstants.SALDO_QUERY;
 import static com.tokopedia.home.account.AccountConstants.TOPADS_QUERY;
 import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
@@ -53,12 +54,13 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
     }
 
     @Override
-    public void getSellerData(String query, String topadsQuery) {
+    public void getSellerData(String query, String topadsQuery, String saldoQuery) {
         view.showLoading();
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(QUERY, query);
         requestParams.putString(TOPADS_QUERY, topadsQuery);
+        requestParams.putString(SALDO_QUERY, saldoQuery);
         Map<String, Object> variables = new HashMap<>();
         int[] shopId = new int[1];
         if(!TextUtils.isEmpty(userSession.getShopId())) {

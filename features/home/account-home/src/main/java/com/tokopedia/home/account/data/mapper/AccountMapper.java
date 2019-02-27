@@ -98,7 +98,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         tokopediaPayViewModel.setRightSaldo(true);
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
         tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                (accountModel.getDeposit().getDepositLong(), false));
+                (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
 
         tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
         items.add(tokopediaPayViewModel);
@@ -303,7 +303,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
         SellerSaldoViewModel sellerSaldoViewModel = new SellerSaldoViewModel();
         sellerSaldoViewModel.setBalance(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                (accountModel.getDeposit().getDepositLong(), false));
+                (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
         items.add(sellerSaldoViewModel);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();

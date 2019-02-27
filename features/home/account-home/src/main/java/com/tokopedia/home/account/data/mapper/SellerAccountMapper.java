@@ -23,6 +23,7 @@ import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.model.DepositModel;
+import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -55,6 +56,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
     @Override
     public SellerViewModel call(GraphqlResponse graphqlResponse) {
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+        SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
+        accountModel.setSaldoModel(saldoModel);
         DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
         DataDeposit dataDeposit = null;
         if (graphqlResponse.getError(DataDeposit.Response.class) == null || graphqlResponse.getError(DataDeposit.Response.class).isEmpty()) {
@@ -111,8 +114,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
 
-        if (accountModel.getDeposit().getDepositLong() != 0) {
-            items.add(getSaldoInfo(accountModel.getDeposit()));
+        if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
+            items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
         }
 
         if (showPinjamanModalOnTop) {

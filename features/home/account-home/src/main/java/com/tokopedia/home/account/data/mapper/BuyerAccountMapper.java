@@ -115,7 +115,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
             tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                    (accountModel.getDeposit().getDepositLong(), false));
+                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
 
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
             items.add(tokopediaPayViewModel);
@@ -192,7 +192,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
                     accountModel
             ));
-        }else {
+        } else {
 
             menuGrid.setItems(getBuyerOrderMenu(
                     accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
@@ -424,6 +424,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGridItems.add(gridItem);
         return menuGridItems;
     }
+
     private ParcelableViewModel getBuyerResolutionMenu(AccountModel accountModel) {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_buyer_complain));
@@ -440,7 +441,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
     private List<MenuGridItemViewModel> getDigitalOrderMenu() {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
-        MenuGridItemViewModel gridItem =  null;
+        MenuGridItemViewModel gridItem = null;
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_belanja,
@@ -450,7 +451,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             );
-        }else {
+        } else {
 
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_belanja,

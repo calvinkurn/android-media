@@ -25,6 +25,9 @@ import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 
@@ -44,6 +47,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     private SwipeRefreshLayout swipeRefreshLayout;
     private BuyerAccountAdapter adapter;
     private PerformanceMonitoring fpmBuyer;
+    private RemoteConfig remoteConfig;
 
     @Inject
     BuyerAccount.Presenter presenter;
@@ -93,8 +97,19 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     }
 
     private void getData() {
+        String saldoQuery = "";
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT,
+                false)) {
+            saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                    .new_query_saldo_balance);
+        } else {
+            saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                    .old_query_saldo_balance);
+        }
+
         presenter.getBuyerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                .query_buyer_account_home));
+                .query_buyer_account_home), saldoQuery);
     }
 
     @Override

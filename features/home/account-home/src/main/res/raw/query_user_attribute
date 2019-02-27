@@ -55,10 +55,6 @@ query BuyerUserAttribute($userID: Int!) {
       visibility
     }
   }
-  balance {
-    buyer_usable
-    seller_usable
-  }
   paymentAdminProfile {
     is_purchased_marketplace
     is_purchased_digital

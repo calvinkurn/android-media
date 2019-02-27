@@ -9,6 +9,7 @@ import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
+import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.usecase.RequestParams;
@@ -70,6 +71,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .just(requestParams)
                 .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) request -> {
                     String query = request.getString(AccountConstants.QUERY, "");
+                    String saldoQuery = request.getString(AccountConstants.SALDO_QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) request.getObject(VARIABLES);
 
                     if (!TextUtils.isEmpty(query) && variables != null) {
@@ -77,11 +79,24 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                                 AccountModel.class, variables);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(requestGraphql);
+
+                        GraphqlRequest saldoGraphql = new GraphqlRequest(saldoQuery,
+                                SaldoModel.class);
+                        graphqlUseCase.addRequest(saldoGraphql);
+
+
                         return graphqlUseCase.createObservable(null);
                     }
 
                     return Observable.error(new Exception("Query and/or variable are empty."));
-                }).map(graphqlResponse -> graphqlResponse.getData(AccountModel.class));
+
+                })
+                .map(graphqlResponse -> {
+                    AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+                    SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
+                    accountModel.setSaldoModel(saldoModel);
+                    return accountModel;
+                });
     }
 
     private void saveLocallyWallet(AccountModel accountModel) {
