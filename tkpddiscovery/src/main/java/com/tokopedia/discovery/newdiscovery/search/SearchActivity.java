@@ -123,7 +123,7 @@ public class SearchActivity extends DiscoveryActivity
     @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
         String departmentId = bundle.getString("sc");
-        boolean isOfficial = bundle.getBoolean("official", false);
+        boolean isOfficial = Boolean.parseBoolean(bundle.getString("official"));
         Intent intent = new Intent(context, SearchActivity.class);
 
         if (!TextUtils.isEmpty(departmentId)) {
