@@ -10,70 +10,70 @@ class PromoCheckoutDetailModel {
     var id: Int = 0
     @SerializedName("expired")
     @Expose
-    var expired: String? = null
+    var expired: String? = ""
     @SerializedName("real_code")
     @Expose
-    var realCode: String? = null
+    var realCode: String? = ""
     @SerializedName("minimum_usage")
     @Expose
-    var minimumUsage: String? = null
+    var minimumUsage: String? = ""
     @SerializedName("minimum_usage_label")
     @Expose
-    var minimumUsageLabel: String? = null
+    var minimumUsageLabel: String? = ""
     @SerializedName("points")
     @Expose
     var points: Int = 0
     @SerializedName("title")
     @Expose
-    var title: String? = null
+    var title: String? = ""
     @SerializedName("catalog_title")
     @Expose
-    var catalogTitle: String? = null
+    var catalogTitle: String? = ""
     @SerializedName("sub_title")
     @Expose
-    var subTitle: String? = null
+    var subTitle: String? = ""
     @SerializedName("catalog_sub_title")
     @Expose
-    var catalogSubTitle: String? = null
+    var catalogSubTitle: String? = ""
     @SerializedName("description")
     @Expose
-    var description: String? = null
+    var description: String? = ""
     @SerializedName("overview")
     @Expose
-    var overview: String? = null
+    var overview: String? = ""
     @SerializedName("how_to_use")
     @Expose
-    var howToUse: String? = null
+    var howToUse: String? = ""
     @SerializedName("tnc")
     @Expose
-    var tnc: String? = null
+    var tnc: String? = ""
     @SerializedName("icon")
     @Expose
-    var icon: String? = null
+    var icon: String? = ""
     @SerializedName("thumbnail_url")
     @Expose
-    var thumbnailUrl: String? = null
+    var thumbnailUrl: String? = ""
     @SerializedName("thumbnail_url_mobile")
     @Expose
-    var thumbnailUrlMobile: String? = null
+    var thumbnailUrlMobile: String? = ""
     @SerializedName("image_url")
     @Expose
-    var imageUrl: String? = null
+    var imageUrl: String? = ""
     @SerializedName("image_url_mobile")
     @Expose
-    var imageUrlMobile: String? = null
+    var imageUrlMobile: String? = ""
     @SerializedName("thumbnail_v2_url")
     @Expose
-    var thumbnailV2Url: String? = null
+    var thumbnailV2Url: String? = ""
     @SerializedName("thumbnail_v2_url_mobile")
     @Expose
-    var thumbnailV2UrlMobile: String? = null
+    var thumbnailV2UrlMobile: String? = ""
     @SerializedName("image_v2_url")
     @Expose
     var imageV2Url: String? = null
     @SerializedName("image_v2_url_mobile")
     @Expose
-    var imageV2UrlMobile: String? = null
+    var imageV2UrlMobile: String? = ""
     @SerializedName("quota")
     @Expose
     var quota: Int = 0
@@ -82,15 +82,15 @@ class PromoCheckoutDetailModel {
     var isGift: Int = 0
     @SerializedName("cta")
     @Expose
-    var cta: String? = null
+    var cta: String? = ""
     @SerializedName("cta_desktop")
     @Expose
-    var ctaDesktop: String? = null
+    var ctaDesktop: String? = ""
     @SerializedName("usage")
     @Expose
-    var usage: Usage? = null
+    var usage: Usage? = Usage()
     @SerializedName("swipe")
     @Expose
-    var swipe: Swipe? = null
+    var swipe: Swipe? = Swipe()
 
 }
