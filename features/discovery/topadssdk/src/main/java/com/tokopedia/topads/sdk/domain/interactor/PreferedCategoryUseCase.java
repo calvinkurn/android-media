@@ -29,16 +29,17 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
     private TopAdsDataSource dataSource;
     private AsyncTask<TopAdsParams, Void, PreferedCategory> task;
     private boolean execute = false;
-    private PreferedCategoryListener listener;
+    private final PreferedCategoryListener listener;
     private final CacheHandler cacheHandler;
     private Random random;
 
-    public PreferedCategoryUseCase(
-            Context context, PreferedCategoryListener listener, CacheHandler cacheHandler) {
 
+
+    public PreferedCategoryUseCase(
+            Context context, PreferedCategoryListener listener) {
         this.dataSource = new CloudTopAdsDataSource(context);
         this.listener = listener;
-        this.cacheHandler = cacheHandler;
+        this.cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
         this.random = new Random();
     }
 
@@ -68,7 +69,7 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
                         listener.onSuccessLoadPrefered(getRandomId(preferedCategory.getUserCategoriesId()));
                         saveToCache(preferedCategory);
                     } else {
-                        listener.onErrorLoadPrefed();
+                        listener.onErrorLoadPrefered();
                         view.notifyAdsErrorLoaded(Config.ERROR_CODE_INVALID_RESPONSE,
                                 preferedCategory.getErrorMessage());
                     }

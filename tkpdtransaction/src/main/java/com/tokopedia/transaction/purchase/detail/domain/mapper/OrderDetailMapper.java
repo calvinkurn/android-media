@@ -108,6 +108,8 @@ public class OrderDetailMapper {
         viewData.setTotalItemWeight(responseData.getSummary().getTotalWeight());
         viewData.setAdditionalFee(responseData.getSummary().getAdditionalPrice());
         viewData.setDeliveryPrice(responseData.getSummary().getShippingPrice());
+        viewData.setHavingCod(responseData.getSummary().getOrderCod());
+        viewData.setCodFee(responseData.getSummary().getCodFee());
         viewData.setInsurancePrice(responseData.getSummary().getInsurancePrice());
         viewData.setProductPrice(responseData.getSummary().getItemsPrice());
         viewData.setTotalPayment(responseData.getSummary().getTotalPrice());
@@ -137,6 +139,7 @@ public class OrderDetailMapper {
             product.setCurrencyType(responseData.getProducts().get(i).getCurrencyType());
             product.setPriceUnformatted(responseData.getProducts().get(i).getPriceUnformatted());
             product.setWeightUnformatted(responseData.getProducts().get(i).getWeightUnformatted());
+            product.setNotes(responseData.getProducts().get(i).getNote());
             productList.add(product);
         }
         viewData.setItemList(productList);
@@ -161,6 +164,7 @@ public class OrderDetailMapper {
         buttonData.setReceiveConfirmationVisibility(buttons.getReceiveConfirmation());
         buttonData.setTrackVisibility(buttons.getTrack());
         buttonData.setRequestPickupVisibility(buttons.getRequestPickup());
+        buttonData.setBuyAgainVisibility(buttons.getBuyAgain());
         viewData.setButtonData(buttonData);
 
         if (responseData.getDetail().getShipment().getInfo() != null &&

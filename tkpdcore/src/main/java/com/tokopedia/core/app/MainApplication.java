@@ -8,14 +8,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.android.gms.tagmanager.ContainerHolder;
+import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -24,6 +30,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -36,14 +43,17 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.service.HUDIntent;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.UserData;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
-import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 
 public abstract class MainApplication extends MainRouterApplication{
@@ -55,7 +65,6 @@ public abstract class MainApplication extends MainRouterApplication{
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Context context;
     private static Activity activity;
     private static Boolean isResetNotification = false;
     private static Boolean isResetDrawer = false;
@@ -101,10 +110,6 @@ public abstract class MainApplication extends MainRouterApplication{
         }
 
         return isInBackground;
-    }
-
-    public synchronized static Context getAppContext() {
-        return MainApplication.context;
     }
 
     /**
@@ -256,8 +261,6 @@ public abstract class MainApplication extends MainRouterApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
-        //CommonUtils.dumper("asdasas");
-        MainApplication.context = getApplicationContext();
         init();
         initCrashlytics();
         initStetho();
@@ -318,10 +321,9 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.GTM, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.APPSFLYER, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.MOENGAGE, getTkpdCoreRouter().legacySessionHandler());
-        TrackingUtils.setMoEngageExistingUser(this, getTkpdCoreRouter().legacySessionHandler().isLoggedIn());
+        TrackingUtils.runGTMFirstTime(this);
+        TrackingUtils.runAppsFylerFirstTime(this);
+        TrackingUtils.runMoengageFirstTime(this);
         TrackingUtils.enableDebugging(this, isDebug());
     }
 
@@ -361,9 +363,16 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     private void initBranch() {
-        Branch.getAutoInstance(this);
-        if (SessionHandler.isV4Login(this)) {
-            BranchSdkUtils.sendIdentityEvent(SessionHandler.getLoginID(this));
+        LinkerManager.initLinkerManager(getApplicationContext());
+
+        UserSession userSession = new UserSession(this);
+
+        if(userSession.isLoggedIn()) {
+            UserData userData = new UserData();
+            userData.setUserId(userSession.getUserId());
+
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                    userData));
         }
     }
 
@@ -375,7 +384,6 @@ public abstract class MainApplication extends MainRouterApplication{
             FirebaseApp.initializeApp(this, builder.build());
         }
     }
-
 
     @Override
     public Intent getSellerHomeActivityReal(Context context) {
@@ -416,6 +424,7 @@ public abstract class MainApplication extends MainRouterApplication{
     public Intent getInboxTalkCallingIntent(Context mContext){
         return null;
     }
+
 
 
 }

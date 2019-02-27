@@ -106,4 +106,9 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
 
     void dismissProgressDialog();
 
+    void onErrorBuyAgain(Throwable e);
+
+    void onSuccessBuyAgain(String message, OrderDetailData data);
+
+    boolean isToggleBuyAgainOn();
 }

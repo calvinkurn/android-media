@@ -10,6 +10,7 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -17,7 +18,7 @@ import com.tokopedia.core.router.SellerRouter;
 /**
  * this code is bridging for old code and latest codes.
  */
-public abstract class MainRouterApplication extends BaseMainApplication implements TkpdCoreRouter {
+public abstract class MainRouterApplication extends CoreNetworkApplication implements TkpdCoreRouter {
     GCMHandler gcmHandler;
     SessionHandler sessionHandler;
 

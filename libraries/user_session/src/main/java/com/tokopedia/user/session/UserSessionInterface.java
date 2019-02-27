@@ -29,6 +29,8 @@ public interface UserSessionInterface {
 
     boolean isMsisdnVerified();
 
+    boolean hasShownSaldoWithdrawalWarning();
+
     String getPhoneNumber();
 
     String getEmail();
@@ -95,5 +97,7 @@ public interface UserSessionInterface {
     void setHasPassword(boolean hasPassword);
 
     void setProfilePicture(String profilePicture);
+
+    void setSaldoWithdrawalWaring(boolean value);
 
 }

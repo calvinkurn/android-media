@@ -3,10 +3,11 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -19,6 +20,8 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
@@ -30,7 +33,7 @@ import java.util.List;
  */
 
 public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewModel> implements
-        View.OnClickListener {
+        View.OnClickListener, PositionChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_product_grid;
@@ -52,12 +55,13 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private LinearLayout bottomLabelContainer;
     private RelativeLayout wishlistBtnContainer;
     private ImageView btnWishList;
-    private int clickPosition;
+    private int clickPosition = RecyclerView.NO_POSITION;
+    private TopAdsItemImpressionListener impressionListener;
 
 
     public ProductGridViewHolder(View itemView, ImageLoader imageLoader,
                                  LocalAdsClickListener itemClickListener,
-                                 int clickPosition,
+                                 TopAdsItemImpressionListener impressionListener,
                                  boolean enableWishlist) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
@@ -65,8 +69,8 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         wishlistBtnContainer.setVisibility(enableWishlist ? View.VISIBLE : View.GONE);
         wishlistBtnContainer.setOnClickListener(this);
         this.itemClickListener = itemClickListener;
+        this.impressionListener = impressionListener;
         this.imageLoader = imageLoader;
-        this.clickPosition = clickPosition;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         productImage = (ImpressedImageView) itemView.findViewById(R.id.product_image);
@@ -84,10 +88,10 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     @Override
     public void bind(ProductGridViewModel element) {
         data = element.getData();
-        if (data.getProduct() != null) {
+        if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
             bindProduct(data.getProduct());
         }
-        if (data.getShop() != null) {
+        if (data.getShop() != null && !TextUtils.isEmpty(data.getShop().getId())) {
             bindShopLocation(data.getShop());
         }
     }
@@ -111,6 +115,15 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
 
     private void bindProduct(final Product product) {
         productImage.setImage(product.getImage());
+        productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem((clickPosition < 0 ?
+                            getAdapterPosition() : clickPosition), product);
+                }
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
@@ -169,8 +182,6 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
             }
             if (v.getId() == R.id.wishlist_button_container) {
                 itemClickListener.onAddWishLish((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
-                data.getProduct().setWishlist(!data.getProduct().isWishlist());
-                renderWishlistButton(data.getProduct().isWishlist());
             }
         }
     }
@@ -196,4 +207,8 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         return false;
     }
 
+    @Override
+    public void onPositionChange(int position) {
+        this.clickPosition = position;
+    }
 }

@@ -25,6 +25,8 @@ public class CartDigitalContract {
 
         void renderErrorAddToCart(String message);
 
+        void stopTrace();
+
         void renderErrorHttpAddToCart(String message);
 
         void renderErrorNoConnectionAddToCart(String message);

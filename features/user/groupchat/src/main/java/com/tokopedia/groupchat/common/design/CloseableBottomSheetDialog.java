@@ -21,10 +21,15 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     Context context;
     private CloseClickedListener closeListener;
+    private BackHardwareClickedListener backHardwareClickedListener;
 
     public interface CloseClickedListener {
         void onCloseDialog();
     }
+    public interface BackHardwareClickedListener {
+        void onBackHardwareClicked();
+    }
+
 
     private CloseableBottomSheetDialog(@NonNull Context context) {
         super(context);
@@ -53,10 +58,19 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         return closeableBottomSheetDialog;
     }
 
-    public static CloseableBottomSheetDialog createInstance(Context context, CloseClickedListener
-            closeListener) {
+    public static CloseableBottomSheetDialog createInstance(Context context,
+                                                            CloseClickedListener closeListener,
+                                                            BackHardwareClickedListener backHardwareClickedListener) {
         CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
-                (context);
+                (context){
+            @Override
+            public void onBackPressed() {
+                super.onBackPressed();
+                if(backHardwareClickedListener != null) {
+                    backHardwareClickedListener.onBackHardwareClicked();
+                }
+            }
+        };
         closeableBottomSheetDialog.setListener(closeListener);
         return closeableBottomSheetDialog;
     }
@@ -71,28 +85,45 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     @Override
     public void setContentView(View view) {
-        View contentView = inflateCustomView(view, "");
+        View contentView = inflateCustomView(view, "", true);
         super.setContentView(contentView);
     }
 
     public void setContentView(View view, String title) {
-        View contentView = inflateCustomView(view, title);
+        View contentView = inflateCustomView(view, title, true);
         super.setContentView(contentView);
     }
 
-    private View inflateCustomView(View view, String title) {
+    public void setCustomContentView(View view, String title, boolean isCloseable) {
+        View contentView = inflateCustomView(view, title, isCloseable);
+        super.setContentView(contentView);
+    }
+
+    private View inflateCustomView(View view, String title, boolean isCloseable) {
+        View contentView = inflateBasicView(view, title);
+        ImageView closeButton = contentView.findViewById(R.id.close_button);
+        if (!isCloseable) {
+            closeButton.setVisibility(View.GONE);
+            contentView.findViewById(R.id.view_separator).setVisibility(View.GONE);
+            ((TextView)contentView.findViewById(R.id.title_closeable)).setVisibility(View.GONE);
+        } else {
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                    closeListener.onCloseDialog();
+                }
+            });
+        }
+
+        return contentView;
+    }
+
+    private View inflateBasicView(View view, String title) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
                 .closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
-        ImageView closeButton = contentView.findViewById(R.id.close_button);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                closeListener.onCloseDialog();
-            }
-        });
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

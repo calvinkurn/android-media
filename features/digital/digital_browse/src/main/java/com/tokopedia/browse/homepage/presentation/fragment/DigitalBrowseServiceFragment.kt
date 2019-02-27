@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.common.DigitalBrowseRouter
@@ -44,6 +45,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     private lateinit var smoothScroller: LinearSmoothScroller
     private lateinit var layoutManager: GridLayoutManager
     private lateinit var containerData: LinearLayout
+    private lateinit var performanceMonitoring: PerformanceMonitoring
 
     private var scrollSelected: RecyclerView.OnScrollListener? = null
     private var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
@@ -51,6 +53,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     private var oldTitlePosition = 0
     private var currentTitlePosition = 0
     private var currentScrollIndex = 0
+    private var traceStop: Boolean = false;
 
     private var selectedCategoryId = -1
 
@@ -59,6 +62,11 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
     override val fragmentContext: Context?
         get() = context
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(BROWSE_TRACE)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_browse_service, container, false)
@@ -80,6 +88,8 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(KEY_SERVICE_DATA)
+        } else {
+            viewModel = DigitalBrowseServiceViewModel(null)
         }
 
         if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_ID)) {
@@ -167,6 +177,14 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
         renderDataList(viewModel.categoryViewModelList)
         setRecyclerViewListener()
+        stopTrace()
+    }
+
+    private fun stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace()
+            traceStop = true
+        }
     }
 
     override fun showTab() {
@@ -200,6 +218,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
             serviceAdapter.showLoading()
             presenter.getDigitalCategoryCloud()
         }
+        stopTrace()
     }
 
     private fun setRecyclerViewListener() {
@@ -297,6 +316,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         private val EXTRA_CATEGORY_ID = "CATEGORY_ID"
         private val COLUMN_NUMBER = 4
         private val KEY_SERVICE_DATA = "KEY_SERVICE_DATA"
+        private val BROWSE_TRACE = "dg_browse"
 
         val fragmentInstance: Fragment
             get() = DigitalBrowseServiceFragment()

@@ -9,7 +9,7 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 
 public class Config {
 
-    public static final String TOPADS_URL = "https://ta.tokopedia.com/promo/";
+    public static String TOPADS_BASE_URL = "https://ta.tokopedia.com/";
     public static final int ERROR_CODE_INVALID_RESPONSE = 911;
     public static final String DEFAULT_DEVICE = "android";
     public static final String DEFAULT_CLIENT_ID = "12";
@@ -128,7 +128,7 @@ public class Config {
         private TopAdsParams topAdsParams;
 
         public Builder() {
-            baseUrl = TOPADS_URL;
+            baseUrl = TOPADS_BASE_URL;
             device = DEFAULT_DEVICE;
             clientId = DEFAULT_CLIENT_ID;
             topAdsParams = new TopAdsParams();
@@ -159,12 +159,12 @@ public class Config {
             return this;
         }
 
-        public Builder displayMode(DisplayMode displayMode){
+        public Builder displayMode(DisplayMode displayMode) {
             this.displayMode = displayMode;
             return this;
         }
 
-        public Builder topAdsParams(TopAdsParams topAdsParams){
+        public Builder topAdsParams(TopAdsParams topAdsParams) {
             this.topAdsParams.getParam().putAll(topAdsParams.getParam());
             return this;
         }

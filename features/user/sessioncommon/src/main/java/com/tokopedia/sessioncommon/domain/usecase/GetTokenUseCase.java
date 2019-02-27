@@ -29,7 +29,7 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
     public static final String ACCESS_TOKEN = "access_token";
 
     public static final int SOCIAL_TYPE_FACEBOOK = 1;
-    public static final int SOCIAL_TYPE_GPLUS = 2;
+    public static final int SOCIAL_TYPE_GPLUS = 7;
     public static final int SOCIAL_TYPE_PHONE_NUMBER = 5;
 
     public static final String USER_NAME = "username";

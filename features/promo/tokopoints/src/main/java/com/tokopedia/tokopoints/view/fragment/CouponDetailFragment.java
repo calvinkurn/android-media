@@ -182,7 +182,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
-        llBottomBtn=view.findViewById(R.id.ll_bottom_button);
+        llBottomBtn = view.findViewById(R.id.ll_bottom_button);
     }
 
     private void initListener() {
@@ -435,7 +435,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     }
 
     private void setCouponToUi(CouponValueEntity data) {
-        if (getView() == null || data.isEmpty()) {
+        if (getView() == null || data == null || data.isEmpty()) {
             return;
         }
 
@@ -553,11 +553,21 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
                     } else {
                         mPresenter.swipeMyCoupon(data.getRealCode(), ""); //Empty for online partner
                     }
+
+                    AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.SWIPE_COUPON,
+                            "");
                 }
 
                 @Override
                 public void onPartialSwipe() {
-
+                    AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.SWIPE_COUPON,
+                            "");
                 }
             });
 

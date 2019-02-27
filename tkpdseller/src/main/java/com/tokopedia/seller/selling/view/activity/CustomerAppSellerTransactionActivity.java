@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
@@ -200,6 +201,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     private void setView() {
         sellerTickerView = findViewById(com.tokopedia.design.R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
+        sellerTickerView.setVisibility(View.GONE);
         mViewPager = findViewById(com.tokopedia.design.R.id.pager);
         indicator = findViewById(com.tokopedia.design.R.id.indicator);
 
@@ -214,22 +216,9 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initSellerTicker() {
-        GTMContainer gtmContainer = GTMContainer.newInstance(this);
-
-        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
-            String message = gtmContainer.getString("ticker_text_sales_rich");
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
-        }
-
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        initSellerTicker();
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
@@ -333,7 +322,6 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
                     UnifyTracking.eventShopTabSelected(CustomerAppSellerTransactionActivity.this,
                             indicator.getTabAt(position).getText().toString());
                 }
-                initSellerTicker();
             }
 
             @Override
@@ -496,13 +484,10 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Bundle bundle = new Bundle();
-        super.onSaveInstanceState(bundle);
-        if (!TooLargeTool.isPotentialCrash(bundle)) {
-            outState.putAll(bundle);
-        }
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

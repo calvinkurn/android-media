@@ -3,8 +3,9 @@ package com.tokopedia.checkout.view.di.module;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepositoryImpl;
+import com.tokopedia.checkout.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.checkout.view.common.utils.PagingHandler;
-import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,18 +23,14 @@ public class PeopleAddressModule {
     }
 
     @Provides
-    PeopleService providePeopleService() {
-        return new PeopleService();
-    }
-
-    @Provides
     AddressModelMapper providePeopleAddressMapper() {
         return new AddressModelMapper();
     }
 
     @Provides
-    PeopleAddressRepositoryImpl providePeopleAddressRepositoryImpl(PeopleService peopleService, AddressModelMapper addressModelMapper) {
-        return new PeopleAddressRepositoryImpl(peopleService, addressModelMapper);
+    PeopleAddressRepositoryImpl providePeopleAddressRepositoryImpl(PeopleActApi peopleActApi,
+                                                                   GetAddressWithCornerUseCase addressWithCornerUseCase) {
+        return new PeopleAddressRepositoryImpl(peopleActApi, addressWithCornerUseCase);
     }
 
     @Provides

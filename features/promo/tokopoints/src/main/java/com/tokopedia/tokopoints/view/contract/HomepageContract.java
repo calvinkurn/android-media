@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
-import com.tokopedia.tokopoints.view.model.PopupNotification;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
@@ -60,11 +59,11 @@ public interface HomepageContract {
 
         void gotoSendGiftPage(int id, String title, String pointStr);
 
-        void showPopupNotification(PopupNotification data);
-
         void showTokoPointCoupon(TokoPointSumCoupon data);
 
         void onSuccessDynamicLink(TokopointsDynamicLinkEntity tokopointsDynamicLinkEntity);
+
+        void onFinishRendering();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -73,7 +72,5 @@ public interface HomepageContract {
         void getTokoPointDetail();
 
         void getPromos();
-
-        void getPopupNotification();
     }
 }

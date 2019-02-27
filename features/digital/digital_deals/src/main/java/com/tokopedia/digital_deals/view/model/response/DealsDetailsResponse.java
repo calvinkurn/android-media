@@ -90,6 +90,10 @@ public class DealsDetailsResponse implements Parcelable {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("min_qty")
+    private int minQty;
+    @SerializedName("max_qty")
+    private int maxQty;
     @SerializedName("min_start_time")
     @Expose
     private String minStartTime;
@@ -145,6 +149,8 @@ public class DealsDetailsResponse implements Parcelable {
     private String seoUrl;
     @SerializedName("is_liked")
     private boolean isLiked;
+    @SerializedName("desktop_url")
+    private String desktopUrl;
 
 
     public final static Parcelable.Creator<DealsDetailsResponse> CREATOR = new Creator<DealsDetailsResponse>() {
@@ -208,11 +214,19 @@ public class DealsDetailsResponse implements Parcelable {
         this.isLiked = in.readValue((Boolean.class.getClassLoader())) != null;
         this.tnc = in.readString();
         this.seoUrl = in.readString();
+        this.desktopUrl = in.readString();
     }
 
     public DealsDetailsResponse() {
     }
 
+    public String getDesktopUrl() {
+        return desktopUrl;
+    }
+
+    public void setDesktopUrl(String desktopUrl) {
+        this.desktopUrl = desktopUrl;
+    }
 
     public Integer getBrandId() {
         return brandId;
@@ -276,6 +290,22 @@ public class DealsDetailsResponse implements Parcelable {
 
     public void setImageWeb(String imageWeb) {
         this.imageWeb = imageWeb;
+    }
+
+    public int getMinQty() {
+        return minQty;
+    }
+
+    public void setMinQty(int minQty) {
+        this.minQty = minQty;
+    }
+
+    public int getMaxQty() {
+        return maxQty;
+    }
+
+    public void setMaxQty(int maxQty) {
+        this.maxQty = maxQty;
     }
 
     public String getThumbnailWeb() {
@@ -597,6 +627,7 @@ public class DealsDetailsResponse implements Parcelable {
         dest.writeValue(isLiked);
         dest.writeString(tnc);
         dest.writeString(seoUrl);
+        dest.writeString(desktopUrl);
     }
 
     public int describeContents() {

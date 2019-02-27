@@ -10,6 +10,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -94,7 +96,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
-        UserIdentificationApplinkModule.class
+        UserIdentificationApplinkModule.class,
+        ChatbotApplinkModule.class
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {
@@ -126,7 +129,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
-                new UserIdentificationApplinkModuleLoader()
+                new UserIdentificationApplinkModuleLoader(),
+                new ChatbotApplinkModuleLoader()
         );
     }
 

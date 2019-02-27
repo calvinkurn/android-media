@@ -77,9 +77,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                             -> {
                         String passengerType = null;
                         if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT) {
-                            passengerType = "Dewasa";
+                            passengerType = getView().getPassengerTypeAdult();
                         } else if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.INFANT) {
-                            passengerType = "Infant";
+                            passengerType = getView().getPassengerTypeChild();
                         }
                         return new TrainReviewPassengerInfoViewModelBuilder()
                                 .name(departureTrainPaxPassenger.getName())
@@ -102,9 +102,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                     .map(departureTrainPaxPassenger -> {
                         String passengerType = null;
                         if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.ADULT) {
-                            passengerType = "Dewasa";
+                            passengerType = getView().getPassengerTypeAdult();
                         } else if (departureTrainPaxPassenger.getPaxType() == TrainBookingPassenger.INFANT) {
-                            passengerType = "Bayi";
+                            passengerType = getView().getPassengerTypeChild();
                         }
                         return new TrainReviewPassengerInfoViewModelBuilder()
                                 .name(departureTrainPaxPassenger.getName())
@@ -209,6 +209,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.getMessage());
+                        if (isViewAttached()) {
+                            getView().stopTrace();
+                        }
                     }
 
                     @Override
@@ -216,6 +219,7 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                         getView().showScheduleTripsPrice(pairScheduleDetail.first, pairScheduleDetail.second);
                         getView().startCountdown(TrainDateUtil.stringToDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 getView().getExpireDate()));
+                        getView().stopTrace();
                     }
                 });
     }

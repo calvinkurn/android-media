@@ -14,7 +14,6 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -36,6 +35,12 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.UserData;
+import com.tokopedia.linker.requests.LinkerGenericRequest;
+import com.tokopedia.user.session.UserSession;
 
 @Deprecated
 /**
@@ -83,6 +88,8 @@ public class SessionHandler {
     private static final String EMAIL = "EMAIL";
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
+    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
+    private static final String KEY_AFFILIATE = "KEY_AFFILIATE";
     public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
 
     private Context context;
@@ -163,6 +170,8 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
+        LocalCacheHandler.clearCache(context, KEY_PROFILE_BUYER);
+        LocalCacheHandler.clearCache(context, KEY_AFFILIATE);
         logoutInstagram(context);
         try {
             MethodChecker.removeAllCookies(context);
@@ -438,12 +447,12 @@ public class SessionHandler {
 
     public static String getAccessToken() {
         SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public static String getRefreshToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
+        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
     }
 
     public static String getRefreshTokenIV(Context context) {
@@ -478,12 +487,12 @@ public class SessionHandler {
 
     public static String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public static String getAccessTokenTokoCash() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), TOKOCASH_SESSION);
-        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "");
+        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "").trim();
     }
 
     public void clearToken() {
@@ -547,12 +556,12 @@ public class SessionHandler {
 
     public String getAuthAccessToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public String getAuthRefreshToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
+        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
     }
 
     public boolean isUserHasShop() {
@@ -574,7 +583,11 @@ public class SessionHandler {
         TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
         if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
-        BranchSdkUtils.sendIdentityEvent(u_id);
+        UserData userData = new UserData();
+        userData.setUserId(u_id);
+
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                userData));
 
         //return status;
     }
@@ -589,7 +602,10 @@ public class SessionHandler {
         }
 
         //Set logout to Branch.io sdk,
-        BranchSdkUtils.sendLogoutEvent();
+        LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGOUT_VAL,
+                        null)
+        );
     }
 
     private void clearUserData() {
@@ -597,8 +613,10 @@ public class SessionHandler {
     }
 
     public void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
-        TrackingUtils.eventMoEngageLogoutUser(context);
+        if(context != null) {
+            PasswordGenerator.clearTokenStorage(context);
+            TrackingUtils.eventMoEngageLogoutUser(context);
+        }
         clearUserData();
     }
 
@@ -698,7 +716,7 @@ public class SessionHandler {
 
     public String getTokenType(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TOKEN_TYPE, "");
+        return sharedPrefs.getString(TOKEN_TYPE, "").trim();
     }
 
     public String getUUID() {

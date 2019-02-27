@@ -9,131 +9,81 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/pulsa_place_holders"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_120"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_10">
+
+        <TextView
+            android:id="@+id/dummy_view_1"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/keyline_1"
+            android:layout_marginRight="@dimen/keyline_1"
+            android:background="@color/grey_200"
+            android:textSize="@dimen/fontvs" />
+
+        <View
+            android:id="@+id/dummy_view_2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_30"
+            android:layout_below="@id/dummy_view_1"
+            android:layout_marginLeft="@dimen/keyline_1"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/keyline_1"
+            android:background="@color/grey_200" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_recommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/title"
+    <LinearLayout
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_16"
+        android:visibility="gone">
+
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:lineSpacingExtra="8sp"
-            android:padding="@dimen/dp_16"
-            android:text="@string/digital_channel_top_up_tagihan_title"
-            android:textColor="@color/black_70"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/see_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="end"
-            android:lineSpacingExtra="3sp"
-            android:padding="@dimen/dp_16"
-            android:text="@string/label_see_all"
-            android:textColor="@color/medium_green"
-            android:textSize="@dimen/sp_13"
-            android:textStyle="normal" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="@color/grey_100" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:id="@+id/pulsa_place_holders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/dp_10">
-
-            <TextView
-                android:id="@+id/dummy_view_1"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/keyline_1"
-                android:layout_marginRight="@dimen/keyline_1"
-                android:background="@color/grey_200"
-                android:textSize="@dimen/fontvs" />
-
-            <View
-                android:id="@+id/dummy_view_2"
-                android:layout_width="match_parent"
-                android:layout_height="16dp"
-                android:layout_below="@id/dummy_view_1"
-                android:layout_marginLeft="@dimen/keyline_1"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginRight="@dimen/keyline_1"
-                android:background="@color/grey_200" />
-
-        </RelativeLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_recommendation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
-
-        <FrameLayout
-            android:id="@+id/digital_widget_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:layout_weight="0.5"
+            app:srcCompat="@drawable/ic_network_error" />
 
         <LinearLayout
-            android:id="@+id/error_view"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="@dimen/dp_16"
-            android:visibility="gone">
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/text_error_message"
+                style="@style/TextView.Small.Bold"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                app:srcCompat="@drawable/ic_network_error" />
+                tools:text="Terjadi Kendala pada Server" />
 
-            <LinearLayout
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text_error_message"
-                    style="@style/TextView.Small.Bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Terjadi Kendala pada Server" />
-
-                <Button
-                    android:id="@+id/button_try_again"
-                    style="@style/Button.Submit.Green"
-                    android:layout_width="@dimen/dp_120"
-                    android:layout_height="@dimen/dp_32"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginLeft="0dp"
-                    android:text="@string/digital_channel_try_again" />
-
-            </LinearLayout>
+            <Button
+                android:id="@+id/button_try_again"
+                style="@style/Button.Submit.Green"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_32"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:text="@string/digital_channel_try_again" />
 
         </LinearLayout>
 
-    </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>

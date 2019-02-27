@@ -196,7 +196,7 @@
             android:layout_below="@+id/total"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:textColor="@color/price_pdp"
+            android:textColor="@color/red_800"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold"
             tools:text="TOTAL:" />

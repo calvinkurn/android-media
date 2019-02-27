@@ -42,7 +42,8 @@ public interface ICartListView extends IBaseView {
 
     void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
 
-    void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap, int condition);
+    void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap,
+                                     boolean checkoutProductEligibleForCashOnDelivery, int condition);
 
     void renderToAddressChoice();
 
@@ -111,4 +112,6 @@ public interface ICartListView extends IBaseView {
     void goToCouponList();
 
     void goToDetail(PromoData promoData);
+
+    void stopTrace();
 }

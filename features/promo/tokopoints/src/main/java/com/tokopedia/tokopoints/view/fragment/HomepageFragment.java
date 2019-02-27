@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -36,6 +37,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
+import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
@@ -49,7 +51,6 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
-import com.tokopedia.tokopoints.view.model.PopupNotification;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
@@ -67,6 +68,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 public class HomepageFragment extends BaseDaggerFragment implements HomepageContract.View, View.OnClickListener {
+
+    private static final String FPM_TOKOPOINT = "ft_tokopoint";
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
@@ -91,9 +94,16 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
     private HomepagePagerAdapter homepagePagerAdapter;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        performanceMonitoring = PerformanceMonitoring.start(FPM_TOKOPOINT);
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -162,13 +172,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mPresenter.attachView(this);
         initListener();
         mPresenter.getTokoPointDetail();
-        mPresenter.getPopupNotification();
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(getAppContext(), CommonConstant.PREF_TOKOPOINTS);
         if (!localCacheHandler.getBoolean(CommonConstant.PREF_KEY_ON_BOARDED)) {
             showOnBoardingTooltip(getString(R.string.tp_label_know_tokopoints), getString(R.string.tp_message_tokopoints_on_boarding));
             localCacheHandler.putBoolean(CommonConstant.PREF_KEY_ON_BOARDED, true);
             localCacheHandler.applyEditor();
         }
+
+        TokoPointsNotificationManager.fetchNotification(getActivity(), "main", getChildFragmentManager());
     }
 
     @Override
@@ -221,18 +232,25 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value
-                || source.getId() == R.id.bottom_view_membership) {
-            openWebView(CommonConstant.WebLink.MEMBERSHIP);
+        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value) {
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
                     mValueMembershipDescription);
+        } else if (source.getId() == R.id.bottom_view_membership) {
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
+                    "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
-            openWebView(CommonConstant.WebLink.HISTORY);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -240,7 +258,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
         } else if (source.getId() == R.id.view_loyalty_saya) {
-            openWebView(CommonConstant.WebLink.HISTORY);
+            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -334,28 +352,28 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                         RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
                 }
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_FLOATING_LUCKY,
+                        "");
             });
 
             getView().findViewById(R.id.text_token_title).setOnClickListener(view -> {
                 if (mSumToken <= 0) {
                     showStartPurchaseBottomSheet(lobDetails.getTitle());
-
-                    AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_EMPTY,
-                            "");
                 } else {
                     if (getActivity() != null) {
                         RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
                     }
-
-                    AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
-                            "");
                 }
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
+                        "");
             });
         }
     }
@@ -375,9 +393,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
-                if(tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")){
+                if (tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")) {
                     ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), R.color.green_50);
-                }else{
+                } else {
                     ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
                 }
 
@@ -535,8 +553,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
         switch (resCode) {
             case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                labelPositive = getString(R.string.tp_label_shopping);
-                labelNegative = getString(R.string.tp_label_later);
+                labelPositive = getString(R.string.tp_label_ok);
                 break;
             case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                 labelPositive = getString(R.string.tp_label_complete_profile);
@@ -564,13 +581,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         if (labelNegative != null && !labelNegative.isEmpty()) {
             adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
                 switch (resCode) {
-                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                        AnalyticsTrackerUtil.sendEvent(getContext(),
-                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                                "");
-                        break;
                     case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                         AnalyticsTrackerUtil.sendEvent(getContext(),
                                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -593,8 +603,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
-
+                    dialogInterface.cancel();
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
@@ -657,10 +666,22 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 if (position == 0) {
                     appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
                     mPresenter.setPagerSelectedItem(position);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_PENUKARAN,
+                            "");
                 } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
                     slideDown();
                     mPresenter.setPagerSelectedItem(position);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_KUPON_SAYA,
+                            "");
                 }
             }
 
@@ -769,17 +790,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     @Override
-    public void showPopupNotification(PopupNotification data) {
-        if (data.getTitle() == null || data.getTitle().trim().isEmpty()) {
-            return;
-        }
-
-        PopupNotificationBottomSheet popupNotificationBottomSheet = new PopupNotificationBottomSheet();
-        popupNotificationBottomSheet.setData(data);
-        popupNotificationBottomSheet.show(getChildFragmentManager(), data.getTitle());
-    }
-
-    @Override
     public void showTokoPointCoupon(TokoPointSumCoupon data) {
         TabUtil.wrapTabIndicatorToTitle(mTabLayoutPromo,
                 (int) getResources().getDimension(R.dimen.tp_margin_medium),
@@ -814,6 +824,11 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         });
         mRvDynamicLinks.setLayoutManager(manager);
         mRvDynamicLinks.setAdapter(new DynamicLinkAdapter(tokopointsDynamicLinkEntity.getLinks()));
+    }
 
+    @Override
+    public void onFinishRendering() {
+        if (performanceMonitoring != null)
+            performanceMonitoring.stopTrace();
     }
 }

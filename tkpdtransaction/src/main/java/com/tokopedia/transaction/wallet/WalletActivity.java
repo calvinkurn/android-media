@@ -82,7 +82,8 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     public void onProgressResult(String progressResult) {
         Uri uri = Uri.parse(progressResult);
-        if (uri.getPath().contains("thanks_wallet")) {
+        String pathUri = uri.getPath();
+        if (pathUri != null && uri.getPath().contains("thanks_wallet")) {
             clearTokoCashData();
             finish();
         }
@@ -117,7 +118,8 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     public boolean onOverrideUrl(String url) {
         Uri uri = Uri.parse(url);
-        if (uri.getPath().contains("thanks_wallet")) {
+        String pathUri = uri.getPath();
+        if (pathUri != null && uri.getPath().contains("thanks_wallet")) {
             clearTokoCashData();
             finish();
             return true;

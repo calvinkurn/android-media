@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.thankyou.data.factory;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;

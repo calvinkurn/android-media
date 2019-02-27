@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
@@ -86,9 +87,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_help) {
-            openApplink(String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW,
-                    CommonConstant.WebLink.INFO));
+            ((TokopointRouter) getApplicationContext()).openTokoPoint(this, CommonConstant.WebLink.INFO);
 
             AnalyticsTrackerUtil.sendEvent(this,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

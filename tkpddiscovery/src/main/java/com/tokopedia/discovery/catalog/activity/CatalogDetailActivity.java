@@ -23,6 +23,7 @@ import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
+import com.tokopedia.linker.model.LinkerData;
 
 /**
  * @author anggaprasetiyo on 10/17/16.
@@ -34,7 +35,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
     String catalogId;
-    private ShareData shareData;
+    private LinkerData shareData;
 
 
     @DeepLink(Constants.Applinks.DISCOVERY_CATALOG)
@@ -105,7 +106,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     }
 
     @Override
-    public void deliverCatalogShareData(ShareData shareData) {
+    public void deliverCatalogShareData(LinkerData shareData) {
         this.shareData = shareData;
     }
 

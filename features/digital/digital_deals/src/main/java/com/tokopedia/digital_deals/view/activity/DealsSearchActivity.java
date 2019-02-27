@@ -136,7 +136,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_SEARCH_VOUCHER_OR_OUTLET, text);
         back.setImageResource(R.drawable.ic_action_back);
         DrawableCompat.setTint(back.getDrawable(), ContextCompat.getColor(getActivity(), R.color.toolbar_home));
-        mPresenter.searchSubmitted(text);
+        mPresenter.searchSubmitted();
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
-import com.google.gson.JsonObject;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
@@ -12,15 +12,14 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,6 +109,33 @@ public class BaseDiscoveryActivity
     public void onHandleResponseHotlist(String url, String query) {
         startActivity(HotlistActivity.createInstanceUsingURL(this, url, query, isPausing()));
         finish();
+    }
+
+    @Override
+    public void onHandleApplink(String applink) {
+        if (getApplicationContext() instanceof DiscoveryRouter
+                && ((DiscoveryRouter) getApplicationContext()).isSupportApplink(applink)) {
+            openApplink(applink);
+        } else {
+            openWebViewURL(applink, this);
+        }
+        finish();
+    }
+
+    public void openApplink(String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            ((DiscoveryRouter) getApplicationContext())
+                    .goToApplinkActivity(this, applink);
+        }
+    }
+
+    public void openWebViewURL(String url, Context context) {
+        if (!TextUtils.isEmpty(url) && context != null) {
+            ((DiscoveryRouter) getApplication())
+                    .actionOpenGeneralWebView(
+                            this,
+                            url);
+        }
     }
 
     @Override

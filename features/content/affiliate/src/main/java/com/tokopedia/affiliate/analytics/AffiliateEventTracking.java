@@ -52,6 +52,7 @@ public interface AffiliateEventTracking {
         String CLICK_SELESAI = "click selesai";
         String CLICK_TAMBAH_GAMBAR = "click tambah gambar";
         String CLICK_TOKOPEDIA_SALDO = "cta tokopedia saldo";
+        String CLICK_PROFILE = "click profile";
         String OTHERS = "others";
     }
 

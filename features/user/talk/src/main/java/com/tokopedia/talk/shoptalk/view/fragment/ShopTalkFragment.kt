@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
@@ -74,14 +75,21 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     @Inject
     lateinit var analytics: TalkAnalytics
 
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+
+    private var isTraceStopped: Boolean = false
+
     companion object {
+
+        const val TALK_SHOP_TRACE = "mp_talk_shop_list"
         fun newInstance(bundle: Bundle): ShopTalkFragment {
             val fragment = ShopTalkFragment()
             fragment.arguments = bundle
             return fragment
         }
-    }
 
+
+    }
 
     override fun initInjector() {
         val shopTalkComponent = DaggerShopTalkComponent.builder()
@@ -100,6 +108,11 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         activity?.run {
             analytics.sendScreen(this, screenName)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(TALK_SHOP_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -172,6 +185,14 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     override fun onSuccessGetShopTalk(talkViewModel: InboxTalkViewModel) {
         adapter.hideEmpty()
         adapter.addList(talkViewModel.listTalk)
+        stopTrace()
+    }
+
+    fun stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace()
+            isTraceStopped = true
+        }
     }
 
     override fun onErrorGetShopTalk(errorMessage: String) {
@@ -200,6 +221,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
         if (userSession.isLoggedIn) {
+            analytics.trackClickReplyButtonFromShop(talkId)
             goToDetailTalk(talkId, shopId, allowReply)
         } else {
             goToLogin()
@@ -269,7 +291,10 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
                     talkId)
             getString(R.string.menu_follow_talk) -> showFollowTalkDialog(alertDialog, talkId)
             getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(alertDialog, talkId)
-            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId, "")
+            getString(R.string.menu_report_talk) -> {
+                analytics.trackClickOnMenuReport()
+                goToReportTalk(talkId, shopId, productId, "")
+            }
         }
         bottomMenu.dismiss()
     }
@@ -290,6 +315,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     private fun showUnfollowTalkDialog(alertDialog: Dialog, talkId: String) {
         context?.run {
+            analytics.trackClickOnMenuUnfollow()
             talkDialog.createUnfollowTalkDialog(
                     this,
                     alertDialog,
@@ -303,6 +329,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     private fun showFollowTalkDialog(alertDialog: Dialog, talkId: String) {
         context?.run {
+            analytics.trackClickOnMenuFollow()
             talkDialog.createFollowTalkDialog(
                     this,
                     alertDialog,
@@ -316,6 +343,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     private fun showDeleteTalkDialog(alertDialog: Dialog, shopId: String, talkId: String) {
         context?.run {
+            analytics.trackClickOnMenuDelete()
             talkDialog.createDeleteTalkDialog(
                     this,
                     alertDialog,
@@ -328,6 +356,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
+
+        analytics.trackClickOnMenuDelete()
 
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -353,14 +383,21 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         presenter.markTalkNotFraud(talkId)
     }
 
-    override fun onGoToPdp(productId: String) {
+    override fun onGoToPdpFromProductItemHeader(productId: String) {
+        analytics.trackClickProduct()
+        onGoToPdp(productId)
+    }
+
+    private fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
+            analytics.trackClickProduct()
             val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
             this@ShopTalkFragment.startActivity(intent)
         }
     }
 
     override fun onGoToUserProfile(userId: String) {
+        analytics.trackClickUserProfileFromShop()
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
             this@ShopTalkFragment.startActivity(intent)
@@ -398,8 +435,10 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
                                          shopId: String, talkId: String, commentId: String,
                                          productId: String) {
         when (itemMenu.title) {
-            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId,
-                    commentId)
+            getString(R.string.menu_report_comment) -> {
+                analytics.trackClickOnMenuReport()
+                goToReportTalk(talkId, shopId, productId, commentId)
+            }
             getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
                     talkId, commentId)
         }
@@ -422,6 +461,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
+        analytics.trackClickProductFromAttachmentFromShop()
         onGoToPdp(attachProduct.productId.toString())
     }
 

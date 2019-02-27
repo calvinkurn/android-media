@@ -1,13 +1,10 @@
 package com.tokopedia.loyalty.view.activity;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.webkit.WebViewFragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.loyalty.view.fragment.TokoPointWebViewFragment;
@@ -37,8 +34,8 @@ public class TokoPointWebviewActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!TextUtils.isEmpty(getIntent().getStringExtra(Intent.EXTRA_TITLE))){
-            updateTitle(getIntent().getStringExtra(Intent.EXTRA_TITLE));
+        if(!TextUtils.isEmpty(getIntent().getStringExtra(EXTRA_TITLE))){
+            updateTitle(getIntent().getStringExtra(EXTRA_TITLE));
         }
     }
 
