@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
@@ -92,6 +93,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_ACTION = "action"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
 
+        const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
         const val RESULT_PRODUCT_DATA = "product_data"
 
         fun createInstance(shopId: String?, productId: String?,
@@ -236,7 +238,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else if (action == ATC_AND_SELECT) {
                 getString(R.string.label_button_buy)
             } else {
-                getString(R.string.label_button_buy)
+                getString(R.string.label_button_buy_now)
             }
             if (hasError()) {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
@@ -361,16 +363,22 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     fun selectVariant() {
         activity?.run {
             if (fragmentViewModel.isStateChanged == true) {
-
                 setResult(Activity.RESULT_OK, Intent().apply {
                     if (!selectedVariantId.isNullOrEmpty()) {
                         putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+                        selectedProductInfo?.let { it ->
+                            val cacheManager =
+                                    SaveInstanceCacheManager(this@run, true).apply {
+                                        put(RESULT_PRODUCT_DATA, it)
+                                    }
+                            putExtra(RESULT_PRODUCT_DATA_CACHE_ID, cacheManager.id)
+                        }
                     }
                     putExtra(EXTRA_QUANTITY, quantity)
+                    putExtra(EXTRA_NOTES, notes)
                 })
-            } else {
-                onBackPressed()
             }
+            onBackPressed()
         }
     }
 
@@ -414,15 +422,18 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 variantSize++
             }
         }
-        //selection option might partial selected, we only care for full selection
-        if (optionList.isNotEmpty() && optionList.size == variantSize) {
+        //selection option might partial selected
+        if (optionList.isNotEmpty()) {
             originalProduct?.run {
                 if (productVariant.hasChildren) {
                     var selectedChild: Child? = null
-                    for (childModel: Child in productVariant.children) {
-                        if (childModel.optionIds.equals(optionList)) {
-                            selectedChild = childModel
-                            break
+                    // find exact size of option, we only care for the full selection
+                    if (optionList.size == variantSize) {
+                        for (childModel: Child in productVariant.children) {
+                            if (childModel.optionIds == optionList) {
+                                selectedChild = childModel
+                                break
+                            }
                         }
                     }
                     if (selectedChild == null) {

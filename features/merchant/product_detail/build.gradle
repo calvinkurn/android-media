@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.cacheManager)
 
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.productDetailCommon)

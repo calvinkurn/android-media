@@ -41,6 +41,7 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.constant.ATC_AND_SELECT
 import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
+import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ProductInfo
@@ -210,6 +211,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (!remoteConfig.getBoolean(ENABLE_VARIANT))
                 useVariant = false
         }
+        retainInstance = true
         setHasOptionsMenu(true)
     }
 
@@ -590,6 +592,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
+                if (resultCode == Activity.RESULT_OK && data!= null) {
+                    //TODO reload product data
+                    val objectId = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
+                    //presenter.loadMerchantVoucher
+                }
+//                *      val objectId = intent.getStringExtra(PASS_OBJECT_ID)
+//                *      cacheManager = SaveInstanceCacheManager(this, savedInstanceState)
+//                *      val manager = if (savedInstanceState == null) SaveInstanceCacheManager(this, objectId) else cacheManager
+//                *      model = manager.get("KEY_TO_PUT", Model::class.java)
                 //TODO set the product = product variant selected
                 //TODO set note, qty, and selected variant
                 //TODO refresh the UI
