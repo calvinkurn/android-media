@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
@@ -105,5 +106,7 @@ public interface HomeContract {
         void hitBannerImpression(BannerSlidesModel slidesModel);
 
         void onBannerClicked(BannerSlidesModel slidesModel);
+
+        void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData);
     }
 }
