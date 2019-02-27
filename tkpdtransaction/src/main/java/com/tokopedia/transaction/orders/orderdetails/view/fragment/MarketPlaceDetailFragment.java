@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -238,10 +239,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
         }
         if (title.backgroundColor() != null && !title.backgroundColor().isEmpty()) {
-            Drawable drawable = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                drawable = getContext().getDrawable(R.drawable.background_deadline);
-            }
+            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.background_deadline);
             doubleTextView.setBottomTextBackground(drawable);
             doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10), getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10));
 
