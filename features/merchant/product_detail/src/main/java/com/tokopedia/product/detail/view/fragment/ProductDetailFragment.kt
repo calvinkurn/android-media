@@ -644,7 +644,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
             val data = productInfo ?: return
 
-            actionButtonView.renderData(data.basic.isWarehouse(),
+            actionButtonView.renderData(!data.basic.isActive(),
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
                             || shopInfo.allowManage),
                     data.preorder)

@@ -143,7 +143,7 @@
         },
         "Stock": {
           "Stock" : 100,
-          "IsBuyable" : true,
+          "IsBuyable" : false,
           "AlwaysAvailable" : false,
           "IsLimitedStock": true,
           "StockWording": "",

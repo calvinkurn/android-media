@@ -109,4 +109,8 @@ data class ProductInfo(
             }
         }
 
+    // also need isSeller or isSellerApp
+    val isBuyable: Boolean
+        get() = basic.isActive()
+
 }

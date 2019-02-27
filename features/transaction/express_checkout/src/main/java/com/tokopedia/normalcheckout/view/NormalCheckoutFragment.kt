@@ -163,13 +163,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             val selectedVariant = productInfoAndVariant.productVariant.getVariant(selectedVariantId)
             if (selectedVariant != null) {
                 if (selectedVariant.isBuyable) {
-                    return ModelMapper.convertToModels(originalProduct?.productInfo!!, selectedVariant)
+                    return ModelMapper.convertVariantToModels(originalProduct?.productInfo!!, selectedVariant)
                 } else {
                     val child = getOtherSiblingProduct(originalProduct!!, selectedVariant.optionIds)
                     if (child == null) {
                         return productInfoAndVariant.productInfo
                     } else {
-                        return ModelMapper.convertToModels(productInfoAndVariant.productInfo, child)
+                        return ModelMapper.convertVariantToModels(productInfoAndVariant.productInfo, child)
                     }
                 }
             } else {
@@ -182,19 +182,34 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
      * When the optionId given is actually not n the children of the variant, we want to switch to another product
      * For example, option ID for [101,201,301] is not found as a children for variant,
      * So, another first product is searched: [101,201,**] that is buyable. The first item found is returned.
+     * If still not find the product, previous level is searched: [101,***,***]
+     * If still not find, root level is searched: [***,***,***]
+     * If not find any, will return null
      */
     private fun getOtherSiblingProduct(productInfoAndVariant: ProductInfoAndVariant?, optionId: List<Int>): Child? {
         var selectedChild: Child? = null
         // we need to reselect other variant
         productInfoAndVariant?.run {
-            val optionsIdList = optionId
-            val optionPartialSize = optionsIdList.size - 1
-            val partialOptionIdList = optionsIdList.subList(0, optionPartialSize)
-            for (childLoop: Child in productVariant.children) {
-                if (childLoop.isBuyable && childLoop.optionIds.subList(0, optionPartialSize).equals(partialOptionIdList)) {
-                    selectedChild = childLoop
+            var optionPartialSize = optionId.size - 1
+            while (optionPartialSize > -1) {
+                val partialOptionIdList = optionId.subList(0, optionPartialSize)
+                for (childLoop: Child in productVariant.children) {
+                    if (!childLoop.isBuyable) {
+                        continue
+                    }
+                    if (optionPartialSize == 0) {
+                        selectedChild = childLoop
+                        break
+                    }
+                    if (childLoop.optionIds.subList(0, optionPartialSize) == partialOptionIdList) {
+                        selectedChild = childLoop
+                        break
+                    }
+                }
+                if (selectedChild != null) {
                     break
                 }
+                optionPartialSize--
             }
         }
         return selectedChild
@@ -203,32 +218,28 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private fun renderActionButton(productInfo: ProductInfo) {
         if (GlobalConfig.isCustomerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
                 productInfo.basic.isActive()) {
-            if (productInfo.basic.isWarehouse()) { //out of stock
-                showFullButton(false, false, false)
+            button_buy_full.gone()
+            button_buy_partial.visible()
+            rl_bottom_action_container.visible()
+            if (action == ATC_AND_SELECT || action == ATC_AND_BUY) {
+                button_cart.visible()
             } else {
-                button_buy_full.gone()
-                button_buy_partial.visible()
-                rl_bottom_action_container.visible()
-                if (action == ATC_AND_SELECT || action == ATC_AND_BUY) {
-                    button_cart.visible()
-                } else {
-                    button_cart.gone()
-                }
-                button_buy_partial.text = if (action == ATC_ONLY) {
-                    getString(R.string.add_to_cart)
-                } else if (productInfo.isPreorderActive) {
-                    getString(R.string.label_button_preorder)
-                } else {
-                    getString(R.string.label_button_buy)
-                }
-                if (hasError()) {
-                    button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
-                } else {
-                    button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
-                }
+                button_cart.gone()
             }
-        } else { // sellerapp
-            showFullButton(productInfo.basic.isWarehouse(), productInfo.isPreorderActive, false)
+            button_buy_partial.text = if (action == ATC_ONLY) {
+                getString(R.string.add_to_cart)
+            } else if (productInfo.isPreorderActive) {
+                getString(R.string.label_button_preorder)
+            } else {
+                getString(R.string.label_button_buy)
+            }
+            if (hasError()) {
+                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+            } else {
+                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
+            }
+        } else { // sellerapp or warehouse product or owner
+            showFullButton(!productInfo.basic.isActive(), productInfo.isPreorderActive, false)
         }
     }
 
@@ -334,7 +345,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         //TODO add to cart
     }
 
-    override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */}
+    override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */
+    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -401,7 +413,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         selectedVariantId = inputSelectedVariantId
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
         selectedProductInfo?.let { it ->
-            val viewModels = ModelMapper.convertToModels(it, originalProduct.productVariant,
+            val viewModels = ModelMapper.convertVariantToModels(it, originalProduct.productVariant,
                     notes, quantity)
             fragmentViewModel.viewModels = viewModels
             quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
