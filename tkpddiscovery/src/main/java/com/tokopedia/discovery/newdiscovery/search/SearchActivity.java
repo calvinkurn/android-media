@@ -187,7 +187,7 @@ public class SearchActivity extends DiscoveryActivity
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
-        boolean isOfficial = getIntent().getBooelanExtra(EXTRA_OFFICIAL, false);
+        boolean isOfficial = getIntent().getBooleanExtra(EXTRA_OFFICIAL, false);
 
         if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
             moveTaskToBack(true);
