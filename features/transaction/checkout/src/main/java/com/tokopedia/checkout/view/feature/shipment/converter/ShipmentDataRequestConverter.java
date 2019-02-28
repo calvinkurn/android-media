@@ -114,6 +114,8 @@ public class ShipmentDataRequestConverter {
                                 shipmentDetailData.getShippingCourierViewModels() != null ?
                                 shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
                             )
+                            .checksum(courierItemData.getChecksum())
+                            .ut(courierItemData.getUt())
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)

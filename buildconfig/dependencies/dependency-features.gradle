@@ -209,6 +209,7 @@ ext {
             //recentview                    : ":features:discovery:recentview_no_op",
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
+            productCard                   : ":features:discovery:productcard",
 
             homecredit                    : ":features:fintech:home_credit",
             instantLoan                   : ":features:fintech:instant_loan",

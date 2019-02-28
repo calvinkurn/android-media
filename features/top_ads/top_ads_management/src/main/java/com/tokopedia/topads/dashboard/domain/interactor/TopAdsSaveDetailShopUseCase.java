@@ -1,12 +1,10 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -20,8 +18,8 @@ public class TopAdsSaveDetailShopUseCase extends UseCase<TopAdsDetailShopDomainM
     protected final TopAdsShopAdsRepository topAdsShopAdsRepository;
 
     @Inject
-    public TopAdsSaveDetailShopUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsShopAdsRepository topAdsShopAdsRepository) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsSaveDetailShopUseCase(TopAdsShopAdsRepository topAdsShopAdsRepository) {
+        super();
         this.topAdsShopAdsRepository = topAdsShopAdsRepository;
     }
 

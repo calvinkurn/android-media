@@ -18,6 +18,12 @@ public class ShippingInfoCheckoutRequest {
     @SerializedName("rates_id")
     @Expose
     public String ratesId;
+    @SerializedName("checksum")
+    @Expose
+    public String checksum;
+    @SerializedName("ut")
+    @Expose
+    public String ut;
 
     public ShippingInfoCheckoutRequest() {
     }
@@ -26,6 +32,8 @@ public class ShippingInfoCheckoutRequest {
         shippingId = builder.shippingId;
         spId = builder.spId;
         ratesId = builder.ratesId;
+        checksum = builder.checksum;
+        ut = builder.ut;
     }
 
 
@@ -33,6 +41,8 @@ public class ShippingInfoCheckoutRequest {
         private int shippingId;
         private int spId;
         private String ratesId;
+        private String checksum;
+        private String ut;
 
         public Builder() {
         }
@@ -49,6 +59,16 @@ public class ShippingInfoCheckoutRequest {
 
         public Builder ratesId(String val) {
             ratesId = val;
+            return this;
+        }
+
+        public Builder checksum(String val) {
+            checksum = val;
+            return this;
+        }
+
+        public Builder ut(String val) {
+            ut = val;
             return this;
         }
 

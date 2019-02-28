@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
+import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 
-import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -28,8 +26,6 @@ public interface SellerModuleRouter {
     Observable<GMFeaturedProductDomainModel> getFeaturedProduct();
 
     void goToGMSubscribe(Activity activity);
-
-    Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
 
     GetShopInfoUseCase getShopInfo();
 

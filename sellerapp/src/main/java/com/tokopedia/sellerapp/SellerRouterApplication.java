@@ -167,7 +167,6 @@ import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
@@ -299,6 +298,8 @@ public abstract class SellerRouterApplication extends MainApplication
         analyticTracker = initializeAnalyticTracker();
         initializeDagger();
         initializeRemoteConfig();
+
+        //TODO if using Trackapp, remove TrackingUtils from MainApplication
     }
 
     private AnalyticTracker initializeAnalyticTracker() {
@@ -621,7 +622,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
-    @Override
     public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
@@ -966,12 +966,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return BuildConfig.FLAVOR;
     }
 
-    @Override
-    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
-        GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
-        return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
-    }
-
     public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
     }
@@ -1243,18 +1237,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendEnhanceECommerceTracking(@NotNull Map<String, Object> events) {
         TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
-    }
-
-    @Override
-    public void sendTrackDefaultAuth() {
-        ScreenTracking.sendAuth(this);
-    }
-
-    @Override
-    public void sendTrackCustomAuth(@NotNull Context context, @NotNull String shopID,
-                                    @NotNull String shopType, @NotNull String pageType,
-                                    @NotNull String productId) {
-        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
     }
 
     @Override

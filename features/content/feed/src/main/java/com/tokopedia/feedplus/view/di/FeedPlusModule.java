@@ -21,6 +21,7 @@ import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -230,8 +231,8 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
-        return new ToggleFavouriteShopUseCase(shopCommonRepository);
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase( @ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase( new GraphqlUseCase(), context.getResources());
     }
 
 

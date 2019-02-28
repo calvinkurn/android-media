@@ -52,16 +52,13 @@ import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoi
 
 /**
  * @author Aghny A. Putra on 25/01/18
+ * Fajar U N
  */
-
 public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
-        ISearchAddressListView<List<RecipientAddressModel>>,
-        SearchInputView.Listener,
-        SearchInputView.ResetListener,
-        ShipmentAddressListAdapter.ActionListener {
+        ISearchAddressListView<List<RecipientAddressModel>>, SearchInputView.Listener,
+        SearchInputView.ResetListener, ShipmentAddressListAdapter.ActionListener {
 
     private static final int ORDER_ASC = 1;
-    private static final String PARAMS = "params";
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
     public static final String TAG_CORNER_BS = "TAG_CORNER_BS";
     public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";

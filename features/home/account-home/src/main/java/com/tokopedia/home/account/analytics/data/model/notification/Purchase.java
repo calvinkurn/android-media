@@ -11,16 +11,16 @@ public class Purchase {
 
     @SerializedName("purchase_reorder")
     @Expose
-    private int purchaseReorder;
+    private int purchaseReorder = 0;
     @SerializedName("purchase_payment_confirm")
     @Expose
-    private int purchasePaymentConfirm;
+    private int purchasePaymentConfirm = 0;
     @SerializedName("purchase_payment_conf")
     @Expose
-    private int purchasePaymentConf;
+    private int purchasePaymentConf = 0;
     @SerializedName("purchase_order_status")
     @Expose
-    private int purchaseOrderStatus;
+    private int purchaseOrderStatus = 0;
     @SerializedName("purchase_delivery_confirm")
     @Expose
     private int purchaseDeliveryConfirm;

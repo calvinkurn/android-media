@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_4"
+    android:elevation="@dimen/dp_3"
+    app:cardCornerRadius="@dimen/dp_4">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_10">
+
+        <ImageView
+            android:id="@+id/img_product"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10"
+            android:textSize="@dimen/sp_14"
+            android:maxLines="@integer/int_3"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:ellipsize="end"
+            android:textColor="@color/light_primary"
+            app:layout_constraintLeft_toRightOf="@id/img_product"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Fujifilm Instax Square SQ6 Instant Film Camera (Stone Grey Color) Polaroid" />
+
+        <TextView
+            android:id="@+id/txt_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="@dimen/sp_11"
+            android:textColor="@color/font_black_secondary_54"
+            app:layout_constraintLeft_toLeftOf="@id/txt_product_name"
+            app:layout_constraintTop_toBottomOf="@id/txt_product_name"
+            tools:text="2 Barang(20kg)" />
+
+        <TextView
+            android:id="@+id/txt_item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/orange_red"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintLeft_toLeftOf="@id/txt_quantity"
+            app:layout_constraintTop_toBottomOf="@id/txt_quantity"
+            tools:text="Rp 2.000.000" />
+
+        <TextView
+            android:id="@+id/txt_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_item_price"
+            tools:text="Tambah kecap bang sama kuahnya banyakin mantap lu bang" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/grey_300"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_description" />
+
+        <TextView
+            android:id="@+id/txt_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="Total Harga:"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/font_black_secondary_54"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+        <TextView
+            android:id="@+id/txt_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/orange_red"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_total"
+            tools:text="Rp 4.000.000" />
+
+        <TextView
+            android:id="@+id/btn_buy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:background="@color/deep_orange_500"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            tools:text="Beli Lagi" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

@@ -8,13 +8,13 @@ public class Stats {
 
     @SerializedName("__typename")
     @Expose
-    private String typename;
+    private String typename = "";
     @SerializedName("shop_total_transaction")
     @Expose
-    private String shopTotalTransaction;
+    private String shopTotalTransaction = "";
     @SerializedName("shop_item_sold")
     @Expose
-    private String shopItemSold;
+    private String shopItemSold = "";
 
     public String getTypename() {
         return typename;
