@@ -71,9 +71,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     if (data != null && !data.isJsonNull()) {
                         Type type = requests.get(i).getTypeOfT();
                         Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
-                        if (requests.get(i).isCheckNull()) {
-                            checkForNull(object);
-                        }
+//                        if (requests.get(i).isCheckNull()) {
+//                            checkForNull(object);
+//                        }
                         //Lookup for data
                         results.put(type, object);
                     }
