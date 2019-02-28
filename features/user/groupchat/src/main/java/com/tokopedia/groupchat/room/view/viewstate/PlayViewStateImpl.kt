@@ -2,7 +2,6 @@ package com.tokopedia.groupchat.room.view.viewstate
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.os.Handler
@@ -341,7 +340,7 @@ open class PlayViewStateImpl(
 
         loadingView.hide()
 
-        if(it.isFreeze){
+        if (it.isFreeze) {
             onChannelFrozen(it.channelId)
             listener.onToolbarEnabled(false)
             return
@@ -574,7 +573,12 @@ open class PlayViewStateImpl(
                 ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
                 overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
                     if (!TextUtils.isEmpty(interruptViewModel.imageLink)) {
-                        RouteManager.route(view.context, interruptViewModel.imageLink)
+                        RouteManager.routeWithAttribution(view.context, interruptViewModel.imageLink,
+                                GroupChatAnalytics.generateTrackerAttribution(
+                                        GroupChatAnalytics.ATTRIBUTE_OVERLAY_IMAGE,
+                                        channelInfoViewModel.channelUrl,
+                                        channelInfoViewModel.title
+                                ))
                         closeOverlayDialog()
                     }
 
@@ -599,7 +603,12 @@ open class PlayViewStateImpl(
                 analytics.eventClickOverlayButton(channelInfoViewModel)
 
                 if (!TextUtils.isEmpty(interruptViewModel.btnLink)) {
-                    RouteManager.route(view.context, interruptViewModel.btnLink)
+                    RouteManager.routeWithAttribution(view.context, interruptViewModel.btnLink,
+                            GroupChatAnalytics.generateTrackerAttribution(
+                                    GroupChatAnalytics.ATTRIBUTE_OVERLAY_BUTTON,
+                                    channelInfoViewModel.channelUrl,
+                                    channelInfoViewModel.title
+                            ))
                 }
                 closeOverlayDialog()
             }
@@ -781,7 +790,7 @@ open class PlayViewStateImpl(
                 videoContainer.show()
                 sponsorLayout.hide()
                 setChatListHasSpaceOnTop(false)
-                liveIndicator.shouldShowWithAction(isVideoLive){}
+                liveIndicator.shouldShowWithAction(isVideoLive) {}
                 youTubePlayer?.let {
                     it.cueVideo(videoId)
                     autoPlayVideo()
@@ -923,9 +932,22 @@ open class PlayViewStateImpl(
         } else {
             ImageHandler.LoadImage(webviewIcon, iconUrl)
         }
+        webviewIcon.show()
+
+        viewModel?.let{
+            analytics.eventViewProminentButton(it.channelId, redirectUrl)
+        }
 
         webviewIcon.setOnClickListener {
-            RouteManager.route(view.context, redirectUrl)
+            viewModel?.let{
+                analytics.eventClickProminentButton(it.channelId, redirectUrl)
+
+                RouteManager.routeWithAttribution(view.context, redirectUrl, GroupChatAnalytics.generateTrackerAttribution(
+                        GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
+                        it.channelUrl,
+                        it.title
+                ))
+            }
         }
 
     }
@@ -1128,7 +1150,6 @@ open class PlayViewStateImpl(
         }
 
         pinnedMessageDialog.setContentView(pinnedMessageView, "Pinned Chat")
-        view.setOnClickListener(null)
         pinnedMessageDialog.show()
 
     }
@@ -1150,7 +1171,7 @@ open class PlayViewStateImpl(
             }
             view.findViewById<ImageView>(R.id.thumbnail).visibility = View.GONE
         }
-
+        view.setOnClickListener(null)
         return view
     }
 
@@ -1182,6 +1203,8 @@ open class PlayViewStateImpl(
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
         viewModel?.let {
+
+            analytics.eventClickOverlayCTAButton(it.channelId, button.contentButtonText)
 
             it.overlayViewModel = OverlayViewModel(
                     OverlayViewModel.TYPE_CTA,

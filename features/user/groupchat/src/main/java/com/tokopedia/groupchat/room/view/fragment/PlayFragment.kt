@@ -1,10 +1,7 @@
 package com.tokopedia.groupchat.room.view.fragment
 
 import android.app.Activity
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -20,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.constant.TkpdState
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
@@ -29,6 +27,7 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
+import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
@@ -41,6 +40,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.user.session.UserSessionInterface
@@ -61,6 +61,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private var snackBarWebSocket: Snackbar? = null
 
     companion object {
+
+        const val GROUP_CHAT_NETWORK_PREFERENCES = "gc_network"
 
         var VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1)
         const val REQUEST_LOGIN = 111
@@ -85,6 +87,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     lateinit var viewState: PlayViewState
     private lateinit var notifReceiver: BroadcastReceiver
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var networkPreference : SharedPreferences
 
     private lateinit var channelInfoViewModel: ChannelInfoViewModel
     private var exitDialog: Dialog? = null
@@ -97,12 +101,29 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(GroupChatAnalytics.PLAY_TRACE)
+        setNetworkPreference(savedInstanceState)
+
         setHasOptionsMenu(true)
         val channelUUID = getParamString(PlayActivity.EXTRA_CHANNEL_UUID, arguments,
                 savedInstanceState, "")
         position = getParamInt(PlayActivity.EXTRA_POSITION, arguments,
                 savedInstanceState, 0)
         channelInfoViewModel = ChannelInfoViewModel(channelUUID)
+    }
+
+    private fun setNetworkPreference(savedInstanceState: Bundle?) {
+        activity?.let{
+            networkPreference  = it.applicationContext.getSharedPreferences(GROUP_CHAT_NETWORK_PREFERENCES,
+                    Context.MODE_PRIVATE)
+            val editor = networkPreference.edit()
+            val useGCP = getParamBoolean(PlayActivity
+                    .EXTRA_USE_GCP, arguments, savedInstanceState, false)
+            editor.putBoolean(PlayActivity.EXTRA_USE_GCP, useGCP)
+            editor.apply()
+            val bool = networkPreference.getBoolean(PlayActivity.EXTRA_USE_GCP, false)
+            val heah = bool.toString()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -290,7 +311,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
         return {
-
+            performanceMonitoring.stopTrace()
             onToolbarEnabled(true)
 
             presenter.getDynamicButtons(channelInfoViewModel.channelId, onSuccessGetDynamicButtons(),
@@ -309,6 +330,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorGetInfo(): (String) -> Unit {
         return {
+            performanceMonitoring.stopTrace()
             viewState.onErrorGetInfo(it)
             onToolbarEnabled(false)
         }
@@ -438,6 +460,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 //    }
 
     override fun onImageAnnouncementClicked(url: String?) {
+        analytics.eventClickThumbnail(String.format("%s - %s", (activity as GroupChatContract.View).channelInfoViewModel!!.channelId, url))
         url?.run {
             openRedirectUrl(this)
         }

@@ -24,6 +24,8 @@ import javax.inject.Inject;
 
 public class GroupChatAnalytics {
     public static final int DEFAULT_EE_POSITION = 1;
+    private static final String EVENT_VIEW_GROUP_CHAT = "viewGroupChat";
+    public static final String PLAY_TRACE = "mp_play_detail";
     private AnalyticTracker analyticTracker;
 
     private static final String EVENT_NAME = "event";
@@ -39,7 +41,6 @@ public class GroupChatAnalytics {
     private static final String EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room";
     private static final String EVENT_CATEGORY_SHARE = "share page";
     public static final String EVENT_CATEGORY_LEFT_NAVIGATION = "left navigation";
-
 
     private static final String EVENT_ACTION_GROUPCHAT_LIST = "click on group chat list";
     private static final String EVENT_ACTION_VOTE = "click on vote";
@@ -81,6 +82,9 @@ public class GroupChatAnalytics {
     public static final String ATTRIBUTE_FLASH_SALE = "Flash Sale";
     public static final String ATTRIBUTE_BANNER = "Banner";
     public static final String ATTRIBUTE_PARTNER_LOGO = "Logo";
+    public static final String ATTRIBUTE_OVERLAY_IMAGE = "Overlay Image";
+    public static final String ATTRIBUTE_OVERLAY_BUTTON = "Overlay Button";
+    public static final String ATTRIBUTE_PROMINENT_BUTTON = "Prominent Button";
 
     public static final String SCREEN_CHAT_ROOM = "/group-chat-room/";
     public static final String SCREEN_PLAY_WEBVIEW_FULL= "/group-chat-webvie-full/";
@@ -496,4 +500,32 @@ public class GroupChatAnalytics {
                     viewModel.getSprintSaleViewModel().getCampaignName()));
 
     }
+
+    public void eventClickOverlayCTAButton(@Nullable String channelId, @NotNull String contentButtonText) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                "click on menu button",
+                channelId + " - " + contentButtonText
+        );
+    }
+
+    public void eventViewProminentButton(@Nullable String channelId, @NotNull String redirectUrl) {
+        analyticTracker.sendEventTracking(
+                EVENT_VIEW_GROUP_CHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                "view on prominent button",
+                channelId + " - " + redirectUrl
+        );
+    }
+
+    public void eventClickProminentButton(@Nullable String channelId, @NotNull String redirectUrl) {
+        analyticTracker.sendEventTracking(
+                EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                "click on prominent button",
+                channelId + " - " + redirectUrl
+        );
+    }
+
+
 }
