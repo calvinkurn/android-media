@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home;
+package com.tokopedia.officialstore.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -45,8 +45,6 @@ public class ReactNativeBrandListOsActivity extends ReactFragmentActivity<Genera
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
-
-
 
     @Override
     protected GeneralReactNativeFragment getReactNativeFragment() {

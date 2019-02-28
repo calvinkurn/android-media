@@ -18,4 +18,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.reactNative)
 
     implementation rootProject.ext.miscDependencies.reactNative
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

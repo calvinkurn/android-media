@@ -1,2 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.officialstore" />
+    package="com.tokopedia.officialstore">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.officialstore.activity.ReactNativeBrandListOsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.officialstore.activity.ReactNativeOfficialStoreActivity"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>
