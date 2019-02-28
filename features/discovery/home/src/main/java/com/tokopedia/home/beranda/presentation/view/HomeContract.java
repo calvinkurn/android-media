@@ -83,8 +83,6 @@ public interface HomeContract {
 
         void updateHeaderTokoCashPendingData(CashBackData cashBackData);
 
-        void updateHeaderTokoPointData(TokopointHomeDrawerData tokoPointDrawerData);
-
         void getShopInfo(String url, String shopDomain);
 
         void openProductPageIfValid(String url, String shopDomain);

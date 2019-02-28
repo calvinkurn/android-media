@@ -216,16 +216,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     @Override
-    public void updateHeaderTokoPointData(TokopointHomeDrawerData tokoPointDrawerData) {
-        if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
-        }
-        headerViewModel.setTokoPointDataSuccess();
-        headerViewModel.setTokoPointDrawerData(tokoPointDrawerData);
-        getView().updateHeaderItem(headerViewModel);
-    }
-
-    @Override
     public void onHeaderTokopointError() {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
