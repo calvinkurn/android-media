@@ -47,6 +47,10 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }
 
 apply from: '../../publish_local.gradle'

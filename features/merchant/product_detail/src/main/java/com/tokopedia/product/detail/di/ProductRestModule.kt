@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.repository.RestRepositoryImpl
 import com.tokopedia.network.NetworkRouter
@@ -20,9 +21,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 class ProductRestModule {
     @ProductDetailScope
     @Provides
-    fun provideReportRestRepository(interceptors: MutableList<Interceptor>,
+    fun provideRestRepository(interceptors: MutableList<Interceptor>,
                                     @ApplicationContext context: Context): RestRepository =
-            RestRepositoryImpl(interceptors, context)
+            RestRequestInteractor.getInstance().restRepository.apply {
+                updateInterceptors(interceptors, context)
+            }
 
     @ProductDetailScope
     @Provides

@@ -8,9 +8,9 @@ import com.tokopedia.usecase.UseCase
 
 import rx.Observable
 
-class GetRateEstimationUseCase(private val graphqlUseCase: GraphqlUseCase) : UseCase<RatesEstimationModel>() {
+class GetRateEstimationUseCase(private val graphqlUseCase: GraphqlUseCase) : UseCase<RatesEstimationModel.Data>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<RatesEstimationModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<RatesEstimationModel.Data> {
         val query = requestParams.getString(PARAM_QUERY, "")
         requestParams.clearValue(PARAM_QUERY)
 
@@ -18,7 +18,7 @@ class GetRateEstimationUseCase(private val graphqlUseCase: GraphqlUseCase) : Use
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).map {
-            graphqlResponse -> graphqlResponse.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java).data.ratesEstimation[0]
+            graphqlResponse -> graphqlResponse.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java).data
         }
     }
 

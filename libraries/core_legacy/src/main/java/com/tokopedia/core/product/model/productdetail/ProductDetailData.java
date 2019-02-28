@@ -185,7 +185,7 @@ public class ProductDetailData implements Parcelable {
     }
 
     public String getCheckoutType() {
-        return "express";
+        return checkoutType;
     }
 
     public void setBigPromo(boolean bigPromo) {
@@ -313,6 +313,7 @@ public class ProductDetailData implements Parcelable {
         dest.writeParcelable(this.campaign, flags);
         dest.writeLong(this.serverTimeUnix);
         dest.writeByte(this.isBigPromo ? (byte) 1 : (byte) 0);
+        dest.writeString(this.checkoutType);
     }
 
     protected ProductDetailData(Parcel in) {
@@ -330,6 +331,7 @@ public class ProductDetailData implements Parcelable {
         this.campaign = in.readParcelable(Campaign.class.getClassLoader());
         this.serverTimeUnix = in.readLong();
         this.isBigPromo = in.readByte() == 1;
+        this.checkoutType = in.readString();
     }
 
     public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {

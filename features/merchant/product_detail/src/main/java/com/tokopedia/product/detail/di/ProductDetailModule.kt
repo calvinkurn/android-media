@@ -9,7 +9,7 @@ import kotlinx.coroutines.experimental.Dispatchers
 import javax.inject.Named
 
 @ProductDetailScope
-@Module (includes = [ProductDetailUserModule::class])
+@Module (includes = [ProductRestModule::class])
 class ProductDetailModule {
 
     @ProductDetailScope

@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class TokopointStatusModel {
     @SerializedName("tier")
     @Expose
-    private TokopointTierModel tier;
+    private TokopointTierModel tier = new TokopointTierModel();
     @SerializedName("points")
     @Expose
-    private PointsModel points;
+    private PointsModel points = new PointsModel();
 
     public TokopointTierModel getTier() {
         return tier;

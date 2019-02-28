@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
@@ -31,6 +33,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipe
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckPromoCodeFromSelectedCourierSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
@@ -40,6 +43,8 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.network.utils.AuthUtil;
@@ -105,6 +110,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -654,8 +661,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RecipientAddressModel recipientAddressModel = getRecipientAddressModel();
         if (recipientAddressModel != null && recipientAddressModel.isCornerAddress()) {
             cornerData = new TokopediaCornerData(
-                    true,
-                    Integer.parseInt(recipientAddressModel.getUserCornerId()),
+                    recipientAddressModel.getUserCornerId(),
                     Integer.parseInt(recipientAddressModel.getCornerId())
             );
         }
@@ -734,6 +740,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(CheckoutData checkoutData) {
+                NullCheckerKt.isContainNull(checkoutData, s -> {
+                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
+                    throw exception;
+                });
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
@@ -887,7 +900,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         TokopediaCornerData cornerData = null;
         if (getRecipientAddressModel().isCornerAddress()) {
             cornerData = new TokopediaCornerData(
-                    true, Integer.parseInt(getRecipientAddressModel().getUserCornerId()),
+                    getRecipientAddressModel().getUserCornerId(),
                     Integer.parseInt(getRecipientAddressModel().getCornerId())
             );
         }
@@ -1195,6 +1208,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 boolean resultSuccess = false;
                                 try {
                                     JSONObject jsonObject = new JSONObject(stringResponse);
+                                    NullCheckerKt.isContainNull(jsonObject, s -> {
+                                        ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
+                                        if (!BuildConfig.DEBUG) {
+                                            Crashlytics.logException(exception);
+                                        }
+                                        throw exception;
+                                    });
+
                                     resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
                                             .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
                                 } catch (JSONException e) {
@@ -1268,6 +1289,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onNext(SetShippingAddressData setShippingAddressData) {
+                                NullCheckerKt.isContainNull(setShippingAddressData, s -> {
+                                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ShipmentPresenter.class.getSimpleName());
+                                    if (!BuildConfig.DEBUG) {
+                                        Crashlytics.logException(exception);
+                                    }
+                                    throw exception;
+                                });
+
                                 getView().hideLoading();
                                 if (setShippingAddressData.isSuccess()) {
                                     getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
@@ -1328,6 +1357,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
         shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
+        shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
+        shippingParam.setAddressId(shipmentDetailData.getAddressId());
+        shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
         return shippingParam;
     }
 

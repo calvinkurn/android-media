@@ -2,43 +2,25 @@ package com.tokopedia.common.network.coroutines.datasource
 
 import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.common.network.data.model.CacheType
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.data.model.RestResponseIntermediate
+import com.tokopedia.common.network.data.model.*
 import com.tokopedia.common.network.data.source.cloud.api.RestApi
 import com.tokopedia.common.network.util.*
-import com.tokopedia.network.CoroutineCallAdapterFactory
-import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.converter.StringResponseConverter
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.utils.TkpdOkHttpBuilder
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.coroutineScope
 import kotlinx.coroutines.experimental.withContext
 import okhttp3.*
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import java.io.File
 
-class RestCloudDataStore : RestDataStore{
-    private var mApi: RestApi
-    private var mCacheManager: RestCacheManager
-    private var mFingerprintManager: FingerprintManager
+class RestCloudDataStore(
+        private var mApi: RestApi,
+        private val mCacheManager: RestCacheManager,
+        private val mFingerprintManager: FingerprintManager
+) : RestDataStore{
 
-    constructor() {
-        this.mApi = NetworkClient.getApiInterface()
-        this.mCacheManager = RestCacheManager()
-        this.mFingerprintManager = NetworkClient.getFingerPrintManager()
-    }
-
-    constructor(interceptors: List<Interceptor>, context: Context) {
-        this.mApi = getApiInterface(interceptors, context)
-        this.mCacheManager = RestCacheManager()
-        this.mFingerprintManager = NetworkClient.getFingerPrintManager()
+    fun updateInterceptor(interceptors: List<Interceptor>, context: Context){
+        mApi = RestUtil.getApiInterface(interceptors, context)
     }
 
     private fun getResponseJob(request: RestRequest): Deferred<Response<String>> {
@@ -68,11 +50,8 @@ class RestCloudDataStore : RestDataStore{
         }
     }
 
-    override suspend fun getResponse(request: RestRequest): RestResponseIntermediate? {
-        return withContext(Dispatchers.IO) {
-            getResponseJob(request).await().process(request)
-        }
-    }
+    override suspend fun getResponse(request: RestRequest): RestResponse =
+            withContext(Dispatchers.IO) { processData(request, getResponseJob(request).await()) }
 
     /**
      * Helper method to Invoke HTTP get request
@@ -98,21 +77,17 @@ class RestCloudDataStore : RestDataStore{
                     request.queryParams,
                     request.headers)
         } else {
-            var body: String? = null
-            if (request.body is String) {
-                body = request.body
+            val body: String = (if (request.body is String) {
+                request.body
             } else {
                 try {
-                    body = CommonUtil.toJson(request.body)
+                    CommonUtil.toJson(request.body)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    null
                 }
 
-            }
-
-            if (body == null) {
-                throw RuntimeException("Invalid json object provided")
-            }
+            }) ?: throw RuntimeException("Invalid json object provided")
 
             return mApi.postDeferred(request.url,
                     body,
@@ -134,20 +109,16 @@ class RestCloudDataStore : RestDataStore{
                     request.queryParams,
                     request.headers)
         } else {
-            var body: String? = null
-            if (request.body is String) {
-                body = request.body
+            val body: String = (if (request.body is String) {
+                request.body
             } else {
                 try {
-                    body = CommonUtil.toJson(request.body)
+                    CommonUtil.toJson(request.body)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    null
                 }
-            }
-
-            if (body == null) {
-                throw RuntimeException("Invalid json object provided")
-            }
+            }) ?: throw RuntimeException("Invalid json object provided")
 
             return mApi.postDeferred(request.url,
                     body,
@@ -206,12 +177,11 @@ class RestCloudDataStore : RestDataStore{
      * @param responseString - Current server response body
      * @param request        - Current server request
      */
-    private fun cachedData(request: RestRequest, responseString: String) {
+    private suspend fun cachedData(request: RestRequest, responseString: String) = coroutineScope {
         //trying to store the data into cache based on cache strategy;
         try {
             when (request.cacheStrategy.type) {
-                CacheType.NONE, CacheType.CACHE_ONLY -> {
-                }
+                CacheType.NONE, CacheType.CACHE_ONLY -> { }
                 null, CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD ->
                     //store the data into disk
                     mCacheManager.save(mFingerprintManager.generateFingerPrint(request.toString(),
@@ -226,60 +196,37 @@ class RestCloudDataStore : RestDataStore{
 
     }
 
-    fun Response<String>.process(request: RestRequest): RestResponseIntermediate? {
-        return processData(request, this)
-    }
-
-    private fun processData(request: RestRequest, response: Response<String>): RestResponseIntermediate {
-        var returnResponse: RestResponseIntermediate
-        try {
+    private suspend fun processData(request: RestRequest, response: Response<String>): RestResponse {
+        return try {
             if (response.code() == RestConstant.HTTP_SUCCESS) {
-                returnResponse = RestResponseIntermediate(Gson().fromJson(response.body(), request.typeOfT), request.typeOfT, false)
-                returnResponse.code = response.code()
-                returnResponse.isError = false
-
                 //For success case saving the data into cache
                 cachedData(request, response.body())
+
+                RestResponse(Gson().fromJson(response.body(), request.typeOfT), response.code(), false)
+                        .apply {
+                            type = request.typeOfT
+                            isError = false
+                        }
             } else {
                 //For any kind of error body always be null
                 //E.g. error response like HTTP error code = 400,401,410 or 500 etc.
-                returnResponse = RestResponseIntermediate(null, request.typeOfT, false)
-                returnResponse.code = response.code()
-                returnResponse.errorBody = if (response.body() == null) response.errorBody().string() else response.body()
-                returnResponse.isError = true
+                RestResponse(Unit, response.code(), false).apply {
+                    type = request.typeOfT
+                    errorBody = if (response.body() == null) response.errorBody().string() else response.body()
+                    isError = true
+                }
             }
         } catch (e: Exception) {
             //For any kind of error body always be null
             //E.g. JSONException while serializing json to POJO.
-            returnResponse = RestResponseIntermediate(null, request.typeOfT, false)
-            returnResponse.code = RestConstant.INTERNAL_EXCEPTION
-            returnResponse.errorBody = "Caught Exception please fix it--> Responsible class : " + e.javaClass.toString() + " Detailed Message: " + e.message + ", Cause by: " + e.cause
-            returnResponse.isError = true
-        }
-
-        return returnResponse
-    }
-
-    private fun getApiInterface(interceptors: List<Interceptor?>?, context: Context): RestApi {
-        val userSession: UserSessionInterface = UserSession(context.applicationContext)
-        val okkHttpBuilder = TkpdOkHttpBuilder(context, OkHttpClient.Builder())
-        if (interceptors != null) {
-            okkHttpBuilder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
-            for (interceptor in interceptors) {
-                if (interceptor == null) {
-                    continue
-                }
-
-                okkHttpBuilder.addInterceptor(interceptor)
+            RestResponse(Unit, RestConstant.INTERNAL_EXCEPTION, false).apply {
+                type = request.typeOfT
+                errorBody = "Caught Exception please fix it--> Responsible class : " + e.javaClass.toString() + " Detailed Message: " + e.message + ", Cause by: " + e.cause
+                isError = true
             }
         }
-
-        return Retrofit.Builder()
-                .baseUrl("http://tokopedia.com/")
-                .addConverterFactory(StringResponseConverter())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
-                .client(okkHttpBuilder.build()).build().create(RestApi::class.java)
     }
+
+
 
 }

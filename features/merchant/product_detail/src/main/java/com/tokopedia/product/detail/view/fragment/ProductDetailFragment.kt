@@ -69,6 +69,7 @@ import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -475,7 +476,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
 
         if (!::productShopView.isInitialized) {
-            productShopView = PartialShopView.build(base_shop_view)
+            productShopView = PartialShopView.build(base_shop_view, onViewClickListener)
         }
 
         if (!::attributeInfoView.isInitialized)
@@ -492,6 +493,27 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::otherProductView.isInitialized)
             otherProductView = PartialOtherProductView.build(base_other_product)
+    }
+
+    val onViewClickListener = View.OnClickListener {
+        when(it.id){
+            R.id.btn_favorite -> onShopFavoriteClick()
+            else -> {}
+        }
+    }
+
+    private fun onShopFavoriteClick() {
+        val shop = shopInfo ?: return
+        activity?.let {
+            if (productInfoViewModel.isUserSessionActive()) {
+                productShopView.toggleClickableFavoriteBtn(false)
+                productInfoViewModel.toggleFavorite(shop.shopCore.shopID,
+                        this::onSuccessFavoriteShop, this::onFailFavoriteShop)
+            } else {
+                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+            }
+        }
     }
 
     private fun initView() {
@@ -858,7 +880,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString()
-                    ?: "", shopInfo.shipments)
+                        ?: "", shopInfo.shipments, shopInfo.bbInfo)
             }
             if (productInfoP2.vouchers.isNotEmpty()) {
                 merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
@@ -871,7 +893,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
                     (if (shopInfo.goldOS.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
                 label_desc_installment.visible()
-                if (label_min_wholesale.isVisible) {
+                label_desc_installment.setOnClickListener {
+                    activity?.let {
+                        val price = (
+                                if (productInfo?.campaign?.isActive == true && (productInfo?.campaign?.id?.toIntOrNull() ?: 0) > 0)
+                                    productInfo?.campaign?.discountedPrice
+                                else
+                                    productInfo?.basic?.price
+                                ) ?: 0f
+                        startActivity(ProductInstallmentActivity.createIntent(it,
+                                shopInfo.goldOS.isOfficial == 1,
+                                price))
+                    }
+                }
+                if (label_min_wholesale.isVisible){
                     wholesale_divider.visible()
                 } else {
                     wholesale_divider.gone()
@@ -974,6 +1009,27 @@ class ProductDetailFragment : BaseDaggerFragment() {
         showToastSuccess(getString(R.string.success_warehousing_product))
         //TODO refresh reload product page force from network
         loadProductData()
+    }
+
+    private fun onSuccessFavoriteShop(isSuccess: Boolean){
+        val favorite = shopInfo?.favoriteData ?: return
+        if (isSuccess){
+            //TODO TRACKING FOLLOW / UNFOLLOW
+            val newFavorite =
+                    if (favorite.alreadyFavorited == 1)
+                        ShopInfo.FavoriteData(0, favorite.totalFavorite - 1)
+                    else
+                        ShopInfo.FavoriteData(1, favorite.totalFavorite + 1)
+            shopInfo = shopInfo?.copy(favoriteData = newFavorite)
+            productShopView.updateFavorite(favorite.alreadyFavorited != 1)
+            productShopView.toggleClickableFavoriteBtn(true)
+        }
+    }
+
+    private fun onFailFavoriteShop(t: Throwable){
+        context?.let { ToasterError.make(view, ErrorHandler.getErrorMessage(it, t))
+                .setAction(R.string.retry_label){ onShopFavoriteClick() }}
+        productShopView.toggleClickableFavoriteBtn(true)
     }
 
     @SuppressLint("Range")

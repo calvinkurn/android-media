@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
@@ -20,6 +22,8 @@ import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.feedplus.data.pojo.TopAd;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
@@ -690,6 +694,14 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onNext(AddToCartResult addToCartResult) {
+                NullCheckerKt.isContainNull(addToCartResult, s -> {
+                    ContainNullException exception = new ContainNullException("Found " + s + " on " + WishListImpl.class.getSimpleName());
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
+                    throw exception;
+                });
+
                 wishListView.dismissProgressDialog();
                 if (addToCartResult.getCartId().isEmpty()) {
                     wishListView.showAddToCartErrorMessage(addToCartResult.getMessage());

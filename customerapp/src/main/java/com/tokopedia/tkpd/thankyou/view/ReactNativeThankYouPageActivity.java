@@ -70,17 +70,14 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     protected ReactNativeThankYouPageFragment getReactNativeFragment() {
         Bundle initialProps = getIntent().getExtras();
-        initialProps.remove("android.intent.extra.REFERRER");
-        initialProps.remove("is_deep_link_flag");
-        initialProps.remove("deep_link_uri");
-        sendAnalytics(initialProps);
+        if (initialProps != null) {
+            initialProps.remove("android.intent.extra.REFERRER");
+            initialProps.remove("is_deep_link_flag");
+            initialProps.remove("deep_link_uri");
+            sendAnalytics(initialProps);
+        }
         return ReactNativeThankYouPageFragment.createInstance(initialProps);
     }
 
@@ -134,9 +131,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             String platform = extra.getString(PLATFORM);
-            if (platform != null && platform.equals(DIGITAL)) {
-                return true;
-            }
+            return platform != null && platform.equals(DIGITAL);
         }
         return false;
     }

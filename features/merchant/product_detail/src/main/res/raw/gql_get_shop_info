@@ -50,6 +50,12 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
                 statusMessage
                 statusTitle
             }
+            bbInfo {
+                bbName
+                bbNameEN
+                bbDesc
+                bbDescEN
+            }
         }
         error {
             message

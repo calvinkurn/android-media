@@ -19,7 +19,11 @@ data class RatesEstimationModel (
     data class Data (
         @SerializedName("data")
         @Expose
-        val ratesEstimation: ArrayList<RatesEstimationModel> = ArrayList()
+        val ratesEstimation: ArrayList<RatesEstimationModel> = ArrayList(),
+
+        @SerializedName("is_blackbox")
+        @Expose
+        val isBlackbox: Boolean = false
     )
 
     data class Response (

@@ -36,8 +36,8 @@ class YoutubeThumbnailAdapter(private val videos: MutableList<Video>,
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(object : RequestListener<String, GlideDrawable> {
                         override fun onException(e: Exception?, model: String?, target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
-                            videos.removeAt(position)
-                            notifyDataSetChanged()
+//                            videos.removeAt(position)
+//                            notifyDataSetChanged()
                             if (videos.isEmpty())
                                 recyclerView.visibility = View.GONE
                             youtube_thumbnail_loading_bar.visibility = View.GONE

@@ -8,7 +8,7 @@ import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
  *         <p>
  *         {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterContentFragment}
  */
-
+@Deprecated
 public abstract class BaseFilterContentFragment<P> extends BasePresenterFragment<P> implements BaseFilterContentViewListener {
     protected BaseFilterContentFragment.Callback callback;
     /**

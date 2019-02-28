@@ -85,6 +85,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     public FloatingEggPresenter floatingEggPresenter;
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
+    private OnDragListener onDragListener;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -379,12 +380,18 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                     new OnDragTouchListener.OnDragActionListener() {
                         @Override
                         public void onDragStart(View view) {
+                            if (onDragListener != null) {
+                                onDragListener.onDragStart();
+                            }
                             vgFloatingEgg.setScaleX(SCALE_ON_DOWN);
                             vgFloatingEgg.setScaleY(SCALE_ON_DOWN);
                         }
 
                         @Override
                         public void onDragEnd(View view) {
+                            if (onDragListener != null) {
+                                onDragListener.onDragEnd();
+                            }
                             animateToLeftOrRightBound();
                         }
                     }));
@@ -562,5 +569,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             idToken
                     );
         }
+    }
+
+    public void setOnDragListener(OnDragListener onDragListener) {
+        this.onDragListener = onDragListener;
+    }
+
+    public interface OnDragListener {
+        void onDragStart();
+        void onDragEnd();
     }
 }

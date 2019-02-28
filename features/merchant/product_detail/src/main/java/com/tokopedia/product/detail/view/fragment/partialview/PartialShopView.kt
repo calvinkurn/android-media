@@ -13,10 +13,11 @@ import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import kotlinx.android.synthetic.main.partial_product_shop_info.view.*
 
-class PartialShopView private constructor(private val view: View){
+class PartialShopView private constructor(private val view: View, val clickListener: View.OnClickListener) :
+        View.OnClickListener by clickListener {
     companion object {
         private const val TRUE_VALUE = 1
-        fun build(_view: View) = PartialShopView(_view)
+        fun build(_view: View, _listener: View.OnClickListener) = PartialShopView(_view, _listener)
     }
 
     fun renderShop(shop: ShopInfo, isOwned: Boolean = false){
@@ -53,20 +54,10 @@ class PartialShopView private constructor(private val view: View){
                 btn_favorite.visible()
             }
 
-            //val screenDensityDpi = resources.displayMetrics.densityDpi
-            if (shop.favoriteData.alreadyFavorited == TRUE_VALUE){
-                btn_favorite.text = context.getString(R.string.label_favorited)
-                btn_favorite.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green))
-                btn_favorite.background = ContextCompat.getDrawable(context, R.drawable.bg_button_white_border)
-                btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
-                        ContextCompat.getDrawable(context, R.drawable.ic_check_green_24), null, null, null)
-            } else {
-                btn_favorite.text = context.getString(R.string.label_favorite)
-                btn_favorite.setTextColor(ContextCompat.getColor(context, R.color.dark_primary))
-                btn_favorite.background = ContextCompat.getDrawable(context, R.drawable.bg_button_green)
-                btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
-                        ContextCompat.getDrawable(context, R.drawable.ic_plus_add_white_24), null, null, null)
-            }
+            updateFavorite(shop.favoriteData.alreadyFavorited == TRUE_VALUE)
+
+            btn_favorite.setOnClickListener(this@PartialShopView)
+
             visible()
         }
     }
@@ -88,5 +79,27 @@ class PartialShopView private constructor(private val view: View){
 
     fun renderShopBadge(shopBadge: ShopBadge) {
         ImageHandler.loadImage(view.context, view.l_medal, shopBadge.badge, -1)
+    }
+
+    fun updateFavorite(isFavorite: Boolean) {
+        with(view) {
+            if (isFavorite) {
+                btn_favorite.text = context.getString(R.string.label_favorited)
+                btn_favorite.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green))
+                btn_favorite.background = ContextCompat.getDrawable(context, R.drawable.bg_button_white_border)
+                btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(context, R.drawable.ic_check_green_24), null, null, null)
+            } else {
+                btn_favorite.text = context.getString(R.string.label_favorite)
+                btn_favorite.setTextColor(ContextCompat.getColor(context, R.color.dark_primary))
+                btn_favorite.background = ContextCompat.getDrawable(context, R.drawable.bg_button_green)
+                btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(context, R.drawable.ic_plus_add_white_24), null, null, null)
+            }
+        }
+    }
+
+    fun toggleClickableFavoriteBtn(enable: Boolean){
+        view.btn_favorite.isClickable = enable
     }
 }

@@ -46,7 +46,11 @@ data class ShopInfo(
 
         @SerializedName("statusInfo")
         @Expose
-        val statusInfo: StatusInfo = StatusInfo()
+        val statusInfo: StatusInfo = StatusInfo(),
+
+        @SerializedName("bbInfo")
+        @Expose
+        val bbInfo: List<BBInfo> = listOf()
 ){
     data class Response(
             @SerializedName("shopInfoByID")

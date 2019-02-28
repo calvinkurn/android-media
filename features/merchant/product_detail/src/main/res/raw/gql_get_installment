@@ -1,20 +1,20 @@
-query getInstallment($price: Float!, $qty: Int){
-     installmentCalculation(merchantCode:"tokopedia",profileCode:"TKPD_DEFAULT",price:$price, quantity:$qty){
-         response
-         message
-         bank{
-             bankName
-             bankID
-             bankCode
-             installmentList{
-                 term
-                 feeValue
-                 feeType
-                 interest
-                 minimumAmount
-                 monthlyPrice
-                 osMonthlyPrice
-             }
-         }
-     }
- }
+query installmentCalculation($price: Float!, $qty: Int!){
+      installmentCalculation(merchantCode:"tokopedia",profileCode:"TKPD_DEFAULT",price:$price, quantity:$qty){
+          response
+          message
+          bank{
+              bankName
+              bankID
+              bankCode
+              installmentList{
+                  term
+                  feeValue
+                  feeType
+                  interest
+                  minimumAmount
+                  monthlyPrice
+                  osMonthlyPrice
+              }
+          }
+      }
+  }

@@ -54,7 +54,7 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    onSuccessGetReportType((result?.getData() as DataResponse<ReportTypeModel>).data.reportType)
+                    onSuccessGetReportType((result.getData() as DataResponse<ReportTypeModel>).data.reportType)
                 },
                 onError = {
                     onErrorGetReportType(it)
@@ -82,7 +82,7 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    val reportSubmit = (result?.getData() as DataResponse<ReportSubmit>).data
+                    val reportSubmit = (result.getData() as DataResponse<ReportSubmit>).data
                     if (reportSubmit.getIsSuccess()) {
                         onSuccessReportProduct()
                     } else {

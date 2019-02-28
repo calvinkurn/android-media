@@ -1,9 +1,8 @@
 package com.tokopedia.expresscheckout.view.variant
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.expresscheckout.domain.mapper.checkout.CheckoutDomainModelMapper
-import com.tokopedia.expresscheckout.domain.usecase.DoAtcExpressUseCase
+import com.tokopedia.transactiondata.usecase.DoAtcExpressUseCase
 import com.tokopedia.expresscheckout.domain.usecase.DoCheckoutExpressUseCase
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
@@ -13,7 +12,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.runners.MockitoJUnitRunner
 

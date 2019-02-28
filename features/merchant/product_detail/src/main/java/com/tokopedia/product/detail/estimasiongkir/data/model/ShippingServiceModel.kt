@@ -14,11 +14,11 @@ data class ShippingServiceModel (
 
     @SerializedName("service_range_price")
     @Expose
-    private val rangePrice: String = "",
+    val rangePrice: String = "",
 
     @SerializedName("service_notes")
     @Expose
-    private val notes: String = "",
+    val notes: String = "",
 
     @SerializedName("products")
     @Expose

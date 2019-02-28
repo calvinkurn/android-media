@@ -2,7 +2,6 @@ package com.tokopedia.expresscheckout.view.variant.subscriber
 
 import com.tokopedia.expresscheckout.data.entity.response.atc.AtcExpressGqlResponse
 import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
-import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber

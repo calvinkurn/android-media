@@ -104,7 +104,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
 
     }
 
-    override fun onSuccesLoadRateEstimaion(ratesEstimationModel: RatesEstimationModel) {
+    override fun onSuccesLoadRateEstimaion(ratesEstimationModel: RatesEstimationModel, isBlackbox: Boolean) {
         val address = ratesEstimationModel.address
         val ratesEstimation = ratesEstimationModel.rates
         val shop = ratesEstimationModel.shop
@@ -119,6 +119,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
             shipping_receiver_phone.text = address.phone
         }
         shipping_receiver_address.text = "${address.address}, ${address.districtName}, ${address.provinceName}"
+        adapter.isBlackbox = isBlackbox
         adapter.updateShippingServices(ratesEstimation.attributes)
         setViewState(VIEW_CONTENT)
     }

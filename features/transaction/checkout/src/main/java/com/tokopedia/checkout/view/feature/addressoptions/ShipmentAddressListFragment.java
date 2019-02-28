@@ -49,16 +49,13 @@ import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoi
 
 /**
  * @author Aghny A. Putra on 25/01/18
+ * Fajar U N
  */
-
 public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
-        ISearchAddressListView<List<RecipientAddressModel>>,
-        SearchInputView.Listener,
-        SearchInputView.ResetListener,
-        ShipmentAddressListAdapter.ActionListener {
+        ISearchAddressListView<List<RecipientAddressModel>>, SearchInputView.Listener,
+        SearchInputView.ResetListener, ShipmentAddressListAdapter.ActionListener {
 
     private static final int ORDER_ASC = 1;
-    private static final String PARAMS = "params";
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
     public static final String TAG_CORNER_BS = "TAG_CORNER_BS";
     public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";
@@ -110,16 +107,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
         return shipmentAddressListFragment;
-    }
-
-    public static ShipmentAddressListFragment newInstance(HashMap<String, String> params) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(PARAMS, params);
-
-        ShipmentAddressListFragment fragment = new ShipmentAddressListFragment();
-        fragment.setArguments(bundle);
-
-        return fragment;
     }
 
     @Override
@@ -442,7 +429,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position) {
         mShipmentAddressListAdapter.updateSelected(position);
-        if (mCartAddressChoiceActivityListener != null && getActivity() != null && mCurrAddress != null){
+        if (mCartAddressChoiceActivityListener != null && getActivity() != null && mCurrAddress != null) {
             RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel, mCurrAddress.getId());
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
         } else {
