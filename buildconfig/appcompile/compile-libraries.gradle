@@ -1,6 +1,7 @@
 // Sort alphabetically by name
 include "libraries:analytics"
 include "libraries:applink"
+include "libraries:banner"
 include "libraries:base_adapter"
 include "libraries:base_list_seller"
 include "libraries:bottom_sheet_builder"

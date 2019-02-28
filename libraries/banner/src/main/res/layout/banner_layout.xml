@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/banner_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/banner_indicator_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="start|bottom"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dp_5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/banner_recyclerview"
+        tools:layout_height="50dp"
+        tools:layout_width="100dp" />
+
+    <TextView
+        android:id="@+id/banner_see_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal|center_vertical"
+        android:padding="@dimen/dp_10"
+        android:text="@string/banner_see_all"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/banner_recyclerview" />
+
+</android.support.constraint.ConstraintLayout>

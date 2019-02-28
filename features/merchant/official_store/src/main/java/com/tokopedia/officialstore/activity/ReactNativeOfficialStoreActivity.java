@@ -32,7 +32,7 @@ public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<Reac
 
     @Override
     protected ReactNativeOfficialStoreFragment getReactNativeFragment() {
-        return ReactNativeOfficialStoreFragment.createInstance(getReactNativeProps());
+        return ReactNativeOfficialStoreFragment.createInstance();
     }
 
     @Override

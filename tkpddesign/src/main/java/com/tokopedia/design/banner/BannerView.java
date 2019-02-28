@@ -32,23 +32,23 @@ public class BannerView extends BaseCustomView {
     private static final String SAVED = "instance state BannerView.class";
     private static final String SAVE_STATE_AUTO_SCROLL_ON_PROGRESS = "auto_scroll_on_progress";
 
-    private RecyclerView bannerRecyclerView;
-    private ViewGroup bannerIndicator;
-    private View bannerSeeAll;
+    protected RecyclerView bannerRecyclerView;
+    protected ViewGroup bannerIndicator;
+    protected View bannerSeeAll;
     private Handler bannerHandler;
     private Runnable runnableScrollBanner;
     private boolean autoScrollOnProgress;
 
-    private OnPromoClickListener onPromoClickListener;
+    protected OnPromoClickListener onPromoClickListener;
     private OnPromoLoadedListener onPromoLoadedListener;
     private OnPromoScrolledListener onPromoScrolledListener;
     private OnPromoAllClickListener onPromoAllClickListener;
     private OnPromoDragListener onPromoDragListener;
 
-    private ArrayList<ImageView> indicatorItems;
-    private ArrayList<Boolean> impressionStatusList;
-    private List<String> promoImageUrls;
-    private int currentPosition;
+    protected ArrayList<ImageView> indicatorItems;
+    protected ArrayList<Boolean> impressionStatusList;
+    protected List<String> promoImageUrls;
+    protected int currentPosition;
 
     public BannerView(@NonNull Context context) {
         super(context);
@@ -139,7 +139,7 @@ public class BannerView extends BaseCustomView {
         init();
     }
 
-    private void init() {
+    protected void init() {
         View view = inflate(getContext(), R.layout.widget_banner, this);
         bannerRecyclerView = view.findViewById(R.id.viewpager_banner_category);
         bannerIndicator = view.findViewById(R.id.indicator_banner_container);
@@ -156,7 +156,7 @@ public class BannerView extends BaseCustomView {
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
 
-        BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
+        BannerPagerAdapter bannerPagerAdapter = getBannerAdapter();
         bannerRecyclerView.setHasFixedSize(true);
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
@@ -169,9 +169,9 @@ public class BannerView extends BaseCustomView {
             ImageView pointView = new ImageView(getContext());
             pointView.setPadding(5, 0, 5, 0);
             if (count == 0) {
-                pointView.setImageResource(R.drawable.indicator_focus);
+                pointView.setImageResource(getIndicatorFocus());
             } else {
-                pointView.setImageResource(R.drawable.indicator);
+                pointView.setImageResource(getIndicator());
             }
             indicatorItems.add(pointView);
             bannerIndicator.addView(pointView);
@@ -240,9 +240,9 @@ public class BannerView extends BaseCustomView {
     private void setCurrentIndicator() {
         for (int i = 0; i < indicatorItems.size(); i++) {
             if (currentPosition != i) {
-                indicatorItems.get(i).setImageResource(R.drawable.indicator);
+                indicatorItems.get(i).setImageResource(getIndicator());
             } else {
-                indicatorItems.get(i).setImageResource(R.drawable.indicator_focus);
+                indicatorItems.get(i).setImageResource(getIndicatorFocus());
             }
         }
     }
@@ -327,6 +327,18 @@ public class BannerView extends BaseCustomView {
 
     public boolean isInitialized() {
         return (bannerHandler != null && runnableScrollBanner != null && !promoImageUrls.isEmpty());
+    }
+
+    protected int getIndicatorFocus() {
+        return R.drawable.indicator_focus;
+    }
+
+    protected int getIndicator() {
+        return R.drawable.indicator;
+    }
+
+    protected BannerPagerAdapter getBannerAdapter() {
+        return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
     }
 }
 
