@@ -52,6 +52,9 @@ public class Product {
     @SerializedName("slashed_price_int")
     @Expose
     private Integer slashedPriceInt;
+    @SerializedName("discount_percentage")
+    @Expose
+    private Integer discountPercentage;
     @SerializedName("rating")
     @Expose
     private Integer rating;
@@ -189,6 +192,14 @@ public class Product {
 
     public void setSlashedPriceInt(Integer slashedPriceInt) {
         this.slashedPriceInt = slashedPriceInt;
+    }
+
+    public Integer getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(Integer discountPercentage) {
+        this.discountPercentage = discountPercentage;
     }
 
     public Integer getRating() {
