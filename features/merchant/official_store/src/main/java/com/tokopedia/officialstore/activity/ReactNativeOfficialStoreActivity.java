@@ -16,7 +16,7 @@ public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<Reac
 
     private static final String MP_OFFICIAL_STORE = "mp_official_store";
 
-    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORES_CATEGORY})
+    @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE })
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(MP_OFFICIAL_STORE);
         return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(context, bundle);

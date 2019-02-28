@@ -68,6 +68,7 @@ public interface ApplinkConst {
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
+    String OFFICIAL_STORE = "tokopedia://official-store";
     String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
