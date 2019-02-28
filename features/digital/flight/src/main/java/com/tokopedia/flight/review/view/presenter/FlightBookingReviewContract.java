@@ -21,10 +21,6 @@ import java.util.List;
 public interface FlightBookingReviewContract {
 
     interface View extends FlightBaseBookingContact.View {
-//
-//        void onErrorCheckVoucherCode(Throwable t);
-//
-//        void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher);
 
         void onErrorSubmitData(Throwable e);
 

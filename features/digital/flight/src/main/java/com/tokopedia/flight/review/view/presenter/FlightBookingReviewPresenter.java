@@ -301,12 +301,9 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     @Override
     public void fetchTickerData() {
-        compositeSubscription.add(travelTickerUseCase.createObservable(travelTickerUseCase.createRequestParams(
-                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getSUMMARY()))
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<TravelTickerViewModel>() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getSUMMARY()),
+                new Subscriber<TravelTickerViewModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -319,12 +316,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
                     @Override
                     public void onNext(TravelTickerViewModel travelTickerViewModel) {
-                        if (travelTickerViewModel != null &&
-                                travelTickerViewModel.getMessage().length() > 0) {
+                        if (travelTickerViewModel.getMessage().length() > 0) {
                             getView().renderTickerView(travelTickerViewModel);
                         }
                     }
-                }));
+                });
     }
 
     @Override
@@ -336,6 +332,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         flightBookingVerifyUseCase.unsubscribe();
         flightCancelVoucherUseCase.unsubscribe();
         flightPassengerDeleteAllListUseCase.unsubscribe();
+        travelTickerUseCase.unsubscribe();
 
         super.detachView();
     }

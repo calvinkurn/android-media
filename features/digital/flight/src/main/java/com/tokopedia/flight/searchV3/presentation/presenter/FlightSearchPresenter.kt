@@ -322,12 +322,9 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     }
 
     override fun fetchTickerData() {
-        compositeSubscription.add(travelTickerUseCase.createObservable(travelTickerUseCase.createRequestParams(
-                TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.SEARCH))
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<TravelTickerViewModel>() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.SEARCH),
+                object : Subscriber<TravelTickerViewModel>() {
                     override fun onCompleted() {
 
                     }
@@ -336,12 +333,12 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         e.printStackTrace()
                     }
 
-                    override fun onNext(travelTickerViewModel: TravelTickerViewModel?) {
-                        if (travelTickerViewModel != null && travelTickerViewModel.message.length > 0) {
+                    override fun onNext(travelTickerViewModel: TravelTickerViewModel) {
+                        if (travelTickerViewModel.message.isNotEmpty()) {
                             view.renderTickerView(travelTickerViewModel)
                         }
                     }
-                }))
+                })
     }
 
     override fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel) {

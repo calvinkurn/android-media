@@ -660,6 +660,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
+        travelTickerUseCase.unsubscribe();
+        flightAddToCartUseCase.unsubscribe();
+        flightBookingGetPhoneCodeUseCase.unsubscribe();
+        flightSearchJourneyByIdUseCase.unsubscribe();
         detachView();
     }
 
@@ -1035,12 +1039,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void fetchTickerData() {
-        compositeSubscription.add(travelTickerUseCase.createObservable(travelTickerUseCase.createRequestParams(
-                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getBOOK()))
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<TravelTickerViewModel>() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getBOOK()),
+                new Subscriber<TravelTickerViewModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -1053,11 +1054,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
                     @Override
                     public void onNext(TravelTickerViewModel travelTickerViewModel) {
-                        if (travelTickerViewModel != null &&
-                                travelTickerViewModel.getMessage().length() > 0) {
+                        if (travelTickerViewModel.getMessage().length() > 0) {
                             getView().renderTickerView(travelTickerViewModel);
                         }
                     }
-                }));
+                });
     }
 }

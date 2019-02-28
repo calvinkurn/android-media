@@ -458,6 +458,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onDestroyView() {
         if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
+        travelTickerUseCase.unsubscribe();
+        bannerGetDataUseCase.unsubscribe();
+        flightAirportVersionCheckUseCase.unsubscribe();
+        flightDeleteAllFlightSearchDataUseCase.unsubscribe();
+        getFlightAirportWithParamUseCase.unsubscribe();
+        getFlightClassByIdUseCase.unsubscribe();
         detachView();
     }
 
@@ -766,12 +772,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void fetchTickerData() {
-        compositeSubscription.add(travelTickerUseCase.createObservable(travelTickerUseCase.createRequestParams(
-                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getHOME()))
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<TravelTickerViewModel>() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getHOME()),
+                new Subscriber<TravelTickerViewModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -784,11 +787,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
                     @Override
                     public void onNext(TravelTickerViewModel travelTickerViewModel) {
-                        if (travelTickerViewModel != null &&
-                                travelTickerViewModel.getMessage().length() > 0) {
+                        if (travelTickerViewModel.getMessage().length() > 0) {
                             getView().renderTickerView(travelTickerViewModel);
                         }
                     }
-                }));
+                });
     }
 }

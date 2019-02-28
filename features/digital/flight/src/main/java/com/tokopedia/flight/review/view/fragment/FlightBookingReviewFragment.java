@@ -781,7 +781,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        TravelTickerUtils.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
     }
 
     private void setVoucherValue(AttributesVoucher voucherValue, int isCoupon, String couponTitle) {

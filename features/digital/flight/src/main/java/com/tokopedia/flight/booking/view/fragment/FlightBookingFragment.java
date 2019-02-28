@@ -657,7 +657,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        TravelTickerUtils.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
     }
 
     @Override
