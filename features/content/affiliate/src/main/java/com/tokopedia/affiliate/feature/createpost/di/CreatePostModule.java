@@ -28,6 +28,17 @@ import dagger.Provides;
 @Module(includes = ImageUploaderModule.class)
 public class CreatePostModule {
 
+    private final Context context;
+
+    public CreatePostModule(Context context) {
+        this.context = context;
+    }
+
+    @Provides
+    @ApplicationContext Context provideApplicationContext() {
+        return context.getApplicationContext();
+    }
+
     @Provides
     @CreatePostScope
     public UploadImageUseCase<UploadImageResponse> provideUploadImageUseCase(

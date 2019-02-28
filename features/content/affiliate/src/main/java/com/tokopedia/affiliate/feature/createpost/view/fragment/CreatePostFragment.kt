@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliate.R
@@ -17,6 +16,7 @@ import com.tokopedia.affiliate.analytics.AffiliateEventTracking
 import com.tokopedia.affiliate.feature.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity
@@ -75,10 +75,8 @@ class CreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun initInjector() {
-        val baseAppComponent = (activity!!.application as BaseMainApplication)
-                .baseAppComponent
         DaggerCreatePostComponent.builder()
-                .baseAppComponent(baseAppComponent)
+                .createPostModule(CreatePostModule(context!!.applicationContext))
                 .build()
                 .inject(this)
     }

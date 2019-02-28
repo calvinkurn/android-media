@@ -6,12 +6,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID_PARAM
+import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
@@ -20,7 +20,7 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostDat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import java.util.*
 import javax.inject.Inject
@@ -32,6 +32,9 @@ class SubmitPostService : IntentService(TAG) {
 
     @Inject
     lateinit var submitPostUseCase: SubmitPostUseCase
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var notificationManager: SubmitPostNotificationManager? = null
 
@@ -73,16 +76,14 @@ class SubmitPostService : IntentService(TAG) {
     }
 
     private fun initInjector() {
-        val baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent
         DaggerCreatePostComponent.builder()
-                .baseAppComponent(baseAppComponent)
+                .createPostModule(CreatePostModule(this.applicationContext))
                 .build()
                 .inject(this)
     }
 
     private fun getNotificationManager(draftId: String, notifId: Int, maxCount: Int): SubmitPostNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val userSession = UserSession(this)
         return object : SubmitPostNotificationManager(notifId, maxCount, manager, this@SubmitPostService) {
             override fun getSuccessIntent(): PendingIntent {
                 //TODO milhamj handle intent
