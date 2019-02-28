@@ -5,6 +5,10 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+        maven {
+            url "https://maven.google.com"
+        }
+        google()
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
         jcenter()
@@ -12,7 +16,7 @@ buildscript {
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.google.gms:google-services:4.2.0'
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -42,6 +46,7 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.appIndexing
@@ -60,9 +65,6 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.analyticsDependencies.branch) {
-        exclude module: 'answers-shim'
-    }
     implementation rootProject.ext.analyticsDependencies.logentries
 
     implementation project(rootProject.ext.libraries.analytics)
@@ -71,6 +73,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.playServicesDependencies.remoteConfig
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor

@@ -32,6 +32,19 @@ public class Detail {
         this.imageUrl = imageUrl;
     }
 
+    public Detail(String label, String value) {
+        this.label = label;
+        this.value = value;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public String label() {
         return label;
     }

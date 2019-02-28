@@ -270,61 +270,6 @@ public class ProductPageTracking {
         PaymentTracking.atcAF(MainApplication.getAppContext(), values);
     }
 
-    public static void eventTopAdsClicked(Context context, int position, Product product) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "product detail page",
-                        "eventAction", "click - top ads",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/productdetail - top ads'"),
-                                        "products", DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        "name", product.getName(),
-                                                        "id", product.getId(),
-                                                        "price", product.getPriceFormat(),
-                                                        "brand", "none / other",
-                                                        "category", product.getCategory().getId(),
-                                                        "variant", "none / other",
-                                                        "position", (position + 1)
-                                                )
-                                        ))
-                        )
-                )
-        );
-    }
-
-    public static void eventTopAdsImpression(Context context, int position, Product product) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "product detail page",
-                        "eventAction", "impression - top ads",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
-                                "impression", DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                "name", product.getName(),
-                                                "id", product.getId(),
-                                                "price", product.getPriceFormat(),
-                                                "brand", "none / other",
-                                                "category", product.getCategory().getId(),
-                                                "variant", "none / other",
-                                                "position", (position + 1)
-                                        )
-                                )
-                        )
-                )
-        );
-    }
-
     public static void eventPdpOrientationChanged(Context context, String productId) {
         if (context != null
                 && context.getApplicationContext() != null

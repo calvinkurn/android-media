@@ -69,8 +69,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-//import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
-
 /**
  * @author by nathan on 10/19/17.
  * modified by al

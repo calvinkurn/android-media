@@ -41,6 +41,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivit
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
@@ -274,15 +275,15 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
         SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
 
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.DISCOVERY_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
                 .build();
 
         if(getActivity() instanceof HotlistActivity){
-            shareData.setType(ShareData.HOTLIST_TYPE);
+            shareData.setType(LinkerData.HOTLIST_TYPE);
         } else {
             SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
         }

@@ -72,6 +72,7 @@ public class ShipmentDataConverter {
                 userAddress.getLongitude() : null);
 
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
+        recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
 
         return recipientAddress;
     }
