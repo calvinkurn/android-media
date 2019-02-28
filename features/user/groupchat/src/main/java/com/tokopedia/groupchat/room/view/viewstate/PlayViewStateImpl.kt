@@ -266,9 +266,9 @@ open class PlayViewStateImpl(
 
             StickyComponentHelper.setView(stickyComponent, item)
             stickyComponent.setOnClickListener {
-//                viewModel?.let {
-//                    analytics.eventClickStickyComponent(item, it)
-//                }
+                viewModel?.let {
+                    analytics.eventClickStickyComponent(item, it)
+                }
                 RouteManager.route(activity, item.redirectUrl)
             }
 
@@ -276,7 +276,7 @@ open class PlayViewStateImpl(
                     .alpha(1f)
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
-                            viewModel?.let{
+                            viewModel?.let {
                                 analytics.eventShowStickyComponent(item, it)
                             }
                             stickyComponent.show()
@@ -546,11 +546,19 @@ open class PlayViewStateImpl(
         }
 
         if (!::overlayDialog.isInitialized) {
-            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context, {
-                analytics.eventClickCloseOverlayCloseButton(channelInfoViewModel.channelId)
-            }, {
-                analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
-            })
+            //TODO
+//            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context,
+//                    object : CloseableBottomSheetDialog.CloseClickedListener {
+//                        override fun onCloseDialog() {
+//                            analytics.eventClickCloseOverlayCloseButton(channelInfoViewModel.channelId)
+//
+//                        }
+//                    }, object : CloseableBottomSheetDialog.BackHardwareClickedListener {
+//                override fun onBackHardwareClicked() {
+//                    analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
+//                }})
+
+            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context)
 
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
@@ -716,7 +724,7 @@ open class PlayViewStateImpl(
         }
 
         if (sponsorLayout.visibility == View.VISIBLE) {
-            viewModel?.run{
+            viewModel?.run {
                 analytics.eventViewBanner(this, adsId, adsName, adsImageUrl)
             }
         }
@@ -926,12 +934,12 @@ open class PlayViewStateImpl(
         }
         webviewIcon.show()
 
-        viewModel?.let{
+        viewModel?.let {
             analytics.eventViewProminentButton(it.channelId, floatingButton.linkUrl)
         }
 
         webviewIcon.setOnClickListener {
-            viewModel?.let{
+            viewModel?.let {
                 analytics.eventClickProminentButton(it, floatingButton)
 
                 RouteManager.routeWithAttribution(view.context, floatingButton.linkUrl, GroupChatAnalytics.generateTrackerAttribution(
@@ -1076,7 +1084,7 @@ open class PlayViewStateImpl(
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
                                     onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context, {}, {})
+            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context)
         }
 
         welcomeInfoDialog.setOnDismissListener {
@@ -1127,7 +1135,7 @@ open class PlayViewStateImpl(
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
         if (!::pinnedMessageDialog.isInitialized) {
-            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
+            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context)
         }
 
         val pinnedMessageView = createPinnedMessageView(viewModel)

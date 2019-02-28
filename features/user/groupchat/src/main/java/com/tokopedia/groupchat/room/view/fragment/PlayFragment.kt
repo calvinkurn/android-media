@@ -460,7 +460,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 //    }
 
     override fun onImageAnnouncementClicked(url: String?) {
-        analytics.eventClickThumbnail(channelInfoViewModel)
+        //TODO
+        analytics.eventClickThumbnail(channelInfoViewModel, "", "", "")
         url?.run {
             openRedirectUrl(this)
         }

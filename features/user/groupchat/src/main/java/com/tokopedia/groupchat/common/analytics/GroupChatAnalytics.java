@@ -409,6 +409,7 @@ public class GroupChatAnalytics {
         );
     }
 
+    //#32
     public void eventShowStickyComponent(@NotNull StickyComponentViewModel item,
                                          ChannelInfoViewModel viewModel) {
 
@@ -432,6 +433,31 @@ public class GroupChatAnalytics {
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
+    }
+
+    //#33
+    public void eventClickStickyComponent(@NotNull StickyComponentViewModel item,
+                                       @NotNull ChannelInfoViewModel it) {
+//        //TODO sticky component id
+//        ArrayList<EEPromotion> list = new ArrayList<>();
+//        list.add(new EEPromotion("",
+//                EEPromotion.NAME_GROUPCHAT+"-stickycomponent",
+//                GroupChatAnalytics.DEFAULT_EE_POSITION,
+//                item.getTitle(),
+//                item.getImageUrl(),
+//                generateTrackerAttribution(GroupChatAnalytics
+//                        .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
+//        ));
+//
+//        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+//                EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT,
+//                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+//                EVENT_ACTION, "view on sticky product",
+//                EVENT_LABEL, viewModel.getChannelId(),
+//                ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
+//                ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
+//                        .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
+//        ));
     }
 
     public void eventClickGroupChatList(String id) {
