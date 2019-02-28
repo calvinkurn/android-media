@@ -1,10 +1,10 @@
-package com.tokopedia.checkout.view.feature.promostacking
+package com.tokopedia.checkout.view.feature.promomerchant.view
 
 import android.view.View
 import com.tokopedia.checkout.R
 import com.tokopedia.design.component.BottomSheets
 
-class PromoMerchantBottomsheet : BottomSheets(), PromoMerchantListener {
+class PromoMerchantBottomsheet : BottomSheets(), PromoMerchantAdapterListener {
 
     companion object {
         @JvmStatic
@@ -29,7 +29,7 @@ class PromoMerchantBottomsheet : BottomSheets(), PromoMerchantListener {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.bottomsheet_promo_shop
+        return R.layout.item_promo_merchant
     }
 
     override fun initView(view: View?) {

@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.promostacking.di
+package com.tokopedia.checkout.view.feature.promomerchant.di
 
 import javax.inject.Scope
 import kotlin.annotation.Retention
