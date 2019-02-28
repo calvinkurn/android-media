@@ -38,6 +38,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+            android:label="@string/title_activity_people_deposit"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".dashboard.view.activity.DashboardActivity"
             android:exported="true"
             android:label="@string/drawer_title_home"
