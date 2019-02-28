@@ -34,8 +34,6 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
-import com.tokopedia.expresscheckout.data.entity.response.profile.ProfileListGqlResponse
-import com.tokopedia.expresscheckout.domain.usecase.GetProfileListUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
@@ -94,8 +92,10 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.transaction.common.TransactionRouter
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
+import com.tokopedia.transactiondata.usecase.GetProfileListUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -710,11 +710,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     if (selectedProductInfo != null) {
                         userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
                         productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
-                        if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
-                            val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
-                            showSnackbarSuccessAtc(successMessage, selectedProductInfo.basic.id.toString())
-                            updateCartNotification()
-                        }
                     }
                     userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
                     userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
@@ -724,6 +719,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         variantResult.data.run {
                             onSuccessGetProductVariantInfo(this)
                         }
+                    }
+
+                    if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
+                        val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
+                        showSnackbarSuccessAtc(successMessage)
+                        updateCartNotification()
                     }
 
                 }
@@ -789,7 +790,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showSnackbarSuccessAtc(message: String?, productId: String) {
+    private fun showSnackbarSuccessAtc(message: String?) {
         activity?.run {
             val messageString: String = if (message.isNullOrEmpty()) {
                 getString(R.string.default_request_error_unknown_short)
