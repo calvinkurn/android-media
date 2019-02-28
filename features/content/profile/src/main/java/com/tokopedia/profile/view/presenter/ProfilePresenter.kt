@@ -7,6 +7,8 @@ import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
+import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileFirstUseCase
+import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase
 import com.tokopedia.profile.domain.usecase.GetProfileFirstPage
 import com.tokopedia.profile.domain.usecase.TrackAffiliateClickUseCase
 import com.tokopedia.profile.view.listener.ProfileContract
@@ -17,8 +19,8 @@ import javax.inject.Inject
  * @author by milhamj on 9/21/18.
  */
 class ProfilePresenter @Inject constructor(
-        private val getProfileFirstPage: GetProfileFirstPage,
-        private val getContentListUseCase: GetContentListUseCase,
+        private val getDynamicFeedProfileFirstUseCase: GetDynamicFeedProfileFirstUseCase,
+        private val getDynamicFeedProfileUseCase: GetDynamicFeedProfileUseCase,
         private val likeKolPostUseCase: LikeKolPostUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
         private val deletePostUseCase: DeletePostUseCase,
@@ -29,8 +31,8 @@ class ProfilePresenter @Inject constructor(
 
     override fun detachView() {
         super.detachView()
-        getProfileFirstPage.unsubscribe()
-        getContentListUseCase.unsubscribe()
+        getDynamicFeedProfileFirstUseCase.unsubscribe()
+        getDynamicFeedProfileUseCase.unsubscribe()
         likeKolPostUseCase.unsubscribe()
         followKolPostGqlUseCase.unsubscribe()
         deletePostUseCase.unsubscribe()
@@ -39,14 +41,14 @@ class ProfilePresenter @Inject constructor(
 
     override fun getProfileFirstPage(userId: Int, isFromLogin: Boolean) {
         cursor = ""
-        getProfileFirstPage.execute(
-                GetProfileFirstPage.createRequestParams(userId),
+        getDynamicFeedProfileFirstUseCase.execute(
+                GetDynamicFeedProfileFirstUseCase.createRequestParams(userId),
                 GetProfileFirstPageSubscriber(view, isFromLogin)
         )
     }
 
     override fun getProfilePost(userId: Int) {
-        getContentListUseCase.execute(
+        getDynamicFeedProfileUseCase.execute(
                 GetContentListUseCase.getProfileParams(userId, cursor),
                 GetProfilePostSubscriber(view)
         )

@@ -323,7 +323,7 @@ public class FeedPlusPresenter
         }
 
         getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId()),
+                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), GetDynamicFeedUseCase.SOURCE_FEEDS),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -408,7 +408,7 @@ public class FeedPlusPresenter
         }
 
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor),
+                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
                 new Subscriber<DynamicFeedDomainModel>() {
                     @Override
                     public void onCompleted() {
