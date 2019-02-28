@@ -68,11 +68,12 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         }
 
         @JvmOverloads
-        fun createProfileFeedRequestParams(cursor: String = "", source: String): RequestParams {
+        fun createProfileFeedRequestParams(targetUserId: String = "", cursor: String = ""): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putInt(PARAM_LIMIT, LIMIT_3)
             requestParams.putString(PARAM_CURSOR, cursor)
-            requestParams.putString(PARAM_SOURCE, source)
+            requestParams.putString(PARAM_USER_ID, targetUserId)
+            requestParams.putString(PARAM_SOURCE, SOURCE_PROFILE)
             return requestParams
         }
     }
