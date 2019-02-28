@@ -732,26 +732,6 @@ open class PlayViewStateImpl(
         }
     }
 
-    private fun eventClickComponentEnhancedEcommerce(
-            componentType: String,
-            campaignName: String?,
-            attributeName: String,
-            list: ArrayList<EEPromotion>
-    ) {
-        analytics.eventClickComponentEnhancedEcommerce(componentType, campaignName,
-                attributeName, viewModel?.channelUrl, viewModel?.title, list)
-    }
-
-    private fun eventViewComponentEnhancedEcommerce(
-            componentType: String,
-            campaignName: String?,
-            attributeName: String,
-            list: ArrayList<EEPromotion>
-    ) {
-        analytics.eventViewComponentEnhancedEcommerce(componentType, campaignName,
-                attributeName, viewModel?.channelUrl, viewModel?.title, list)
-    }
-
     private fun generateLink(
             applink: String,
             attributeBanner: String,

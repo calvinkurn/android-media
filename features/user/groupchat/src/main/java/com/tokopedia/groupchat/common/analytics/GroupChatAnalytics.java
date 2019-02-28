@@ -177,6 +177,15 @@ public class GroupChatAnalytics {
     }
 
     //#9
+    public void eventClickVoteComponent(String componentType, String componentName) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_COMPONENT + componentType,
+                componentType + " " + componentName
+        );
+    }
+
+    //#9
     public void eventClickSprintSaleProduct(@Nullable SprintSaleProductViewModel productViewModel,
                                             Integer position, ChannelInfoViewModel viewModel) {
         ArrayList<EEPromotion> list = new ArrayList<>();
@@ -619,43 +628,6 @@ public class GroupChatAnalytics {
                 " %s - %s", attributeName, channelUrl, channelName);
     }
 
-    public void eventClickVoteComponent(String componentType, String componentName) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
-                EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION_CLICK_COMPONENT + componentType,
-                componentType + " " + componentName
-        );
-    }
-
-    public void eventClickComponentEnhancedEcommerce(String componentType, String componentName,
-                                                     String attributeName, String channelUrl,
-                                                     String channelName, List<EEPromotion> listPromotion) {
-
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
-                EVENT_NAME, EVENT_NAME_PROMO_CLICK,
-                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + componentType,
-                EVENT_LABEL, componentType + " " + componentName,
-                ECOMMERCE, getEEDataLayer(listPromotion, EE_PROMO_CLICK),
-                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
-        ));
-    }
-
-    public void eventViewComponentEnhancedEcommerce(String componentType, String componentName,
-                                                    String attributeName, String channelUrl,
-                                                    String channelName, List<EEPromotion> listPromotion) {
-
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
-                EVENT_NAME, EVENT_NAME_PROMO_VIEW,
-                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION, EVENT_ACTION_VIEW_COMPONENT + componentType,
-                EVENT_LABEL, componentType + " " + componentName,
-                ECOMMERCE, getEEDataLayer(listPromotion, EE_PROMO_VIEW),
-                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
-        ));
-    }
-
-
     public Map<String, Object> getEEDataLayer(List<EEPromotion> listPromotion, String eventName) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(eventName, getEEPromoClickData(listPromotion));
@@ -686,6 +658,37 @@ public class GroupChatAnalytics {
         map.put(EEPromotion.KEY_CREATIVE_URL, promo.getCreativeUrl());
         map.put(EEPromotion.ATTRIBUTION, promo.getAttribution());
         return map;
+    }
+
+
+    @Deprecated
+    public void eventClickComponentEnhancedEcommerce(String componentType, String componentName,
+                                                     String attributeName, String channelUrl,
+                                                     String channelName, List<EEPromotion> listPromotion) {
+
+        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+                EVENT_NAME, EVENT_NAME_PROMO_CLICK,
+                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + componentType,
+                EVENT_LABEL, componentType + " " + componentName,
+                ECOMMERCE, getEEDataLayer(listPromotion, EE_PROMO_CLICK),
+                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
+        ));
+    }
+
+    @Deprecated
+    public void eventViewComponentEnhancedEcommerce(String componentType, String componentName,
+                                                    String attributeName, String channelUrl,
+                                                    String channelName, List<EEPromotion> listPromotion) {
+
+        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+                EVENT_NAME, EVENT_NAME_PROMO_VIEW,
+                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION, EVENT_ACTION_VIEW_COMPONENT + componentType,
+                EVENT_LABEL, componentType + " " + componentName,
+                ECOMMERCE, getEEDataLayer(listPromotion, EE_PROMO_VIEW),
+                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
+        ));
     }
 
     @Deprecated
