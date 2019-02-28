@@ -123,13 +123,6 @@
         <attr name="default_layout" format="integer" />
     </declare-styleable>
 
-    <!--gm subscribe home attr-->
-    <declare-styleable name="GMFeatureHomeView">
-        <attr name="feature_img" format="reference" />
-        <attr name="feature_title" format="string" />
-        <attr name="feature_desc" format="string" />
-    </declare-styleable>
-
     <attr name="bottomSheetBuilderBackgroundColor" format="color" />
     <attr name="bottomSheetBuilderItemTextColor" format="color" />
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />

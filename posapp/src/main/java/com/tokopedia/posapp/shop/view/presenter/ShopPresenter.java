@@ -1,12 +1,8 @@
 package com.tokopedia.posapp.shop.view.presenter;
 
-import android.text.TextUtils;
-
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.posapp.shop.domain.usecase.GetShopUseCase;
 import com.tokopedia.posapp.shop.view.GetShopSubscriber;
 import com.tokopedia.posapp.shop.view.Shop;
-import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 

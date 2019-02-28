@@ -12,6 +12,9 @@ import com.tokopedia.iris.data.network.ApiService
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import java.io.File
+import java.lang.Exception
+import java.security.cert.CertificateException
+import javax.net.ssl.SSLHandshakeException
 
 /**
  * @author okasurya on 10/25/18.
@@ -37,14 +40,18 @@ class TrackingRepository (
 
     fun sendSingleEvent(data: String, session: Session) {
         val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
-        val service = ApiService(context).makeRetrofitService()
-        GlobalScope.launch {
-            val requestBody = ApiService.parse(dataRequest)
-            val request = service.sendSingleEvent(requestBody)
-            val response = request.await()
-            if (response.isSuccessful) {
-                Log.d("Iris Service Single", "${response.code()}: response.body().toString()")
+        try {
+            val service = ApiService(context).makeRetrofitService()
+            GlobalScope.launch {
+                val requestBody = ApiService.parse(dataRequest)
+                val request = service.sendSingleEvent(requestBody)
+                val response = request.await()
+                if (response.isSuccessful) {
+                    Log.d("Iris Service Single", "${response.code()}: response.body().toString()")
+                }
             }
+        } catch (e: Exception) {
+            // no-op
         }
     }
 

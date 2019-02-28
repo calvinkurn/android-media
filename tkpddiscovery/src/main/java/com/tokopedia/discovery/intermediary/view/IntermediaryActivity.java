@@ -20,6 +20,8 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -194,7 +196,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
             toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
-        }else {
+        } else {
             toolbar.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_white_toolbar_drop_shadow);
         }
         Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core2.R.drawable.ic_toolbar_overflow_level_two_black);
@@ -322,6 +324,15 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
             super.onBackPressed();
         }
         thumbnailIntializing = false;
+    }
+
+    @Override
+    public void clickVideo(String title) {
+        CategoryPageTracking.eventEnhance(this, DataLayer.mapOf(
+                "event", "clickIntermediary",
+                "eventCategory", "intermediary page",
+                "eventAction", "click video - " + departmentId,
+                "eventLabel", title));
     }
 
     // Work Around IF your press back and youtube thumbnail doesn't intalized yet }

@@ -103,7 +103,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojoAttribute.productProfile.category,
                 pojoAttribute.productProfile.variant.toString(),
                 pojoAttribute.productProfile.dropPercentage,
-                pojoAttribute.productProfile.priceBefore
+                pojoAttribute.productProfile.priceBefore,
+                pojoAttribute.productProfile.shopId
         )
     }
 
@@ -115,6 +116,10 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     open fun convertToFallBackModel(pojo: ChatSocketPojo): Visitable<*> {
+        var fallbackMessage = ""
+        pojo.attachment?.fallbackAttachment?.let{
+            fallbackMessage = it.message
+        }
         return FallbackAttachmentViewModel(
                 pojo.msgId.toString(),
                 pojo.fromUid,
@@ -123,7 +128,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
                 pojo.message.timeStampUnixNano,
-                pojo.attachment!!.fallbackAttachment.message
+                fallbackMessage
         )
     }
 

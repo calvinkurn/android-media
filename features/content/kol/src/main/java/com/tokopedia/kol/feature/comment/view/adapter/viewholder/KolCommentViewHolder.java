@@ -6,24 +6,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 
-import javax.inject.Inject;
-
 /**
  * @author by nisie on 10/31/17.
  */
 
 public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel> {
-
-
-    @Inject
-    UserSession userSession;
 
     public static final int LAYOUT = R.layout.kol_comment_item;
     private static final String SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
