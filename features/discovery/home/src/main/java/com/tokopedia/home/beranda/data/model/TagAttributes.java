@@ -10,7 +10,7 @@ public class TagAttributes implements Parcelable {
 	@SerializedName("text")
 	private String text;
 
-	@SerializedName("backgroundColour")
+	@SerializedName("backgroundColor")
 	private String backgroundColour;
 
 	protected TagAttributes(Parcel in) {

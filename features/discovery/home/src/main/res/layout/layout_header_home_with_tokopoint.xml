@@ -141,12 +141,12 @@
 
         <ImageView
             android:id="@+id/iv_logo_tokopoint"
-            android:layout_width="@dimen/dp_36"
-            android:layout_height="@dimen/dp_36"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             android:layout_marginTop="@dimen/card_view_margin"
             android:layout_marginBottom="@dimen/card_view_margin"
             android:padding="@dimen/keyline_1_minus_8dp"
-            android:src="@drawable/ic_hachiko_egg"
+            tools:src="@drawable/ic_hachiko_egg"
             android:visibility="visible" />
 
         <LinearLayout
@@ -202,6 +202,7 @@
                     android:ellipsize="end"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:lines="1"
+                    android:gravity="center"
                     android:textColor="@color/font_black_disabled_38"
                     android:textSize="12sp"
                     android:visibility="gone"

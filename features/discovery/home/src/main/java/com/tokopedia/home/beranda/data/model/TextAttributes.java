@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class TextAttributes implements Parcelable {
 
-	@SerializedName("colour")
+	@SerializedName("color")
 	private String colour;
 
 	@SerializedName("text")

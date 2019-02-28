@@ -5,11 +5,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -154,73 +160,17 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokoPoint.setVisibility(VISIBLE);
             mTextCouponCount.setVisibility(VISIBLE);
 
-            ImageHandler.loadImageWithoutPlaceholderAndError(ivLogoTokoPoint, headerViewModel.getTokopointsDrawerHomeData().getIconImageURL());
+            ImageHandler.loadImageAndCache(ivLogoTokoPoint, headerViewModel.getTokopointsDrawerHomeData().getIconImageURL());
             mTextCouponCount.setTypeface(mTextCouponCount.getTypeface(), Typeface.BOLD);
             if (headerViewModel.getTokopointsDrawerHomeData().getSectionContent() != null
                     && headerViewModel.getTokopointsDrawerHomeData().getSectionContent().size() > 0) {
-                if (headerViewModel.getTokopointsDrawerHomeData().getSectionContent().size() >= 1) {
-                    SectionContentItem sectionContentItem = headerViewModel.getTokopointsDrawerHomeData().getSectionContent().get(0);
-                    if (sectionContentItem != null) {
-//                        if (sectionContentItem.getTagAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
-//                            if (HexValidator.validate(sectionContentItem.getTagAttributes().getBackgroundColour())) {
-//                                tvBalanceTokoPoint.setTextColor(getResources().getColor(R.color.white));
-//                            } else {
-//                                tvBalanceTokoPoint.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-//                            }
-//                            if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
-//                                tvBalanceTokoPoint.setText(sectionContentItem.getTagAttributes().getText());
-//                            }
-//
-//                        } else
-                        if (sectionContentItem.getTextAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTextAttributes().getText())) {
-                            if (HexValidator.validate(sectionContentItem.getTagAttributes().getBackgroundColour())) {
-                                tvBalanceTokoPoint.setTextColor(Color.parseColor(sectionContentItem.getTagAttributes().getBackgroundColour()));
-                            } else {
-                                tvBalanceTokoPoint.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-                            }
-                            if (sectionContentItem.getTextAttributes().isIsBold()) {
-                                tvBalanceTokoPoint.setTypeface(tvBalanceTokoPoint.getTypeface(), Typeface.BOLD);
-                            }
-                            if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
-                                tvBalanceTokoPoint.setText(sectionContentItem.getTagAttributes().getText());
-                            }
-
-                        }
-
-                    }
-                }
+                setTokopointsHeaderData(headerViewModel.getTokopointsDrawerHomeData().getSectionContent().get(0), tvBalanceTokoPoint);
                 if (headerViewModel.getTokopointsDrawerHomeData().getSectionContent().size() >= 2) {
-                    SectionContentItem sectionContentItem = headerViewModel.getTokopointsDrawerHomeData().getSectionContent().get(1);
-                    if (sectionContentItem != null) {
-//                        if (sectionContentItem.getTagAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
-//                            if (HexValidator.validate(sectionContentItem.getTagAttributes().getBackgroundColour())) {
-//                                mTextCouponCount.setTextColor(Color.parseColor(sectionContentItem.getTagAttributes().getBackgroundColour()));
-//                            }
-//                            if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
-//                                mTextCouponCount.setText(sectionContentItem.getTagAttributes().getText());
-//                            }
-//
-//                        }
-                        if (sectionContentItem.getTextAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTextAttributes().getText())) {
-                            if (HexValidator.validate(sectionContentItem.getTagAttributes().getBackgroundColour())) {
-                                mTextCouponCount.setTextColor(Color.parseColor(sectionContentItem.getTagAttributes().getBackgroundColour()));
-                            } else {
-                                mTextCouponCount.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-                            }
-                            if (sectionContentItem.getTextAttributes().isIsBold()) {
-                                mTextCouponCount.setTypeface(mTextCouponCount.getTypeface(), Typeface.BOLD);
-                            }
-                            if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
-                                mTextCouponCount.setText(sectionContentItem.getTagAttributes().getText());
-                            }
-
-                        }
-
-                    }
+                    setTokopointsHeaderData(headerViewModel.getTokopointsDrawerHomeData().getSectionContent().get(1), mTextCouponCount);
                 }
-
             } else {
                 tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_no_tokopoints);
+                mTextCouponCount.setText(R.string.home_header_tokopoint_no_coupons);
                 tvBalanceTokoPoint.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
                 mTextCouponCount.setTextColor(getContext().getResources().getColor(R.color.tkpd_main_green));
             }
@@ -239,6 +189,48 @@ public class HeaderHomeView extends BaseCustomView {
                     }
                 }
             });
+        }
+
+    }
+
+    private void setTokopointsHeaderData(SectionContentItem sectionContentItem, TextView tokopointsTextView) {
+        if (sectionContentItem != null) {
+            if (sectionContentItem.getTagAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
+                if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getBackgroundColour()) && HexValidator.validate(sectionContentItem.getTagAttributes().getBackgroundColour())) {
+                    Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.bg_tokopoints_rounded);
+                    if (drawable instanceof GradientDrawable) {
+                        GradientDrawable shapeDrawable = (GradientDrawable) drawable;
+                        shapeDrawable.setColorFilter(Color.parseColor(sectionContentItem.getTagAttributes().getBackgroundColour()), PorterDuff.Mode.SRC_ATOP);
+                        tokopointsTextView.setBackground(shapeDrawable);
+                        int horizontalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_3);
+                        int verticalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
+                        tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_8));
+                        tokopointsTextView.setTypeface(null, Typeface.NORMAL);
+                        tokopointsTextView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+                    }
+                    tokopointsTextView.setTextColor(getResources().getColor(R.color.white));
+                } else {
+                    tokopointsTextView.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+                }
+                if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
+                    tokopointsTextView.setText(sectionContentItem.getTagAttributes().getText());
+                }
+            } else if (sectionContentItem.getTextAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTextAttributes().getText())) {
+                if (!TextUtils.isEmpty(sectionContentItem.getTextAttributes().getColour()) && HexValidator.validate(sectionContentItem.getTextAttributes().getColour())) {
+                    tokopointsTextView.setTextColor(Color.parseColor(sectionContentItem.getTextAttributes().getColour()));
+                } else {
+                    tokopointsTextView.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+                }
+                if (sectionContentItem.getTextAttributes().isIsBold()) {
+                    tokopointsTextView.setTypeface(null, Typeface.BOLD);
+                } else {
+                    tokopointsTextView.setTypeface(null, Typeface.NORMAL);
+                }
+                if (!TextUtils.isEmpty(sectionContentItem.getTextAttributes().getText())) {
+                    tokopointsTextView.setText(sectionContentItem.getTextAttributes().getText());
+                }
+
+            }
         }
 
     }
