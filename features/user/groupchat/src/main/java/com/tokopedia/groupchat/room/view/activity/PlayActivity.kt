@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.common.util.NonSwipeableViewPager
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
@@ -24,6 +25,7 @@ import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * @author : Steven 11/02/19
@@ -34,17 +36,29 @@ open class PlayActivity : BaseSimpleActivity() {
     lateinit var viewPager: NonSwipeableViewPager
     private lateinit var pagerAdapter: FragmentPagerAdapter
 
+    @Inject
+    lateinit var analytics: GroupChatAnalytics
+
     override fun getNewFragment(): Fragment? {
-//        val bundle = Bundle()
-//        if (intent != null && intent.extras != null) {
-//            bundle.putAll(intent.extras)
-//        }
-//        return PlayFragment.createInstance(bundle)
         return null
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.play_activity
+    }
+
+    override fun onStart() {
+        super.onStart()
+        analytics.sendScreen(this, screenName)
+    }
+
+    override fun getScreenName(): String {
+        if (intent != null && intent.extras != null) {
+            val roomName = intent.extras!!.getString(EXTRA_CHANNEL_UUID, "")
+            return GroupChatAnalytics.SCREEN_CHAT_ROOM + roomName
+        } else {
+            return GroupChatAnalytics.SCREEN_CHAT_ROOM
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

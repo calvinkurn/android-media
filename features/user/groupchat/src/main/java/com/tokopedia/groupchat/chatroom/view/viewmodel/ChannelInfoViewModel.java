@@ -25,6 +25,7 @@ import java.util.List;
  * @author by nisie on 2/22/18.
  */
 
+@Deprecated
 public class ChannelInfoViewModel implements Parcelable {
     private String channelId;
     private String title;

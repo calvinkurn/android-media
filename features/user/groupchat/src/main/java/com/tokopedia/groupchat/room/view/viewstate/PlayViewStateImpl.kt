@@ -235,7 +235,7 @@ open class PlayViewStateImpl(
 
         if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
             it.floatingButton.run {
-                setFloatingIcon(linkUrl.trim(), imageUrl.trim())
+                setFloatingIcon(this)
             }
         }
 
@@ -697,36 +697,15 @@ open class PlayViewStateImpl(
                             infoViewModel.channelUrl,
                             infoViewModel.title))
 
-                    analytics.eventClickBanner(String.format(
-                            "%s - %s",
-                            infoViewModel.channelId,
-                            adsId
-                    ))
-
-                    val list = ArrayList<EEPromotion>()
-                    list.add(EEPromotion(adsId,
-                            EEPromotion.NAME_GROUPCHAT,
-                            GroupChatAnalytics.DEFAULT_EE_POSITION,
-                            adsName,
-                            adsImageUrl,
-                            getAttributionTracking(GroupChatAnalytics.ATTRIBUTE_BANNER)
-                    ))
-
-                    eventClickComponentEnhancedEcommerce(
-                            GroupChatAnalytics.COMPONENT_BANNER,
-                            adsName,
-                            GroupChatAnalytics.ATTRIBUTE_BANNER,
-                            list)
+                    analytics.eventClickBanner(infoViewModel, adsId, adsName, adsImageUrl)
                 }
             }
         }
 
         if (sponsorLayout.visibility == View.VISIBLE) {
-            analytics.eventViewBanner(String.format(
-                    "%s - %s",
-                    viewModel?.channelId,
-                    viewModel?.adsName
-            ))
+            viewModel?.run{
+                analytics.eventViewBanner(this, adsId, adsName, adsImageUrl)
+            }
         }
     }
 
@@ -920,29 +899,29 @@ open class PlayViewStateImpl(
     }
 
 
-    private fun setFloatingIcon(redirectUrl: String, iconUrl: String) {
-        if (iconUrl.isBlank()
-                || redirectUrl.isBlank()
-                || !RouteManager.isSupportApplink(view.context, redirectUrl)) {
+    private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
+        if (floatingButton.imageUrl.isBlank()
+                || floatingButton.linkUrl.isBlank()
+                || !RouteManager.isSupportApplink(view.context, floatingButton.linkUrl)) {
             return
         }
 
-        if (iconUrl.toLowerCase().endsWith("gif")) {
-            ImageHandler.loadGifFromUrl(webviewIcon, iconUrl, R.drawable.ic_loading_toped)
+        if (floatingButton.imageUrl.toLowerCase().endsWith("gif")) {
+            ImageHandler.loadGifFromUrl(webviewIcon, floatingButton.imageUrl, R.drawable.ic_loading_toped)
         } else {
-            ImageHandler.LoadImage(webviewIcon, iconUrl)
+            ImageHandler.LoadImage(webviewIcon, floatingButton.imageUrl)
         }
         webviewIcon.show()
 
         viewModel?.let{
-            analytics.eventViewProminentButton(it.channelId, redirectUrl)
+            analytics.eventViewProminentButton(it.channelId, floatingButton.linkUrl)
         }
 
         webviewIcon.setOnClickListener {
             viewModel?.let{
-                analytics.eventClickProminentButton(it.channelId, redirectUrl)
+                analytics.eventClickProminentButton(it, floatingButton)
 
-                RouteManager.routeWithAttribution(view.context, redirectUrl, GroupChatAnalytics.generateTrackerAttribution(
+                RouteManager.routeWithAttribution(view.context, floatingButton.linkUrl, GroupChatAnalytics.generateTrackerAttribution(
                         GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
                         it.channelUrl,
                         it.title

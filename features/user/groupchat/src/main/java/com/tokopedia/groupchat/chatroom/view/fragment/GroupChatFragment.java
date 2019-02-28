@@ -764,7 +764,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
 
         if (messageItem instanceof ImageAnnouncementViewModel) {
-            analytics.eventViewBannerPushPromo(
+            analytics.eventViewImageAnnouncement(
                     String.format("%s - %s"
                             , ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelId()
                             , ((ImageAnnouncementViewModel) messageItem).getRedirectUrl()));

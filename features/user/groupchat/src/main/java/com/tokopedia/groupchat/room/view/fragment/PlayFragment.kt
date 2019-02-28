@@ -88,7 +88,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     lateinit var viewState: PlayViewState
     private lateinit var notifReceiver: BroadcastReceiver
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var networkPreference : SharedPreferences
+    private lateinit var networkPreference: SharedPreferences
 
     private lateinit var channelInfoViewModel: ChannelInfoViewModel
     private var exitDialog: Dialog? = null
@@ -113,8 +113,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun setNetworkPreference(savedInstanceState: Bundle?) {
-        activity?.let{
-            networkPreference  = it.applicationContext.getSharedPreferences(GROUP_CHAT_NETWORK_PREFERENCES,
+        activity?.let {
+            networkPreference = it.applicationContext.getSharedPreferences(GROUP_CHAT_NETWORK_PREFERENCES,
                     Context.MODE_PRIVATE)
             val editor = networkPreference.edit()
             val useGCP = getParamBoolean(PlayActivity
@@ -467,7 +467,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onVoteComponentClicked(type: String?, name: String?) {
-        //TODO
+        analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name)
+
     }
 
     override fun onSprintSaleProductClicked(productViewModel: SprintSaleProductViewModel?, position: Int) {
@@ -641,6 +642,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun addIncomingMessage(it: Visitable<*>) {
         viewState.onMessageReceived(it)
+        trackViewIncomingMessage(it)
+    }
+
+    private fun trackViewIncomingMessage(it: Visitable<*>) {
+        if (it is ImageAnnouncementViewModel) {
+            //TODO ads Name and ads Id
+            analytics.eventViewImageAnnouncement(channelInfoViewModel, it.contentImageUrl, "", "")
+        }
     }
 
 
