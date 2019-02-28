@@ -17,7 +17,7 @@
         android:id="@+id/menu_os"
         android:enabled="true"
         android:icon="@drawable/ic_menu_os"
-        android:title="@string/official_store"
+        android:title="@string/official"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_cart"
