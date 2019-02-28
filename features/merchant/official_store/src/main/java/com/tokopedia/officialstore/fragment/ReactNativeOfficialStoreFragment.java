@@ -12,7 +12,7 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
 
     @Override
     public String getModuleName() {
-        return ReactConst.Screen.OFFICIAL_STORE;
+        return ReactConst.Screen.OFFICIAL_STORE_HOME;
     }
 
     @Override

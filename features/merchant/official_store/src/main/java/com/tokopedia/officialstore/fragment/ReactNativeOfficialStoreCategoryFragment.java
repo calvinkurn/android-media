@@ -19,6 +19,8 @@ public class ReactNativeOfficialStoreCategoryFragment extends ReactNativeFragmen
         return getArguments() != null ? getArguments() : new Bundle();
     }
 
+
+
     public static ReactNativeOfficialStoreCategoryFragment createInstance(Bundle bundle){
         if (bundle == null)
             bundle = new Bundle();
