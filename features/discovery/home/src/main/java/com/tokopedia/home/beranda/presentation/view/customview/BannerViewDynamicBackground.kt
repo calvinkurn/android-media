@@ -56,7 +56,7 @@ class BannerViewDynamicBackground : BannerView {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
                         && currentImagePosition != currentPosition
                         && currentPosition != -1) {
-                    setBackgroundImage()
+                    setBackgroundImageCrossfade()
                     currentImagePosition = currentPosition
                 }
             }
@@ -66,6 +66,15 @@ class BannerViewDynamicBackground : BannerView {
     private fun setBackgroundImage() {
         val url = promoImageUrls[currentPosition]
         ImageHandler.loadImageBlur(
+                context,
+                img_banner_background,
+                url
+        )
+    }
+
+    private fun setBackgroundImageCrossfade() {
+        val url = promoImageUrls[currentPosition]
+        ImageHandler.loadImageBlurCrossfade(
                 context,
                 img_banner_background,
                 url

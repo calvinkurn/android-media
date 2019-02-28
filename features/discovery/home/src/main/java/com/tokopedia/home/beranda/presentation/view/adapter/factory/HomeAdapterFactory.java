@@ -114,7 +114,7 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     public int type(DummyModel dummyModel) {
-        return DummyViewHolder.LAYOUT;
+        return DummyViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -175,7 +175,7 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)
             viewHolder = new InspirationHeaderViewHolder(view);
-        else if (type == DummyViewHolder.LAYOUT) {
+        else if (type == DummyViewHolder.Companion.getLAYOUT()) {
             viewHolder = new DummyViewHolder(view,listener);
         }
         else viewHolder = super.createViewHolder(view, type);

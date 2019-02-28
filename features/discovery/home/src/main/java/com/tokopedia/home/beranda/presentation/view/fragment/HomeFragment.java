@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
@@ -121,6 +122,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
+    public static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
+    public static final String KEY_DIMEN = "dimen";
+    public static final String KEY_DEF_PACKAGE = "android";
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
 
@@ -576,6 +580,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getActivity().getResources().getDimensionPixelSize(R.dimen.dp_10),
                 getActivity().getResources().getDimensionPixelSize(R.dimen.dp_60)
                 ));
+    }
+
+    private int getNavigationHeightPixelSize() {
+        Resources resources = getResources();
+        int resourceId = resources.getIdentifier(KEY_NAVIGATION_BAR_HEIGHT, KEY_DIMEN, KEY_DEF_PACKAGE);
+        if (resourceId > 0) {
+            return resources.getDimensionPixelSize(resourceId);
+        }
+        return 0;
     }
 
     private FloatingEggButtonFragment getFloatingEggButtonFragment() {

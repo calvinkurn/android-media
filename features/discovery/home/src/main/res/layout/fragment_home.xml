@@ -60,20 +60,24 @@
             android:background="@color/white"
             android:orientation="vertical">
 
-            <com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout
-                android:id="@+id/tab_layout_home_feeds"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tab_home_feed_max_height"
+            <FrameLayout
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_8"
-                app:tabPaddingStart="0dp"
-                app:tabPaddingEnd="0dp"
-                app:tabMode="scrollable"
-                app:tabBackground="@android:color/transparent"
-                android:background="@drawable/home_bg_shadow_bottom"
-                android:visibility="gone"
-                app:tabIndicatorHeight="0dp"
-                />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/home_bg_shadow_bottom">
+                <com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout
+                    android:id="@+id/tab_layout_home_feeds"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tab_home_feed_max_height"
+                    app:tabPaddingStart="0dp"
+                    app:tabPaddingEnd="0dp"
+                    app:tabMode="scrollable"
+                    app:tabBackground="@android:color/transparent"
+                    android:visibility="gone"
+                    app:tabIndicatorHeight="0dp"
+                    />
+            </FrameLayout>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager_home_feeds"

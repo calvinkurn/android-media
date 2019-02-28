@@ -751,7 +751,32 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+
+
     public static void loadImageBlur(final Context context, final ImageView imageView, String imageUrl) {
+        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .override(80, 80)
+                    .centerCrop()
+                    .into(imageView);
+        }
+
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .into(new BitmapImageViewTarget(imageView) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            Bitmap blurredBitmap = blur(context, resource);
+                            imageView.setImageBitmap(blurredBitmap);
+                        }
+                    });
+        }
+    }
+
+    public static void loadImageBlurCrossfade(final Context context, final ImageView imageView, String imageUrl) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .load(imageUrl)
