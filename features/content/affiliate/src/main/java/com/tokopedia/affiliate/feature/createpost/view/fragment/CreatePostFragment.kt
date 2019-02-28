@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking
+import com.tokopedia.affiliate.feature.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
@@ -91,11 +92,6 @@ class CreatePostFragment : BaseDaggerFragment(),
         affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initVar(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_af_create_post, container, false)
@@ -105,6 +101,7 @@ class CreatePostFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         presenter.attachView(this)
+        initVar(savedInstanceState)
         initView()
         if (userSession.isLoggedIn) {
             //TODO milhamj handle multiple product or ad id
@@ -236,9 +233,17 @@ class CreatePostFragment : BaseDaggerFragment(),
 
             if (draft != null) {
                 viewModel = draft
+                handleDraftError(arguments)
             } else {
                 it.finish()
             }
+        }
+    }
+
+    private fun handleDraftError(arguments: Bundle) {
+        val errorMessage = arguments.getString(CREATE_POST_ERROR_MSG, "")
+        if (errorMessage.isNotBlank()) {
+            view?.showErrorToaster(errorMessage)
         }
     }
 
