@@ -100,7 +100,7 @@ data class Info(
     data class CodInfo(
             @SerializedName("failed_message")
             @Expose
-            val failedMessage: String = ""
+            val failedMessage: List<String> = listOf()
     )
 
     data class BlackboxInfo(
