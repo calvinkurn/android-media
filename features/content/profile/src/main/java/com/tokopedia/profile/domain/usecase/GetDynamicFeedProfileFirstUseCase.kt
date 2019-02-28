@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
+import com.tokopedia.profile.data.pojo.affiliatequota.AffiliateQuotaData
 import com.tokopedia.profile.data.pojo.profileheader.Profile
 import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderError
@@ -27,6 +29,7 @@ class GetDynamicFeedProfileFirstUseCase
 @Inject constructor(@ApplicationContext val context: Context,
                     val getDynamicFeedUseCase: GetDynamicFeedUseCase,
                     val getProfileHeaderUseCase: GetProfileHeaderUseCase,
+                    val getAffiliateQuotaUseCase: GetAffiliateQuotaUseCase,
                     val userSessionInterface: UserSessionInterface)
     : UseCase<DynamicFeedProfileViewModel>() {
     var userId = 0;
@@ -35,14 +38,26 @@ class GetDynamicFeedProfileFirstUseCase
         userId = requestParams!!.getInt(GetProfileHeaderUseCase.PARAM_USER_ID_TARGET, 0)
         return Observable.zip(
                 getProfileHeader(userId),
+                getQuota(),
                 getDynamicFeed(requestParams)
-        ) { header, feed -> DynamicFeedProfileViewModel(header, feed)
+        ) { header, quota, feed -> DynamicFeedProfileViewModel(header, feed, quota)
         }
     }
 
 
     private fun getDynamicFeed(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
         return getDynamicFeedUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
+    }
+
+    private fun getQuota(): Observable<AffiliatePostQuota> {
+        return if (userId.toString() == userSessionInterface.userId) {
+            getAffiliateQuotaUseCase
+                    .createObservable(RequestParams.EMPTY)
+                    .map(convertToPostQuota())
+                    .subscribeOn(Schedulers.io())
+        } else {
+            Observable.just(AffiliatePostQuota())
+        }
     }
 
     private fun getProfileHeader(userId: Int): Observable<ProfileHeaderViewModel> {
@@ -77,6 +92,14 @@ class GetDynamicFeedProfileFirstUseCase
             )
         }
     }
+
+    private fun convertToPostQuota(): Func1<GraphqlResponse, AffiliatePostQuota> {
+        return Func1 { graphqlResponse ->
+            val data: AffiliateQuotaData? = graphqlResponse.getData(AffiliateQuotaData::class.java)
+            data?.affiliatePostQuota ?: AffiliatePostQuota()
+        }
+    }
+
     companion object {
         fun createRequestParams(targetUserId: Int): RequestParams {
             val requestParams = GetDynamicFeedUseCase.createProfileFeedRequestParams(targetUserId.toString(), "")

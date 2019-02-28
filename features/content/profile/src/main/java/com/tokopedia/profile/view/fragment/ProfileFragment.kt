@@ -265,46 +265,45 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.cursor = element.dynamicFeedDomainModel.cursor
         onlyOnePost = element.dynamicFeedDomainModel.postList.size == 1
         isAffiliate = element.profileHeaderViewModel.isAffiliate
-//        affiliatePostQuota = firstPageViewModel.affiliatePostQuota
-//
-//        if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
-//            setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
-//            addFooter(
-//                    firstPageViewModel.profileHeaderViewModel,
-//                    firstPageViewModel.affiliatePostQuota
-//            )
-//        }
-//
-//        setProfileToolbar(firstPageViewModel.profileHeaderViewModel, isFromLogin)
-//
-//        val visitables: ArrayList<Visitable<*>> = ArrayList()
-//        if (!firstPageViewModel.visitableList.isEmpty()) {
-//            firstPageViewModel.visitableList
-//                    .filterIsInstance<BaseKolViewModel>()
-//                    .forEach { it.isKol = firstPageViewModel.profileHeaderViewModel.isKol }
-//            visitables.addAll(firstPageViewModel.visitableList)
-//        } else {
-//            visitables.add(getEmptyModel(
-//                    firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent,
-//                    firstPageViewModel.profileHeaderViewModel.isOwner,
-//                    firstPageViewModel.profileHeaderViewModel.isAffiliate)
-//            )
-//        }
-//        trackKolPostImpression(visitables)
-//        renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
-//
-//        if (afterPost) {
-//            when {
-//                isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
-//                onlyOnePost -> showShowCaseDialog(shareProfile)
-//                else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
-//            }
-//            afterPost = false
-//
-//        } else if (afterEdit) {
-//            showAfterEditToaster()
-//            afterEdit = false
-//        }
+        affiliatePostQuota = element.affiliatePostQuota
+
+        if (element.profileHeaderViewModel.isAffiliate) {
+            setToolbarTitle(element.profileHeaderViewModel.affiliateName)
+            addFooter(
+                    element.profileHeaderViewModel,
+                    element.affiliatePostQuota
+            )
+        }
+        setProfileToolbar(element.profileHeaderViewModel, isFromLogin)
+
+        val visitables: ArrayList<Visitable<*>> = ArrayList()
+        if (!element.dynamicFeedDomainModel.postList.isEmpty()) {
+            element.dynamicFeedDomainModel.postList
+                    .filterIsInstance<BaseKolViewModel>()
+                    .forEach { it.isKol = element.profileHeaderViewModel.isKol }
+            visitables.addAll(element.dynamicFeedDomainModel.postList)
+        } else {
+            visitables.add(getEmptyModel(
+                    element.profileHeaderViewModel.isShowAffiliateContent,
+                    element.profileHeaderViewModel.isOwner,
+                    element.profileHeaderViewModel.isAffiliate)
+            )
+        }
+        trackKolPostImpression(visitables)
+        renderList(visitables, !TextUtils.isEmpty(element.dynamicFeedDomainModel.cursor))
+
+        if (afterPost) {
+            when {
+                isAutomaticOpenShareUser() -> shareLink(element.profileHeaderViewModel.link)
+                onlyOnePost -> showShowCaseDialog(shareProfile)
+                else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
+            }
+            afterPost = false
+
+        } else if (afterEdit) {
+            showAfterEditToaster()
+            afterEdit = false
+        }
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
