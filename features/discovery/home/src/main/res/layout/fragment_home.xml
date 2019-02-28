@@ -35,7 +35,7 @@
                     android:descendantFocusability="beforeDescendants"
                     android:tag="home_list"/>
 
-                <com.tokopedia.home.beranda.presentation.view.customview.HomeMainToolbar
+                <com.tokopedia.searchbar.HomeMainToolbar
                     android:id="@+id/toolbar"
                     android:fitsSystemWindows="true"
                     android:layout_width="match_parent"

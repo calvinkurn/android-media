@@ -1,18 +1,14 @@
-package com.tokopedia.home.beranda.presentation.view.customview
+package com.tokopedia.searchbar
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-
-import com.tokopedia.home.R
-import com.tokopedia.searchbar.MainToolbar
-import com.tokopedia.searchbar.SearchBarConstant
-import com.tokopedia.searchbar.SearchBarRouter
+import com.tokopedia.design.component.badge.BadgeView
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 
 class HomeMainToolbar : MainToolbar {
@@ -63,7 +59,7 @@ class HomeMainToolbar : MainToolbar {
         if (toolbarType != TOOLBAR_DARK_TYPE) {
             btnWishlist.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_wishlist_grey)
             btnNotification.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_notif_grey)
-            btn_inbox.setImageResource(R.drawable.ic_inbox_searcbar);
+            btn_inbox.setImageResource(R.drawable.ic_searchbar_inbox_grey);
             toolbarType = TOOLBAR_DARK_TYPE
         }
     }
@@ -72,7 +68,7 @@ class HomeMainToolbar : MainToolbar {
         if (toolbarType != TOOLBAR_LIGHT_TYPE) {
             btnWishlist.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_wishlist_white)
             btnNotification.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_notif_white)
-            btn_inbox.setImageResource(R.drawable.ic_inbox_searcbar);
+            btn_inbox.setImageResource(R.drawable.ic_searchbar_inbox_white)
             toolbarType = TOOLBAR_LIGHT_TYPE
         }
     }
@@ -85,6 +81,15 @@ class HomeMainToolbar : MainToolbar {
             btnWishlist.tag = ""
             btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_white)
         }
+    }
+
+    override fun setInboxNumber(badgeNumber: Int) {
+        if (badgeView == null)
+            badgeView = BadgeView(context)
+
+        badgeView.bindTarget(btn_inbox)
+        badgeView.badgeGravity = Gravity.END or Gravity.TOP
+        badgeView.badgeNumber = badgeNumber
     }
 
     companion object {

@@ -4,34 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
-
-    <ImageView
-        android:id="@+id/img_banner_background"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_230"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_icon_market_toped" />
-
-    <View
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="210dp"
-        android:background="@drawable/background_banner_image_mask"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/dp_72" />
+    android:background="@color/transparent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/viewpager_banner_category"
@@ -50,7 +23,6 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="left|bottom"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="@dimen/dp_5"
         android:layout_weight="1"
         android:orientation="horizontal"
@@ -59,7 +31,6 @@
         app:layout_constraintTop_toBottomOf="@+id/viewpager_banner_category"
         tools:layout_height="50dp"
         tools:layout_width="100dp" />
-
 
     <TextView
         android:id="@+id/promo_link"
@@ -72,7 +43,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center_horizontal|center_vertical"
         android:paddingLeft="@dimen/dp_10"
-        android:text="@string/all_promo"
+        android:text="Lihat Semua"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"

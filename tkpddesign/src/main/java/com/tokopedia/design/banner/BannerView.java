@@ -169,9 +169,9 @@ public class BannerView extends BaseCustomView {
             ImageView pointView = new ImageView(getContext());
             pointView.setPadding(5, 0, 5, 0);
             if (count == 0) {
-                pointView.setImageResource(R.drawable.indicator_focus);
+                pointView.setImageResource(getIndicatorFocus());
             } else {
-                pointView.setImageResource(R.drawable.indicator);
+                pointView.setImageResource(getIndicator());
             }
             indicatorItems.add(pointView);
             bannerIndicator.addView(pointView);
@@ -233,6 +233,14 @@ public class BannerView extends BaseCustomView {
         }
     }
 
+    protected int getIndicatorFocus() {
+        return R.drawable.indicator_focus;
+    }
+
+    protected int getIndicator() {
+        return R.drawable.indicator;
+    }
+
     protected BannerPagerAdapter getBannerAdapter() {
         return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
     }
@@ -244,9 +252,9 @@ public class BannerView extends BaseCustomView {
     private void setCurrentIndicator() {
         for (int i = 0; i < indicatorItems.size(); i++) {
             if (currentPosition != i) {
-                indicatorItems.get(i).setImageResource(R.drawable.indicator);
+                indicatorItems.get(i).setImageResource(getIndicator());
             } else {
-                indicatorItems.get(i).setImageResource(R.drawable.indicator_focus);
+                indicatorItems.get(i).setImageResource(getIndicatorFocus());
             }
         }
     }

@@ -68,7 +68,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
-import com.tokopedia.home.beranda.presentation.view.customview.HomeMainToolbar;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.DummyModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
@@ -86,6 +85,7 @@ import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
@@ -574,7 +574,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.addItemDecoration(new HomeRecyclerViewDecorator(0,
                 0,
                 getActivity().getResources().getDimensionPixelSize(R.dimen.dp_10),
-                getActivity().getResources().getDimensionPixelSize(R.dimen.dp_20)
+                getActivity().getResources().getDimensionPixelSize(R.dimen.dp_60)
                 ));
     }
 
@@ -1274,8 +1274,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onNotifyBadgeInboxNotification(int number) {
-        if (mainToolbar != null) {
-            mainToolbar.setInboxNumber(number);
+        if (homeMainToolbar != null) {
+            homeMainToolbar.setInboxNumber(number);
         }
     }
 

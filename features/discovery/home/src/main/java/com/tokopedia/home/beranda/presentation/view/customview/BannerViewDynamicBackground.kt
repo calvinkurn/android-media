@@ -10,13 +10,13 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeBannerPagerAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.CardBannerPagerAdapter
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeBannerViewDecorator
 
 import java.util.ArrayList
 
-class HomeBannerView : BannerView {
+class BannerViewDynamicBackground : BannerView {
 
     internal lateinit var img_banner_background: ImageView
 
@@ -27,7 +27,7 @@ class HomeBannerView : BannerView {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
     override fun init() {
-        val view = View.inflate(context, R.layout.widget_banner_home, this)
+        val view = View.inflate(context, R.layout.layout_card_banner_dynamic_background, this)
         bannerRecyclerView = view.findViewById(R.id.viewpager_banner_category)
         bannerIndicator = view.findViewById<ViewGroup>(R.id.indicator_banner_container)
         bannerSeeAll = view.findViewById(R.id.promo_link)
@@ -43,10 +43,10 @@ class HomeBannerView : BannerView {
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
                     HomeBannerViewDecorator(
-                            context.resources.getDimensionPixelSize(R.dimen.dp_5),
-                            0,
-                            0,
-                            0)
+                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(R.dimen.dp_4),
+                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(R.dimen.dp_4))
             )
         }
         bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -73,6 +73,14 @@ class HomeBannerView : BannerView {
     }
 
     override fun getBannerAdapter(): BannerPagerAdapter {
-        return HomeBannerPagerAdapter(promoImageUrls, onPromoClickListener)
+        return CardBannerPagerAdapter(promoImageUrls, onPromoClickListener)
+    }
+
+    override fun getIndicator(): Int {
+        return R.drawable.home_indicator
+    }
+
+    override fun getIndicatorFocus(): Int {
+        return R.drawable.home_indicator_focus
     }
 }
