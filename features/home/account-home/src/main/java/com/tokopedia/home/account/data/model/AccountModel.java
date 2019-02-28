@@ -2,18 +2,17 @@ package com.tokopedia.home.account.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import com.tokopedia.navigation_common.model.DepositModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation_common.model.PendingCashbackModel;
+import com.tokopedia.navigation_common.model.ProfileModel;
 import com.tokopedia.navigation_common.model.ReputationShop;
+import com.tokopedia.navigation_common.model.TokopointsModel;
 import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
+import com.tokopedia.navigation_common.model.UserShopInfoModel;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
-import com.tokopedia.navigation_common.model.ProfileModel;
-import com.tokopedia.navigation_common.model.UserShopInfoModel;
-import com.tokopedia.navigation_common.model.TokopointsModel;
-import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.user_identification_common.pojo.KycStatusPojo;
 
 import java.util.ArrayList;

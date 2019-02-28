@@ -3,7 +3,6 @@ package com.tokopedia.challenges.view.presenter;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
