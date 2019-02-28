@@ -75,10 +75,13 @@ public class ScreenTracking extends TrackingUtils {
     }
 
     public static void sendAFPDPEvent(Context context, final ProductDetailData data, final String eventName) {
-        if (context instanceof Application && context instanceof AbstractionRouter) {
-            CacheManager cacheManager = ((AbstractionRouter) context).getGlobalCacheManager();
+        if (context == null)
+            return;
+        Context appContext = context.getApplicationContext();
+        if (appContext instanceof AbstractionRouter) {
+            CacheManager cacheManager = ((AbstractionRouter) appContext).getGlobalCacheManager();
             final AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(cacheManager);
-            getAFEngine(context).getAdsID(new AppsflyerContainer.AFAdsIDCallback() {
+            getAFEngine(appContext).getAdsID(new AppsflyerContainer.AFAdsIDCallback() {
                 @Override
                 public void onGetAFAdsID(String adsID) {
                     String productID = data.getInfo().getProductId() + "";
@@ -96,8 +99,16 @@ public class ScreenTracking extends TrackingUtils {
                         analHandler.setAdsId(adsID);
                     }
 
+                    if (data.getBreadcrumb() != null && data.getBreadcrumb().size() > 0) {
+                        int size = data.getBreadcrumb().size();
+                        for (int i = 1; i <= size; i++) {
+                            values.put("level" + i + "_name", data.getBreadcrumb().get(size - i).getDepartmentName());
+                            values.put("level" + i + "_id", data.getBreadcrumb().get(size - i).getDepartmentId());
+                        }
+                    }
+
                     CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
-                    getAFEngine(context).sendTrackEvent(eventName, values);
+                    getAFEngine(appContext).sendTrackEvent(eventName, values);
                 }
 
                 @Override

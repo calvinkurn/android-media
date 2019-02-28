@@ -13,10 +13,6 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -36,11 +32,15 @@ import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -276,8 +276,8 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void showEmailVerificationDialog(String userEmail) {
-        UserSession session = ((AbstractionRouter) getActivity().getApplicationContext()).getSession();
-        if (session.isHasPassword()) {
+        UserSessionInterface userSession = new UserSession(getActivity());
+        if (userSession.hasPassword()) {
             DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
                     new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
                         @Override

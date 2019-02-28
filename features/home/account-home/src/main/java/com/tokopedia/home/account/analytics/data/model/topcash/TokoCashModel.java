@@ -11,16 +11,16 @@ public class TokoCashModel {
 
     @SerializedName("success")
     @Expose
-    private boolean success;
+    private boolean success = false;
     @SerializedName("data")
     @Expose
-    private TokoCashData data;
+    private TokoCashData data = new TokoCashData();
     @SerializedName("error")
     @Expose
-    private String errorMessage;
+    private String errorMessage = "";
     @SerializedName("status")
     @Expose
-    private String statusMessage;
+    private String statusMessage = "";
     @SerializedName("code")
     @Expose
     private int responseCode;

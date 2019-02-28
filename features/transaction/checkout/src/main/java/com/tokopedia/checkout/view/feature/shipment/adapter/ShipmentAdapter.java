@@ -54,6 +54,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.http.HEAD;
+
 /**
  * @author Irfan Khoirul on 23/04/18.
  */
@@ -245,6 +247,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void addNotifierData(ShipmentNotifierModel shipmentNotifierModel) {
         if (shipmentNotifierModel != null) {
             shipmentDataList.add(HEADER_POSITION, shipmentNotifierModel);
+        }
+    }
+
+    public void removeNotifierData() {
+        if (shipmentDataList.get(HEADER_POSITION) instanceof ShipmentNotifierModel) {
+            shipmentDataList.remove(HEADER_POSITION);
+            notifyItemRemoved(HEADER_POSITION);
         }
     }
 
