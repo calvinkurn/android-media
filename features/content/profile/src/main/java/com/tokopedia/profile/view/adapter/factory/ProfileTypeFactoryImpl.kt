@@ -38,15 +38,15 @@ import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
  */
 class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.View,
                              private val kolPostViewListener : KolPostListener.View.ViewHolder?,
-                             private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
-                             private val bannerListener: BannerAdapter.BannerItemListener,
-                             private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener,
-                             private val recommendationCardListener: RecommendationCardAdapter.RecommendationCardListener,
-                             private val cardTitleListener: CardTitleView.CardTitleListener,
-                             private val imagePostListener: ImagePostViewHolder.ImagePostListener,
-                             private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
-                             private val pollOptionListener: PollAdapter.PollOptionListener,
-                             private val gridItemListener: GridPostAdapter.GridItemListener)
+                             private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener?,
+                             private val bannerListener: BannerAdapter.BannerItemListener?,
+                             private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener?,
+                             private val recommendationCardListener: RecommendationCardAdapter.RecommendationCardListener?,
+                             private val cardTitleListener: CardTitleView.CardTitleListener?,
+                             private val imagePostListener: ImagePostViewHolder.ImagePostListener?,
+                             private val youtubePostListener: YoutubeViewHolder.YoutubePostListener?,
+                             private val pollOptionListener: PollAdapter.PollOptionListener?,
+                             private val gridItemListener: GridPostAdapter.GridItemListener?)
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
@@ -119,18 +119,18 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 ExploreViewHolder(parent, kolPostViewListener) as AbstractViewHolder<Visitable<*>>
             DynamicPostViewHolder.LAYOUT ->
                 DynamicPostViewHolder(parent,
-                        dynamicPostListener,
-                        cardTitleListener,
-                        imagePostListener,
-                        youtubePostListener,
-                        pollOptionListener,
-                        gridItemListener) as AbstractViewHolder< Visitable<*>>
+                        dynamicPostListener!!,
+                        cardTitleListener!!,
+                        imagePostListener!!,
+                        youtubePostListener!!,
+                        pollOptionListener!!,
+                        gridItemListener!!) as AbstractViewHolder< Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
-                FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+                FeedRecommendationViewHolder(parent, recommendationCardListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
             BannerViewHolder.LAYOUT ->
-                BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+                BannerViewHolder(parent, bannerListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
-                TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+                TopadsShopViewHolder(parent, topadsShopListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }

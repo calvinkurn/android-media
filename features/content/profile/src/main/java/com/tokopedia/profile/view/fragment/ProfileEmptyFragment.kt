@@ -78,7 +78,18 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     override fun loadData(page: Int) = presenter.getProfileHeader(userId)
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return ProfileTypeFactoryImpl(this, null)
+        return ProfileTypeFactoryImpl(
+                this,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null)
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
