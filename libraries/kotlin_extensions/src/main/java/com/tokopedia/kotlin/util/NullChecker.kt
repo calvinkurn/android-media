@@ -41,7 +41,7 @@ fun isContainNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }): Boole
     //setPrettyPrinting is needed because it's easier to find a variable in a formatted JSON
     //In a formatted JSON, a variable is always in a newline
     val gson = GsonBuilder()
-            .registerTypeAdapterFactory(NullToDefaultValueAdapterFactory())
+            .registerTypeAdapterFactory(DefaultValueAdapterFactory())
             .serializeNulls()
             .setPrettyPrinting().create()
     val objectAsJson = gson.toJson(`object`).toLowerCase()

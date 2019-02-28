@@ -5,7 +5,7 @@ import com.google.gson.TypeAdapter
 import com.google.gson.TypeAdapterFactory
 import com.google.gson.reflect.TypeToken
 
-class NullToDefaultValueAdapterFactory : TypeAdapterFactory {
+class DefaultValueAdapterFactory : TypeAdapterFactory {
     override fun <T> create(gson: Gson, type: TypeToken<T>): TypeAdapter<T>? {
         val rawType = type.getRawType() as Class<T>
         return if (rawType == String::class.java) {
