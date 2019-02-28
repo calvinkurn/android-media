@@ -17,7 +17,7 @@ class GetProfilePostSubscriber(private val view: ProfileContract.View)
             view.showGetListError(RuntimeException())
             return
         }
-//        view.onSuccessGetProfilePost(t.visitableList, t.lastCursor)
+        view.onSuccessGetProfilePost(t.postList, t.cursor)
     }
 
     override fun onCompleted() {

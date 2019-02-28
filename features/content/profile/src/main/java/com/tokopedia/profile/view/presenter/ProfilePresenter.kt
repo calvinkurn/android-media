@@ -39,10 +39,10 @@ class ProfilePresenter @Inject constructor(
         trackAffiliateClickUseCase.unsubscribe()
     }
 
-    override fun getProfileFirstPage(userId: Int, isFromLogin: Boolean) {
+    override fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean) {
         cursor = ""
         getDynamicFeedProfileFirstUseCase.execute(
-                GetDynamicFeedProfileFirstUseCase.createRequestParams(userId),
+                GetDynamicFeedProfileFirstUseCase.createRequestParams(view.getUserSession().userId, targetUserId),
                 GetProfileFirstPageSubscriber(view, isFromLogin)
         )
     }
