@@ -381,6 +381,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
         } catch (t: Throwable) {
+            t.printStackTrace()
         }
         productInfoP3
     }
