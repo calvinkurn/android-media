@@ -33,7 +33,7 @@ interface ProfileContract {
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
 
-        fun getProfileFirstPage(userId: Int, isFromLogin: Boolean)
+        fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean)
 
         fun getProfilePost(userId: Int)
 
