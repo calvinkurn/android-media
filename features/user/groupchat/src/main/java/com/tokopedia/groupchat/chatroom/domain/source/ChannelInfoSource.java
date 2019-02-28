@@ -40,12 +40,14 @@ public class ChannelInfoSource {
                              ChatroomApi chatroomApi,
                              @GCPQualifier ChatroomApi gcpApi,
                              ChannelInfoMapper mapper,
-                             DynamicButtonsMapper dynamicButtonsMapper) {
+                             DynamicButtonsMapper dynamicButtonsMapper,
+                             StickyComponentMapper stickyComponentMapper) {
         this.context = context;
         this.gcpApi = gcpApi;
         this.chatroomApi = chatroomApi;
         this.mapper = mapper;
         this.dynamicButtonsMapper = dynamicButtonsMapper;
+        this.stickyComponentMapper = stickyComponentMapper;
     }
 
     public Observable<ChannelInfoViewModel> getChannelInfo(String channelUuid,
