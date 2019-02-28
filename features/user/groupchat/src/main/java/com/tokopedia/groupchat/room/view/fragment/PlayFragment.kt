@@ -460,7 +460,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 //    }
 
     override fun onImageAnnouncementClicked(url: String?) {
-        analytics.eventClickThumbnail(String.format("%s - %s", (activity as GroupChatContract.View).channelInfoViewModel!!.channelId, url))
+        analytics.eventClickThumbnail(channelInfoViewModel)
         url?.run {
             openRedirectUrl(this)
         }
@@ -655,6 +655,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun sendMessage(): (PendingChatViewModel) -> Unit {
         return {
+            analytics.eventClickSendChat(channelInfoViewModel.channelId)
             presenter.sendMessage(it, ::afterSendMessage, ::onSuccessSendMessage, ::onErrorSendMessage)
         }
     }

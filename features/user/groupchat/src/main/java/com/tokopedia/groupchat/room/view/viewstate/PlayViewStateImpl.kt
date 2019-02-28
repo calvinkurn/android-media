@@ -266,6 +266,9 @@ open class PlayViewStateImpl(
 
             StickyComponentHelper.setView(stickyComponent, item)
             stickyComponent.setOnClickListener {
+//                viewModel?.let {
+//                    analytics.eventClickStickyComponent(item, it)
+//                }
                 RouteManager.route(activity, item.redirectUrl)
             }
 
@@ -273,6 +276,9 @@ open class PlayViewStateImpl(
                     .alpha(1f)
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
+                            viewModel?.let{
+                                analytics.eventShowStickyComponent(item, it)
+                            }
                             stickyComponent.show()
                         }
                     })
@@ -540,9 +546,12 @@ open class PlayViewStateImpl(
         }
 
         if (!::overlayDialog.isInitialized) {
-            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context) {
+            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context, {
+                analytics.eventClickCloseOverlayCloseButton(channelInfoViewModel.channelId)
+            }, {
                 analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
-            }
+            })
+
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
 
@@ -582,7 +591,9 @@ open class PlayViewStateImpl(
                         closeOverlayDialog()
                     }
 
-                    analytics.eventClickOverlayImage(channelInfoViewModel)
+                    //TODO Overlay ads id
+                    analytics.eventClickOverlayImage(channelInfoViewModel, "", "",
+                            interruptViewModel.imageUrl)
                 }
             } else
                 (overlayView.findViewById(R.id.ivImage) as ImageView).visibility = View.GONE
@@ -600,7 +611,9 @@ open class PlayViewStateImpl(
             (overlayView.findViewById<View>(R.id.btnCta) as ButtonCompat).text = MethodChecker.fromHtml(interruptViewModel.btnTitle)
             (overlayView.findViewById<View>(R.id.btnCta) as ButtonCompat).setOnClickListener { view1 ->
 
-                analytics.eventClickOverlayButton(channelInfoViewModel)
+                //TODO : ADD OVERLAY ADS ID
+                analytics.eventClickOverlayButton(channelInfoViewModel, "", interruptViewModel.btnTitle,
+                        interruptViewModel.imageUrl)
 
                 if (!TextUtils.isEmpty(interruptViewModel.btnLink)) {
                     RouteManager.routeWithAttribution(view.context, interruptViewModel.btnLink,
@@ -1063,7 +1076,7 @@ open class PlayViewStateImpl(
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
                                     onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
+            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context, {}, {})
         }
 
         welcomeInfoDialog.setOnDismissListener {
