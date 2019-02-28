@@ -395,7 +395,7 @@ public class HeaderHomeView extends BaseCustomView {
         if (!(getContext() instanceof Activity) && (getContext() instanceof ContextWrapper)) {
             Context context = ((ContextWrapper) getContext()).getBaseContext();
             Activity activity = (Activity) context;
-            activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
         }
     }
 
