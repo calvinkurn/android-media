@@ -819,6 +819,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else {
             builder.state(TickerCheckoutView.State.EMPTY);
         }
+
+        cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
+        cartAdapter.addDataList(cartListData.getShopGroupDataList());
+        if (cartListData.getAdsModel() != null) {
+            cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+        }
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+        if (cbSelectAll != null) {
+            cbSelectAll.setChecked(cartListData.isAllSelected());
+        }
+
         cartAdapter.addPromoVoucherData(builder.build());
 
         if (cartListData.getCartPromoSuggestion().isVisible()) {
@@ -831,16 +842,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                             .cartTickerErrorData(cartListData.getCartTickerErrorData())
                             .build()
             );
-        }
-
-        cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
-        cartAdapter.addDataList(cartListData.getShopGroupDataList());
-        if (cartListData.getAdsModel() != null) {
-            cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-        }
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        if (cbSelectAll != null) {
-            cbSelectAll.setChecked(cartListData.isAllSelected());
         }
 
         cartAdapter.checkForShipmentForm();
