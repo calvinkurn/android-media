@@ -90,6 +90,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String OVERRIDE_URL = "override_url";
     private static final String PARAM_TITLEBAR = "titlebar";
+    private static final String PARAM_NEED_LOGIN = "need_login";
 
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
@@ -286,7 +287,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                    */
                 case DeepLinkChecker.APPLINK:
                     if (linkSegment != null && linkSegment.size() > 0) {
-                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false, true);
+                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false, true,
+                                false);
                         screenName = AppScreen.SCREEN_WEBVIEW;
                     } else {
                         return;
@@ -479,10 +481,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             openWebView(uriData,
                     uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"),
                     uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
-                            (PARAM_TITLEBAR).equalsIgnoreCase("true"));
+                            (PARAM_TITLEBAR).equalsIgnoreCase("true"),
+                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null && uriData.getQueryParameter
+                            (PARAM_NEED_LOGIN).equalsIgnoreCase("true"));
         } else {
-            openWebView(uriData, false, uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
-                    (PARAM_TITLEBAR).equalsIgnoreCase("true"));
+            openWebView(uriData, false,
+                    uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
+                    (PARAM_TITLEBAR).equalsIgnoreCase("true"),
+                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null && uriData.getQueryParameter
+                            (PARAM_NEED_LOGIN).equalsIgnoreCase("true")
+                    );
         }
     }
 
@@ -490,9 +498,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
 
-    private void openWebView(Uri encodedUri, boolean allowingOverriding, boolean showTitlebar) {
+    private void openWebView(Uri encodedUri, boolean allowingOverriding, boolean showTitlebar,
+                             boolean needLogin) {
         Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString
-                ()), allowingOverriding, showTitlebar);
+                ()), allowingOverriding, showTitlebar, needLogin);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
         viewListener.actionChangeToolbarWithBackToNative();
     }

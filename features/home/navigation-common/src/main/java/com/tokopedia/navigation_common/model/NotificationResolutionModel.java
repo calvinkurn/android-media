@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class NotificationResolutionModel {
     @SerializedName("buyer")
     @Expose
-    private Integer buyer;
+    private Integer buyer = 0;
     @SerializedName("seller")
     @Expose
-    private Integer seller;
+    private Integer seller = 0;
 
     public Integer getBuyer() {
         return buyer;

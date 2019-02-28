@@ -30,6 +30,7 @@ include "features:digital:common_travel"
 include "features:digital:common_digital"
 
 include "features:discovery:category_common"
+include 'features:discovery:productcard'
 include "features:discovery:home"
 //include "features:discovery:home_no_op"
 include "features:discovery:topadssdk"

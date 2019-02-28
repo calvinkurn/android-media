@@ -2,11 +2,13 @@ package com.tokopedia.checkout.view.feature.multipleaddressform;
 
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -17,6 +19,8 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
 import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
@@ -245,6 +249,14 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
             @Override
             public void onNext(SetShippingAddressData setShippingAddressData) {
+                NullCheckerKt.isContainNull(setShippingAddressData, s -> {
+                    ContainNullException exception = new ContainNullException("Found " + s + " on " + MultipleAddressPresenter.class.getSimpleName());
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
+                    throw exception;
+                });
+
                 view.hideLoading();
                 if (setShippingAddressData.isSuccess()) {
                     view.successMakeShipmentData();

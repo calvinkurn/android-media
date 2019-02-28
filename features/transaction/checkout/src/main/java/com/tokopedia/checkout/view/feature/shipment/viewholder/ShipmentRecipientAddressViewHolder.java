@@ -69,8 +69,15 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         }
 
         tvAddressStatus.setVisibility(View.GONE);
-        tvAddressName.setVisibility(View.GONE);
-        formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
+        if (recipientAddress.getAddressStatus() == 2) {
+            tvAddressStatus.setVisibility(View.VISIBLE);
+        } else {
+            tvAddressStatus.setVisibility(View.GONE);
+        }
+        // tvAddressName.setVisibility(View.GONE);
+        tvAddressName.setText(recipientAddress.getAddressName());
+        tvRecipientName.setText(recipientAddress.getRecipientName());
+        // formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
         tvRecipientAddress.setText(getFullAddress(recipientAddress));
         tvRecipientPhone.setVisibility(View.GONE);
 
@@ -116,7 +123,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     }
 
     private void formatAddressName(TextView textView, String recipientName, String addressName) {
-        addressName = " (" + addressName + ")";
+        // addressName = " (" + addressName + ")";
         recipientName += addressName;
         int startSpan = recipientName.indexOf(addressName);
         int endSpan = recipientName.indexOf(addressName) + addressName.length();

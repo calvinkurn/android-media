@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi
-import com.tokopedia.seller.shop.common.di.ShopQualifier
 import com.tokopedia.shop.common.constant.ShopCommonUrl
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource

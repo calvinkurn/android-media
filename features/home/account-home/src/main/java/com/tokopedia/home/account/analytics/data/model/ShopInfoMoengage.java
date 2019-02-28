@@ -8,13 +8,13 @@ public class ShopInfoMoengage {
 
     @SerializedName("info")
     @Expose
-    private Info info;
+    private Info info = new Info();
     @SerializedName("owner")
     @Expose
-    private Owner owner;
+    private Owner owner = new Owner();
     @SerializedName("stats")
     @Expose
-    private Stats stats;
+    private Stats stats = new Stats();
 
     public Info getInfo() {
         return info;
