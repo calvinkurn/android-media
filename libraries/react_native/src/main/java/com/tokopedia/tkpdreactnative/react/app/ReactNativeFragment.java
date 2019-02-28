@@ -1,9 +1,8 @@
 package com.tokopedia.tkpdreactnative.react.app;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,8 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author ricoharisin .
@@ -29,7 +30,7 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     public void onPause() {
         super.onPause();
 
-        if (reactInstanceManager != null) {
+        if (reactInstanceManager != null && getActivity() != null) {
             reactInstanceManager.onHostPause(getActivity());
         }
     }
@@ -65,7 +66,8 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
 
     @Override
     public void invokeDefaultOnBackPressed() {
-        getActivity().onBackPressed();
+        if (getActivity() != null)
+            getActivity().onBackPressed();
     }
 
     @Override
@@ -73,16 +75,7 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
         super.onAttach(context);
         if (reactRootView == null)
             reactRootView = new ReactRootView(context);
-        if (reactInstanceManager == null)
-            reactInstanceManager = ((ReactApplication) getActivity().getApplication()).getReactNativeHost().getReactInstanceManager();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (reactRootView == null)
-            reactRootView = new ReactRootView(activity);
-        if (reactInstanceManager == null)
+        if (reactInstanceManager == null && getActivity() != null)
             reactInstanceManager = ((ReactApplication) getActivity().getApplication()).getReactNativeHost().getReactInstanceManager();
     }
 
@@ -95,7 +88,7 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     protected abstract Bundle getInitialBundle();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         return reactRootView;
     }
