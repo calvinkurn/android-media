@@ -432,9 +432,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void updateEmasCostModel() {
         double totalPrice = shipmentCostModel.getTotalPrice();
         int valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
-        int buyEgoldValue = 0;
+        int buyEgoldValue = 0, k =0;
         for (int i = egoldAttributeModel.getMinEgoldRange(); i <= egoldAttributeModel.getMaxEgoldRange(); i++) {
-            valueTOCheck = valueTOCheck + i;
+            valueTOCheck += k;
+            k++;
             if (valueTOCheck % LAST_THREE_DIGIT_MODULUS == 0) {
                 buyEgoldValue = i;
                 break;
