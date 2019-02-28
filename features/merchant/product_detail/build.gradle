@@ -28,17 +28,20 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
-    implementation project(rootProject.ext.features.productShare)
-    implementation project(rootProject.ext.features.productDetailCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
-    implementation project(rootProject.ext.features.merchantVoucher)
-    implementation project(rootProject.ext.features.gallery)
-    implementation project(rootProject.ext.features.shopEtalasePicker)
-    implementation project(rootProject.ext.features.topAdsSourceTagging)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.expressCheckout)
+    implementation project(rootProject.ext.features.gallery)
+    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.productShare)
+    implementation project(rootProject.ext.features.productDetailCommon)
+    implementation project(rootProject.ext.features.shopEtalasePicker)
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.wishlistCommon)
+
+
     implementation project(rootProject.ext.features.transactiondata)
 
     implementation rootProject.ext.miscDependencies.dagger

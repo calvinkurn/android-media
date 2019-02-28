@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.res.Resources
 import android.util.SparseArray
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -27,9 +28,11 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_INPUT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_ID
 import com.tokopedia.product.detail.common.data.model.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -46,6 +49,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.topads.sdk.domain.Xparams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -390,17 +394,24 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
         launchCatchError(block = {
-            val bodyMap = AuthUtil.generateParamsNetwork(userId, userSessionInterface.deviceId,
-                    mutableMapOf("shop_id" to shopID))
-            val request = RestRequest.Builder(ProductDetailConstant.BASE_REST_URL+ProductDetailConstant.PATH_FAVORITE_SHOP_ACTION,
-                    object :TypeToken<DataResponse<PostRestResponse>>() {}.type)
-                    .setRequestType(RequestType.POST)
-                    .setBody(bodyMap).build()
-            val result = withContext(Dispatchers.IO){ restRepository.getResponse(request)}
-            if (result.isError)
-                throw MessageErrorException(result.errorBody)
-            else
-                onSuccess(result.getData<DataResponse<PostRestResponse>>().data.isSuccess)
+            val param = mapOf(PARAM_INPUT to JsonObject().apply {
+                addProperty(PARAM_SHOP_ID, shopID)
+            })
+
+            val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_FAVORITE_SHOP],
+                    DataFollowShop::class.java, param)
+            val result = withContext(Dispatchers.IO){graphqlRepository.getReseponse(listOf(request))}
+
+            // for unsigned in jenkins
+            /*val error = result.getError(DataFollowShop::class.java)
+            if (error == null || error.isEmpty()){
+                onSuccess(result.getData<DataFollowShop>(DataFollowShop::class.java).followShop.isSuccess)
+            } else {
+                throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+            }*/
+
+            // for signed
+            onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
         }){ onError(it)}
     }
 
