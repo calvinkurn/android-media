@@ -12,7 +12,7 @@ import com.tokopedia.design.banner.BannerView
  * Credit Devara Fikry
  */
 
-class Banner : BannerView {
+public class Banner : BannerView {
 
     constructor(context: Context) : super(context) {}
 
@@ -64,5 +64,9 @@ class Banner : BannerView {
 
     override fun getIndicatorFocus(): Int {
         return R.drawable.indicator_focus
+    }
+
+    fun getBannerSeeAll() : View {
+        return bannerSeeAll
     }
 }
