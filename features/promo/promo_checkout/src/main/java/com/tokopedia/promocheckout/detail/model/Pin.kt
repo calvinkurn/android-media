@@ -10,6 +10,6 @@ class Pin {
     var isNeedPin: Boolean = false
     @SerializedName("text")
     @Expose
-    var text: String? = null
+    var text: String? = ""
 
 }
