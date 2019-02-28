@@ -18,9 +18,9 @@ import kotlin.math.roundToInt
 
 object ModelMapper {
 
-    fun convertToModels(productInfo: ProductInfo,
-                        productVariant: ProductVariant?,
-                        noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
+    fun convertVariantToModels(productInfo: ProductInfo,
+                               productVariant: ProductVariant?,
+                               noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
         dataList.add(convertToProductViewModel(productInfo))
         if (productVariant != null && productVariant.hasChildren) {
@@ -40,52 +40,66 @@ object ModelMapper {
         return dataList
     }
 
-    fun convertToModels(originalProductInfo: ProductInfo,
-                        selectedVariant: Child?): ProductInfo {
+    fun convertVariantToModels(originalProductInfo: ProductInfo,
+                               selectedVariant: Child?,
+                               variantRef: List<Variant>? = null): ProductInfo {
         return originalProductInfo.copy(
-                basic = originalProductInfo.basic.copy(
-                        id = selectedVariant?.productId ?: 0,
-                        price = selectedVariant?.price ?: 0f,
-                        name = selectedVariant?.name ?: originalProductInfo.basic.name,
-                        minOrder = selectedVariant?.stock?.minimumOrder ?: 0,
-                        maxOrder = selectedVariant?.stock?.maximumOrder ?: 0,
-                        status = if (selectedVariant?.isBuyable == true) {
-                            ACTIVE
-                        } else {
-                            WAREHOUSE
-                        },
-                        sku = selectedVariant?.sku ?: "",
-                        isEligibleCod = selectedVariant?.isCod ?: false
-                ),
-                pictures = if (selectedVariant?.hasPicture == true) {
-                    mutableListOf(
-                            Picture(urlOriginal =
-                            selectedVariant.picture?.original ?: "",
-                                    urlThumbnail = selectedVariant.picture?.thumbnail ?: "",
-                                    url300 = selectedVariant.picture?.thumbnail ?: ""))
+            basic = originalProductInfo.basic.copy(
+                id = selectedVariant?.productId ?: 0,
+                price = selectedVariant?.price ?: 0f,
+                name = if (selectedVariant == null) {
+                    originalProductInfo.basic.name
                 } else {
-                    originalProductInfo.pictures
+                    val optionStringList = selectedVariant.getOptionStringList(variantRef)
+                    if (optionStringList.isEmpty()) {
+                        selectedVariant.name
+                    } else {
+                        selectedVariant.name + optionStringList.joinToString(separator = ", ", prefix = " - ")
+                    }
                 },
-                campaign = if (selectedVariant?.campaign?.activeAndHasId == true) {
-                    originalProductInfo.campaign.copy(
-                            id = selectedVariant.campaign?.campaignID ?: "",
-                            isActive = selectedVariant.campaign?.isActive ?: false,
-                            originalPrice = selectedVariant.campaign?.originalPrice ?: 0f,
-                            discountedPrice = selectedVariant.campaign?.discountedPrice ?: 0f,
-                            percentage = selectedVariant.campaign?.discountedPercentage ?: 0f,
-                            startDate = selectedVariant.campaign?.startDate ?: "",
-                            endDate = selectedVariant.campaign?.endDate ?: ""
-                    )
+                minOrder = selectedVariant?.stock?.minimumOrder ?: 0,
+                maxOrder = selectedVariant?.stock?.maximumOrder ?: 0,
+                status = if (selectedVariant?.isBuyable == true) {
+                    ACTIVE
                 } else {
-                    originalProductInfo.campaign
+                    WAREHOUSE
                 },
-                stock = originalProductInfo.stock.copy(
-                        useStock = selectedVariant?.stock?.alwaysAvailable == true ||
-                                (selectedVariant?.stock?.isLimitedStock == true && (selectedVariant.stock?.stock
-                                        ?: 0) > 0),
-                        value = selectedVariant?.stock?.stock ?: 0,
-                        stockWording = selectedVariant?.stock?.stockWordingHTML ?: ""
+                sku = selectedVariant?.sku ?: "",
+                isEligibleCod = selectedVariant?.isCod ?: false
+            ),
+            pictures = if (selectedVariant?.hasPicture == true) {
+                mutableListOf(
+                    Picture(urlOriginal =
+                    selectedVariant.picture?.original ?: "",
+                        urlThumbnail = selectedVariant.picture?.thumbnail ?: "",
+                        url300 = selectedVariant.picture?.thumbnail ?: ""))
+            } else {
+                originalProductInfo.pictures
+            },
+            campaign = if (selectedVariant?.campaign?.activeAndHasId == true) {
+                originalProductInfo.campaign.copy(
+                    id = selectedVariant.campaign?.campaignID ?: "",
+                    isActive = selectedVariant.campaign?.isActive ?: false,
+                    originalPrice = selectedVariant.campaign?.originalPrice ?: 0f,
+                    discountedPrice = selectedVariant.campaign?.discountedPrice ?: 0f,
+                    percentage = selectedVariant.campaign?.discountedPercentage ?: 0f,
+                    startDate = selectedVariant.campaign?.startDate ?: "",
+                    endDate = selectedVariant.campaign?.endDate ?: ""
                 )
+            } else {
+                originalProductInfo.campaign
+            },
+            stock = originalProductInfo.stock.copy(
+                useStock = selectedVariant?.stock?.alwaysAvailable == true ||
+                    (selectedVariant?.stock?.isLimitedStock == true && (selectedVariant.stock?.stock
+                        ?: 0) > 0),
+                value = selectedVariant?.stock?.stock ?: 0,
+                stockWording = selectedVariant?.stock?.stockWordingHTML ?: ""
+            ),
+            variant = originalProductInfo.variant.copy(
+                isVariant = true,
+                parentID = originalProductInfo.parentProductId
+            )
         )
     }
 
@@ -141,15 +155,16 @@ object ModelMapper {
     fun convertToProductVariantViewModel(productVariant: ProductVariant,
                                          selectedProduct: ProductInfo): List<TypeVariantViewModel>? {
         val variantViewModelList = ArrayList<TypeVariantViewModel>()
-        val variantChildrenValidation = validateVariantChildren(productVariant.children, productVariant.variant?.size
-                ?: 0)
+        val variantChildrenValidation = validateVariantChildren(productVariant.children, productVariant.variant.size)
         if (!variantChildrenValidation) {
             return null
         }
         val variantModels = productVariant.variant
         var level = 0
         for (variantModel: Variant in variantModels) {
-            val typeVariantViewModel = convertToTypeVariantViewModel(productVariant, variantModel, selectedProduct, level)
+            val typeVariantViewModel =
+                convertToTypeVariantViewModel(productVariant, variantModel, selectedProduct, level,
+                    (level + 1) == variantModels.size)
                     ?: continue
             level++
             variantViewModelList.add(typeVariantViewModel)
@@ -171,14 +186,14 @@ object ModelMapper {
         quantityViewModel.isStateError = false
 
         quantityViewModel.maxOrderQuantity =
-                when {
-                    productInfo.stock.useStock && productInfo.stock.value > 0 ->
-                        productInfo.stock.value
-                    productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
-                    else -> MAX_QUANTITY
-                }
-        quantityViewModel.minOrderQuantity = productInfo.basic.minOrder
-        quantityViewModel.orderQuantity = if (quantity > 0) quantity else productInfo.basic.minOrder
+            when {
+                productInfo.stock.useStock && productInfo.stock.value > 0 ->
+                    productInfo.stock.value
+                productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
+                else -> MAX_QUANTITY
+            }
+        quantityViewModel.minOrderQuantity = if (productInfo.basic.minOrder > 0) productInfo.basic.minOrder else 1
+        quantityViewModel.orderQuantity = if (quantity > 0) quantity else quantityViewModel.minOrderQuantity
         quantityViewModel.stockWording = productInfo.stock.stockWording
 
         return quantityViewModel
@@ -190,30 +205,30 @@ object ModelMapper {
      */
     fun convertToTypeVariantViewModel(productVariant: ProductVariant, variantModel: Variant,
                                       selectedProduct: ProductInfo,
-                                      variantLevel: Int): TypeVariantViewModel? {
+                                      variantLevel: Int,
+                                      isLeaf: Boolean): TypeVariantViewModel? {
         val typeVariantViewModel = TypeVariantViewModel()
         val childrenModel = productVariant.children
 
         val optionVariantViewModels = ArrayList<OptionVariantViewModel>()
         val optionModels = variantModel.options
-        if (optionModels != null) {
-            val selectedOptionsIds = getOptionsIds(childrenModel, selectedProduct)
-            for (optionModel: Option in optionModels) {
-                optionVariantViewModels.add(
-                        convertToOptionVariantViewModel(optionModel, variantModel.v ?: 0,
-                                childrenModel, selectedOptionsIds, variantLevel)
-                )
-            }
+        val selectedOptionsIds = getOptionsIds(childrenModel, selectedProduct)
+        val isSelectedProductBuyable = selectedProduct.isBuyable
+        for (optionModel: Option in optionModels) {
+            optionVariantViewModels.add(
+                convertToOptionVariantViewModel(optionModel, variantModel.v ?: 0,
+                    childrenModel, selectedOptionsIds, isSelectedProductBuyable, variantLevel, isLeaf)
+            )
         }
         typeVariantViewModel.variantId = variantModel.v ?: 0
         typeVariantViewModel.variantOptions = optionVariantViewModels
         typeVariantViewModel.variantName = variantModel.name ?: ""
         typeVariantViewModel.variantGuideline =
-                if (variantModel.isSizeIdentifier && productVariant.sizeChart.isNotEmpty()) {
-                    productVariant.sizeChart
-                } else {
-                    ""
-                }
+            if (variantModel.isSizeIdentifier && productVariant.sizeChart.isNotEmpty()) {
+                productVariant.sizeChart
+            } else {
+                ""
+            }
         return typeVariantViewModel
     }
 
@@ -235,7 +250,9 @@ object ModelMapper {
                                         variantId: Int,
                                         childrenModel: List<Child>,
                                         selectedOptionsIds: List<Int>,
-                                        variantLevel: Int): OptionVariantViewModel {
+                                        isSelectedProductBuyable: Boolean,
+                                        variantLevel: Int,
+                                        isLeaf: Boolean): OptionVariantViewModel {
         val optionVariantViewModel = OptionVariantViewModel()
         optionVariantViewModel.variantId = variantId
         optionVariantViewModel.optionId = optionModel.id ?: 0
@@ -251,28 +268,39 @@ object ModelMapper {
         optionVariantViewModel.currentState = STATE_NOT_AVAILABLE
 
         if (selectedOptionsIds.isNotEmpty() && optionModel.id in selectedOptionsIds) {
-            optionVariantViewModel.currentState = STATE_SELECTED
+            // if the option is in selectedOptionList, means the option is selected.
+            // check if the product buyable, then it is selected
+            // else need to check if there is child is buyable to be selected.
+            if (isSelectedProductBuyable) {
+                optionVariantViewModel.currentState = STATE_SELECTED
+            } else if (!isLeaf) {
+                for (childModel: Child in childrenModel) {
+                    if (childModel.isBuyable &&
+                        childModel.optionIds.get(variantLevel) == optionVariantViewModel.optionId) {
+                        optionVariantViewModel.currentState = STATE_SELECTED
+                        break
+                    }
+                }
+            }
         } else {
             for (childModel: Child in childrenModel) {
-                if (childModel.isBuyable && childModel.optionIds.contains(optionVariantViewModel.optionId)) {
+                if (childModel.isBuyable &&
+                    childModel.optionIds.get(variantLevel) == optionVariantViewModel.optionId) {
                     if (partialSelectedListByLevel.isEmpty()) {
-                        // no need to check more. This will be enabled
+                        // no need to check more. This will be enabled, since it is the first level
                         optionVariantViewModel.currentState = STATE_NOT_SELECTED
                     } else {
+                        // check if the child option match with the selected options
+                        // example, we have option: [100, 200, 300]
+                        // selection option is [100,200,301]
+                        // if this in level 2, we just need to check [100, 200] (first 2 levels)
                         val childOptionId = childModel.optionIds.getOrNull(variantLevel)
                         if (childOptionId != null) {
-                            var selectedCounter = 0
-                            for (selectedOptionId: Int in partialSelectedListByLevel) {
-                                if (childModel.optionIds.contains(selectedOptionId)) {
-                                    selectedCounter++
-                                }
-                            }
-                            if (selectedCounter == variantLevel) {
+                            if (childModel.optionIds.subList(0, variantLevel) == partialSelectedListByLevel) {
                                 optionVariantViewModel.currentState = STATE_NOT_SELECTED
                             }
                         }
                     }
-
                 }
             }
         }

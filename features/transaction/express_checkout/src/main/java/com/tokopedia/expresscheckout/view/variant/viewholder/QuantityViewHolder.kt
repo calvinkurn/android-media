@@ -20,16 +20,11 @@ import java.util.concurrent.TimeUnit
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
+class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : AbstractViewHolder<QuantityViewModel>(view) {
 
-    private var actionListener: CheckoutVariantActionListener
+    private var actionListener: CheckoutVariantActionListener = listener
     private var quantityChangeDebounceListener: QuantityChangeDebounceListener? = null
     private lateinit var element: QuantityViewModel
-
-    constructor(view: View, listener: CheckoutVariantActionListener) : super(view) {
-        this.actionListener = listener
-        initUpdateShippingRatesDebouncer()
-    }
 
     companion object {
         const val QUANTITY_PLACEHOLDER = "{{value}}"
@@ -136,8 +131,14 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
 
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
             error = element.errorProductMinQuantity.replace(QUANTITY_PLACEHOLDER, "${element.minOrderQuantity}", false)
+            if (error.isEmpty()) {
+                error = String.format(itemView.context.getString(R.string.min_order_x), element.minOrderQuantity)
+            }
         } else if (element.orderQuantity > element.maxOrderQuantity) {
             error = element.errorProductMaxQuantity.replace(QUANTITY_PLACEHOLDER, "${element.maxOrderQuantity}", false)
+            if (error.isEmpty()) {
+                error = String.format(itemView.context.getString(R.string.max_order_x), element.maxOrderQuantity)
+            }
         }
 
         if (error != null) {
@@ -201,5 +202,9 @@ class QuantityViewHolder : AbstractViewHolder<QuantityViewModel> {
             var previousQuantity: Int,
             var newQuantity: Int
     )
+
+    init {
+        initUpdateShippingRatesDebouncer()
+    }
 
 }

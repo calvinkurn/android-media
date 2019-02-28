@@ -57,6 +57,9 @@ data class ProductVariant(
         }
 
     fun getVariant(selectedVariantId: String?): Child? {
+        if (selectedVariantId.isNullOrEmpty()) {
+            return null
+        }
         if (hasChildren) {
             for (child: Child in children) {
                 if (child.productId.toString().equals(selectedVariantId, false)) {
@@ -65,6 +68,10 @@ data class ProductVariant(
             }
         }
         return null
+    }
+
+    fun getOptionListString(selectedVariantId: String?): List<String>? {
+        return getVariant(selectedVariantId)?.getOptionStringList(variant)
     }
 }
 

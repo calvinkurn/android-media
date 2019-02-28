@@ -155,6 +155,7 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter;
+import com.tokopedia.normalcheckout.router.NormalCheckoutRouter;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -573,6 +574,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingOptimizerRouter,
         LoginRegisterPhoneRouter,
         ExpressCheckoutRouter,
+        NormalCheckoutRouter,
         com.tokopedia.product.detail.ProductDetailRouter,
         ResolutionRouter {
 

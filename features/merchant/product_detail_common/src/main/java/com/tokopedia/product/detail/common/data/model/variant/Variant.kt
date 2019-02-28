@@ -38,7 +38,7 @@ data class Variant(
 
         @SerializedName("Option")
         @Expose
-        val options: List<Option>? = null
+        val options: List<Option> = listOf()
 ) {
     val isSizeIdentifier: Boolean
         get() = "size".equals(identifier, false)
