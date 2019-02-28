@@ -38,6 +38,7 @@ public class SettingConstant {
         public static final String BASE_MOBILE = "https://m.tokopedia.com/";
         public static final String PATH_TERM_CONDITION = "terms.pl";
         public static final String PATH_PRIVACY_POLICY = "privacy.pl";
+        public static final String PATH_CHECKOUT_TEMPLATE = "user/settings/template-pembelian";
     }
 
     public static class PeopleUrl{

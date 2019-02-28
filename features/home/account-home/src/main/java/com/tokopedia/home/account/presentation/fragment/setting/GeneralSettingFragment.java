@@ -45,6 +45,7 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION;
+import static com.tokopedia.home.account.constant.SettingConstant.Url.BASE_MOBILE;
+import static com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEMPLATE;
 
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
@@ -128,8 +131,12 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         String settingDescTkpdPay = walletName + getString(R.string.subtitle_tkpd_pay_setting);
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay));
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
-                getString(R.string.title_tkpd_template_setting), getString(R.string.subtitle_template_setting)));
+        if (getActivity() != null && getActivity().getApplication() instanceof AccountHomeRouter &&
+                ((AccountHomeRouter) getActivity().getApplication()).getBooleanRemoteConfig(
+                        RemoteConfigKey.CHECKOUT_TEMPLATE_SETTING_TOGGLE, false)) {
+            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
+                    getString(R.string.title_tkpd_template_setting), getString(R.string.subtitle_template_setting)));
+        }
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)));
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -178,8 +185,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 break;
             case SettingConstant.SETTING_TEMPLATE_ID:
                 if (getActivity() != null) {
-                    String url = "https://lite-beta.tokopedia.com/user/settings/express-checkout/";
-                    String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url);
+                    String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, BASE_MOBILE + PATH_CHECKOUT_TEMPLATE);
                     RouteManager.route(getActivity(), applink);
                 }
                 break;
