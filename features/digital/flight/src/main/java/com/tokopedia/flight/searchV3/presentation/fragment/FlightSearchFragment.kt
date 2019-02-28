@@ -508,7 +508,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (inFilterMode) {
             emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter
             emptyResultViewModel.buttonTitleRes = R.string.reset_filter
-            emptyResultViewModel.callback = object: EmptyResultViewHolder.Callback {
+            emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
 
                 }
@@ -520,7 +520,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         } else {
             emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available
             emptyResultViewModel.buttonTitleRes = R.string.change_date
-            emptyResultViewModel.callback = object: EmptyResultViewHolder.Callback {
+            emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
 
                 }
@@ -754,7 +754,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     .setSelectedDate(date)
                     .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
                     .build()
-            travelCalendarBottomSheet.setListener(object: TravelCalendarBottomSheet.ActionListener {
+            travelCalendarBottomSheet.setListener(object : TravelCalendarBottomSheet.ActionListener {
                 override fun onClickDate(dateSelected: Date) {
                     val calendar = FlightDateUtil.getCurrentCalendar()
                     calendar.time = dateSelected
