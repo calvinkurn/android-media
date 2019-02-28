@@ -40,6 +40,7 @@ interface PlayContract {
         fun onRetryGetInfo()
         fun onFinish()
         fun onToolbarEnabled(b: Boolean)
+        fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
     }
 
     interface Presenter: CustomerPresenter<View> {

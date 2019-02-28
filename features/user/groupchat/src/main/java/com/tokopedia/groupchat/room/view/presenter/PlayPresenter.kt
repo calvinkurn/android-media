@@ -179,6 +179,7 @@ class PlayPresenter @Inject constructor(
                         is OverlayCloseViewModel -> view.closeOverlayDialog()
                         is DynamicButtonsViewModel -> view.updateDynamicButton(it)
                         is BackgroundViewModel -> view.onBackgroundUpdated(it)
+                        is SprintSaleAnnouncementViewModel -> view.onSprintSaleReceived(it)
                         else -> {
                             view.addIncomingMessage(it)
                         }

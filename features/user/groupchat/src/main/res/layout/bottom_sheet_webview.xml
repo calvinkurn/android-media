@@ -22,7 +22,7 @@
         <TextView
             android:id="@+id/close_button"
             android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_2"
+            android:layout_height="@dimen/dp_4"
             android:background="@drawable/close_button_bottom_sheet"/>
 
     </RelativeLayout>

@@ -51,4 +51,7 @@ interface PlayViewState {
     fun setBottomView()
     fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel)
     fun onErrorGetStickyComponent()
+    fun errorViewShown(): Boolean
+    fun autoAddSprintSale()
+    fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
 }
