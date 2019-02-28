@@ -134,4 +134,40 @@ public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
                 EventAction.CLICK_PLUS_FROM_MULTIPLE
         );
     }
+
+    public void eventClickAddressCartMultipleAddressClickButtonSimpanSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickAddressCartMultipleAddressClickButtonSimpanNotSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS
+        );
+    }
+
+    public void eventClickAddressCartMultipleAddressClickButtonSimpanFromEditSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickAddressCartMultipleAddressClickButtonSimpanFromEditNotSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS
+        );
+    }
 }
