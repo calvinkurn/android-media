@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:background="@drawable/green_button_rounded_unify"
+            android:background="@drawable/transaction_checkout_green_button_rounded_unify"
             android:foreground="?selectableItemBackground"
             android:paddingBottom="@dimen/dp_9"
             android:paddingLeft="@dimen/dp_27"

@@ -80,10 +80,11 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                     KolRecommendItemViewModel kolItem = data.getListRecommend().get(getAdapterPosition());
                     if (kolItem.isFollowed()) {
                         analytics.eventKolRecommendationUnfollowClick(kolItem.getLabel(), kolItem.getName());
-                        kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
+                        kolViewListener.onUnfollowKolFromRecommendationClicked(
                                 data.getRowNumber(),
                                 kolItem.getId(),
-                                getAdapterPosition());
+                                getAdapterPosition()
+                        );
                         kolItem.setFollowed(false);
                         notifyItemChanged(getAdapterPosition());
                     } else {
@@ -106,10 +107,11 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                                         Integer.parseInt(userId)
                                 ));
 
-                        kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
+                        kolViewListener.onFollowKolFromRecommendationClicked(
                                 data.getRowNumber(),
                                 kolItem.getId(),
-                                getAdapterPosition());
+                                getAdapterPosition()
+                        );
                         kolItem.setFollowed(true);
                         notifyItemChanged(getAdapterPosition());
                     }

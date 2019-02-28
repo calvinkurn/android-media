@@ -10,6 +10,10 @@ public class SaldoDetailsConstants {
         String SALDO_MAIN_SCREEN = "fin - android main screen";
     }
 
+    interface Action {
+        String SALDO_ANCHOR_EVENT_ACTION = "sal - %s click";
+    }
+
     public interface EventLabel {
         String SALDO_PAGE = "saldo page";
     }

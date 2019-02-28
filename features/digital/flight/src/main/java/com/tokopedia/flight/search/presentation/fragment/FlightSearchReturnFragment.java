@@ -7,15 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.common.travel.widget.DepartureTripLabelView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
@@ -45,9 +44,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     @Inject
     FlightSearchReturnPresenter flightSearchReturnPresenter;
 
-    private TextView departureHeaderLabel;
-    private TextView airlineName;
-    private TextView duration;
+    private DepartureTripLabelView departureHeaderLabel;
     private String selectedFlightDeparture;
     private boolean isBestPairing = false;
     private boolean isViewOnlyBestPairing = false;
@@ -86,9 +83,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        airlineName = view.findViewById(R.id.airline_name);
-        duration = view.findViewById(R.id.duration);
-        departureHeaderLabel = view.findViewById(R.id.tv_departure_header_card_label);
+        departureHeaderLabel = view.findViewById(R.id.departure_trip_label);
 
         flightSearchReturnPresenter.attachView(this);
 
@@ -142,22 +137,28 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     public void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel) {
         if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() > 1) {
-            airlineName.setText(getString(R.string.flight_label_multi_maskapai));
+            departureHeaderLabel.setValueName(String.format(" | %s", getString(R.string.flight_label_multi_maskapai)));
         } else if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() == 1) {
-            airlineName.setText(flightJourneyViewModel.getAirlineDataList().get(0).getName());
+            departureHeaderLabel.setValueName(String.format(" | %s", flightJourneyViewModel.getAirlineDataList().get(0).getShortName()));
         }
         if (flightJourneyViewModel.getAddDayArrival() > 0) {
-            duration.setText(String.format("| %s - %s (+%sh)", flightJourneyViewModel.getDepartureTime(),
+            departureHeaderLabel.setValueTime(String.format("%s - %s (+%sh)", flightJourneyViewModel.getDepartureTime(),
                     flightJourneyViewModel.getArrivalTime(), String.valueOf(flightJourneyViewModel.getAddDayArrival())));
         } else {
-            duration.setText(String.format("| %s - %s", flightJourneyViewModel.getDepartureTime(),
+            departureHeaderLabel.setValueTime(String.format("%s - %s", flightJourneyViewModel.getDepartureTime(),
                     flightJourneyViewModel.getArrivalTime()));
         }
 
-        departureHeaderLabel.setText(String.format("%s - %s",
-                getString(R.string.flight_label_departure_flight),
-                FlightDateUtil.formatToUi(passDataViewModel.getDepartureDate())));
+        departureHeaderLabel.setValueDestination(String.format("%s - %s",
+                flightJourneyViewModel.getDepartureAirport(),
+                flightJourneyViewModel.getArrivalAirport()));
+
+        if (flightJourneyViewModel.getFare().getAdultNumericCombo() != 0) {
+            departureHeaderLabel.setValuePrice(flightJourneyViewModel.getFare().getAdultCombo());
+        } else {
+            departureHeaderLabel.setValuePrice(flightJourneyViewModel.getFare().getAdult());
+        }
     }
 
     @Override
@@ -209,13 +210,15 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void showSeeAllResultView() {
-        getAdapter().addElement(new FlightSearchSeeAllResultViewModel());
+        getAdapter().addElement(new FlightSearchSeeAllResultViewModel(priceViewModel
+                .getDeparturePrice().getAdult()));
         isViewOnlyBestPairing = true;
     }
 
     @Override
     public void showSeeBestPairingResultView() {
-        getAdapter().addElement(new FlightSearchSeeOnlyBestPairingViewModel());
+        getAdapter().addElement(new FlightSearchSeeOnlyBestPairingViewModel(priceViewModel
+                .getDeparturePrice().getAdultCombo()));
         isViewOnlyBestPairing = false;
     }
 
@@ -280,9 +283,9 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     private void showSeeAllResultDialog(String bestPairPrice, String normalPrice) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_search_choose_except_best_pairing_dialog_title));
+        dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog));
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_search_choose_except_best_pairing_dialog_description, bestPairPrice, normalPrice)));
+                getString(R.string.flight_search_return_price_change_desc_dialog, normalPrice)));
         dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -305,9 +308,9 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     private void showSeeBestPairingDialog(String normalPrice, String bestPairPrice) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_search_choose_best_pairing_dialog_title));
+        dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog));
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_search_choose_best_pairing_dialog_description, normalPrice, bestPairPrice)));
+                getString(R.string.flight_search_return_price_change_desc_dialog, bestPairPrice)));
         dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override

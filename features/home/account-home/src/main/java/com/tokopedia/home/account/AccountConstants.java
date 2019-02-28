@@ -29,6 +29,7 @@ public class AccountConstants {
         public static final String LOAN = "modal usaha";
         public static final String PEMBELI = "pembeli";
         public static final String CLICK_CHALLENGE = "challenge";
+        public static final String BY_ME = "by.me";
         public static final String PENJUAL = "penjual";
         public static final String USER = "user";
         public static final String SETTING = "setting";
@@ -86,10 +87,15 @@ public class AccountConstants {
         public static final String CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang";
         public static final String CLICK_KYC_PENDING = "click on lihat status";
         public static final String EVENT_SALDO_OVO = "clickSaldo";
+        public static final String EVENT_CLICK_SAMPAI = "clickRegister";
+        public static final String EVENT_CATEGORY_SAMPAI = "register tokopedia corner";
+        public static final String EVENT_ACTION_SAMPAI = "click button daftar";
         public static final String OVO_PAY_LATER_CATEGORY = "fin - android main screen";
         public static final String OVO_PAY_LATER_CLICK = "ovo - pay later click";
         public static final String OVO_PAY_LATER_LABEL = "success - %s";
         public static final String OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click";
+        public static final String BY_ME_CURATION = "kurasi produk by.me";
+        public static final String CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
     }
 
     public class ImageUrl {

@@ -41,7 +41,7 @@ public class CouponActivityPresenter extends BaseDaggerPresenter<CouponActivityC
     @Override
     public void getFilter(String slug) {
         Map<String, Object> variablesFilter = new HashMap<>();
-        variablesFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, slug);
+        variablesFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, slug == null ? "" : slug.toLowerCase());
         GraphqlRequest filterRequest = new GraphqlRequest(getView().getStringRaw(R.raw.tp_gql_coupon_filter),
                 CouponFilterBase.class,
                 variablesFilter);

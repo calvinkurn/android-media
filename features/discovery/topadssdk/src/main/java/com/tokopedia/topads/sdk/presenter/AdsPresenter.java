@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.presenter;
 
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.view.AdsView;
@@ -40,6 +41,8 @@ public interface AdsPresenter <V extends AdsView>{
     void getPreferedCategory();
 
     void getMerlinCategory();
+
+    void addWishlist(Data data);
 
     void setConfig(Config config);
 

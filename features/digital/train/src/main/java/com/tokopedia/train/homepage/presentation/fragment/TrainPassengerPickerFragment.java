@@ -11,11 +11,11 @@ import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.widget.SelectPassengerView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.homepage.presentation.listener.TrainPassengerPickerView;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.train.homepage.presentation.presenter.TrainPassengerPickerPresenterImpl;
-import com.tokopedia.train.homepage.presentation.widget.SelectPassengerView;
 
 /**
  * @author Rizky on 13/03/18.

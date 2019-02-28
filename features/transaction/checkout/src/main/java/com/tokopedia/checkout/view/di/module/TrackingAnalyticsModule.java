@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.di.module;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
@@ -52,4 +53,10 @@ public class TrackingAnalyticsModule {
     CheckoutAnalyticsPurchaseProtection providePurchaseProtectionAnalytics(AbstractionRouter abstractionRouter) {
         return new CheckoutAnalyticsPurchaseProtection(abstractionRouter.getAnalyticTracker());
     }
+
+    @Provides
+    CodAnalytics provideCodAnalytics(AbstractionRouter abstractionRouter) {
+        return new CodAnalytics(abstractionRouter.getAnalyticTracker());
+    }
+
 }

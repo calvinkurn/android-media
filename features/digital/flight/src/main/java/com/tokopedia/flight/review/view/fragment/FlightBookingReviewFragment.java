@@ -26,6 +26,8 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -39,7 +41,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -86,6 +87,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public static final int RESULT_ERROR_VERIFY = 874;
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
+    private static final String FLIGHT_CHECKOUT_TRACE = "tr_flight_checkout";
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
     private static final int REQUEST_CODE_LOYALTY = 200;
@@ -120,6 +122,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private boolean isPassengerInfoPageNeedToRefresh = false;
     private boolean isCouponVoucherChanged = false;
 
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStop = false;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel,
                                                              String comboKey) {
@@ -154,6 +158,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         } else {
             flightBookingReviewModel = getArguments().getParcelable(EXTRA_DATA_REVIEW);
         }
+
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_CHECKOUT_TRACE);
     }
 
     @Override
@@ -290,6 +296,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         super.onViewCreated(view, savedInstanceState);
         initView();
         flightBookingReviewPresenter.onViewCreated();
+        stopTrace();
     }
 
     @Override
@@ -404,6 +411,14 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             return getArguments().getString(EXTRA_COMBO_KEY);
         }
         return null;
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring.stopTrace();
+            isTraceStop = true;
+        }
     }
 
     @Override

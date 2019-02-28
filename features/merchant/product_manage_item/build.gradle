@@ -21,27 +21,30 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.libraries.baseListSeller)
-    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.cacheManager)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
 
     kapt  rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

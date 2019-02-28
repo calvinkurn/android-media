@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.thankyou.di.module;
 
 import android.content.Context;
 
-import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;

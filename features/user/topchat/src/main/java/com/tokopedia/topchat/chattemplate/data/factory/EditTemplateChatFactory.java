@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chattemplate.data.factory;
 
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.source.CloudEditTemplateChatDataSource;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
 
 /**
  * Created by stevenfredian on 11/27/17.
@@ -11,14 +11,14 @@ import com.tokopedia.topchat.chattemplate.data.source.CloudEditTemplateChatDataS
 public class EditTemplateChatFactory {
 
     private EditTemplateChatMapper templateChatMapper;
-    private ChatService chatService;
+    private ChatApi chatApi;
 
-    public EditTemplateChatFactory(EditTemplateChatMapper templateChatMapper, ChatService chatService) {
+    public EditTemplateChatFactory(EditTemplateChatMapper templateChatMapper, ChatApi chatApi) {
         this.templateChatMapper = templateChatMapper;
-        this.chatService = chatService;
+        this.chatApi = chatApi;
     }
 
     public CloudEditTemplateChatDataSource createCloudEditTemplateDataSource() {
-        return new CloudEditTemplateChatDataSource(templateChatMapper, chatService);
+        return new CloudEditTemplateChatDataSource(templateChatMapper, chatApi);
     }
 }

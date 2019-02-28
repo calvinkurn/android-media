@@ -20,6 +20,7 @@ import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenter;
 
 public class OrderDetailButtonLayout extends LinearLayout{
 
+    public static final int BUY_AGAIN_VISIBLE = 2;
     private View mainView;
 
     public OrderDetailButtonLayout(Context context) {
@@ -91,6 +92,14 @@ public class OrderDetailButtonLayout extends LinearLayout{
         cancelChance = mainView.findViewById(R.id.cancel_chance);
         cancelChance.setOnClickListener(onCancelSearch(context, presenter, data));
         switchVisibilty(cancelChance, buttonData.getCancelPeluangVisibility());
+
+        Button buyAgain = mainView.findViewById(R.id.buy_again);
+        buyAgain.setOnClickListener(onBuyAgain(context, presenter, data));
+        if(buttonData.getBuyAgainVisibility() == BUY_AGAIN_VISIBLE && presenter.isToggleBuyAgainOn()){
+            buyAgain.setVisibility(VISIBLE);
+        }else{
+            buyAgain.setVisibility(GONE);
+        }
     }
 
     private void setSellerOrderDetailOption(Context context, OrderDetailPresenter presenter, OrderDetailData data) {
@@ -317,6 +326,12 @@ public class OrderDetailButtonLayout extends LinearLayout{
             public void onClick(View v) {
                 presenter.processCancelSearch(context, data);
             }
+        };
+    }
+
+    private OnClickListener onBuyAgain(Context context, OrderDetailPresenter presenter, OrderDetailData data) {
+        return view -> {
+            presenter.processBuyAgain(context.getResources(),data);
         };
     }
 

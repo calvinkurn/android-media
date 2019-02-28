@@ -1,6 +1,15 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.facebook.react.bridge.Arguments;
+
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableMap;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.utils.AuthUtil;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -8,7 +17,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
@@ -37,6 +45,12 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
+    private static final String PATH = "path";
+    private static final String PARAM = "param";
+    private static final String METHOD = "method";
+    private static final String CONTENT_TYPE = "contentType";
+    private static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json; charset=UTF-8";
+    public static final String METHOD_GET = "GET";
 
     @Inject
     ReactNetworkRepository reactNetworkRepository;
@@ -46,9 +60,12 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     ReactNativeNetworkComponent daggerRnNetworkComponent;
 
     private CompositeSubscription compositeSubscription;
+    private Context context;
 
     public ReactNetworkModule(ReactApplicationContext reactContext) {
         super(reactContext);
+
+        this.context = reactContext;
         if (reactContext.getApplicationContext() instanceof MainApplication) {
             AppComponent appComponent = ((MainApplication) reactContext.getApplicationContext()).getApplicationComponent();
             daggerRnNetworkComponent = DaggerReactNativeNetworkComponent.builder()
@@ -117,6 +134,40 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
+    }
+
+    /**
+     *
+     * @param reactParam will consists of
+     * {
+     *  path: string of url path
+     *  param: string of graphql query with all id / params included
+     *  method: string of request method like POST, GET, etc
+     *  contentType: string of content type,
+     *               if empty / null the default value is "application/json; charset=UTF-8"
+     * }
+     * @param promise
+     */
+    @ReactMethod
+    public void getAuthHeader(ReadableMap reactParam, Promise promise) {
+        Map<String, Object> param = reactParam.toHashMap();
+        String contentType = APPLICATION_JSON_CHARSET_UTF_8;
+        if(param.containsKey(CONTENT_TYPE) && TextUtils.isEmpty(String.valueOf(param.get(CONTENT_TYPE)))) {
+            contentType = String.valueOf(param.get(CONTENT_TYPE));
+        }
+
+        Map<String, String> headers = AuthUtil.getAuthHeaderReact(
+                context,
+                param.containsKey(PATH) ? String.valueOf(param.get(PATH)) : "",
+                param.containsKey(PARAM) ? String.valueOf(param.get(PARAM)) : "",
+                param.containsKey(METHOD) ? String.valueOf(param.get(METHOD)) : METHOD_GET,
+                contentType
+        );
+        WritableMap writableMap = Arguments.createMap();
+        for(Map.Entry<String, String> item : headers.entrySet()) {
+           writableMap.putString(item.getKey(), item.getValue());
+        }
+        promise.resolve(writableMap);
     }
 
     @ReactMethod

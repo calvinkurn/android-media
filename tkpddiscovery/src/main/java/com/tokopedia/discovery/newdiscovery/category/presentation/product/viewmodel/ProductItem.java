@@ -41,6 +41,7 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
     private boolean isOfficial;
     private String topLabel;
     private String bottomLabel;
+    private String categoryBreadcrumb;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -194,6 +195,14 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.discountPercentage = discountPercentage;
     }
 
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
+    }
+
+    public void setCategoryBreadcrumb(String categoryBreadcrumb) {
+        this.categoryBreadcrumb = categoryBreadcrumb;
+    }
+
     public ProductItem() {
     }
 
@@ -251,6 +260,35 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.bottomLabel = bottomLabel;
     }
 
+    public Map<String, Object> generateImpressionDataLayer() {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                        getPrice()
+                )),
+                "brand", "none / other",
+                "category", getCategoryBreadcrumb(),
+                "variant", "none / other",
+                "list", getTrackerName(),
+                "position", getTrackerPosition(),
+                "dimension38", getHomeAttribution()
+        );
+    }
+
+    public Map<String, Object> generateClickDataLayer() {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
+                "brand", "none / other",
+                "category", getCategoryBreadcrumb(),
+                "variant", "none / other",
+                "position", getTrackerPosition(),
+                "dimension38", getHomeAttribution()
+        );
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -262,11 +300,11 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         dest.writeString(this.productName);
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageUrl700);
-        dest.writeInt(rating);
-        dest.writeInt(countReview);
-        dest.writeInt(countCourier);
+        dest.writeInt(this.rating);
+        dest.writeInt(this.countReview);
+        dest.writeInt(this.countCourier);
         dest.writeString(this.price);
-        dest.writeString(priceRange);
+        dest.writeString(this.priceRange);
         dest.writeString(this.shopID);
         dest.writeString(this.shopName);
         dest.writeString(this.shopCity);
@@ -281,8 +319,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         dest.writeString(this.originalPrice);
         dest.writeInt(this.discountPercentage);
         dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
-        dest.writeString(topLabel);
-        dest.writeString(bottomLabel);
+        dest.writeString(this.topLabel);
+        dest.writeString(this.bottomLabel);
+        dest.writeString(this.categoryBreadcrumb);
     }
 
     protected ProductItem(Parcel in) {
@@ -290,11 +329,11 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.productName = in.readString();
         this.imageUrl = in.readString();
         this.imageUrl700 = in.readString();
-        rating = in.readInt();
-        countReview = in.readInt();
-        countCourier = in.readInt();
+        this.rating = in.readInt();
+        this.countReview = in.readInt();
+        this.countCourier = in.readInt();
         this.price = in.readString();
-        priceRange = in.readString();
+        this.priceRange = in.readString();
         this.shopID = in.readString();
         this.shopName = in.readString();
         this.shopCity = in.readString();
@@ -309,8 +348,9 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
         this.isOfficial = in.readByte() != 0;
-        topLabel = in.readString();
-        bottomLabel = in.readString();
+        this.topLabel = in.readString();
+        this.bottomLabel = in.readString();
+        this.categoryBreadcrumb = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
@@ -324,33 +364,4 @@ public class ProductItem implements Parcelable, Visitable<CategoryProductListTyp
             return new ProductItem[size];
         }
     };
-
-    public Map<String, Object> generateImpressionDataLayer() {
-        return DataLayer.mapOf(
-                "name", getProductName(),
-                "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
-                        getPrice()
-                )),
-                "brand", "none / other",
-                "category", "none / other",
-                "variant", "none / other",
-                "list", getTrackerName(),
-                "position", getTrackerPosition(),
-                "dimension38", getHomeAttribution()
-        );
-    }
-
-    public Map<String, Object> generateClickDataLayer() {
-        return DataLayer.mapOf(
-                "name", getProductName(),
-                "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "brand", "none / other",
-                "category", "none / other",
-                "variant", "none / other",
-                "position", getTrackerPosition(),
-                "dimension38", getHomeAttribution()
-        );
-    }
 }

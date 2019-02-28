@@ -18,11 +18,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
+            <com.tokopedia.common.travel.widget.SelectPassengerView
                 android:id="@+id/spv_passenger_adult"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spv_icon="@drawable/ic_passenger_adult"
+                app:spv_icon="@drawable/ic_travel_passenger_adult"
                 app:spv_max_value="7"
                 app:spv_min_value="1"
                 app:spv_subtitle="@string/select_passenger_adult_subtitle"
@@ -32,7 +32,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_8"/>
 
-            <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
+            <com.tokopedia.common.travel.widget.SelectPassengerView
                 android:id="@+id/spv_passenger_children"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_8"/>
 
-            <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
+            <com.tokopedia.common.travel.widget.SelectPassengerView
                 android:id="@+id/spv_passenger_infant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -8,14 +8,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class CrossSellingConfig implements Parcelable {
     private boolean skipAble;
+    private boolean isChecked;
     private String headerTitle;
     private String bodyTitle;
     private String bodyContentBefore;
     private String bodyContentAfter;
     private String checkoutButtonText;
 
+    public CrossSellingConfig() {
+    }
+
     protected CrossSellingConfig(Parcel in) {
         skipAble = in.readByte() != 0;
+        isChecked = in.readByte() != 0;
         headerTitle = in.readString();
         bodyTitle = in.readString();
         bodyContentBefore = in.readString();
@@ -34,9 +39,6 @@ public class CrossSellingConfig implements Parcelable {
             return new CrossSellingConfig[size];
         }
     };
-
-    public CrossSellingConfig() {
-    }
 
     public String getHeaderTitle() {
         return headerTitle;
@@ -86,18 +88,27 @@ public class CrossSellingConfig implements Parcelable {
         this.skipAble = skipAble;
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (skipAble ? 1 : 0));
-        dest.writeString(headerTitle);
-        dest.writeString(bodyTitle);
-        dest.writeString(bodyContentBefore);
-        dest.writeString(bodyContentAfter);
-        dest.writeString(checkoutButtonText);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeByte((byte) (skipAble ? 1 : 0));
+        parcel.writeByte((byte) (isChecked ? 1 : 0));
+        parcel.writeString(headerTitle);
+        parcel.writeString(bodyTitle);
+        parcel.writeString(bodyContentBefore);
+        parcel.writeString(bodyContentAfter);
+        parcel.writeString(checkoutButtonText);
     }
 }

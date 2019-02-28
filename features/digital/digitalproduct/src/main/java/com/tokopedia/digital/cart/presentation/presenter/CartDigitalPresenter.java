@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -23,8 +24,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
@@ -388,30 +389,33 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    /* Ini kalau ga ada internet */
-                    getView().renderErrorNoConnectionAddToCart(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    /* Ini kalau timeout */
-                    getView().renderErrorTimeoutConnectionAddToCart(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    getView().renderErrorAddToCart(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    getView().renderErrorAddToCart(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException) {
+                        /* Ini kalau ga ada internet */
+                        getView().renderErrorNoConnectionAddToCart(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                        /* Ini kalau timeout */
+                        getView().renderErrorTimeoutConnectionAddToCart(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        /* Ini kalau error dari API kasih message error */
+                        getView().renderErrorAddToCart(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                        getView().renderErrorAddToCart(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    getView().renderErrorHttpAddToCart(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    getView().renderErrorHttpAddToCart(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        getView().renderErrorHttpAddToCart(e.getMessage());
+                    } else {
+                        /* Ini diluar dari segalanya hahahaha */
+                        getView().renderErrorHttpAddToCart(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                    getView().stopTrace();
                 }
             }
 
@@ -432,6 +436,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
                     }
                     getView().renderAddToCartData(cartDigitalInfoData);
                 }
+                getView().stopTrace();
             }
         };
     }
@@ -600,13 +605,16 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
     @Override
     public void autoApplyCouponIfAvailable(String digitalCategoryId) {
-        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(getView().getActivity());
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(getView().getActivity(), TkpdCache.CACHE_PROMO_CODE);
+        String savedCoupon = persistentCacheManager.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
         if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucher(savedCoupon, digitalCategoryId);
         }
     }
 
     private void removeBranchPromoIfNeeded() {
-        BranchSdkUtils.removeCouponCode(getView().getActivity());
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(getView().getActivity(),
+                TkpdCache.CACHE_PROMO_CODE);
+        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
     }
 }

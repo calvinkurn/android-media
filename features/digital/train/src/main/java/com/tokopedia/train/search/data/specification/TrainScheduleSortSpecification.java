@@ -1,9 +1,9 @@
 package com.tokopedia.train.search.data.specification;
 
-import com.raizlabs.android.dbflow.sql.language.OrderBy;
-import com.tokopedia.train.common.specification.DbFlowWithOrderSpecification;
-import com.tokopedia.train.search.constant.TrainSortOption;
-import com.tokopedia.train.search.data.databasetable.TrainScheduleDbTable_Table;
+import com.tokopedia.common.travel.constant.TravelSortOption;
+import com.tokopedia.train.common.specification.RoomSpecification;
+import com.tokopedia.train.common.specification.RoomWithOrderSpecification;
+import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,44 +12,64 @@ import java.util.List;
  * @author rizkyfadillah on 15/03/18.
  */
 
-public class TrainScheduleSortSpecification implements DbFlowWithOrderSpecification {
+public class TrainScheduleSortSpecification implements RoomWithOrderSpecification, RoomSpecification {
 
     private int sortOptionId;
+    private int scheduleVariant;
+    private List<Object> args;
 
-    public TrainScheduleSortSpecification(int sortOptionId) {
+    public TrainScheduleSortSpecification(int sortOptionId, int scheduleVariant) {
         this.sortOptionId = sortOptionId;
+        this.scheduleVariant = scheduleVariant;
+        args = new ArrayList<>();
     }
 
     @Override
-    public List<OrderBy> toOrder() {
-        List<OrderBy> orderBies = new ArrayList<OrderBy>();
+    public String toOrder() {
+        String query = "";
         switch (sortOptionId) {
-            case TrainSortOption.EARLIEST_DEPARTURE:
-                orderBies.add(OrderBy.fromProperty(TrainScheduleDbTable_Table.departure_timestamp).ascending());
+            case TravelSortOption.EARLIEST_DEPARTURE:
+                query += " ORDER BY departureTimestamp ASC";
                 break;
-            case TrainSortOption.LATEST_DEPARTURE:
-                orderBies.add(OrderBy.fromProperty(TrainScheduleDbTable_Table.departure_timestamp).descending());
+            case TravelSortOption.LATEST_DEPARTURE:
+                query += " ORDER BY departureTimestamp DESC";
                 break;
-            case TrainSortOption.SHORTEST_DURATION:
-                orderBies.add(OrderBy.fromProperty(TrainScheduleDbTable_Table.duration).ascending());
+            case TravelSortOption.SHORTEST_DURATION:
+                query += " ORDER BY duration ASC";
                 break;
-            case TrainSortOption.LONGEST_DURATION:
-                orderBies.add(OrderBy.fromProperty(TrainScheduleDbTable_Table.duration).descending());
+            case TravelSortOption.LONGEST_DURATION:
+                query += " ORDER BY duration DESC";
                 break;
-            case TrainSortOption.EARLIEST_ARRIVAL:
-                orderBies.add(OrderBy.fromProperty(TrainScheduleDbTable_Table.arrival_timestamp).ascending());
+            case TravelSortOption.EARLIEST_ARRIVAL:
+                query += " ORDER BY arrivalTimestamp ASC";
                 break;
-            case TrainSortOption.LATEST_ARRIVAL:
-                orderBies.add(OrderBy.fromProperty(TrainScheduleDbTable_Table.arrival_timestamp).descending());
+            case TravelSortOption.LATEST_ARRIVAL:
+                query += " ORDER BY arrivalTimestamp DESC";
                 break;
-            case TrainSortOption.CHEAPEST:
-                orderBies.add(OrderBy.fromProperty(TrainScheduleDbTable_Table.adult_fare).ascending());
+            case TravelSortOption.CHEAPEST:
+                query += " ORDER BY adultFare ASC";
                 break;
-            case TrainSortOption.MOST_EXPENSIVE:
-                orderBies.add(OrderBy.fromProperty(TrainScheduleDbTable_Table.adult_fare).descending());
+            case TravelSortOption.MOST_EXPENSIVE:
+                query += " ORDER BY adultFare DESC";
                 break;
         }
-        return orderBies;
+        return query;
     }
 
+    @Override
+    public String query() {
+        args.clear();
+        String query = " isReturnSchedule = ? " + toOrder();
+        args.add(getScheduleVariant());
+        return query;
+    }
+
+    @Override
+    public List<Object> getArgs() {
+        return args;
+    }
+
+    private int getScheduleVariant() {
+        return scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE ? 1 : 0;
+    }
 }

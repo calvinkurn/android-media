@@ -3,17 +3,14 @@ package com.tokopedia.checkout.view.feature.addressoptions;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.R;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.common.base.CartMvpPresenter;
 import com.tokopedia.checkout.view.common.utils.PagingHandler;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,8 +24,6 @@ import rx.Subscriber;
 public class ShipmentAddressListPresenter
         extends CartMvpPresenter<ISearchAddressListView<List<RecipientAddressModel>>> {
 
-    private static final String TAG = ShipmentAddressListPresenter.class.getSimpleName();
-
     private static final String DEFAULT_KEYWORD = "";
 
     private final GetPeopleAddressUseCase mGetPeopleAddressUseCase;
@@ -38,8 +33,7 @@ public class ShipmentAddressListPresenter
     private boolean resetPage;
 
     @Inject
-    public ShipmentAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase,
-                                        PagingHandler pagingHandler) {
+    public ShipmentAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase) {
         mGetPeopleAddressUseCase = getPeopleAddressUseCase;
     }
 
@@ -57,16 +51,16 @@ public class ShipmentAddressListPresenter
         return hasNext;
     }
 
-    public void resetAddressList(Context context, int order, RecipientAddressModel currentAddress) {
-        getAddressList(context, order, DEFAULT_KEYWORD, currentAddress, true);
+    public void resetAddressList(int order, RecipientAddressModel currentAddress, boolean isDisableCorner) {
+        getAddressList(order, DEFAULT_KEYWORD, currentAddress, true, isDisableCorner);
     }
 
-    public void getAddressFromNewCreated(Context context, final RecipientAddressModel newAddress) {
-        getAddressList(context, 1, "", newAddress, true);
+    public void getAddressFromNewCreated(final RecipientAddressModel newAddress, boolean isDisableCorner) {
+        getAddressList(1, "", newAddress, true, isDisableCorner);
     }
 
-    public void getAddressList(Context context, int order, String query,
-                               final RecipientAddressModel currentAddress, boolean resetPage) {
+    public void getAddressList(int order, String query, final RecipientAddressModel currentAddress,
+                               boolean resetPage, boolean isDisableCorner) {
         if (!TextUtils.isEmpty(query)) {
             resetPage = !lastQueryKeyword.equals(query);
         }
@@ -79,7 +73,7 @@ public class ShipmentAddressListPresenter
         if (currentPage == 1 || hasNext) {
             getMvpView().showLoading();
             mGetPeopleAddressUseCase.execute(mGetPeopleAddressUseCase
-                            .getRequestParams(context, order, query, currentPage++),
+                            .getRequestParams(order, query, currentPage++),
                     new Subscriber<PeopleAddressModel>() {
                         @Override
                         public void onCompleted() {
@@ -91,21 +85,7 @@ public class ShipmentAddressListPresenter
                             throwable.printStackTrace();
                             if (isViewAttached() && getMvpView().getActivityContext() != null) {
                                 getMvpView().hideLoading();
-                                String message;
-                                if (throwable instanceof UnknownHostException ||
-                                        throwable instanceof ConnectException ||
-                                        throwable instanceof SocketTimeoutException) {
-                                    message = getMvpView().getActivityContext().getResources().getString(
-                                            R.string.msg_no_connection);
-                                } else if (throwable instanceof UnProcessableHttpException) {
-                                    message = TextUtils.isEmpty(throwable.getMessage()) ?
-                                            getMvpView().getActivityContext().getResources().getString(
-                                                    R.string.msg_no_connection) :
-                                            throwable.getMessage();
-                                } else {
-                                    message = getMvpView().getActivityContext().getResources().getString(
-                                            R.string.default_request_error_unknown);
-                                }
+                                String message = ErrorHandler.getErrorMessage(getMvpView().getActivityContext(), throwable);
                                 getMvpView().showError(message);
                                 getMvpView().stopTrace();
                             }
@@ -140,7 +120,7 @@ public class ShipmentAddressListPresenter
                                                                     recipientAddressModel.getPostalCode().equals(currentAddress.getPostalCode()) &&
                                                                     recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
                                                                     recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()))
-                                                            ) {
+                                                    ) {
                                                         newlyCreatedAddress = recipientAddressModel;
                                                         recipientAddressModel.setSelected(true);
                                                         break;
@@ -152,6 +132,12 @@ public class ShipmentAddressListPresenter
                                                     getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
                                                     getMvpView().stopTrace();
                                                 } else {
+                                                    if (peopleAddressModel.getCornerAddressModelsList() != null &&
+                                                            !peopleAddressModel.getCornerAddressModelsList().isEmpty() &&
+                                                            !isDisableCorner) {
+                                                        getMvpView().setSampai(peopleAddressModel.getCornerAddressModelsList().get(0));
+                                                        getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
+                                                    }
                                                     getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
                                                     getMvpView().stopTrace();
                                                 }

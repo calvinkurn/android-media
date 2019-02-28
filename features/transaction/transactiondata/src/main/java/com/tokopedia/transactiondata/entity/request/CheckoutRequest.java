@@ -21,6 +21,12 @@ public class CheckoutRequest {
     @SerializedName("data")
     @Expose
     public List<DataCheckoutRequest> data = new ArrayList<>();
+    @SerializedName("tokopedia_corner_data")
+    @Expose
+    public TokopediaCornerData cornerData;
+
+    public CheckoutRequest() {
+    }
 
     public boolean isHavingPurchaseProtectionEnabled() {
         for (DataCheckoutRequest datum : data) {
@@ -39,6 +45,7 @@ public class CheckoutRequest {
         promoCode = builder.promoCode;
         isDonation = builder.isDonation;
         data = builder.data;
+        cornerData = builder.cornerData;
     }
 
 
@@ -46,6 +53,7 @@ public class CheckoutRequest {
         private String promoCode;
         private int isDonation;
         private List<DataCheckoutRequest> data;
+        private TokopediaCornerData cornerData;
 
         public Builder() {
         }
@@ -57,6 +65,11 @@ public class CheckoutRequest {
 
         public Builder isDonation(int val) {
             isDonation = val;
+            return this;
+        }
+
+        public Builder cornerData(TokopediaCornerData val) {
+            cornerData = val;
             return this;
         }
 

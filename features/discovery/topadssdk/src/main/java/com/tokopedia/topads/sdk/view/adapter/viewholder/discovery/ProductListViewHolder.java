@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.FlowLayout;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
@@ -29,7 +32,8 @@ import java.util.List;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class ProductListViewHolder extends AbstractViewHolder<ProductListViewModel> implements View.OnClickListener {
+public class ProductListViewHolder extends AbstractViewHolder<ProductListViewModel> implements View.OnClickListener,
+        PositionChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_product_list;
@@ -47,18 +51,19 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     private ImageLoader imageLoader;
     private ImageView rating;
     private TextView reviewCount;
-    private int clickPosition;
+    private int clickPosition = RecyclerView.NO_POSITION;
     private ImageView btnWishList;
     private RelativeLayout wishlistBtnContainer;
+    private TopAdsItemImpressionListener impressionListener;
 
     public ProductListViewHolder(View itemView, ImageLoader imageLoader,
                                  LocalAdsClickListener itemClickListener,
-                                 int clickPosition,
+                                 TopAdsItemImpressionListener itemImpressionListener,
                                  boolean enableWishlist) {
         super(itemView);
         this.itemClickListener = itemClickListener;
+        this.impressionListener = itemImpressionListener;
         this.imageLoader = imageLoader;
-        this.clickPosition = clickPosition;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
@@ -81,6 +86,15 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         Product product = data.getProduct();
         if (product != null) {
             productImage.setImage(product.getImage());
+            productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+                @Override
+                public void onViewHint() {
+                    if(impressionListener!=null){
+                        impressionListener.onImpressionProductAdsItem((clickPosition < 0 ?
+                                getAdapterPosition() : clickPosition), product);
+                    }
+                }
+            });
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 productName.setText(Html.fromHtml(product.getName(),
                         Html.FROM_HTML_MODE_LEGACY));
@@ -167,8 +181,6 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
             }
             if (v.getId() == R.id.wishlist_button_container) {
                 itemClickListener.onAddWishLish((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
-                data.getProduct().setWishlist(!data.getProduct().isWishlist());
-                renderWishlistButton(data.getProduct().isWishlist());
             }
         }
     }
@@ -192,5 +204,10 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
             }
         }
         return false;
+    }
+
+    @Override
+    public void onPositionChange(int position) {
+        this.clickPosition = position;
     }
 }

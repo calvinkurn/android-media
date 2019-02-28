@@ -93,11 +93,11 @@ public class CartMapper implements ICartMapper {
             shopGroupData.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
             shopGroupData.setShopName(shopGroup.getShop().getShopName());
             shopGroupData.setShopType(generateShopType(shopGroup.getShop()));
-            shopGroupData.setGoldMerchant(shopGroup.getShop().getIsGold() == 1);
+            shopGroupData.setGoldMerchant(shopGroup.getShop().getGoldMerchant().isGoldBadge());
             shopGroupData.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
             if (shopGroup.getShop().getIsOfficial() == 1) {
                 shopGroupData.setShopBadge(shopGroup.getShop().getOfficialStore().getOsLogoUrl());
-            } else if (shopGroup.getShop().getIsGold() == 1) {
+            } else if (shopGroup.getShop().getGoldMerchant().isGoldBadge()) {
                 shopGroupData.setShopBadge(shopGroup.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
             }
 
@@ -121,6 +121,11 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setPricePlanInt(data.getProduct().getProductPrice());
                 cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
                 cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
+                if (data.getProduct().getProductPreorder() != null
+                        && data.getProduct().getProductPreorder().getDurationText() != null) {
+                    cartItemDataOrigin.setPreOrderInfo("PO " + data.getProduct().getProductPreorder().getDurationText());
+                }
+                cartItemDataOrigin.setCod(data.getProduct().isCod());
                 cartItemDataOrigin.setFavorite(false);
                 cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
                 cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
@@ -139,7 +144,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setOriginalRemark(cartItemDataOrigin.getProductVarianRemark());
                 cartItemDataOrigin.setOriginalQty(data.getProduct().getProductQuantity());
                 cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
-                cartItemDataOrigin.setGoldMerchant(shopGroup.getShop().getIsGold() == 1);
+                cartItemDataOrigin.setGoldMerchant(shopGroup.getShop().getGoldMerchant().isGoldBadge());
                 cartItemDataOrigin.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
                 cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
                 cartItemDataOrigin.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
@@ -248,7 +253,7 @@ public class CartMapper implements ICartMapper {
         autoApplyData.setIsCoupon(cartDataListResponse.getAutoapplyV2().getIsCoupon());
         autoApplyData.setMessageSuccess(cartDataListResponse.getAutoapplyV2().getMessage().getText());
         int promoId = 0;
-        if(!TextUtils.isEmpty(cartDataListResponse.getAutoapplyV2().getPromoCodeId())){
+        if (!TextUtils.isEmpty(cartDataListResponse.getAutoapplyV2().getPromoCodeId())) {
             Integer.valueOf(cartDataListResponse.getAutoapplyV2().getPromoCodeId());
         }
         autoApplyData.setPromoId(promoId);
@@ -309,6 +314,10 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setShopType(generateShopType(data.getShop()));
             cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
+            if (data.getProduct().getProductPreorder() != null
+                    && data.getProduct().getProductPreorder().getDurationText() != null) {
+                cartItemDataOrigin.setPreOrderInfo("PO " + data.getProduct().getProductPreorder().getDurationText());
+            }
             cartItemDataOrigin.setFavorite(false);
             cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
             cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
@@ -323,6 +332,10 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
             cartItemDataOrigin.setCategory(data.getProduct().getCategory());
             cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
+            cartItemDataOrigin.setGoldMerchant(data.getShop().getGoldMerchant().isGoldBadge());
+            cartItemDataOrigin.setGoldMerchantLogoUrl(data.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
+            cartItemDataOrigin.setOfficialStore(data.getShop().getOfficialStore().isOfficial() == 1);
+            cartItemDataOrigin.setOfficialStoreLogoUrl(data.getShop().getOfficialStore().getOsLogoUrl());
             if (data.getProduct().getWholesalePrice() != null) {
                 List<WholesalePrice> wholesalePrices = new ArrayList<>();
                 for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
@@ -420,7 +433,7 @@ public class CartMapper implements ICartMapper {
     private String generateShopType(Shop shop) {
         if (shop.getIsOfficial() == 1)
             return SHOP_TYPE_OFFICIAL_STORE;
-        else if (shop.getIsGold() == 1)
+        else if (shop.getGoldMerchant().isGoldBadge())
             return SHOP_TYPE_GOLD_MERCHANT;
         else return SHOP_TYPE_REGULER;
     }

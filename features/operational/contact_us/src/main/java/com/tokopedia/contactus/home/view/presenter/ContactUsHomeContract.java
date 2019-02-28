@@ -13,6 +13,7 @@ import java.util.List;
 
 public interface ContactUsHomeContract {
     String ContactUsName = "Contact_Us";
+    String CONTACT_US_WEB = "app_enable_contactus_native";
 
     interface View extends CustomerView {
         void addPopularArticle(ContactUsArticleResponse articleResponse);

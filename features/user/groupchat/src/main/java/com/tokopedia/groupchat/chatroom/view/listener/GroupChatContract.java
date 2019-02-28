@@ -55,6 +55,14 @@ public interface GroupChatContract {
         String generateAttributeApplink(String applink,
                                         String attributeBanner);
 
+        void startApplink(String applink);
+
+        void transitionToTabChat();
+
+        void transitionToTabVote();
+
+        void transitionToTabInfo();
+
         void vibratePhone();
 
         String getAttributionTracking(String attributePartnerLogo);
@@ -90,6 +98,8 @@ public interface GroupChatContract {
         void initVideoFragment();
 
         void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
+
+        void showOverlayDialogOnScreen();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

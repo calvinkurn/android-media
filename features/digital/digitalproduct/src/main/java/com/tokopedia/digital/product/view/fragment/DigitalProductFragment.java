@@ -37,6 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -150,6 +151,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
+    private static final String DIGITAL_DETAIL_TRACE = "dg_detail";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -204,6 +206,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
     private boolean isCouponApplied;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     private SaveInstanceCacheManager saveInstanceCacheManager;
 
@@ -236,8 +240,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(DIGITAL_DETAIL_TRACE);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
-        if (savedInstanceState!= null) {
+        if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
                     CategoryData.class, null);
             bannerDataListState = saveInstanceCacheManager.get(EXTRA_STATE_BANNER_LIST_DATA,
@@ -473,6 +478,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
+    }
+
+    @Override
     public void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber, String operatorErrorMsg, Boolean isSimActive, String carrierName) {
         CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
         checkPulsaBalanceView.setActionListener(this);
@@ -684,7 +697,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
         String isInstant = isInstantCheckoutChecked ? "instant" : "no instant";
-        UnifyTracking.eventClickBuyOnNative(getActivity(),categoryDataState.getName(), isInstant);
+        UnifyTracking.eventClickBuyOnNative(getActivity(), categoryDataState.getName(), isInstant);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
@@ -847,13 +860,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorSelected(String categoryName, String operatorName) {
-        UnifyTracking.eventSelectOperatorOnNativePage(getActivity(),categoryName,
+        UnifyTracking.eventSelectOperatorOnNativePage(getActivity(), categoryName,
                 operatorName);
     }
 
     @Override
     public void onProductSelected(String categoryName, String productDesc) {
-        UnifyTracking.eventSelectProductOnNativePage(getActivity(),categoryName,
+        UnifyTracking.eventSelectProductOnNativePage(getActivity(), categoryName,
                 productDesc);
     }
 
@@ -913,11 +926,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 }
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
-                    handleCallbackSearchNumber(orderClientNumber);
-                } else {
-                    handleCallbackSearchNumberCancel();
+                if (digitalProductView != null) {
+                    if (resultCode == Activity.RESULT_OK && data != null) {
+                        OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
+                        handleCallbackSearchNumber(orderClientNumber);
+                    } else {
+                        handleCallbackSearchNumberCancel();
+                    }
                 }
                 break;
         }
@@ -958,7 +973,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             if (categoryDataState != null) {
-                UnifyTracking.eventClickDaftarTransaksiEvent(getActivity(),categoryDataState.getName(), categoryDataState.getName());
+                UnifyTracking.eventClickDaftarTransaksiEvent(getActivity(), categoryDataState.getName(), categoryDataState.getName());
             }
             if (GlobalConfig.isSellerApp()) {
                 navigateToActivity(
@@ -1025,21 +1040,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     public void checkBalanceByUSSD(int simPosition, String ussdCode) {
         presenter.processToCheckBalance(null, simPosition, ussdCode);
-      
-        UnifyTracking.eventUssd(getActivity(),AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
+
+        UnifyTracking.eventUssd(getActivity(), AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
         UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.ussd_permission_allowed_label));
     }
 
     @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void showDeniedForPhone() {
         RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CALL_PHONE);
-        UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.ussd_permission_denied_label));
+        UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.ussd_permission_denied_label));
     }
 
     @OnNeverAskAgain({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void showNeverAskForPhone() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CALL_PHONE);
-        UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.ussd_permission_denied_label));
+        UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.ussd_permission_denied_label));
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
@@ -1048,7 +1063,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
         if (orderClientNumber != null) {
-            UnifyTracking.eventSelectNumberOnUserProfileNative(getActivity(),categoryDataState.getName());
+            UnifyTracking.eventSelectNumberOnUserProfileNative(getActivity(), categoryDataState.getName());
         }
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
@@ -1188,13 +1203,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             }
             if (pulsaBalance != null && pulsaBalance.isSuccess()) {
                 pulsaBalance.setMobileNumber(number);
-                UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.status_success_label));
+                UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.status_success_label));
                 startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
                         categoryDataState.getClientNumberList().get(0).getValidation(),
                         categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
             } else {
                 showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
-                UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.status_failed_label) + getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.status_failed_label) + getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }
     }
@@ -1313,7 +1328,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             @Override
             public void onPageSelected(int position) {
                 if (position == PANDUAN_TAB_POSITION) {
-                    if(digitalAnalytics != null)
+                    if (digitalAnalytics != null)
                         digitalAnalytics.eventClickPanduanPage(categoryDataState.getName());
                 }
             }

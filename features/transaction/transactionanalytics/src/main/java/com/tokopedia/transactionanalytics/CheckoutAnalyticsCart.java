@@ -12,6 +12,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Key;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.CustomDimension;
 
 
 /**
@@ -317,29 +318,70 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_CHECKOUT,
                 Key.EVENT_LABEL, eventLabel,
-                Key.E_COMMERCE, cartMap
+                Key.E_COMMERCE, cartMap,
+                Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    private void flushEnhancedECommerceGoToCheckoutStep1() {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.E_COMMERCE, null,
+                Key.CURRENT_SITE, null
         );
         sendEnhancedEcommerce(dataLayer);
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessDefaultEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessCheckAllEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialProductEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProductEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     //PHASE 2
@@ -517,5 +559,14 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
         sendEnhancedEcommerce(dataLayer);
     }
+
+    public void eventViewCartListFinishRender() {
+        sendEventCategoryAction(
+                EventName.VIEW_CART,
+                EventCategory.CART,
+                EventAction.VIEW_CART_LIST
+        );
+    }
+
 
 }

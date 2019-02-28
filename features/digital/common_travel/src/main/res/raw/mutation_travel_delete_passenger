@@ -1,0 +1,8 @@
+mutation travelDeletePassenger($input: TravelPassengerDelete!, $instanceType: TravelType!) {
+  travelDeletePassenger(
+    input: $input
+    instanceType: $instanceType
+  ) {
+    travelId
+  }
+}

@@ -2,6 +2,8 @@ package com.tokopedia.tkpd.campaign.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class CampaignResponseEntity {
 
 	@SerializedName("updated_at")
@@ -33,8 +35,16 @@ public class CampaignResponseEntity {
 
 	@SerializedName("message")
 	private String message;
+
 	@SerializedName("enable")
 	private boolean enable;
+
+	@SerializedName("valid_campaigns")
+	private ArrayList<ValidCampaignPojo> validCampaignPojos;
+
+	public ArrayList<ValidCampaignPojo> getValidCampaignPojos() {
+		return validCampaignPojos;
+	}
 
 	public String getMessage() {
 		return message;

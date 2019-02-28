@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_32">
+
+    <ImageView
+        android:id="@+id/img_banner"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:adjustViewBounds="true"
+        android:maxHeight="@dimen/dp_150"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_quota_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/bg_tp_remaining_exchange"
+        android:drawableStart="@drawable/ic_tp_flash"
+        android:drawableLeft="@drawable/ic_tp_flash"
+        android:drawablePadding="@dimen/dp_3"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_2"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/img_banner"
+        app:layout_constraintTop_toTopOf="@+id/img_banner"
+        tool:text="30 max" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_14"
+        android:gravity="center_horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_banner"
+        tool:text="Hore! Kamu Dapat Hadiah Ulang Tahun dari Tokopedia" />
+
+    <TextView
+        android:id="@+id/text_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        tool:text="Kira-kira kamu dapat hadiah apa, ya? Yuk, intip hadiahmu sekarang, dan wujudkan keinginanmu!"
+        tool:visibility="visible" />
+
+    <TextView
+        android:id="@+id/text_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/text_desc"
+        tool:text="Kira-kira kamu dapat hadiah apa, ya? Yuk, intip hadiahmu sekarang, dan wujudkan keinginanmu!"
+        tool:visibility="visible" />
+
+    <TextView
+        android:id="@+id/text_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_1"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/text_notes" />
+
+    <Button
+        android:id="@+id/button_action"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_weight="1"
+        android:background="@drawable/bg_button_green"
+        android:gravity="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_sender" />
+
+</android.support.constraint.ConstraintLayout>

@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
@@ -85,6 +86,8 @@ public class AddAddressFragment extends BaseDaggerFragment
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
     private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
 
+    private static final String FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_SUBMIT_ADD_ADDRESS = "mp_submit_add_address";
+
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
     private TextInputLayout addressTypeLayout;
@@ -128,6 +131,8 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Inject AddAddressContract.Presenter mPresenter;
     @Inject @LogisticUserSessionQualifier UserSessionInterface userSession;
+    @Inject
+    PerformanceMonitoring performanceMonitoring;
 
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
@@ -258,6 +263,11 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void setPinpointAddress(String address) {
         locationEditText.setText(address);
+    }
+
+    @Override
+    public void stopPerformaceMonitoring() {
+        performanceMonitoring.stopTrace();
     }
 
     @Override
@@ -668,6 +678,7 @@ public class AddAddressFragment extends BaseDaggerFragment
             sendAnalyticsOnSubmitSaveAddressClicked();
             if (isValidAddress()) {
                 updateAddress();
+                performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_SUBMIT_ADD_ADDRESS);
                 mPresenter.saveAddress();
             }
         });

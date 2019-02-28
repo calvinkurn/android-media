@@ -8,6 +8,7 @@
     <string name="favorit">Favorit</string>
     <string name="topads_follow">Follow</string>
     <string name="topads_following">Following</string>
+    <string name="topads_visit_shop">Visit Shop</string>
     <string name="promote_0">TopAds</string>
     <string name="promote_1">Tingkatkan penjualan</string>
     <string name="promote_2">Toko dan produk Anda akan lebih mudah ditemukan oleh pengunjung Tokopedia</string>
@@ -24,4 +25,8 @@
     <string name="produk_pilihan">Produk Pilihan</string>
     <string name="topads_info_dynamic_channel">Promosi oleh TopAds yang muncul berdasarkan minat Anda.</string>
     <string name="baca_selengkapnya">Baca Selengkapnya</string>
+    <string name="msg_success_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="msg_error_add_wishlist">Error menambah wishlist</string>
+    <string name="msg_error_remove_wishlist">Error menghapus wishlist</string>
 </resources>

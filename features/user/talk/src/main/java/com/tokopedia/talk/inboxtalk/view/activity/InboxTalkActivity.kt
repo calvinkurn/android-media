@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.TalkRouter
+import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
@@ -38,6 +39,9 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics : TalkAnalytics
 
     private lateinit var titles: Array<String>
 
@@ -128,6 +132,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
+                analytics.trackSelectTab(tab.text.toString().toLowerCase())
                 setTabSelected(tab)
             }
         })

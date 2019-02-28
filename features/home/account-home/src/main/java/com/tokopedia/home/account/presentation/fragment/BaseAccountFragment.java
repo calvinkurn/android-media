@@ -7,6 +7,9 @@ import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.analytics.TrackAnalytics;
+import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
@@ -19,6 +22,7 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -28,8 +32,12 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.user_identification_common.KycCommonUrl;
+
+import java.util.HashMap;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
@@ -50,6 +58,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
 
+    abstract void notifyItemChanged(int position);
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +71,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             RouteManager.route(getContext(), applink);
         }
     }
-
 
     private boolean isApplink(String applink) {
         if (RouteManager.isSupportApplink(getContext(), applink)) {
@@ -117,6 +126,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void onByMeClicked() {
+        sendTracking(PEMBELI, BY_ME_CURATION, "", true);
+        openApplink(ApplinkConst.AFFILIATE_EXPLORE);
+    }
+
+    @Override
     public void onTokopediaPayLinkClicked() {
         if (getActivity() != null) {
             sendTracking(PEMBELI,
@@ -139,10 +154,35 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onInfoCardClicked(InfoCardViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(),
-                item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
+    public void onInfoCardClicked(InfoCardViewModel item, int adapterPosition) {
+
+        if (getContext() != null && getContext().getString(R.string.title_menu_loan)
+                .equalsIgnoreCase(item.getMainText())) {
+            TrackAnalytics.sendEvent(FirebaseEvent.SellerHome.HOMEPAGE_AKUN_PENJUAL_CLICK,
+                    new HashMap<>(), getContext());
+        }
+
+        if (getContext() != null
+                && item.getMainText().equals(
+                        getContext().getResources().getString(R.string.title_menu_affiliate))) {
+            item.setIconRes(R.drawable.ic_byme_card);
+            notifyItemChanged(adapterPosition);
+            AccountByMeHelper.setFirstTimeByme(getContext());
+            sendTracking(
+                    item.getTitleTrack(),
+                    item.getSectionTrack(),
+                    !TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText(),
+                    true
+            );
+        } else {
+            sendTracking(
+                    item.getTitleTrack(),
+                    item.getSectionTrack(),
+                    !TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText()
+            );
+        }
         openApplink(item.getApplink());
+
     }
 
     @Override
@@ -194,10 +234,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
 
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
-        sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
-                AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
-                String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccStatus));
-
+        if (bsData != null) {
+            sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
+                    AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
+                    String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccStatus));
+        }
         if (applink != null && applink.startsWith("http")) {
             openApplink(String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW,
@@ -304,6 +345,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     private void sendTracking(String title, String section, String item) {
+        sendTracking(title, section, item, false);
+    }
+
+    private void sendTracking(String title, String section, String item, boolean withUserId) {
         if (accountAnalytics == null)
             return;
 
@@ -313,7 +358,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         accountAnalytics.eventClickAccount(
                 title.toLowerCase(),
                 section.toLowerCase(),
-                item.toLowerCase());
+                item.toLowerCase(),
+                withUserId
+        );
     }
 
     private void sendTrackingOvoActivation() {
@@ -334,5 +381,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             ((AccountHomeRouter) getContext().getApplicationContext()).
                     gotoTopAdsDashboard(getContext());
         }
+    }
+
+    @Override
+    public void onShopStatusInfoButtonClicked() {
+        RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
     }
 }

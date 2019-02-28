@@ -6,7 +6,6 @@
 
     <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
     <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
-    <string name="BRANCH_SDK_KEY">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="key_moengage">LNCME8HVKUEJIGXE2N0698H0</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
@@ -1013,7 +1012,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_update_receipt_number">Perbarui nomor resi anda</string>
     <!-- Success String -->
     <string name="success_send_msg">Sukses kirim pesan.</string>
-    <string name="title_activity_people_deposit">Saldo Saya</string>
+    <string name="title_activity_people_deposit">Detail Saldo</string>
     <string name="title_activity_people_withdraw_balance">Penarikan Saldo</string>
     <string name="title_activity_shipping_confirmation_detail">Detil Konfirmasi Pengiriman</string>
     <string name="title_activity_shipping_confirmation_prod_conf">Konfirmasi Pengiriman</string>
@@ -2160,10 +2159,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="title_app_referral_howitworks">Info lebih lanjut</string>
 
-    <string name="code_error">Kode error :</string>
-
     <string name="notif_channel_general">Notifikasi</string>
-    <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
     <string name="title_download">Download</string>
     <string name="app_share_explore_btn_label">Dapatkan Cashback-mu</string>
     <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>

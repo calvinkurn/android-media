@@ -33,7 +33,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     private GraphqlUseCase mSaveCouponUseCase;
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
-    private int selectedItem =0;
+    private int selectedItem = 0;
 
     @Inject
     public HomepagePresenter(GraphqlUseCase getTokoPointDetailUseCase,
@@ -99,6 +99,8 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
             @Override
             public void onError(Throwable e) {
                 getView().onError(e.getLocalizedMessage());
+
+                if (getView() != null) getView().onFinishRendering();
             }
 
             @Override
@@ -129,6 +131,8 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                 } else {
                     getView().onSuccessTicker(data.getTokoPoints().getTicker().getTickers());
                 }
+
+                if (getView() != null) getView().onFinishRendering();
             }
         });
     }
@@ -206,7 +210,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                 String title;
                 ValidateCouponBaseEntity validateCoupon = response.getData(ValidateCouponBaseEntity.class);
 
-                if (validateCoupon.getValidateCoupon() != null) {
+                if (validateCoupon != null && validateCoupon.getValidateCoupon() != null) {
                     validateResponseCode = CommonConstant.CouponRedemptionCode.SUCCESS;
                     message = validateCoupon.getValidateCoupon().getMessageSuccess();
                     title = validateCoupon.getValidateCoupon().getMessageTitle();
@@ -277,7 +281,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
             @Override
             public void onNext(GraphqlResponse response) {
                 RedeemCouponBaseEntity redeemCouponBaseEntity = response.getData(RedeemCouponBaseEntity.class);
-                if (redeemCouponBaseEntity != null) {
+                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem() != null) {
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
@@ -285,13 +289,16 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                     String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
                     if (errorsMessage != null && errorsMessage.length > 0) {
                         String title = errorsMessage[0];
+                        String desc = null;
+                        int validateResponseCode = 0;
 
-                        if (errorsMessage.length <= 2) {
-                            getView().showRedeemFullError(item, null, title);
-                        } else {
-                            String desc = errorsMessage[1];
-                            getView().showRedeemFullError(item, title, desc);
+                        if (errorsMessage.length >= 2) {
+                            desc = errorsMessage[1];
                         }
+                        if (errorsMessage.length >= 3)
+                            validateResponseCode = Integer.parseInt(errorsMessage[2]);
+                        getView().showValidationMessageDialog(item, title, desc, validateResponseCode);
+
                     }
                 }
             }
@@ -308,41 +315,11 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
         getView().showRedeemCouponDialog(cta, code, title);
     }
 
-    @Override
-    public void getPopupNotification() {
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tp_gql_popup_notification),
-                TokoPointDetailEntity.class);
-        mRedeemCouponUseCase.clearRequest();
-        mRedeemCouponUseCase.addRequest(request);
-        mRedeemCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                //NA
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                TokoPointDetailEntity data = response.getData(TokoPointDetailEntity.class);
-                if (data != null
-                        && data.getTokoPoints() != null
-                        && data.getTokoPoints().getPopupNotif() != null) {
-                    getView().showPopupNotification(data.getTokoPoints().getPopupNotif());
-                }
-            }
-        });
-    }
-
     public int getPagerSelectedItem() {
         return selectedItem;
     }
 
-    public void setPagerSelectedItem(int selectedItem){
-        this.selectedItem=selectedItem;
+    public void setPagerSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
     }
 }

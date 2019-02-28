@@ -12,6 +12,7 @@ public interface ConstantTransactionAnalytics {
         String EVENT_LABEL = "eventLabel";
         String E_COMMERCE = "ecommerce";
         String PAYMENT_ID = "payment_id";
+        String CURRENT_SITE = "currentSite";
     }
 
 
@@ -36,6 +37,9 @@ public interface ConstantTransactionAnalytics {
         String PRODUCT_VIEW = "productView";
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
+        String VIEW_CART = "viewCart";
+        String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
+        String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
     }
 
     interface EventCategory {
@@ -47,6 +51,7 @@ public interface ConstantTransactionAnalytics {
         String ORDER_TRACKING = "order tracking";
         String PRODUCT_DETAIL_PAGE = "product detail page";
         String PURCHASE_PROTECTION = "fin - mp checkout";
+        String EXPRESS_CHECKOUT = "express checkout";
     }
 
     interface EventAction {
@@ -156,6 +161,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TELEPON_PADA_TAMBAH_ADDRESS = "click telepon pada + address";
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
+        String VIEW_CART_LIST = "view cart list";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -209,6 +215,12 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PELAJARI = "pp - pelajari click";
         String CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click";
         String IMPRESSION_PELAJARI = "pp - pelajari impression";
+
+        //EXPRESS CHECKOUT
+        String VIEW_EXPRESS_CHECKOUT = "view express checkout";
+        String CLICK_LANJUTKAN_TANPA_TEMPLATE = "click lanjutkan tanpa template";
+        String CLICK_X = "click x";
+        String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
     }
 
     interface EventLabel {
@@ -227,6 +239,12 @@ public interface ConstantTransactionAnalytics {
         String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
 
+        String CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD = "success - default - cod";
+        String CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD = "success - check all - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD = "success - partial shop - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD = "success - partial product - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD = "success - partial shop and product - cod";
+
         String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
         String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
 
@@ -237,11 +255,15 @@ public interface ConstantTransactionAnalytics {
         String SUCCESS_TICKED_PPP = "success - yes";
         String SUCCESS_UNTICKED_PPP = "success - no";
         String APPEAR = "appear";
+
+        String SUCCESS_DEFAULT = "success - default";
+        String SUCCESS_NOT_DEFAULT = "success - not default";
     }
 
     interface ScreenName {
         String CART = "/cart";
         String CHECKOUT = "/cart/shipment";
+        String ONE_CLICK_SHIPMENT = "/cart/shipment/ocs";
         String SELECT_COURIER = "/selectcourier";
         String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart#voucher";
         String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart#coupon";
@@ -253,5 +275,10 @@ public interface ConstantTransactionAnalytics {
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
         String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
         String ADD_NEW_ADDRESS_PAGE_USER = "/user/address/create";
+        String EXPRESS_CHECKOUT = "/express-checkout";
+    }
+
+    interface CustomDimension {
+        String DIMENSION_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace";
     }
 }

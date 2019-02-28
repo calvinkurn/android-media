@@ -1,0 +1,10 @@
+mutation chatToggleBlockChat($messageID: String!, $blockType: String!, $isBlocked: Boolean!){
+  chatToggleBlockChat(messageID:$messageID, blockType: $blockType, isBlocked: $isBlocked){
+		success
+		block_status{
+			is_blocked
+			is_promo_blocked
+			blocked_until
+		}
+	}
+}

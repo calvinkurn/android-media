@@ -14,11 +14,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
@@ -28,41 +25,32 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.common.constant.GMParamConstant;
+import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.gm.subscribe.tracking.GMTracking;
+import com.tokopedia.mitratoppers.MitraToppersRouter;
+import com.tokopedia.profile.view.activity.ProfileActivity;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.flashsale.management.router.FlashSaleRouter;
-import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
-import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.profile.view.activity.ProfileActivity;
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 import java.util.ArrayList;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by nisie on 5/6/17.
@@ -145,12 +133,10 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
-        if (!TrackingUtils.getBoolean(context, AppEventTracking.GTM.CONTACT_US)) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
-                    R.drawable.ic_help,
-                    TkpdState.DrawerPosition.HELP,
-                    true));
-        }
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
+                R.drawable.ic_help,
+                TkpdState.DrawerPosition.HELP,
+                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
@@ -338,7 +324,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(DashboardActivity.createInstance(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
-                    if (context.getApplication() instanceof AbstractionRouter){
+                    if (context.getApplication() instanceof AbstractionRouter) {
                         new GMTracking((AbstractionRouter) context.getApplication())
                                 .sendClickHamburgerMenuEvent(item.label);
                     }
@@ -494,9 +480,11 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public void onGoToDeposit() {
-        Intent intent = new Intent(context, DepositActivity.class);
-        context.startActivity(intent);
-        sendGTMNavigationEvent(AppEventTracking.EventLabel.DEPOSIT);
+        if (context.getApplicationContext() instanceof SellerModuleRouter) {
+            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) context.getApplicationContext();
+            sellerModuleRouter.startSaldoDepositIntent(context);
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
+        }
     }
 
     @Override
