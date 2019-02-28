@@ -229,19 +229,21 @@ open class PlayViewStateImpl(
     }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
-        viewModel?.run {
-            dynamicButtons = it
-        }
+        viewModel?.let { viewModel ->
+            viewModel.dynamicButtons = it
 
-        if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
-            it.floatingButton.run {
-                setFloatingIcon(this)
+            if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
+                it.floatingButton.run {
+                    setFloatingIcon(this)
+                }
+            }
+
+            if (!it.listDynamicButton.isEmpty()) {
+                analytics.eventViewDynamicButtons(viewModel, it.listDynamicButton)
+                dynamicButtonAdapter.setList(it.listDynamicButton)
             }
         }
 
-        if (!it.listDynamicButton.isEmpty()) {
-            dynamicButtonAdapter.setList(it.listDynamicButton)
-        }
     }
 
     override fun onErrorGetDynamicButtons() {
@@ -935,7 +937,7 @@ open class PlayViewStateImpl(
         webviewIcon.show()
 
         viewModel?.let {
-            analytics.eventViewProminentButton(it.channelId, floatingButton.linkUrl)
+            analytics.eventViewProminentButton(it, floatingButton)
         }
 
         webviewIcon.setOnClickListener {

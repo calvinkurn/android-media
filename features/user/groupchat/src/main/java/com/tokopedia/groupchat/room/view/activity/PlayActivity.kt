@@ -13,6 +13,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.RelativeLayout
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
@@ -21,6 +22,7 @@ import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.common.util.NonSwipeableViewPager
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
+//import com.tokopedia.groupchat.room.di.DagggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
@@ -36,8 +38,8 @@ open class PlayActivity : BaseSimpleActivity() {
     lateinit var viewPager: NonSwipeableViewPager
     private lateinit var pagerAdapter: FragmentPagerAdapter
 
-    @Inject
-    lateinit var analytics: GroupChatAnalytics
+//    @Inject
+//    lateinit var analytics: GroupChatAnalytics
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -49,7 +51,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
     override fun onStart() {
         super.onStart()
-        analytics.sendScreen(this, screenName)
+//        analytics.sendScreen(this, screenName)
     }
 
     override fun getScreenName(): String {
@@ -63,7 +65,16 @@ open class PlayActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         initView()
+    }
+
+    private fun initInjector() {
+//        val playComponent = DaggerPlayComponent.builder()
+//                .baseAppComponent(application as BaseMainApplication)
+//                .baseAppComponent.build()
+//
+//        playComponent.inject(this)
     }
 
     private fun initView() {
