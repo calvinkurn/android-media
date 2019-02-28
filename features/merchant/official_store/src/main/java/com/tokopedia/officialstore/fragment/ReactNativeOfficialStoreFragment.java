@@ -24,6 +24,9 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
     }
 
     public static ReactNativeOfficialStoreFragment createInstance(Bundle bundle){
+        if (bundle == null)
+            bundle = new Bundle();
+
         ReactNativeOfficialStoreFragment fragment = new ReactNativeOfficialStoreFragment();
         bundle.putString(ReactConst.KEY_SCREEN, ReactConst.Screen.OFFICIAL_STORE);
         String category = bundle.getString(KEY_CATEGORY);
