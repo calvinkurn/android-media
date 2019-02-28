@@ -14,10 +14,10 @@
         android:title="@string/feed"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_inbox"
+        android:id="@+id/menu_os"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_inbox"
-        android:title="@string/inbox"
+        android:icon="@drawable/ic_menu_os"
+        android:title="@string/official_store"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_cart"
