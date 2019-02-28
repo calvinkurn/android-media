@@ -5,11 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -20,6 +22,7 @@ import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
@@ -147,17 +150,15 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (getAdapter().getItemViewType(position) == HomeFeedViewHolder.LAYOUT) {
-                    return 1;
-                }
-                return DEFAULT_SPAN_COUNT;
-            }
-        });
-        return gridLayoutManager;
+        return new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapter<HomeFeedViewModel, HomeFeedTypeFactory> createAdapterInstance() {
+        HomeFeedAdapter homeFeedAdapter = new HomeFeedAdapter(getAdapterTypeFactory());
+        homeFeedAdapter.setOnAdapterInteractionListener(this);
+        return homeFeedAdapter;
     }
 
     @Override
