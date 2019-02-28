@@ -11,6 +11,7 @@ import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID_PARAM
+import com.tokopedia.affiliate.feature.createpost.USER_ID_PARAM
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
@@ -86,8 +87,10 @@ class SubmitPostService : IntentService(TAG) {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : SubmitPostNotificationManager(notifId, maxCount, manager, this@SubmitPostService) {
             override fun getSuccessIntent(): PendingIntent {
-                //TODO milhamj handle intent
-                val intent = RouteManager.getIntent(context, "tokopedia://people/${userSession.userId}")
+                val intent = RouteManager.getIntent(
+                        context,
+                        ApplinkConst.PROFILE.replace(USER_ID_PARAM, userSession.userId)
+                )
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 
