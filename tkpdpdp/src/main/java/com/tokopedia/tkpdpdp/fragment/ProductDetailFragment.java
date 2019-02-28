@@ -2644,7 +2644,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             }
             return stringBuilder.toString();
         }else {
-            return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+            return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
         }
     }
 
