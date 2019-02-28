@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.expressCheckout)
+    implementation project(rootProject.ext.features.expressCheckoutCommon)
     implementation project(rootProject.ext.features.transactiondata)
 
     implementation rootProject.ext.miscDependencies.dagger
