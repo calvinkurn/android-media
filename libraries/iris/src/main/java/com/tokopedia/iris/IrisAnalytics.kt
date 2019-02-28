@@ -22,48 +22,43 @@ class IrisAnalytics(context: Context) : Iris {
     private val session: Session = IrisSession(context)
 
     override fun setService(config: Configuration) {
-        try {
-            GlobalScope.launch {
-                setWorkManager(config)
-            }
-        } catch (e: Throwable) {
-
+        GlobalScope.launchCatchError(block = {
+            setWorkManager(config)
+        }) {
+            // no-op
         }
     }
 
     override fun resetService(config: Configuration) {
-        GlobalScope.launch {
+        GlobalScope.launchCatchError(block = {
             WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
             setWorkManager(config)
+        }) {
+            // no-op
         }
     }
 
     override fun saveEvent(map: Map<String, Any>) {
-        try {
-            GlobalScope.launch(context = Dispatchers.IO) {
-                // convert map to json then save as string
-                val event = JSONObject(map).toString()
-                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-                trackingRepository.saveEvent(resultEvent.toString(), session)
-            }
-        } catch (w: Throwable) {
-
+        GlobalScope.launchCatchError(context = Dispatchers.IO, block = {
+            // convert map to json then save as string
+            val event = JSONObject(map).toString()
+            val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+            trackingRepository.saveEvent(resultEvent.toString(), session)
+        }) {
+            // no-op
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-        try {
-            GlobalScope.launch(context = Dispatchers.IO) {
-                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
-                        session)
-                if (isSuccess && BuildConfig.DEBUG) {
-                    Log.e("Iris", "Success Send Single Event")
-                }
+        GlobalScope.launchCatchError(context = Dispatchers.IO, block = {
+            val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
+                    session)
+            if (isSuccess && BuildConfig.DEBUG) {
+                Log.e("Iris", "Success Send Single Event")
             }
-        } catch (e: Throwable) {
-            // no op
+        }) {
+            // no-op
         }
-
     }
 
     override fun setUserId(userId: String) {
