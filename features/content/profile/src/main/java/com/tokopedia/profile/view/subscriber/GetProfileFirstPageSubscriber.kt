@@ -2,6 +2,7 @@ package com.tokopedia.profile.view.subscriber
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import rx.Subscriber
 
@@ -10,8 +11,8 @@ import rx.Subscriber
  */
 class GetProfileFirstPageSubscriber(private val view: ProfileContract.View,
                                     private val fromLogin: Boolean)
-    : Subscriber<ProfileFirstPageViewModel>() {
-    override fun onNext(t: ProfileFirstPageViewModel) {
+    : Subscriber<DynamicFeedProfileViewModel>() {
+    override fun onNext(t: DynamicFeedProfileViewModel) {
         view.onSuccessGetProfileFirstPage(t, fromLogin)
     }
 

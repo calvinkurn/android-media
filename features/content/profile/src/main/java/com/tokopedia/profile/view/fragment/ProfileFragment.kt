@@ -63,6 +63,7 @@ import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
@@ -260,50 +261,50 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel, isFromLogin: Boolean) {
-        presenter.cursor = firstPageViewModel.lastCursor
-        onlyOnePost = firstPageViewModel.visitableList.size == 1
-        isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
-        affiliatePostQuota = firstPageViewModel.affiliatePostQuota
-
-        if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
-            setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
-            addFooter(
-                    firstPageViewModel.profileHeaderViewModel,
-                    firstPageViewModel.affiliatePostQuota
-            )
-        }
-
-        setProfileToolbar(firstPageViewModel.profileHeaderViewModel, isFromLogin)
-
-        val visitables: ArrayList<Visitable<*>> = ArrayList()
-        if (!firstPageViewModel.visitableList.isEmpty()) {
-            firstPageViewModel.visitableList
-                    .filterIsInstance<BaseKolViewModel>()
-                    .forEach { it.isKol = firstPageViewModel.profileHeaderViewModel.isKol }
-            visitables.addAll(firstPageViewModel.visitableList)
-        } else {
-            visitables.add(getEmptyModel(
-                    firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent,
-                    firstPageViewModel.profileHeaderViewModel.isOwner,
-                    firstPageViewModel.profileHeaderViewModel.isAffiliate)
-            )
-        }
-        trackKolPostImpression(visitables)
-        renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
-
-        if (afterPost) {
-            when {
-                isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
-                onlyOnePost -> showShowCaseDialog(shareProfile)
-                else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
-            }
-            afterPost = false
-
-        } else if (afterEdit) {
-            showAfterEditToaster()
-            afterEdit = false
-        }
+    override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
+        presenter.cursor = element.dynamicFeedDomainModel.cursor
+        onlyOnePost = element.dynamicFeedDomainModel.postList.size == 1
+        isAffiliate = element.profileHeaderViewModel.isAffiliate
+//        affiliatePostQuota = firstPageViewModel.affiliatePostQuota
+//
+//        if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
+//            setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
+//            addFooter(
+//                    firstPageViewModel.profileHeaderViewModel,
+//                    firstPageViewModel.affiliatePostQuota
+//            )
+//        }
+//
+//        setProfileToolbar(firstPageViewModel.profileHeaderViewModel, isFromLogin)
+//
+//        val visitables: ArrayList<Visitable<*>> = ArrayList()
+//        if (!firstPageViewModel.visitableList.isEmpty()) {
+//            firstPageViewModel.visitableList
+//                    .filterIsInstance<BaseKolViewModel>()
+//                    .forEach { it.isKol = firstPageViewModel.profileHeaderViewModel.isKol }
+//            visitables.addAll(firstPageViewModel.visitableList)
+//        } else {
+//            visitables.add(getEmptyModel(
+//                    firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent,
+//                    firstPageViewModel.profileHeaderViewModel.isOwner,
+//                    firstPageViewModel.profileHeaderViewModel.isAffiliate)
+//            )
+//        }
+//        trackKolPostImpression(visitables)
+//        renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
+//
+//        if (afterPost) {
+//            when {
+//                isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
+//                onlyOnePost -> showShowCaseDialog(shareProfile)
+//                else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
+//            }
+//            afterPost = false
+//
+//        } else if (afterEdit) {
+//            showAfterEditToaster()
+//            afterEdit = false
+//        }
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
