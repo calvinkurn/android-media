@@ -32,7 +32,7 @@ class GetDynamicFeedProfileFirstUseCase
     var userId = 0;
 
     override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedProfileViewModel> {
-        userId = requestParams!!.getInt(GetProfileHeaderUseCase.PARAM_USER_ID, 0)
+        userId = requestParams!!.getInt(GetProfileHeaderUseCase.PARAM_USER_ID_TARGET, 0)
         return Observable.zip(
                 getProfileHeader(userId),
                 getDynamicFeed(requestParams)
@@ -78,9 +78,9 @@ class GetDynamicFeedProfileFirstUseCase
         }
     }
     companion object {
-        fun createRequestParams(userId: Int): RequestParams {
-            val requestParams = GetDynamicFeedUseCase.createRequestParams(userId.toString(), "", GetDynamicFeedUseCase.SOURCE_PROFILE)
-            requestParams.putInt(GetProfileHeaderUseCase.PARAM_USER_ID, userId)
+        fun createRequestParams(targetUserId: Int): RequestParams {
+            val requestParams = GetDynamicFeedUseCase.createProfileFeedRequestParams(targetUserId.toString(), "")
+            requestParams.putInt(GetProfileHeaderUseCase.PARAM_USER_ID_TARGET, targetUserId)
             return requestParams
         }
     }

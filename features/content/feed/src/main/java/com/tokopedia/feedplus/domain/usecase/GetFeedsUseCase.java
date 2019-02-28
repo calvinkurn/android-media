@@ -15,7 +15,7 @@ import rx.Observable;
  */
 
 public class GetFeedsUseCase extends UseCase<FeedResult> {
-    public static final String PARAM_USER_ID = "PARAM_USER_ID";
+    public static final String PARAM_USER_ID = "PARAM_USER_ID_TARGET";
     public static final String PARAM_CURSOR = "PARAM_CURSOR";
     public static final String PARAM_PAGE = "PARAM_PAGE";
     protected FeedRepository feedRepository;
