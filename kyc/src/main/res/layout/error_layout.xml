@@ -24,13 +24,14 @@
         />
 
     <Button
+        android:id="@+id/error_btn_confirm"
         android:layout_marginTop="@dimen/dp_40"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="#ffffff"
         android:gravity="center"
-        android:text="KONFIRMASI"
+        android:text="OKE"
         android:background="@drawable/btn_bg_rounded_corners"
         android:layout_marginBottom="@dimen/dp_14"
         />

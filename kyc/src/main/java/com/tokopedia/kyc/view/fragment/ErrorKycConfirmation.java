@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
@@ -15,18 +16,12 @@ import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
-public class FragmentVerificationSuccess extends BaseDaggerFragment implements
-        View.OnClickListener{
-
+public class ErrorKycConfirmation extends BaseDaggerFragment
+        implements View.OnClickListener{
     private ActivityListener activityListener;
-    private Button continueShopping;
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if(i == R.id.continue_shopping){
-            getActivity().finish();
-        }
-    }
+    public static String TAG = "error_kyc_confirm";
+    private Button tryAgain;
+    private TextView secondaryText;
 
     @Override
     protected void initInjector() {
@@ -35,12 +30,12 @@ public class FragmentVerificationSuccess extends BaseDaggerFragment implements
 
     @Override
     protected String getScreenName() {
-        return Constants.Values.VERFICATION_SUCCESS_SCR;
-    }
 
-    public static FragmentVerificationSuccess newInstance(){
-        FragmentVerificationSuccess fragmentVerificationSuccess = new FragmentVerificationSuccess();
-        return fragmentVerificationSuccess;
+        return Constants.Values.ERROR_KYC_CONFIRM;
+    }
+    public static ErrorKycConfirmation newInstance() {
+        ErrorKycConfirmation errorKycConfirmation = new ErrorKycConfirmation();
+        return errorKycConfirmation;
     }
 
     @Override
@@ -55,13 +50,21 @@ public class FragmentVerificationSuccess extends BaseDaggerFragment implements
         activityListener = (ActivityListener)context;
     }
 
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if(i == R.id.try_again){
+            activityListener.addReplaceFragment(FragmentUpgradeToOvo.newInstance(), true, FragmentUpgradeToOvo.TAG);
+        }
+    }
+
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.successful_verification, container, false);
-        continueShopping = view.findViewById(R.id.continue_shopping);
-        continueShopping.setOnClickListener(this::onClick);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.error_kyc, container, false);
+        tryAgain = view.findViewById(R.id.try_again);
+        tryAgain.setOnClickListener(this::onClick);
         return view;
     }
 }

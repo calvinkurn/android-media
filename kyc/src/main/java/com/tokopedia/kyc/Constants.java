@@ -3,6 +3,7 @@ package com.tokopedia.kyc;
 public interface Constants {
     interface Values {
         String OVOUPGRADE_STEP_1_SCR = "/ovoupgrade_step_1";
+        String ERROR_KYC_CONFIRM = "/error_kyc_confirm";
         String OVOUPGRADE_STEP_2_SCR = "/ovoupgrade_step_2";
         String KYC_CARDID_UPLOAD_SCR = "/kyc_cardid_upload";
         String KYC_ERROR_SCR = "/kyc_error_page";
@@ -21,11 +22,13 @@ public interface Constants {
         String TAG_CAMERA_PAGE = "card_id_camera";
         String SUCCESS = "success";
         int MAIDEN_NAME_LENGTH = 30;
+        int KTP_NUMBER_LENGTH = 16;
         String WEB_VIEW_TITLE = "Sayarat dan Ketentuan";
+        String SELFIE = "SELFIE";
     }
     interface AppLinks{
         String OVOUPGRADE = "tokopedia://ovoupgrade";
-        String OVOUPGRADE_COMPLETE = "tokopedia://ovoupgradedone";
+        String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}";
     }
 
     interface Keys{
@@ -34,18 +37,8 @@ public interface Constants {
         String KYC_REQUEST_ID = "kyc_request_id";
         int KYC_CARDID_CAMERA = 1;
         int KYC_SELFIEID_CAMERA = 2;
-        String PERSISTENT_STORE = "persistent_store";
-        String DOCID_CARD = "docid_card";
-        String DOCID_SELFIE = "docid_selfie";
-        String DOCTYPE = "doctype";
-        String MOTHERS_MAIDEN_NAME = "mothers_maiden_name";
-        String DOC_NUMBER = "doc_number";
-        String KYC_REQ_ID = "kyc_req_id";
-        String CARD_IMG_PATH = "card_img_path";
-        String FLIP_CARD_IMG = "flip_card_img";
-        String SELFIE_IMG_PATH = "selfie_img_path";
-        String FLIP_SELFIE_IMG = "flip_selfie_img";
-        String CONFIRM_DATA_REQ_CONTAINER = "confirm_data_req_container";
+        String STATUS = "status";
+        String FROM_RETAKE_FLOW = "from_retake_flow";
 
     }
 
@@ -59,10 +52,16 @@ public interface Constants {
         String name = "^[a-zA-Z\\s]+";
     }
 
-    interface ERROR_MSG{
+    interface ErrorMsg{
         String KTP_NUMBER = "Nomor KTP harus 16 digit";
         String MOTHERS_NAME = "Nama gadis ibu kandung maksimal 30 karakter";
         String PASSPORT_NUMBER = "Passport number is not valid";
         String FORIEGNER_MOTHERS_NAME = "Mother's maiden name is not valid";
+    }
+
+    interface Status{
+        String INPROGRESS = "inprogress";
+        String SUCCESSFUL = "successful";
+        String FAILED = "failed";
     }
 }

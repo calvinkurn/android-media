@@ -94,7 +94,8 @@
                 android:layout_below="@+id/txtv_care_timings"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_36"
-                android:paddingRight="@dimen/dp_100"
+                android:layout_marginLeft="@dimen/dp_100"
+                android:layout_alignParentLeft="true"
                 android:src="@drawable/call" />
 
             <ImageView
@@ -103,17 +104,20 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtv_care_timings"
                 android:layout_centerHorizontal="true"
+                android:layout_alignParentRight="true"
                 android:layout_marginTop="@dimen/dp_36"
-                android:paddingLeft="@dimen/dp_50"
-                android:src="@drawable/ic_email" />
+                android:layout_marginRight="@dimen/dp_100"
+                android:src="@drawable/email" />
 
-            <TextView
+            <Button
+                android:id="@+id/back_to_app"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/call"
                 android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_36"
                 android:background="@drawable/btn_bg_rounded_corners"
-                android:gravity="center_horizontal"
+                android:gravity="center"
                 android:text="Kembali ke Tokopedia"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />

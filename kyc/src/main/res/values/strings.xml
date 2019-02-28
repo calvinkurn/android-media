@@ -5,4 +5,6 @@
     <string name="upgrade_ovo_btn">Tingkatkan Level OVO</string>
     <string name="label_later">Nanti Saja</string>
     <string name="branding">Powered by</string>
+    <string name="ovo_tnc_text"><![CDATA[Proses ini dilakukan sepenuhnya oleh OVO.<font color="#06b3ba">Lihat Syarat &amp; Ketentuan OVO</font>]]></string>
+    <string name="upgrade_failure">Yuk, kama bisa mengulang proses peningkatan level akun OVO degan mengeklik tombol di bawah ini.</string>
 </resources>

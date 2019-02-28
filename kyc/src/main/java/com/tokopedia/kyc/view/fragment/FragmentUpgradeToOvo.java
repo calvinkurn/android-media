@@ -1,5 +1,6 @@
 package com.tokopedia.kyc.view.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 import com.tokopedia.kyc.view.interfaces.UpgradeToOvoContract;
 
 import rx.Subscriber;
@@ -28,9 +30,10 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
         implements UpgradeToOvoContract.View, View.OnClickListener{
 
     private ActivityListener activityListener;
+    private LoaderUiListener loaderUiListener;
     private Button proceedWithUpgrade;
     private Button upgradeLater;
-    private String TAG = "start_upgrade";
+    public static String TAG = "start_upgrade";
 
     @Override
     protected void initInjector() {
@@ -78,15 +81,19 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         activityListener = (ActivityListener)context;
+        loaderUiListener = (LoaderUiListener)context;
     }
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.upgrade_btn) {
+            loaderUiListener.showProgressDialog();
             KycUtil.executeEligibilityCheck(getContext(), getEligibilityCheckSubscriber());
         } else if (i == R.id.later_btn) {
-            getActivity().finish();
+//            getActivity().finish();
+            activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(),
+                    true, FragmentCardIDUpload.TAG);
         }
     }
 
@@ -99,21 +106,17 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
 
             @Override
             public void onError(Throwable e) {
-
+                loaderUiListener.hideProgressDialog();
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                loaderUiListener.hideProgressDialog();
                 EligibilityBase eligibilityBase = graphqlResponse.getData(EligibilityBase.class);
                 if(eligibilityBase != null && eligibilityBase.getGoalKYCRequest().getKycRequestId() > 0){
-                    KycUtil.saveDataToPersistentStore(getContext(), Constants.Keys.KYC_REQ_ID,
-                            eligibilityBase.getGoalKYCRequest().getKycRequestId());
-
                     FragmentIntroToOvoUpgradeSteps fragmentIntroToOvoUpgradeSteps =
                             FragmentIntroToOvoUpgradeSteps.newInstance();
-                    ConfirmRequestDataContainer confirmRequestDataContainer = new ConfirmRequestDataContainer();
-                    confirmRequestDataContainer.setKycReqId(eligibilityBase.getGoalKYCRequest().getKycRequestId());
-                    fragmentIntroToOvoUpgradeSteps.setArguments(KycUtil.getConfirmReqDataContainerBundle(confirmRequestDataContainer));
+                    activityListener.getDataContatainer().setKycReqId(eligibilityBase.getGoalKYCRequest().getKycRequestId());
                     activityListener.addReplaceFragment(fragmentIntroToOvoUpgradeSteps,
                             true, FragmentIntroToOvoUpgradeSteps.TAG);
                 }

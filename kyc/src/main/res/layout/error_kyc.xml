@@ -33,7 +33,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:text="Secondary text goes here"
+                android:text="@string/upgrade_failure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -45,7 +45,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <TextView
+    <Button
         android:text="COBA LAGI"
         android:background="@drawable/btn_bg_rounded_corners"
         android:layout_width="match_parent"

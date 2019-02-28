@@ -1,44 +1,46 @@
 package com.tokopedia.kyc.view;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.text.TextUtils;
+import android.net.Uri;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.cachemanager.CacheManager;
-import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.KYCRouter;
-import com.tokopedia.kyc.PersistentStore;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
-import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
+import com.tokopedia.kyc.model.ConfirmSubmitResponse;
 import com.tokopedia.kyc.model.EligibilityBase;
+import com.tokopedia.kyc.model.KYCDocumentUploadResponse;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 
 import rx.Subscriber;
 
 public class KycUtil {
     public static void createKYCIdCameraFragment(Context context,
-                                                 ActivityListener activityListener, ActionCreator actionCreator, int cameraType) {
+                                                 ActivityListener activityListener,
+                                                 ActionCreator actionCreator,
+                                                 int cameraType, boolean replace) {
         activityListener.showHideActionbar(false);
         activityListener.addReplaceFragment((
                         (KYCRouter) context.getApplicationContext()).getKYCCameraFragment(actionCreator,
                 new CardIdDataKeyProvider(), cameraType),
-                false, Constants.Values.TAG_CAMERA_PAGE);
+                replace, Constants.Values.TAG_CAMERA_PAGE);
     }
 
     public static void executeEligibilityCheck(Context context, Subscriber<GraphqlResponse> subscriber) {
@@ -53,7 +55,7 @@ public class KycUtil {
             Object> gqlMutationDataMap){
         GraphqlUseCase kycConfirmationUseCase= new GraphqlUseCase();
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.kyc_confirmation_submit),
-                EligibilityBase.class, gqlMutationDataMap);
+                ConfirmSubmitResponse.class, gqlMutationDataMap);
         kycConfirmationUseCase.addRequest(graphqlRequest);
         kycConfirmationUseCase.execute(subscriber);
     }
@@ -77,17 +79,28 @@ public class KycUtil {
         }
     }
 
-    public static void saveDataToPersistentStore(Context context, String key, Object value){
-        PersistentStore.getInstance(context).getCacheManager().put(key, value);
+    public static void sendEmail(Context context){
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"cs@ovo.id"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "[Upgrade Ke OVO Premier] Dalam Proses Issue");
+
+        context.startActivity(Intent.createChooser(emailIntent, "Kirim mail..."));
     }
 
-    public static Object getDataFromPersistentStore(Context context, String key, Type type, Object defaultValue){
-        return PersistentStore.getInstance(context).getCacheManager().get(key,type, defaultValue);
+    public static void makeCall(Context context){
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:1500696"));
+        context.startActivity(Intent.createChooser(intent, "Lakukan panggilan"));
     }
 
-    public static Bundle getConfirmReqDataContainerBundle(ConfirmRequestDataContainer confirmRequestDataContainer){
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.Keys.CONFIRM_DATA_REQ_CONTAINER, confirmRequestDataContainer);
-        return bundle;
+    public static AlertDialog.Builder getErrorDialogBuilder(Activity context, View.OnClickListener onClickListener){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = context.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.error_layout, null);
+        dialogView.findViewById(R.id.error_btn_confirm).setOnClickListener(onClickListener);
+        dialogBuilder.setView(dialogView);
+        return dialogBuilder;
     }
 }

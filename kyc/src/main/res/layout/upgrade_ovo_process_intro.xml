@@ -68,11 +68,11 @@
 
             <TextView
                 android:paddingTop="@dimen/dp_20"
+                android:id="@+id/ovo_tncpage_link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="6sp"
-                android:text="Proses ini dilakukan sepenuhnya oleh OVO.  Lihat Syarat &amp; Ketentuan OVO"
                 android:textColor="#6b767e"
                 android:textSize="12sp" />
 

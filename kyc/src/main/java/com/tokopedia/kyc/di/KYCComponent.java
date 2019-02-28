@@ -1,6 +1,7 @@
 package com.tokopedia.kyc.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.kyc.view.fragment.ErrorKycConfirmation;
 import com.tokopedia.kyc.view.fragment.FragmentCardIDUpload;
 import com.tokopedia.kyc.view.fragment.FragmentErrorKyc;
 import com.tokopedia.kyc.view.fragment.FragmentFollowupCustomerCare;
@@ -16,6 +17,7 @@ import dagger.Component;
 @KYCScope
 @Component(modules = KYCModule.class, dependencies = BaseAppComponent.class)
 public interface KYCComponent {
+    void inject(ErrorKycConfirmation fragmentUpgradeToOvo);
     void inject(FragmentUpgradeToOvo fragmentUpgradeToOvo);
     void inject(FragmentIntroToOvoUpgradeSteps upgradeToOvoFragment);
     void inject(FragmentCardIDUpload fragmentCardIDUpload);

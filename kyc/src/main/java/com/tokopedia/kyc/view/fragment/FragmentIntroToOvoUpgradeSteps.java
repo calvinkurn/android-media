@@ -1,16 +1,20 @@
 package com.tokopedia.kyc.view.fragment;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
@@ -24,6 +28,7 @@ import java.util.HashMap;
 public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implements View.OnClickListener {
     private ActivityListener activityListener;
     private Button startUpgradeProcess;
+    private TextView ovoTncLink;
     public static String TAG = "intro_to_ovo_upgrade_steps";
 
     @Override
@@ -53,6 +58,14 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
         View view = inflater.inflate(R.layout.upgrade_ovo_process_intro, container, false);
         startUpgradeProcess = view.findViewById(R.id.start_upgrade_process);
         startUpgradeProcess.setOnClickListener(this);
+        ovoTncLink = view.findViewById(R.id.ovo_tncpage_link);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ovoTncLink.setText(Html.fromHtml(getResources().getString(R.string.ovo_tnc_text), Html.FROM_HTML_MODE_LEGACY));
+        }
+        else {
+            ovoTncLink.setText(Html.fromHtml(getResources().getString(R.string.ovo_tnc_text)));
+        }
+        ovoTncLink.setOnClickListener(this::onClick);
         return view;
     }
 
@@ -70,10 +83,8 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
                 public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
                     Bundle bundle = new Bundle();
                     ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
-                    bundle.putString(FragmentCardIDUpload.CARDID_IMG_PATH, (String) dataObj.get(keysList.get(0)));
-                    bundle.putBoolean(FragmentCardIDUpload.FLAG_IMG_FLIP, (Boolean) dataObj.get(keysList.get(1)));
-                    bundle.putParcelable(Constants.Keys.CONFIRM_DATA_REQ_CONTAINER,
-                            getArguments().getParcelable(Constants.Keys.CONFIRM_DATA_REQ_CONTAINER));
+                    activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
+                    activityListener.getDataContatainer().setCardIdImage((String) dataObj.get(keysList.get(0)));
                     activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(bundle), true,
                             FragmentCardIDUpload.TAG);
                     activityListener.showHideActionbar(true);
@@ -84,7 +95,15 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
 
                 }
             };
-            KycUtil.createKYCIdCameraFragment(getContext(), activityListener, actionCreator, Constants.Keys.KYC_CARDID_CAMERA);
+            KycUtil.createKYCIdCameraFragment(getContext(),
+                    activityListener,
+                    actionCreator,
+                    Constants.Keys.KYC_CARDID_CAMERA,
+                    true);
+        }
+        else if(v.getId() == R.id.ovo_tncpage_link){
+            ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
+                    Constants.URLs.OVO_TNC_PAGE);
         }
     }
 }

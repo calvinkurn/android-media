@@ -1,5 +1,6 @@
 package com.tokopedia.kyc.view.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,18 +14,27 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.kyc.domain.UploadDocumentUseCase;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
+import com.tokopedia.kyc.model.KYCDocumentUploadResponse;
 import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment implements View.OnClickListener{
     private ActivityListener activityListener;
+    private LoaderUiListener loaderUiListener;
     private View selfieIdIntroView;
     private View selfieIdPreviewAndUpload;
     private Button selfieIdIntroOkBtn;
@@ -32,18 +42,63 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     private TextView retakeImageBtn;
     private ImageView selfieidImg;
     public static String TAG = "selfieid_preview_upload";
+    private int kycReqId;
+    private String imagePath;
+    private boolean flipSelfieIdImg;
+    private AlertDialog alertDialog;
+
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.selfieid_intro_proceed){
-            KycUtil.createKYCIdCameraFragment(getContext(), activityListener, getSefieIdImageAction(), Constants.Keys.KYC_SELFIEID_CAMERA);
+            KycUtil.createKYCIdCameraFragment(getContext(),
+                    activityListener, getSefieIdImageAction(),
+                    Constants.Keys.KYC_SELFIEID_CAMERA, false);
         }
         else if(i == R.id.use_img){
-            goToTandCPage();
+            loaderUiListener.showProgressDialog();
+            kycReqId = activityListener.getDataContatainer().getKycReqId();
+            UploadDocumentUseCase uploadDocumentUseCase = new UploadDocumentUseCase(null,
+                    getContext(), imagePath, Constants.Values.SELFIE, kycReqId);
+            uploadDocumentUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    showErrorAlertDialog();
+                    loaderUiListener.hideProgressDialog();
+                }
+
+                @Override
+                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                    loaderUiListener.hideProgressDialog();
+                    KYCDocumentUploadResponse kycDocumentUploadResponse =
+                            (typeRestResponseMap.get(KYCDocumentUploadResponse.class)).getData();
+                    if(kycDocumentUploadResponse != null &&
+                            kycDocumentUploadResponse.getKycImageUploadDataClass() != null &&
+                            kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId() > 0){
+                        activityListener.getDataContatainer().setSelfieIdDocumentId(
+                                kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId());
+                        goToTandCPage();
+                    }
+                    else {
+                        showErrorAlertDialog();
+                    }
+                }
+            });
         }
         else if(i == R.id.retake_image){
-            KycUtil.createKYCIdCameraFragment(getContext(), activityListener, getSefieIdImageAction(), Constants.Keys.KYC_SELFIEID_CAMERA);
+            KycUtil.createKYCIdCameraFragment(getContext(),
+                    activityListener,
+                    getSefieIdImageAction(),
+                    Constants.Keys.KYC_SELFIEID_CAMERA, false);
+        }
+        else if(i == R.id.error_btn_confirm){
+            alertDialog.dismiss();
         }
     }
 
@@ -68,6 +123,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         activityListener = (ActivityListener)context;
+        loaderUiListener = (LoaderUiListener)context;
     }
 
     @Nullable
@@ -97,6 +153,12 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
         return fragmentSelfieIdPreviewAndUpload;
     }
 
+    public static FragmentSelfieIdPreviewAndUpload newInstance(Bundle bundle){
+        FragmentSelfieIdPreviewAndUpload fragmentSelfieIdPreviewAndUpload = newInstance();
+        fragmentSelfieIdPreviewAndUpload.setArguments(bundle);
+        return fragmentSelfieIdPreviewAndUpload;
+    }
+
     private ActionCreator getSefieIdImageAction(){
         ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
             @Override
@@ -105,10 +167,11 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
                 selfieIdIntroView.setVisibility(View.GONE);
                 selfieIdPreviewAndUpload.setVisibility(View.VISIBLE);
                 activityListener.showHideActionbar(true);
-                KycUtil.saveDataToPersistentStore(getContext(), Constants.Keys.SELFIE_IMG_PATH,  dataObj.get(keysList.get(0)));
-                KycUtil.saveDataToPersistentStore(getContext(), Constants.Keys.FLIP_SELFIE_IMG, dataObj.get(keysList.get(1)));
-                KycUtil.setCameraCapturedImage((String) dataObj.get(keysList.get(0)),
-                        (Boolean) dataObj.get(keysList.get(1)), selfieidImg);
+                imagePath = (String) dataObj.get(keysList.get(0));
+                flipSelfieIdImg = (Boolean) dataObj.get(keysList.get(1));
+                activityListener.getDataContatainer().setSelfieIdImage(imagePath);
+                activityListener.getDataContatainer().setFlipSelfieIdImg(flipSelfieIdImg);
+                KycUtil.setCameraCapturedImage(imagePath, flipSelfieIdImg, selfieidImg);
             }
 
             @Override
@@ -122,5 +185,10 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     private void goToTandCPage(){
         activityListener.addReplaceFragment(FragmentTermsAndConditions.newInstance(), true,
                 FragmentTermsAndConditions.TAG);
+    }
+
+    private void showErrorAlertDialog(){
+        alertDialog = KycUtil.getErrorDialogBuilder(getActivity(), FragmentSelfieIdPreviewAndUpload.this::onClick).create();
+        alertDialog.show();
     }
 }

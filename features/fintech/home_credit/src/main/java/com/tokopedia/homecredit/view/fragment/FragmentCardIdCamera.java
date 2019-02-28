@@ -1,11 +1,16 @@
 package com.tokopedia.homecredit.view.fragment;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.RequiresPermission;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.otaliastudios.cameraview.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,6 +43,12 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         else {
             actionCreator.actionError(1,101);
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.CAMERA)
+    public static BaseDaggerFragment newInstance() {
+        return new FragmentCardIdCamera();
     }
 
     @Override

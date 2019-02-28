@@ -1,6 +1,7 @@
 package com.tokopedia.kyc.view.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -29,9 +30,10 @@ import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.domain.UploadDocumentUseCase;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
-import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
+import com.tokopedia.kyc.model.KYCDocumentUploadResponse;
 import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -61,40 +63,19 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     public static String TAG = "cardId_upload";
     public static String CARDID_IMG_PATH = "cardid_img_path";
     public static String FLAG_IMG_FLIP = "flag_img_flip";
-    private List<String> permissionsToRequest;
-    private boolean isPermissionGotDenied;
-    protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
-
+    private AlertDialog alertDialog;
 
     private ActivityListener activityListener;
+    private LoaderUiListener loaderUiListener;
     @Override
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.confirmation_btn){
+            if(setNumberWrapperError()) return;
+            if(setNameWrapperError()) return;
 
-            if(TextUtils.isEmpty(edtxtNumber.getText())){
-                wrapperNumberKtp.setError("Invalid KTP/Passport number");
-                return;
-            }
-            else {
-                wrapperNumberKtp.setError("");
-            }
-            if(TextUtils.isEmpty(edtxtName.getText())){
-                wrapperName.setError("Invalid Mother's maiden name");
-                return;
-            }
-            else
-            if(!(edtxtName.getText().toString().matches(Constants.RegEx.name)) ||
-                    !(edtxtName.getText().length() <= Constants.Values.MAIDEN_NAME_LENGTH)){
-                wrapperName.setError("Invalid Mother's maiden name");
-                return;
-            }
-            else {
-                wrapperName.setError("");
-            }
-
-            kycReqId = ((ConfirmRequestDataContainer)getArguments().
-                    getParcelable(Constants.Keys.CONFIRM_DATA_REQ_CONTAINER)).getKycReqId() ;
+            kycReqId = activityListener.getDataContatainer().getKycReqId();
+            loaderUiListener.showProgressDialog();
             UploadDocumentUseCase uploadDocumentUseCase = new UploadDocumentUseCase(null,
                     getContext(), imagePath, docType, kycReqId);
             uploadDocumentUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -105,12 +86,34 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
 
                 @Override
                 public void onError(Throwable e) {
-
+                    showErrorAlertDialog();
+                    loaderUiListener.hideProgressDialog();
                 }
-
                 @Override
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                    loaderUiListener.hideProgressDialog();
+                    KYCDocumentUploadResponse kycDocumentUploadResponse =
+                            (typeRestResponseMap.get(KYCDocumentUploadResponse.class)).getData();
+                    if(kycDocumentUploadResponse != null &&
+                            kycDocumentUploadResponse.getKycImageUploadDataClass() != null &&
+                            kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId() > 0){
+                        activityListener.getDataContatainer().setDocumentNumber(edtxtNumber.getText().toString());
+                        activityListener.getDataContatainer().setMothersMaidenName(edtxtName.getText().toString());
+                        activityListener.getDataContatainer().setCardIdDocumentId(
+                                kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId());
+                        activityListener.getDataContatainer().setDocumentType(
+                                kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentType());
+                        if(getArguments().getBoolean(Constants.Keys.FROM_RETAKE_FLOW)){
+                            goToTandCPage();
+                        }
+                        else {
+                            goToSelfieIdIntroPage();
 
+                        }
+                    }
+                    else {
+                        showErrorAlertDialog();
+                    }
                 }
             });
         }
@@ -121,9 +124,9 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
                     ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
                     imagePath = ((String) dataObj.get(keysList.get(0)));
                     toBeFlipped = ((Boolean) dataObj.get(keysList.get(1)));
+                    activityListener.getDataContatainer().setFlipCardIdImg(toBeFlipped);
+                    activityListener.getDataContatainer().setCardIdImage(imagePath);
                     activityListener.showHideActionbar(true);
-                    KycUtil.saveDataToPersistentStore(getContext(), Constants.Keys.CARD_IMG_PATH, imagePath);
-                    KycUtil.saveDataToPersistentStore(getContext(), Constants.Keys.FLIP_CARD_IMG, toBeFlipped);
                     KycUtil.setCameraCapturedImage(imagePath, toBeFlipped, idCardImageView);
                 }
 
@@ -132,7 +135,11 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
 
                 }
             };
-            KycUtil.createKYCIdCameraFragment(getContext(), activityListener, actionCreator, Constants.Keys.KYC_CARDID_CAMERA);
+            KycUtil.createKYCIdCameraFragment(getContext(),
+                    activityListener, actionCreator, Constants.Keys.KYC_CARDID_CAMERA, true);
+        }
+        else if(i == R.id.error_btn_confirm){
+            alertDialog.dismiss();
         }
     }
 
@@ -167,6 +174,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         activityListener = (ActivityListener)context;
+        loaderUiListener = (LoaderUiListener) context;
     }
 
     @Nullable
@@ -180,14 +188,16 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
         passportSelection.setOnCheckedChangeListener(this);
         wrapperNumberKtp = view.findViewById(R.id.wrapper_number_ktp);
         edtxtNumber = view.findViewById(R.id.edtxt_number);
+        edtxtNumber.addTextChangedListener(getNumberTextWatcher());
         wrapperName = view.findViewById(R.id.wrapper_name);
         edtxtName = view.findViewById(R.id.edtxt_name);
+        edtxtName.addTextChangedListener(getNameTextWatcher());
         confirmationBtn = view.findViewById(R.id.confirmation_btn);
         confirmationBtn.setOnClickListener(this::onClick);
         retakePhoto = view.findViewById(R.id.retake_photo);
         retakePhoto.setOnClickListener(this::onClick);
-        imagePath = getArguments().getString(CARDID_IMG_PATH);
-        toBeFlipped = getArguments().getBoolean(FLAG_IMG_FLIP);
+        imagePath = activityListener.getDataContatainer().getCardIdImage();
+        toBeFlipped = activityListener.getDataContatainer().isFlipCardIdImg();
         KycUtil.setCameraCapturedImage(imagePath, toBeFlipped, idCardImageView);
         return view;
     }
@@ -209,12 +219,13 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
             edtxtNumber.setHint(Constants.Values.PASSPORT_NUMBER);
             edtxtName.setHint(Constants.Values.MOTHERS_MAIDEN_NAME);
         }
+        setNameWrapperError();
+        setNumberWrapperError();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        checkAndAskForPermissions();
     }
 
     private void goToSelfieIdIntroPage(){
@@ -222,46 +233,6 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
                 FragmentSelfieIdPreviewAndUpload.TAG);
     }
 
-    private void checkAndAskForPermissions(){
-        if (isPermissionGotDenied) {
-            getActivity().getSupportFragmentManager().popBackStack();
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String[] permissions;
-            permissions = new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            permissionsToRequest = new ArrayList<>();
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(getActivity(), permission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsToRequest.add(permission);
-                }
-            }
-            if (!permissionsToRequest.isEmpty()) {
-                ActivityCompat.requestPermissions(getActivity(),
-                        permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (permissionsToRequest != null && grantResults.length == permissionsToRequest.size()) {
-            int grantCount = 0;
-            for (int result : grantResults) {
-                if (result == PackageManager.PERMISSION_DENIED) {
-                    isPermissionGotDenied = true;
-                    break;
-                }
-                grantCount++;
-            }
-            if (grantCount == grantResults.length) {
-                isPermissionGotDenied = false;
-            }
-        }
-    }
 
     private TextWatcher getNameTextWatcher(){
         return new TextWatcher(){
@@ -272,12 +243,14 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if(s.length() > 0){
+                    setNameWrapperLable();
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                setNameWrapperError();
             }
         };
     }
@@ -291,15 +264,91 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if(s.length() > 0){
+                    setNumberWrapperLable();
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                setNumberWrapperError();
             }
         };
     }
 
+    private void goToTandCPage(){
+        activityListener.addReplaceFragment(FragmentTermsAndConditions.newInstance(), true,
+                FragmentTermsAndConditions.TAG);
+    }
+
+    private void setNameWrapperLable(){
+        if(KTPWNISelection.isChecked()){
+            wrapperName.setLabel(Constants.Values.NAMA_GADIS);
+        }
+        else if(passportSelection.isChecked()){
+            wrapperName.setLabel(Constants.Values.MOTHERS_MAIDEN_NAME);
+        }
+    }
+
+    private void setNumberWrapperLable(){
+        if(KTPWNISelection.isChecked()){
+            wrapperNumberKtp.setLabel(Constants.Values.NOMOR_KTP);
+        }
+        else if(passportSelection.isChecked()){
+            wrapperNumberKtp.setLabel(Constants.Values.PASSPORT_NUMBER);
+        }
+    }
+
+    private boolean setNumberWrapperError(){
+        if(TextUtils.isEmpty(edtxtNumber.getText())){
+            if(KTPWNISelection.isChecked()){
+                wrapperNumberKtp.setError(Constants.ErrorMsg.KTP_NUMBER);
+
+            }
+            else if(passportSelection.isChecked()){
+                wrapperNumberKtp.setError(Constants.ErrorMsg.PASSPORT_NUMBER);
+            }
+            return true;
+        }
+        else {
+            if(KTPWNISelection.isChecked() && edtxtNumber.getText().length() != 16){
+                wrapperNumberKtp.setError(Constants.ErrorMsg.KTP_NUMBER);
+                return true;
+            }
+            wrapperNumberKtp.setError("");
+        }
+        return false;
+    }
+
+    private boolean setNameWrapperError(){
+        if(TextUtils.isEmpty(edtxtName.getText())){
+            if(KTPWNISelection.isChecked()){
+                wrapperName.setError(Constants.ErrorMsg.MOTHERS_NAME);
+            }
+            else if(passportSelection.isChecked()) {
+                wrapperName.setError(Constants.ErrorMsg.FORIEGNER_MOTHERS_NAME);
+            }
+            return true;
+        }
+        else if(!(edtxtName.getText().toString().matches(Constants.RegEx.name)) ||
+                !(edtxtName.getText().length() <= Constants.Values.MAIDEN_NAME_LENGTH)){
+            if(KTPWNISelection.isChecked()){
+                wrapperName.setError(Constants.ErrorMsg.MOTHERS_NAME);
+            }
+            else if(passportSelection.isChecked()) {
+                wrapperName.setError(Constants.ErrorMsg.FORIEGNER_MOTHERS_NAME);
+            }
+            return true;
+        }
+        else {
+            wrapperName.setError("");
+        }
+        return false;
+    }
+
+    private void showErrorAlertDialog(){
+        alertDialog = KycUtil.getErrorDialogBuilder(getActivity(), FragmentCardIDUpload.this::onClick).create();
+        alertDialog.show();
+    }
 
 }

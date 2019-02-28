@@ -1,9 +1,15 @@
 package com.tokopedia.kyc.view.activity;
 
+import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
@@ -16,14 +22,23 @@ import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.DaggerKYCComponent;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
 import com.tokopedia.kyc.view.fragment.FragmentUpgradeToOvo;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
-        HasComponent<KYCComponent>, ActivityListener {
+        HasComponent<KYCComponent>, ActivityListener, LoaderUiListener {
 
     private KYCComponent KYCComponent = null;
-
+    private ConfirmRequestDataContainer confirmRequestDataContainer;
+    private ProgressDialog loading;
+    private List<String> permissionsToRequest;
+    private boolean isPermissionGotDenied;
+    protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
 
     @DeepLink(Constants.AppLinks.OVOUPGRADE)
     public static Intent getCallingStartUpgradeToOvo(Context context, Bundle extras) {
@@ -78,5 +93,70 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
     public void showHideActionbar(boolean show){
         if(show) getSupportActionBar().show();
         else getSupportActionBar().hide();
+    }
+
+    @Override
+    public ConfirmRequestDataContainer getDataContatainer() {
+        if(confirmRequestDataContainer == null){
+            confirmRequestDataContainer = new ConfirmRequestDataContainer();
+        }
+        return confirmRequestDataContainer;
+    }
+
+    @Override
+    public void hideProgressDialog(){
+        if(loading != null)
+            loading.dismiss();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        if(loading == null) loading = new ProgressDialog(this);
+        loading.setCancelable(false);
+        loading.setMessage(getString(R.string.title_loading));
+        loading.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (permissionsToRequest != null && grantResults.length == permissionsToRequest.size()) {
+            int grantCount = 0;
+            for (int result : grantResults) {
+                if (result == PackageManager.PERMISSION_DENIED) {
+                    isPermissionGotDenied = true;
+                    break;
+                }
+                grantCount++;
+            }
+            if (grantCount == grantResults.length) {
+                isPermissionGotDenied = false;
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isPermissionGotDenied) {
+            finish();
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            String[] permissions;
+            permissions = new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            permissionsToRequest = new ArrayList<>();
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    permissionsToRequest.add(permission);
+                }
+            }
+            if (!permissionsToRequest.isEmpty()) {
+                ActivityCompat.requestPermissions(this,
+                        permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+            }
+        }
     }
 }

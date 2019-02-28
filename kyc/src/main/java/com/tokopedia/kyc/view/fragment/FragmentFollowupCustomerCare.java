@@ -7,12 +7,14 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
 public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
@@ -20,14 +22,19 @@ public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
     private ActivityListener activityListener;
     private ImageView callAction;
     private ImageView emailAction;
+    private Button backToApp;
+    public static String TAG = "cc_follow_up";
     @Override
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.call){
-
+            KycUtil.makeCall(getContext());
         }
         else if(i == R.id.email){
-
+            KycUtil.sendEmail(getContext());
+        }
+        else if(i == R.id.back_to_app){
+            getActivity().finish();
         }
     }
 
@@ -68,6 +75,8 @@ public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
         callAction.setOnClickListener(this::onClick);
         emailAction = view.findViewById(R.id.email);
         emailAction.setOnClickListener(this::onClick);
+        backToApp = view.findViewById(R.id.back_to_app);
+        backToApp.setOnClickListener(this::onClick);
         return view;
     }
 }

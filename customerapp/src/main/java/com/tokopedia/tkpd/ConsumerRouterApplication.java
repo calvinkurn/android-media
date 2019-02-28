@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
@@ -3714,6 +3715,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return CheckLoginPhoneNumberActivity.getCallingIntent(context);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
                                                    ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType){
@@ -3721,7 +3723,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         BaseDaggerFragment baseDaggerFragment = null;
         switch (cameraType) {
             case KYC_CARDID_CAMERA:
-                baseDaggerFragment = new FragmentCardIdCamera();
+                baseDaggerFragment = FragmentCardIdCamera.newInstance();
                 bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
                 bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
                 baseDaggerFragment.setArguments(bundle);

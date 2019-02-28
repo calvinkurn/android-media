@@ -43,7 +43,7 @@
                 android:textColor="#61000000"
                 android:textSize="14sp" />
 
-            <TextView
+            <Button
                 android:id="@+id/upgrade_now"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                 android:textColor="#ffffff"
                 android:textSize="14sp" />
 
-            <TextView
+            <Button
                 android:id="@+id/returnto_main_page"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
