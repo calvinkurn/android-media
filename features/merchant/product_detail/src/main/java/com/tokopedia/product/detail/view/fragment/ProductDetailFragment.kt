@@ -606,7 +606,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
         productInfoP3.rateEstimation?.let {
-            partialVariantAndRateEstView.renderRateEstimation(it.rates,
+            partialVariantAndRateEstView.renderRateEstimation(it,
                     shopInfo?.location ?: "", ::gotoRateEstimation)
         }
         shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }

@@ -60,7 +60,7 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION)
     fun provideRawGetRateEstimation(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_pdp_estimasi_ongkir)
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_rates_estimation_v3)
 
     @ProductDetailScope
     @Provides

@@ -50,7 +50,7 @@ query RateEstimate($weight: Float!, $domain: String!) {
                         error_msg
                     }
                 }
-                    texts {
+                texts {
                     text_min_price
                     text_destination
                 }

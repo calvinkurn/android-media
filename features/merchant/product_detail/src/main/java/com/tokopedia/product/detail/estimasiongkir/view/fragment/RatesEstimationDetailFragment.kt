@@ -1,5 +1,8 @@
 package com.tokopedia.product.detail.estimasiongkir.view.fragment
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -11,29 +14,30 @@ import android.view.ViewGroup
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.data.model.session.UserSession
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.KG
 import com.tokopedia.product.detail.data.util.LABEL_GRAM
 import com.tokopedia.product.detail.data.util.LABEL_KG
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.estimasiongkir.data.constant.RatesEstimationConstant
-import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
+import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.detail.estimasiongkir.di.RatesEstimationComponent
 import com.tokopedia.product.detail.estimasiongkir.view.adapter.RatesEstimationServiceAdapter
-import com.tokopedia.product.detail.estimasiongkir.view.listener.RatesEstimationDetailView
-import com.tokopedia.product.detail.estimasiongkir.view.presenter.RatesEstimationDetailPresenter
+import com.tokopedia.product.detail.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_rates_estimation_detail.*
 import kotlinx.android.synthetic.main.partial_header_rate_estimation.*
 
 import javax.inject.Inject
 
-class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetailView {
+class RatesEstimationDetailFragment : BaseDaggerFragment(){
 
     @Inject
-    lateinit var presenter: RatesEstimationDetailPresenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModel: RatesEstimationDetailViewModel
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -45,10 +49,27 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
 
     override fun initInjector() {
         getComponent(RatesEstimationComponent::class.java).inject(this)
-        presenter.attachView(this)
     }
 
     override fun getScreenName(): String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            viewModel = viewModelProvider.get(RatesEstimationDetailViewModel::class.java)
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.rateEstResp.observe(this, Observer {
+            when(it){
+                is Success -> onSuccesLoadRateEstimaion(it.data)
+                is Fail -> onErrorLoadRateEstimaion(it.throwable)
+            }
+        })
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_rates_estimation_detail, container, false)
@@ -77,7 +98,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
         val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight/1000)
-        presenter.getCostEstimation(GraphqlHelper.loadRawString(resources, R.raw.gql_pdp_estimasi_ongkir), weightInKg, shopDomain)
+        viewModel.getCostEstimation(weightInKg, shopDomain)
     }
 
     private fun setViewState(viewLoading: Int) {
@@ -96,15 +117,15 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
     }
 
     override fun onDestroyView() {
-        presenter.detachView()
+        viewModel.clear()
         super.onDestroyView()
     }
 
-    override fun onErrorLoadRateEstimaion(throwable: Throwable) {
-
+    private fun onErrorLoadRateEstimaion(throwable: Throwable) {
+        setViewState(VIEW_CONTENT)
     }
 
-    override fun onSuccesLoadRateEstimaion(ratesEstimationModel: RatesEstimationModel, isBlackbox: Boolean) {
+    private fun onSuccesLoadRateEstimaion(ratesEstimationModel: RatesEstimationModel) {
         val address = ratesEstimationModel.address
         val ratesEstimation = ratesEstimationModel.rates
         val shop = ratesEstimationModel.shop
@@ -119,8 +140,8 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
             shipping_receiver_phone.text = address.phone
         }
         shipping_receiver_address.text = "${address.address}, ${address.districtName}, ${address.provinceName}"
-        adapter.isBlackbox = isBlackbox
-        adapter.updateShippingServices(ratesEstimation.attributes)
+        adapter.isBlackbox = ratesEstimationModel.isBlackbox
+        adapter.updateShippingServices(ratesEstimation.services)
         setViewState(VIEW_CONTENT)
     }
 

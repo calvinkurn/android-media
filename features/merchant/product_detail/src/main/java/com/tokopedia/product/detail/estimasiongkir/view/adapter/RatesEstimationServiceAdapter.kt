@@ -1,11 +1,10 @@
 package com.tokopedia.product.detail.estimasiongkir.view.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.estimasiongkir.data.model.ShippingServiceModel
+import com.tokopedia.product.detail.estimasiongkir.data.model.v3.ServiceModel
 import com.tokopedia.product.detail.estimasiongkir.view.adapter.viewholder.BaseRatesEstimationViewHolder
 import com.tokopedia.product.detail.estimasiongkir.view.adapter.viewholder.RatesEstimationBBViewHolder
 import com.tokopedia.product.detail.estimasiongkir.view.adapter.viewholder.RatesEstimationServiceViewHolder
@@ -14,7 +13,7 @@ import com.tokopedia.product.detail.estimasiongkir.view.adapter.viewholder.Rates
 import java.util.ArrayList
 
 class RatesEstimationServiceAdapter : RecyclerView.Adapter<BaseRatesEstimationViewHolder>() {
-    private val shippingServiceModels = ArrayList<ShippingServiceModel>()
+    private val shippingServiceModels = ArrayList<ServiceModel>()
     var isBlackbox: Boolean = false
         set(value) {
             field = value
@@ -51,7 +50,7 @@ class RatesEstimationServiceAdapter : RecyclerView.Adapter<BaseRatesEstimationVi
         else TYPE_BLACKBOX_CONTENT
     }
 
-    fun updateShippingServices(shippingServiceModels: List<ShippingServiceModel>) {
+    fun updateShippingServices(shippingServiceModels: List<ServiceModel>) {
         this.shippingServiceModels.clear()
         this.shippingServiceModels.addAll(shippingServiceModels)
         notifyDataSetChanged()

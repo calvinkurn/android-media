@@ -6,7 +6,8 @@ import com.tokopedia.product.detail.estimasiongkir.view.fragment.RatesEstimation
 import dagger.Component
 
 @RatesEstimationScope
-@Component(modules = arrayOf(RatesEstimationModule::class), dependencies = arrayOf(BaseAppComponent::class))
+@Component(modules = arrayOf(RatesEstimationModule::class, RatesEstimationViewModelModule::class),
+        dependencies = arrayOf(BaseAppComponent::class))
 interface RatesEstimationComponent {
     fun inject(fragment: RatesEstimationDetailFragment)
 }

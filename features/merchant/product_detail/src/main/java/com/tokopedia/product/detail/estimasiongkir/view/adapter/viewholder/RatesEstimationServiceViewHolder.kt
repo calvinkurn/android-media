@@ -7,7 +7,7 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.estimasiongkir.data.model.ShippingServiceModel
+import com.tokopedia.product.detail.estimasiongkir.data.model.v3.ServiceModel
 import com.tokopedia.product.detail.estimasiongkir.view.adapter.ServiceProductAdapter
 import kotlinx.android.synthetic.main.item_rates_estimation_blackbox.view.*
 import kotlinx.android.synthetic.main.item_rates_estimation_service.view.*
@@ -25,17 +25,16 @@ class RatesEstimationBBViewHolder(view: View): BaseRatesEstimationViewHolder(vie
         }
     }
 
-    fun bind(shippingServiceModel: ShippingServiceModel){
-        if (shippingServiceModel.notes.isNotBlank()){
+    fun bind(shippingServiceModel: ServiceModel){
+        if (shippingServiceModel.texts.notes.isNotBlank()){
             itemView.subtitle.visible()
-            itemView.subtitle.text = String.format("(%s)", shippingServiceModel.notes)
+            itemView.subtitle.text = String.format("(%s)", shippingServiceModel.texts.notes)
         } else
             itemView.subtitle.gone()
 
         with(itemView.label_view){
             title = shippingServiceModel.name
-            setSubTitle(shippingServiceModel.etd)
-            setContent(shippingServiceModel.rangePrice)
+            setContent(shippingServiceModel.texts.rangePrice)
             setContentTypeface(Typeface.NORMAL)
         }
     }
@@ -52,14 +51,9 @@ class RatesEstimationServiceViewHolder(itemView: View) : BaseRatesEstimationView
         }
     }
 
-    fun bind(shippingServiceModel: ShippingServiceModel) {
-        if(shippingServiceModel.etd.isEmpty()){
-            itemView.service_title.text = itemView.context.getString(R.string.service_title_format_empty,
-                    shippingServiceModel.name)
-        } else {
-            itemView.service_title.text = itemView.context.getString(R.string.service_title_format,
-                    shippingServiceModel.name, shippingServiceModel.etd)
-        }
+    fun bind(shippingServiceModel: ServiceModel) {
+        itemView.service_title.text = itemView.context.getString(R.string.service_title_format_empty,
+                shippingServiceModel.name)
 
         adapter.replaceProducts(shippingServiceModel.products)
     }

@@ -5,13 +5,9 @@ import android.content.res.Resources
 import android.util.SparseArray
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -23,9 +19,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_INPUT
@@ -37,6 +31,7 @@ import com.tokopedia.product.detail.common.data.model.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.model.holder.RatesEstSummarize
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
@@ -44,11 +39,10 @@ import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.product.detail.estimasiongkir.data.model.RatesEstimationModel
+import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.topads.sdk.domain.Xparams
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,7 +60,6 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class ProductInfoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                               private val restRepository: RestRepository,
                                                private val userSessionInterface: UserSessionInterface,
                                                private val rawQueries: Map<String, String>,
                                                private val addWishListUseCase: AddWishListUseCase,
@@ -339,11 +332,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     affiliateRequest))
 
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
-                productInfoP3.rateEstimation = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)
-                        .data.ratesEstimation.firstOrNull()
-            } else {
-                productInfoP3.rateEstimation = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_rate_estimation),
-                        RatesEstimationModel.Response::class.java).data.ratesEstimation.first()
+                val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)
+                        .data.data
+                val addressDest = ratesEstModel.address.cityName
+                val minPrice = ratesEstModel.rates.services.flatMap { it.products.map { it.price.price } }.minBy { it } ?: 0
+                productInfoP3.rateEstimation = RatesEstSummarize(minPrice, addressDest)
             }
 
             if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)

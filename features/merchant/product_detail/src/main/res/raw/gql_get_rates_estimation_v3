@@ -1,0 +1,160 @@
+query RateEstimate($weight: Float!, $domain: String!) {
+  ratesEstimateV3(input: {weight: $weight, domain: $domain}) {
+      data{
+          address {
+              city_name
+              province_name
+              district_name
+              country
+              postal_code
+              address
+              lat
+              long
+              phone
+              addr_name
+              address_1
+              receiver_name
+          }
+          shop {
+              district_name
+          }
+          rates {
+              id
+              rates_id
+              type
+              services {
+                  service_name
+                  service_id
+                  service_order
+                  status
+                  range_price {
+                      min_price
+                      max_price
+                  }
+                  etd {
+                      min_etd
+                      max_etd
+                  }
+                  texts {
+                      text_range_price
+                      text_etd
+                      text_notes
+                      text_service_notes
+                      text_price
+                      text_service_desc
+                  }
+                  products {
+                      shipper_name
+                      shipper_id
+                      shipper_product_id
+                      shipper_product_name
+                      shipper_product_desc
+                      shipper_weight
+                      promo_code
+                      is_show_map
+                      status
+                      recommend
+                      checksum
+                      ut
+                      price {
+                          price
+                          formatted_price
+                      }
+                      etd {
+                          min_etd
+                          max_etd
+                      }
+                      texts {
+                          text_range_price
+                          text_etd
+                          text_notes
+                          text_service_notes
+                          text_price
+                          text_service_desc
+                      }
+                      insurance {
+                          insurance_price
+                          insurance_type
+                          insurance_type_info
+                          insurance_used_type
+                          insurance_used_default
+                          insurance_used_info
+                      }
+                      error {
+                          error_id
+                          error_message
+                      }
+                      cod {
+                          is_cod_available
+                          cod_text
+                          cod_price
+                          formatted_price
+                      }
+                  }
+                  error {
+                      error_id
+                      error_message
+                  }
+                  is_promo
+                  cod {
+                      is_cod
+                      cod_text
+                  }
+                  order_priority {
+                      is_now
+                      price
+                      formatted_price
+                      inactive_message
+                  }
+
+              }
+              recommendations {
+                  service_name
+                  shipping_id
+                  shipping_product_id
+                  price {
+                      price
+                      formatted_price
+                  }
+                  etd {
+                      min_etd
+                      max_etd
+                  }
+                  texts {
+                      text_range_price
+                      text_etd
+                      text_notes
+                      text_service_notes
+                      text_price
+                      text_service_desc
+                  }
+                  insurance {
+                      insurance_price
+                      insurance_type
+                      insurance_type_info
+                      insurance_used_type
+                      insurance_used_default
+                      insurance_used_info
+                  }
+                  error {
+                      error_id
+                      error_message
+                  }
+              }
+              info {
+                  cod_info {
+                      failed_message
+                  }
+                  blackbox_info{
+                      text_info
+                  }
+              }
+              error {
+                  error_id
+                  error_message
+              }
+          }
+          is_blackbox
+      }
+  }
+}

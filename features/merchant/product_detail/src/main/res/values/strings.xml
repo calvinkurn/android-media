@@ -100,4 +100,5 @@
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
     <string name="template_installment">Min. Pembelanjaan %1$s</string>
     <string name="label_bb_info_desc">Durasi dihitung sejak barang diserahkan kekurir</string>
+    <string name="template_rates_estimate_start_price">Ongkos Kirim mulai dari %1$s</string>
 </resources>
