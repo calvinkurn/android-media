@@ -176,7 +176,7 @@ public interface ApplinkConst {
     String SETTING_BANK = "tokopedia://settings/bankaccount";
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
-    String AFFILIATE_EDIT_POST = "tokopedia://affiliate/edit/{post_id}";
+    String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
     String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
