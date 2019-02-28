@@ -1,7 +1,10 @@
 package com.tokopedia.product.detail
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.transaction.common.TransactionRouter
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 
 interface ProductDetailRouter{
     fun getCartIntent(context: Context): Intent
@@ -12,4 +15,6 @@ interface ProductDetailRouter{
     fun goToEditProduct(context: Context, isEdit: Boolean, productId: String): Intent
     fun getIntermediaryIntent(context: Context, categoryId: String): Intent //only for non seller-app
     fun getCartCount(context: Context): Int
+    fun getExpressCheckoutIntent(activity: Activity, atcRequestParam: AtcRequestParam): Intent
+    fun updateMarketplaceCartCounter(listener: TransactionRouter.CartNotificationListener)
 }

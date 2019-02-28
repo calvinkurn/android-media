@@ -99,4 +99,5 @@
     <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
     <string name="pdp_label_cart_count_max">99+</string>
+    <string name="label_atc_open_cart">Lihat</string>
 </resources>

@@ -6,44 +6,48 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.PreOrder
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
-class PartialButtonActionView private constructor(private val view: View){
+class PartialButtonActionView private constructor(private val view: View) {
     var promoTopAdsClick: (() -> Unit)? = null
-    var buyNowClick: (()-> Unit)? = null
-    var addToCartClick: (()-> Unit)? = null
+    var buyNowClick: (() -> Unit)? = null
+    var addToCartClick: (() -> Unit)? = null
     var topchatClick: (() -> Unit)? = null
     var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
     var visibility: Boolean = false
-    set(value) {
-        field = value
-        with(view){
-            if (value) base_btn_action.visible() else base_btn_action.gone()
+        set(value) {
+            field = value
+            with(view) {
+                if (value) base_btn_action.visible() else base_btn_action.gone()
+            }
         }
-    }
+
+    var hasComponentLoading = false
+
 
     companion object {
         fun build(_view: View) = PartialButtonActionView(_view)
     }
 
     init {
-        with(view){
+        with(view) {
             pb_buy_now.indeterminateDrawable
-                    .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
+                .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
             pb_add_to_cart.indeterminateDrawable
-                    .setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN)
+                .setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN)
         }
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?){
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
         if (isWarehouseProduct) {
             showNoStockButton()
-        } else if (hasShopAuthority){
+        } else if (hasShopAuthority) {
             showShopManageButton()
-        } else if (GlobalConfig.isCustomerApp()){
+        } else if (GlobalConfig.isCustomerApp()) {
             showNewCheckoutButton(preOrder)
         }
 
@@ -55,20 +59,28 @@ class PartialButtonActionView private constructor(private val view: View){
             btn_promote_topads.visibility = View.GONE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
-            tv_buy_now.text = context.getString(if (preOrder?.isPreOrderActive() == true){
+            tv_buy_now.text = context.getString(if (preOrder?.isPreOrderActive() == true) {
                 R.string.action_preorder
             } else R.string.buy)
             btn_buy_now.visibility = View.VISIBLE
             btn_add_to_cart.visibility = View.VISIBLE
 
-            btn_buy_now.setOnClickListener { buyNowClick?.invoke() }
-            btn_add_to_cart.setOnClickListener { addToCartClick?.invoke() }
-            btn_topchat.setOnClickListener { topchatClick?.invoke()  }
+            btn_buy_now.setOnClickListener {
+                if (hasComponentLoading) return@setOnClickListener
+                buyNowClick?.invoke()
+            }
+            btn_add_to_cart.setOnClickListener {
+                if (hasComponentLoading) return@setOnClickListener
+                addToCartClick?.invoke()
+            }
+            btn_topchat.setOnClickListener {
+                topchatClick?.invoke()
+            }
         }
     }
 
     private fun showShopManageButton() {
-        with(view){
+        with(view) {
             btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
             btn_buy.visibility = View.GONE
             btn_promote_topads.visibility = View.VISIBLE
@@ -94,6 +106,26 @@ class PartialButtonActionView private constructor(private val view: View){
         }
     }
 
+    fun showLoadingBuy(){
+        hasComponentLoading = true
+        view.pb_buy_now.visible()
+    }
+
+    fun hideLoadingBuy(){
+        hasComponentLoading = false
+        view.pb_buy_now.hide()
+    }
+
+    fun showLoadingCart(){
+        hasComponentLoading = true
+        view.pb_add_to_cart.visible()
+    }
+
+    fun hideLoadingCart(){
+        hasComponentLoading = false
+        view.pb_add_to_cart.hide()
+    }
+
     fun gone() {
         view.base_btn_action.gone()
     }
@@ -103,8 +135,8 @@ class PartialButtonActionView private constructor(private val view: View){
     }
 
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
-        with(view){
-            if(show) {
+        with(view) {
+            if (show) {
                 btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
                 btn_byme.visible()
             } else btn_byme.gone()

@@ -41,5 +41,7 @@
     <string name="add_to_cart">Tambah ke Keranjang</string>
     <string name="label_discount_percentage">%1$d%%OFF</string>
     <string name="sizechart_guideline">Panduan Ukuran</string>
+    <string name="min_order_x">Jumlah minimum %1$d</string>
+    <string name="max_order_x">Jumlah maksimum %1$d</string>
 
 </resources>

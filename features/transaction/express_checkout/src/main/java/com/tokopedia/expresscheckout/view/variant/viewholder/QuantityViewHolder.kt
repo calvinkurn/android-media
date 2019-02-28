@@ -131,8 +131,14 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
 
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
             error = element.errorProductMinQuantity.replace(QUANTITY_PLACEHOLDER, "${element.minOrderQuantity}", false)
+            if (error.isEmpty()) {
+                error = String.format(itemView.context.getString(R.string.min_order_x), element.minOrderQuantity)
+            }
         } else if (element.orderQuantity > element.maxOrderQuantity) {
             error = element.errorProductMaxQuantity.replace(QUANTITY_PLACEHOLDER, "${element.maxOrderQuantity}", false)
+            if (error.isEmpty()) {
+                error = String.format(itemView.context.getString(R.string.max_order_x), element.maxOrderQuantity)
+            }
         }
 
         if (error != null) {

@@ -145,7 +145,7 @@
             android:layout_height="19dp"
             android:layout_gravity="center"
             android:indeterminateTint="@color/orange_red"
-            tools:visibility="gone"
+            tools:visibility="visible"
             android:visibility="gone" />
 
     </FrameLayout>

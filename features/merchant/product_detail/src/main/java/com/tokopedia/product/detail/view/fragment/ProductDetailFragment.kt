@@ -29,18 +29,28 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
+import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
+import com.tokopedia.expresscheckout.data.entity.response.profile.ProfileListGqlResponse
+import com.tokopedia.expresscheckout.domain.usecase.GetProfileListUseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ATC_AND_SELECT
-import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
-import com.tokopedia.normalcheckout.view.ModelMapper
+import com.tokopedia.normalcheckout.constant.ATC_ONLY
+import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
@@ -48,7 +58,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
@@ -83,8 +92,11 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
+import com.tokopedia.transaction.common.TransactionRouter
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
@@ -99,6 +111,7 @@ import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import rx.Subscriber
 import javax.inject.Inject
 
 class ProductDetailFragment : BaseDaggerFragment() {
@@ -135,6 +148,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var shouldShowCod = false
 
     var loadingProgressDialog: ProgressDialog? = null
+    val errorBottomsheets: ErrorBottomsheets by lazy {
+        ErrorBottomsheets()
+    }
 
     private var userInputNotes = ""
     private var userInputQuantity = 0
@@ -155,6 +171,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_MERCHANT_VOUCHER = 564
         const val REQUEST_CODE_ETALASE = 565
         const val REQUEST_CODE_NORMAL_CHECKOUT = 566
+        const val REQUEST_CODE_ATC_EXPRESS = 567
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -340,13 +357,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         actionButtonView.addToCartClick = {
-            // TODO add to cart click
+            goToNormalCheckout(ATC_ONLY)
         }
         actionButtonView.buyNowClick = {
             // TODO buy now / buy / preorder
             if (productInfoViewModel.isUserSessionActive()) {
                 //TODO tracking
                 //TODO go to normal checkout or express checkout activity
+
+                var isExpressCheckout = false // TODO will check checkoutType = express
+                if (isExpressCheckout) {
+                    goToAtcExpress()
+                } else {
+                    goToNormalCheckout()
+                }
             } else { // not login
                 //TODO tracking
                 context?.let {
@@ -356,6 +380,70 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         loadProductData()
+    }
+
+    private fun goToNormalCheckout(@ProductAction action: Int = ATC_AND_BUY) {
+        context?.let {
+            productInfo?.run {
+                startActivityForResult(NormalCheckoutActivity.getIntent(it,
+                    basic.shopID.toString(),
+                    parentProductId,
+                    userInputNotes,
+                    userInputQuantity,
+                    userInputVariant,
+                    action,
+                    null), REQUEST_CODE_NORMAL_CHECKOUT);
+            }
+        }
+    }
+
+    private fun goToAtcExpress() {
+        actionButtonView.showLoadingBuy()
+        activity?.run {
+            val useCase = GetProfileListUseCase(this)
+            useCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    actionButtonView.hideLoadingBuy()
+                    goToNormalCheckout()
+                }
+
+                override fun onNext(graphqlResponse: GraphqlResponse) {
+                    actionButtonView.hideLoadingBuy()
+                    val profileResponse = graphqlResponse.getData<ProfileListGqlResponse>(ProfileListGqlResponse::class.java)
+                    if (profileResponse?.data != null && profileResponse.data.status.equals("OK")
+                        && profileResponse.data.data.defaultProfileId != 0) {
+                        navigateToExpressCheckout()
+                    } else {
+                        goToNormalCheckout()
+                    }
+                }
+            })
+        }
+    }
+
+    fun navigateToExpressCheckout() {
+        activity?.run {
+            try {
+                val productInfo = (productInfoViewModel.productInfoP1Resp.value as Success).data
+                val atcRequestParam = AtcRequestParam()
+                atcRequestParam.setShopId(productInfo.productInfo.basic.shopID)
+                atcRequestParam.setProductId(productInfo.productInfo.basic.id)
+                atcRequestParam.setNotes(userInputNotes)
+                val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
+                atcRequestParam.setQuantity(qty)
+
+                val intent = (getApplicationContext() as ProductDetailRouter)
+                    .getExpressCheckoutIntent(this, atcRequestParam)
+                startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
+                overridePendingTransition(R.anim.pull_up, 0)
+            } catch (e: Exception) {
+
+            }
+        }
     }
 
     private fun showSnackbarClose(string: String) {
@@ -600,6 +688,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     if (selectedProductInfo != null) {
                         userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
                         productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
+                        if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
+                            val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
+                            showSnackbarSuccessAtc(successMessage, selectedProductInfo.basic.id.toString())
+                            updateCartNotification()
+                        }
                     }
                     userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
                     userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
@@ -610,6 +703,39 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             onSuccessGetProductVariantInfo(this)
                         }
                     }
+
+                }
+            }
+            REQUEST_CODE_ATC_EXPRESS -> {
+                if (resultCode == RESULT_CODE_ERROR && data != null) {
+                    val message = data.getStringExtra(EXTRA_MESSAGES_ERROR)
+                    if (message != null && message.isNotEmpty()) {
+                        ToasterError.make(view, data.getStringExtra(EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        errorBottomsheets.setData(
+                            getString(R.string.bottomsheet_title_global_error),
+                            getString(R.string.bottomsheet_message_global_error),
+                            getString(R.string.bottomsheet_action_global_error),
+                            true
+                        )
+                        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListenerWithRetry {
+                            override fun onActionButtonClicked() {
+                                errorBottomsheets.dismiss()
+                                goToNormalCheckout()
+                            }
+
+                            override fun onRetryClicked() {
+                                errorBottomsheets.dismiss()
+                                goToAtcExpress()
+                            }
+                        }
+                        errorBottomsheets.show(fragmentManager, "")
+                    }
+                } else if (resultCode == RESULT_CODE_NAVIGATE_TO_OCS) {
+                    goToNormalCheckout()
+                } else if (resultCode == RESULT_CODE_NAVIGATE_TO_NCF) {
+                    goToNormalCheckout()
                 }
             }
             else ->
@@ -626,6 +752,39 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productWarehouseViewModel.clear()
         super.onDestroy()
     }
+
+    private fun updateCartNotification() {
+        activity?.run {
+            (application as ProductDetailRouter).updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener {
+                if (isAdded) {
+                    if (isAppBarCollapsed) {
+                        initToolbarLight()
+                    } else {
+                        initToolbarTransparent()
+                    }
+                }
+            })
+        }
+    }
+
+    private fun showSnackbarSuccessAtc(message: String?, productId: String) {
+        activity?.run {
+            val messageString: String = if (message.isNullOrEmpty()) {
+                getString(R.string.default_request_error_unknown_short)
+            } else {
+                message!!
+            }
+            ToasterNormal.make(view, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
+                .setAction(getString(R.string.label_atc_open_cart)) { v ->
+                    //TODO tracking
+                    val intent = (application as ProductDetailRouter)
+                        .getCartIntent(this)
+                    startActivity(intent)
+                }
+                .show()
+        }
+    }
+
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
         productInfoP3.rateEstimation?.let {
@@ -805,7 +964,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
-        val selectedVariantListString = data?.getOptionListString(userInputVariant)?.joinToString(separator = ", ") ?: ""
+        val selectedVariantListString = data?.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
+            ?: ""
         partialVariantAndRateEstView.renderData(data, selectedVariantListString, this::onVariantClicked)
     }
 
@@ -920,19 +1080,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onVariantClicked() {
-        //go to variant Activity
-        context?.let {
-            productInfo?.run {
-                startActivityForResult(NormalCheckoutActivity.getIntent(it,
-                    basic.shopID.toString(),
-                    parentProductId,
-                    userInputNotes,
-                    userInputQuantity,
-                    userInputVariant,
-                    ATC_AND_SELECT,
-                    null), REQUEST_CODE_NORMAL_CHECKOUT);
-            }
-        }
+        goToNormalCheckout(ATC_AND_SELECT)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -1099,6 +1247,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     REQUEST_CODE_LOGIN)
             }
             if (hasVariant())
+            //TODO tracking
                 productDetailTracking.eventCartMenuClicked(""/*generated variant */)
         }
     }
