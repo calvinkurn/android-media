@@ -73,6 +73,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.KAI;
             param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, view.getCategoryId());
         } else if(platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)){
+            platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING;
             param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, view.getCategoryId());
         }
         param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TYPE, platform);
