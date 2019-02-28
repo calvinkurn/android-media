@@ -397,15 +397,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val result = withContext(Dispatchers.IO){graphqlRepository.getReseponse(listOf(request))}
 
             // for unsigned in jenkins
-            /*val error = result.getError(DataFollowShop::class.java)
+            val error = result.getError(DataFollowShop::class.java)
             if (error == null || error.isEmpty()){
                 onSuccess(result.getData<DataFollowShop>(DataFollowShop::class.java).followShop.isSuccess)
             } else {
                 throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-            }*/
+            }
 
             // for signed
-            onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
+            //onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
         }){ onError(it)}
     }
 

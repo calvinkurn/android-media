@@ -62,7 +62,7 @@ data class Price(
 data class Error(
         @SerializedName("error_id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("error_message")
         @Expose
