@@ -73,6 +73,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
+    private static final int TAB_CATALOG = 0;
+    private static final int TAB_COUPON = 1;
     private ViewFlipper mContainerMain;
     private TextView mTextMembershipValue, mTextMembershipValueBottom, mTextPoints, mTextPointsBottom, mTextLoyalty;
     private ImageView mImgEgg, mImgEggBottom;
@@ -697,6 +699,13 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
             }
         });
+
+        if (coupons.isEmpty()) {
+            mPresenter.setPagerSelectedItem(TAB_CATALOG);
+        } else {
+            mPresenter.setPagerSelectedItem(TAB_COUPON);
+        }
+
         mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
     }
 
