@@ -41,6 +41,7 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormReloadFromMultipleAddressSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
@@ -58,7 +59,6 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -80,6 +80,7 @@ import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRe
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.EgoldData;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.TokopediaCornerData;
@@ -919,28 +920,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         );
     }
 
-    private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
-        if (dataCheckoutRequestList == null) {
-            getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
-            return null;
-        }
-
-        TokopediaCornerData cornerData = null;
-        if (getRecipientAddressModel().isCornerAddress()) {
-            cornerData = new TokopediaCornerData(
-                    getRecipientAddressModel().getUserCornerId(),
-                    Integer.parseInt(getRecipientAddressModel().getCornerId())
-            );
-        }
-
-        return new CheckoutRequest.Builder()
-                .promoCode(promoCode)
-                .isDonation(isDonation)
-                .data(dataCheckoutRequestList)
-                .cornerData(cornerData)
-                .build();
-    }
-
     @Override
     public void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
@@ -958,6 +937,34 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(new SaveShipmentStateSubscriber(getView())));
+    }
+
+    private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
+        if (dataCheckoutRequestList == null) {
+            getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
+            return null;
+        }
+
+        TokopediaCornerData cornerData = null;
+        if (getRecipientAddressModel().isCornerAddress()) {
+            cornerData = new TokopediaCornerData(
+                    getRecipientAddressModel().getUserCornerId(),
+                    Integer.parseInt(getRecipientAddressModel().getCornerId())
+            );
+        }
+        EgoldData egoldData = new EgoldData();
+        if (egoldAttributeModel != null) {
+            egoldData.setEgold(egoldAttributeModel.isChecked());
+            egoldData.setEgoldAmount(egoldAttributeModel.getBuyEgoldValue());
+        }
+
+        return new CheckoutRequest.Builder()
+                .promoCode(promoCode)
+                .isDonation(isDonation)
+                .egoldData(egoldData)
+                .data(dataCheckoutRequestList)
+                .cornerData(cornerData)
+                .build();
     }
 
     @Override
