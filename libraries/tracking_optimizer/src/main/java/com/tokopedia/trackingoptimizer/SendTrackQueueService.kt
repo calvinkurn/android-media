@@ -43,7 +43,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
             // allowing only 1 service at a time
             if (atomicInteger.get() < 1) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                    val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
                         ?: return
 
                     val bundle = PersistableBundle()
