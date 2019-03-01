@@ -4,11 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.net.http.SslError
 import android.os.Bundle
-import android.os.Handler
-import android.support.annotation.Nullable
 import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +14,6 @@ import android.view.ViewGroup
 import android.webkit.*
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -27,7 +24,6 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,7 +48,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     lateinit var webview: TkpdWebView
     lateinit var webviewClient: TkpdWebViewClient
     lateinit var progressBar: ProgressBar
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
     lateinit var errorView: View
     lateinit var errorImage: ImageView
     lateinit var retryButton: View
@@ -247,25 +243,31 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 errorView.show()
 
             }
+            override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
+                super.onReceivedSslError(view, handler, error)
+                handler.cancel()
+                progressBar.visibility = View.GONE
+            }
 
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+            override fun shouldOverrideUrlLoading(view: WebView?, requestUrl: String):
+                    Boolean {
                 val PARAM_WEBVIEW_BACK = "tokopedia://back"
 
                 activity?.run {
-                    if (url.equals(PARAM_WEBVIEW_BACK, ignoreCase = true)
+                    if (requestUrl.equals(PARAM_WEBVIEW_BACK, true)
                             && !isTaskRoot) run {
                         finish()
                         return true
-                    } else if (url.equals(PARAM_WEBVIEW_BACK, ignoreCase = true)
+                    } else if (requestUrl.equals(PARAM_WEBVIEW_BACK, true)
                             && isTaskRoot) run {
                         openHomePage()
                         return true
-                    } else if (url.equals(ApplinkConst.LOGIN)) {
-                        val intent = RouteManager.getIntent(this, url)
+                    } else if (requestUrl.equals(ApplinkConst.LOGIN, true)) {
+                        val intent = RouteManager.getIntent(this, requestUrl)
                         startActivityForResult(intent, REQUEST_CODE_LOGIN)
                         return true
-                    } else if (RouteManager.isSupportApplink(this, url)) {
-                        RouteManager.route(this, url)
+                    } else if (RouteManager.isSupportApplink(this, requestUrl)) {
+                        RouteManager.route(this, requestUrl)
                         return true
                     } else {
                         return false
@@ -276,6 +278,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         }
     }
 
+
     private fun openHomePage() {
         activity?.run {
             startActivity((applicationContext as GroupChatModuleRouter).getHomeIntent(this))
@@ -285,15 +288,15 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             loadWebview()
-        }else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
     private fun getHeaderPlay(): HashMap<String, String> {
-        val header = HashMap<String,String>()
+        val header = HashMap<String, String>()
         header[PARAM_HEADER_GC_TOKEN] = gcToken
         return header
     }
