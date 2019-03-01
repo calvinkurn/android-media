@@ -85,7 +85,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetCrackResult widgetCrackResult;
     private WidgetEggSource widgetEggSource;
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
-    private ProgressBar progressBar;`
+    private ProgressBar progressBar;
     private AbstractionRouter abstractionRouter;
     private TextView infoTitlePage;
 
