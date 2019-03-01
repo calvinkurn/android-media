@@ -15,11 +15,9 @@ import java.util.ArrayList
 /**
  * Created by fwidjaja on 28/02/19.
  */
-class PromoMerchantViewHolder(itemView: View, private val adapter: PromoMerchantAdapter,
-                                 private val cartPosition: Int, // set true if has courier promo, whether own courier or other duration's courier
-                                 private val hasCourierPromo: Boolean) : RecyclerView.ViewHolder(itemView) {
+class PromoMerchantViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private val tvError: TextView
+    /*private val tvError: TextView
     private val tvDuration: TextView
     private val tvPrice: TextView
     private val tvCod: TextView
@@ -27,11 +25,11 @@ class PromoMerchantViewHolder(itemView: View, private val adapter: PromoMerchant
     private val imgCheck: ImageView
     private val tvDurationHeaderInfo: TextView
     private val rlContent: RelativeLayout
-    private val tvPromoPotency: TextView
+    private val tvPromoPotency: TextView*/
 
     init {
 
-        tvError = itemView.findViewById(R.id.tv_error)
+        /*tvError = itemView.findViewById(R.id.tv_error)
         tvDuration = itemView.findViewById(R.id.tv_duration)
         tvPrice = itemView.findViewById(R.id.tv_price)
         tvTextDesc = itemView.findViewById(R.id.tv_text_desc)
@@ -39,13 +37,12 @@ class PromoMerchantViewHolder(itemView: View, private val adapter: PromoMerchant
         tvDurationHeaderInfo = itemView.findViewById(R.id.tv_duration_header_info)
         rlContent = itemView.findViewById(R.id.rl_content)
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency)
-        tvCod = itemView.findViewById(R.id.tv_cod_availability)
+        tvCod = itemView.findViewById(R.id.tv_cod_availability)*/
     }
 
-    fun bindData(shippingDurationViewModel: ShippingDurationViewModel,
-                 promoMerchantAdapterListener: PromoMerchantAdapterListener) {
+    fun bindData(promoMerchantAdapterListener: PromoMerchantAdapterListener) {
 
-        if (shippingDurationAdapterListener.isToogleYearEndPromotionOn && shippingDurationViewModel.serviceData.isPromo == 1) {
+        /*if (shippingDurationAdapterListener.isToogleYearEndPromotionOn && shippingDurationViewModel.serviceData.isPromo == 1) {
             tvPromoPotency.visibility = View.VISIBLE
         } else {
             tvPromoPotency.visibility = View.GONE
@@ -95,18 +92,18 @@ class PromoMerchantViewHolder(itemView: View, private val adapter: PromoMerchant
             }
         } else {
             tvDurationHeaderInfo.visibility = View.GONE
-        }
+        }*/
 
     }
 
     private fun setShowCase(shippingDurationAdapterListener: PromoMerchantAdapterListener) {
         val label = itemView.context.getString(R.string.label_title_showcase_shipping_duration)
         val text = itemView.context.getString(R.string.label_body_showcase_shipping_duration)
-        val showCase = ShowCaseObject(rlContent, label, text, ShowCaseContentPosition.UNDEFINED)
+        // val showCase = ShowCaseObject(rlContent, label, text, ShowCaseContentPosition.UNDEFINED)
 
         val showCaseObjectList = ArrayList<ShowCaseObject>()
 
-        showCaseObjectList.add(showCase)
+        // showCaseObjectList.add(showCase)
 
         val showCaseDialog = createShowCaseDialog()
         showCaseDialog.setShowCaseStepListener { previousStep, nextStep, showCaseObject -> false }
