@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -47,7 +48,7 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
                     if (shouldThrowException()) {
                         throw exception;
                     }
-                    return null;
+                    return Unit.INSTANCE;
                 });
 
             }

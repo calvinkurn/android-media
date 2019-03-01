@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
 import okhttp3.Interceptor;
 import rx.Observable;
 import rx.functions.Func1;
@@ -60,7 +61,7 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
                     if (shouldThrowException()) {
                         throw exception;
                     }
-                    return null;
+                    return Unit.INSTANCE;
                 });
 
             }

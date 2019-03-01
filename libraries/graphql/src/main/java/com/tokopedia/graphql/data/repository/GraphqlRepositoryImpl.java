@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -113,7 +114,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
             if (shouldThrow) {
                 throw exception;
             }
-            return null;
+            return Unit.INSTANCE;
         });
     }
 }
