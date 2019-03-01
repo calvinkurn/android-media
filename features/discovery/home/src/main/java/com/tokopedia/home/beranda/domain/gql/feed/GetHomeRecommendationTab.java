@@ -6,19 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class GetHomeRecommendation {
+public class GetHomeRecommendationTab {
 
     @SerializedName("recommendation_tabs")
     @Expose
     private List<RecommendationTab> recommendationTabs;
-
-    @SerializedName("recommendation_product")
-    @Expose
-    private RecommendationProduct recommendationProduct;
-
-    public RecommendationProduct getRecommendationProduct() {
-        return recommendationProduct;
-    }
 
     public List<RecommendationTab> getRecommendationTabs() {
         return recommendationTabs;
