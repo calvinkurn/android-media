@@ -7,11 +7,14 @@ import android.view.ViewGroup;
 
 import com.tokopedia.officialstore.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 
 import org.jetbrains.annotations.NotNull;
 
 public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
+
+    private static final String MP_OFFICIAL_STORE = "mp_official_store";
 
     @Override
     public String getModuleName() {
@@ -21,7 +24,9 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.fragment_official_store, container, false);
+        View view = inflater.inflate(R.layout.fragment_official_store, container, false);
+        ReactUtils.startTracing(MP_OFFICIAL_STORE); // start trace when view created
+        return view;
     }
 
     @Override

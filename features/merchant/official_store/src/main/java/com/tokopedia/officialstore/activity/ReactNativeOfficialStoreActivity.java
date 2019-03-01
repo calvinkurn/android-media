@@ -5,22 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.officialstore.R;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
-import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<ReactNativeOfficialStoreFragment> {
-
-    private static final String MP_OFFICIAL_STORE = "mp_official_store";
-
-    @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE })
-    public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
-        ReactUtils.startTracing(MP_OFFICIAL_STORE);
-        return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(context, bundle);
-    }
 
     public static Intent createApplinkCallingIntent(Context context,
                                                     Bundle extras) {

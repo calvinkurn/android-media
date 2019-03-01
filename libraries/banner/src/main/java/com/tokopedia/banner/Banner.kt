@@ -12,7 +12,7 @@ import com.tokopedia.design.banner.BannerView
  * Credit Devara Fikry
  */
 
-public class Banner : BannerView {
+class Banner : BannerView {
 
     constructor(context: Context) : super(context) {}
 

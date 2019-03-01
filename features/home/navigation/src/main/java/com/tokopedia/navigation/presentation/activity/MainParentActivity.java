@@ -51,7 +51,6 @@ import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
-import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -118,7 +117,6 @@ public class MainParentActivity extends BaseActivity implements
     private Fragment emptyCartFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
-    private BroadcastReceiver hockeyBroadcastReceiver;
     private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
 
@@ -143,11 +141,13 @@ public class MainParentActivity extends BaseActivity implements
         return intent;
     }
 
-    public static Intent getApplinkFeedIntent(Context context) {
+    @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE })
+    public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
         Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
+        intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
         return intent;
     }
+
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
     @DeepLink({ApplinkConst.HOME_RECOMMENDATION})
     public static Intent getApplinkRecommendationEvent(Context context) {
@@ -249,6 +249,10 @@ public class MainParentActivity extends BaseActivity implements
                 case ACCOUNT_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_account));
+                    break;
+                case OS_MENU:
+                    bottomNavigation.getMenu().findItem(R.id.menu_os).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_os));
                     break;
                 case RECOMENDATION_LIST:
                 case HOME_MENU:
