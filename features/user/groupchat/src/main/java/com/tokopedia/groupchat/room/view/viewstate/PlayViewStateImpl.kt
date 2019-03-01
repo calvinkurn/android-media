@@ -548,19 +548,15 @@ open class PlayViewStateImpl(
         }
 
         if (!::overlayDialog.isInitialized) {
-            //TODO
-//            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context,
-//                    object : CloseableBottomSheetDialog.CloseClickedListener {
-//                        override fun onCloseDialog() {
-//                            analytics.eventClickCloseOverlayCloseButton(channelInfoViewModel.channelId)
-//
-//                        }
-//                    }, object : CloseableBottomSheetDialog.BackHardwareClickedListener {
-//                override fun onBackHardwareClicked() {
-//                    analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
-//                }})
-
-            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context,
+                    object : CloseableBottomSheetDialog.CloseClickedListener {
+                        override fun onCloseDialog() {
+                            analytics.eventClickCloseOverlayCloseButton(channelInfoViewModel.channelId)
+                        }
+                    }, object : CloseableBottomSheetDialog.BackHardwareClickedListener {
+                override fun onBackHardwareClicked() {
+                    analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
+                }})
 
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog

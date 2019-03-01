@@ -22,7 +22,7 @@ import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.common.util.NonSwipeableViewPager
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
-//import com.tokopedia.groupchat.room.di.DagggerPlayComponent
+import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
@@ -38,8 +38,8 @@ open class PlayActivity : BaseSimpleActivity() {
     lateinit var viewPager: NonSwipeableViewPager
     private lateinit var pagerAdapter: FragmentPagerAdapter
 
-//    @Inject
-//    lateinit var analytics: GroupChatAnalytics
+    @Inject
+    lateinit var analytics: GroupChatAnalytics
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -51,7 +51,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
     override fun onStart() {
         super.onStart()
-//        analytics.sendScreen(this, screenName)
+        analytics.sendScreen(this, screenName)
     }
 
     override fun getScreenName(): String {
@@ -70,11 +70,11 @@ open class PlayActivity : BaseSimpleActivity() {
     }
 
     private fun initInjector() {
-//        val playComponent = DaggerPlayComponent.builder()
-//                .baseAppComponent(application as BaseMainApplication)
-//                .baseAppComponent.build()
-//
-//        playComponent.inject(this)
+        val playComponent = DaggerPlayComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+
+        playComponent.inject(this)
     }
 
     private fun initView() {

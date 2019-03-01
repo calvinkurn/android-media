@@ -15,7 +15,7 @@ import dagger.Component
 @Component(modules = arrayOf(PlayModule::class), dependencies = [(BaseAppComponent::class)])
 interface PlayComponent {
 
-//    fun inject(playActivity: PlayActivity)
+    fun inject(playActivity: PlayActivity)
 
     fun inject(playFragment: PlayFragment)
 
