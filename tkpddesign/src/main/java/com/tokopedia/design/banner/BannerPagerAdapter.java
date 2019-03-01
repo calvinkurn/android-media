@@ -32,8 +32,6 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
     private List<String> bannerImageUrls = new ArrayList<>();
     private BannerView.OnPromoClickListener onPromoClickListener;
 
-    public BannerPagerAdapter() { }
-
     public BannerPagerAdapter(List<String> bannerImageUrls, BannerView.OnPromoClickListener onPromoClickListener) {
         this.bannerImageUrls = bannerImageUrls;
         this.onPromoClickListener = onPromoClickListener;

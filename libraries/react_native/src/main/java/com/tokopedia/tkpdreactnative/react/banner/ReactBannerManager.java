@@ -13,6 +13,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
+import com.tokopedia.design.banner.BannerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,22 +37,14 @@ public class ReactBannerManager extends SimpleViewManager<Banner> {
 
     @Override
     protected Banner createViewInstance(ThemedReactContext reactContext) {
-        Banner banner = new Banner(reactContext);
-//        banner.getBannerSeeAll().setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-        return banner;
+        return new Banner(reactContext);
     }
 
     @ReactProp(name = "bannerData")
     public void setBannerData(Banner banner, @Nullable ReadableArray readableArray) {
         this.mappingImageBanner(readableArray);
-        banner.setItems(imageList);
-        banner.setOnItemClickListener(position ->
-                RouteManager.route(banner.getContext(), applinkList.get(position)));
+        banner.setOnPromoClickListener(position -> RouteManager.route(banner.getContext(), applinkList.get(position)));
+        banner.setPromoList(imageList);
         banner.buildView();
     }
 
