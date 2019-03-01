@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
@@ -55,18 +56,35 @@ class BannerViewDynamicBackground : BannerView {
             isUseCrossfade = !isUseCrossfade
         }
         bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            internal var currentImagePosition = currentPosition
+            internal var currentImagePosition = 0
 
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE
-                        && currentImagePosition != currentPosition
-                        && currentPosition != -1) {
-                    if (isUseCrossfade) {
+                if (isUseCrossfade) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE
+                            && currentImagePosition != currentPosition
+                            && currentPosition != -1) {
                         setBackgroundImageCrossfade()
-                    } else {
-                        setBackgroundImage()
+                        currentImagePosition = currentPosition
                     }
-                    currentImagePosition = currentPosition
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (!isUseCrossfade) {
+                    val manager : LinearLayoutManager =
+                            recyclerView!!.layoutManager as LinearLayoutManager
+                    val position = manager.findFirstCompletelyVisibleItemPosition()
+                    if (
+                            position != currentImagePosition && position != -1) {
+
+                        val url = promoImageUrls[position]
+                        ImageHandler.loadImageBlur(
+                                context,
+                                img_banner_background,
+                                url
+                        )
+                        currentImagePosition = position
+                    }
                 }
             }
         })
