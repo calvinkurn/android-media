@@ -24,12 +24,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
     }
 
     private val trackingOptimizerRouter: TrackingOptimizerRouter? by lazy {
-        val application = this.application
-        if (application is TrackingOptimizerRouter) {
-            application
-        } else {
-            null
-        }
+        this.application as? TrackingOptimizerRouter
     }
 
     val handler: CoroutineExceptionHandler by lazy {
