@@ -217,16 +217,11 @@ class PlayPresenter @Inject constructor(
                     showDummy(e.toString(), "logger error")
                 }
                 view.setSnackBarRetryConnectingWebSocket()
-//                reportWebSocket(e)
             }
         }
         val rxWebSocket = RxWebSocket[
                 webSocketUrlWithToken,
                 accessToken
-//                , settings.delay,
-//                settings.maxRetries,
-//                settings.pingInterval,
-//                groupChatToken
         ]
         val subscription = rxWebSocket?.subscribe(subscriber)
 
@@ -248,21 +243,7 @@ class PlayPresenter @Inject constructor(
     }
 
     private fun showDummy(message: String?, senderName: String) {
-//        val showLog = localCacheHandler.getBoolean("log_groupchat", false)!!
-//        if (showLog!!) {
-//            val dummy = ChatViewModel(
-//                    message!!,
-//                    System.currentTimeMillis(),
-//                    System.currentTimeMillis(),
-//                    1231.toString(),
-//                    "123321",
-//                    senderName,
-//                    "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
-//                    false,
-//                    false
-//            )
-//            view.onMessageReceived(dummy, !showLog!!)
-//        }
+//To be used for debug
     }
 
     fun destroyWebSocket() {

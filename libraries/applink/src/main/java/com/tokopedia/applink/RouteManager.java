@@ -5,7 +5,6 @@ import android.content.Intent;
 
 /**
  * @author ricoharisin .
- * <p>
  * Central class for routing to acrtivity
  */
 

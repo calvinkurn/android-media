@@ -2,10 +2,10 @@ package com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 
 /**
@@ -13,60 +13,64 @@ import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
  */
 
 class ChannelInfoViewModel : Parcelable {
-    var channelId: String? = null
+    var channelId: String = ""
         private set
-    var title: String? = null
+    var title: String = ""
         private set
-    var channelUrl: String? = null
+    var channelUrl: String = ""
         private set
-    var bannerUrl: String? = null
+    var bannerUrl: String = ""
         private set
-    var blurredBannerUrl: String? = null
+    var blurredBannerUrl: String = ""
         private set
-    var adsImageUrl: String? = null
-    var adsLink: String? = null
-    var adsId: String? = null
-    var adsName: String? = null
-    var bannerName: String? = null
+    var adsImageUrl: String = ""
+    var adsLink: String = ""
+    var adsId: String = ""
+    var adsName: String = ""
+    var bannerName: String = ""
         private set
-    var groupChatToken: String? = null
+    var groupChatToken: String = ""
         private set
-    var adminName: String? = null
+    var adminName: String = ""
         private set
-    var image: String? = null
+    var image: String = ""
         private set
-    var adminPicture: String? = null
+    var adminPicture: String = ""
         private set
-    var description: String? = null
+    var description: String = ""
         private set
-    var totalView: String? = null
+    var totalView: String = ""
         internal set
-    var channelPartnerViewModels: List<ChannelPartnerViewModel>? = null
+    var channelPartnerViewModels: List<ChannelPartnerViewModel> = arrayListOf()
         private set
-    var bannedMessage: String? = null
+    var bannedMessage: String = ""
         private set
-    var kickedMessage: String? = null
+    var kickedMessage: String = ""
         private set
     var isFreeze: Boolean = false
         private set
-    var videoId: String? = null
-    var settingGroupChat: SettingGroupChat? = null
+    var videoId: String = ""
+    var settingGroupChat: SettingGroupChat = SettingGroupChat()
         private set
-    var overlayViewModel: OverlayViewModel? = null
-        private set
-
-    var voteInfoViewModel: VoteInfoViewModel? = null
-
-    var sprintSaleViewModel: SprintSaleViewModel? = null
-
-    var groupChatPointsViewModel: GroupChatPointsViewModel? = null
-
-    var pinnedMessageViewModel: PinnedMessageViewModel? = null
-
-    var exitMessage: ExitMessage? = null
+    var overlayViewModel: OverlayViewModel = OverlayViewModel()
         private set
 
-    var quickRepliesViewModel: List<GroupChatQuickReplyItemViewModel>? = null
+    var voteInfoViewModel: VoteInfoViewModel = VoteInfoViewModel()
+
+    var sprintSaleViewModel: SprintSaleViewModel = SprintSaleViewModel()
+
+    var groupChatPointsViewModel: GroupChatPointsViewModel = GroupChatPointsViewModel()
+
+    var pinnedMessageViewModel: PinnedMessageViewModel = PinnedMessageViewModel()
+
+    var exitMessage: ExitMessage = ExitMessage()
+        private set
+
+    var quickRepliesViewModel: List<GroupChatQuickReplyItemViewModel> = arrayListOf()
+
+    constructor(){
+
+    }
 
     constructor(channelId: String, title: String, channelUrl: String, bannerUrl: String,
                 blurredBannerUrl: String,
@@ -74,11 +78,11 @@ class ChannelInfoViewModel : Parcelable {
                 bannerName: String, groupChatToken: String, adminName: String, image: String,
                 adminPicture: String, description: String, totalView: String,
                 channelPartnerViewModels: List<ChannelPartnerViewModel>,
-                voteInfoViewModel: VoteInfoViewModel?,
-                sprintSaleViewModel: SprintSaleViewModel?,
+                voteInfoViewModel: VoteInfoViewModel,
+                sprintSaleViewModel: SprintSaleViewModel,
                 bannedMessage: String, kickedMessage: String, isFreeze: Boolean,
-                pinnedMessageViewModel: PinnedMessageViewModel?,
-                exitMessage: ExitMessage?,
+                pinnedMessageViewModel: PinnedMessageViewModel,
+                exitMessage: ExitMessage,
                 quickRepliesViewModel: List<GroupChatQuickReplyItemViewModel>,
                 videoId: String, settingGroupChat: SettingGroupChat, overlayViewModel: OverlayViewModel) {
         this.channelId = channelId

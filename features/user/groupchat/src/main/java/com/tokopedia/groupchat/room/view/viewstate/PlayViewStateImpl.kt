@@ -440,32 +440,41 @@ open class PlayViewStateImpl(
     }
 
     override fun onAdsUpdated(it: AdsViewModel) {
-        viewModel?.adsImageUrl = it.adsUrl
-        viewModel?.adsId = it.adsId
-        viewModel?.adsLink = it.adsLink
-        setSponsorData(viewModel?.adsId, viewModel?.adsImageUrl, viewModel?.adsName)
+        viewModel?.let { viewModel ->
+            viewModel.adsImageUrl = it.adsUrl
+            viewModel.adsId = it.adsId
+            viewModel.adsLink = it.adsLink
+            setSponsorData(viewModel.adsId, viewModel.adsImageUrl, viewModel.adsName)
+        }
+
     }
 
     override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
-        viewModel?.videoId = it.videoId
-        viewModel?.adsId?.let {
-            setSponsorData(it, viewModel?.adsImageUrl, viewModel?.adsName)
+        viewModel?.let { viewModel ->
+            viewModel.videoId = it.videoId
+            viewModel.adsId?.let {
+                setSponsorData(it, viewModel.adsImageUrl, viewModel.adsName)
+            }
+            initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
         }
-        initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
+
     }
 
     override fun onChannelFrozen(channelId: String) {
-        var channelName = viewModel?.title
-        if (channelId == viewModel?.channelId) {
-            setEmptyState(R.drawable.ic_play_end,
-                    view.context.resources.getString((R.string.play_has_end), channelName),
-                    getStringResource(R.string.play_next_event),
-                    getStringResource(R.string.play_start_shopping),
-                    listener::onFinish)
-            loadingView.hide()
-            errorView.show()
-            setToolbarWhite()
+        viewModel?.let { viewModel ->
+            var channelName = viewModel.title
+            if (channelId == viewModel.channelId) {
+                setEmptyState(R.drawable.ic_play_end,
+                        view.context.resources.getString((R.string.play_has_end), channelName),
+                        getStringResource(R.string.play_next_event),
+                        getStringResource(R.string.play_start_shopping),
+                        listener::onFinish)
+                loadingView.hide()
+                errorView.show()
+                setToolbarWhite()
+            }
         }
+
     }
 
     override fun onQuickReplyUpdated(it: GroupChatQuickReplyViewModel) {
@@ -493,8 +502,11 @@ open class PlayViewStateImpl(
     }
 
     override fun onPinnedMessageUpdated(it: PinnedMessageViewModel) {
-        viewModel?.pinnedMessageViewModel = it
-        setPinnedMessage(viewModel)
+        viewModel?.run {
+            pinnedMessageViewModel = it
+            setPinnedMessage(viewModel)
+        }
+
     }
 
     override fun onSuccessLogin() {
@@ -677,7 +689,7 @@ open class PlayViewStateImpl(
         var subtitle = toolbar.findViewById<TextView>(R.id.toolbar_subtitle)
         subtitle.hide()
         toolbar.findViewById<TextView>(R.id.toolbar_live).hide()
-        title.text = "Play"
+        title.text = getStringResource(R.string.play_title)
         subtitle.text = ""
         title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
         subtitle.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
@@ -685,14 +697,6 @@ open class PlayViewStateImpl(
 
     override fun errorViewShown(): Boolean {
         return errorView.isShown
-    }
-
-    override fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?) {
-//        if (TextUtils.isEmpty(blurredBannerUrl)) {
-//            ImageHandler.loadImageBlur(context, channelBanner, bannerUrl)
-//        } else {
-//            ImageHandler.LoadImage(channelBanner, blurredBannerUrl)
-//        }
     }
 
     private fun setToolbarParticipantCount(context: Context, totalParticipant: String) {
@@ -800,7 +804,6 @@ open class PlayViewStateImpl(
                                                 internal var TAG = "youtube"
 
                                                 override fun onPlaying() {
-                                                    Log.i(TAG, "onPlaying: ")
                                                     if (onPlayTime == 0L) {
                                                         onPlayTime = System.currentTimeMillis() / 1000L
                                                     }
@@ -821,30 +824,23 @@ open class PlayViewStateImpl(
                                             })
 
                                             it.setPlayerStateChangeListener(object : YouTubePlayer.PlayerStateChangeListener {
-                                                var TAG = "youtube"
                                                 override fun onLoading() {
-                                                    Log.i(TAG, "onLoading: ")
                                                 }
 
                                                 override fun onLoaded(s: String) {
-                                                    Log.i(TAG, "onLoaded: ")
                                                 }
 
                                                 override fun onAdStarted() {
-                                                    Log.i(TAG, "onAdStarted: ")
                                                 }
 
                                                 override fun onVideoStarted() {
-                                                    Log.i(TAG, "onVideoStarted: ")
                                                 }
 
                                                 override fun onVideoEnded() {
-                                                    Log.i(TAG, "onVideoEnded: ")
                                                     onEndTime = System.currentTimeMillis() / 1000L
                                                 }
 
                                                 override fun onError(errorReason: YouTubePlayer.ErrorReason) {
-                                                    Log.i(TAG, errorReason.declaringClass.toString() + " onError: " + errorReason.name)
                                                 }
                                             })
                                         }
@@ -1290,5 +1286,9 @@ open class PlayViewStateImpl(
 
     private fun getCurrentTime(): Long {
         return Date().time / 1000L
+    }
+
+    override fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?) {
+//NOT USED
     }
 }

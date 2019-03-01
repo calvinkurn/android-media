@@ -46,7 +46,7 @@ data class Channel(
         var isIsFreeze: Boolean = false,
         @SerializedName("active_poll")
         @Expose
-        var activePolls: ActivePollPojo? = null,
+        var activePolls: ActivePollPojo = ActivePollPojo(),
         @SerializedName("moderator_sendbird_id")
         @Expose
         var moderatorId: String = "",
@@ -58,7 +58,7 @@ data class Channel(
         var moderatorProfileUrl: String = "",
         @SerializedName("flashsale")
         @Expose
-        val flashsale: Flashsale? = null,
+        val flashsale: Flashsale = Flashsale(),
         @SerializedName("gc_token")
         @Expose
         val gcToken: String = "",
@@ -82,7 +82,7 @@ data class Channel(
         val bannerName: String = "",
         @SerializedName("list_officials")
         @Expose
-        val listOfficials: List<ListOfficial>? = null,
+        val listOfficials: List<ListOfficial> = arrayListOf(),
         @SerializedName("banned_msg")
         @Expose
         val bannedMessage: String = "",
@@ -112,13 +112,13 @@ data class Channel(
         val kickDuration: Long = 0L,
         @SerializedName("pinned_message")
         @Expose
-        val pinnedMessage: PinnedMessagePojo? = null,
+        val pinnedMessage: PinnedMessagePojo = PinnedMessagePojo(),
         @SerializedName("exit_msg")
         @Expose
-        val exitMessage: ExitMessage? = null,
+        val exitMessage: ExitMessage = ExitMessage(),
         @SerializedName("quick_reply")
         @Expose
-        val listQuickReply: List<String>? = null,
+        val listQuickReply: List<String> = arrayListOf(),
         @SerializedName("video_id")
         @Expose
         val videoId: String = "",

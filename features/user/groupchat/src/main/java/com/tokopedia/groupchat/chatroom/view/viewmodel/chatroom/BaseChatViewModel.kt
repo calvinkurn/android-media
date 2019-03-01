@@ -42,7 +42,7 @@ open class BaseChatViewModel : Parcelable {
     internal constructor(message: String, createdAt: Long, updatedAt: Long, messageId: String) {
         this.isShowHeaderTime = false
         this.headerTime = 0
-        this.formattedHeaderTime = "tes"
+        this.formattedHeaderTime = ""
         this.message = message.replace("\\n", "\n")
         this.createdAt = createdAt
         this.updatedAt = if (updatedAt != 0L) updatedAt else createdAt
@@ -61,7 +61,7 @@ open class BaseChatViewModel : Parcelable {
                          isInfluencer: Boolean, isAdministrator: Boolean) {
         this.isShowHeaderTime = false
         this.headerTime = 0
-        this.formattedHeaderTime = "tes"
+        this.formattedHeaderTime = ""
         this.message = message.replace("\\n", "\n")
         this.createdAt = createdAt
         this.updatedAt = if (updatedAt != 0L) updatedAt else createdAt

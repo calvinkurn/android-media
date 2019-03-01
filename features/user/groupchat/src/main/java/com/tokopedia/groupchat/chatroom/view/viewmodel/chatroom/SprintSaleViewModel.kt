@@ -11,17 +11,21 @@ import java.util.*
 
 class SprintSaleViewModel : Parcelable {
 
-    var listProduct: ArrayList<SprintSaleProductViewModel>? = null
-    var campaignName: String? = null
+    var listProduct: ArrayList<SprintSaleProductViewModel> = arrayListOf()
+    var campaignName: String = ""
     private var startDate: Long = 0
     private var endDate: Long = 0
-    var redirectUrl: String? = null
-    var formattedStartDate: String? = null
+    var redirectUrl: String = ""
+    var formattedStartDate: String = ""
         private set
-    var formattedEndDate: String? = null
+    var formattedEndDate: String = ""
         private set
-    var sprintSaleType: String? = null
-    var campaignId: String? = null
+    var sprintSaleType: String = ""
+    var campaignId: String = ""
+
+    constructor(){
+
+    }
 
     constructor(campaignId: String, listProduct: ArrayList<SprintSaleProductViewModel>,
                 campaignName: String, startDate: Long, endDate: Long, redirectUrl: String, sprintSaleType: String) {

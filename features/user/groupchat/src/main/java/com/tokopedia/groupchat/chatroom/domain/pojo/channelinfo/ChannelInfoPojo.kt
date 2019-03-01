@@ -7,6 +7,6 @@ data class ChannelInfoPojo (
 
     @SerializedName("channel")
     @Expose
-    var channel: Channel? = null
+    var channel: Channel = Channel()
 ){
 }

@@ -23,6 +23,7 @@ public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
+    private static final String GET = "GET";
 
     public TkpdWebView(Context context) {
         super(context);
@@ -47,7 +48,7 @@ public class TkpdWebView extends WebView {
             loadUrl(generateUri(url), AuthUtil.generateHeadersWithBearer(
                     Uri.parse(url).getPath(),
                     getQuery(Uri.parse(url).getQuery()),
-                    "GET",
+                    GET,
                     AuthUtil.KEY.KEY_WSV4, userId, accessToken));
         }
     }
@@ -63,7 +64,7 @@ public class TkpdWebView extends WebView {
             loadUrl(url, AuthUtil.generateHeaders(
                     Uri.parse(url).getPath(),
                     getQuery(Uri.parse(url).getQuery()),
-                    "GET",
+                    GET,
                     AuthUtil.KEY.KEY_WSV4, userId));
         }
     }
@@ -75,7 +76,7 @@ public class TkpdWebView extends WebView {
             loadUrl(url, AuthUtil.generateHeadersWithBearer(
                     Uri.parse(url).getPath(),
                     getQuery(Uri.parse(url).getQuery()),
-                    "GET",
+                    GET,
                     AuthUtil.KEY.KEY_WSV4, userId, accessToken));
         }
     }
@@ -88,7 +89,7 @@ public class TkpdWebView extends WebView {
             Map<String,String> header =  AuthUtil.generateHeadersWithBearer(
                     Uri.parse(url).getPath(),
                     getQuery(Uri.parse(url).getQuery()),
-                    "GET",
+                    GET,
                     AuthUtil.KEY.KEY_WSV4, userId, accessToken);
             header.putAll(additionalHeaders);
             loadUrl(url,header);
