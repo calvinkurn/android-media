@@ -309,17 +309,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     protected void initialVar() {
         saldoDetailsPresenter.setSeller(isSellerEnabled);
-        if (isSellerEnabled) {
-            totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
-            totalBalanceInfo.setVisibility(View.GONE);
-            buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
-            sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
-        } else {
-            totalBalanceTitle.setText(getResources().getString(R.string.saldo_total_balance_text));
-            buyerSaldoBalanceRL.setVisibility(View.GONE);
-            sellerSaldoBalanceRL.setVisibility(View.GONE);
-            totalBalanceInfo.setVisibility(View.VISIBLE);
-        }
+
+        totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
+        totalBalanceInfo.setVisibility(View.GONE);
+        buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
+        sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
 
         totalBalanceInfo.setOnClickListener(v -> showBottomSheetInfoDialog(false));
 

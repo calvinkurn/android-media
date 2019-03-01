@@ -119,21 +119,14 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 if (gqlSaldoBalanceResponse == null) {
                     return;
                 }
-                if (isSeller()) {
-                    getView().setSellerSaldoBalance(gqlSaldoBalanceResponse.getSaldo().getSellerUsable(),
-                            gqlSaldoBalanceResponse.getSaldo().getSellerUsableFmt());
-                    getView().showSellerSaldoRL();
 
-                    getView().setBuyerSaldoBalance(gqlSaldoBalanceResponse.getSaldo().getBuyerUsable(),
-                            gqlSaldoBalanceResponse.getSaldo().getBuyerUsableFmt());
-                    getView().showBuyerSaldoRL();
+                getView().setSellerSaldoBalance(gqlSaldoBalanceResponse.getSaldo().getSellerUsable(),
+                        gqlSaldoBalanceResponse.getSaldo().getSellerUsableFmt());
+                getView().showSellerSaldoRL();
 
-                    getView().showSaldoBalanceSeparator();
-                } else {
-                    getView().hideSellerSaldoRL();
-                    getView().hideBuyerSaldoRL();
-                    getView().hideSaldoBalanceSeparator();
-                }
+                getView().setBuyerSaldoBalance(gqlSaldoBalanceResponse.getSaldo().getBuyerUsable(),
+                        gqlSaldoBalanceResponse.getSaldo().getBuyerUsableFmt());
+                getView().showBuyerSaldoRL();
 
                 float totalBalance = gqlSaldoBalanceResponse.getSaldo().getBuyerUsable() +
                         gqlSaldoBalanceResponse.getSaldo().getSellerUsable();

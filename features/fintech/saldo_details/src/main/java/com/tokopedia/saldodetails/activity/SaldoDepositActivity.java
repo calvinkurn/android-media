@@ -125,8 +125,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
         saldoHelp.setVisibility(View.VISIBLE);
         saldoHelp.setOnClickListener(v -> {
-            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                    SaldoDetailsConstants.SALDO_HELP_URL));
+            RouteManager.route(this, ApplinkConst.SALDO_INTRO);
         });
     }
 
