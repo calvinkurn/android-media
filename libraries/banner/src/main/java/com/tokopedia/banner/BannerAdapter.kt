@@ -10,9 +10,7 @@ import com.tokopedia.design.banner.BannerView
  * Credit Devara Fikry
  */
 
-class BannerAdapter(bannerImageUrls : List<String>,
-                     onPromoClickListener : BannerView.OnPromoClickListener ) :
-        BannerPagerAdapter(bannerImageUrls, onPromoClickListener) {
+class BannerAdapter : BannerPagerAdapter() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         return BannerViewHolder(
