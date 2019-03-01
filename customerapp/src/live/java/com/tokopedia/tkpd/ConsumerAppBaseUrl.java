@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd;
 
-import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
-
 /**
  * Created by hangnadi on 1/24/17.
  */

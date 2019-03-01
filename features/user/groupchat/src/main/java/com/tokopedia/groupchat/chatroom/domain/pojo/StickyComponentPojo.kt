@@ -16,6 +16,9 @@ data class StickyComponentPojo(
 }
 
 class StickyComponentData (
+        @SerializedName("component_id")
+        @Expose
+        var componentId: String = "",
         @SerializedName("component_type")
         @Expose
         var componentType: String = "",

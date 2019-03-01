@@ -89,7 +89,7 @@ public class GroupChatAnalytics {
     public static final String ATTRIBUTE_OVERLAY_BUTTON = "Overlay Button";
     public static final String ATTRIBUTE_PROMINENT_BUTTON = "Prominent Button";
     public static final String ATTRIBUTE_STICKY = "Sticky Button";
-
+    public static final String ATTRIBUTE_IMAGE_ANNOUNCEMENT = "Image Announcement";
 
     public static final String SCREEN_CHAT_ROOM = "/group-chat-room/";
     public static final String SCREEN_PLAY_WEBVIEW_FULL = "/group-chat-webvie-full/";
@@ -309,7 +309,7 @@ public class GroupChatAnalytics {
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         list.add(new EEPromotion(bannerId,
-                EEPromotion.NAME_GROUPCHAT + "-banner",
+                EEPromotion.NAME_GROUPCHAT + "-thumbnail",
                 GroupChatAnalytics.DEFAULT_EE_POSITION,
                 bannerName,
                 imageUrl,
@@ -339,7 +339,7 @@ public class GroupChatAnalytics {
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         list.add(new EEPromotion(bannerId,
-                EEPromotion.NAME_GROUPCHAT + "-banner",
+                EEPromotion.NAME_GROUPCHAT + "-thumbnail",
                 GroupChatAnalytics.DEFAULT_EE_POSITION,
                 bannerName,
                 imageUrl,
@@ -391,7 +391,7 @@ public class GroupChatAnalytics {
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         list.add(new EEPromotion(overlayId,
-                EEPromotion.NAME_GROUPCHAT,
+                EEPromotion.NAME_GROUPCHAT+"-overlay",
                 GroupChatAnalytics.DEFAULT_EE_POSITION,
                 overlayName,
                 imageUrl,
@@ -443,7 +443,7 @@ public class GroupChatAnalytics {
                                        String imageUrl) {
         ArrayList<EEPromotion> list = new ArrayList<>();
         list.add(new EEPromotion(overlayImageId,
-                EEPromotion.NAME_GROUPCHAT+"-banner",
+                EEPromotion.NAME_GROUPCHAT+"-overlay",
                 GroupChatAnalytics.DEFAULT_EE_POSITION,
                 overlayImageName,
                 imageUrl,
@@ -485,9 +485,8 @@ public class GroupChatAnalytics {
     public void eventShowStickyComponent(@NotNull StickyComponentViewModel item,
                                          ChannelInfoViewModel viewModel) {
 
-        //TODO sticky component id
         ArrayList<EEPromotion> list = new ArrayList<>();
-        list.add(new EEPromotion("",
+        list.add(new EEPromotion(item.getComponentId(),
                 EEPromotion.NAME_GROUPCHAT+"-stickycomponent",
                 GroupChatAnalytics.DEFAULT_EE_POSITION,
                 item.getTitle(),
@@ -500,7 +499,7 @@ public class GroupChatAnalytics {
                 EVENT_NAME, EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view on sticky product",
-                EVENT_LABEL, viewModel.getChannelId(),
+                EVENT_LABEL, viewModel.getChannelId() + " - " + item.getComponentId(),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
@@ -510,9 +509,8 @@ public class GroupChatAnalytics {
     //#33
     public void eventClickStickyComponent(@NotNull StickyComponentViewModel item,
                                        @NotNull ChannelInfoViewModel viewModel) {
-        //TODO sticky component id
         ArrayList<EEPromotion> list = new ArrayList<>();
-        list.add(new EEPromotion("",
+        list.add(new EEPromotion(item.getComponentId(),
                 EEPromotion.NAME_GROUPCHAT+"-stickycomponent",
                 GroupChatAnalytics.DEFAULT_EE_POSITION,
                 item.getTitle(),
@@ -525,7 +523,7 @@ public class GroupChatAnalytics {
                 EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on sticky product",
-                EVENT_LABEL, viewModel.getChannelId(),
+                EVENT_LABEL, viewModel.getChannelId() + " - " + item.getComponentId(),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
@@ -558,20 +556,19 @@ public class GroupChatAnalytics {
     public void eventViewDynamicButtons(ChannelInfoViewModel viewModel,
                                         @NotNull ArrayList<DynamicButtonsViewModel.Button> listDynamicButton) {
 
-        //TODO button id
-        String buttonNames= "";
+        StringBuilder buttonNames= new StringBuilder();
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         for(DynamicButtonsViewModel.Button button : listDynamicButton) {
-            list.add(new EEPromotion("",
-                    EEPromotion.NAME_GROUPCHAT + "-stickycomponent",
+            list.add(new EEPromotion(button.getButtonId(),
+                    EEPromotion.NAME_GROUPCHAT + "-dynamicbuttons",
                     GroupChatAnalytics.DEFAULT_EE_POSITION,
                     button.getLinkUrl(),
                     button.getImageUrl(),
                     generateTrackerAttribution(GroupChatAnalytics
                             .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
             ));
-//            buttonNames += button.getId() + ",";
+            buttonNames.append(button.getButtonId()).append(",");
         }
 
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
@@ -590,11 +587,9 @@ public class GroupChatAnalytics {
     public void eventClickDynamicButtons(ChannelInfoViewModel viewModel,
                                          DynamicButtonsViewModel.Button button) {
 
-        //TODO button id
-
         ArrayList<EEPromotion> list = new ArrayList<>();
-            list.add(new EEPromotion("",
-                    EEPromotion.NAME_GROUPCHAT + "-stickycomponent",
+            list.add(new EEPromotion(button.getButtonId(),
+                    EEPromotion.NAME_GROUPCHAT + "-dynamicbuttons",
                     GroupChatAnalytics.DEFAULT_EE_POSITION,
                     button.getLinkUrl(),
                     button.getImageUrl(),
@@ -606,7 +601,7 @@ public class GroupChatAnalytics {
                 EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on dynamic button",
-                EVENT_LABEL, viewModel.getChannelId() + " - ", //button id
+                EVENT_LABEL, viewModel.getChannelId() + " - " + button.getButtonId(),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())

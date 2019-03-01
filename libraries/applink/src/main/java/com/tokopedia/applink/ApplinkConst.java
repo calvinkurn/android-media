@@ -115,6 +115,16 @@ public interface ApplinkConst {
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
 
+
+    String MARKETPLACE_ORDER = "tokopedia://belanja/order";
+    String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
+
+    String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
+    String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
+    String MARKETPLACE_ORDER_PROCESSED = "tokopedia://order/marketplace/filter/12";
+    String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
+
+
     String BUYER_INFO = "tokopedia://buyerinfo";
     String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
@@ -235,6 +245,7 @@ public interface ApplinkConst {
     interface Chat {
         String MESSAGE_ID = "message_id";
         String OPPONENT_ID = "opponent_id";
+        String SHOP_ID = "shop_id";
         String OPPONENT_NAME = "opponent_name";
         String OPPONENT_ROLE = "opponent_role";
         String SOURCE = "source";
@@ -242,7 +253,7 @@ public interface ApplinkConst {
         String TO_SHOP_ID = "toShopId";
         String CUSTOM_MESSAGE = "customMessage";
         String AVATAR = "avatar";
-
+        String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
     }
 

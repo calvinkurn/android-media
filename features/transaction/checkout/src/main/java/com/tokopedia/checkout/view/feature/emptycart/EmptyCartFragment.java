@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -42,6 +41,7 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -50,12 +50,15 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -109,9 +112,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     private PerformanceMonitoring allPerformanceMonitoring;
     private boolean isAllTraceStopped;
+    private UserSessionInterface userSession;
 
-    @Inject
-    UserSession userSession;
     @Inject
     EmptyCartContract.Presenter presenter;
     @Inject
@@ -144,6 +146,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userSession = new UserSession(getActivity());
         cartPerformanceMonitoring = PerformanceMonitoring.start(EMPTY_CART_TRACE);
         allPerformanceMonitoring = PerformanceMonitoring.start(EMPTY_CART_ALL_TRACE);
     }
@@ -432,6 +435,12 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         topAdsView.setAdsItemClickListener(this);
         topAdsView.loadTopAds();
         topAdsView.setAdsListener(this);
+        topAdsView.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventCartEmptyProductView(getContext(), product, position);
+            }
+        });
     }
 
     @Override
@@ -555,6 +564,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
                 String.valueOf(position + 1), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
         startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
+        TopAdsGtmTracker.eventCartEmptyProductClick(getContext(), product, position);
     }
 
     @Override

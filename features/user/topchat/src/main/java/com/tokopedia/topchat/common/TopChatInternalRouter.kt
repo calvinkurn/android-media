@@ -38,7 +38,7 @@ open class TopChatInternalRouter {
 
         fun getChatSettingIntent(context: Context, messageId: String, opponentRole: String,
                                  opponentName: String, isBlocked: Boolean, isPromoBlocked:
-                                 Boolean, blockedUntil: String): Intent {
+                                 Boolean, blockedUntil: String, shopId: Int): Intent {
             return ChatRoomSettingsActivity.getIntent(context,
                     messageId,
                     ChatSettingsResponse(ChatBlockResponse(
@@ -51,7 +51,8 @@ open class TopChatInternalRouter {
                     )),
                     isChatEnabled(opponentRole, isBlocked, isPromoBlocked),
                     opponentRole,
-                    opponentName)
+                    opponentName,
+                    shopId)
         }
 
         private fun isChatEnabled(opponentRole: String, isBlocked: Boolean, isPromoBlocked:

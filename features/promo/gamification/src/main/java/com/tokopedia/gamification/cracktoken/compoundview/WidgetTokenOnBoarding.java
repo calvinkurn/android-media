@@ -156,7 +156,8 @@ public class WidgetTokenOnBoarding extends FrameLayout {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    set.start();
+                    if (getContext() != null)
+                        set.start();
                 }
             };
             private boolean mCanceled;

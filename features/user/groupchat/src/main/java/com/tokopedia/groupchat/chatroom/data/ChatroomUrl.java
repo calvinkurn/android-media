@@ -1,5 +1,7 @@
 package com.tokopedia.groupchat.chatroom.data;
 
+import com.tokopedia.network.constant.TkpdBaseURL;
+
 /**
  * @author by nisie on 2/23/18.
  */
@@ -15,5 +17,5 @@ public class ChatroomUrl {
 
     public static final String GROUP_CHAT_URL = "https://tokopedia.com/groupchat/{channel_url}";
     public static final String PATH_WEB_SOCKET_GROUP_CHAT_URL = "/ws/groupchat?channel_id=";
-    public static String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat.tokopedia.com";
+    public static String GROUP_CHAT_WEBSOCKET_DOMAIN = TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN;
 }

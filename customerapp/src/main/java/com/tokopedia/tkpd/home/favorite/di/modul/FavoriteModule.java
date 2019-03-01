@@ -11,6 +11,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteFactory;
 import com.tokopedia.tkpd.home.favorite.di.scope.FavoriteScope;
@@ -43,6 +45,13 @@ public class FavoriteModule {
 
         return new FavoriteFactory(
                 context, gson, serviceVersion4, topAdsService, cacheManager);
+    }
+
+    @FavoriteScope
+    @Provides
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
+
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 
     @FavoriteScope

@@ -37,12 +37,14 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
     private ImageView departureCircleImage;
     private TextView departureAirportName;
     private TextView departureAirportDesc;
+    private TextView departureTerminal;
     private TextView flightTime;
     private TextView arrivalTime;
     private TextView arrivalDate;
     private ImageView arrivalCircleImage;
     private TextView arrivalAirportName;
     private TextView arrivalAirportDesc;
+    private TextView arrivalTerminal;
     private TextView transitInfo;
     private View containerPNR;
     private TextView pnrCode;
@@ -51,22 +53,24 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
 
     public FlightDetailViewHolder(View itemView, FlightDetailAdapterTypeFactory.OnFlightDetailListener onFlightDetailListener) {
         super(itemView);
-        imageAirline = (ImageView) itemView.findViewById(R.id.airline_icon);
-        airlineName = (TextView) itemView.findViewById(R.id.airline_name);
-        airlineCode = (TextView) itemView.findViewById(R.id.airline_code);
-        refundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
-        departureTime = (TextView) itemView.findViewById(R.id.departure_time);
-        departureDate = (TextView) itemView.findViewById(R.id.departure_date);
-        departureCircleImage = (ImageView) itemView.findViewById(R.id.departure_time_circle);
-        departureAirportName = (TextView) itemView.findViewById(R.id.departure_airport_name);
-        departureAirportDesc = (TextView) itemView.findViewById(R.id.departure_desc_airport_name);
-        flightTime = (TextView) itemView.findViewById(R.id.flight_time);
-        arrivalTime = (TextView) itemView.findViewById(R.id.arrival_time);
-        arrivalDate = (TextView) itemView.findViewById(R.id.arrival_date);
-        arrivalCircleImage = (ImageView) itemView.findViewById(R.id.arrival_time_circle);
-        arrivalAirportName = (TextView) itemView.findViewById(R.id.arrival_airport_name);
-        arrivalAirportDesc = (TextView) itemView.findViewById(R.id.arrival_desc_airport_name);
-        transitInfo = (TextView) itemView.findViewById(R.id.transit_info);
+        imageAirline = itemView.findViewById(R.id.airline_icon);
+        airlineName = itemView.findViewById(R.id.airline_name);
+        airlineCode = itemView.findViewById(R.id.airline_code);
+        refundableInfo = itemView.findViewById(R.id.airline_refundable_info);
+        departureTime = itemView.findViewById(R.id.departure_time);
+        departureDate = itemView.findViewById(R.id.departure_date);
+        departureCircleImage = itemView.findViewById(R.id.departure_time_circle);
+        departureAirportName = itemView.findViewById(R.id.departure_airport_name);
+        departureAirportDesc = itemView.findViewById(R.id.departure_desc_airport_name);
+        departureTerminal = itemView.findViewById(R.id.departure_terminal);
+        flightTime = itemView.findViewById(R.id.flight_time);
+        arrivalTime = itemView.findViewById(R.id.arrival_time);
+        arrivalDate = itemView.findViewById(R.id.arrival_date);
+        arrivalCircleImage = itemView.findViewById(R.id.arrival_time_circle);
+        arrivalAirportName = itemView.findViewById(R.id.arrival_airport_name);
+        arrivalAirportDesc = itemView.findViewById(R.id.arrival_desc_airport_name);
+        arrivalTerminal = itemView.findViewById(R.id.arrival_terminal);
+        transitInfo = itemView.findViewById(R.id.transit_info);
         containerPNR = itemView.findViewById(R.id.container_pnr);
         pnrCode = itemView.findViewById(R.id.pnr_code);
         copyPnr = itemView.findViewById(R.id.copy_pnr);
@@ -111,6 +115,20 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
             }
         } else {
             stopOverContainerLayout.setVisibility(View.GONE);
+        }
+
+        if (route.getDepartureTerminal() != null && route.getDepartureTerminal().length() > 0) {
+            departureTerminal.setText(getString(R.string.flight_terminal_info, route.getDepartureTerminal()));
+            departureTerminal.setVisibility(View.VISIBLE);
+        } else {
+            departureTerminal.setVisibility(View.GONE);
+        }
+
+        if (route.getArrivalTerminal() != null && route.getArrivalTerminal().length() > 0) {
+            arrivalTerminal.setText(getString(R.string.flight_terminal_info, route.getArrivalTerminal()));
+            arrivalTerminal.setVisibility(View.VISIBLE);
+        } else {
+            arrivalTerminal.setVisibility(View.GONE);
         }
     }
 

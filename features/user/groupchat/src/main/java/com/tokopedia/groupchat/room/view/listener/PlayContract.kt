@@ -41,6 +41,7 @@ interface PlayContract {
         fun onFinish()
         fun onToolbarEnabled(b: Boolean)
         fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
+        fun onStickyComponentReceived(it: StickyComponentViewModel)
     }
 
     interface Presenter: CustomerPresenter<View> {

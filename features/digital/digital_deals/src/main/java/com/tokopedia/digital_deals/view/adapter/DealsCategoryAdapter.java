@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -532,7 +531,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                 Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
                         context, categoryItems.get(getIndex()).getDisplayName(),
-                        categoryItems.get(getIndex()).getImageWeb());
+                        categoryItems.get(getIndex()).getImageWeb(), categoryItems.get(getIndex()).getDesktopUrl());
             } else if (v.getId() == R.id.iv_wish_list) {
                 ProductItem item = categoryItems.get(getIndex());
                 boolean isLoggedIn = mPresenter.setDealLike(item.getId(),item.isLiked(), getIndex(),item.getLikes() );

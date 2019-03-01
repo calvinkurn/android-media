@@ -34,7 +34,7 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
         contentImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onImageAnnouncementClicked(element.getRedirectUrl());
+                listener.onImageAnnouncementClicked(element);
             }
         });
     }

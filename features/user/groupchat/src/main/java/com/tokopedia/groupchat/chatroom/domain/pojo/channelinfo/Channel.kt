@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
-import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel
@@ -140,7 +139,10 @@ data class Channel(
         val backgroundViewModel: BackgroundViewModel = BackgroundViewModel(),
         @SerializedName("freeze_channel_state")
         @Expose
-        val freezeState: FreezeViewModel = FreezeViewModel()
+        val freezeState: FreezeViewModel = FreezeViewModel(),
+        @SerializedName("link_info_url")
+        @Expose
+        val linkInfoUrl: String = ""
 
 
 ) {}

@@ -107,8 +107,8 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     }
 
 
-    public void setSearchNotFound() {
-        data.add(new EmptySearchItem());
+    public void setSearchNotFound(String query) {
+        data.add(new EmptySearchItem(query));
     }
 
     public void setEmptyState() {
@@ -188,12 +188,16 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
                 break;
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
-                TopAdsModel topAdsModel = ((TopAdsWishlistItem) data.get(position)).getTopAdsModel();
-                ((WishListTopAdsViewHolder) viewHolder).renderTopAds(topAdsModel);
+                TopAdsWishlistItem topAdsWishlistItem = (TopAdsWishlistItem) data.get(position);
+                ((WishListTopAdsViewHolder) viewHolder).renderTopAds(topAdsWishlistItem.getTopAdsModel(),
+                        topAdsWishlistItem.getQuery());
                 break;
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+                EmptySearchItem emptySearchItem = (EmptySearchItem) data.get(position);
+                ((EmptyViewHolder) viewHolder).loadTopAds(emptySearchItem.getQuery());
+                break;
             case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
-                ((EmptyViewHolder) viewHolder).loadTopAds();
+                ((EmptyViewHolder) viewHolder).loadTopAds("");
                 break;
             default:
                 super.onBindViewHolder(viewHolder, position);

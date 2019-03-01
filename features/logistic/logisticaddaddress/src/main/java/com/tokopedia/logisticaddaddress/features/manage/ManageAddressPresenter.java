@@ -76,6 +76,9 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
             @Override
             public void onError(Throwable e) {
                 mView.showNetworkError();
+                if (page == 1 && query.isEmpty()) {
+                    mView.stopPerformanceMonitoring();
+                }
             }
 
             @Override
@@ -89,7 +92,7 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
                     hasNext = PagingHandler.CheckHasNext(getPeopleAddress.getPaging().getUriNext());
                 mView.showData(addressViewModelList, hasNext);
                 if (page == 1 && query.isEmpty()) {
-                    mView.onFirstPageSuccessRendered();
+                    mView.stopPerformanceMonitoring();
                 }
             }
         };
