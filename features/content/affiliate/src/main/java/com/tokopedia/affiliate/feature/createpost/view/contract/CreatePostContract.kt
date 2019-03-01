@@ -27,6 +27,6 @@ interface CreatePostContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun fetchContentForm(idList: MutableList<String>)
+        fun fetchContentForm(idList: MutableList<String>, type: String)
     }
 }

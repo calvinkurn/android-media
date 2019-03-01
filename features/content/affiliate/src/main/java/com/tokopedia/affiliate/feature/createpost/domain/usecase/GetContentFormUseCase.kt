@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery
-import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentResponse
 import com.tokopedia.affiliate.feature.createpost.domain.entity.GetContentFormDomain
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -26,7 +26,7 @@ class GetContentFormUseCase @Inject internal constructor(
                 context.resources,
                 R.raw.query_af_content_form
         )
-        val request = GraphqlRequest(query, ContentFormData::class.java, requestParams.parameters)
+        val request = GraphqlRequest(query, FeedContentResponse::class.java, requestParams.parameters)
 
         val queryQouta = GraphqlHelper.loadRawString(
                 context.resources,
@@ -39,7 +39,7 @@ class GetContentFormUseCase @Inject internal constructor(
         graphqlUseCase.addRequest(request)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             GetContentFormDomain(
-                    it.getData(ContentFormData::class.java),
+                    it.getData(FeedContentResponse::class.java),
                     it.getData(CheckQuotaQuery::class.java)
             )
         }
@@ -47,15 +47,12 @@ class GetContentFormUseCase @Inject internal constructor(
 
     companion object {
         private const val PARAM_TYPE = "type"
-        private const val PARAM_PRODUCT_ID = "productID"
-        private const val PARAM_AD_ID = "adID"
-        private const val TYPE_AFFILIATE = "affiliate"
+        private const val PARAM_RELATED_ID = "relatedID"
 
-        fun createRequestParams(productId: String, adId: String): RequestParams {
+        fun createRequestParams(relatedIds: MutableList<String>, type: String): RequestParams {
             val requestParams = RequestParams.create()
-            requestParams.putString(PARAM_TYPE, TYPE_AFFILIATE)
-            requestParams.putString(PARAM_PRODUCT_ID, productId)
-            requestParams.putString(PARAM_AD_ID, adId)
+            requestParams.putObject(PARAM_RELATED_ID, relatedIds)
+            requestParams.putString(PARAM_TYPE, type)
             return requestParams
         }
     }

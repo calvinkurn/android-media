@@ -15,6 +15,6 @@ class ContentCreatePostFragment: BaseCreatePostFragment() {
     }
 
     override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.productIdList)
+        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType)
     }
 }

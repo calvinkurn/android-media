@@ -15,6 +15,6 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
     }
 
     override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.adIdList)
+        presenter.fetchContentForm(viewModel.adIdList, viewModel.authorType)
     }
 }

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery;
-import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentResponse;
 import com.tokopedia.affiliate.feature.createpost.domain.entity.GetContentFormDomain;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 
@@ -47,13 +47,9 @@ public class GetContentFormSubscriber extends Subscriber<GetContentFormDomain> {
 
     @Override
     public void onNext(GetContentFormDomain domain) {
-        ContentFormData data = domain.getContentFormData();
-        if (data == null || data.getFeedContentForm() == null || data.getAffiliateCheck() == null) {
+        FeedContentResponse data = domain.getFeedContentResponse();
+        if (data == null || data.getFeedContentForm() == null) {
             onError(new RuntimeException());
-            return;
-        }
-        if (!data.getAffiliateCheck().isIsAffiliate()) {
-            view.onErrorNotAffiliate();
             return;
         }
 

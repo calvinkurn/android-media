@@ -49,7 +49,7 @@ class CreatePostActivity : BaseSimpleActivity() {
         fun getInstanceAffiliate(context: Context, bundle: Bundle): Intent {
             val intent = Intent(context, CreatePostActivity::class.java)
             intent.putExtras(bundle)
-            intent.putExtra(PARAM_TYPE, TYPE_CONTENT_SHOP)
+            intent.putExtra(PARAM_TYPE, TYPE_AFFILIATE)
             return intent
         }
 
@@ -58,7 +58,7 @@ class CreatePostActivity : BaseSimpleActivity() {
         fun getInstanceContent(context: Context, bundle: Bundle): Intent {
             val intent = Intent(context, CreatePostActivity::class.java)
             intent.putExtras(bundle)
-            intent.putExtra(PARAM_TYPE, TYPE_AFFILIATE)
+            intent.putExtra(PARAM_TYPE, TYPE_CONTENT_SHOP)
             return intent
         }
 
