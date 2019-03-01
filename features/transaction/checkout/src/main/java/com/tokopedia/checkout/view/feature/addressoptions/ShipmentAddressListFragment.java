@@ -48,7 +48,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
-import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.RESULT_CODE_MULTIPLE_ADDRESS_EDIT_ADDRESS;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -476,16 +475,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressModelMapper mapper = new AddressModelMapper();
 
         if (getActivity() != null) {
-            Intent intent;
-            if (originDirectionType == RESULT_CODE_MULTIPLE_ADDRESS_EDIT_ADDRESS) {
-                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutMultipleAddressForm(
-                        getActivity(), mapper.transform(model), token
-                );
-            } else {
-                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
-                        getActivity(), mapper.transform(model), token
-                );
-            }
+            Intent intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
+                    getActivity(), mapper.transform(model), token
+            );
             startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
         }
     }
