@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
-import com.tokopedia.seller.shop.common.di.ShopQualifier
 import com.tokopedia.shop.common.constant.ShopCommonUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator

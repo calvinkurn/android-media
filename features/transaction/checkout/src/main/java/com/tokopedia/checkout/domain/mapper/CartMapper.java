@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.mapper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -15,6 +17,8 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
@@ -440,6 +444,14 @@ public class CartMapper implements ICartMapper {
 
     @Override
     public DeleteCartData convertToDeleteCartData(DeleteCartDataResponse deleteCartDataResponse) {
+        NullCheckerKt.isContainNull(deleteCartDataResponse, s -> {
+            ContainNullException exception = new ContainNullException("Found " + s + " on " + CartMapper.class.getSimpleName() + ".convertToDeleteCartData()");
+            if (!BuildConfig.DEBUG) {
+                Crashlytics.logException(exception);
+            }
+            throw exception;
+        });
+
         return new DeleteCartData.Builder()
                 .message(deleteCartDataResponse.getMessage())
                 .success(deleteCartDataResponse.getSuccess() == 1)

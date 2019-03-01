@@ -1,0 +1,18 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+repositories {
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation project(rootProject.ext.features.topAdsSdk)
+}

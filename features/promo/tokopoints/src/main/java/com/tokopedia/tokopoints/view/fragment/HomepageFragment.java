@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -67,6 +68,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 public class HomepageFragment extends BaseDaggerFragment implements HomepageContract.View, View.OnClickListener {
+
+    private static final String FPM_TOKOPOINT = "ft_tokopoint";
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
@@ -91,9 +94,16 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
     private HomepagePagerAdapter homepagePagerAdapter;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        performanceMonitoring = PerformanceMonitoring.start(FPM_TOKOPOINT);
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -181,6 +191,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -212,7 +223,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AnalyticsTrackerUtil.ScreenKeys.HOME_PAGE_SCREEN_NAME;
     }
 
     @Override
@@ -533,6 +544,12 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
+
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
+                title);
     }
 
     @Override
@@ -814,6 +831,11 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         });
         mRvDynamicLinks.setLayoutManager(manager);
         mRvDynamicLinks.setAdapter(new DynamicLinkAdapter(tokopointsDynamicLinkEntity.getLinks()));
+    }
 
+    @Override
+    public void onFinishRendering() {
+        if (performanceMonitoring != null)
+            performanceMonitoring.stopTrace();
     }
 }

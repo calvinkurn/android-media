@@ -256,13 +256,17 @@
     <string name="unggah_bukti">Unggah Bukti</string>
     <string name="search_sort_label">Urutkan</string>
     <string name="search_filter_label">Filter</string>
-    <string name="title_order_detail">Order Detail</string>
+    <string name="title_order_detail">Detail Pesanan</string>
     <string name="additional_text">Masa Perlindungan JKK JKM</string>
     <string name="oops_message">Ooops</string>
+    <string name="empty_message_marketplace">Belum Ada Daftar Transaksi</string>
     <string name="empty_list_message">Transaksi Anda masih kosong</string>
+    <string name="empty_list_message_mp">Mulai belanja dan cek daftar transaksi
+Anda di sini.</string>
     <string name="info_label">Informasi Pembayaran</string>
     <string name="lihat_detail">Lihat Detail</string>
     <string name="detail_label">Detail Pembelian</string>
+    <string name="product_info_label">Daftar Produk</string>
     <string name="lihat_text">LIHAT</string>
     <string name="status">Status</string>
     <string name="top_btn_text">langannan</string>
@@ -294,4 +298,20 @@
     <string name="barcode_image_content_description">Barcode Image</string>
     <string name="protection_count_label">Biaya Proteksi Gadget (%d barang)</string>
     <string name="button_order_detail_buy_again">Beli Lagi</string>
+    <string name="filter">Filter</string>
+    <string name="try_again">Belanja Sekarang</string>
+    <string name="detail_product">Detail Pengiriman</string>
+    <string name="awb_number_copied">Nomor Resi berhasil disalin</string>
+    <string name="item_count">(+ %1$d Produk Lainnya)</string>
+    <string name="call_driver">Hubungi</string>
+    <string name="dropshipper">Dropshipper</string>
+    <string name="hint_search_text">Cari produk, toko, atau invoice</string>
+    <string name="start_date">Tanggal Awal</string>
+    <string name="end_date">Tanggal Akhir</string>
+    <string name="save_date">Terapkan</string>
+    <string name="quantity">%1$d Barang (%2$s)</string>
+    <string name="search_hint_text">Cari produk, toko, atau invoice</string>
+    <string name="selsesai_dialog_text_1">Pastikan Anda sudah menerima produk</string>
+    <string name="selesai_dialog_text_2">Pastikan produk yang Anda terima sesuai pesanan</string>
+    <string name="title_activity_people_reason">Ajukan Pembatalan</string>
 </resources>

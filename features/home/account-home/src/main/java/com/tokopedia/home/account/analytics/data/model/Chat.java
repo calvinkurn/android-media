@@ -8,7 +8,7 @@ public class Chat {
 
     @SerializedName("unreads")
     @Expose
-    private Integer unreads;
+    private Integer unreads = 0;
 
     public Integer getUnreads() {
         return unreads;

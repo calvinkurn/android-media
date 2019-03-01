@@ -1,6 +1,10 @@
 package com.tokopedia.flight.searchV3.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
@@ -33,7 +37,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                                                 private val flightDeleteAllFlightSearchDataUseCase: FlightDeleteAllFlightSearchDataUseCase,
                                                 private val flightDeleteFlightSearchReturnDataUseCase: FlightDeleteFlightSearchReturnDataUseCase,
                                                 private val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
-                                                private val flightAnalytics: FlightAnalytics) :
+                                                private val flightAnalytics: FlightAnalytics,
+                                                private val travelTickerUseCase: TravelTickerUseCase) :
         BaseDaggerPresenter<FlightSearchContract.View>(), FlightSearchContract.Presenter {
 
     private var compositeSubscription = CompositeSubscription()
@@ -118,7 +123,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val twoYears: Date = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
 
         if (dateToSet.after(twoYears)) {
-            view.showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error)
+            view.showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_one_years_from_today_error)
         } else if (!view.isReturning() && dateToSet.before(FlightDateUtil.getCurrentDate())) {
             view.showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error)
         } else if (view.isReturning() && dateToSet.before(FlightDateUtil.stringToDate(flightSearchPassDataViewModel.departureDate))) {
@@ -314,6 +319,26 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     }
                 }
         )
+    }
+
+    override fun fetchTickerData() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.SEARCH),
+                object : Subscriber<TravelTickerViewModel>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(travelTickerViewModel: TravelTickerViewModel) {
+                        if (travelTickerViewModel.message.isNotEmpty()) {
+                            view.renderTickerView(travelTickerViewModel)
+                        }
+                    }
+                })
     }
 
     override fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel) {

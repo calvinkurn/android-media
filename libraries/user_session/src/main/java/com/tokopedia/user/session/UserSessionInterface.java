@@ -45,6 +45,8 @@ public interface UserSessionInterface {
 
     boolean hasShop();
 
+    boolean hasPassword();
+
     String getGCToken();
 
 

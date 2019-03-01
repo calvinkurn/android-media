@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.viewmodel;
 import android.text.Spanned;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.chatlist.adapter.InboxChatTypeFactory;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.Contact;
 
@@ -38,6 +39,15 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     public ChatListViewModel() {
         spanMode = NO_SPAN;
         haveTitle = false;
+        name = "";
+        message = "";
+        image = "";
+        time = "";
+        id = "";
+        senderId = "";
+        label = "";
+        span = MethodChecker.fromHtml("");
+        role = "";
     }
 
     private boolean isChecked;

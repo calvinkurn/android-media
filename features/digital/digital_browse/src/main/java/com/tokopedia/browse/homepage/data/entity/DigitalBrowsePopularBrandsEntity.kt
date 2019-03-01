@@ -10,8 +10,8 @@ import com.google.gson.annotations.SerializedName
 class DigitalBrowsePopularBrandsEntity(
         @SerializedName("category")
         @Expose
-        val category: String,
+        val category: String = "",
         @SerializedName("data")
         @Expose
-        val data: List<DigitalBrowsePopularBrand>
+        val data: List<DigitalBrowsePopularBrand> = arrayListOf()
 )
