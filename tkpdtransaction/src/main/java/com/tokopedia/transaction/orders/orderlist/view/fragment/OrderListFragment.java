@@ -520,11 +520,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSurveyButton(boolean isEligible) {
-//        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja"))) {
-//            surveyBtn.setVisibility(View.VISIBLE);
-//        } else {
-//            surveyBtn.setVisibility(View.GONE);
-//        }
+        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja"))) {
+            surveyBtn.setVisibility(View.VISIBLE);
+        } else {
+            surveyBtn.setVisibility(View.GONE);
+        }
     }
 
     @Override
