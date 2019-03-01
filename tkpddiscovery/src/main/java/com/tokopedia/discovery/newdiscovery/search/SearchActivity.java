@@ -216,6 +216,8 @@ public class SearchActivity extends DiscoveryActivity
             } else {
                 onSuggestionProductClick(searchQuery, isOfficial);
             }
+        } else {
+            searchView.showSearch(true, false, isOfficial);
         }
 
         if (intent != null &&
