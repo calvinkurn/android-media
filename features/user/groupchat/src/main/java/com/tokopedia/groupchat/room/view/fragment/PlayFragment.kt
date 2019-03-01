@@ -122,8 +122,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     .EXTRA_USE_GCP, arguments, savedInstanceState, false)
             editor.putBoolean(PlayActivity.EXTRA_USE_GCP, useGCP)
             editor.apply()
-            val bool = networkPreference.getBoolean(PlayActivity.EXTRA_USE_GCP, false)
-            val heah = bool.toString()
         }
     }
 
@@ -531,7 +529,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry)) {
                     viewState.getChannelInfo()?.let { channelInfo ->
-                        //                        presenter.getPlayInfo(channelInfo.channelId, onSuccessGetInfo(), onErrorGetInfo()
                         presenter.openWebSocket(
                                 userSession,
                                 channelInfo.channelId,

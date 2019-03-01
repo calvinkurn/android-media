@@ -16,13 +16,13 @@ class AdsViewModel : BaseGroupChatPojo, Visitable<GroupChatTypeFactory>, Parcela
 
     @SerializedName("ads_url")
     @Expose
-    var adsUrl: String? = null
+    var adsUrl: String = ""
     @SerializedName("ads_link")
     @Expose
-    var adsLink: String? = null
+    var adsLink: String = ""
     @SerializedName("ads_id")
     @Expose
-    var adsId: String? = null
+    var adsId: String = ""
 
     constructor(adsUrl: String, adsLink: String, adsId: String) {
         this.adsUrl = adsUrl

@@ -2,7 +2,7 @@ package com.tokopedia.groupchat.chatroom.di;
 
 import com.tokopedia.groupchat.chatroom.data.ChatroomApi;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
-import com.tokopedia.groupchat.common.di.qualifier.GCPQualifier;
+import com.tokopedia.groupchat.common.di.qualifier.GcpQualifier;
 import com.tokopedia.groupchat.common.di.qualifier.GroupChatQualifier;
 import com.tokopedia.vote.domain.source.VotingSource;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
@@ -36,7 +36,7 @@ public class ChatroomModule {
 
     @ChatroomScope
     @Provides
-    @GCPQualifier
+    @GcpQualifier
     public Retrofit provideChatroomGCPRetrofit(Retrofit.Builder retrofitBuilder,
                                             OkHttpClient okHttpClient) {
         return retrofitBuilder.baseUrl(GroupChatUrl.BASE_GCP_URL).client(okHttpClient).build();
@@ -44,8 +44,8 @@ public class ChatroomModule {
 
     @ChatroomScope
     @Provides
-    @GCPQualifier
-    public ChatroomApi provideChatroomGCPApi(@GCPQualifier Retrofit retrofit) {
+    @GcpQualifier
+    public ChatroomApi provideChatroomGCPApi(@GcpQualifier Retrofit retrofit) {
         return retrofit.create(ChatroomApi.class);
     }
 

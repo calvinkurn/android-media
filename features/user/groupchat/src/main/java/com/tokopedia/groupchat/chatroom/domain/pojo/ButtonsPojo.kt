@@ -14,15 +14,14 @@ class ButtonsPojo() {
 
     @SerializedName("floating_button")
     @Expose
-    var floatingButton: Button? = null
+    var floatingButton: Button = Button()
 
     @SerializedName("dynamic_buttons")
     @Expose
-    var listDynamicButton: List<Button>?= null
+    var listDynamicButton: List<Button> = arrayListOf()
 
     class Button() {
 
-        //TODO samain nama param
         @SerializedName("button_id")
         @Expose
         var buttonId: String = ""

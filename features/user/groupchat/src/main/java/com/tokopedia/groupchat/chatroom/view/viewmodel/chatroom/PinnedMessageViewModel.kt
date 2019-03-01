@@ -12,10 +12,14 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
 
 class PinnedMessageViewModel : Visitable<GroupChatTypeFactory>, Parcelable {
 
-    var message: String
-    var title: String
-    var imageUrl: String
-    var thumbnail: String
+    var message: String = ""
+    var title: String = ""
+    var imageUrl: String = ""
+    var thumbnail: String = ""
+
+    constructor(){
+
+    }
 
     constructor(message: String, title: String, imageUrl: String, thumbnail: String) {
         this.message = message

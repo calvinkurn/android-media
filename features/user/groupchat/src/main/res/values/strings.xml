@@ -106,6 +106,7 @@
     <string name="please_try_again">Silakan coba kembali</string>
     <string name="failed_to_load_content">Gagal memuat konten</string>
 
+    <string name="play_title">Play</string>
     <string name="play_has_end">"%1$s telah berakhir"</string>
     <string name="play_next_event">"Nantikan dan gabung di channel Play selanjutnya"</string>
     <string name="play_start_shopping">"Mulai belanja"</string>

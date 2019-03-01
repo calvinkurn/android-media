@@ -11,30 +11,30 @@ data class Product (
 
     @SerializedName("product_id")
     @Expose
-    val productId: String? = null,
+    val productId: String = "",
     @SerializedName("name")
     @Expose
-    val name: String? = null,
+    val name: String = "",
     @SerializedName("url_mobile")
     @Expose
-    val urlMobile: String? = null,
+    val urlMobile: String = "",
     @SerializedName("image_url")
     @Expose
-    val imageUrl: String? = null,
+    val imageUrl: String = "",
     @SerializedName("discount_percentage")
     @Expose
     val discountPercentage: Int = 0,
     @SerializedName("discounted_price")
     @Expose
-    val discountedPrice: String? = null,
+    val discountedPrice: String = "",
     @SerializedName("original_price")
     @Expose
-    val originalPrice: String? = null,
+    val originalPrice: String = "",
     @SerializedName("remaining_stock_percentage")
     @Expose
     val remainingStockPercentage: Double = 0.toDouble(),
     @SerializedName("stock_text")
     @Expose
-    val stockText: String? = null
+    val stockText: String = ""
 ){
 }

@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.groupchat.chatroom.data.ChatroomApi
 import com.tokopedia.groupchat.common.data.GroupChatUrl
-import com.tokopedia.groupchat.common.di.qualifier.GCPQualifier
+import com.tokopedia.groupchat.common.di.qualifier.GcpQualifier
 import com.tokopedia.groupchat.common.di.qualifier.GroupChatQualifier
 import com.tokopedia.groupchat.common.network.PlayInterceptor
 import com.tokopedia.groupchat.common.network.StreamErrorResponse
@@ -53,7 +53,7 @@ class PlayModule {
 
     @PlayScope
     @Provides
-    @GCPQualifier
+    @GcpQualifier
     fun provideChatroomGCPRetrofit(retrofitBuilder: Retrofit.Builder,
                                 okHttpClient: OkHttpClient): Retrofit {
         return retrofitBuilder.baseUrl(GroupChatUrl.BASE_GCP_URL).client(okHttpClient).build()
@@ -61,8 +61,8 @@ class PlayModule {
 
     @PlayScope
     @Provides
-    @GCPQualifier
-    fun provideChatroomGCPApi(@GCPQualifier retrofit: Retrofit): ChatroomApi {
+    @GcpQualifier
+    fun provideChatroomGCPApi(@GcpQualifier retrofit: Retrofit): ChatroomApi {
         return retrofit.create(ChatroomApi::class.java)
     }
 

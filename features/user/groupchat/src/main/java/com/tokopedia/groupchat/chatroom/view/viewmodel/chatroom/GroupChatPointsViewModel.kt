@@ -12,12 +12,15 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
 
 class GroupChatPointsViewModel : Parcelable, Visitable<GroupChatTypeFactory> {
 
+    var image: String = ""
+    var text: String = ""
+    var span: String = ""
+    var url: String = ""
+    var type: String = ""
 
-    var image: String? = null
-    var text: String? = null
-    var span: String? = null
-    var url: String? = null
-    var type: String? = null
+    constructor(){
+
+    }
 
     constructor(text: String, url: String) {
         this.text = text

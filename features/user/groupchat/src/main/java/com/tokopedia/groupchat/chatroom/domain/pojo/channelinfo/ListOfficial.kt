@@ -9,6 +9,6 @@ data class ListOfficial (
         var title: String = "",
         @SerializedName("list_brands")
         @Expose
-        var listBrands: List<ListBrand>? = null
+        var listBrands: List<ListBrand> = arrayListOf()
 
 ) {}

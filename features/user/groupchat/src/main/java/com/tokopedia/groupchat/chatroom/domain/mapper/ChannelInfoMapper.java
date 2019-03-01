@@ -54,7 +54,6 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     @Override
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
-        //TODO REPLACE FROM POJO
         return new ChannelInfoViewModel(
                 String.valueOf(pojo.getChannel().getChannelId()),
                 pojo.getChannel().getTitle() != null ? pojo.getChannel().getTitle() : "",

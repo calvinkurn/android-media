@@ -234,24 +234,6 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
                 super.onProgressChanged(view, newProgress)
             }
 
-//            override fun onReceivedTitle(view: WebView, title: String) {
-//                super.onReceivedTitle(view, title)
-//                if (activity is AppCompatActivity && (activity as AppCompatActivity).supportActionBar != null) {
-//                    val decodedUrl = Uri.decode(url).toLowerCase()
-//
-//                    if (!TextUtils.isEmpty(title)
-//                            && Uri.parse(title).scheme == null
-//                            && isKolUrl(decodedUrl)) {
-//                        (activity as AppCompatActivity).supportActionBar!!.setTitle(
-//                                title
-//                        )
-//                    } else {
-//                        (activity as AppCompatActivity).supportActionBar!!.setTitle(
-//                                getString(R.string.title_activity_deep_link)
-//                        )
-//                    }
-//                }
-//            }
         }
     }
 

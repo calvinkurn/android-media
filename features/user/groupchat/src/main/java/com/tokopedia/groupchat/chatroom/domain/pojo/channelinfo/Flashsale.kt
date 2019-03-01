@@ -28,6 +28,6 @@ data class Flashsale (
     val endDate: Long = 0,
     @SerializedName("products")
     @Expose
-    val products: List<Product>? = null
+    val products: List<Product> = arrayListOf()
 ){
 }

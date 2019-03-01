@@ -10,7 +10,7 @@ import java.util.*
 
 data class ChannelPartnerViewModel (
         var partnerTitle: String = "",
-        var child: List<ChannelPartnerChildViewModel>? = null
+        var child: List<ChannelPartnerChildViewModel> = arrayListOf()
 ) : Parcelable {
 
     override fun describeContents(): Int {

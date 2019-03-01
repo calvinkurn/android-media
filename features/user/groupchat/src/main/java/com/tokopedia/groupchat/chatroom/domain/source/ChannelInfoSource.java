@@ -9,7 +9,7 @@ import com.tokopedia.groupchat.chatroom.domain.mapper.ChannelInfoMapper;
 import com.tokopedia.groupchat.chatroom.domain.mapper.DynamicButtonsMapper;
 import com.tokopedia.groupchat.chatroom.domain.mapper.StickyComponentMapper;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.groupchat.common.di.qualifier.GCPQualifier;
+import com.tokopedia.groupchat.common.di.qualifier.GcpQualifier;
 import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment;
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
@@ -38,7 +38,7 @@ public class ChannelInfoSource {
     @Inject
     public ChannelInfoSource(@ApplicationContext Context context,
                              ChatroomApi chatroomApi,
-                             @GCPQualifier ChatroomApi gcpApi,
+                             @GcpQualifier ChatroomApi gcpApi,
                              ChannelInfoMapper mapper,
                              DynamicButtonsMapper dynamicButtonsMapper,
                              StickyComponentMapper stickyComponentMapper) {
