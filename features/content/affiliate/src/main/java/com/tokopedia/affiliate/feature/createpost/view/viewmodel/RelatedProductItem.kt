@@ -10,7 +10,8 @@ data class RelatedProductItem(
         val id: String = "",
         val name: String = "",
         val price: String = "",
-        val image: String = ""
+        val image: String = "",
+        val type: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
             source.readString() ?: "",

@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking
 import com.tokopedia.affiliate.feature.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
+import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
@@ -148,7 +149,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
         viewModel.token = feedContentForm.token
         viewModel.maxImage = feedContentForm.media.maxMedia
-        if (!feedContentForm.media.media.isEmpty()) {
+
+        if (feedContentForm.media.media.isNotEmpty()) {
             if (viewModel.urlImageList.isEmpty()) {
                 viewModel.urlImageList.clear()
                 feedContentForm.media.media.forEach {
@@ -157,6 +159,21 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
         }
         updateThumbnail()
+
+        if (feedContentForm.relatedItems.isNotEmpty()) {
+            viewModel.relatedProducts.clear()
+
+            feedContentForm.relatedItems.forEach {
+                viewModel.relatedProducts.add(RelatedProductItem(
+                        it.id,
+                        it.title,
+                        it.price,
+                        it.image,
+                        viewModel.authorType
+                ))
+            }
+        }
+        adapter.notifyDataSetChanged()
     }
 
     override fun onErrorGetContentForm(message: String) {
@@ -195,6 +212,22 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onEmptyProductClick() {
         goToAttachProduct()
+    }
+
+    override fun onItemDeleted(position: Int) {
+        val relatedProductItem = viewModel.relatedProducts[position]
+
+        viewModel.relatedProducts.removeAt(position)
+        adapter.notifyItemRemoved(position)
+
+        if (isTypeAffiliate()) {
+            viewModel.adIdList.removeAll { it == relatedProductItem.id }
+        } else {
+            viewModel.productIdList.removeAll { it == relatedProductItem.id }
+        }
+
+        viewModel.urlImageList.removeAll { it == relatedProductItem.image }
+        updateThumbnail()
     }
 
     abstract fun fetchContentForm()
@@ -245,6 +278,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun initView() {
+        adapter.setList(viewModel.relatedProducts)
         relatedProductRv.adapter = adapter
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
@@ -345,4 +379,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         return relatedProducts
     }
+
+    private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
 }

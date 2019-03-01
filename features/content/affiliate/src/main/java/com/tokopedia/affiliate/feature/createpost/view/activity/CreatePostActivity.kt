@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
+import com.tokopedia.affiliate.feature.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.affiliate.feature.createpost.view.fragment.AffiliateCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePostFragment
 import com.tokopedia.applink.ApplinkConst
@@ -32,8 +34,6 @@ class CreatePostActivity : BaseSimpleActivity() {
         const val PARAM_AD_ID = "ad_id"
         const val PARAM_POST_ID = "post_id"
         const val PARAM_TYPE = "author_type"
-        const val TYPE_CONTENT_SHOP = "content-shop"
-        const val TYPE_AFFILIATE = "affiliate"
 
         fun getInstanceAffiliate(context: Context, productId: String, adId: String): Intent {
             val intent = Intent(context, CreatePostActivity::class.java)

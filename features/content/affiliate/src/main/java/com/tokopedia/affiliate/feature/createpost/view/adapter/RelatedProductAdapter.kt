@@ -4,7 +4,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_af_related_product.view.*
@@ -62,9 +64,13 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
         }
         holder.itemView.name.text = element.name
         holder.itemView.price.text = element.price
+        holder.itemView.price.setTextColor(MethodChecker.getColor(
+                holder.itemView.context,
+                if (element.type == TYPE_AFFILIATE) R.color.af_commission_blue
+                else R.color.orange_red)
+        )
         holder.itemView.delete.setOnClickListener {
-            list.removeAt(holder.adapterPosition)
-            notifyItemRemoved(holder.adapterPosition)
+            listener?.onItemDeleted(holder.adapterPosition)
 
             if (list.isEmpty() && shouldAddEmpty()) {
                 list.add(emptyItem)
@@ -94,5 +100,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
 
     interface RelatedProductListener {
         fun onEmptyProductClick()
+
+        fun onItemDeleted(position: Int)
     }
 }
