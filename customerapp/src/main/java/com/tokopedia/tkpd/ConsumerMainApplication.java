@@ -254,6 +254,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
         TkpdBaseURL.CHAT_DOMAIN = ConsumerAppBaseUrl.CHAT_DOMAIN;
         TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN =
+                ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN =
+                ConsumerAppBaseUrl.GROUP_CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         TkpdBaseURL.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;

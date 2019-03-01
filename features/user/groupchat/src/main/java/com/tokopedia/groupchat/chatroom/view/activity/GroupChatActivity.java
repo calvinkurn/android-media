@@ -40,14 +40,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -103,6 +102,8 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
@@ -241,7 +242,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private int initialFragment;
     private GroupChatViewModel viewModel;
 
-    private CallbackManager callbackManager;
     private Snackbar snackbarError;
 
     @Inject
@@ -255,7 +255,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     SharedPreferences sharedPreferences;
 
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     private PerformanceMonitoring performanceMonitoring;
 
@@ -301,8 +301,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             finish();
         }
 
-        callbackManager = CallbackManager.Factory.create();
-        userSession = ((AbstractionRouter) getApplication()).getSession();
+        userSession = new UserSession(this);
 
         initView();
         initInjector();
@@ -994,7 +993,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -1028,9 +1026,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             if (!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
                 trackAdsEE(channelInfoViewModel);
             }
-            if (getApplication() instanceof AbstractionRouter) {
-                userSession = ((AbstractionRouter) getApplication()).getSession();
-            }
+            userSession = new UserSession(this);
             onSuccessEnterChannel();
 
             presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
@@ -1083,9 +1079,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             trackAdsEE(channelInfoViewModel);
         }
 
-        if (getApplication() instanceof AbstractionRouter) {
-            userSession = ((AbstractionRouter) getApplication()).getSession();
-        }
+        userSession = new UserSession(this);
 
         presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
                 , channelInfoViewModel.getGroupChatToken()
