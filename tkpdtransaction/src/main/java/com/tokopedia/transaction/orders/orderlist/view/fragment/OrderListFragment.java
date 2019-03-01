@@ -36,6 +36,7 @@ import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
 import com.tokopedia.transaction.orders.orderlist.common.SurveyBottomSheet;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
@@ -507,7 +508,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSurveyButton(boolean isEligible) {
-        if (isEligible) {
+        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja"))) {
             surveyBtn.setVisibility(View.VISIBLE);
         } else {
             surveyBtn.setVisibility(View.GONE);
