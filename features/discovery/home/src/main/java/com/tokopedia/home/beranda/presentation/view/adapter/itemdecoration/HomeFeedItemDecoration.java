@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
@@ -43,6 +44,6 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getTotalSpanCount(RecyclerView parent) {
-        return ((GridLayoutManager) parent.getLayoutManager()).getSpanCount();
+        return ((StaggeredGridLayoutManager) parent.getLayoutManager()).getSpanCount();
     }
 }
