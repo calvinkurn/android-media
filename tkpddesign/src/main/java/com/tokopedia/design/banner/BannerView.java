@@ -45,9 +45,9 @@ public class BannerView extends BaseCustomView {
     private OnPromoAllClickListener onPromoAllClickListener;
     private OnPromoDragListener onPromoDragListener;
 
-    protected ArrayList<ImageView> indicatorItems;
-    protected ArrayList<Boolean> impressionStatusList;
-    protected List<String> promoImageUrls;
+    protected ArrayList<ImageView> indicatorItems = new ArrayList<>();
+    protected ArrayList<Boolean> impressionStatusList = new ArrayList<>();
+    protected List<String> promoImageUrls = new ArrayList<>();
     protected int currentPosition;
 
     protected BannerPagerAdapter bannerPagerAdapter;
