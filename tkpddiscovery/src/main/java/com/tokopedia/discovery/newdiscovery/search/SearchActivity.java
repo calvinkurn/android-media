@@ -194,16 +194,6 @@ public class SearchActivity extends DiscoveryActivity
         initPresenter();
         initResources();
 
-        if(intent.getExtras() != null) {
-            Bundle bundle = intent.getExtras();
-            RequestParams searchParams = RequestParams.create();
-
-            for(String key : bundle.keySet()) {
-                Object value = bundle.get(key);
-                searchParams.putObject(key, value);
-            }
-        }
-
         ProductViewModel productViewModel =
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
@@ -216,7 +206,7 @@ public class SearchActivity extends DiscoveryActivity
 
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
-            loadSection(productViewModel, forceSwipeToShop);
+            loadSection(productViewModel, forceSwipeToShop, isOfficial);
             setToolbarTitle(productViewModel.getQuery());
             bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         } else if (!TextUtils.isEmpty(searchQuery)) {
@@ -357,14 +347,14 @@ public class SearchActivity extends DiscoveryActivity
         profileTabTitle = getString(R.string.title_profile);
     }
 
-    private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {
+    private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop, boolean isOfficial) {
 
         List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
 
         if (productViewModel.isHasCatalog()) {
-            populateFourTabItem(searchSectionItemList, productViewModel);
+            populateFourTabItem(searchSectionItemList, productViewModel, isOfficial);
         } else {
-            populateThreeTabItem(searchSectionItemList, productViewModel);
+            populateThreeTabItem(searchSectionItemList, productViewModel, isOfficial);
         }
         searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
@@ -392,11 +382,12 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList,
-                                      ProductViewModel productViewModel) {
+                                      ProductViewModel productViewModel,
+                                      boolean isOfficial) {
 
         productListFragment = getProductFragment(productViewModel);
         catalogFragment = getCatalogFragment(productViewModel.getQuery());
-        shopListFragment = getShopFragment(productViewModel.getQuery());
+        shopListFragment = getShopFragment(productViewModel.getQuery(), isOfficial);
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
@@ -449,8 +440,8 @@ public class SearchActivity extends DiscoveryActivity
         return ProductListFragment.newInstance(productViewModel);
     }
 
-    private ShopListFragment getShopFragment(String query) {
-        return ShopListFragment.newInstance(query);
+    private ShopListFragment getShopFragment(String query, boolean isOfficial) {
+        return ShopListFragment.newInstance(query, isOfficial);
     }
 
     private ProfileListFragment getProfileListFragment(String query, SearchNavigationListener searchNavigationListener) {
@@ -458,10 +449,11 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
-                                    ProductViewModel productViewModel) {
+                                      ProductViewModel productViewModel,
+                                      boolean isOfficial) {
 
         productListFragment = getProductFragment(productViewModel);
-        shopListFragment = getShopFragment(productViewModel.getQuery());
+        shopListFragment = getShopFragment(productViewModel.getQuery(), isOfficial);
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));

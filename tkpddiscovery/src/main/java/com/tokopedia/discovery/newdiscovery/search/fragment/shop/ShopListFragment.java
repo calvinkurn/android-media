@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -37,6 +39,7 @@ import com.tokopedia.discovery.newdiscovery.util.SearchParameterBuilder;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,6 +55,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
     private static final String EXTRA_QUERY = "EXTRA_QUERY";
+    private static final String EXTRA_IS_OFFICIAL = "EXTRA_IS_OFFICIAL";
     private static final int REQUEST_CODE_GOTO_SHOP_DETAIL = 125;
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_ACTIVITY_SORT_SHOP = 1235;
@@ -61,6 +65,7 @@ public class ShopListFragment extends SearchSectionFragment
     private RecyclerView recyclerView;
     private ShopListAdapter adapter;
     private String query;
+    private boolean isOfficial;
 
     @Inject
     ShopListPresenter presenter;
@@ -74,9 +79,10 @@ public class ShopListFragment extends SearchSectionFragment
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
-    public static ShopListFragment newInstance(String query) {
+    public static ShopListFragment newInstance(String query, boolean isOfficial) {
         Bundle args = new Bundle();
         args.putString(EXTRA_QUERY, query);
+        args.putBoolean(EXTRA_IS_OFFICIAL, isOfficial);
         ShopListFragment ShopListFragment = new ShopListFragment();
         ShopListFragment.setArguments(args);
         return ShopListFragment;
@@ -86,7 +92,7 @@ public class ShopListFragment extends SearchSectionFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            loadDataFromSavedState(savedInstanceState);
+            loadDataFromBundle(savedInstanceState);
         } else {
             loadDataFromArguments();
         }
@@ -94,12 +100,13 @@ public class ShopListFragment extends SearchSectionFragment
         gcmHandler = new GCMHandler(getContext());
     }
 
-    private void loadDataFromSavedState(Bundle savedInstanceState) {
-        query = savedInstanceState.getString(EXTRA_QUERY);
+    private void loadDataFromArguments() {
+        loadDataFromBundle(getArguments());
     }
 
-    private void loadDataFromArguments() {
-        query = getArguments().getString(EXTRA_QUERY);
+    private void loadDataFromBundle(Bundle bundle) {
+        query = bundle.getString(EXTRA_QUERY);
+        isOfficial = bundle.getBoolean(EXTRA_IS_OFFICIAL, false);
     }
 
     @Override
@@ -199,7 +206,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     private void loadMoreShop(final int startRow) {
         SearchParameter searchParameter
-                = generateLoadMoreParameter(startRow, query);
+                = generateLoadMoreParameter(startRow);
 
         isLoadingData = true;
         presenter.loadShop(searchParameter, new ShopListPresenterImpl.LoadMoreListener() {
@@ -243,12 +250,13 @@ public class ShopListFragment extends SearchSectionFragment
         });
     }
 
-    private SearchParameter generateLoadMoreParameter(int startRow, String query) {
+    private SearchParameter generateLoadMoreParameter(int startRow) {
         SearchParameterBuilder builder = SearchParameterBuilder.createInstance();
         builder.setUniqueID(generateUniqueId());
         builder.setUserID(generateUserId());
         builder.setQueryKey(query);
         builder.setStartRow(startRow);
+        builder.setOfficial(isOfficial);
         return builder.build();
     }
 
@@ -483,6 +491,7 @@ public class ShopListFragment extends SearchSectionFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(EXTRA_QUERY, query);
+        outState.putBoolean(EXTRA_IS_OFFICIAL, isOfficial);
     }
 
     @Override
@@ -516,5 +525,23 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void setSelectedFilter(HashMap<String, String> selectedFilter) {
+        super.setSelectedFilter(selectedFilter);
+//        if (selectedFilter == null) {
+//            return;
+//        }
+//        if (TextUtils.isEmpty(selectedFilter.get("official"))) {
+//            getSearchParameter().setOfficial(false);
+//        } else {
+//            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get("official")));
+//        }
+//        if (TextUtils.isEmpty(selectedFilter.get(BrowseApi.SC))) {
+//            getSearchParameter().setDepartmentId("");
+//        } else {
+//            getSearchParameter().setDepartmentId(selectedFilter.get(BrowseApi.SC));
+//        }
     }
 }
