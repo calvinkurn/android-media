@@ -50,6 +50,8 @@ public class BannerView extends BaseCustomView {
     protected List<String> promoImageUrls;
     protected int currentPosition;
 
+    protected BannerPagerAdapter bannerPagerAdapter;
+
     public BannerView(@NonNull Context context) {
         super(context);
         init();
@@ -156,7 +158,7 @@ public class BannerView extends BaseCustomView {
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
 
-        BannerPagerAdapter bannerPagerAdapter = getBannerAdapter();
+        bannerPagerAdapter = getBannerPagerAdapter();
         bannerRecyclerView.setHasFixedSize(true);
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
@@ -337,7 +339,7 @@ public class BannerView extends BaseCustomView {
         return R.drawable.indicator;
     }
 
-    protected BannerPagerAdapter getBannerAdapter() {
+    protected BannerPagerAdapter getBannerPagerAdapter() {
         return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
     }
 }

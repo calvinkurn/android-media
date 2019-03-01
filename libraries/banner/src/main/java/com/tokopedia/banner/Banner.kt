@@ -30,7 +30,6 @@ public class Banner : BannerView {
         promoImageUrls = ArrayList()
     }
 
-
     override fun buildView() {
         super.buildView()
         if (bannerRecyclerView.itemDecorationCount.equals(0)) {
@@ -54,7 +53,22 @@ public class Banner : BannerView {
             }
         })
     }
-    override fun getBannerAdapter(): BannerPagerAdapter {
+
+    fun setItems(bannerImageUrls: List<String>) {
+        if (bannerPagerAdapter != null) {
+            bannerPagerAdapter.clear()
+            bannerPagerAdapter.setItems(bannerImageUrls)
+            bannerPagerAdapter.notifyDataSetChanged()
+        }
+    }
+
+    fun setOnItemClickListener(listener: OnPromoClickListener) {
+        if (bannerPagerAdapter != null) {
+            bannerPagerAdapter.setOnItemClickListener(listener)
+        }
+    }
+
+    override fun getBannerPagerAdapter(): BannerPagerAdapter {
         return BannerAdapter(promoImageUrls, onPromoClickListener)
     }
 
