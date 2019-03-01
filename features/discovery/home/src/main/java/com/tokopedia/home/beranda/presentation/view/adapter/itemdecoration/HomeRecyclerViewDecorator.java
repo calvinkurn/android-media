@@ -5,16 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 public class HomeRecyclerViewDecorator extends RecyclerView.ItemDecoration {
-    private final int left;
+    private final int lastItemOffset;
     private final int right;
     private final int bottom;
     private final int top;
 
-    public HomeRecyclerViewDecorator(int left,
+    public HomeRecyclerViewDecorator(int lastItemOffset,
                                      int right,
                                      int bottom,
                                      int top) {
-        this.left = left;
+        this.lastItemOffset = lastItemOffset;
         this.right = right;
         this.bottom = bottom;
         this.top = top;
@@ -24,10 +24,13 @@ public class HomeRecyclerViewDecorator extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view,
                                RecyclerView parent, RecyclerView.State state) {
         if (parent.getLayoutManager().getPosition(view) == 1) {
-            outRect.left = left;
-            outRect.right = right;
             outRect.bottom = bottom;
             outRect.top = -top;
+        }
+
+        if (parent.getLayoutManager().getPosition(view) ==
+        parent.getLayoutManager().getChildCount()-1) {
+            outRect.bottom = lastItemOffset;
         }
     }
 }

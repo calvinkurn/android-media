@@ -11,9 +11,13 @@ class CardBannerPagerAdapter(bannerImageUrls : List<String>,
         BannerPagerAdapter(bannerImageUrls, onPromoClickListener) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
-        return BannerViewHolder(
-                LayoutInflater.from(parent.context)
-                        .inflate(R.layout.layout_slider_banner_design_card, parent, false)
-        )
+        val inflater = LayoutInflater.from(parent.context)
+        val itemView = inflater.inflate(R.layout.layout_slider_banner_design_card, parent, false)
+
+//        val layoutParams = itemView.getLayoutParams()
+//        layoutParams.height = (parent.height * 0.7).toInt()
+//        itemView.setLayoutParams(layoutParams)
+
+        return BannerViewHolder(itemView)
     }
 }

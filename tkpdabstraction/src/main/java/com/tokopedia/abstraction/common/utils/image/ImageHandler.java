@@ -758,6 +758,7 @@ public class ImageHandler {
             Glide.with(context)
                     .load(imageUrl)
                     .override(80, 80)
+                    .placeholder(imageView.getDrawable())
                     .centerCrop()
                     .into(imageView);
         }
@@ -766,6 +767,7 @@ public class ImageHandler {
             Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
+                    .placeholder(imageView.getDrawable())
                     .into(new BitmapImageViewTarget(imageView) {
                         @Override
                         protected void setResource(Bitmap resource) {
@@ -810,7 +812,7 @@ public class ImageHandler {
 
     public static Bitmap blur(Context context, Bitmap image) {
         final float BITMAP_SCALE = 0.4f;
-        final float BLUR_RADIUS = 7.5f;
+        final float BLUR_RADIUS = 25f;
 
         int width = Math.round(image.getWidth() * BITMAP_SCALE);
         int height = Math.round(image.getHeight() * BITMAP_SCALE);

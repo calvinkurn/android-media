@@ -18,6 +18,8 @@ import java.util.ArrayList
 
 class BannerViewDynamicBackground : BannerView {
 
+    var isUseCrossfade = true;
+
     internal lateinit var img_banner_background: ImageView
 
     constructor(context: Context) : super(context) {}
@@ -44,10 +46,13 @@ class BannerViewDynamicBackground : BannerView {
             bannerRecyclerView.addItemDecoration(
                     HomeBannerViewDecorator(
                             context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_4),
+                            context.resources.getDimensionPixelSize(R.dimen.dp_2),
                             context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_4))
+                            context.resources.getDimensionPixelSize(R.dimen.dp_2))
             )
+        }
+        bannerSeeAll.setOnClickListener {
+            isUseCrossfade = !isUseCrossfade
         }
         bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             internal var currentImagePosition = currentPosition
@@ -56,7 +61,11 @@ class BannerViewDynamicBackground : BannerView {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
                         && currentImagePosition != currentPosition
                         && currentPosition != -1) {
-                    setBackgroundImageCrossfade()
+                    if (isUseCrossfade) {
+                        setBackgroundImageCrossfade()
+                    } else {
+                        setBackgroundImage()
+                    }
                     currentImagePosition = currentPosition
                 }
             }

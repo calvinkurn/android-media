@@ -577,8 +577,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.addOnScrollListener(onEggScrollListener);
         recyclerView.addItemDecoration(new HomeRecyclerViewDecorator(0,
                 0,
-                getActivity().getResources().getDimensionPixelSize(R.dimen.dp_10),
-                getActivity().getResources().getDimensionPixelSize(R.dimen.dp_60)
+                getActivity().getResources().getDimensionPixelSize(R.dimen.home_recyclerview_last_item_offset),
+                getActivity().getResources().getDimensionPixelSize(R.dimen.home_viewholder_below_banner_offset)
                 ));
     }
 

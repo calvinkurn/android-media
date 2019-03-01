@@ -10,7 +10,8 @@
         android:id="@+id/viewpager_banner_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:layout_height="wrap_content" />
@@ -28,6 +29,7 @@
         tools:layout_width="100dp" />
 
     <TextView
+        android:layout_marginTop="@dimen/dp_8"
         android:id="@+id/promo_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

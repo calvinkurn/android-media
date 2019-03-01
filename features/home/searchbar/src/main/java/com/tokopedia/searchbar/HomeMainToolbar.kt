@@ -76,7 +76,7 @@ class HomeMainToolbar : MainToolbar {
     override fun showInboxIconForAbTest(shouldShowInbox: Boolean) {
         if (shouldShowInbox) {
             btnWishlist.tag = TAG_INBOX
-            btnWishlist.setImageResource(R.drawable.ic_inbox_searcbar)
+            btnWishlist.setImageResource(R.drawable.ic_searchbar_inbox_white)
         } else {
             btnWishlist.tag = ""
             btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_white)
