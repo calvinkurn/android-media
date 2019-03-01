@@ -11,7 +11,7 @@ import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedC
  */
 interface CreatePostContract {
     interface View : CustomerView {
-        val context: Context
+        fun getContext(): Context?
 
         fun showLoading()
 
@@ -27,6 +27,6 @@ interface CreatePostContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun fetchContentForm(productId: MutableList<String>, adId: MutableList<String>)
+        fun fetchContentForm(idList: MutableList<String>)
     }
 }

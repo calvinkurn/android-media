@@ -121,12 +121,6 @@ public interface ApplinkConst {
 
     String TC_LANDING = "tokopedia://tc-landing";
 
-    String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
-    String CONTENT_DETAIL = "tokopedia://content/{post_id}";
-    String INTEREST_PICK = "tokopedia://interestpick";
-    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
-    String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
-
     String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
@@ -174,6 +168,13 @@ public interface ApplinkConst {
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
+
+    String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
+    String CONTENT_DETAIL = "tokopedia://content/{post_id}";
+    String CONTENT_CREATE_POST = "tokopedia://content/create_post/";
+    String INTEREST_PICK = "tokopedia://interestpick";
+    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
+    String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";

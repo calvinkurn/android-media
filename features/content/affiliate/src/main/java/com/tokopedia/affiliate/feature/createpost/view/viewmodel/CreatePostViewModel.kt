@@ -7,6 +7,7 @@ import java.util.*
 data class CreatePostViewModel(
         var postId: String = "",
         var token: String = "",
+        var authorType: String = "",
         var mainImageIndex: Int = 0,
         var maxImage: Int = 5,
         val productIdList: MutableList<String> = arrayListOf(),
@@ -27,6 +28,7 @@ data class CreatePostViewModel(
     constructor(source: Parcel) : this(
             source.readString() ?: "",
             source.readString() ?: "",
+            source.readString() ?: "",
             source.readInt(),
             source.readInt(),
             source.createStringArrayList() ?: arrayListOf(),
@@ -41,6 +43,7 @@ data class CreatePostViewModel(
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(postId)
         writeString(token)
+        writeString(authorType)
         writeInt(mainImageIndex)
         writeInt(maxImage)
         writeStringList(productIdList)

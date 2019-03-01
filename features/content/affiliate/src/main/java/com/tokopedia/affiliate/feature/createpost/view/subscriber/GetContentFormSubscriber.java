@@ -15,6 +15,7 @@ import rx.Subscriber;
 /**
  * @author by milhamj on 9/26/18.
  */
+@SuppressWarnings("ConstantConditions")
 public class GetContentFormSubscriber extends Subscriber<GetContentFormDomain> {
 
     private CreatePostContract.View view;

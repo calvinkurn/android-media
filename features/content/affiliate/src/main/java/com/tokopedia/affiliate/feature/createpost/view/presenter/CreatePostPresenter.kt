@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.createpost.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
-import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
 import javax.inject.Inject
 
 /**
@@ -18,11 +17,12 @@ class CreatePostPresenter @Inject constructor(
         getContentFormUseCase.unsubscribe()
     }
 
-    override fun fetchContentForm(productId: MutableList<String>, adId: MutableList<String>) {
+    override fun fetchContentForm(idList: MutableList<String>) {
         view.showLoading()
-        getContentFormUseCase.execute(
-                GetContentFormUseCase.createRequestParams(productId, adId),
-                GetContentFormSubscriber(view)
-        )
+        //TODO milhamj
+//        getContentFormUseCase.execute(
+//                GetContentFormUseCase.createRequestParams(productId, adId),
+//                GetContentFormSubscriber(view)
+//        )
     }
 }

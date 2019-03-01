@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.createpost.di;
 
-import com.tokopedia.affiliate.feature.createpost.view.fragment.CreatePostFragment;
+import com.tokopedia.affiliate.feature.createpost.view.fragment.BaseCreatePostFragment;
 import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService;
 
 import dagger.Component;
@@ -11,7 +11,7 @@ import dagger.Component;
 @CreatePostScope
 @Component(modules = CreatePostModule.class)
 public interface CreatePostComponent {
-    void inject(CreatePostFragment fragment);
+    void inject(BaseCreatePostFragment fragment);
 
     void inject(SubmitPostService service);
 }

@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class CreatePostFragment : BaseDaggerFragment(),
+abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         CreatePostContract.View,
         RelatedProductAdapter.RelatedProductListener {
 
@@ -51,14 +51,13 @@ class CreatePostFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var viewModel: CreatePostViewModel = CreatePostViewModel()
+    protected var viewModel: CreatePostViewModel = CreatePostViewModel()
 
     private val adapter: RelatedProductAdapter by lazy {
         RelatedProductAdapter(this)
     }
 
     companion object {
-
         private const val VIEW_MODEL = "view_model"
         private const val PARAM_USER_ID = "{user_id}"
         private const val PRODUCT_ID_QUERY_PARAM = "?product_id="
@@ -66,12 +65,6 @@ class CreatePostFragment : BaseDaggerFragment(),
         private const val REQUEST_EXAMPLE = 13
         private const val REQUEST_LOGIN = 83
         private const val REQUEST_ATTACH_PRODUCT = 10
-
-        fun createInstance(bundle: Bundle): CreatePostFragment {
-            val fragment = CreatePostFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 
     override fun initInjector() {
@@ -102,8 +95,7 @@ class CreatePostFragment : BaseDaggerFragment(),
         initVar(savedInstanceState)
         initView()
         if (userSession.isLoggedIn) {
-            //TODO milhamj handle multiple product or ad id
-            presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull())
+            fetchContentForm()
         } else {
             context?.let {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQUEST_LOGIN)
@@ -131,7 +123,7 @@ class CreatePostFragment : BaseDaggerFragment(),
                 updateThumbnail()
             }
             REQUEST_EXAMPLE -> goToImagePicker()
-            REQUEST_LOGIN -> presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull())
+            REQUEST_LOGIN -> fetchContentForm()
             REQUEST_ATTACH_PRODUCT -> if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
                 val products = data?.getParcelableArrayListExtra<ResultProduct>(
                         AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
@@ -168,8 +160,9 @@ class CreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onErrorGetContentForm(message: String) {
-        NetworkErrorHelper.showEmptyState(context, mainView, message
-        ) { presenter.fetchContentForm(viewModel.productIdList.firstOrNull(), viewModel.adIdList.firstOrNull()) }
+        NetworkErrorHelper.showEmptyState(context, mainView, message) {
+            fetchContentForm()
+        }
     }
 
     override fun onErrorNotAffiliate() {
@@ -204,6 +197,8 @@ class CreatePostFragment : BaseDaggerFragment(),
         goToAttachProduct()
     }
 
+    abstract fun fetchContentForm()
+
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
@@ -211,9 +206,13 @@ class CreatePostFragment : BaseDaggerFragment(),
             if (arguments!!.getString(DRAFT_ID) != null) {
                 initDraft(arguments!!)
             } else {
-                viewModel.productIdList.add(arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, ""))
-                viewModel.adIdList.add(arguments!!.getString(CreatePostActivity.PARAM_AD_ID, ""))
+                val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "").split(',')
+                val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "").split(',')
+
+                viewModel.productIdList.addAll(productIds)
+                viewModel.adIdList.addAll(adIds)
                 viewModel.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
+                viewModel.authorType = arguments!!.getString(CreatePostActivity.PARAM_TYPE, "")
             }
         } else {
             activity?.finish()
