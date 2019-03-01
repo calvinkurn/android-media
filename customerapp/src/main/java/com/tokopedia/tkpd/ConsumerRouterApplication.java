@@ -3086,7 +3086,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
-        return ReactNativeOfficialStoreFragment.createInstance(bundle);
+        return ReactNativeOfficialStoreFragment.createInstance();
     }
 
     @Override
