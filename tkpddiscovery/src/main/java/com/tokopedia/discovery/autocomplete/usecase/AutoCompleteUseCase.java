@@ -40,6 +40,10 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         return autoCompleteRepository.getSearchData(requestParams.getParameters());
     }
 
+    public static RequestParams getParams(String query, String registrationId, String userId) {
+        return getParams(query, false, registrationId, userId);
+    }
+
     public static RequestParams getParams(String query, boolean isOfficial, String registrationId, String userId) {
         RequestParams params = RequestParams.create();
         params.putString(KEY_DEVICE, DEFAULT_DEVICE);
