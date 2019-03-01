@@ -23,12 +23,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -42,6 +36,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
@@ -49,7 +44,10 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRoute
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,6 +146,7 @@ public class SearchActivity extends DiscoveryActivity
         intent.putExtra(EXTRA_OFFICIAL, isOfficial);
 
         intent.putExtras(bundle);
+
         return intent;
     }
 
@@ -194,6 +193,16 @@ public class SearchActivity extends DiscoveryActivity
     private void handleIntent(Intent intent) {
         initPresenter();
         initResources();
+
+        if(intent.getExtras() != null) {
+            Bundle bundle = intent.getExtras();
+            RequestParams searchParams = RequestParams.create();
+
+            for(String key : bundle.keySet()) {
+                Object value = bundle.get(key);
+                searchParams.putObject(key, value);
+            }
+        }
 
         ProductViewModel productViewModel =
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
