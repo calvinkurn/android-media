@@ -44,6 +44,6 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getTotalSpanCount(RecyclerView parent) {
-        return ((StaggeredGridLayoutManager) parent.getLayoutManager()).getSpanCount();
+        return ((GridLayoutManager) parent.getLayoutManager()).getSpanCount();
     }
 }
