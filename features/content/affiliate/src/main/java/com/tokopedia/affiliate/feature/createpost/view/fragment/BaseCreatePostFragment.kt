@@ -122,6 +122,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 viewModel.fileImageList.clear()
                 viewModel.fileImageList.addAll(imageList)
                 updateThumbnail()
+                updateButton()
             }
             REQUEST_EXAMPLE -> goToImagePicker()
             REQUEST_LOGIN -> fetchContentForm()
@@ -132,6 +133,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 viewModel.relatedProducts.clear()
                 viewModel.relatedProducts.addAll(convertAttachProduct(products))
                 updateRelatedProduct()
+                updateButton()
             }
             else -> {
             }
@@ -158,7 +160,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 }
             }
         }
-        updateThumbnail()
 
         if (feedContentForm.relatedItems.isNotEmpty()) {
             viewModel.relatedProducts.clear()
@@ -174,6 +175,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
         }
         adapter.notifyDataSetChanged()
+
+        updateThumbnail()
+        updateButton()
     }
 
     override fun onErrorGetContentForm(message: String) {
@@ -227,7 +231,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
 
         viewModel.urlImageList.removeAll { it == relatedProductItem.image }
+
         updateThumbnail()
+        updateButton()
     }
 
     abstract fun fetchContentForm()
@@ -295,6 +301,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         thumbnail.setOnClickListener {
             goToMediaPreview()
         }
+        updateButton()
     }
 
     private fun goToImagePicker() {
@@ -352,6 +359,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         } else {
             thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
         }
+    }
+
+    private fun updateButton() {
+        val isButtonEnabled = viewModel.completeImageList.isNotEmpty()
+                && viewModel.relatedProducts.isNotEmpty()
+                && (viewModel.adIdList.isNotEmpty() || viewModel.productIdList.isNotEmpty())
+        doneBtn.isEnabled = isButtonEnabled
     }
 
     private fun goToAttachProduct() {
