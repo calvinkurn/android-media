@@ -1038,6 +1038,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isHomeFragment() {
+        if (getActivity() == null) {
+            return false;
+        }
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
         return (fragment instanceof HomeFragment);
     }
