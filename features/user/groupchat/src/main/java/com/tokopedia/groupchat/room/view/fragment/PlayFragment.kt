@@ -474,7 +474,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onSprintSaleProductClicked(productViewModel: SprintSaleProductViewModel?, position: Int) {
 
-        channelInfoViewModel.sprintSaleViewModel?.let {
+        viewState.getChannelInfo()?.sprintSaleViewModel?.let {
             if (!it.sprintSaleType.equals(SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH, true)) {
                 analytics.eventClickSprintSaleProduct(productViewModel, position, channelInfoViewModel)
                 openRedirectUrl(it.redirectUrl ?: "")
@@ -590,6 +590,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onDynamicButtonUpdated(it)
     }
 
+    override fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel) {
+        viewState.onSprintSaleReceived(it)
+        addIncomingMessage(it)
+
+    }
+
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
         viewState.onBackgroundUpdated(it)
     }
@@ -599,7 +605,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun setSnackBarConnectingWebSocket() {
-        if (userSession.isLoggedIn) {
+        if (userSession.isLoggedIn && !viewState.errorViewShown()) {
             snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
@@ -609,7 +615,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun setSnackBarRetryConnectingWebSocket() {
-        if (userSession.isLoggedIn) {
+        if (userSession.isLoggedIn && !viewState.errorViewShown()) {
             snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
@@ -700,15 +706,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.setBottomView()
         kickIfIdleForTooLong()
         if (canResume()) {
-//
-//            if (viewModel != null && viewModel.getChannelInfoViewModel() != null
-//                    && !isFirstTime) {
-//                if (!channelInfoDialog.isShowing() || loading.getVisibility() != View.VISIBLE) {
-//                    showLoading()
-//                    presenter.refreshChannelInfo(viewModel.getChannelUuid())
-//                }
-//
-//            }
+
+            viewState.autoAddSprintSale()
+
             viewState.getChannelInfo()?.let {
                 presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
             }

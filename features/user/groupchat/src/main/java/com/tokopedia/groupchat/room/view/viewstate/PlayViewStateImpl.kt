@@ -150,7 +150,7 @@ open class PlayViewStateImpl(
         chatRecyclerView.layoutManager = layoutManager
         chatRecyclerView.adapter = adapter
         val itemDecoration = SpaceItemDecoration(view.context
-                .getResources().getDimension(R.dimen.space_play_chat).toInt())
+                .resources.getDimension(R.dimen.space_play_chat).toInt())
         chatRecyclerView.addItemDecoration(itemDecoration)
 
         chatRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -307,6 +307,7 @@ open class PlayViewStateImpl(
         inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
         sendButton.hide()
         dynamicButtonRecyclerView.show()
+        scrollToBottom()
 
     }
 
@@ -323,6 +324,7 @@ open class PlayViewStateImpl(
         sendButton.show()
         dynamicButtonRecyclerView.hide()
 //            setSprintSaleIcon(null)
+        scrollToBottom()
     }
 
     private fun checkText(replyText: String): String {
@@ -366,6 +368,8 @@ open class PlayViewStateImpl(
 
         onBackgroundUpdated(it.backgroundViewModel)
         errorView.hide()
+
+        autoAddSprintSale()
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
@@ -447,7 +451,7 @@ open class PlayViewStateImpl(
     override fun onChannelFrozen(channelId: String) {
         var channelName = viewModel?.title
         if (channelId == viewModel?.channelId) {
-            setEmptyState(R.drawable.ic_play_dynamic_icon,
+            setEmptyState(R.drawable.ic_play_end,
                     view.context.resources.getString((R.string.play_has_end), channelName),
                     getStringResource(R.string.play_next_event),
                     getStringResource(R.string.play_start_shopping),
@@ -661,8 +665,8 @@ open class PlayViewStateImpl(
         }
     }
 
-
     private fun setToolbarWhite() {
+        sponsorLayout.hide()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f
             toolbar.setBackgroundResource(R.color.white)
@@ -673,10 +677,14 @@ open class PlayViewStateImpl(
         var subtitle = toolbar.findViewById<TextView>(R.id.toolbar_subtitle)
         subtitle.hide()
         toolbar.findViewById<TextView>(R.id.toolbar_live).hide()
-        title.text = "PLAY"
+        title.text = "Play"
         subtitle.text = ""
         title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
         subtitle.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
+    }
+
+    override fun errorViewShown(): Boolean {
+        return errorView.isShown
     }
 
     override fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?) {
@@ -972,7 +980,7 @@ open class PlayViewStateImpl(
     }
 
     override fun onErrorGetInfo(it: String) {
-        setEmptyState(R.drawable.ic_play_dynamic_icon, it,
+        setEmptyState(R.drawable.ic_play_overload, it,
                 getStringResource(R.string.try_again_later),
                 getStringResource(R.string.title_try_again),
                 listener::onRetryGetInfo)
@@ -1172,12 +1180,11 @@ open class PlayViewStateImpl(
 
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
         var space = when {
-            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_32)
             else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
         }
         chatRecyclerView.setPadding(0, space, 0, 0)
     }
-
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
         viewModel?.let {
@@ -1204,6 +1211,18 @@ open class PlayViewStateImpl(
 
     }
 
+    override fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel) {
+        var item = SprintSaleViewModel(
+                campaignId = it.campaignId,
+                listProduct = it.listProducts,
+                campaignName = it.campaignName,
+                startDate = it.startDate,
+                endDate = it.endDate,
+                redirectUrl = it.redirectUrl.toString(),
+                sprintSaleType = it.sprintSaleType)
+        viewModel?.sprintSaleViewModel = item
+    }
+
     override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
         showWebviewBottomSheet(it.linkUrl)
     }
@@ -1211,5 +1230,64 @@ open class PlayViewStateImpl(
     override fun destroy() {
         youTubePlayer?.release()
         youtubeRunnable.removeCallbacksAndMessages(null)
+    }
+
+    override fun autoAddSprintSale() {
+
+        var sprintSaleViewModel = viewModel?.sprintSaleViewModel
+        var channelInfoViewModel = viewModel
+
+        if (sprintSaleViewModel != null
+                && isValidSprintSale(sprintSaleViewModel)
+                && sprintSaleViewModel.sprintSaleType != null
+                && !sprintSaleViewModel.sprintSaleType!!.equals(SprintSaleViewModel.TYPE_UPCOMING, ignoreCase = true)
+                && !sprintSaleViewModel.sprintSaleType!!.equals(SprintSaleViewModel.TYPE_FINISHED, ignoreCase = true)
+                && channelInfoViewModel != null) {
+
+//            trackViewSprintSaleComponent(sprintSaleViewModel)
+
+            val sprintSaleAnnouncementViewModel = SprintSaleAnnouncementViewModel(
+                    sprintSaleViewModel.campaignId!!,
+                    Date().time,
+                    Date().time,
+                    "0",
+                    "0",
+                    channelInfoViewModel.adminName,
+                    channelInfoViewModel.adminPicture,
+                    false,
+                    true,
+                    sprintSaleViewModel.redirectUrl,
+                    sprintSaleViewModel.listProduct!!,
+                    sprintSaleViewModel.campaignName!!,
+                    sprintSaleViewModel.getStartDate(),
+                    sprintSaleViewModel.getEndDate(),
+                    sprintSaleViewModel.sprintSaleType!!
+            )
+
+            Observable.timer(3, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (adapter.list.size == 0
+                                || adapter.getItemAt(0) != null
+                                && adapter.getItemAt(0) !is SprintSaleAnnouncementViewModel) {
+                            adapter.addIncomingMessage(sprintSaleAnnouncementViewModel)
+                            adapter.notifyItemInserted(0)
+                            listener.vibratePhone()
+                        }
+                    }
+        }
+    }
+
+
+    private fun isValidSprintSale(sprintSaleViewModel: SprintSaleViewModel?): Boolean {
+        return (sprintSaleViewModel != null
+                && sprintSaleViewModel.getStartDate() != 0L
+                && sprintSaleViewModel.getEndDate() != 0L
+                && sprintSaleViewModel.getEndDate() > getCurrentTime())
+    }
+
+
+    private fun getCurrentTime(): Long {
+        return Date().time / 1000L
     }
 }

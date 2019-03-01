@@ -8,6 +8,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.FreezeViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 
 data class Channel(
@@ -136,6 +137,10 @@ data class Channel(
         val button: ButtonsPojo = ButtonsPojo(),
         @SerializedName("background")
         @Expose
-        val backgroundViewModel: BackgroundViewModel = BackgroundViewModel()
+        val backgroundViewModel: BackgroundViewModel = BackgroundViewModel(),
+        @SerializedName("freeze_channel_state")
+        @Expose
+        val freezeState: FreezeViewModel = FreezeViewModel()
+
 
 ) {}

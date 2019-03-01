@@ -64,9 +64,9 @@
 
             <android.support.v7.widget.CardView
                 android:id="@+id/content_image_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="@dimen/radius_chat_image"
+                android:layout_width="@dimen/dp_44"
+                android:layout_height="@dimen/dp_44"
+                app:cardCornerRadius="@dimen/dp_4"
                 app:cardElevation="0dp"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true"
@@ -74,14 +74,12 @@
                 android:layout_below="@id/space"
                 android:layout_alignLeft="@id/title"
                 android:layout_alignStart="@id/title">
-                <ImageView
+
+                <com.tokopedia.design.image.SquareImageView
                     android:id="@+id/content_image"
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
-                    android:textSize="@dimen/sp_14"
-                    android:textColor="@color/white"
-                    tools:background="@tools:sample/avatars"
-                    />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/red_400"/>
             </android.support.v7.widget.CardView>
 
             <android.widget.Space
@@ -110,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_10"
                     android:textColor="@color/black_38"
-                    android:layout_weight="1"
+
                     tools:text="Rp4.655.000"
                     />
                 <TextView

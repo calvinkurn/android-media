@@ -87,7 +87,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getSettingGroupChat(),
                 pojo.getChannel().getOverlayMessage(),
                 convertDynamicButtons(pojo.getChannel().getButton()),
-                pojo.getChannel().getBackgroundViewModel()
+                pojo.getChannel().getBackgroundViewModel(),
+                pojo.getChannel().getFreezeState()
         );
     }
 

@@ -9,6 +9,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BanViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.FreezeViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.KickViewModel;
@@ -54,6 +55,7 @@ public class ChannelInfoViewModel implements Parcelable {
     public OverlayViewModel overlayViewModel;
     private DynamicButtonsViewModel dynamicButtons;
     private BackgroundViewModel backgroundViewModel;
+    private FreezeViewModel freezeViewModel;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -106,6 +108,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.overlayViewModel = null;
         this.dynamicButtons = null;
         this.backgroundViewModel = null;
+        this.freezeViewModel = null;
     }
 
     public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
@@ -122,7 +125,8 @@ public class ChannelInfoViewModel implements Parcelable {
                                 List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel,
                                 String videoId, Boolean videoLive, String infoUrl,
                                 SettingGroupChat settingGroupChat, OverlayViewModel overlayViewModel,
-                                DynamicButtonsViewModel dynamicButtons, BackgroundViewModel backgroundViewModel) {
+                                DynamicButtonsViewModel dynamicButtons, BackgroundViewModel backgroundViewModel,
+                                FreezeViewModel freezeViewModel) {
         this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
@@ -155,6 +159,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.overlayViewModel = overlayViewModel;
         this.dynamicButtons = dynamicButtons;
         this.backgroundViewModel = backgroundViewModel;
+        this.freezeViewModel = freezeViewModel;
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -186,6 +191,7 @@ public class ChannelInfoViewModel implements Parcelable {
         overlayViewModel = in.readParcelable(OverlayViewModel.class.getClassLoader());
         dynamicButtons = in.readParcelable(DynamicButtonsViewModel.class.getClassLoader());
         backgroundViewModel = in.readParcelable(BackgroundViewModel.class.getClassLoader());
+        freezeViewModel = in.readParcelable(FreezeViewModel.class.getClassLoader());
         voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
         sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
         groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
@@ -223,6 +229,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(overlayViewModel, flags);
         dest.writeParcelable(dynamicButtons, flags);
         dest.writeParcelable(backgroundViewModel, flags);
+        dest.writeParcelable(freezeViewModel, flags);
         dest.writeParcelable(voteInfoViewModel, flags);
         dest.writeParcelable(sprintSaleViewModel, flags);
         dest.writeParcelable(groupChatPointsViewModel, flags);
