@@ -20,6 +20,7 @@ import com.tokopedia.design.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
-    private List<String> bannerImageUrls;
+    private List<String> bannerImageUrls = new ArrayList<>();
     private BannerView.OnPromoClickListener onPromoClickListener;
 
     public BannerPagerAdapter() { }
