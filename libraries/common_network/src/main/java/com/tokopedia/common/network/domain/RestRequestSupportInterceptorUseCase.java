@@ -48,19 +48,21 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
     private Func1<Map<Type, RestResponse>, Map<Type, RestResponse>> checkForNull() {
         return responseMap -> {
             for (Map.Entry<Type, RestResponse> pair : responseMap.entrySet()) {
-                if (isCheckNull()) {
-                    NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
-                        String message = String.format("Found %s in %s",
-                                errorMessage,
-                                RestRequestSupportInterceptorUseCase.class.getSimpleName()
-                        );
-                        ContainNullException exception = new ContainNullException(message);
-                        if (!BuildConfig.DEBUG) {
-                            Crashlytics.logException(exception);
-                        }
+                NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
+                    String message = String.format("Found %s in %s",
+                            errorMessage,
+                            RestRequestSupportInterceptorUseCase.class.getSimpleName()
+                    );
+                    ContainNullException exception = new ContainNullException(message);
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
+                    if (shouldThrowException()) {
                         throw exception;
-                    });
-                }
+                    }
+                    return null;
+                });
+
             }
             return responseMap;
         };
@@ -121,13 +123,12 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
     protected abstract List<RestRequest> buildRequest(RequestParams requestParams);
 
     /**
-     * A function to indicate whether the use case needs to check for null variables
-     * in the responses.
+     * A function to indicate whether the use case needs to throw exception when null is found in the response
      *
      * Please override this function and return `false`
-     * if you want the use case to _NOT_ check for null values.
+     * if you want the use case to _NOT_ throw exception
      **/
-    protected boolean isCheckNull() {
-        return true;
+    protected boolean shouldThrowException() {
+        return false;
     }
 }

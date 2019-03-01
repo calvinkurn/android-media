@@ -71,9 +71,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     if (data != null && !data.isJsonNull()) {
                         Type type = requests.get(i).getTypeOfT();
                         Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
-                        if (requests.get(i).isCheckNull()) {
-                            checkForNull(object);
-                        }
+                        checkForNull(object, requests.get(i).isShouldThrow());
                         //Lookup for data
                         results.put(type, object);
                     }
@@ -105,14 +103,17 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
         }
     }
 
-    private void checkForNull(Object object) {
+    private void checkForNull(Object object, boolean shouldThrow) {
         NullCheckerKt.isContainNull(object, errorMessage -> {
             String message = String.format("Found %s in %s", errorMessage, GraphqlUseCase.class.getSimpleName());
             ContainNullException exception = new ContainNullException(message);
             if (!BuildConfig.DEBUG) {
                 Crashlytics.logException(exception);
             }
-            throw exception;
+            if (shouldThrow) {
+                throw exception;
+            }
+            return null;
         });
     }
 }

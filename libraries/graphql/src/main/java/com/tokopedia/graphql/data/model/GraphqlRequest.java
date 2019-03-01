@@ -27,7 +27,7 @@ public class GraphqlRequest {
     private transient Type typeOfT; /*Mandatory parameter*/
 
     /*transient by nature hence it will not be part of request body*/
-    private transient boolean checkNull = true; /*Optional parameter*/
+    private transient boolean shouldThrow = false; /*Optional parameter*/
 
     public GraphqlRequest(String query, Type typeOfT) {
         this.query = query;
@@ -40,9 +40,9 @@ public class GraphqlRequest {
     }
 
     public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
-                          boolean checkNull) {
+                          boolean shouldThrow) {
         this(query, typeOfT, variables);
-        this.checkNull = checkNull;
+        this.shouldThrow = shouldThrow;
     }
 
     public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
@@ -52,9 +52,9 @@ public class GraphqlRequest {
     }
 
     public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
-                          String operationName, boolean checkNull) {
+                          String operationName, boolean shouldThrow) {
         this(query, typeOfT, variables, operationName);
-        this.checkNull = checkNull;
+        this.shouldThrow = shouldThrow;
     }
 
     public String getQuery() {
@@ -77,12 +77,12 @@ public class GraphqlRequest {
         return typeOfT;
     }
 
-    public boolean isCheckNull() {
-        return checkNull;
+    public boolean isShouldThrow() {
+        return shouldThrow;
     }
 
-    public void setCheckNull(boolean checkNull) {
-        this.checkNull = checkNull;
+    public void setShouldThrow(boolean shouldThrow) {
+        this.shouldThrow = shouldThrow;
     }
 
     //Do not rewrite on remove it
@@ -93,7 +93,7 @@ public class GraphqlRequest {
                 ", variables=" + variables +
                 ", operationName='" + operationName + '\'' +
                 ", typeOfT=" + typeOfT +
-                ", checkNull=" + checkNull +
+                ", shouldThrow=" + shouldThrow +
                 '}';
     }
 }
