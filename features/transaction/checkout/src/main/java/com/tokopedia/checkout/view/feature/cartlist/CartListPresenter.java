@@ -187,22 +187,22 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
         );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
-//                .flatMap(new Func1<CartListData, Observable<CartListData>>() {
-//                    @Override
-//                    public Observable<CartListData> call(CartListData cartListData) {
-//                        RequestParams adsParam = RequestParams.create();
-//                        adsParam.putString("params", generateTopAdsParam(cartListData));
-//                        return Observable.zip(Observable.just(cartListData),
-//                                topAdsUseCase.createObservable(adsParam),
-//                                new Func2<CartListData, TopAdsModel, CartListData>() {
-//                                    @Override
-//                                    public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
-//                                        cartListData.setAdsModel(adsModel);
-//                                        return cartListData;
-//                                    }
-//                                });
-//                    }
-//                })
+                .flatMap(new Func1<CartListData, Observable<CartListData>>() {
+                    @Override
+                    public Observable<CartListData> call(CartListData cartListData) {
+                        RequestParams adsParam = RequestParams.create();
+                        adsParam.putString("params", generateTopAdsParam(cartListData));
+                        return Observable.zip(Observable.just(cartListData),
+                                topAdsUseCase.createObservable(adsParam),
+                                new Func2<CartListData, TopAdsModel, CartListData>() {
+                                    @Override
+                                    public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
+                                        cartListData.setAdsModel(adsModel);
+                                        return cartListData;
+                                    }
+                                });
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -286,23 +286,23 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(paramGetList));
 
         compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
-//                .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
-//                    @Override
-//                    public Observable<DeleteAndRefreshCartListData> call(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
-//                        RequestParams adsParam = RequestParams.create();
-//                        adsParam.putString("params", generateTopAdsParam(cartListData));
-//                        return Observable.zip(Observable.just(deleteAndRefreshCartListData),
-//                                topAdsUseCase.createObservable(adsParam),
-//                                new Func2<DeleteAndRefreshCartListData, TopAdsModel, DeleteAndRefreshCartListData>() {
-//                                    @Override
-//                                    public DeleteAndRefreshCartListData call(DeleteAndRefreshCartListData deleteAndRefreshCartListData,
-//                                                                             TopAdsModel adsModel) {
-//                                        deleteAndRefreshCartListData.getCartListData().setAdsModel(adsModel);
-//                                        return deleteAndRefreshCartListData;
-//                                    }
-//                                });
-//                    }
-//                })
+                .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
+                    @Override
+                    public Observable<DeleteAndRefreshCartListData> call(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
+                        RequestParams adsParam = RequestParams.create();
+                        adsParam.putString("params", generateTopAdsParam(cartListData));
+                        return Observable.zip(Observable.just(deleteAndRefreshCartListData),
+                                topAdsUseCase.createObservable(adsParam),
+                                new Func2<DeleteAndRefreshCartListData, TopAdsModel, DeleteAndRefreshCartListData>() {
+                                    @Override
+                                    public DeleteAndRefreshCartListData call(DeleteAndRefreshCartListData deleteAndRefreshCartListData,
+                                                                             TopAdsModel adsModel) {
+                                        deleteAndRefreshCartListData.getCartListData().setAdsModel(adsModel);
+                                        return deleteAndRefreshCartListData;
+                                    }
+                                });
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
