@@ -1,16 +1,10 @@
 package com.tokopedia.tkpdreactnative.react.banner;
 
-import android.view.View;
-
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
 import com.tokopedia.design.banner.BannerView;
@@ -23,7 +17,7 @@ import javax.annotation.Nullable;
 /**
  * Created by meta on 28/02/19.
  */
-public class ReactBannerManager extends SimpleViewManager<Banner> implements BannerView.OnPromoAllClickListener, BannerView.OnPromoDragListener, BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoScrolledListener {
+public class ReactBannerManager extends SimpleViewManager<Banner> implements BannerView.OnPromoAllClickListener, BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoScrolledListener {
 
     private static final String BANNER_CLASS = "BannerView";
 
