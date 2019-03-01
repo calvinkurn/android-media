@@ -326,6 +326,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onSuccessPromos(@NonNull TokoPointPromosEntity data) {
+        if (data == null
+                || data.getCatalog() == null
+                || data.getCoupon() == null
+                || data.getCoupon().getCoupons() == null
+                || data.getCatalog().getCatalogs() == null) {
+            return;
+        }
+
         initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons(), data.getCoupon().getEmptyMessage());
     }
 
