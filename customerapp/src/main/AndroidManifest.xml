@@ -295,6 +295,7 @@
             android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
             android:label="@string/title_activity_people_deposit"
             android:theme="@style/Theme.White"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity
