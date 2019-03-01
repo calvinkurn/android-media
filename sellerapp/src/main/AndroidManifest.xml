@@ -205,6 +205,12 @@
             android:exported="true" />
 
         <activity
+            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+            android:label="@string/title_activity_people_deposit"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>
