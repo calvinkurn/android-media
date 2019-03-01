@@ -15,9 +15,19 @@ public class CreatePostActivity extends BaseSimpleActivity {
     public static final String PARAM_PRODUCT_ID = "product_id";
     public static final String PARAM_AD_ID = "ad_id";
     public static final String PARAM_POST_ID = "post_id";
+    public static final String PARAM_TYPE = "author_type";
+    public static final String TYPE_CONTENT_SHOP = "content-shop";
+    public static final String TYPE_AFFILIATE = "affiliate";
 
     @DeepLink(ApplinkConst.AFFILIATE_CREATE_POST)
-    public static Intent getInstance(Context context, Bundle bundle) {
+    public static Intent getInstanceAffiliate(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, CreatePostActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    @DeepLink(ApplinkConst.CONTENT_CREATE_POST)
+    public static Intent getInstanceContent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, CreatePostActivity.class);
         intent.putExtras(bundle);
         return intent;

@@ -7,15 +7,15 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData;
+import com.tokopedia.affiliate.feature.createpost.domain.entity.GetContentFormDomain;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import rx.Subscriber;
 
 /**
  * @author by milhamj on 9/26/18.
  */
-public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
+public class GetContentFormSubscriber extends Subscriber<GetContentFormDomain> {
 
     private CreatePostContract.View view;
 
@@ -45,8 +45,8 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
     }
 
     @Override
-    public void onNext(GraphqlResponse graphqlResponse) {
-        ContentFormData data = graphqlResponse.getData(ContentFormData.class);
+    public void onNext(GetContentFormDomain domain) {
+        ContentFormData data = domain.getContentFormData();
         if (data == null || data.getFeedContentForm() == null || data.getAffiliateCheck() == null) {
             onError(new RuntimeException());
             return;
@@ -56,7 +56,7 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
             return;
         }
 
-        CheckQuotaQuery checkQuotaQuery = graphqlResponse.getData(CheckQuotaQuery.class);
+        CheckQuotaQuery checkQuotaQuery = domain.getCheckQuotaQuery();
         if (checkQuotaQuery == null || checkQuotaQuery.getData() == null) {
             onError(new RuntimeException());
             return;
