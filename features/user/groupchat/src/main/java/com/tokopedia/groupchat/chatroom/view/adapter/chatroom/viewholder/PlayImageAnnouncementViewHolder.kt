@@ -44,7 +44,7 @@ class PlayImageAnnouncementViewHolder(itemView: View, var listener: ChatroomCont
         message.append(" ")
         message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, R.color.white)))
         ImageHandler.LoadImage(content, element.contentImageUrl)
-        content.setOnClickListener { listener.onImageAnnouncementClicked(element.redirectUrl) }
+        content.setOnClickListener { listener.onImageAnnouncementClicked(element) }
     }
 
     private fun getUserName(senderName: String?, administrator: Boolean): Spannable {

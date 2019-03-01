@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.groupchat.chatroom.domain.mapper.StickyComponentMapper
 import com.tokopedia.groupchat.chatroom.domain.pojo.*
 import com.tokopedia.groupchat.chatroom.domain.pojo.EventHandlerPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel
@@ -15,6 +16,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel
 import com.tokopedia.websocket.WebSocketResponse
@@ -40,13 +42,13 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             PinnedMessageViewModel.TYPE, AdsViewModel.TYPE, GroupChatQuickReplyViewModel.TYPE,
             EventHandlerPojo.BANNED, EventHandlerPojo.FREEZE, ParticipantViewModel.TYPE,
             OverlayViewModel.TYPE, OverlayCloseViewModel.TYPE, VideoViewModel.TYPE,
-            DynamicButtonsViewModel.TYPE -> true
+            DynamicButtonsViewModel.TYPE, StickyComponentViewModel.TYPE -> true
             else -> false
         }
     }
 
     fun map(response: WebSocketResponse): Visitable<*>? {
-        var data = response.getData()
+        val data = response.getData()
         if (response.getType() == null) {
             return null
         }
@@ -79,8 +81,14 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             OverlayCloseViewModel.TYPE -> mapToOverlayClose(data)
             DynamicButtonsViewModel.TYPE -> mapToDynamicButton(data)
             BackgroundViewModel.TYPE -> mapToBackground(data)
+            StickyComponentViewModel.TYPE -> mapToStickyComponent(data)
             else -> null
         }
+    }
+
+    private fun mapToStickyComponent(data: JsonObject?): Visitable<*>? {
+        val pojo = gson.fromJson(data, StickyComponentPojo::class.java)
+        return StickyComponentMapper().mapToViewModel(pojo)
     }
 
     private fun mapToBackground(data: JsonObject?): Visitable<*>? {
@@ -95,24 +103,26 @@ class PlayWebSocketMessageMapper @Inject constructor() {
 
     private fun convertDynamicButtons(button: ButtonsPojo): DynamicButtonsViewModel {
         val dynamicButtonsViewModel = DynamicButtonsViewModel()
-        if (button.floatingButton != null) {
+        button.floatingButton?.let {
             dynamicButtonsViewModel.floatingButton = DynamicButtonsViewModel.Button(
-                    button.floatingButton!!.imageUrl,
-                    button.floatingButton!!.linkUrl,
-                    button.floatingButton!!.contentType,
-                    button.floatingButton!!.contentText,
-                    button.floatingButton!!.contentButtonText,
-                    button.floatingButton!!.contentLinkUrl,
-                    button.floatingButton!!.contentImageUrl,
-                    button.floatingButton!!.redDot,
-                    button.floatingButton!!.tooltip
+                    it.buttonId,
+                    it.imageUrl,
+                    it.linkUrl,
+                    it.contentType,
+                    it.contentText,
+                    it.contentButtonText,
+                    it.contentLinkUrl,
+                    it.contentImageUrl,
+                    it.redDot,
+                    it.tooltip
             )
         }
 
-        if (button.listDynamicButton != null) {
-            for (buttonItem in button.listDynamicButton!!) {
+        button.listDynamicButton?.let{
+            for (buttonItem in it) {
                 dynamicButtonsViewModel.listDynamicButton.add(
                         DynamicButtonsViewModel.Button(
+                                buttonItem.buttonId,
                                 buttonItem.imageUrl,
                                 buttonItem.linkUrl,
                                 buttonItem.contentType,
@@ -173,7 +183,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
         val model = GroupChatQuickReplyViewModel()
 
         val list = ArrayList<GroupChatQuickReplyItemViewModel>()
-        if (channel != null && channel.listQuickReply != null) {
+        if (channel?.listQuickReply != null) {
             var id = 1
             for (quickReply in channel.listQuickReply) {
                 val item = GroupChatQuickReplyItemViewModel(id.toString(), quickReply)
@@ -295,6 +305,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
 
         pojo.user?.let {
             return ImageAnnouncementViewModel(
+                    pojo.imageId,
                     pojo.imageUrl.trim { it <= ' ' },
                     pojo.timestamp!!,
                     pojo.timestamp!!,

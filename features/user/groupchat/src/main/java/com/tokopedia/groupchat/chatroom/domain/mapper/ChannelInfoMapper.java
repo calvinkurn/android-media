@@ -83,50 +83,12 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 convertChannelQuickReply(pojo.getChannel()),
                 pojo.getChannel().getVideoId(),
                 pojo.getChannel().getVideoLive(),
-                "https://m.tokopedia.com/discovery/734",
+                pojo.getChannel().getLinkInfoUrl(),
                 pojo.getChannel().getSettingGroupChat(),
                 pojo.getChannel().getOverlayMessage(),
-                convertDynamicButtons(pojo.getChannel().getButton()),
                 pojo.getChannel().getBackgroundViewModel(),
                 pojo.getChannel().getFreezeState()
         );
-    }
-
-    private DynamicButtonsViewModel convertDynamicButtons(ButtonsPojo button) {
-        DynamicButtonsViewModel dynamicButtonsViewModel = new DynamicButtonsViewModel();
-        if (button.getFloatingButton() != null) {
-            dynamicButtonsViewModel.setFloatingButton(new DynamicButtonsViewModel.Button(
-                    button.getFloatingButton().getImageUrl(),
-                    button.getFloatingButton().getLinkUrl(),
-                    button.getFloatingButton().getContentType(),
-                    button.getFloatingButton().getContentText(),
-                    button.getFloatingButton().getContentButtonText(),
-                    button.getFloatingButton().getContentLinkUrl(),
-                    button.getFloatingButton().getContentImageUrl(),
-                    button.getFloatingButton().getRedDot(),
-                    button.getFloatingButton().getTooltip()
-            ));
-        }
-
-        if (button.getListDynamicButton() != null) {
-            for (ButtonsPojo.Button buttonItem : button.getListDynamicButton()) {
-                dynamicButtonsViewModel.getListDynamicButton().add(
-                        new DynamicButtonsViewModel.Button(
-                                buttonItem.getImageUrl(),
-                                buttonItem.getLinkUrl(),
-                                buttonItem.getContentType(),
-                                buttonItem.getContentText(),
-                                buttonItem.getContentButtonText(),
-                                buttonItem.getContentLinkUrl(),
-                                buttonItem.getContentImageUrl(),
-                                buttonItem.getRedDot(),
-                                buttonItem.getTooltip()
-                        )
-                );
-            }
-        }
-
-        return dynamicButtonsViewModel;
     }
 
     private PinnedMessageViewModel mapToPinnedMessageViewModel(PinnedMessagePojo pinnedMessage) {
@@ -314,27 +276,6 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
         return childViewModelList;
     }
-
-//    private OverlayViewModel convertOverlayModel(OverlayMessagePojo pojo) {
-//        return new OverlayViewModel(
-//                pojo.getTypeMessage(),
-//                pojo.get
-//                pojo.isCloseable(),
-//                pojo.getStatus(),
-//                convertInteruptViewModel(pojo.getAssets())
-//        );
-//    }
-//
-//    private InteruptViewModel convertInteruptViewModel(OverlayMessageAssetPojo pojo) {
-//        return new InteruptViewModel(
-//                pojo.getTitle(),
-//                pojo.getDescription(),
-//                pojo.getImageUrl(),
-//                pojo.getImageLink(),
-//                pojo.getBtnTitle(),
-//                pojo.getBtnLink()
-//        );
-//    }
 
     private BanViewModel mapToBannedViewModel(Channel channel) {
         return new BanViewModel(

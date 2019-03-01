@@ -17,7 +17,8 @@ class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
         this.listDynamicButton = `in`.createTypedArrayList(Button.CREATOR)
     }
 
-    class Button(var imageUrl: String = "",
+    class Button(var buttonId : String = "",
+                 var imageUrl: String = "",
                  var linkUrl: String = "",
                  var contentType: String = "",
                  var contentText: String = "",
@@ -34,11 +35,13 @@ class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
                 parcel.readString(),
                 parcel.readString(),
                 parcel.readString(),
+                parcel.readString(),
                 parcel.readByte() != 0.toByte(),
                 parcel.readString()) {
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(buttonId)
             parcel.writeString(imageUrl)
             parcel.writeString(linkUrl)
             parcel.writeString(contentType)

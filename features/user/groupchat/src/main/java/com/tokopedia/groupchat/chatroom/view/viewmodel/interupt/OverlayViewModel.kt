@@ -12,6 +12,9 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
  * @author by yfsx on 14/12/18.
  */
  data class OverlayViewModel (
+        @SerializedName("overlay_id")
+        @Expose
+        var overlayId: String = "",
         @SerializedName("type")
         @Expose
         var type: String = "",
@@ -31,6 +34,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
 ) : BaseGroupChatPojo(), Visitable<GroupChatTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
@@ -62,6 +66,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(overlayId)
         parcel.writeString(type)
         parcel.writeString(redirectUrl)
         parcel.writeByte(if (isCloseable) 1 else 0)

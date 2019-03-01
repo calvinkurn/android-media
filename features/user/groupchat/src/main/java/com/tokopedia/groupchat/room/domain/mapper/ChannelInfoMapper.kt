@@ -2,8 +2,6 @@ package com.tokopedia.groupchat.room.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
-import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessageAssetPojo
-import com.tokopedia.groupchat.chatroom.domain.pojo.OverlayMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.*
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo
@@ -11,8 +9,6 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.poll.Option
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.StatisticOption
 import com.tokopedia.groupchat.chatroom.kotlin.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel
 import retrofit2.Response

@@ -6,6 +6,10 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
 
 class AdminImagePojo : BaseGroupChatPojo() {
 
+    //TODO variable name check
+    @SerializedName("image_id")
+    @Expose
+    var imageId: String= ""
     @SerializedName("image_url")
     @Expose
     var imageUrl: String= ""

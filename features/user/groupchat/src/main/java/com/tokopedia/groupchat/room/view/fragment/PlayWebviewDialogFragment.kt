@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.net.http.SslError
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
 import android.view.KeyEvent
@@ -35,8 +34,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     private var url: String = ""
     private var gcToken: String = ""
-    private var doubleTapExit = false
-    private val EXIT_DELAY_MILLIS = 2000
     private val REQUEST_CODE_LOGIN = 123
     private val PARAM_HEADER_GC_TOKEN: String = "X-User-Token"
 
@@ -46,7 +43,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     var callbackAfterL: ValueCallback<Array<Uri>>? = null
 
     lateinit var webview: TkpdWebView
-    lateinit var webviewClient: TkpdWebViewClient
     lateinit var progressBar: ProgressBar
     lateinit var userSession: UserSessionInterface
     lateinit var errorView: View
@@ -97,7 +93,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.bottom_sheet_webview, container, false)
         errorView = view.findViewById(R.id.error_layout)
-        errorImage = view.findViewById<ImageView>(R.id.error_image)
+        errorImage = view.findViewById(R.id.error_image)
         retryButton = view.findViewById(R.id.retry_button)
         closeButton = view.findViewById(R.id.header)
         initWebview(view)
@@ -212,30 +208,11 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 super.onProgressChanged(view, newProgress)
             }
 
-//            override fun onReceivedTitle(view: WebView, title: String) {
-//                super.onReceivedTitle(view, title)
-//                if (activity is AppCompatActivity && (activity as AppCompatActivity).supportActionBar != null) {
-//                    val decodedUrl = Uri.decode(url).toLowerCase()
-//
-//                    if (!TextUtils.isEmpty(title)
-//                            && Uri.parse(title).scheme == null
-//                            && isKolUrl(decodedUrl)) {
-//                        (activity as AppCompatActivity).supportActionBar!!.setTitle(
-//                                title
-//                        )
-//                    } else {
-//                        (activity as AppCompatActivity).supportActionBar!!.setTitle(
-//                                getString(R.string.title_activity_deep_link)
-//                        )
-//                    }
-//                }
-//            }
         }
     }
 
-
-    private fun getWebviewClient(): WebViewClient? {
-        return object : WebViewClient() {
+    private fun getWebviewClient(): TkpdWebViewClient {
+        return object : TkpdWebViewClient() {
 
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
@@ -243,41 +220,40 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 errorView.show()
 
             }
-            override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
-                super.onReceivedSslError(view, handler, error)
-                handler.cancel()
-                progressBar.visibility = View.GONE
-            }
 
-            override fun shouldOverrideUrlLoading(view: WebView?, requestUrl: String):
-                    Boolean {
-                val PARAM_WEBVIEW_BACK = "tokopedia://back"
-
-                activity?.run {
-                    if (requestUrl.equals(PARAM_WEBVIEW_BACK, true)
-                            && !isTaskRoot) run {
-                        finish()
-                        return true
-                    } else if (requestUrl.equals(PARAM_WEBVIEW_BACK, true)
-                            && isTaskRoot) run {
-                        openHomePage()
-                        return true
-                    } else if (requestUrl.equals(ApplinkConst.LOGIN, true)) {
-                        val intent = RouteManager.getIntent(this, requestUrl)
-                        startActivityForResult(intent, REQUEST_CODE_LOGIN)
-                        return true
-                    } else if (RouteManager.isSupportApplink(this, requestUrl)) {
-                        RouteManager.route(this, requestUrl)
-                        return true
-                    } else {
-                        return false
-                    }
-                }
-                return false
+            override fun onOverrideUrl(url: Uri?): Boolean {
+                if (url == null) return true
+                val requestUrl = url.toString()
+                return onOverrideUrl(requestUrl)
             }
         }
     }
 
+    private fun onOverrideUrl(requestUrl: String): Boolean {
+        val webview_back = "tokopedia://back"
+
+        activity?.run {
+            if (requestUrl.equals(webview_back, true)
+                    && !isTaskRoot) run {
+                finish()
+                return true
+            } else if (requestUrl.equals(webview_back, true)
+                    && isTaskRoot) run {
+                openHomePage()
+                return true
+            } else if (requestUrl.equals(ApplinkConst.LOGIN, true)) {
+                val intent = RouteManager.getIntent(this, requestUrl)
+                startActivityForResult(intent, REQUEST_CODE_LOGIN)
+                return true
+            } else if (RouteManager.isSupportApplink(this, requestUrl)) {
+                RouteManager.route(this, requestUrl)
+                return true
+            } else {
+                return false
+            }
+        }
+        return false
+    }
 
     private fun openHomePage() {
         activity?.run {

@@ -7,7 +7,9 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
  * @author by nisie on 2/27/18.
  */
 
-class ImageAnnouncementViewModel(val contentImageUrl: String, createdAt: Long, updatedAt: Long,
+class ImageAnnouncementViewModel(val contentImageId : String,
+                                 val contentImageUrl: String,
+                                 createdAt: Long, updatedAt: Long,
                                  messageId: String, senderId: String, senderName: String,
                                  senderIconUrl: String, isInfluencer: Boolean,
                                  isAdministrator: Boolean, val redirectUrl: String) : BaseChatViewModel("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl, isInfluencer, isAdministrator), Visitable<GroupChatTypeFactory> {

@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.GroupChatModuleRouter
@@ -27,7 +28,6 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
-import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
@@ -225,7 +225,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onSuccessGetDynamicButtons(): (DynamicButtonsViewModel) -> Unit {
         return {
-            channelInfoViewModel.dynamicButtons = it
             viewState.onDynamicButtonUpdated(it)
         }
     }
@@ -233,54 +232,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun onErrorGetDynamicButtons(): (String) -> Unit {
         return {
             viewState.onErrorGetDynamicButtons()
-
-            //TODO DELETE THIS
-//            val listDynamic = ArrayList<DynamicButtonsViewModel.Button>()
-//
-//            listDynamic.add(DynamicButtonsViewModel.Button(
-//                    "https://i.gifer.com/M8tf.gif",
-//                    "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
-//                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
-//                    "external",
-//                    "",
-//                    "tokopedia://gamiication",
-//                    "",
-//                    false,
-//                    ""
-//            ))
-//
-//            listDynamic.add(DynamicButtonsViewModel.Button(
-//                    "https://i.gifer.com/M8tf.gif",
-//                    "https://www.tokopedia.com/",
-//                    "overlay_webview",
-//                    "Heyahyehayhea",
-//                    "https%3A%2F%2Fwww" +
-//                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih",
-//                    "",
-//                    true,
-//                    "Test tooltip"
-//            ))
-//            listDynamic.add(DynamicButtonsViewModel.Button(
-//                    "https://i.gifer.com/M8tf.gif",
-//                    "tokopedia://gamification",
-//                    "overlay_cta",
-//                    "Heyahyehayhea",
-//                    "tokopedia://gamification",
-//                    "https://www.vgr.com/wp-content/uploads/2019/02/kingdom-hearts-3-gameplay-16-2-925x520.jpg",
-//                    true,
-//                    ""
-//            ))
-//
-//            viewState.onDynamicButtonUpdated(
-//                    DynamicButtonsViewModel(
-//                            DynamicButtonsViewModel.Button(
-//                                    "https://i.gifer.com/M8tf.gif",
-//                                    "tokopedia://webview?need_login=true&titlebar=false&url=https%3A%2F%2Fwww" +
-//                                            ".tokopedia.com%2Fplay%2Ftrivia-quiz%3Fcampaign%3Dtrivia-hitam-putih"
-//                            ),
-//                            listDynamic
-//                    )
-//            )
         }
     }
 
@@ -293,19 +244,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun onErrorGetStickyComponent(): (String) -> Unit {
         return {
             viewState.onErrorGetStickyComponent()
-
-//            viewState.onStickyComponentUpdated(
-//                    StickyComponentViewModel(
-//                            "product",
-//                            "https://66.media.tumblr" +
-//                                    ".com/24cd87cc477767ba344376b3aa1f6e8f/tumblr_p732bhKoSc1wpahsoo4_250.png",
-//                            "TITLE",
-//                            "SUBTITLE",
-//                            "tokopedia://gamification",
-//                            10
-//                    )
-//            )
-
         }
     }
 
@@ -430,46 +368,18 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onQuickReplyClicked(text)
     }
 
-//    fun generateAttributeApplink(applink: String,
-//                                          attributeBanner: String): String {
-//        try {
-//            return if (RouteManager.isSupportApplink(context, applink)) {
-//                generateAttributeApplink(applink, attributeBanner,
-//                        channelInfoViewModel.getChannelUrl(),
-//                        channelInfoViewModel.title())
-//            } else {
-//                applink
-//            }
-//        } catch (e: UnknownFormatConversionException) {
-//            e.printStackTrace()
-//            return applink
-//        }
-//    }
-//
-//    private fun generateAttributeApplink(applink: String,
-//                                         attributeBanner: String,
-//                                         channelUrl: String,
-//                                         channelName: String): String {
-//        return if (applink.contains("?")) {
-//            String.format("$applink&%s", generateTrackerAttribution(attributeBanner,
-//                    channelUrl, channelName))
-//        } else {
-//            String.format("$applink?%s", generateTrackerAttribution(attributeBanner,
-//                    channelUrl, channelName))
-//        }
-//    }
-
-    override fun onImageAnnouncementClicked(url: String?) {
-        //TODO
-        analytics.eventClickThumbnail(channelInfoViewModel, "", "", "")
-        url?.run {
-            openRedirectUrl(this)
-        }
+    override fun onImageAnnouncementClicked(image: ImageAnnouncementViewModel) {
+        analytics.eventClickThumbnail(channelInfoViewModel, image.contentImageUrl, image
+                .contentImageId, image.contentImageId)
+        RouteManager.routeWithAttribution(context,  image.redirectUrl,
+                GroupChatAnalytics.generateTrackerAttribution(GroupChatAnalytics
+                        .ATTRIBUTE_IMAGE_ANNOUNCEMENT,
+                        channelInfoViewModel.channelUrl,
+                        channelInfoViewModel.title))
     }
 
     override fun onVoteComponentClicked(type: String?, name: String?) {
         analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name)
-
     }
 
     override fun onSprintSaleProductClicked(productViewModel: SprintSaleProductViewModel?, position: Int) {
@@ -495,10 +405,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             }
         }
 
-    }
-
-    override fun onSprintSaleIconClicked(sprintSaleViewModel: SprintSaleViewModel?) {
-        //NOT USED
     }
 
     override fun onPointsClicked(url: String?) {
@@ -593,7 +499,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel) {
         viewState.onSprintSaleReceived(it)
         addIncomingMessage(it)
-
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
@@ -602,6 +507,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onQuickReplyUpdated(it: GroupChatQuickReplyViewModel) {
         viewState.onQuickReplyUpdated(it)
+    }
+
+    override fun onStickyComponentReceived(it: StickyComponentViewModel) {
+        viewState.onStickyComponentUpdated(it)
     }
 
     override fun setSnackBarConnectingWebSocket() {
@@ -654,8 +563,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun trackViewIncomingMessage(it: Visitable<*>) {
         if (it is ImageAnnouncementViewModel) {
-            //TODO ads Name and ads Id
-            analytics.eventViewImageAnnouncement(channelInfoViewModel, it.contentImageUrl, "", "")
+            analytics.eventViewImageAnnouncement(channelInfoViewModel,
+                    it.contentImageUrl,
+                    it.contentImageId,
+                    it.contentImageId)
         }
     }
 
@@ -811,6 +722,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
+        //NOT USED
+    }
+
+    override fun onSprintSaleIconClicked(sprintSaleViewModel: SprintSaleViewModel?) {
         //NOT USED
     }
 

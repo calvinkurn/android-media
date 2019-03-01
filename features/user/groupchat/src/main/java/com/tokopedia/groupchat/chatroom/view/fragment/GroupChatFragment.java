@@ -863,11 +863,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void onImageAnnouncementClicked(String url) {
+    public void onImageAnnouncementClicked(ImageAnnouncementViewModel image) {
         analytics.eventClickThumbnail(String.format("%s - %s", ((GroupChatContract.View) getActivity()).
-                getChannelInfoViewModel().getChannelId(), url));
-        if (!TextUtils.isEmpty(url)) {
-            ((GroupChatModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
+                getChannelInfoViewModel().getChannelId(), image.getRedirectUrl()));
+        if (!TextUtils.isEmpty(image.getRedirectUrl())) {
+            ((GroupChatModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), image.getRedirectUrl());
         }
     }
 
