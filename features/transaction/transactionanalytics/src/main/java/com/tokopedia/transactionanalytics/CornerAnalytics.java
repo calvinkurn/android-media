@@ -8,7 +8,7 @@ import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.*;
  */
 public class CornerAnalytics extends TransactionAnalytics {
 
-    CornerAnalytics(AnalyticTracker analyticTracker) {
+    public CornerAnalytics(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
 
