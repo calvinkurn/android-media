@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 /**
  * Created by meta on 28/02/19.
  */
-public class ReactBannerManager extends SimpleViewManager<Banner> implements View.OnClickListener {
+public class ReactBannerManager extends SimpleViewManager<Banner> {
 
     private static final String BANNER_CLASS = "BannerView";
 
@@ -38,19 +38,14 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Vie
     @Override
     protected Banner createViewInstance(ThemedReactContext reactContext) {
         banner = new Banner(reactContext);
-        banner.getBannerSeeAll().setOnClickListener(this);
         banner.buildView();
-        return banner;
-    }
+        banner.getBannerSeeAll().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-    @Override
-    public void onClick(View view) {
-        if (view == banner.getBannerSeeAll()) {
-            WritableMap map = Arguments.createMap();
-            ReactContext reactContext = (ReactContext) view.getContext();
-            reactContext.getJSModule(RCTEventEmitter.class)
-                    .receiveEvent(view.getId(), "bannerSeeAllClick", map);
-        }
+            }
+        });
+        return banner;
     }
 
     @ReactProp(name = "bannerData")

@@ -28,9 +28,10 @@ import java.util.List;
 
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
-    private static final String TAG = BannerPagerAdapter.class.getSimpleName();
     private List<String> bannerImageUrls;
     private BannerView.OnPromoClickListener onPromoClickListener;
+
+    public BannerPagerAdapter() { }
 
     public BannerPagerAdapter(List<String> bannerImageUrls, BannerView.OnPromoClickListener onPromoClickListener) {
         this.bannerImageUrls = bannerImageUrls;
