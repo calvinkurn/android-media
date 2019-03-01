@@ -126,20 +126,6 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
     }
 
-    private void setData(GqlBuyerDepositSummaryResponse data) {
-        if (!isViewAttached() || getView().getBuyerHistoryAdapter() == null || data == null) {
-            return;
-        }
-
-        getView().getBuyerHistoryAdapter().addElement(data.getBuyerDepositHistory().getDepositHistoryList());
-        ((BaseListFragment) getView().getSingleHistoryTabItem().getFragment()).
-                updateScrollListenerState(data.getBuyerDepositHistory().isHaveNextPage());
-        if (getView().getBuyerHistoryAdapter().getItemCount() == 0) {
-            getView().getBuyerHistoryAdapter().addElement(getView().getDefaultEmptyViewModel());
-        }
-
-    }
-
     private void showLoading() {
         if (isViewAttached() && getView().getAdapter() != null) {
             getView().getAdapter().showLoading();
