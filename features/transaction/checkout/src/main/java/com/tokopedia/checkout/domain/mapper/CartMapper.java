@@ -52,14 +52,6 @@ public class CartMapper implements ICartMapper {
 
     @Override
     public CartListData convertToCartItemDataList(Context context, CartDataListResponse cartDataListResponse) {
-        NullCheckerKt.isContainNull(cartDataListResponse, s -> {
-            ContainNullException exception = new ContainNullException("Found " + s + " on " + CartMapper.class.getSimpleName() + ".convertToCartItemDataList()");
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception);
-            }
-            throw exception;
-        });
-
         CartListData cartListData = new CartListData();
         String errorMessage = mapperUtil.convertToString(cartDataListResponse.getErrors());
         boolean hasError = false;
