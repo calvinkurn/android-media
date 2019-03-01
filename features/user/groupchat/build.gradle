@@ -41,6 +41,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.network)
     implementation rootProject.ext.networkDependencies.glide
 
@@ -57,7 +58,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -71,10 +71,6 @@ dependencies {
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
-
-    implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
 }

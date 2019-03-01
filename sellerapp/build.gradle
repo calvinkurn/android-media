@@ -284,6 +284,7 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticgeolocation)
@@ -307,6 +308,7 @@ dependencies {
     implementation project(rootProject.ext.features.flashsaleManagement)
     implementation project(rootProject.ext.features.flashsaleManagementCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.categoryCommon)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.commonDigital)

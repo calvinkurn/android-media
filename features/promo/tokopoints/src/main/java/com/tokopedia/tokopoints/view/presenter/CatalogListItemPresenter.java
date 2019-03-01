@@ -155,7 +155,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                 String title;
                 ValidateCouponBaseEntity validateCoupon = response.getData(ValidateCouponBaseEntity.class);
 
-                if (validateCoupon.getValidateCoupon() != null) {
+                if (validateCoupon!=null && validateCoupon.getValidateCoupon() != null) {
                     validateResponseCode = CommonConstant.CouponRedemptionCode.SUCCESS;
                     message = validateCoupon.getValidateCoupon().getMessageSuccess();
                     title = validateCoupon.getValidateCoupon().getMessageTitle();
@@ -226,7 +226,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
             @Override
             public void onNext(GraphqlResponse response) {
                 RedeemCouponBaseEntity redeemCouponBaseEntity = response.getData(RedeemCouponBaseEntity.class);
-                if (redeemCouponBaseEntity != null) {
+                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem()!=null) {
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
@@ -234,12 +234,16 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                     String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
                     if (errorsMessage != null && errorsMessage.length > 0) {
                         String title = errorsMessage[0];
-                        if (errorsMessage.length <= 2) {
-                            getView().showRedeemFullError(item, null, title);
-                        } else {
-                            String desc = errorsMessage[1];
-                            getView().showRedeemFullError(item, title, desc);
+                        String desc = null;
+                        int validateResponseCode = 0;
+
+                        if (errorsMessage.length >= 2) {
+                            desc = errorsMessage[1];
                         }
+                        if (errorsMessage.length >= 3)
+                            validateResponseCode = Integer.parseInt(errorsMessage[2]);
+                        getView().showValidationMessageDialog(item, title, desc, validateResponseCode);
+
                     }
                 }
             }

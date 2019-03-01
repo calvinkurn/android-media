@@ -37,9 +37,9 @@
         <activity
             android:name=".orders.orderlist.view.activity.OrderListActivity"
             android:label="@string/title_order_list"
-            android:theme="@style/Theme.White"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".orders.orderlist.view.activity.SellerOrderListActivity"
             android:label="@string/title_order_list"
@@ -78,14 +78,22 @@
         <activity
             android:name=".pickuppoint.view.activity.PickupPointMapActivity"
             android:label="@string/title_send_to_pick_up_booth" />
-
-        <activity android:name=".purchase.detail.activity.BookingCodeActivity"
+        <activity
+            android:name=".purchase.detail.activity.BookingCodeActivity"
             android:label="@string/title_booking_code_detail"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".orders.orderlist.common.SaveDateBottomSheetActivity"
+            android:theme="@style/Theme.AppCompat.Translucent" />
 
         <service
             android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />
+
+        <activity android:name=".orders.orderdetails.view.activity.RequestCancelActivity"
+            android:label="@string/title_activity_people_reason"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

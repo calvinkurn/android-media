@@ -28,7 +28,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -71,6 +70,8 @@ import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,7 +120,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View sprintSaleIconLayout;
     private TextView sprintSaleText;
 
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     private Handler sprintSaleHandler;
     private Runnable sprintSaleRunnable;
@@ -156,7 +157,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity());
     }
 
     @Nullable
@@ -465,7 +466,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
         pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(getActivity(), () -> {
             ((GroupChatContract.View) getActivity()).showOverlayDialogOnScreen();
-        }, null);
+        }, new CloseableBottomSheetDialog.BackHardwareClickedListener() {
+            @Override
+            public void onBackHardwareClicked() {
+
+            }
+        });
 
         View view = createPinnedMessageView(pinnedMessage);
         pinnedMessageDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -1024,7 +1030,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN) {
             ((GroupChatContract.View) getActivity()).onSuccessLogin();
-            userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            userSession = new UserSession(getActivity());
             setForLoginUser(userSession != null && userSession.isLoggedIn());
         }
     }

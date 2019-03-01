@@ -40,6 +40,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.features.commonTravel)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation project(rootProject.ext.features.flightDbFlow)
 

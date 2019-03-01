@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.GamificationRouter;
@@ -66,6 +67,8 @@ import javax.inject.Inject;
 
 public class CrackTokenFragment extends BaseDaggerFragment implements CrackTokenContract.View {
 
+    private static final String FPM_RENDER = "ft_gamification";
+    private static final String FPM_CRACKING = "ft_gamification_cracking_egg";
     public static final int VIBRATE_DURATION = 500;
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
     private static final int REQUEST_CODE_LOGIN = 112;
@@ -82,25 +85,25 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetCrackResult widgetCrackResult;
     private WidgetEggSource widgetEggSource;
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
-    private ProgressBar progressBar;
+    private ProgressBar progressBar;`
     private AbstractionRouter abstractionRouter;
     private TextView infoTitlePage;
 
     private ImageView imageRemainingToken;
     private TextView tvCounter;
     private FrameLayout flRemainingToken;
-
     private TokenDataEntity tokenData;
-
     private ImageView ivContainer;
     private long prevTimeStamp;
-
     private ActionListener listener;
     private Handler crackTokenErrorhandler;
     private Handler crackTokenSuccessHandler;
     private WidgetRewardCrackResult widgetRewards;
     private Toolbar toolbar;
     private TextView toolbarTitle;
+
+    private PerformanceMonitoring fpmRender;
+    private PerformanceMonitoring fpmCrack;
 
     public static Fragment newInstance() {
         return new CrackTokenFragment();
@@ -109,6 +112,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        fpmRender = PerformanceMonitoring.start(FPM_RENDER);
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -298,6 +307,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
             @Override
             public void onClick() {
+                fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
                 stopTimer();
                 hideInfoTitle();
                 vibrate();
@@ -500,6 +510,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         renderViewCrackEgg();
         widgetTokenOnBoarding.showHandOnboarding();
         trackingLuckyEggView();
+        if (fpmRender != null)
+            fpmRender.stopTrace();
     }
 
     @Override
@@ -585,6 +597,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 }
             }
         }, 1000);
+    }
+
+    @Override
+    public void onFinishCrackToken() {
+        if (fpmCrack != null)
+            fpmCrack.stopTrace();
     }
 
     private void initCrackTokenErrorHandler() {

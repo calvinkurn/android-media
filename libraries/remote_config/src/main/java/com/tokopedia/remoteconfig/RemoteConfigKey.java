@@ -41,6 +41,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
+    public static final String MAINAPP_FLIGHT_NEW_SEARCH_FLOW = "mainapp_flight_new_search_flow";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
 
@@ -70,4 +71,9 @@ public class RemoteConfigKey {
     public static final String fireBaseShareMsgKey = "app_referral_product_share_format";
     public static final String fireBaseGuestShareMsgKey = "app_pdp_share_msg_guest";
     public static final String LOGIN_REVAMP_UI = "mainapp_enable_login_revamp_phone";
+    public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
+
+    public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
+
+    public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 }

@@ -25,6 +25,8 @@ public interface CrackTokenContract {
 
         void onErrorCrackToken(CrackResultEntity crackResult);
 
+        void onFinishCrackToken();
+
         void showLoading();
 
         void hideLoading();

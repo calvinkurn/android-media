@@ -1,6 +1,9 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
+import android.os.Build
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.BuildConfig
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
@@ -25,6 +28,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationC
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.util.ContainNullException
+import com.tokopedia.kotlin.util.isContainNull
 import rx.functions.Func1
 import javax.inject.Inject
 
@@ -52,6 +57,15 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val posts: MutableList<Visitable<*>> = ArrayList()
         var lastCursor = ""
         var hasNext = false
+
+        isContainNull(feedQuery) {
+            val exception = ContainNullException("Found $it in ${DynamicFeedMapper::class.java.simpleName}")
+            if (!BuildConfig.DEBUG) {
+                Crashlytics.logException(exception)
+            }
+            throw exception
+        }
+
         feedQuery?.let {
             for (feed in it.feedv2.data) {
                 val templateData: TemplateData = it.feedv2.included.template.firstOrNull { templateData ->

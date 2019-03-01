@@ -92,7 +92,6 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
             public void onCompleted() {
 
             }
-
             @Override
             public void onError(Throwable e) {
                 if (!isViewAttached()) {
@@ -118,11 +117,12 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
                     } else {
                         CrackResultEntity errorCrackResult = createGeneralErrorCrackResult();
                         getView().onErrorCrackToken(errorCrackResult);
+                        getView().onFinishCrackToken();
                     }
                 }
-
             }
         });
+
     }
 
     private CrackResultEntity createExpiredCrackResult(ResultStatusEntity resultStatus) {
