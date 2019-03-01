@@ -1555,9 +1555,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onEgoldChecked(boolean checked) {
         shipmentAdapter.updateEgold(checked);
-        if (checked) {
-            // TODO: 20/2/19 send analytics
-        }
     }
 
     @Override
