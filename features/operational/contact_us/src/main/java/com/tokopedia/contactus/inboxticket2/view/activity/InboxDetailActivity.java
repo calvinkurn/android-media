@@ -127,7 +127,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         edMessage.getText().clear();
         setSubmitButtonEnabled(false);
 
-        //viewHelpRate.setVisibility(View.GONE);
+        viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
 
         int textSizeLabel = 11;
@@ -150,7 +150,7 @@ public class InboxDetailActivity extends InboxBaseActivity
                     getResources().getColor(R.color.black_38), textSizeLabel));
             showIssueClosed();
 
-        } else if (/*Sandeep*/true) {
+        } else if (ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
                     getResources().getColor(R.color.red_30),
                     getResources().getColor(R.color.red_150), textSizeLabel));
@@ -415,7 +415,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         edMessage.getText().clear();
         setSubmitButtonEnabled(false);
         edMessage.setHint(R.string.type_here);
-       // viewHelpRate.setVisibility(View.GONE);
+        viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
         rvMessageList.setPadding(0, 0, 0,
                 getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
@@ -424,7 +424,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void showIssueClosed() {
-        //viewHelpRate.setVisibility(View.GONE);
+        viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.VISIBLE);
         rvMessageList.setPadding(0, 0, 0,
@@ -434,7 +434,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void enterSearchMode(String search, int total) {
         textToolbar.setVisibility(View.GONE);
-      //  viewHelpRate.setVisibility(View.GONE);
+        viewHelpRate.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.GONE);
         detailAdapter.enterSearchMode(search);
         String placeHolder = "/%s";
