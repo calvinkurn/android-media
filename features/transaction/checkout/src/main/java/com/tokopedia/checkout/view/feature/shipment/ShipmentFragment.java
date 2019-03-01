@@ -304,7 +304,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setCartPromoSuggestion(savedCartPromoSuggestion);
             shipmentPresenter.setRecipientAddressModel(savedRecipientAddressModel);
             shipmentPresenter.setShipmentCostModel(savedShipmentCostModel);
-            shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentPresenter.setShipmentDonationModel(savedShipmentDonationModel);
             shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
@@ -537,16 +536,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentTracePerformance.stopTrace();
             isShipmentTraceStopped = true;
         }
-    }
-
-    @Override
-    public void showBuyEgoldWidget(EgoldAttributeModel egoldAttributes) {
-        // TODO: 20/2/19 show buy egold widget
-    }
-
-    @Override
-    public void hideBuyEgoldWidget() {
-        // TODO: 20/2/19 buy egold hide widget
     }
 
     @Override

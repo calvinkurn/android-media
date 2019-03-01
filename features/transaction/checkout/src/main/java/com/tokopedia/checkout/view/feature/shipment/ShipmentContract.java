@@ -124,9 +124,6 @@ public interface ShipmentContract {
 
         void stopTrace();
 
-        void showBuyEgoldWidget(EgoldAttributeModel egoldAttributes);
-
-        void hideBuyEgoldWidget();
     }
 
     interface AnalyticsActionListener {

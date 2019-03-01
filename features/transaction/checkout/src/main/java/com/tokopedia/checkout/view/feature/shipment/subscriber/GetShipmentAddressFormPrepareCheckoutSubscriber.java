@@ -102,10 +102,6 @@ public class GetShipmentAddressFormPrepareCheckoutSubscriber extends Subscriber<
                 if (cartShipmentAddressFormData.getEgoldAttributes() != null &&
                         cartShipmentAddressFormData.getEgoldAttributes().isEligible()) {
                     shipmentPresenter.setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
-                    view.showBuyEgoldWidget(cartShipmentAddressFormData.getEgoldAttributes());
-
-                } else {
-                    view.hideBuyEgoldWidget();
                 }
             }
         }

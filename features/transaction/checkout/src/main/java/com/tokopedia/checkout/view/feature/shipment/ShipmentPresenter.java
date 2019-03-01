@@ -300,7 +300,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel) {
-//        updateEgoldBuyValue();
         this.egoldAttributeModel = egoldAttributeModel;
     }
 
