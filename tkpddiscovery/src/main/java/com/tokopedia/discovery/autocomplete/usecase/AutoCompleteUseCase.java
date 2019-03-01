@@ -24,6 +24,7 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
     public static final String DEFAULT_SOURCE = "searchbar";
     public static final String DEFAULT_COUNT = "5";
     private static final String DEVICE_ID = "device_id";
+    private static final String KEY_IS_OFFICIAL = "official";
 
     private final AutoCompleteRepository autoCompleteRepository;
 
@@ -39,7 +40,7 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         return autoCompleteRepository.getSearchData(requestParams.getParameters());
     }
 
-    public static RequestParams getParams(String query, String registrationId, String userId) {
+    public static RequestParams getParams(String query, boolean isOfficial, String registrationId, String userId) {
         RequestParams params = RequestParams.create();
         params.putString(KEY_DEVICE, DEFAULT_DEVICE);
         params.putString(KEY_SOURCE, DEFAULT_SOURCE);
@@ -52,6 +53,7 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         params.putString(KEY_UNIQUE_ID, uniqueId);
         params.putString(DEVICE_ID, registrationId);
         params.putString(KEY_QUERY, (query.isEmpty() ? "" : query));
+        params.putBoolean(KEY_IS_OFFICIAL, isOfficial);
         return params;
     }
 }

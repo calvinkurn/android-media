@@ -96,6 +96,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private SearchViewListener mSearchViewListener;
     private AppCompatActivity activity;
     private boolean finishOnClose = false;
+    private boolean isOfficial = false;
     private SavedState mSavedState;
     private boolean submit = false;
 
@@ -457,7 +458,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mOldQueryText = newText.toString();
 
         if (mSuggestionFragment != null) {
-            mSuggestionFragment.search(newText.toString());
+            mSuggestionFragment.search(newText.toString(), isOfficial);
         }
     }
 
@@ -684,6 +685,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
      */
     public void showSearch() {
         showSearch(true);
+    }
+
+    public void showSearch(boolean finishOnClose, boolean animate, boolean isOfficial) {
+        this.isOfficial = isOfficial;
+        showSearch(finishOnClose, animate);
     }
 
     public void showSearch(boolean finishOnClose, boolean animate) {
