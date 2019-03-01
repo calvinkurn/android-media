@@ -250,7 +250,7 @@ public class BannerView extends BaseCustomView {
     }
 
     private boolean isCurrentPositionHasImpression(int currentPosition) {
-        if (currentPosition >= 0 && currentPosition <= impressionStatusList.size()) {
+        if (currentPosition >= 0 && currentPosition < impressionStatusList.size()) {
             return impressionStatusList.get(currentPosition);
         } else {
             return true;
