@@ -35,7 +35,6 @@ query getProductVariant($productID:String!, $userID: String, $includeCampaign: B
       ProductURL
       IsCOD
       IsWishlist
-      Enabled
       CampaignInfo{
         CampaignID
         IsActive
