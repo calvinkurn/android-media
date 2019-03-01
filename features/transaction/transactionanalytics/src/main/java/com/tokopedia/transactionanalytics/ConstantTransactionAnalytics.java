@@ -38,6 +38,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
+        String CLICK_REGISTER = "clickRegister";
+        String VIEW_REGISTER = "viewRegister";
     }
 
     interface EventCategory {
@@ -49,6 +51,7 @@ public interface ConstantTransactionAnalytics {
         String ORDER_TRACKING = "order tracking";
         String PRODUCT_DETAIL_PAGE = "product detail page";
         String PURCHASE_PROTECTION = "fin - mp checkout";
+        String CORNER_ADDRES = "tokopedia corner address";
     }
 
     interface EventAction {
@@ -212,6 +215,12 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PELAJARI = "pp - pelajari click";
         String CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click";
         String IMPRESSION_PELAJARI = "pp - pelajari impression";
+
+        //TOKOPEDIA CORNER
+        String CHOOSE_LOCATION_CORNER = "click pilih lokasi tokopedia corner";
+        String CLICK_CORNER_ADDRESS = "click alamat tokopedia corner";
+        String VIEW_CORNER_ERROR = "view tokopedia corner not available";
+        String VIEW_CORNER_PO_ERROR = "view error pre order tokopedia corner";
     }
 
     interface EventLabel {
