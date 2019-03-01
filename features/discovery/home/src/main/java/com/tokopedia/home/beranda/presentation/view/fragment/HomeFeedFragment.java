@@ -263,9 +263,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     public void scrollToTop() {
-        GridLayoutManager gridLayoutManager = ((GridLayoutManager) getRecyclerView(getView()).getLayoutManager());
+        StaggeredGridLayoutManager staggeredGridLayoutManager = ((StaggeredGridLayoutManager) getRecyclerView(getView()).getLayoutManager());
 
-        if (gridLayoutManager != null && gridLayoutManager.findFirstVisibleItemPosition() > 10) {
+        if (staggeredGridLayoutManager != null && staggeredGridLayoutManager.findFirstVisibleItemPositions(null)[0] > 10) {
             getRecyclerView(getView()).scrollToPosition(10);
         }
         getRecyclerView(getView()).smoothScrollToPosition(0);
