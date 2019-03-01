@@ -69,6 +69,10 @@ open class PlayActivity : BaseSimpleActivity() {
         initView()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+    }
+
     private fun initInjector() {
         val playComponent = DaggerPlayComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
@@ -89,7 +93,10 @@ open class PlayActivity : BaseSimpleActivity() {
         val fragmentList = ArrayList<Fragment>()
 
         val bundle = Bundle()
-        val channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        var channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
+        if(channelId == null) {
+            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        }
         val useGCP = intent?.extras?.getString(EXTRA_USE_GCP, "false")
         useGCP?.run{
             bundle.putBoolean(EXTRA_USE_GCP, this.toBoolean())
@@ -258,7 +265,7 @@ open class PlayActivity : BaseSimpleActivity() {
             return intent
         }
 
-        val KICK_THRESHOLD_TIME = TimeUnit.SECONDS.toMillis(15)
+        val KICK_THRESHOLD_TIME = TimeUnit.MINUTES.toMillis(5)
     }
 
     object DeepLickIntents {
