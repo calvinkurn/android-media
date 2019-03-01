@@ -465,7 +465,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private void onSubmitQuery() {
         CharSequence query = mSearchSrcTextView.getText();
         if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString())) {
+            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString(), isOfficial)) {
                 closeSearch();
                 mSearchSrcTextView.setText(null);
             }
@@ -821,6 +821,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         return lastQuery;
     }
 
+    public boolean getIsOfficial() {
+        return isOfficial;
+    }
+
     /**
      * Set this listener to listen to Query Change events.
      *
@@ -961,7 +965,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
          * @return true if the query has been handled by the listener, false to let the
          * SearchView perform the default action.
          */
-        boolean onQueryTextSubmit(String query);
+        boolean onQueryTextSubmit(String query, boolean isOfficial);
 
         /**
          * Called when the query text is changed by the user.

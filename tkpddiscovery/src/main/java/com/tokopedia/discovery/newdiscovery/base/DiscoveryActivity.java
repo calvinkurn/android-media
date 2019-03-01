@@ -184,7 +184,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String query, boolean isOfficial) {
         AutoCompleteTracking.eventClickSubmit(this, query);
         if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
             onHandleOfficialStorePage();
@@ -193,11 +193,11 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         } else {
             switch (searchView.getSuggestionFragment().getCurrentTab()) {
                 case SearchMainFragment.PAGER_POSITION_PRODUCT:
-                    onProductQuerySubmit(query);
+                    onProductQuerySubmit(query, isOfficial);
                     sendSearchProductGTM(query);
                     return false;
                 case SearchMainFragment.PAGER_POSITION_SHOP:
-                    onShopQuerySubmit(query);
+                    onShopQuerySubmit(query, isOfficial);
                     sendSearchShopGTM(query);
                     return false;
                 default:
@@ -206,18 +206,18 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    protected void onProductQuerySubmit(String query) {
+    protected void onProductQuerySubmit(String query, boolean isOfficial) {
         setForceSwipeToShop(false);
         setForceSearch(false);
         setRequestOfficialStoreBanner(true);
-        performRequestProduct(query);
+        performRequestProduct(query, isOfficial);
     }
 
-    private void onShopQuerySubmit(String query) {
+    private void onShopQuerySubmit(String query, boolean isOfficial) {
         setForceSwipeToShop(true);
         setForceSearch(false);
         setRequestOfficialStoreBanner(true);
-        performRequestProduct(query);
+        performRequestProduct(query, isOfficial);
     }
 
     private void sendSearchProductGTM(String keyword) {
@@ -429,7 +429,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         NetworkErrorHelper.showEmptyState(this, container, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                performRequestProduct(searchView.getLastQuery());
+                performRequestProduct(searchView.getLastQuery(), searchView.getIsOfficial());
             }
         });
     }
