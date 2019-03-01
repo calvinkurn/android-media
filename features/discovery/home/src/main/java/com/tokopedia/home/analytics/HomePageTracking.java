@@ -7,8 +7,12 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.beranda.data.model.Promotion;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +63,34 @@ public class HomePageTracking {
 
     private static final String LABEL_TOKOPOINTS = "tokopoints";
     private static final String LABEL_EMPTY = "";
+    public static final String EVENT = "event";
+    public static final String PROMO_VIEW = "promoView";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION_CLICK_ON_HOMEPAGE_RECOMMENDATION_TAB = "click on homepage recommendation tab";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
+    public static final String ECOMMERCE = "ecommerce";
+    public static final String PROMO_CLICK = "promoClick";
+    public static final String PROMOTIONS = "promotions";
+    public static final String PRODUCT_VIEW = "productView";
+    public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION = "product recommendation impression";
+    public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION_NON_LOGIN =
+            "product recommendation impression - non login recommendation impression";
+    public static final String CURRENCY_CODE = "currencyCode";
+    public static final String IDR = "IDR";
+    public static final String IMPRESSIONS = "impressions";
+    public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK = "product recommendation click";
+    public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK_NON_LOGIN = "product recommendation click - non login";
+    public static final String CLICK = "click";
+    public static final String ACTION_FIELD = "actionField";
+    public static final String LIST = "list";
+    public static final String LIST_CLICK_FEED_HOME = "/ - p2 - %s - rekomendasi untuk anda - %s";
+    public static final String LIST_CLICK_FEED_HOME_NON_LOGIN = "/ - p2 - non login - %s - rekomendasi untuk anda - %s";
+    public static final String PRODUCTS = "products";
+    public static final String PRODUCT_CLICK = "productClick";
+    public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "add wishlist on product recommendation";
+    public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
+    public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
 
     public static AnalyticTracker getTracker(Context context){
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -446,4 +478,175 @@ public class HomePageTracking {
         tracker.sendEnhancedEcommerce(data);
     }
 
+    public static void eventClickOnHomePageRecommendationTab(
+            TrackingQueue trackingQueue,
+            FeedTabModel feedTabModel) {
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_CLICK_ON_HOMEPAGE_RECOMMENDATION_TAB,
+                EVENT_LABEL, feedTabModel.getName(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        feedTabModel.convertFeedTabModelToDataObject()
+                                )
+                        )
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    public static void eventImpressionOnProductRecommendationForLoggedInUser(
+            TrackingQueue trackingQueue,
+            List<HomeFeedViewModel> feedViewModels,
+            String tabName) {
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION,
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        IMPRESSIONS,
+                        convertHomeFeedViewModelListToObjectForLoggedInUser(feedViewModels, tabName)
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    public static void eventImpressionOnProductRecommendationForNonLoginUser(
+            TrackingQueue trackingQueue,
+            List<HomeFeedViewModel> feedViewModels,
+            String tabName) {
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION_NON_LOGIN,
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        IMPRESSIONS,
+                        convertHomeFeedViewModelListToObjectForNonLoginUser(feedViewModels, tabName)
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    private static List<Object> convertHomeFeedViewModelListToObjectForLoggedInUser(
+            List<HomeFeedViewModel> feedViewModels,
+            String tabName
+    ) {
+        List<Object> objects = new ArrayList<>();
+        for (HomeFeedViewModel homeFeedViewModel : feedViewModels) {
+            objects.add(homeFeedViewModel.convertFeedTabModelToImpressionDataForLoggedInUser(tabName));
+        }
+        return objects;
+    }
+
+    private static List<Object> convertHomeFeedViewModelListToObjectForNonLoginUser(
+            List<HomeFeedViewModel> feedViewModels,
+            String tabName
+    ) {
+        List<Object> objects = new ArrayList<>();
+        for (HomeFeedViewModel homeFeedViewModel : feedViewModels) {
+            objects.add(homeFeedViewModel.convertFeedTabModelToImpressionDataForNonLoginUser(tabName));
+        }
+        return objects;
+    }
+
+    public static void eventClickOnHomeProductFeedForLoggedInUser(
+            TrackingQueue trackingQueue,
+            HomeFeedViewModel homeFeedViewModel,
+            String tabName) {
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK,
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        CLICK, DataLayer.mapOf(
+                                ACTION_FIELD, DataLayer.mapOf(
+                                        LIST, String.format(
+                                                LIST_CLICK_FEED_HOME,
+                                                tabName,
+                                                homeFeedViewModel.getRecommendationType()
+                                        )),
+                                PRODUCTS, DataLayer.listOf(
+                                        homeFeedViewModel.convertFeedTabModelToClickData()
+                                )
+                        )
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    public static void eventClickOnHomeProductFeedForNonLoginUser(
+            TrackingQueue trackingQueue,
+            HomeFeedViewModel homeFeedViewModel,
+            String tabName) {
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK_NON_LOGIN,
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        CLICK, DataLayer.mapOf(
+                                ACTION_FIELD, DataLayer.mapOf(
+                                        LIST, String.format(
+                                                LIST_CLICK_FEED_HOME_NON_LOGIN,
+                                                tabName,
+                                                homeFeedViewModel.getRecommendationType()
+                                        )),
+                                PRODUCTS, DataLayer.listOf(
+                                        homeFeedViewModel.convertFeedTabModelToClickData()
+                                )
+                        )
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    public static void eventClickWishlistOnProductRecommendation(Context context, String tabName) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION,
+                    tabName
+            );
+        }
+    }
+
+    public static void eventClickRemoveWishlistOnProductRecommendation(Context context, String tabName) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION,
+                    tabName
+            );
+        }
+    }
+
+    public static void eventClickWishlistOnProductRecommendationForNonLogin(Context context, String tabName) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                    tabName
+            );
+        }
+    }
 }

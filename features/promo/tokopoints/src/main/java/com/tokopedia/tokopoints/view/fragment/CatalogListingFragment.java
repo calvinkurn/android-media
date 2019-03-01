@@ -167,6 +167,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -396,7 +397,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AnalyticsTrackerUtil.ScreenKeys.CATALOG_LISTING_SCREEN_NAME;
     }
 
     @Override

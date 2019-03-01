@@ -22,6 +22,10 @@ class ButtonsPojo() {
 
     class Button() {
 
+        //TODO samain nama param
+        @SerializedName("button_id")
+        @Expose
+        var buttonId: String = ""
         @SerializedName("button_type")
         @Expose
         var buttonType: String = ""

@@ -27,8 +27,9 @@ class StickyComponentMapper @Inject constructor() : Func1<Response<DataResponse<
         }
     }
 
-    private fun mapToViewModel(pojo: StickyComponentPojo): StickyComponentViewModel {
+    public fun mapToViewModel(pojo: StickyComponentPojo): StickyComponentViewModel {
         return StickyComponentViewModel(
+                pojo.stickyComponent.componentId,
                 pojo.stickyComponent.componentType,
                 pojo.stickyComponent.imageUrl,
                 pojo.stickyComponent.primaryText,

@@ -39,6 +39,13 @@ public interface AbstractionRouter {
 
     CacheManager getGlobalCacheManager();
 
+    /**
+     * To send analytic, use Track Library
+     * val analytics = TrackApp.getInstance().getGTM()
+     * analytics.push(event)
+     * @return
+     */
+    @Deprecated
     AnalyticTracker getAnalyticTracker();
 
     void logInvalidGrant(Response response);

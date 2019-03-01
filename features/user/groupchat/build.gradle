@@ -41,6 +41,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.userSession)
@@ -60,7 +61,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -76,11 +76,6 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
-
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
-    compile project(path: ':libraries:user_session')
 }
 
 apply from: '../../../publish_local.gradle'

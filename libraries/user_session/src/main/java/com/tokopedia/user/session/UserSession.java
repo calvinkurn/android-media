@@ -189,6 +189,11 @@ public class UserSession implements UserSessionInterface {
         return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
     }
 
+    public boolean hasPassword() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(HAS_PASSWORD, true);
+    }
+
     /**
      * SETTER METHOD
      */

@@ -267,15 +267,21 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
             @Override
             public void onError(Throwable e) {
                 //NA
-                getView().hideLoader();
+                if (getView() != null) {
+                    getView().hideLoader();
+                    getView().onFinishRendering();
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-                getView().hideLoader();
-                CatalogDetailOuter data = response.getData(CatalogDetailOuter.class);
-                getView().populateDetail(data.getDetail());
-                handlePointQuery(response.getData(TokoPointDetailEntity.class));
+                if (getView() != null) {
+                    getView().hideLoader();
+                    CatalogDetailOuter data = response.getData(CatalogDetailOuter.class);
+                    getView().populateDetail(data.getDetail());
+                    handlePointQuery(response.getData(TokoPointDetailEntity.class));
+                    getView().onFinishRendering();
+                }
             }
         });
     }

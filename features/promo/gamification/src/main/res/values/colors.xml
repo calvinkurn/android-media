@@ -7,4 +7,7 @@
     <color name="lucky_egg_color">#c5f962</color>
 
     <color name="default_text_reward_color">#FFFFFF</color>
+    <color name="default_reward_color">#FFD65C</color>
+    <color name="toolbar_color">#33ffffff</color>
+    <color name="egg_source_color">#ffd63b</color>
 </resources>

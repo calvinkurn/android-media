@@ -73,7 +73,11 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
-import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.UserData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -87,7 +91,6 @@ import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -164,7 +167,6 @@ import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
@@ -296,6 +298,8 @@ public abstract class SellerRouterApplication extends MainApplication
         analyticTracker = initializeAnalyticTracker();
         initializeDagger();
         initializeRemoteConfig();
+
+        //TODO if using Trackapp, remove TrackingUtils from MainApplication
     }
 
     private AnalyticTracker initializeAnalyticTracker() {
@@ -618,7 +622,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
-    @Override
     public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
@@ -657,7 +660,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToProductDetail(Context context, ShareData shareData) {
+    public void goToProductDetail(Context context, LinkerData shareData) {
         Intent intent = ProductInfoActivity.createInstance(context, shareData);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ProductInfoActivity.SHARE_DATA, shareData);
@@ -963,12 +966,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return BuildConfig.FLAVOR;
     }
 
-    @Override
-    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
-        GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
-        return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
-    }
-
     public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
     }
@@ -1243,26 +1240,14 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendTrackDefaultAuth() {
-        ScreenTracking.sendAuth(this);
-    }
-
-    @Override
-    public void sendTrackCustomAuth(@NotNull Context context, @NotNull String shopID,
-                                    @NotNull String shopType, @NotNull String pageType,
-                                    @NotNull String productId) {
-        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
-    }
-
-    @Override
     public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
         return TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
     }
 
     @Override
     public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.SHOP_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
                 .setTextContent(shareLabel)
                 .setUri(shopUrl)
@@ -1803,8 +1788,11 @@ public abstract class SellerRouterApplication extends MainApplication
         TrackingUtils.eventPushUserID(applicationContext, userId);
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
-        BranchSdkUtils.sendIdentityEvent(userId);
-        BranchSdkUtils.sendLoginEvent(applicationContext);
+        UserData userData = new UserData();
+        userData.setUserId(userId);
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                userId));
+
     }
 
     @Override
@@ -1835,8 +1823,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendBranchRegisterEvent(String email, String phone) {
-        BranchSdkUtils.sendRegisterEvent(getAppContext(), email, phone);
-
+        UserData userData = new UserData();
+        userData.setEmail(email);
+        userData.setPhoneNumber(phone);
+        LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData));
     }
 
     @Override

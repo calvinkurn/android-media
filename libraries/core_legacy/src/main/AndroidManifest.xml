@@ -56,10 +56,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!-- Branch init -->
-        <meta-data
-            android:name="io.branch.sdk.BranchKey"
-            android:value="@string/BRANCH_SDK_KEY" />
         <service
             android:name=".gcm.intentservices.PushNotificationIntentService"
             android:exported="false" />

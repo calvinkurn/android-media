@@ -37,6 +37,7 @@ class DynamicButtonsMapper @Inject constructor() : Func1<Response<DataResponse<B
         listDynamicButton?.let {
             for (pojo in listDynamicButton) {
                 buttonList.add(DynamicButtonsViewModel.Button(
+                        pojo.buttonId,
                         pojo.imageUrl,
                         pojo.linkUrl,
                         pojo.contentType,

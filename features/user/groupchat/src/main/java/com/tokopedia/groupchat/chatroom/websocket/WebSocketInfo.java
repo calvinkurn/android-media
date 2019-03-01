@@ -231,6 +231,7 @@ public class WebSocketInfo {
         AdminImagePojo pojo = gson.fromJson(data, AdminImagePojo.class);
 
         return new ImageAnnouncementViewModel(
+                pojo.getImageId(),
                 pojo.getImageUrl().trim(),
                 pojo.getTimestamp(),
                 pojo.getTimestamp(),

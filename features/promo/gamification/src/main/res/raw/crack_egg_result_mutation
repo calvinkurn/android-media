@@ -1,1 +1,35 @@
-mutation CrackResult($tokenUserID: Int!, $campaignID: Int!) {    crackResult(tokenUserID: $tokenUserID, campaignID: $campaignID) {        resultStatus {            code            message            status        }        imageUrl        benefitType        benefits {            text            color            size        }        ctaButton {            title            url            applink            type        }        returnButton {            title            url            applink            type        }    }}
+mutation CrackResult($tokenUserID: Int!, $campaignID: Int!) {
+crackResult(tokenUserID: $tokenUserID, campaignID: $campaignID) {
+ resultStatus {
+       code
+       message
+       status
+     }
+     imageUrl
+     benefitType
+     benefits {
+       text
+       color
+       size
+       benefitType
+       templateText
+       animationType
+       valueBefore
+       valueAfter
+       tierInformation
+       multiplier
+     }
+     ctaButton {
+       title
+       url
+       applink
+       type
+     }
+     returnButton {
+       title
+       url
+       applink
+       type
+     }
+}
+}

@@ -46,7 +46,6 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
-import com.tokopedia.groupchat.common.analytics.EEPromotion
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
@@ -87,6 +86,7 @@ open class PlayViewStateImpl(
 
     private var viewModel: ChannelInfoViewModel? = null
     private var stickyComponentViewModel: StickyComponentViewModel? = null
+    private var dynamicButtonsViewModel: DynamicButtonsViewModel? = null
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
@@ -230,7 +230,7 @@ open class PlayViewStateImpl(
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
         viewModel?.let { viewModel ->
-            viewModel.dynamicButtons = it
+            dynamicButtonsViewModel = it
 
             if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
                 it.floatingButton.run {
@@ -270,8 +270,14 @@ open class PlayViewStateImpl(
             stickyComponent.setOnClickListener {
                 viewModel?.let {
                     analytics.eventClickStickyComponent(item, it)
+                    RouteManager.routeWithAttribution(activity, item.redirectUrl,
+                            GroupChatAnalytics.generateTrackerAttribution(
+                                    GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
+                                    it.channelUrl,
+                                    it.title
+                            ))
                 }
-                RouteManager.route(activity, item.redirectUrl)
+
             }
 
             stickyComponent.animate().setDuration(200)
@@ -553,14 +559,8 @@ open class PlayViewStateImpl(
 
         if (!::overlayDialog.isInitialized) {
             overlayDialog = CloseableBottomSheetDialog.createInstance(view.context,
-                    object : CloseableBottomSheetDialog.CloseClickedListener {
-                        override fun onCloseDialog() {
-                            analytics.eventClickCloseOverlayCloseButton(channelInfoViewModel.channelId)
-                        }
-                    }, object : CloseableBottomSheetDialog.BackHardwareClickedListener {
-                override fun onBackHardwareClicked() {
-                    analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
-                }})
+                    { analytics.eventClickCloseOverlayCloseButton(channelInfoViewModel.channelId) },
+                    { analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId) })
 
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
@@ -601,8 +601,7 @@ open class PlayViewStateImpl(
                         closeOverlayDialog()
                     }
 
-                    //TODO Overlay ads id
-                    analytics.eventClickOverlayImage(channelInfoViewModel, "", "",
+                    analytics.eventClickOverlayImage(channelInfoViewModel, channelInfoViewModel.overlayViewModel.overlayId, interruptViewModel.btnTitle,
                             interruptViewModel.imageUrl)
                 }
             } else
@@ -621,8 +620,9 @@ open class PlayViewStateImpl(
             (overlayView.findViewById<View>(R.id.btnCta) as ButtonCompat).text = MethodChecker.fromHtml(interruptViewModel.btnTitle)
             (overlayView.findViewById<View>(R.id.btnCta) as ButtonCompat).setOnClickListener { view1 ->
 
-                //TODO : ADD OVERLAY ADS ID
-                analytics.eventClickOverlayButton(channelInfoViewModel, "", interruptViewModel.btnTitle,
+                analytics.eventClickOverlayButton(channelInfoViewModel,
+                        channelInfoViewModel.overlayViewModel.overlayId,
+                        interruptViewModel.btnTitle,
                         interruptViewModel.imageUrl)
 
                 if (!TextUtils.isEmpty(interruptViewModel.btnLink)) {
@@ -1192,6 +1192,7 @@ open class PlayViewStateImpl(
             analytics.eventClickOverlayCTAButton(it.channelId, button.contentButtonText)
 
             it.overlayViewModel = OverlayViewModel(
+                    button.buttonId,
                     OverlayViewModel.TYPE_CTA,
                     button.contentLinkUrl,
                     true,
