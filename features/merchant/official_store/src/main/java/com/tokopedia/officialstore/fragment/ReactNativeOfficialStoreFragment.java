@@ -23,10 +23,8 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_official_store, container, false);
         ReactUtils.startTracing(MP_OFFICIAL_STORE); // start trace when view created
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
