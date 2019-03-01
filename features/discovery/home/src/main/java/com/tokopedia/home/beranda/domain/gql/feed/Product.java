@@ -54,7 +54,7 @@ public class Product {
     private Integer slashedPriceInt = 0;
     @SerializedName("discount_percentage")
     @Expose
-    private Integer discountPercentage;
+    private Integer discountPercentage = 0;
     @SerializedName("rating")
     @Expose
     private Integer rating = 0;
