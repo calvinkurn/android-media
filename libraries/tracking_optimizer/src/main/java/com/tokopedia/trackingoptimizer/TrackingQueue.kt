@@ -1,6 +1,7 @@
 package com.tokopedia.trackingoptimizer
 
 import android.content.Context
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
@@ -59,7 +60,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
      * The other keys will be considered as custom dimensions
      */
     fun putEETracking(map: HashMap<String, Any>? = null) {
-        if (map != null && !map.containsKey("ecommerce")) {
+        if (!(map?.containsKey(ECOMMERCE) == true)) {
             return
         }
         launch {
