@@ -76,6 +76,9 @@ public class QuickSingleFilterView extends BaseCustomView {
     public void renderFilter(List<QuickFilterItem> quickFilterItems) {
         adapterFilter.addQuickFilterList(quickFilterItems);
     }
+    protected boolean isMultipleSelectionAllowed() {
+        return false;
+    }
 
     protected QuickSingleFilterListener getQuickSingleFilterListener() {
         return new QuickSingleFilterListener() {
@@ -92,7 +95,7 @@ public class QuickSingleFilterView extends BaseCustomView {
                         } else {
                             items.get(i).setSelected(true);
                         }
-                    } else {
+                    } else if(!isMultipleSelectionAllowed()){
                         totalFalse++;
                         items.get(i).setSelected(false);
                     }

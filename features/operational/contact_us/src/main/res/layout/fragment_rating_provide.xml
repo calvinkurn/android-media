@@ -5,6 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/toolbar_textview"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:elevation="@dimen/dp_4"
+        android:gravity="center"
+        android:text="@string/survei_layanan"
+        android:textColor="@color/black_70"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:theme="?toolbarTheme"
+        app:elevation="@dimen/dp_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <View
         android:id="@+id/divider_1"
         android:layout_width="match_parent"
@@ -13,35 +29,37 @@
         android:background="@color/grey_300"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_textview" />
 
     <TextView
         android:id="@+id/txt_help_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginBottom="8dp"
-        android:paddingTop="@dimen/dp_20"
         android:gravity="center"
+        android:paddingTop="@dimen/dp_20"
         android:text="@string/text_satisfied"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/smile_layout"
-        app:layout_constraintTop_toBottomOf="@id/divider_1"
+        app:layout_constraintTop_toBottomOf="@+id/divider_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
 
         />
 
     <LinearLayout
         android:id="@+id/smile_layout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_60"
-        android:padding="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
         android:weightSum="5"
-        app:layout_constraintTop_toBottomOf="@id/txt_help_title"
-        android:layout_marginTop="@dimen/dp_10">
+        app:layout_constraintLeft_toLeftOf="@id/txt_help_title"
+        app:layout_constraintRight_toRightOf="@id/txt_help_title"
+        app:layout_constraintTop_toBottomOf="@id/txt_help_title">
 
     </LinearLayout>
 
@@ -75,11 +93,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:gravity="center"
+        android:paddingLeft="@dimen/dp_30"
+        android:paddingRight="@dimen/dp_30"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/divider"
-        tools:text="Apa yang bisa diperbaiki dari layanan kami?" />
+        tools:text="Apa yang sebaiknya dipertahankan dari layanan kami?" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -97,7 +117,7 @@
             android:id="@+id/filter_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center" />
     </LinearLayout>
 
     <TextView
@@ -107,13 +127,13 @@
         android:layout_margin="@dimen/dp_24"
         android:background="@drawable/rounded_rectangle_greenbutton_solid"
         android:gravity="center"
+        android:text="Selesai"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="Selesai" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

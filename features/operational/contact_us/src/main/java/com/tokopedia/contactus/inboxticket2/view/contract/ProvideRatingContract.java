@@ -22,6 +22,7 @@ public interface ProvideRatingContract {
         public void setFilterList(List<BadCsatReasonListItem> filterList);
         public String getTicketId();
         public String getSelectedItem();
+        public String getCommentId();
 
         void onSuccessSubmit();
     }

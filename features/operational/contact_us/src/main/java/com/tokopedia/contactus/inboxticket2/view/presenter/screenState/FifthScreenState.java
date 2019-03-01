@@ -12,6 +12,7 @@ public class FifthScreenState extends ScreenState {
         fourthEmoji = R.drawable.rating_active_5;
         fifthEmoji = R.drawable.rating_active_5;
         message = "Sangat Memuaskan";
+        question = "Apa yang sebaiknya dipertahankan dari layanan kami?";
         messageColor = "#00ac47";
     }
 }

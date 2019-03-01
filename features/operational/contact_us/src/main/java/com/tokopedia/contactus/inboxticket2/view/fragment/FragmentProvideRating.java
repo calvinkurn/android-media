@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxticket2.view.fragment;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -46,6 +47,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     private TextView mTxtFinished;
     public static final String CLICKED_EMOJI = "clicked_emoji";
     public static final String PARAM_TICKET_ID = "ticket_id";
+    public static final String PARAM_COMMENT_ID = "comment_id";
     private CustomQuickOptionView mFilterReview;
 
     public static FragmentProvideRating newInstance(Bundle bundle) {
@@ -170,7 +172,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         ToasterError.make(getView(), o).show();
     }
 
-    String selectedOption;
+    List<String> selectedOption = new ArrayList<>();
     @Override
     public void setFilterList(List<BadCsatReasonListItem> filterList) {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
@@ -187,8 +189,17 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         mFilterReview.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
-                selectedOption = typeFilter;
-                enableSubmitButton();
+                if(selectedOption.contains(typeFilter)) {
+                    selectedOption.remove(typeFilter);
+                }else {
+                    selectedOption.add(typeFilter);
+                }
+
+                if( mFilterReview.isAnyItemSelected()) {
+                    enableSubmitButton();
+                }else {
+                    disableSubmitButton();
+                }
             }
         });
     }
@@ -201,12 +212,23 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
 
     @Override
     public String getSelectedItem() {
-        return selectedOption;
+        String filters = "";
+        for (String filter:selectedOption) {
+            filters +=filter+";";
+        }
+        filters = filters.substring(0,filters.length()-1);
+        return filters;
+    }
+
+    @Override
+    public String getCommentId() {
+        return getArguments().getString(PARAM_COMMENT_ID);
     }
 
     @Override
     public void onSuccessSubmit() {
-        Toast.makeText(getContext(), "submitSuccess", Toast.LENGTH_SHORT).show();
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     private void initView(View view) {

@@ -77,5 +77,6 @@
     <string name="bad_reason_5">Jawaban terlalu kaku</string>
     <string name="bad_reason_6">Kurang ramah</string>
     <string name="other_reason">Lainnya</string>
+    <string name="survei_layanan">Survei Layanan</string>
 
 </resources>

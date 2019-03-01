@@ -10,6 +10,7 @@ public class FourthScreenState extends ScreenState {
         thirdEmoji = R.drawable.rating_active_4;
         fourthEmoji = R.drawable.rating_active_4;
         message = "Memuaskan";
+        question = "Apa yang bisa ditingkatkan dari layanan kami?";
         messageColor = "#00ac47";
 
 

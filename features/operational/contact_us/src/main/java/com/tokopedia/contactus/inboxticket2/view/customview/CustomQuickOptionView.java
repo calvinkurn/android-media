@@ -25,4 +25,9 @@ public class CustomQuickOptionView extends QuickSingleFilterView {
     protected void initialAdapter() {
         this.adapterFilter = new CustomQuickOptionViewAdapter(getQuickSingleFilterListener());
     }
+
+    @Override
+    protected boolean isMultipleSelectionAllowed() {
+        return true;
+    }
 }

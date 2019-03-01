@@ -30,7 +30,7 @@ public class OptionItemViewHolder extends ItemFilterViewHolder {
         } else {
             drawableBorder.setColor(ContextCompat.getColor(layoutInside.getContext(), com.tokopedia.design.R.color.grey_500));
             drawableInside.setColor(ContextCompat.getColor(layoutBorder.getContext(), com.tokopedia.design.R.color.white));
-            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.design.R.color.grey_500));
         }
     }
 

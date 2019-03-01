@@ -55,8 +55,8 @@ public class InboxModule {
     InboxDetailContract.InboxDetailPresenter provideInboxListPresenter(GetTicketDetailUseCase useCase,
                                                                        PostMessageUseCase messageUseCase,
                                                                        PostMessageUseCase2 messageUseCase2,
-                                                                       PostRatingUseCase ratingUseCase) {
-        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2, ratingUseCase);
+                                                                       PostRatingUseCase ratingUseCase,InboxOptionUseCase inboxOptionUseCase) {
+        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2, ratingUseCase,inboxOptionUseCase);
     }
 
     @InboxScope

@@ -9,6 +9,7 @@ public class ThirdScreenState extends ScreenState {
         secondEmoji = R.drawable.rating_active_3;
         thirdEmoji = R.drawable.rating_active_3;
         message = "Cukup Memuaskan";
+        question = "Apa yang bisa ditingkatkan dari layanan kami?";
         messageColor = "#fec100";
 
     }

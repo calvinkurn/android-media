@@ -129,7 +129,7 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
 
     @Override
     public void onSubmitClick() {
-        RequestParams requestParams = submitRatingUseCase.createRequestParams(getView().getTicketId(),emojiState+"",getView().getSelectedItem());
+        RequestParams requestParams = submitRatingUseCase.createRequestParams(getView().getCommentId(),emojiState+"",getView().getSelectedItem());
         submitRatingUseCase.execute(requestParams, new Subscriber<ChipGetInboxDetail>() {
             @Override
             public void onCompleted() {

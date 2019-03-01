@@ -21,8 +21,8 @@ import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
+import com.tokopedia.contactus.inboxticket2.data.model.Tickets;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
-import com.tokopedia.contactus.inboxticket2.domain.Tickets;
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -31,6 +31,7 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -50,6 +51,8 @@ import rx.schedulers.Schedulers;
 
 public class InboxDetailActivity extends InboxBaseActivity
         implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick {
+
+
     @BindView(R2.id.tv_ticket_title)
     TextView tvTicketTitle;
     @BindView(R2.id.tv_id_num)
@@ -160,12 +163,12 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvIdNum.setVisibility(View.VISIBLE);
         } else
             tvIdNum.setVisibility(View.GONE);
-        if(!TextUtils.isEmpty(ticketDetail.getInvoice())){
+        /*if(!TextUtils.isEmpty(ticketDetail.getInvoice())){
             viewTransaction.setText(ticketDetail.getInvoice());
             viewTransaction.setVisibility(View.VISIBLE);
         } else
             viewTransaction.setVisibility(View.GONE);
-
+*/
         if (ticketDetail.getComments() != null && ticketDetail.getComments().size() > 0) {
             detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(), ticketDetail.isNeedAttachment(),
                     (InboxDetailContract.InboxDetailPresenter) mPresenter);
@@ -303,17 +306,19 @@ public class InboxDetailActivity extends InboxBaseActivity
     @OnClick({R2.id.btn_inactive_1,R2.id.btn_inactive_2,R2.id.btn_inactive_3,R2.id.btn_inactive_4,R2.id.btn_inactive_5,})
     void onEmojiClick(View v) {
             if(v.getId() == R.id.btn_inactive_1) {
-                startActivity(ActivityProvideRating.getInstance(this, 1,getIntent().getStringExtra(PARAM_TICKET_ID)));
+                startActivityForResult(ActivityProvideRating.getInstance(this, 1,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
             }else if (v.getId() == R.id.btn_inactive_2) {
-                startActivity(ActivityProvideRating.getInstance(this, 2,getIntent().getStringExtra(PARAM_TICKET_ID)));
+                startActivityForResult(ActivityProvideRating.getInstance(this, 2,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
             }else if (v.getId() == R.id.btn_inactive_3) {
-                startActivity(ActivityProvideRating.getInstance(this, 3,getIntent().getStringExtra(PARAM_TICKET_ID)));
+                startActivityForResult(ActivityProvideRating.getInstance(this, 3,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
             }else if (v.getId() == R.id.btn_inactive_4) {
-                startActivity(ActivityProvideRating.getInstance(this, 4,getIntent().getStringExtra(PARAM_TICKET_ID)));
+                startActivityForResult(ActivityProvideRating.getInstance(this, 4,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
             }else if (v.getId() == R.id.btn_inactive_5) {
-                startActivity(ActivityProvideRating.getInstance(this, 5,getIntent().getStringExtra(PARAM_TICKET_ID)));
+                startActivityForResult(ActivityProvideRating.getInstance(this, 5,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
             }
     }
+
+
 
 
     @OnClick(R2.id.iv_send_button)
