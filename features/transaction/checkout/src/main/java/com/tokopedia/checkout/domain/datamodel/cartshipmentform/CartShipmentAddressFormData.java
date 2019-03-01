@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.EgoldAttributeModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
 import java.util.List;

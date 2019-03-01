@@ -1,7 +1,9 @@
-package com.tokopedia.shipping_recommendation.domain.shipping;
+package com.tokopedia.checkout.view.feature.shipment.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 
 public class EgoldAttributeModel implements ShipmentData, Parcelable {
 

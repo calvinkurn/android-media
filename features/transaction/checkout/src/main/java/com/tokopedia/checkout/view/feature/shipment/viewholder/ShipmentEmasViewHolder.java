@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.shipping_recommendation.domain.shipping.EgoldAttributeModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 
 public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
 
