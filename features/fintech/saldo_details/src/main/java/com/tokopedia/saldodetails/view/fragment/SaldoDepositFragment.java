@@ -336,11 +336,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void hideSaldoBalanceSeparator() {
-        saldoBalanceSeparator.setVisibility(View.GONE);
-    }
-
-    @Override
     public void showSaldoBalanceSeparator() {
         saldoBalanceSeparator.setVisibility(View.VISIBLE);
     }
@@ -484,11 +479,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void hideSellerSaldoRL() {
-        sellerSaldoBalanceRL.setVisibility(View.GONE);
-    }
-
-    @Override
     public void showSellerSaldoRL() {
         sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
     }
@@ -503,11 +493,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void setSellerSaldoBalance(float amount, String formattedAmount) {
         sellerSaldoBalance = amount;
         sellerBalanceTV.setText(formattedAmount);
-    }
-
-    @Override
-    public void hideBuyerSaldoRL() {
-        buyerSaldoBalanceRL.setVisibility(View.GONE);
     }
 
     @Override

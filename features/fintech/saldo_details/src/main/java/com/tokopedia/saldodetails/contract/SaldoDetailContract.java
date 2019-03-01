@@ -56,23 +56,21 @@ public interface SaldoDetailContract {
 
         boolean isSellerEnabled();
 
-        void hideSellerSaldoRL();
-
         void showSellerSaldoRL();
 
         void setSellerSaldoBalance(float amount, String formattedAmount);
 
-        void hideBuyerSaldoRL();
-
         void showBuyerSaldoRL();
 
-        void hideSaldoBalanceSeparator();
     }
 
     interface Presenter extends CustomerPresenter<SaldoDetailContract.View> {
         void getSaldoBalance();
+
         void getTickerWithdrawalMessage();
+
         void getMerchantSaldoDetails();
+
         void onDrawClicked(Intent intent);
     }
 }
