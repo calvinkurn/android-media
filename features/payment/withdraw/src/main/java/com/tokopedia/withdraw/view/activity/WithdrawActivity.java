@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -20,6 +21,7 @@ import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
+import com.tokopedia.withdraw.view.bottomsheet.WithdrawInfoBottomSheet;
 import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
 
 import javax.inject.Inject;
@@ -36,6 +38,11 @@ public class WithdrawActivity extends BaseSimpleActivity {
         super.onCreate(savedInstanceState);
         setToolbar();
         initInjector();
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_saldo_withdraw;
     }
 
     @Override
@@ -58,6 +65,7 @@ public class WithdrawActivity extends BaseSimpleActivity {
     }
 
     private void setToolbar() {
+        toolbar = findViewById(R.id.toolbar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(MethodChecker.getColor(this, R.color.white)));
         toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.black_70));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -71,6 +79,18 @@ public class WithdrawActivity extends BaseSimpleActivity {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+
+        TextView withdrawInfo = findViewById(R.id.toolbar_withdraw_help);
+
+        withdrawInfo.setVisibility(View.VISIBLE);
+        withdrawInfo.setOnClickListener(v -> {
+            showWithdrawInfoBottomSheet();
+        });
+    }
+
+    private void showWithdrawInfoBottomSheet() {
+        WithdrawInfoBottomSheet withdrawInfoBottomSheet = new WithdrawInfoBottomSheet(this);
+        withdrawInfoBottomSheet.show();
     }
 
     @Override

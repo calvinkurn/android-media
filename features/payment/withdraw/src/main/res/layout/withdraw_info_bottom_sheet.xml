@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/close_bottom_sheet"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_default" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/string_min_withdraw"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/grey_450" />
+
+    <TextView
+        android:id="@+id/title_min_withdraw_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/string_min_withdraw"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/body_min_withdraw_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/min_withdraw_body_one"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12" />
+
+
+    <TextView
+        android:id="@+id/body_min_withdraw_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/min_withdraw_body_two"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/admin_withdraw_title"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/admin_withdraw_body_one"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/admin_withdraw_body_two"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/process_time_withdraw_title"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/process_time_withdraw_body_one"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/process_time_withdraw_body_two"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12" />
+
+</LinearLayout>

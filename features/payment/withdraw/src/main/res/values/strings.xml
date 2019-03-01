@@ -71,6 +71,16 @@
     <string name="refund_saldo_less_min">Saldo Refund kurang dari minimum penarikan, Rp10.000</string>
     <string name="seller_saldo_inactive">Saat ini kamu tidak memiliki Saldo Penghasilan</string>
     <string name="seller_saldo_less_min">Saldo Penghasilan kurang dari minimum penarikan, Rp10.000</string>
+    <string name="withdraw_help">Info</string>
+    <string name="string_min_withdraw">Minimum Penarikan</string>
+    <string name="min_withdraw_body_one">BCA, BRI, BNI, Mandiri = Rp10.000</string>
+    <string name="min_withdraw_body_two">Bank Lain = Rp50.000</string>
+    <string name="admin_withdraw_title">Biaya Admin</string>
+    <string name="admin_withdraw_body_one">BRI = Rp1.000</string>
+    <string name="admin_withdraw_body_two">Biaya transfer antar bank ditanggung pengguna</string>
+    <string name="process_time_withdraw_title">Waktu Proses Penarikan</string>
+    <string name="process_time_withdraw_body_one">BCA, BRI, BNI, CIMB, Mandiri paling lama 24 jam</string>
+    <string name="process_time_withdraw_body_two">Bank lain - paling lama 2 hari kerja (tidak termasuk Sabtu/Minggu/Libur)</string>
 
 
 </resources>
