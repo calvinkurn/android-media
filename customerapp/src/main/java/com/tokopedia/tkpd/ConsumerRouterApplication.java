@@ -2037,7 +2037,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                 tokoPointDrawerData.getOffFlag(),
                                 tokoPointDrawerData.getHasNotif(),
                                 userTier,
-                                tokoPointDrawerData.getUserTier().getRewardPoints(),
                                 tokoPointDrawerData.getUserTier().getRewardPointsStr(),
                                 tokoPointDrawerData.getMainPageUrl(),
                                 tokoPointDrawerData.getMainPageTitle(),

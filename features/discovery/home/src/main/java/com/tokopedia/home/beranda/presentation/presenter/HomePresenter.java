@@ -222,6 +222,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
         headerViewModel.setTokoPointDataError();
         headerViewModel.setTokoPointDrawerData(null);
+        headerViewModel.setTokopointsDrawerHomeData(null);
         getView().updateHeaderItem(headerViewModel);
     }
 
@@ -232,6 +233,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
         headerViewModel.setTokoPointDataSuccess();
         headerViewModel.setTokoPointDrawerData(null);
+        headerViewModel.setTokopointsDrawerHomeData(null);
         getView().updateHeaderItem(headerViewModel);
 
         getTokopoint();

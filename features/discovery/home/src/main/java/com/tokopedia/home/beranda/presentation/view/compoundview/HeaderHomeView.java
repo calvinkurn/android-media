@@ -149,6 +149,7 @@ public class HeaderHomeView extends BaseCustomView {
             tvActionTokopoint.setVisibility(VISIBLE);
             tokopointProgressBarLayout.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
+            ivLogoTokoPoint.setImageResource(R.drawable.ic_hachiko_egg);
         } else if (headerViewModel.getTokopointsDrawerHomeData() == null && !headerViewModel.isTokoPointDataError()) {
             tokoPointHolder.setOnClickListener(null);
             tokopointProgressBarLayout.setVisibility(VISIBLE);
