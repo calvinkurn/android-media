@@ -53,6 +53,7 @@ ext {
             imagePicker       : ":libraries:image_picker",
             imageuploader     : ":libraries:imageuploader",
             kotlinExtensions  : ":libraries:kotlin_extensions",
+            linker            : ":libraries:linker",
             locationmanager   : ":libraries:locationmanager",
             network           : ":libraries:network",
             omsApi            : ":libraries:oms",
@@ -74,6 +75,8 @@ ext {
             design            : ":tkpddesign",
             track             : ":libraries:track",
             trackinterface    : ":libraries:trackinterface",
-            graphView         :":libraries:graph_view"
+            graphView         :":libraries:graph_view",
+            iris              : ":libraries:iris",
+//            iris              : ":libraries:iris_no_op"
     ]
 }

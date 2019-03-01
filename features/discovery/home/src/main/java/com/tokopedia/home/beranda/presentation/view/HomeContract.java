@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
@@ -68,6 +69,12 @@ public interface HomeContract {
         void startDeeplinkShopInfo(String url);
 
         void showPopupIntroOvo(String applinkActivation);
+
+        void onTabFeedLoadError(Throwable e);
+
+        void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList);
+
+        void onHomeDataLoadSuccess();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -106,5 +113,7 @@ public interface HomeContract {
         void onBannerClicked(BannerSlidesModel slidesModel);
 
         void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData);
+
+        void getFeedTabData();
     }
 }

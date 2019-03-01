@@ -513,9 +513,12 @@ public class MainParentActivity extends BaseActivity implements
 
         if (fragment instanceof NotificationListener && notification != null) {
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
-            ((InboxNotificationListener) fragment).onNotifyBadgeInboxNotification(notification.getTotalInbox());
-            invalidateOptionsMenu();
         }
+
+        if (fragment instanceof InboxNotificationListener && notification != null) {
+            ((InboxNotificationListener) fragment).onNotifyBadgeInboxNotification(notification.getTotalInbox());
+        }
+        invalidateOptionsMenu();
     }
 
     @Override

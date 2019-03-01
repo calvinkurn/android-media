@@ -10,6 +10,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 
 public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implements BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
-        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener {
+        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener{
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;
@@ -42,6 +43,8 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         bannerView.setOnPromoClickListener(this);
         bannerView.setOnPromoScrolledListener(this);
         bannerView.setOnPromoLoadedListener(this);
+        bannerView.setOnPromoDragListener(this);
+        listener.setActivityStateListener(this);
     }
 
     @Override
@@ -104,5 +107,25 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
             HomePageTracking.eventPromoImpression(context, promotionList);
             hasSendBannerImpression = true;
         }
+    }
+
+    @Override
+    public void onPromoDragStart() {
+        listener.onPromoDragStart();
+    }
+
+    @Override
+    public void onPromoDragEnd() {
+        listener.onPromoDragEnd();
+    }
+
+    @Override
+    public void onPause() {
+        bannerView.stopAutoScrollBanner();
+    }
+
+    @Override
+    public void onResume() {
+        bannerView.startAutoScrollBanner();
     }
 }

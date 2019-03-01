@@ -97,11 +97,15 @@ public class QuickSingleFilterView extends BaseCustomView {
                         setSelectedFilter(items.get(indexOf).getType());
                     }
                 } else {
-                    setSelectedFilter(quickFilterItem.getType());
+                        setSelectedFilter(getDefaultSelectedFilterType(quickFilterItem));
                 }
                 adapterFilter.notifyDataSetChanged();
             }
         };
+    }
+
+    protected String getDefaultSelectedFilterType(QuickFilterItem quickFilterItem) {
+            return quickFilterItem.getType();
     }
 
     private void setSelectedFilter(String type) {
