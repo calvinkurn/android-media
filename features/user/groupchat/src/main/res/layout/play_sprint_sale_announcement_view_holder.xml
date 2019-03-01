@@ -7,7 +7,6 @@
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginStart="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_4"
-    android:paddingRight="@dimen/dp_8"
     android:paddingTop="@dimen/dp_4"
     tools:background="@color/red_150">
 

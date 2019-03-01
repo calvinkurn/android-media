@@ -27,6 +27,7 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity.PAUSE_RESUME_TRESHOLD_TIME
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -664,6 +665,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     LocalBroadcastManager.getInstance(it).unregisterReceiver(notifReceiver)
                 }
             }
+            timeStampAfterPause = System.currentTimeMillis()
         }
     }
 
@@ -703,14 +705,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun canResume(): Boolean {
-        return true
-        //        return viewModel != null && (viewModel.getTimeStampAfterResume() == 0L || viewModel.getTimeStampAfterResume() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterResume() > PAUSE_RESUME_TRESHOLD_TIME)
+        return timeStampAfterResume == 0L || timeStampAfterResume > 0
+                && System.currentTimeMillis() - timeStampAfterResume > PAUSE_RESUME_TRESHOLD_TIME
     }
 
     private fun canPause(): Boolean {
-        return true
-//        return viewModel != null && (viewModel.getTimeStampAfterPause() == 0L || (viewModel.getTimeStampAfterPause() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterPause() > PAUSE_RESUME_TRESHOLD_TIME
-//                && canResume()))
+        return (timeStampAfterPause == 0L || (timeStampAfterPause > 0
+                && System.currentTimeMillis() - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
+                && canResume()))
     }
 
     private fun kickIfIdleForTooLong() {
