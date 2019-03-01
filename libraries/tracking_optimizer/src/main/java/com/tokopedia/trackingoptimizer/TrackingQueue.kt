@@ -99,7 +99,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
         try {
             SendTrackQueueService.start(context)
         } catch (e: Throwable) {
-            // illegal state exception when service is launch when app in background
+            // prevent illegal state exception when service is launch when app in background (in O)
         }
     }
 

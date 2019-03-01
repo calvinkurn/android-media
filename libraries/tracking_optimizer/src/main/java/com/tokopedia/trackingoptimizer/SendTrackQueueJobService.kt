@@ -38,7 +38,7 @@ class SendTrackQueueJobService : JobService(), CoroutineScope {
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
         sendTrack(this,trackingRepository, trackingOptimizerRouter) {
-            jobFinished(jobParameters, true)
+            jobFinished(jobParameters, false)
         }
         return true
     }
