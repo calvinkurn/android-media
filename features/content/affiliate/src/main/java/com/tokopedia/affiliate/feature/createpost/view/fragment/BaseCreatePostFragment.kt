@@ -63,7 +63,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val PARAM_USER_ID = "{user_id}"
         private const val PRODUCT_ID_QUERY_PARAM = "?product_id="
         private const val REQUEST_IMAGE_PICKER = 1234
-        private const val REQUEST_EXAMPLE = 13
+        private const val REQUEST_PREVIEW = 13
         private const val REQUEST_LOGIN = 83
         private const val REQUEST_ATTACH_PRODUCT = 10
     }
@@ -124,7 +124,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 updateThumbnail()
                 updateButton()
             }
-            REQUEST_EXAMPLE -> goToImagePicker()
+            REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
+                val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
+                        CreatePostViewModel.TAG
+                )
+                resultViewModel?.let {
+                    viewModel = resultViewModel
+                    updateRelatedProduct()
+                    updateThumbnail()
+                    updateButton()
+                }
+            }
             REQUEST_LOGIN -> fetchContentForm()
             REQUEST_ATTACH_PRODUCT -> if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
                 val products = data?.getParcelableArrayListExtra<ResultProduct>(
@@ -331,7 +341,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun goToMediaPreview() {
         context?.let {
-            startActivity(MediaPreviewActivity.createIntent(it, viewModel))
+            startActivityForResult(MediaPreviewActivity.createIntent(it, viewModel), REQUEST_PREVIEW)
         }
     }
 
@@ -354,7 +364,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            thumbnail.loadImageRounded(viewModel.completeImageList.first(), 25f)
+            thumbnail.loadImageRounded(viewModel.completeImageList[viewModel.mainImageIndex], 25f)
             carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
         } else {
             thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)

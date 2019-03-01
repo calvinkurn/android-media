@@ -14,11 +14,9 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewM
 class MediaPreviewActivity : BaseSimpleActivity() {
 
     companion object {
-        internal const val CREATE_POST_MODEL = "create_post_model"
-
         fun createIntent(context: Context, createPostViewModel: CreatePostViewModel): Intent {
             val intent = Intent(context, MediaPreviewActivity::class.java)
-            intent.putExtra(CREATE_POST_MODEL, createPostViewModel)
+            intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
             return intent
         }
     }

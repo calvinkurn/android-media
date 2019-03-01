@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -7,11 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.fragment_af_media_preview.*
 
 /**
@@ -26,6 +27,9 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
     private val productAdapter: RelatedProductAdapter by lazy {
         RelatedProductAdapter(null, RelatedProductAdapter.TYPE_PREVIEW)
+    }
+    private val resultIntent: Intent by lazy {
+        Intent()
     }
 
     companion object {
@@ -54,8 +58,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun initVar() {
-        viewModel = arguments?.getParcelable(MediaPreviewActivity.CREATE_POST_MODEL)
-                ?: CreatePostViewModel()
+        viewModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
     }
 
     private fun initView() {
@@ -63,6 +66,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         mediaViewPager.adapter = imageAdapter
         mediaViewPager.offscreenPageLimit = imageAdapter.count
         tabLayout.setupWithViewPager(mediaViewPager)
+        updateDeleteBtn()
 
         val relatedProducts = ArrayList(viewModel.relatedProducts)
         productAdapter.setList(relatedProducts)
@@ -86,12 +90,19 @@ class MediaPreviewFragment : BaseDaggerFragment() {
                         tabLayout.selectedTabPosition - viewModel.fileImageList.size
                 )
             }
-            imageAdapter.imageList.removeAt(tabLayout.selectedTabPosition)
-            imageAdapter.notifyDataSetChanged()
+            imageAdapter.setList(viewModel.completeImageList)
 
-            if (imageAdapter.imageList.isEmpty()) {
-                deleteMediaBtn.hide()
-            }
+            updateDeleteBtn()
+            updateResultIntent()
         }
+    }
+
+    private fun updateDeleteBtn() {
+        deleteMediaBtn.showWithCondition(imageAdapter.imageList.isNotEmpty())
+    }
+
+    private fun updateResultIntent() {
+        resultIntent.putExtra(CreatePostViewModel.TAG, viewModel)
+        activity?.setResult(Activity.RESULT_OK, resultIntent)
     }
 }
