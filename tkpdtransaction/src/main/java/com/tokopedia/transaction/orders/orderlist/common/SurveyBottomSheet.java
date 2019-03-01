@@ -11,18 +11,21 @@ import android.widget.TextView;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.transaction.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SurveyBottomSheet extends BottomSheets implements View.OnClickListener {
 
     public static final String TITLE = "Beri Tanggapan Anda";
 
     private ImageView veryBadRating, badRating, averageRating, goodRating, veryGoodRating;
-    private TextView submitBtn;
+    private TextView submitBtn, ratingTextView;
     private EditText surveyReason;
 
     private int rating;
     private String comment;
     SurveyResult surveyResult;
-
+    List<ImageView> ratingView;
 
 
     public SurveyBottomSheet() {
@@ -32,7 +35,7 @@ public class SurveyBottomSheet extends BottomSheets implements View.OnClickListe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        surveyResult = (SurveyResult)context;
+        surveyResult = (SurveyResult) context;
     }
 
     @Override
@@ -48,6 +51,7 @@ public class SurveyBottomSheet extends BottomSheets implements View.OnClickListe
         goodRating = view.findViewById(R.id.good_rating);
         veryGoodRating = view.findViewById(R.id.very_good_rating);
         submitBtn = view.findViewById(R.id.submit_survey);
+        ratingTextView = view.findViewById(R.id.rating_text);
 
         surveyReason = view.findViewById(R.id.survey_comment);
 
@@ -57,6 +61,13 @@ public class SurveyBottomSheet extends BottomSheets implements View.OnClickListe
         goodRating.setOnClickListener(this);
         veryGoodRating.setOnClickListener(this);
         submitBtn.setOnClickListener(this);
+
+        ratingView = new ArrayList<>();
+        ratingView.add(veryBadRating);
+        ratingView.add(badRating);
+        ratingView.add(averageRating);
+        ratingView.add(goodRating);
+        ratingView.add(veryGoodRating);
     }
 
     @Override
@@ -68,43 +79,23 @@ public class SurveyBottomSheet extends BottomSheets implements View.OnClickListe
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.very_bad_rating) {
-            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
-            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            setSelectedItem(veryBadRating, getContext().getResources().getString(R.string.very_bad_rating));
             rating = 1;
 
         } else if (i == R.id.bad_rating) {
-            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
-            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_IN);
+            setSelectedItem(badRating, getContext().getResources().getString(R.string.bad_rating));
             rating = 2;
 
         } else if (i == R.id.average_rating) {
-            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
-            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_IN);
+            setSelectedItem(averageRating, getContext().getResources().getString(R.string.average_rating));
             rating = 3;
 
         } else if (i == R.id.good_rating) {
-            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
-            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_IN);
+            setSelectedItem(goodRating, getContext().getResources().getString(R.string.good_rating));
             rating = 4;
 
         } else if (i == R.id.very_good_rating) {
-            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
-            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
-            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_IN);
+            setSelectedItem(veryGoodRating, getContext().getResources().getString(R.string.very_good_rating));
             rating = 5;
 
         } else if (i == R.id.submit_survey) {
@@ -115,7 +106,18 @@ public class SurveyBottomSheet extends BottomSheets implements View.OnClickListe
         }
     }
 
-    public interface SurveyResult{
+    private void setSelectedItem(ImageView selectedRatingView, String selectedRating) {
+        for (ImageView ratingView : ratingView) {
+            ratingView.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_ATOP);
+        }
+        selectedRatingView.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), PorterDuff.Mode.SRC_ATOP);
+        ratingTextView.setText(selectedRating);
+        ratingTextView.setVisibility(View.VISIBLE);
+        submitBtn.setEnabled(true);
+        submitBtn.setAlpha(1.0f);
+    }
+
+    public interface SurveyResult {
         void setSurveyResult(int rating, String surveyComment);
     }
 }

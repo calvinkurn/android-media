@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.design.component.FloatingButton;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -304,6 +305,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+            if (dy > 0 || dy < 0 && surveyBtn.getVisibility() == View.VISIBLE)
+                surveyBtn.setVisibility(View.GONE);
             if (!isLoading && hasRecyclerListener) {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 if (linearLayoutManager != null) {
@@ -314,6 +317,14 @@ public class OrderListFragment extends BaseDaggerFragment implements
                     }
                 }
             }
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                surveyBtn.setVisibility(View.VISIBLE);
+            }
+            super.onScrollStateChanged(recyclerView, newState);
         }
     };
 
@@ -382,6 +393,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 emptyLayoutOrderList.setVisibility(View.VISIBLE);
             }
             filterDate.setVisibility(View.GONE);
+            surveyBtn.setVisibility(View.GONE);
         }
     }
 
@@ -508,11 +520,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSurveyButton(boolean isEligible) {
-        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja"))) {
-            surveyBtn.setVisibility(View.VISIBLE);
-        } else {
-            surveyBtn.setVisibility(View.GONE);
-        }
+//        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja"))) {
+//            surveyBtn.setVisibility(View.VISIBLE);
+//        } else {
+//            surveyBtn.setVisibility(View.GONE);
+//        }
     }
 
     @Override

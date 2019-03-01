@@ -314,4 +314,9 @@ Anda di sini.</string>
     <string name="selsesai_dialog_text_1">Pastikan Anda sudah menerima produk</string>
     <string name="selesai_dialog_text_2">Pastikan produk yang Anda terima sesuai pesanan</string>
     <string name="title_activity_people_reason">Ajukan Pembatalan</string>
+    <string name="very_bad_rating">Tidak Mengerti</string>
+    <string name="bad_rating">Kurang Mengerti</string>
+    <string name="average_rating">Cukup</string>
+    <string name="good_rating">Mengerti</string>
+    <string name="very_good_rating">Sangat Mengerti</string>
 </resources>

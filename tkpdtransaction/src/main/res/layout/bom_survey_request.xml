@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
@@ -64,10 +65,14 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/rating_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_16"
+        android:visibility="invisible"
+        android:enabled="false"
+        tools:visibility="visible"
         android:text="Mengerti"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/sp_12" />
@@ -103,7 +108,9 @@
         android:background="@drawable/save_date_btn_bg"
         android:gravity="center"
         android:padding="@dimen/dp_16"
-        android:text="submit"
+        android:text="Submit"
+        android:alpha="0.5"
+        android:enabled="false"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         android:visibility="visible" />
