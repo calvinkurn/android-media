@@ -670,21 +670,25 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 break;
             case CONFIRM_PASSWORD_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
-                            .setTitle(getActivity().getString(R.string.alert_success_withdraw_title))
-                            .setMessage(getActivity().getString(R.string.alert_success_withdraw_body))
-                            .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), (dialog1, which) -> {
-                                dialog1.dismiss();
-                                if (getActivity() != null) {
-                                    getActivity().setResult(Activity.RESULT_OK);
-                                    getActivity().finish();
-                                }
 
-                            })
-                            .setCancelable(false)
-                            .create();
-                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.tkpd_main_green));
-                    dialog.show();
+                    if (getActivity() != null) {
+                        AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
+                                .setTitle(getActivity().getString(R.string.alert_success_withdraw_title))
+                                .setMessage(getActivity().getString(R.string.alert_success_withdraw_body))
+                                .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), (dialog1, which) -> {
+                                    dialog1.dismiss();
+                                    if (getActivity() != null) {
+                                        getActivity().setResult(Activity.RESULT_OK);
+                                        getActivity().finish();
+                                    }
+
+                                })
+                                .setCancelable(false)
+                                .create();
+                        dialog.show();
+                        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.tkpd_main_green));
+                    }
+
                 }
                 break;
             default:

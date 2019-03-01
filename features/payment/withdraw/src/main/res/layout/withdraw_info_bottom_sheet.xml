@@ -12,9 +12,9 @@
 
         <ImageView
             android:id="@+id/close_bottom_sheet"
-            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_close_default" />
 
         <TextView
@@ -39,7 +39,7 @@
         android:id="@+id/title_min_withdraw_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_28"
         android:lineSpacingExtra="@dimen/sp_6"
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
@@ -157,6 +157,7 @@
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_48"
         android:paddingRight="@dimen/dp_16"
         android:text="@string/process_time_withdraw_body_two"
         android:textColor="@color/black_54"
