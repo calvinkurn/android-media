@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
+
 public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
 
     private int spacing;
@@ -23,27 +25,27 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
 
         int position = parent.getChildAdapterPosition(view);
 
-        int totalSpanCount = getTotalSpanCount(parent);
+        if (!isProductItem(parent, position)) {
+            return;
+        }
 
-        outRect.top = isTopProductItem(position, totalSpanCount) ? 0 : spacing / 2;
-        outRect.left = isFirstInRow(position, totalSpanCount) ? spacing * 2 : spacing / 2;
-        outRect.right = isLastInRow(position, totalSpanCount) ? spacing * 2 : spacing / 2;
-        outRect.bottom = spacing / 2;
+        int spanIndex = ((StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
+
+        if(spanIndex == 1){
+            outRect.left = spacing / 2;
+            outRect.right = spacing * 2;
+        } else{
+            outRect.left = spacing * 2;
+            outRect.right = spacing / 2;
+        }
+        outRect.bottom = spacing;
     }
 
-    private boolean isFirstInRow(int pos, int spanCount) {
-        return pos % spanCount == 0;
-    }
-
-    private boolean isLastInRow(int pos, int spanCount) {
-        return isFirstInRow(pos + 1, spanCount);
-    }
-
-    private boolean isTopProductItem(int position, int totalSpanCount) {
-        return position < totalSpanCount;
-    }
-
-    private int getTotalSpanCount(RecyclerView parent) {
-        return ((StaggeredGridLayoutManager) parent.getLayoutManager()).getSpanCount();
+    private boolean isProductItem(RecyclerView parent, int viewPosition) {
+        final RecyclerView.Adapter adapter = parent.getAdapter();
+        if (viewPosition < 0 || viewPosition > adapter.getItemCount() - 1) {
+            return false;
+        }
+        return adapter.getItemViewType(viewPosition) == HomeFeedViewHolder.LAYOUT;
     }
 }
