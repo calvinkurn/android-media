@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 /**
  * Created by meta on 28/02/19.
  */
-public class ReactBannerManager extends SimpleViewManager<Banner> {
+public class ReactBannerManager extends SimpleViewManager<Banner> implements BannerView.OnPromoAllClickListener, BannerView.OnPromoDragListener, BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoScrolledListener {
 
     private static final String BANNER_CLASS = "BannerView";
 
@@ -44,6 +44,10 @@ public class ReactBannerManager extends SimpleViewManager<Banner> {
     public void setBannerData(Banner banner, @Nullable ReadableArray readableArray) {
         this.mappingImageBanner(readableArray);
         banner.setOnPromoClickListener(position -> RouteManager.route(banner.getContext(), applinkList.get(position)));
+        banner.setOnPromoAllClickListener(this);
+        banner.setOnPromoScrolledListener(this);
+        banner.setOnPromoLoadedListener(this);
+        banner.setOnPromoDragListener(this);
         banner.setPromoList(imageList);
         banner.buildView();
     }
@@ -59,5 +63,30 @@ public class ReactBannerManager extends SimpleViewManager<Banner> {
                 this.applinkList.add(applink);
             }
         }
+    }
+
+    @Override
+    public void onPromoLoaded() {
+
+    }
+
+    @Override
+    public void onPromoScrolled(int position) {
+
+    }
+
+    @Override
+    public void onPromoAllClick() {
+
+    }
+
+    @Override
+    public void onPromoDragStart() {
+
+    }
+
+    @Override
+    public void onPromoDragEnd() {
+
     }
 }
