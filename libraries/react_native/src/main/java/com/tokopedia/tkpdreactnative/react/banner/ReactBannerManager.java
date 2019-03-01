@@ -1,18 +1,13 @@
 package com.tokopedia.tkpdreactnative.react.banner;
 
-import android.view.View;
-
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
+import com.tokopedia.design.banner.BannerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +17,7 @@ import javax.annotation.Nullable;
 /**
  * Created by meta on 28/02/19.
  */
-public class ReactBannerManager extends SimpleViewManager<Banner> {
+public class ReactBannerManager extends SimpleViewManager<Banner> implements BannerView.OnPromoAllClickListener, BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoScrolledListener {
 
     private static final String BANNER_CLASS = "BannerView";
 
@@ -36,22 +31,18 @@ public class ReactBannerManager extends SimpleViewManager<Banner> {
 
     @Override
     protected Banner createViewInstance(ThemedReactContext reactContext) {
-        Banner banner = new Banner(reactContext);
-//        banner.getBannerSeeAll().setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-        return banner;
+        return new Banner(reactContext);
     }
 
     @ReactProp(name = "bannerData")
     public void setBannerData(Banner banner, @Nullable ReadableArray readableArray) {
         this.mappingImageBanner(readableArray);
-        banner.setItems(imageList);
-        banner.setOnItemClickListener(position ->
-                RouteManager.route(banner.getContext(), applinkList.get(position)));
+        banner.setOnPromoClickListener(position -> RouteManager.route(banner.getContext(), applinkList.get(position)));
+        banner.setOnPromoAllClickListener(this);
+        banner.setOnPromoScrolledListener(this);
+        banner.setOnPromoLoadedListener(this);
+        banner.setOnPromoDragListener(this);
+        banner.setPromoList(imageList);
         banner.buildView();
     }
 
@@ -66,5 +57,30 @@ public class ReactBannerManager extends SimpleViewManager<Banner> {
                 this.applinkList.add(applink);
             }
         }
+    }
+
+    @Override
+    public void onPromoLoaded() {
+
+    }
+
+    @Override
+    public void onPromoScrolled(int position) {
+
+    }
+
+    @Override
+    public void onPromoAllClick() {
+
+    }
+
+    @Override
+    public void onPromoDragStart() {
+
+    }
+
+    @Override
+    public void onPromoDragEnd() {
+
     }
 }
