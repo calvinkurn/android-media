@@ -6,29 +6,28 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
-import android.support.v4.app.TaskStackBuilder
 import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.view.View
-import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.RelativeLayout
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.applink.ApplinkConstant
 import com.tokopedia.groupchat.common.util.NonSwipeableViewPager
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper
+import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * @author : Steven 11/02/19
@@ -39,12 +38,10 @@ open class PlayActivity : BaseSimpleActivity() {
     lateinit var viewPager: NonSwipeableViewPager
     private lateinit var pagerAdapter: FragmentPagerAdapter
 
+    @Inject
+    lateinit var analytics: GroupChatAnalytics
+
     override fun getNewFragment(): Fragment? {
-//        val bundle = Bundle()
-//        if (intent != null && intent.extras != null) {
-//            bundle.putAll(intent.extras)
-//        }
-//        return PlayFragment.createInstance(bundle)
         return null
     }
 
@@ -52,9 +49,32 @@ open class PlayActivity : BaseSimpleActivity() {
         return R.layout.play_activity
     }
 
+    override fun onStart() {
+        super.onStart()
+        analytics.sendScreen(this, screenName)
+    }
+
+    override fun getScreenName(): String {
+        if (intent != null && intent.extras != null) {
+            val roomName = intent.extras!!.getString(EXTRA_CHANNEL_UUID, "")
+            return GroupChatAnalytics.SCREEN_CHAT_ROOM + roomName
+        } else {
+            return GroupChatAnalytics.SCREEN_CHAT_ROOM
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         initView()
+    }
+
+    private fun initInjector() {
+        val playComponent = DaggerPlayComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+
+        playComponent.inject(this)
     }
 
     private fun initView() {
@@ -70,6 +90,10 @@ open class PlayActivity : BaseSimpleActivity() {
 
         val bundle = Bundle()
         val channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        val useGCP = intent?.extras?.getString(EXTRA_USE_GCP, "false")
+        useGCP?.run{
+            bundle.putBoolean(EXTRA_USE_GCP, this.toBoolean())
+        }
         bundle.putString(PlayActivity.EXTRA_CHANNEL_UUID, channelId)
         fragmentList.add(BlankFragment.createInstance(bundle = Bundle()))
         fragmentList.add(PlayFragment.createInstance(bundle))
@@ -175,7 +199,7 @@ open class PlayActivity : BaseSimpleActivity() {
     }
 
     fun setSwipeable(swipeable: Boolean) {
-        if(!swipeable){
+        if (!swipeable) {
         } else {
         }
     }
@@ -188,8 +212,8 @@ open class PlayActivity : BaseSimpleActivity() {
         val EXTRA_CHANNEL_UUID = "CHANNEL_UUID"
         val EXTRA_CHANNEL_INFO = "CHANNEL_INFO"
         val EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM"
+        const val EXTRA_USE_GCP = "use_gcp"
         val EXTRA_POSITION = "position"
-        val APPLINK_DATA = "APPLINK_DATA"
 
         @JvmStatic
         fun getCallingIntent(context: Context, channelViewModel: ChannelViewModel, position: Int): Intent {
@@ -224,12 +248,12 @@ open class PlayActivity : BaseSimpleActivity() {
          */
 
         @JvmStatic
-        fun getCallingIntent(context: Context, channelId: String, applinkData: String?): Intent {
+        fun getCallingIntent(context: Context, channelId: String, useGCP: Boolean): Intent {
             val intent = Intent(context, PlayActivity::class.java)
             val bundle = Bundle()
             bundle.putString(EXTRA_CHANNEL_UUID, channelId)
             bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, true)
-            bundle.putString(APPLINK_DATA, applinkData)
+            bundle.putBoolean(EXTRA_USE_GCP, useGCP)
             intent.putExtras(bundle)
             return intent
         }
@@ -241,49 +265,10 @@ open class PlayActivity : BaseSimpleActivity() {
 
         @JvmStatic
         @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
-        fun getCallingTaskStack(context: Context, extras: Bundle): TaskStackBuilder {
-            val id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-            val homeIntent = (context.applicationContext as GroupChatModuleRouter).getHomeIntent(context)
-            var detailsIntent = PlayActivity.getCallingIntent(context, id)
-            if (extras.get(ApplinkConstant.PARAM_TAB) != null) {
-                detailsIntent = PlayActivity.getCallingIntent(context, id, extras.getString(ApplinkConstant.PARAM_TAB))
-            }
-            val taskStackBuilder = TaskStackBuilder.create(context)
-            taskStackBuilder.addNextIntent(homeIntent)
-            taskStackBuilder.addNextIntent(detailsIntent)
-            return taskStackBuilder
-        }
-
-        @JvmStatic
-        @DeepLink(ApplinkConstant.GROUPCHAT_ROOM_VIA_LIST)
-        fun getCallingTaskStackViaList(context: Context, extras: Bundle): TaskStackBuilder {
-            val id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-            val homeIntent = (context.applicationContext as GroupChatModuleRouter).getHomeIntent(context)
-            val detailsIntent = PlayActivity.getCallingIntent(context, id)
-            val parentIntent = (context.applicationContext as GroupChatModuleRouter)
-                    .getInboxChannelsIntent(context)
-
-            val taskStackBuilder = TaskStackBuilder.create(context)
-            taskStackBuilder.addNextIntent(homeIntent)
-            taskStackBuilder.addNextIntent(parentIntent)
-            taskStackBuilder.addNextIntent(detailsIntent)
-            return taskStackBuilder
-        }
-
-        @JvmStatic
-        @DeepLink(ApplinkConstant.GROUPCHAT_VOTE_VIA_LIST)
-        fun getCallingTaskStackVoteViaList(context: Context, extras: Bundle): TaskStackBuilder {
-            val id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-            val homeIntent = (context.applicationContext as GroupChatModuleRouter).getHomeIntent(context)
-            val detailsIntent = PlayActivity.getCallingIntent(context, id)
-            val parentIntent = (context.applicationContext as GroupChatModuleRouter)
-                    .getInboxChannelsIntent(context)
-
-            val taskStackBuilder = TaskStackBuilder.create(context)
-            taskStackBuilder.addNextIntent(homeIntent)
-            taskStackBuilder.addNextIntent(parentIntent)
-            taskStackBuilder.addNextIntent(detailsIntent)
-            return taskStackBuilder
+        fun getCallingTaskStack(context: Context, extras: Bundle): Intent {
+            val id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID, "")
+            val useGcp : String = extras.getString(ApplinkConstant.PARAM_GCP, "false")
+            return getCallingIntent(context, id, useGcp.toBoolean())
         }
     }
 }

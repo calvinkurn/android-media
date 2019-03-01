@@ -54,6 +54,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     @Override
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
+        //TODO REPLACE FROM POJO
         return new ChannelInfoViewModel(
                 String.valueOf(pojo.getChannel().getChannelId()),
                 pojo.getChannel().getTitle() != null ? pojo.getChannel().getTitle() : "",
@@ -82,7 +83,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 convertChannelQuickReply(pojo.getChannel()),
                 pojo.getChannel().getVideoId(),
                 pojo.getChannel().getVideoLive(),
-                "https://www.tokopedia.com/",
+                "https://m.tokopedia.com/discovery/734",
                 pojo.getChannel().getSettingGroupChat(),
                 pojo.getChannel().getOverlayMessage(),
                 convertDynamicButtons(pojo.getChannel().getButton()),

@@ -229,19 +229,21 @@ open class PlayViewStateImpl(
     }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
-        viewModel?.run {
-            dynamicButtons = it
-        }
+        viewModel?.let { viewModel ->
+            viewModel.dynamicButtons = it
 
-        if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
-            it.floatingButton.run {
-                setFloatingIcon(linkUrl.trim(), imageUrl.trim())
+            if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
+                it.floatingButton.run {
+                    setFloatingIcon(this)
+                }
+            }
+
+            if (!it.listDynamicButton.isEmpty()) {
+                analytics.eventViewDynamicButtons(viewModel, it.listDynamicButton)
+                dynamicButtonAdapter.setList(it.listDynamicButton)
             }
         }
 
-        if (!it.listDynamicButton.isEmpty()) {
-            dynamicButtonAdapter.setList(it.listDynamicButton)
-        }
     }
 
     override fun onErrorGetDynamicButtons() {
@@ -266,6 +268,9 @@ open class PlayViewStateImpl(
 
             StickyComponentHelper.setView(stickyComponent, item)
             stickyComponent.setOnClickListener {
+                viewModel?.let {
+                    analytics.eventClickStickyComponent(item, it)
+                }
                 RouteManager.route(activity, item.redirectUrl)
             }
 
@@ -273,6 +278,9 @@ open class PlayViewStateImpl(
                     .alpha(1f)
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
+                            viewModel?.let {
+                                analytics.eventShowStickyComponent(item, it)
+                            }
                             stickyComponent.show()
                         }
                     })
@@ -342,7 +350,7 @@ open class PlayViewStateImpl(
 
         loadingView.hide()
 
-        if(it.isFreeze){
+        if (it.isFreeze) {
             onChannelFrozen(it.channelId)
             listener.onToolbarEnabled(false)
             return
@@ -544,9 +552,16 @@ open class PlayViewStateImpl(
         }
 
         if (!::overlayDialog.isInitialized) {
-            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context) {
-                analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
-            }
+            overlayDialog = CloseableBottomSheetDialog.createInstance(view.context,
+                    object : CloseableBottomSheetDialog.CloseClickedListener {
+                        override fun onCloseDialog() {
+                            analytics.eventClickCloseOverlayCloseButton(channelInfoViewModel.channelId)
+                        }
+                    }, object : CloseableBottomSheetDialog.BackHardwareClickedListener {
+                override fun onBackHardwareClicked() {
+                    analytics.eventClickCloseOverlayBackButton(channelInfoViewModel.channelId)
+                }})
+
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
 
@@ -577,11 +592,18 @@ open class PlayViewStateImpl(
                 ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
                 overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
                     if (!TextUtils.isEmpty(interruptViewModel.imageLink)) {
-                        RouteManager.route(view.context, interruptViewModel.imageLink)
+                        RouteManager.routeWithAttribution(view.context, interruptViewModel.imageLink,
+                                GroupChatAnalytics.generateTrackerAttribution(
+                                        GroupChatAnalytics.ATTRIBUTE_OVERLAY_IMAGE,
+                                        channelInfoViewModel.channelUrl,
+                                        channelInfoViewModel.title
+                                ))
                         closeOverlayDialog()
                     }
 
-                    analytics.eventClickOverlayImage(channelInfoViewModel)
+                    //TODO Overlay ads id
+                    analytics.eventClickOverlayImage(channelInfoViewModel, "", "",
+                            interruptViewModel.imageUrl)
                 }
             } else
                 (overlayView.findViewById(R.id.ivImage) as ImageView).visibility = View.GONE
@@ -599,10 +621,17 @@ open class PlayViewStateImpl(
             (overlayView.findViewById<View>(R.id.btnCta) as ButtonCompat).text = MethodChecker.fromHtml(interruptViewModel.btnTitle)
             (overlayView.findViewById<View>(R.id.btnCta) as ButtonCompat).setOnClickListener { view1 ->
 
-                analytics.eventClickOverlayButton(channelInfoViewModel)
+                //TODO : ADD OVERLAY ADS ID
+                analytics.eventClickOverlayButton(channelInfoViewModel, "", interruptViewModel.btnTitle,
+                        interruptViewModel.imageUrl)
 
                 if (!TextUtils.isEmpty(interruptViewModel.btnLink)) {
-                    RouteManager.route(view.context, interruptViewModel.btnLink)
+                    RouteManager.routeWithAttribution(view.context, interruptViewModel.btnLink,
+                            GroupChatAnalytics.generateTrackerAttribution(
+                                    GroupChatAnalytics.ATTRIBUTE_OVERLAY_BUTTON,
+                                    channelInfoViewModel.channelUrl,
+                                    channelInfoViewModel.title
+                            ))
                 }
                 closeOverlayDialog()
             }
@@ -695,57 +724,16 @@ open class PlayViewStateImpl(
                             infoViewModel.channelUrl,
                             infoViewModel.title))
 
-                    analytics.eventClickBanner(String.format(
-                            "%s - %s",
-                            infoViewModel.channelId,
-                            adsId
-                    ))
-
-                    val list = ArrayList<EEPromotion>()
-                    list.add(EEPromotion(adsId,
-                            EEPromotion.NAME_GROUPCHAT,
-                            GroupChatAnalytics.DEFAULT_EE_POSITION,
-                            adsName,
-                            adsImageUrl,
-                            getAttributionTracking(GroupChatAnalytics.ATTRIBUTE_BANNER)
-                    ))
-
-                    eventClickComponentEnhancedEcommerce(
-                            GroupChatAnalytics.COMPONENT_BANNER,
-                            adsName,
-                            GroupChatAnalytics.ATTRIBUTE_BANNER,
-                            list)
+                    analytics.eventClickBanner(infoViewModel, adsId, adsName, adsImageUrl)
                 }
             }
         }
 
         if (sponsorLayout.visibility == View.VISIBLE) {
-            analytics.eventViewBanner(String.format(
-                    "%s - %s",
-                    viewModel?.channelId,
-                    viewModel?.adsName
-            ))
+            viewModel?.run {
+                analytics.eventViewBanner(this, adsId, adsName, adsImageUrl)
+            }
         }
-    }
-
-    private fun eventClickComponentEnhancedEcommerce(
-            componentType: String,
-            campaignName: String?,
-            attributeName: String,
-            list: ArrayList<EEPromotion>
-    ) {
-        analytics.eventClickComponentEnhancedEcommerce(componentType, campaignName,
-                attributeName, viewModel?.channelUrl, viewModel?.title, list)
-    }
-
-    private fun eventViewComponentEnhancedEcommerce(
-            componentType: String,
-            campaignName: String?,
-            attributeName: String,
-            list: ArrayList<EEPromotion>
-    ) {
-        analytics.eventViewComponentEnhancedEcommerce(componentType, campaignName,
-                attributeName, viewModel?.channelUrl, viewModel?.title, list)
     }
 
     private fun generateLink(
@@ -788,7 +776,7 @@ open class PlayViewStateImpl(
                 videoContainer.show()
                 sponsorLayout.hide()
                 setChatListHasSpaceOnTop(false)
-                liveIndicator.shouldShowWithAction(isVideoLive){}
+                liveIndicator.shouldShowWithAction(isVideoLive) {}
                 youTubePlayer?.let {
                     it.cueVideo(videoId)
                     autoPlayVideo()
@@ -918,21 +906,34 @@ open class PlayViewStateImpl(
     }
 
 
-    private fun setFloatingIcon(redirectUrl: String, iconUrl: String) {
-        if (iconUrl.isBlank()
-                || redirectUrl.isBlank()
-                || !RouteManager.isSupportApplink(view.context, redirectUrl)) {
+    private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
+        if (floatingButton.imageUrl.isBlank()
+                || floatingButton.linkUrl.isBlank()
+                || !RouteManager.isSupportApplink(view.context, floatingButton.linkUrl)) {
             return
         }
 
-        if (iconUrl.toLowerCase().endsWith("gif")) {
-            ImageHandler.loadGifFromUrl(webviewIcon, iconUrl, R.drawable.ic_loading_toped)
+        if (floatingButton.imageUrl.toLowerCase().endsWith("gif")) {
+            ImageHandler.loadGifFromUrl(webviewIcon, floatingButton.imageUrl, R.drawable.ic_loading_toped)
         } else {
-            ImageHandler.LoadImage(webviewIcon, iconUrl)
+            ImageHandler.LoadImage(webviewIcon, floatingButton.imageUrl)
+        }
+        webviewIcon.show()
+
+        viewModel?.let {
+            analytics.eventViewProminentButton(it, floatingButton)
         }
 
         webviewIcon.setOnClickListener {
-            RouteManager.route(view.context, redirectUrl)
+            viewModel?.let {
+                analytics.eventClickProminentButton(it, floatingButton)
+
+                RouteManager.routeWithAttribution(view.context, floatingButton.linkUrl, GroupChatAnalytics.generateTrackerAttribution(
+                        GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
+                        it.channelUrl,
+                        it.title
+                ))
+            }
         }
 
     }
@@ -1069,7 +1070,7 @@ open class PlayViewStateImpl(
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
                                     onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
+            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context)
         }
 
         welcomeInfoDialog.setOnDismissListener {
@@ -1120,7 +1121,7 @@ open class PlayViewStateImpl(
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
         if (!::pinnedMessageDialog.isInitialized) {
-            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context) {}
+            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context)
         }
 
         val pinnedMessageView = createPinnedMessageView(viewModel)
@@ -1135,7 +1136,6 @@ open class PlayViewStateImpl(
         }
 
         pinnedMessageDialog.setContentView(pinnedMessageView, "Pinned Chat")
-        view.setOnClickListener(null)
         pinnedMessageDialog.show()
 
     }
@@ -1157,7 +1157,7 @@ open class PlayViewStateImpl(
             }
             view.findViewById<ImageView>(R.id.thumbnail).visibility = View.GONE
         }
-
+        view.setOnClickListener(null)
         return view
     }
 
@@ -1188,6 +1188,8 @@ open class PlayViewStateImpl(
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
         viewModel?.let {
+
+            analytics.eventClickOverlayCTAButton(it.channelId, button.contentButtonText)
 
             it.overlayViewModel = OverlayViewModel(
                     OverlayViewModel.TYPE_CTA,
