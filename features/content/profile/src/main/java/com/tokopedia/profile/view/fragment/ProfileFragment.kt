@@ -32,6 +32,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -40,6 +41,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -50,6 +55,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
+import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showNormalToaster
@@ -119,6 +125,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val POST_ID = "{post_id}"
         private const val PARAM_TAB_NAME = "{tab_name}"
         private const val PARAM_CATEGORY_ID = "{category_id}"
+        private const val YOUTUBE_URL = "{youtube_url}";
         private const val TAB_INSPIRASI = "inspirasi"
         private const val CATEGORY_0 = "0"
         private const val TEXT_PLAIN = "text/plain"
@@ -128,6 +135,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val EDIT_POST_CODE = 1310
         private const val LOGIN_CODE = 1383
         private const val LOGIN_FOLLOW_CODE = 1384
+        private const val OPEN_CONTENT_REPORT = 1130
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -180,6 +188,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
             SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE, LOGIN_CODE -> {
                 onSwipeRefresh()
+            }
+            OPEN_CONTENT_REPORT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.let {
+                        if (it.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
+                            onSuccessReportContent()
+                        } else {
+                            onErrorReportContent(it.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG))
+                        }
+                    }
+                }
             }
         }
     }
@@ -557,56 +576,205 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         loadingLayout.visibility = View.GONE
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
 
+    //newfeed section
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
+
+//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
+//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    trackingPostModel,
+//                    FeedAnalytics.Element.AVATAR,
+//                    redirectUrl
+//            )
+//        }
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
+        if (type == FollowCta.AUTHOR_USER) {
+            var userIdInt = 0
+            try {
+                userIdInt = Integer.valueOf(id)
+            } catch (ignored: NumberFormatException) {
+            }
+            if (isFollow) {
+                onUnfollowKolClicked(positionInFeed, userIdInt)
+            } else {
+                onFollowKolClicked(positionInFeed, userIdInt)
+            }
+        }
 
+//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
+//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    trackingPostModel,
+//                    FeedAnalytics.Element.FOLLOW,
+//                    ""
+//            )
+//        }
     }
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
-
+        if (context != null) {
+            val menus = Menus(context!!)
+            val menusList = ArrayList<Menus.ItemMenus>()
+            if (reportable) {
+                menusList.add(
+                        Menus.ItemMenus(
+                                getString(R.string.profile_feed_report),
+                                -1
+                        )
+                )
+            }
+            menus.itemMenuList = menusList
+            menus.setActionText(getString(R.string.profile_feed_cancel))
+            menus.setOnActionClickListener { v -> menus.dismiss() }
+            menus.setOnItemMenuClickListener { itemMenus, pos ->
+                if (itemMenus.title == getString(R.string.profile_feed_report)) {
+                    goToContentReport(postId)
+                }
+                menus.dismiss()
+            }
+            menus.show()
+        }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
-
+        onGoToLink(redirectUrl)
     }
 
     override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
-
+        if (isLiked) {
+            onUnlikeKolClicked(positionInFeed, id,false, "")
+        } else {
+            onLikeKolClicked(positionInFeed, id, false, "")
+        }
     }
 
     override fun onCommentClick(positionInFeed: Int, id: Int) {
-
+        onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
-
+        if (activity != null) {
+            profileRouter.shareFeed(
+                    activity!!,
+                    id.toString(),
+                    url,
+                    title,
+                    iamgeUrl,
+                    description
+            )
+        }
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
 
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
 
+//        if (adapter.getlist().get(positionInFeed) is BannerViewModel) {
+//            val (itemViewModels) = adapter.getlist().get(positionInFeed)
+//            trackBannerClick(
+//                    positionInFeed,
+//                    adapterPosition,
+//                    itemViewModels[adapterPosition].trackingBannerModel,
+//                    FeedAnalytics.Element.IMAGE
+//            )
+//        }
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-
+        val intent = profileRouter.getShopPageIntent(activity!!, shop.id)
+        startActivity(intent)
+//
+//        if (adapter.getlist().get(positionInFeed) is TopadsShopViewModel) {
+//            val (_, _, _, trackingList) = adapter.getlist().get(positionInFeed)
+//
+//            for (tracking in trackingList) {
+//                if (TextUtils.equals(tracking.authorName, shop.name)) {
+//                    trackRecommendationClick(
+//                            positionInFeed,
+//                            adapterPosition,
+//                            tracking,
+//                            FeedAnalytics.Element.FOLLOW
+//                    )
+//                    break
+//                }
+//            }
+//        }
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
-
+//        presenter.toggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+//
+//        if (adapter.getlist().get(positionInFeed) is TopadsShopViewModel) {
+//            val (_, _, _, trackingList) = adapter.getlist().get(positionInFeed)
+//
+//            for (tracking in trackingList) {
+//                if (TextUtils.equals(tracking.authorName, data.shop.name)) {
+//                    trackRecommendationClick(
+//                            positionInFeed,
+//                            adapterPosition,
+//                            tracking,
+//                            FeedAnalytics.Element.FOLLOW
+//                    )
+//                    break
+//                }
+//            }
+//        }
     }
 
     override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
+        onGoToLink(redirectLink)
 
+//        if (adapter.getlist().get(positionInFeed) is FeedRecommendationViewModel) {
+//
+//            val (_, cards) = adapter.getlist().get(positionInFeed)
+//            trackRecommendationClick(
+//                    positionInFeed,
+//                    adapterPosition,
+//                    cards[adapterPosition].trackingRecommendationModel,
+//                    FeedAnalytics.Element.AVATAR
+//            )
+//        }
     }
 
     override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean) {
+        if (type == FollowCta.AUTHOR_USER) {
+            var userIdInt = 0
+            try {
+                userIdInt = Integer.valueOf(id)
+            } catch (ignored: NumberFormatException) {
+            }
 
+//            if (isFollow) {
+//                onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
+//            } else {
+//                onFollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
+//            }
+
+        }
+//        else if (type == FollowCta.AUTHOR_SHOP) {
+//            presenter.toggleFavoriteShop(positionInFeed, id)
+//        }
+//
+//        if (adapter.getlist().get(positionInFeed) is FeedRecommendationViewModel) {
+//
+//            val (_, cards) = adapter.getlist().get(positionInFeed)
+//            trackRecommendationClick(
+//                    positionInFeed,
+//                    adapterPosition,
+//                    cards[adapterPosition].trackingRecommendationModel,
+//                    FeedAnalytics.Element.FOLLOW
+//            )
+//        }
     }
 
     override fun onActionPopup() {
@@ -614,28 +782,74 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onActionRedirect(redirectUrl: String) {
-
+        onGoToLink(redirectUrl)
     }
 
     override fun onTitleCtaClick(redirectUrl: String) {
-
+        onGoToLink(redirectUrl)
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+        onGoToLink(redirectLink)
 
+//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
+//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    contentPosition,
+//                    trackingPostModel,
+//                    FeedAnalytics.Element.IMAGE,
+//                    redirectLink
+//            )
+//        }
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
+        val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
 
+        if (context != null) {
+            RouteManager.route(
+                    context!!,
+                    redirectUrl
+            )
+        }
     }
 
     override fun onPollOptionClick(positionInFeed: Int, contentPosition: Int, option: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String) {
-
+//        if (isVoted) {
+//            onGoToLink(redirectLink)
+//        } else {
+//            onVoteOptionClicked(positionInFeed, pollId, optionId)
+//        }
+//
+//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
+//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    contentPosition,
+//                    trackingPostModel,
+//                    FeedAnalytics.Element.OPTION + option,
+//                    redirectLink
+//            )
+//        }
     }
 
     override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+        onGoToLink(redirectLink)
 
+//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
+//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    contentPosition,
+//                    trackingPostModel,
+//                    FeedAnalytics.Element.PRODUCT,
+//                    redirectLink
+//            )
+//        }
     }
+
+    //end of new feed section
 
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -1077,5 +1291,37 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 || userId == 17211048 //QA's userId
                 || remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_ALL, false))
                 && remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_RULES, true)
+    }
+
+    private fun goToContentReport(contentId: Int) {
+        if (context != null) {
+            val intent = ContentReportActivity.createIntent(
+                    context!!,
+                    contentId
+            )
+            startActivityForResult(intent, OPEN_CONTENT_REPORT)
+        }
+    }
+
+    private fun onSuccessReportContent() {
+        ToasterNormal
+                .make(view,
+                        getString(R.string.profile_feed_content_reported),
+                        BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close) { v -> }
+                .show()
+    }
+
+    private fun onErrorReportContent(errorMsg: String?) {
+        ToasterError
+                .make(view, errorMsg, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close) { v -> }
+                .show()
+    }
+
+    fun onGoToLink(link: String) {
+        if (!TextUtils.isEmpty(link)) {
+            profileRouter.openRedirectUrl(activity!!, link)
+        }
     }
 }
