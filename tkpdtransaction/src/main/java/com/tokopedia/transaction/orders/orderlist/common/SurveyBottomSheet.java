@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderlist.common;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
@@ -68,22 +69,42 @@ public class SurveyBottomSheet extends BottomSheets implements View.OnClickListe
         int i = v.getId();
         if (i == R.id.very_bad_rating) {
             veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
+            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
             rating = 1;
 
         } else if (i == R.id.bad_rating) {
+            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
             badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
+            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_IN);
             rating = 2;
 
         } else if (i == R.id.average_rating) {
+            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
             averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
+            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_IN);
             rating = 3;
 
         } else if (i == R.id.good_rating) {
+            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
             goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
+            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_IN);
             rating = 4;
 
-        } else if (i == R.id.very_bad_rating) {
+        } else if (i == R.id.very_good_rating) {
+            veryBadRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
             veryGoodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_main_green), android.graphics.PorterDuff.Mode.SRC_IN);
+            averageRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            goodRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), android.graphics.PorterDuff.Mode.SRC_IN);
+            badRating.setColorFilter(ContextCompat.getColor(getContext(), R.color.tkpd_survey_icon_gray), PorterDuff.Mode.SRC_IN);
             rating = 5;
 
         } else if (i == R.id.submit_survey) {

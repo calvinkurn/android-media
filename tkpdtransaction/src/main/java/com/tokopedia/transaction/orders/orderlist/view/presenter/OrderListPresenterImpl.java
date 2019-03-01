@@ -223,6 +223,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     if (insertSurveyResponse != null && insertSurveyResponse.getCheckResponseData() != null) {
                         if (insertSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isSuccess()) {
                             getView().showSuccessMessage("Terimakasih atas pendapat anda");
+                            getView().showSurveyButton(false);
                         } else {
                             getView().showFailureMessage(insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
                         }

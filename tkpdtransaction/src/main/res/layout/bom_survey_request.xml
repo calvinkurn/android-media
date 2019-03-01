@@ -52,7 +52,7 @@
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_16"
-            android:tint="#979797"
+            android:tint="@color/tkpd_survey_icon_gray"
             android:src="@drawable/ic_good_rating" />
 
         <ImageView
