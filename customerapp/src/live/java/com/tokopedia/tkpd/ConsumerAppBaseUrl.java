@@ -40,6 +40,7 @@ public class ConsumerAppBaseUrl {
     public static final String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static final String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static final String CHAT_DOMAIN = "https://chat.tokopedia.com";
+    public static final String PLAY_DOMAIN = "https://groupchat.tokopedia.com";
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
     public static final String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat.tokopedia.com";
     public static final String MAPS_DOMAIN = "https://gw.tokopedia.com/";

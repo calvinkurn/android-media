@@ -221,9 +221,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     private void goToChannel(ChannelViewModel channelViewModel, int position) {
         analytics.eventClickGroupChatList(channelViewModel.getChannelUrl());
-//        startActivityForResult(GroupChatActivity.getCallingIntent(getActivity(),
-//                channelViewModel, position),
-//                REQUEST_OPEN_GROUPCHAT);
         startActivityForResult(PlayActivity.getCallingIntent(getActivity(),
                     channelViewModel, position),
                 REQUEST_OPEN_GROUPCHAT);
