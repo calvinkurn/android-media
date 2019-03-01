@@ -45,9 +45,9 @@ public class BannerView extends BaseCustomView {
     private OnPromoAllClickListener onPromoAllClickListener;
     private OnPromoDragListener onPromoDragListener;
 
-    protected ArrayList<ImageView> indicatorItems;
-    protected ArrayList<Boolean> impressionStatusList;
-    protected List<String> promoImageUrls;
+    protected ArrayList<ImageView> indicatorItems = new ArrayList<>();
+    protected ArrayList<Boolean> impressionStatusList = new ArrayList<>();
+    protected List<String> promoImageUrls = new ArrayList<>();
     protected int currentPosition;
 
     protected BannerPagerAdapter bannerPagerAdapter;
@@ -250,7 +250,7 @@ public class BannerView extends BaseCustomView {
     }
 
     private boolean isCurrentPositionHasImpression(int currentPosition) {
-        if (currentPosition >= 0 && currentPosition <= impressionStatusList.size()) {
+        if (currentPosition >= 0 && currentPosition < impressionStatusList.size()) {
             return impressionStatusList.get(currentPosition);
         } else {
             return true;

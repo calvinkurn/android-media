@@ -26,7 +26,6 @@ public class ReactBannerManager extends SimpleViewManager<Banner> {
 
     private static final String BANNER_CLASS = "BannerView";
 
-    private Banner banner;
     private List<String> applinkList = new ArrayList<>();
     private List<String> imageList = new ArrayList<>();
 
@@ -37,14 +36,13 @@ public class ReactBannerManager extends SimpleViewManager<Banner> {
 
     @Override
     protected Banner createViewInstance(ThemedReactContext reactContext) {
-        banner = new Banner(reactContext);
-        banner.buildView();
-        banner.getBannerSeeAll().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        Banner banner = new Banner(reactContext);
+//        banner.getBannerSeeAll().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
         return banner;
     }
 
@@ -54,6 +52,7 @@ public class ReactBannerManager extends SimpleViewManager<Banner> {
         banner.setItems(imageList);
         banner.setOnItemClickListener(position ->
                 RouteManager.route(banner.getContext(), applinkList.get(position)));
+        banner.buildView();
     }
 
     private void mappingImageBanner(ReadableArray readableArray) {

@@ -55,17 +55,19 @@ class Banner : BannerView {
     }
 
     fun setItems(bannerImageUrls: List<String>) {
-        if (bannerPagerAdapter != null) {
-            bannerPagerAdapter.clear()
-            bannerPagerAdapter.setItems(bannerImageUrls)
-            bannerPagerAdapter.notifyDataSetChanged()
-        }
+        setPromoList(bannerImageUrls)
+//        if (bannerPagerAdapter != null) {
+//            bannerPagerAdapter.clear()
+//            bannerPagerAdapter.setItems(bannerImageUrls)
+//            bannerPagerAdapter.notifyDataSetChanged()
+//        }
     }
 
     fun setOnItemClickListener(listener: OnPromoClickListener) {
-        if (bannerPagerAdapter != null) {
-            bannerPagerAdapter.setOnItemClickListener(listener)
-        }
+        setOnPromoClickListener(onPromoClickListener)
+//        if (bannerPagerAdapter != null) {
+//            bannerPagerAdapter.setOnItemClickListener(listener)
+//        }
     }
 
     override fun getBannerPagerAdapter(): BannerPagerAdapter {
