@@ -7,15 +7,15 @@ class BtnUsage {
 
     @SerializedName("text")
     @Expose
-    var text: String? = ""
+    var text: String = ""
     @SerializedName("url")
     @Expose
-    var url: String? = ""
+    var url: String = ""
     @SerializedName("applink")
     @Expose
-    var applink: String? = ""
+    var applink: String = ""
     @SerializedName("type")
     @Expose
-    var type: String? = ""
+    var type: String = ""
 
 }

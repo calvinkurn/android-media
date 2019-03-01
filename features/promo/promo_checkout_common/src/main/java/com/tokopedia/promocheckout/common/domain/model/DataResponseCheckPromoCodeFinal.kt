@@ -7,5 +7,5 @@ class DataResponseCheckPromoCodeFinal {
 
     @SerializedName("check_promo_final_v2")
     @Expose
-    var checkPromoCartV2: ResponseCheckPromoCode? = ResponseCheckPromoCode()
+    var checkPromoCartV2: ResponseCheckPromoCode = ResponseCheckPromoCode()
 }

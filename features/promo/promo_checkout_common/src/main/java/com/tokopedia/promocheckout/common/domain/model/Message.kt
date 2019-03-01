@@ -7,12 +7,12 @@ class Message {
 
     @SerializedName("state")
     @Expose
-    var state: String? = ""
+    var state: String = ""
     @SerializedName("color")
     @Expose
-    var color: String? = ""
+    var color: String = ""
     @SerializedName("text")
     @Expose
-    var text: String? = ""
+    var text: String = ""
 
 }

@@ -13,12 +13,12 @@ class Usage {
     var expiredCountDown: Int = 0
     @SerializedName("text")
     @Expose
-    var text: String? = ""
+    var text: String = ""
     @SerializedName("usage_str")
     @Expose
-    var usageStr: String? = ""
+    var usageStr: String = ""
     @SerializedName("btn_usage")
     @Expose
-    var btnUsage: BtnUsage? = BtnUsage()
+    var btnUsage: BtnUsage = BtnUsage()
 
 }

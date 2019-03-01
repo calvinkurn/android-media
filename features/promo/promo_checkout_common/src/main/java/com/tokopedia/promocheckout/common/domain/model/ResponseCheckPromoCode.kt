@@ -6,12 +6,12 @@ import com.google.gson.annotations.SerializedName
 class ResponseCheckPromoCode {
     @SerializedName("data")
     @Expose
-    var data: Data? = Data()
+    var data: Data = Data()
     @SerializedName("status")
     @Expose
-    var status: String? = ""
+    var status: String = ""
     @SerializedName("error_message")
     @Expose
-    var errorMessage: List<String>? = listOf()
+    var errorMessage: List<String> = listOf()
 
 }

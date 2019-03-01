@@ -7,9 +7,9 @@ class Data {
 
     @SerializedName("error")
     @Expose
-    var error: String? = ""
+    var error: String = ""
     @SerializedName("data_voucher")
     @Expose
-    var dataVoucher: DataVoucher? = DataVoucher()
+    var dataVoucher: DataVoucher = DataVoucher()
 
 }
