@@ -2769,22 +2769,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
-        if (context instanceof Activity) {
-            goToApplinkActivity((Activity) context, applink, new Bundle());
-        } else {
-            Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-            intent.setData(Uri.parse(applink));
-            context.startActivity(intent);
+        if(context != null) {
+            if (context instanceof Activity) {
+                goToApplinkActivity((Activity) context, applink, new Bundle());
+            } else {
+                Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+                intent.setData(Uri.parse(applink));
+                context.startActivity(intent);
+            }
         }
     }
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-        ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.setData(Uri.parse(applink));
-        intent.putExtras(bundle);
-        deepLinkDelegate.dispatchFrom(activity, intent);
+        if(activity != null) {
+            ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
+            Intent intent = activity.getIntent();
+            intent.setData(Uri.parse(applink));
+            intent.putExtras(bundle);
+            deepLinkDelegate.dispatchFrom(activity, intent);
+        }
     }
 
     @Override
