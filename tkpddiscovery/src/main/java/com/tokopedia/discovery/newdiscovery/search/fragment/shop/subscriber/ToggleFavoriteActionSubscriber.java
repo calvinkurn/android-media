@@ -11,7 +11,7 @@ import rx.Subscriber;
  * Created by henrypriyono on 10/23/17.
  */
 
-public class ToggleFavoriteActionSubscriber extends Subscriber<ActionResultModel> {
+public class ToggleFavoriteActionSubscriber extends Subscriber<Boolean> {
     private final FavoriteActionListener viewListener;
     private int adapterPosition;
     private boolean targetFavoritedStatus;
@@ -35,8 +35,8 @@ public class ToggleFavoriteActionSubscriber extends Subscriber<ActionResultModel
     }
 
     @Override
-    public void onNext(ActionResultModel result) {
-        if (result.isSuccess())
+    public void onNext(Boolean isSuccess) {
+        if (isSuccess)
             viewListener.onSuccessToggleFavorite(adapterPosition, targetFavoritedStatus);
         else
             viewListener.onErrorToggleFavorite(

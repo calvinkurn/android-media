@@ -321,10 +321,13 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runGTMFirstTime(this);
-        TrackingUtils.runAppsFylerFirstTime(this);
-        TrackingUtils.runMoengageFirstTime(this);
-        TrackingUtils.enableDebugging(this, isDebug());
+        //TODO to be remove, after sellerapp is added Trackapp library
+        if (GlobalConfig.isSellerApp()) {
+            TrackingUtils.runGTMFirstTime(this);
+            TrackingUtils.runAppsFylerFirstTime(this);
+            TrackingUtils.runMoengageFirstTime(this);
+            TrackingUtils.enableDebugging(this, isDebug());
+        }
     }
 
     public void initCrashlytics() {
@@ -373,15 +376,6 @@ public abstract class MainApplication extends MainRouterApplication{
 
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
                     userData));
-        }
-    }
-
-    private void initFirebase() {
-        if (GlobalConfig.DEBUG) {
-            FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
-            builder.setApplicationId("1:692092518182:android:9bb64c665e7c68ee");
-            builder.setApiKey("AIzaSyDan4qOIiANywQFOk-AG-WhRxsEMVqfcbg");
-            FirebaseApp.initializeApp(this, builder.build());
         }
     }
 

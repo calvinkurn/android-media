@@ -12,7 +12,7 @@ public class NotifcenterUnread {
 
     @SerializedName("notif_unread")
     @Expose
-    private String notifUnread;
+    private String notifUnread = "";
 
     public String getNotifUnread() {
         return notifUnread;
