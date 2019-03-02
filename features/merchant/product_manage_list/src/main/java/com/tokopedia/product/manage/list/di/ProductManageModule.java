@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.list.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -44,6 +43,7 @@ import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSou
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -67,7 +67,7 @@ public class ProductManageModule {
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
                                                                 MultipleDeleteProductUseCase multipleDeleteProductUseCase,
-                                                                UserSession userSession,
+                                                                UserSessionInterface userSession,
                                                                 TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                                                 TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                                                 GetFeatureProductListUseCase getFeatureProductListUseCase,
@@ -160,8 +160,8 @@ public class ProductManageModule {
 
     @ProductManageScope
     @Provides
-    UserSession provideUserSessionAbstraction(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getSession();
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @Provides
@@ -227,11 +227,5 @@ public class ProductManageModule {
     @ProductManageScope
     public GraphqlUseCase provideGraphqlUseCase(){
         return new GraphqlUseCase();
-    }
-
-    @ProductManageScope
-    @Provides
-    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
     }
 }
