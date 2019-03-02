@@ -38,7 +38,7 @@ public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
     @Override
     public Observable<List<FeedTabModel>> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-        R.raw.gql_home_feed_tab), HomeFeedGqlResponse.class, requestParams.getParameters());
+        R.raw.gql_home_feed_tab), HomeFeedGqlResponse.class, requestParams.getParameters(), false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

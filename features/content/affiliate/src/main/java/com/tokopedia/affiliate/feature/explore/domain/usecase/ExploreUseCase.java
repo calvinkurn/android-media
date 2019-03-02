@@ -48,7 +48,7 @@ public class ExploreUseCase extends GraphqlUseCase {
         return new GraphqlRequest(
                 query,
                 ExploreData.class,
-                getParam(exploreParams).getParameters()
+                getParam(exploreParams).getParameters(), false
         );
     }
 
@@ -60,7 +60,7 @@ public class ExploreUseCase extends GraphqlUseCase {
         return new GraphqlRequest(
                 query,
                 ExploreData.class,
-                getParam(exploreParams).getParameters()
+                getParam(exploreParams).getParameters(), false
         );
     }
 

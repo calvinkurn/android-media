@@ -18,7 +18,7 @@ class UpdateInterestUseCase @Inject constructor(@ApplicationContext val context:
                                              val graphqlUseCase: GraphqlUseCase) {
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>?) {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_update_interest)
-        val graphqlRequest = GraphqlRequest(query, UpdateInterestData::class.java, variables)
+        val graphqlRequest = GraphqlRequest(query, UpdateInterestData::class.java, variables, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

@@ -32,7 +32,7 @@ class DeletePostUseCase @Inject constructor(@ApplicationContext private val cont
         val variables = HashMap<String, Any>()
         variables[PARAM_INPUT] = getContentSubmitInput(requestParams)
 
-        val graphqlRequest = GraphqlRequest(query, SubmitPostData::class.java, variables)
+        val graphqlRequest = GraphqlRequest(query, SubmitPostData::class.java, variables, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

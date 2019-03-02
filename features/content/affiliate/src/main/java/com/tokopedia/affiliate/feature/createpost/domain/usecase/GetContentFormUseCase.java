@@ -42,13 +42,13 @@ public class GetContentFormUseCase {
                 context.getResources(),
                 R.raw.query_af_content_form
         );
-        GraphqlRequest request = new GraphqlRequest(query, ContentFormData.class, variables);
+        GraphqlRequest request = new GraphqlRequest(query, ContentFormData.class, variables, false);
 
         String queryQouta = GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.query_af_quota
         );
-        GraphqlRequest requestQouta = new GraphqlRequest(queryQouta, CheckQuotaQuery.class);
+        GraphqlRequest requestQouta = new GraphqlRequest(queryQouta, CheckQuotaQuery.class, false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(requestQouta);

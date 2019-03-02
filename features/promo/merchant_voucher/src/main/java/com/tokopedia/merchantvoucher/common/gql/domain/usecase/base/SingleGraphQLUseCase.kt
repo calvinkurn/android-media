@@ -29,7 +29,7 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
         val variables = createGraphQLVariable(requestParams)
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                graphQLRawResId), tClass, variables)
+                graphQLRawResId), tClass, variables, false)
 
         graphqlUseCase.setCacheStrategy(createGraphQLCacheStrategy())
 

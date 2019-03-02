@@ -21,7 +21,7 @@ class SendReportUseCase @Inject constructor(
 
     override fun createObservable(params: RequestParams?): Observable<SendReportResponse> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_send_report)
-        val request = GraphqlRequest(query, SendReportResponse::class.java, params?.parameters)
+        val request = GraphqlRequest(query, SendReportResponse::class.java, params?.parameters, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)

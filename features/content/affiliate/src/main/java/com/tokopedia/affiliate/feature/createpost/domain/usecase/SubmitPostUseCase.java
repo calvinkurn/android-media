@@ -93,7 +93,7 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
             GraphqlRequest graphqlRequest = new GraphqlRequest(
                     query,
                     SubmitPostData.class,
-                    variables);
+                    variables, false);
 
             graphqlUseCase.clearRequest();
             graphqlUseCase.addRequest(graphqlRequest);

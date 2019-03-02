@@ -40,7 +40,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
                 R.raw.query_feed_dynamic
         )
 
-        val graphqlRequest = GraphqlRequest(query, FeedQuery::class.java, requestParams?.parameters)
+        val graphqlRequest = GraphqlRequest(query, FeedQuery::class.java, requestParams?.parameters, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

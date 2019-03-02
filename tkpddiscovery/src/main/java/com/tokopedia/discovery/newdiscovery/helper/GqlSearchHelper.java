@@ -45,7 +45,7 @@ public class GqlSearchHelper {
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.gql_search_product_first_page), SearchProductGqlResponse.class, variables);
+                R.raw.gql_search_product_first_page), SearchProductGqlResponse.class, variables, false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.setRequest(graphqlRequest);
@@ -62,7 +62,7 @@ public class GqlSearchHelper {
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.gql_search_product), SearchProductGqlResponse.class, variables);
+                R.raw.gql_search_product), SearchProductGqlResponse.class, variables, false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.setRequest(graphqlRequest);

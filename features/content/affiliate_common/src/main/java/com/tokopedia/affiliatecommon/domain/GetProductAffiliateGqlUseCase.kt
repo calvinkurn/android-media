@@ -25,7 +25,7 @@ class GetProductAffiliateGqlUseCase @Inject constructor(private val resources: R
         val graphRequest = GraphqlRequest(
                 queryProductAffiliate,
                 TopAdsPdpAffiliateResponse::class.java,
-                requestParams.parameters
+                requestParams.parameters, false
         )
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphRequest)

@@ -26,7 +26,7 @@ open class GetProfileListUseCase(private val context: Context,
         variables[KEY_PARAMS] = UrlParamHelper.generateUrlParamString(requestParams.paramsAllValueInString)
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context!!.getResources(),
-                R.raw.gql_search_profile), SearchProfileListGqlResponse::class.java, variables)
+                R.raw.gql_search_profile), SearchProfileListGqlResponse::class.java, variables, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
