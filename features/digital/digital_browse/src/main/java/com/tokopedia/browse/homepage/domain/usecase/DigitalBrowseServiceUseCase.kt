@@ -27,7 +27,7 @@ constructor(private val digitalBrowseServiceCacheSource: DigitalBrowseServiceCac
         clearRequest()
 
         addRequest(GraphqlRequest(queryCategory,
-                DigitalBrowseMarketplaceData::class.java, variablesCategory, CATEGORY_OPERTAION_NAME, false))
+                DigitalBrowseMarketplaceData::class.java, variablesCategory, CATEGORY_OPERTAION_NAME))
 
         return getExecuteObservable(RequestParams.EMPTY)
                 .flatMap { graphqlResponse ->

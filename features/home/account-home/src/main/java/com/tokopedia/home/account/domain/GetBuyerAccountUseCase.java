@@ -73,7 +73,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
                     if (!TextUtils.isEmpty(query) && variables != null) {
                         GraphqlRequest requestGraphql = new GraphqlRequest(query,
-                                AccountModel.class, variables, false);
+                                AccountModel.class, variables);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(requestGraphql);
                         return graphqlUseCase.createObservable(null);

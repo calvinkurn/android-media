@@ -33,7 +33,7 @@ public class AutoCompleteUseCase extends GraphqlUseCase {
         return new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_explore_auto_complete),
                 AutoCompleteQuery.class,
-                getParam(keyword).getParameters(), false
+                getParam(keyword).getParameters()
         );
     }
 

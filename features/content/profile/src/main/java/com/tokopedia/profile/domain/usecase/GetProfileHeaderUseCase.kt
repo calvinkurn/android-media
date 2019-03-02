@@ -22,7 +22,7 @@ class GetProfileHeaderUseCase @Inject constructor(@ApplicationContext val contex
         val request = GraphqlRequest(
                 query,
                 ProfileHeaderData::class.java,
-                requestParams?.parameters, false
+                requestParams?.parameters
         )
 
         this.clearRequest()

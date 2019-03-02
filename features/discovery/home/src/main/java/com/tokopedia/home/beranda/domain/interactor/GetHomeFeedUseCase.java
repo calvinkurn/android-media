@@ -41,7 +41,7 @@ public class GetHomeFeedUseCase extends UseCase<HomeFeedListModel> {
     @Override
     public Observable<HomeFeedListModel> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-        R.raw.gql_home_feed), HomeFeedGqlResponse.class, requestParams.getParameters(), false);
+        R.raw.gql_home_feed), HomeFeedGqlResponse.class, requestParams.getParameters());
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

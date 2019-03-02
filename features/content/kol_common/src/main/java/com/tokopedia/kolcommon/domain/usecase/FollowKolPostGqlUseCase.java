@@ -49,7 +49,7 @@ public class FollowKolPostGqlUseCase extends UseCase<FollowResponseModel>{
                         R.raw.query_follow_kol
                 ),
                 FollowKolQuery.class,
-                requestParams.getParameters(), false
+                requestParams.getParameters()
         );
 
         graphqlUseCase.clearRequest();

@@ -19,7 +19,7 @@ class GetAffiliateQuotaUseCase @Inject constructor(@ApplicationContext val conte
     : GraphqlUseCase() {
     override fun createObservable(requestParams: RequestParams?): Observable<GraphqlResponse> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_af_quota)
-        val request = GraphqlRequest(query, AffiliateQuotaData::class.java, false)
+        val request = GraphqlRequest(query, AffiliateQuotaData::class.java)
 
         this.clearRequest()
         this.addRequest(request)

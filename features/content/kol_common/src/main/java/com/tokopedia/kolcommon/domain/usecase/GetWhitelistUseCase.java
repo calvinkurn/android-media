@@ -47,7 +47,7 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
         return new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_whitelist),
                 WhitelistQuery.class,
-                variables, false
+                variables
         );
     }
 
@@ -56,7 +56,7 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_whitelist),
                 WhitelistQuery.class,
-                variables, false
+                variables
         );
         this.clearRequest();
         this.addRequest(graphqlRequest);

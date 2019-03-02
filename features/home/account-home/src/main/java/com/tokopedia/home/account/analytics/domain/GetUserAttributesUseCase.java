@@ -52,7 +52,7 @@ public class GetUserAttributesUseCase extends UseCase<UserAttributeData> {
                     String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_user_attribute);
                     Map<String, Object> variables = new HashMap<>();
                     variables.put(PARAM_USER_ID, Integer.parseInt(userSession.getUserId()));
-                    return new GraphqlRequest(query, UserAttributeData.class, variables, false);
+                    return new GraphqlRequest(query, UserAttributeData.class, variables);
                 })
                 .flatMap((Func1<GraphqlRequest, Observable<GraphqlResponse>>) request -> {
                     GraphqlCacheStrategy cacheStrategy =

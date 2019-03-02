@@ -42,7 +42,7 @@ public class GetByMeUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_url_tracking),
                 Data.class,
-                variables, false);
+                variables);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

@@ -18,7 +18,7 @@ class GetInterestUseCase @Inject constructor(@ApplicationContext val context: Co
                                              val graphqlUseCase: GraphqlUseCase) {
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_get_interest)
-        val graphqlRequest = GraphqlRequest(query, GetInterestData::class.java, false)
+        val graphqlRequest = GraphqlRequest(query, GetInterestData::class.java)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

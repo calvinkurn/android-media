@@ -54,7 +54,7 @@ public class GetContentListUseCase extends UseCase<ContentListDomain> {
                 R.raw.query_content_list
         );
         Map<String, Object> variables = params.getParameters();
-        GraphqlRequest request = new GraphqlRequest(query, ContentListData.class, variables, false);
+        GraphqlRequest request = new GraphqlRequest(query, ContentListData.class, variables);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(request);

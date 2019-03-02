@@ -35,7 +35,7 @@ public class GetUsernameSuggestionUseCase extends GraphqlUseCase {
         );
 
         this.clearRequest();
-        this.addRequest(new GraphqlRequest(query, GetUsernameSuggestionData.class, false));
+        this.addRequest(new GraphqlRequest(query, GetUsernameSuggestionData.class));
         return super.createObservable(params);
     }
 }

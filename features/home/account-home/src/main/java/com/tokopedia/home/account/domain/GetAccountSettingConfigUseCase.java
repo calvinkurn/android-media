@@ -38,7 +38,7 @@ public class GetAccountSettingConfigUseCase  {
                 .query_account_setting_config);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                AccountSettingConfig.class, requestParams, false);
+                AccountSettingConfig.class, requestParams);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

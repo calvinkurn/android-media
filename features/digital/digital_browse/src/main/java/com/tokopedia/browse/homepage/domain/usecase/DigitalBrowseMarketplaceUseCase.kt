@@ -33,9 +33,9 @@ constructor(private val marketplaceViewModelMapper: MarketplaceViewModelMapper,
         clearRequest()
 
         addRequest(GraphqlRequest(queryCategory,
-                DigitalBrowseMarketplaceData::class.java, variablesCategory, CATEGORY_OPERTAION_NAME, false))
+                DigitalBrowseMarketplaceData::class.java, variablesCategory, CATEGORY_OPERTAION_NAME))
         addRequest(GraphqlRequest(queryOfficial,
-                DigitalBrowseOfficialStoreBrandsEntity::class.java, variablesOfficial, OFFICIAL_OPERATION_NAME, false))
+                DigitalBrowseOfficialStoreBrandsEntity::class.java, variablesOfficial, OFFICIAL_OPERATION_NAME))
 
         return getExecuteObservable(RequestParams.EMPTY)
                 .flatMap { graphqlResponse ->
