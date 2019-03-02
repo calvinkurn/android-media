@@ -44,5 +44,4 @@ public class ShopModule {
     public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
         return new ToggleFavouriteShopUseCase(shopCommonRepository);
     }
-
 }

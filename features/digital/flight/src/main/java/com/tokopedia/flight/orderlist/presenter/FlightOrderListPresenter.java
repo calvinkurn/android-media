@@ -2,7 +2,6 @@ package com.tokopedia.flight.orderlist.presenter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -20,6 +19,7 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +43,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     private static final int MINIMUM_HOURS_CANCELLATION_DURATION = 6;
     private static final String FLIGHT_AIRPORT = "flight_airport";
 
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
     private FlightAirportPreloadUseCase flightAirportPreloadUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
@@ -55,7 +55,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     private String userResendEmail = "";
 
     @Inject
-    public FlightOrderListPresenter(UserSession userSession,
+    public FlightOrderListPresenter(UserSessionInterface userSession,
                                     FlightGetOrdersUseCase flightGetOrdersUseCase,
                                     FlightAirportPreloadUseCase flightAirportPreloadUseCase,
                                     FlightOrderViewModelMapper flightOrderViewModelMapper,

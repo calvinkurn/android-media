@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.feature.createpost.domain.usecase;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse;
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium;
@@ -8,6 +7,7 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,12 +37,12 @@ public class UploadMultipleImageUseCase extends UseCase<List<SubmitPostMedium>> 
     private static final String RESOLUTION_500 = "500";
     private static final String TEXT_PLAIN = "text/plain";
 
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
     private final UploadImageUseCase<UploadImageResponse> uploadImageUseCase;
 
     @Inject
     UploadMultipleImageUseCase(UploadImageUseCase<UploadImageResponse> uploadImageUseCase,
-                               UserSession userSession) {
+                               UserSessionInterface userSession) {
         this.uploadImageUseCase = uploadImageUseCase;
         this.userSession = userSession;
     }

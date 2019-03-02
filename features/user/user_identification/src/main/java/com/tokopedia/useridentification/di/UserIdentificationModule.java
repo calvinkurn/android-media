@@ -21,6 +21,8 @@ import com.tokopedia.useridentification.view.listener.UserIdentificationUploadIm
 import com.tokopedia.useridentification.view.presenter.UserIdentificationInfoPresenter;
 import com.tokopedia.useridentification.view.presenter.UserIdentificationUploadImagePresenter;
 import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -73,5 +75,17 @@ public class UserIdentificationModule {
                 registerIdentificationUseCase,
                 userSession,
                 compositeSubscription);
+    }
+
+    @UserIdentificationScope
+    @Provides
+    public UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @UserIdentificationScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

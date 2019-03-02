@@ -90,7 +90,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     public TkpdAuthInterceptor(Context context,
                                NetworkRouter networkRouter,
-                               UserSession userSession,
+                               UserSessionInterface userSession,
                                String authKey) {
         this.context = context;
         this.networkRouter = networkRouter;

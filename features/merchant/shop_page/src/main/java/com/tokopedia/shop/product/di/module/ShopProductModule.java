@@ -32,6 +32,8 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
 import com.tokopedia.wishlist.common.data.interceptor.WishListAuthInterceptor;
 import com.tokopedia.wishlist.common.data.repository.WishListCommonRepositoryImpl;
@@ -255,5 +257,11 @@ public class ShopProductModule {
     @Provides
     public GetProductCampaignsUseCase provideGetProductCampaignsUseCase(ShopProductRepository wishListCommonRepository) {
         return new GetProductCampaignsUseCase(wishListCommonRepository);
+    }
+
+    @ShopProductScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

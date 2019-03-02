@@ -4,7 +4,6 @@ package com.tokopedia.flight.booking.view.presenter;
 import android.support.annotation.NonNull;
 import android.util.Patterns;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
@@ -36,6 +35,7 @@ import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,7 +69,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     private static final int GENDER_MAN = 1;
     private static final int GENDER_WOMAN = 2;
@@ -81,7 +81,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
                                   FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase,
                                   FlightAnalytics flightAnalytics,
-                                  UserSession userSession,
+                                  UserSessionInterface userSession,
                                   FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightAddToCartUseCase = flightAddToCartUseCase;

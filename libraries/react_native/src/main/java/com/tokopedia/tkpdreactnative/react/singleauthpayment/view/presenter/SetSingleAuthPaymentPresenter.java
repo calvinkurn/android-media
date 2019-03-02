@@ -1,10 +1,10 @@
 package com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Subscriber;
 
@@ -21,12 +21,12 @@ public class SetSingleAuthPaymentPresenter
     private static final String UPDATED_STATE = "UPDATED_STATE";
 
     private ReactNativeRouter reactNativeRouter;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private UseCase<String> creditCardFingerPrintUseCase;
 
 
     public SetSingleAuthPaymentPresenter(ReactNativeRouter reactNativeRouter,
-                                         UserSession userSession) {
+                                         UserSessionInterface userSession) {
         this.reactNativeRouter = reactNativeRouter;
         this.userSession = userSession;
     }

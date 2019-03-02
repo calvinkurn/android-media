@@ -22,6 +22,8 @@ import com.tokopedia.shop.note.data.source.ShopNoteDataSource;
 import com.tokopedia.shop.note.domain.repository.ShopNoteRepository;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 import com.tokopedia.shop.page.di.ShopInfoReputationSpeedQualifier;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -106,6 +108,12 @@ public class ShopInfoModule {
     @Provides
     public GetReputationSpeedDailyUseCase provideGetReputationSpeedDailyUseCase(ReputationCommonRepository reputationCommonRepository) {
         return new GetReputationSpeedDailyUseCase(reputationCommonRepository);
+    }
+
+    @ShopInfoScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }
 

@@ -133,14 +133,6 @@ public class InboxChatModule {
         return new TemplateRepositoryImpl(templateChatFactory);
     }
 
-    //Add ShopInfo provides.. Change it to use component after shop_common Component & module are
-    // Implemented
-    @InboxChatScope
-    @Provides
-    public UserSessionInterface providesUserSessionAbstraction(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
     @InboxChatScope
     @Provides
     public ShopCommonWSApi provideShopCommonWsApi(@RetrofitWsDomainQualifier Retrofit retrofit) {
@@ -158,7 +150,7 @@ public class InboxChatModule {
     @Provides
     public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
                                                                       ShopCommonWSApi shopCommonWS4Api,
-                                                                      com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
+                                                                      UserSessionInterface userSession) {
         return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
     }
 
@@ -206,7 +198,7 @@ public class InboxChatModule {
     @Provides
     public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
                                                         NetworkRouter networkRouter,
-                                                        UserSession userSession) {
+                                                        UserSessionInterface userSession) {
         return new XUserIdInterceptor(context, networkRouter, userSession);
     }
 
@@ -292,7 +284,7 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    UserSession provideUserSession(@ApplicationContext Context context) {
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 

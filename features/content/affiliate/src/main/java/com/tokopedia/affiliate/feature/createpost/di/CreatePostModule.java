@@ -33,7 +33,7 @@ public class CreatePostModule {
             @ImageUploaderQualifier UploadImageRepository uploadImageRepository,
             @ImageUploaderQualifier GenerateHostRepository generateHostRepository,
             @ImageUploaderQualifier Gson gson,
-            @ImageUploaderQualifier com.tokopedia.abstraction.common.data.model.session.UserSession userSession,
+            @ImageUploaderQualifier UserSessionInterface userSession,
             @ImageUploaderQualifier ImageUploaderUtils imageUploaderUtils) {
         return new UploadImageUseCase<>(
                 uploadImageRepository,

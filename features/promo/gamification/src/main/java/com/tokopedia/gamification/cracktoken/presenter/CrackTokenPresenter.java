@@ -8,7 +8,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.model.CrackResult;
@@ -21,6 +20,7 @@ import com.tokopedia.gamification.floating.view.model.TokenAsset;
 import com.tokopedia.gamification.floating.view.model.TokenBackgroundAsset;
 import com.tokopedia.gamification.floating.view.model.TokenData;
 import com.tokopedia.gamification.floating.view.model.TokenUser;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +43,12 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
     private GetCrackResultEggUseCase getCrackResultEggUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public CrackTokenPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase,
                                GetCrackResultEggUseCase getCrackResultEggUseCase,
-                               UserSession userSession) {
+                               UserSessionInterface userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
         this.userSession = userSession;

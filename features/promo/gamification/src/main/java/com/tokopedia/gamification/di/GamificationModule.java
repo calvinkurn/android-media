@@ -11,6 +11,8 @@ import com.tokopedia.gamification.data.GamificationRepository;
 import com.tokopedia.gamification.domain.GetCrackResultEggUseCase;
 import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
 import com.tokopedia.gamification.network.GamificationAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -78,5 +80,10 @@ public class GamificationModule {
     @Provides
     GetCrackResultEggUseCase provideGetCrackResultEggUseCase(GamificationRepository gamificationRepository) {
         return new GetCrackResultEggUseCase(gamificationRepository);
+    }
+
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }
