@@ -20,7 +20,7 @@ public class ReactImageManager extends SimpleViewManager<ReactImageView> {
 
     @Override
     public String getName() {
-        return "RCTImageView";
+        return "RCTImgView";
     }
 
     @Override
