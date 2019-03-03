@@ -70,7 +70,7 @@ public class LoginActivity extends BaseSimpleActivity implements HasComponent {
             bundle.putAll(getIntent().getExtras());
         }
 
-        if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.LOGIN_REVAMP_UI, true)) {
+        if (GlobalConfig.isSellerApp() || !false) {
             return LoginFragment.createInstance(bundle);
         } else {
             return LoginEmailPhoneFragment.Companion.createInstance(bundle);

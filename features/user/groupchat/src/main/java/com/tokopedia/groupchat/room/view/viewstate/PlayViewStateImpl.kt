@@ -1074,7 +1074,7 @@ open class PlayViewStateImpl(
             analytics.eventClickJoin(channelInfoViewModel.channelId)
         }
 
-        val welcomeInfoView = createWelcomeInfoView(channelInfoViewModel)
+        val welcomeInfoView = createWelcomeInfoView(welcomeInfoDialog, channelInfoViewModel)
         welcomeInfoDialog.setOnShowListener() { dialog ->
             val d = dialog as BottomSheetDialog
 
@@ -1090,7 +1090,8 @@ open class PlayViewStateImpl(
 
     }
 
-    private fun createWelcomeInfoView(channelInfoViewModel: ChannelInfoViewModel): View {
+    private fun createWelcomeInfoView(welcomeInfoDialog: CloseableBottomSheetDialog,
+                                      channelInfoViewModel: ChannelInfoViewModel): View {
         val welcomeInfoView = activity.layoutInflater.inflate(R.layout
                 .channel_info_bottom_sheet_dialog, null)
 
@@ -1100,6 +1101,7 @@ open class PlayViewStateImpl(
         val subtitle = welcomeInfoView.findViewById<TextView>(R.id.subtitle)
         val name = welcomeInfoView.findViewById<TextView>(R.id.name)
         val participant = welcomeInfoView.findViewById<TextView>(R.id.participant)
+        val ctaButton = welcomeInfoView.findViewById<TextView>(R.id.action_button)
 
         participant.text = TextFormatter.format(channelInfoViewModel.totalView.toString())
         name.text = channelInfoViewModel.adminName
@@ -1111,6 +1113,11 @@ open class PlayViewStateImpl(
                 profile,
                 channelInfoViewModel.adminPicture,
                 R.drawable.loading_page)
+
+        ctaButton.setOnClickListener {
+            welcomeInfoDialog.dismiss()
+            analytics.eventClickJoin(channelInfoViewModel.channelId)
+        }
 
         return welcomeInfoView
     }
