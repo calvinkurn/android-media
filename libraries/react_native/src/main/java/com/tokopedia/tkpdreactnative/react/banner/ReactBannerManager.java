@@ -21,7 +21,7 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
 
     private static final String BANNER_CLASS = "BannerView";
 
-    private List<String> applinkList = new ArrayList<>();
+    private List<String> redirectUrlList = new ArrayList<>();
     private List<String> imageList = new ArrayList<>();
 
     @Override
@@ -37,7 +37,7 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
     @ReactProp(name = "bannerData")
     public void setBannerData(Banner banner, @Nullable ReadableArray readableArray) {
         this.mappingImageBanner(readableArray);
-        banner.setOnPromoClickListener(position -> RouteManager.route(banner.getContext(), applinkList.get(position)));
+        banner.setOnPromoClickListener(position -> RouteManager.route(banner.getContext(), redirectUrlList.get(position)));
         banner.setOnPromoAllClickListener(this);
         banner.setOnPromoScrolledListener(this);
         banner.setOnPromoLoadedListener(this);
@@ -51,10 +51,10 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
             for (int i = 0; i < readableArray.size(); i++) {
                 ReadableMap map = readableArray.getMap(i);
                 String imageUrl = map.getString("imageUrl");
-                String applink = map.getString("applink");
+                String redirectUrl = map.getString("redirectUrl");
 
                 this.imageList.add(imageUrl);
-                this.applinkList.add(applink);
+                this.redirectUrlList.add(redirectUrl);
             }
         }
     }
