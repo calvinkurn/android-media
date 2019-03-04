@@ -64,10 +64,14 @@ class CreatePostActivity : BaseSimpleActivity() {
 
         @DeepLink(ApplinkConst.AFFILIATE_DRAFT_POST)
         @JvmStatic
-        fun getInstanceDraft(context: Context, bundle: Bundle): Intent {
-            val intent = Intent(context, CreatePostActivity::class.java)
-            intent.putExtras(bundle)
-            return intent
+        fun getInstanceDraftAffiliate(context: Context, bundle: Bundle): Intent {
+            return getInstanceAffiliate(context, bundle)
+        }
+
+        @DeepLink(ApplinkConst.CONTENT_DRAFT_POST)
+        @JvmStatic
+        fun getInstanceDraftContent(context: Context, bundle: Bundle): Intent {
+            return getInstanceContent(context, bundle)
         }
     }
 }
