@@ -11,16 +11,5 @@
   <path
       android:pathData="M-2,-3m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0"
       android:fillType="evenOdd">
-    <aapt:attr name="android:fillColor">
-      <gradient
-          app:startY="-23"
-          app:startX="-2"
-          app:endY="17"
-          app:endX="-2"
-          android:type="linear">
-        <item app:offset="0" android:color="#FFFFFFFF"/>
-        <item app:offset="1" android:color="#00FFFFFF"/>
-      </gradient>
-    </aapt:attr>
   </path>
 </vector>
