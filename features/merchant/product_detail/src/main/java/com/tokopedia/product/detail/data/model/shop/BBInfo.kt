@@ -25,9 +25,7 @@ data class BBInfo(
         val descEN: String = ""
 ): BlackBoxShipmentHolder(), Parcelable {
 
-    override fun type(typeFactory: CourierTypeFactory?): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun type(typeFactory: CourierTypeFactory): Int = typeFactory.type(this)
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),

@@ -140,6 +140,19 @@ class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
         analyticTracker?.sendEventTracking(params)
     }
 
+    fun eventSendMessage() {
+        analyticTracker?.sendEventTracking(ProductTrackingConstant.Message.EVENT,
+                ProductTrackingConstant.Category.PDP, ProductTrackingConstant.Action.CLICK,
+                ProductTrackingConstant.Message.LABEL)
+    }
+
+    fun eventSendChat() {
+        analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
+                ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
+                ProductTrackingConstant.Action.CLICK,
+                ProductTrackingConstant.Message.LABEL.toLowerCase())
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"

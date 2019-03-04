@@ -17,7 +17,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.review.Review
 import kotlinx.android.synthetic.main.item_product_most_helpful_review.view.*
 
-class MostHelpfulReviewPagerAdapter(private val reviews: List<Review>): PagerAdapter() {
+class MostHelpfulReviewPagerAdapter(private val reviews: List<Review>, var onReviewClicked: (() -> Unit)?): PagerAdapter() {
 
     companion object {
         private const val MAX_IMAGE = 3
@@ -44,7 +44,7 @@ class MostHelpfulReviewPagerAdapter(private val reviews: List<Review>): PagerAda
             iv_rating_review.setImageDrawable(ContextCompat.getDrawable(container.context,
                     getRatingDrawable(review.productRating)))
 
-            setOnClickListener { /*TODO MOVE TO REVIEW*/ }
+            setOnClickListener { onReviewClicked?.invoke() }
             if (review.imageAttachments.isEmpty())
                 rv_review_attachment.gone()
             else {

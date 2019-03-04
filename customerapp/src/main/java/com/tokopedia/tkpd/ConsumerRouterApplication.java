@@ -93,6 +93,7 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
@@ -3678,13 +3679,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @NotNull
     @Override
     public Intent getCartIntent(@NotNull Context context) {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public Intent getIntermediaryIntent(@NonNull Context context, String categoryId) {
-        return null;
+        return TransactionCartRouter.createInstanceCartActivity(context);
     }
 
     public void onLoginSuccess() {

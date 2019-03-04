@@ -2000,18 +2000,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
-    @NotNull
-    @Override
-    public Intent getCartIntent(@NotNull Context context) {
-        return TransactionCartRouter.createInstanceCartActivity(context);
-    }
-
-    @NotNull
-    @Override
-    public Intent getIntermediaryIntent(@NonNull Context context, String categoryId) {
-        return new Intent();
-    }
-
     @Override
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 

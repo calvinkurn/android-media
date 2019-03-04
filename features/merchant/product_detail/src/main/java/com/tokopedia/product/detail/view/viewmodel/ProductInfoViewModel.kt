@@ -6,7 +6,6 @@ import android.util.SparseArray
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -19,8 +18,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_INPUT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
@@ -80,14 +77,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
                         PARAM_PRODUCT_KEY to productParams.productName)
-                val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
+                val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO],
+                        ProductInfo.Response::class.java, paramsInfo)
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             val productInfoP1 = ProductInfoP1()
 
             // for unsigned in jenkins
-            val error = data.getError(ProductInfo.Response::class.java)
+            /*val error = data.getError(ProductInfo.Response::class.java)
             if (error == null || error.isEmpty()){
                 data.getData<ProductInfo.Response>(ProductInfo.Response::class.java).data?.let {
                     productInfoP1.productInfo =  it
@@ -95,13 +93,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 }
             } else {
                 throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-            }
+            }*/
 
             // for signed
-            /*data.getSuccessData<ProductInfo.Response>().data?.let {
+            data.getSuccessData<ProductInfo.Response>().data?.let {
                 productInfoP1.productInfo =  it
                 productInfoP1Resp.value = Success(productInfoP1)
-            }*/
+            }
 
             //if fail, will not interrupt the product info
             val variantJob = async {
@@ -123,42 +121,16 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productVariantResp.value = Success(variantJob.await().data!!)
             } catch (e: Exception) {
                 //TODO just testing
-                //productVariantResp.value = Fail(e)
-                val gson = Gson()
-                val productVariant = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_variant),
-                        ProductDetailVariantResponse::class.java).data ?: ProductVariant()
-                productVariantResp.value = Success(productVariant)
+                productVariantResp.value = Fail(e)
             }
         }) {
-            //productInfoP1Resp.value = Fail(it)
             it.printStackTrace()
-            // for testing
-            val gson = Gson()
-            val productInfoP1 = ProductInfoP1()
-            productInfoP1.productInfo = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_info_p1),
-                    ProductInfo.Response::class.java).data ?: ProductInfo()
-            productInfoP1Resp.value = Success(productInfoP1)
-
-            val productVariant = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_variant),
-                    ProductDetailVariantResponse::class.java).data ?: ProductVariant()
-            productVariantResp.value = Success(productVariant)
-
-            val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
-                    productInfoP1.productInfo.basic.id,
-                    productInfoP1.productInfo.basic.price, resources)
-            productInfoP2resp.value = productInfoP2
-            val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
-            ?: return@launchCatchError
-            productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, resources)
-
+            productInfoP1Resp.value = Fail(it)
         }
     }
 
     private suspend fun getProductInfoP2(shopId: Int, productId: Int, productPrice: Float, resources: Resources): ProductInfoP2 = withContext(Dispatchers.IO) {
         val productInfoP2 = ProductInfoP2()
-
-        // gson for testing
-        val gson = Gson()
 
         val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                 PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
@@ -196,14 +168,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     installmentRequest),
                     cacheStrategy)
 
-            val result = if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
-                (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result
-            } else {
-                gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_shop_info_p2),
-                        ShopInfo.Response::class.java).result
+            if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
+                val result = (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result
+                if (result.data.isNotEmpty())
+                    productInfoP2.shopInfo = result.data.first()
+
             }
-            if (result.data.isNotEmpty())
-                productInfoP2.shopInfo = result.data.first()
 
             if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true){
                 productInfoP2.shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
@@ -212,24 +182,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             if (gqlResponse.getError(Rating.Response::class.java)?.isNotEmpty() != true)
                 productInfoP2.rating = gqlResponse.getData<Rating.Response>(Rating.Response::class.java).data
-            else
-                productInfoP2.rating = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_rating_p2),
-                        Rating.Response::class.java).data
 
             if (gqlResponse.getError(WishlistCount.Response::class.java)?.isNotEmpty() != true)
                 productInfoP2.wishlistCount = gqlResponse.getData<WishlistCount.Response>(WishlistCount.Response::class.java)
                         .wishlistCount
-            else
-                productInfoP2.wishlistCount = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_wishlist_count),
-                        WishlistCount.Response::class.java).wishlistCount
 
             if (gqlResponse.getError(MerchantVoucherQuery::class.java)?.isNotEmpty() != true) {
                 productInfoP2.vouchers = ((gqlResponse.getData<MerchantVoucherQuery>(MerchantVoucherQuery::class.java))
                         .result?.vouchers?.toList()
-                        ?: listOf()).map { MerchantVoucherViewModel(it) }
-            } else {
-                productInfoP2.vouchers = (gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_voucher),
-                        MerchantVoucherQuery::class.java)?.result?.vouchers?.toList()
                         ?: listOf()).map { MerchantVoucherViewModel(it) }
             }
 
@@ -326,7 +286,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 TopAdsPdpAffiliateResponse::class.java, affilateParams)
 
         try {
-            val gson = Gson()
             val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, estimationRequest,
                     imageReviewRequest, helpfulReviewRequest, latestTalkRequest, topAdsRequest, otherProductRequest,
                     affiliateRequest))
@@ -348,16 +307,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             if (response.getError(ImageReviewGqlResponse::class.java)?.isNotEmpty() != true)
                 productInfoP3.imageReviews = response.getData<ImageReviewGqlResponse>(ImageReviewGqlResponse::class.java)
                         .toImageReviewItemList()
-            else
-                productInfoP3.imageReviews = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_image_review),
-                        ImageReviewGqlResponse::class.java).toImageReviewItemList()
 
             if (response.getError(Review.Response::class.java)?.isNotEmpty() != true)
                 productInfoP3.helpfulReviews = response.getData<Review.Response>(Review.Response::class.java)
                         .productMostHelpfulReviewQuery.list
-            else
-                productInfoP3.helpfulReviews = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_most_helpful_review),
-                        Review.Response::class.java).productMostHelpfulReviewQuery.list
 
             if (response.getError(TalkList.Response::class.java)?.isNotEmpty() != true) {
                 productInfoP3.latestTalk = response.getData<TalkList.Response>(TalkList.Response::class.java)
@@ -397,15 +350,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val result = withContext(Dispatchers.IO){graphqlRepository.getReseponse(listOf(request))}
 
             // for unsigned in jenkins
-            val error = result.getError(DataFollowShop::class.java)
+            /*val error = result.getError(DataFollowShop::class.java)
             if (error == null || error.isEmpty()){
                 onSuccess(result.getData<DataFollowShop>(DataFollowShop::class.java).followShop.isSuccess)
             } else {
                 throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-            }
+            }*/
 
             // for signed
-            //onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
+            onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
         }){ onError(it)}
     }
 

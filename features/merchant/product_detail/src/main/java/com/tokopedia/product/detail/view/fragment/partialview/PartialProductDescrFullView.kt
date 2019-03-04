@@ -10,6 +10,8 @@ import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.ProductDetailRouter
@@ -122,10 +124,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
     }
 
     private fun openCategory(category: Category.Detail) {
-        if (!GlobalConfig.isSellerApp() && view.context.applicationContext is ProductDetailRouter){
-            view.context.startActivity((view.context.applicationContext as ProductDetailRouter)
-                    .getIntermediaryIntent(view.context, category.id))
-        }
+        // GO TO CATEGORY
     }
 
     private fun gotoEtalase(etalaseId: String, shopID: Int) {
@@ -133,11 +132,11 @@ class PartialProductDescrFullView private constructor(private val view: View,
         if (appContext !is ProductDetailRouter)
             return
 
-        val intent = if (etalaseId.isNotBlank()){
-            appContext.getShoProductListIntent(view.context, shopID.toString(), "", etalaseId)
+        val intent = RouteManager.getIntent(view.context,if (etalaseId.isNotBlank()){
+             ApplinkConst.SHOP_ETALASE.replace("{etalase_id}", etalaseId)
         } else {
-            appContext.getShopPageIntent(view.context, shopID.toString())
-        }
+            ApplinkConst.SHOP
+        }.replace("{shop_id}", shopID.toString()))
         view.context.startActivity(intent)
     }
 

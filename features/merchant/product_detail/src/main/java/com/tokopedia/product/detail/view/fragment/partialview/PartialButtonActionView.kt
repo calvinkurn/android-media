@@ -12,11 +12,12 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.PreOrder
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
-class PartialButtonActionView private constructor(private val view: View) {
+class PartialButtonActionView private constructor(private val view: View,
+                                                  private val listener: View.OnClickListener)
+    : View.OnClickListener by listener {
     var promoTopAdsClick: (() -> Unit)? = null
     var buyNowClick: (() -> Unit)? = null
     var addToCartClick: (() -> Unit)? = null
-    var topchatClick: (() -> Unit)? = null
     var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
     var visibility: Boolean = false
         set(value) {
@@ -30,7 +31,7 @@ class PartialButtonActionView private constructor(private val view: View) {
 
 
     companion object {
-        fun build(_view: View) = PartialButtonActionView(_view)
+        fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
     }
 
     init {
@@ -73,9 +74,7 @@ class PartialButtonActionView private constructor(private val view: View) {
                 if (hasComponentLoading) return@setOnClickListener
                 addToCartClick?.invoke()
             }
-            btn_topchat.setOnClickListener {
-                topchatClick?.invoke()
-            }
+            btn_topchat.setOnClickListener(this@PartialButtonActionView)
         }
     }
 

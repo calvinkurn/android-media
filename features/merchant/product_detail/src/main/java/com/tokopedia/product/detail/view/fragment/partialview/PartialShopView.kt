@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import kotlinx.android.synthetic.main.partial_product_shop_info.view.*
 
-class PartialShopView private constructor(private val view: View, val clickListener: View.OnClickListener) :
+class PartialShopView private constructor(private val view: View, private val clickListener: View.OnClickListener) :
         View.OnClickListener by clickListener {
     companion object {
         private const val TRUE_VALUE = 1
@@ -56,8 +56,11 @@ class PartialShopView private constructor(private val view: View, val clickListe
 
             updateFavorite(shop.favoriteData.alreadyFavorited == TRUE_VALUE)
 
+            shop_name.setOnClickListener(this@PartialShopView)
+            shop_ava.setOnClickListener(this@PartialShopView)
             btn_favorite.setOnClickListener(this@PartialShopView)
-
+            send_msg_shop.setOnClickListener(this@PartialShopView)
+            shop
             visible()
         }
     }

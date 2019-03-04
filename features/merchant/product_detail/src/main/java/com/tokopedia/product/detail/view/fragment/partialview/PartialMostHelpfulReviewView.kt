@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.view.adapter.MostHelpfulReviewPagerAdapter
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.view.*
 
 class PartialMostHelpfulReviewView private constructor(private val view: View) {
+    var onReviewClicked: (()-> Unit)? = null
     companion object {
         fun build(_view: View) = PartialMostHelpfulReviewView(_view)
     }
@@ -19,11 +20,12 @@ class PartialMostHelpfulReviewView private constructor(private val view: View) {
             if (reviews.isEmpty()){
                 gone()
             } else {
-                review_viewpager.adapter = MostHelpfulReviewPagerAdapter(reviews)
+                review_viewpager.adapter = MostHelpfulReviewPagerAdapter(reviews, onReviewClicked)
                 review_page_indicator.setViewPager(review_viewpager)
                 review_page_indicator.notifyDataSetChanged()
                 base_view_most_helpful_review.visible()
                 txt_see_all_review.text = context.getString(R.string.label_see_all_review, totalReview.thousandFormatted())
+                txt_see_all_review.setOnClickListener { onReviewClicked?.invoke() }
                 visible()
             }
         }

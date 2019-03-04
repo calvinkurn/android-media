@@ -91,7 +91,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
      * @param extras
      * @return
      */
-    @DeepLink(Constants.Applinks.PRODUCT_INFO)
+    //@DeepLink(Constants.Applinks.PRODUCT_INFO)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 
