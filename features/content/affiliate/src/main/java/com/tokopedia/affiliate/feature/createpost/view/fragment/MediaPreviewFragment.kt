@@ -8,12 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.onTabSelected
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.fragment_af_media_preview.*
+
+
 
 /**
  * @author by milhamj on 25/02/19.
@@ -66,7 +72,9 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         mediaViewPager.adapter = imageAdapter
         mediaViewPager.offscreenPageLimit = imageAdapter.count
         tabLayout.setupWithViewPager(mediaViewPager)
-        updateDeleteBtn()
+        tabLayout.onTabSelected {
+            updateMainImageText()
+        }
 
         val relatedProducts = ArrayList(viewModel.relatedProducts)
         productAdapter.setList(relatedProducts)
@@ -95,6 +103,15 @@ class MediaPreviewFragment : BaseDaggerFragment() {
             updateDeleteBtn()
             updateResultIntent()
         }
+
+        mainImageText.setOnClickListener {
+            viewModel.mainImageIndex = tabLayout.selectedTabPosition
+            updateMainImageText()
+            updateResultIntent()
+        }
+
+        updateMainImageText()
+        updateDeleteBtn()
     }
 
     private fun updateDeleteBtn() {
@@ -104,5 +121,17 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     private fun updateResultIntent() {
         resultIntent.putExtra(CreatePostViewModel.TAG, viewModel)
         activity?.setResult(Activity.RESULT_OK, resultIntent)
+    }
+
+    private fun updateMainImageText() {
+        if (viewModel.mainImageIndex == tabLayout.selectedTabPosition) {
+            mainImageText.setText(R.string.af_main_image)
+            mainImageText.setTextColor(MethodChecker.getColor(context, R.color.black_38))
+            mainImageIcon.show()
+        } else {
+            mainImageText.setText(R.string.af_set_main_image)
+            mainImageText.setTextColor(MethodChecker.getColor(context, R.color.medium_green))
+            mainImageIcon.hide()
+        }
     }
 }

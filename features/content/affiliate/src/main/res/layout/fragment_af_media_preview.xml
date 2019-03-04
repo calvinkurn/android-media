@@ -48,7 +48,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
             android:lineSpacingExtra="6sp"
             android:paddingTop="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_16"
@@ -58,18 +60,20 @@
             app:layout_constraintEnd_toStartOf="@+id/mainImageIcon"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mediaViewPager" />
+            app:layout_constraintTop_toBottomOf="@+id/mediaViewPager"
+            tools:textColor="@color/black_38" />
 
-        <!--//TODO milhamj change icon-->
         <ImageView
             android:id="@+id/mainImageIcon"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:src="@drawable/ic_action_check"
+            android:src="@drawable/ic_af_check_gray"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/mainImageText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/mainImageText"
-            app:layout_constraintTop_toTopOf="@+id/mainImageText" />
+            app:layout_constraintTop_toTopOf="@+id/mainImageText"
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/mediaSeparator"
