@@ -2,26 +2,16 @@ package com.tokopedia.cpm;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,7 +21,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CharacterPerMinuteActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
 
-    final Map<EditText, TextWatcher> map = new ConcurrentHashMap<>();
+    protected final Map<EditText, TextWatcher> map = new ConcurrentHashMap<>();
+
+    private RemoteConfig remoteConfig;
+
+    protected ArrayList<EditText> texts = new ArrayList<>();
+
+    private CharacterPerMinuteInterface characterPerMinuteInterface;
+
+    public CharacterPerMinuteActivityLifecycleCallbacks(CharacterPerMinuteInterface characterPerMinuteInterface) {
+        this.characterPerMinuteInterface = characterPerMinuteInterface;
+    }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
@@ -45,22 +45,29 @@ public class CharacterPerMinuteActivityLifecycleCallbacks implements Application
 
     @Override
     public void onActivityResumed(Activity activity) {
-        traverseEditTexts((ViewGroup) activity.findViewById(android.R.id.content));
+        traverseEditTexts(activity.findViewById(android.R.id.content));
 
-        Log.d(this.getClass().getName(),"Jumlah Edittext : "+texts.size());
-        for(EditText editText : texts){
-            editText.setFocusable(true);
-            editText.setFocusableInTouchMode(true);
-            if(!map.containsKey(editText)){
-                map.put(editText, new CharacterPerMinuteTextWatcher());
+        if (remoteConfig == null) {
+            remoteConfig = new FirebaseRemoteConfigImpl(activity);
+            boolean enabled = remoteConfig.getBoolean("android_customer_typing_tracker_enabled");
+            if (enabled) {
+                Log.d(this.getClass().getName(), "Jumlah Edittext : " + texts.size());
+                for (EditText editText : texts) {
+                    editText.setFocusable(true);
+                    editText.setFocusableInTouchMode(true);
+                    if (!map.containsKey(editText)) {
+                        map.put(editText, new CharacterPerMinuteTextWatcher(characterPerMinuteInterface));
+                    }
+                    editText.addTextChangedListener(map.get(editText));
+                }
             }
-            editText.addTextChangedListener(map.get(editText));
         }
+
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-        for(EditText editText : texts){
+        for (EditText editText : texts) {
             map.remove(editText);
         }
         map.clear();
@@ -82,23 +89,16 @@ public class CharacterPerMinuteActivityLifecycleCallbacks implements Application
 
     }
 
-    ArrayList<EditText> texts = new ArrayList<>();
-    private EditText traverseEditTexts(ViewGroup v)
-    {
+    private EditText traverseEditTexts(ViewGroup v) {
         EditText invalid = null;
-        for (int i = 0; i < v.getChildCount(); i++)
-        {
+        for (int i = 0; i < v.getChildCount(); i++) {
             Object child = v.getChildAt(i);
-            if (child instanceof EditText)
-            {
-                EditText e = (EditText)child;
+            if (child instanceof EditText) {
+                EditText e = (EditText) child;
                 texts.add(e);
-            }
-            else if(child instanceof ViewGroup)
-            {
-                invalid = traverseEditTexts((ViewGroup)child);  // Recursive call.
-                if(invalid != null)
-                {
+            } else if (child instanceof ViewGroup) {
+                invalid = traverseEditTexts((ViewGroup) child);  // Recursive call.
+                if (invalid != null) {
                     break;
                 }
             }

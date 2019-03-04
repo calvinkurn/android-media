@@ -32,6 +32,11 @@ public class CharacterPerMinuteTextWatcher implements TextWatcher {
     char a, b;
     long chartime;
 
+    CharacterPerMinuteInterface characterPerMinuteInterface;
+
+    public CharacterPerMinuteTextWatcher(CharacterPerMinuteInterface characterPerMinuteInterface) {
+        this.characterPerMinuteInterface = characterPerMinuteInterface;
+    }
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -84,6 +89,10 @@ public class CharacterPerMinuteTextWatcher implements TextWatcher {
             Log.d("TextWatcher", "CPM =" + cpm1);
             Log.d("TextWatcher", "Arrayleng=" + array1);
             Log.d("TextWatcher", "total =" + total);
+
+            if(characterPerMinuteInterface != null){
+                characterPerMinuteInterface.saveCPM(Float.toString(cpm1));
+            }
 
         }
     }

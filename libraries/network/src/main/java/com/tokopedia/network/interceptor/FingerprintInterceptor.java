@@ -1,5 +1,6 @@
 package com.tokopedia.network.interceptor;
 
+import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.utils.AuthUtil;
@@ -28,6 +29,7 @@ public class FingerprintInterceptor implements Interceptor {
 
     private NetworkRouter networkRouter;
     private UserSessionInterface userSession;
+    private CharacterPerMinuteInterface characterPerMinuteInterface;
 
     @Deprecated
     /*
@@ -41,6 +43,12 @@ public class FingerprintInterceptor implements Interceptor {
     public FingerprintInterceptor(NetworkRouter networkRouter, UserSessionInterface userSession) {
         this.networkRouter = networkRouter;
         this.userSession = userSession;
+    }
+
+    public FingerprintInterceptor(NetworkRouter networkRouter, UserSessionInterface userSession,
+                                  CharacterPerMinuteInterface characterPerMinuteInterface){
+        this(networkRouter, userSession);
+        this.characterPerMinuteInterface = characterPerMinuteInterface;
     }
 
     @Override
@@ -60,6 +68,8 @@ public class FingerprintInterceptor implements Interceptor {
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, fingerprintModel.getAdsId());
+
+        if()
 
         return newRequest;
     }

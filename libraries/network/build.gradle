@@ -27,6 +27,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
+    implementation project(":cpm")
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.userSession)
 
