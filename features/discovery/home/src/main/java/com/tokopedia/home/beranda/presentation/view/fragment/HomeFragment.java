@@ -270,8 +270,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initResources() {
         TypedValue typedValue = new TypedValue();
         if (getActivity() != null && getActivity().getTheme() != null &&
-                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
-        {
+                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
         }
     }
@@ -429,7 +428,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
         notifyToolbarForAbTesting();
         presenter.onResume();
-        if(activityStateListener!=null){
+        if (activityStateListener != null) {
             activityStateListener.onResume();
         }
     }
@@ -438,7 +437,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onPause() {
         super.onPause();
         trackingQueue.sendAll();
-        if(activityStateListener!=null) {
+        if (activityStateListener != null) {
             activityStateListener.onPause();
         }
     }
@@ -1039,6 +1038,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isHomeFragment() {
+        if (getActivity() == null) {
+            return false;
+        }
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
         return (fragment instanceof HomeFragment);
     }
@@ -1162,7 +1164,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             Intent intentBalanceWalet = RouteManager.getIntent(getActivity(), applinkActivation);
             getContext().startActivity(intentBalanceWalet);
             Activity activity = (Activity) getContext();
-            activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
         }
     }
 

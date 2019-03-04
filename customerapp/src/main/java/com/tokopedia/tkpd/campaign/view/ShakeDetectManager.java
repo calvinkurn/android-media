@@ -53,8 +53,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 5000;
     private boolean  isShakeShakeEnable = true;
 
-    public static String sTopActivity = null;
-    private String mOpenedActivity = null;
+    public static String sTopActivity = "";
+    private String mOpenedActivity = "";
     private Activity activity;
 
     private ShakeDetectManager() {

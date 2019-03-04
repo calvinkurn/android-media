@@ -451,8 +451,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
                 if (showCaseObjectList.size() == 1) {
                     showCaseObjectList.add(new ShowCaseObject(llSelectShipmentRecommendation,
-                            llSelectShipmentRecommendation.getContext().getString(R.string.label_title_showcase_shipment),
-                            llSelectShipmentRecommendation.getContext().getString(R.string.label_message_showcase_shipment_courier_recommendation),
+                            llSelectShipmentRecommendation.getContext().getString(R.string.label_title_showcase_shipment_blackbox),
+                            llSelectShipmentRecommendation.getContext().getString(R.string.label_message_showcase_shipment_courier_recommendation_blackbox),
                             ShowCaseContentPosition.UNDEFINED)
                     );
                 }
