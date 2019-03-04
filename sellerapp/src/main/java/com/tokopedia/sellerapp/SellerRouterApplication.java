@@ -285,7 +285,8 @@ public abstract class SellerRouterApplication extends MainApplication
         ChatbotRouter,
         SaldoDetailsRouter,
         TrackingOptimizerRouter ,
-        FlashSaleRouter{
+        FlashSaleRouter,
+        LinkerRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
