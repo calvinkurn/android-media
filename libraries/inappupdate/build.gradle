@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 repositories {
     flatDir {
-        dirs 'src/libs'
+        dirs project(rootProject.ext.libraries.inappupdate).file('libs')
     }
 }
 
