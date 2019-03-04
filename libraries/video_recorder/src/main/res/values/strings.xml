@@ -2,4 +2,6 @@
     <string name="app_name">Video Recorder</string>
     <string name="title_record_duration">Durasi Merekam</string>
     <string name="delete_recording">Hapus Rekaman</string>
+    <string name="menu_video_picker">Ambil Video</string>
+    <string name="menu_recorder">Recorder</string>
 </resources>
