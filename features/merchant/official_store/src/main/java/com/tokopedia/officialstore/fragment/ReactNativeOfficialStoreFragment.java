@@ -27,7 +27,7 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
         ReactUtils.startTracing(MP_OFFICIAL_STORE); // start trace when view created
         super.onCreateView(inflater, container, savedInstanceState);
         if (getActivity() != null) // set background color of react root view
-            reactRootView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white)); /
+            reactRootView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
         return reactRootView;
     }
 
