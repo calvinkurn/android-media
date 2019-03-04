@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.ovo">
+<application>
+        <activity
+            android:name=".PaymentQRSummaryActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/payment_summary"
+            android:theme="@style/Theme.White" />
+    </application>
+
+</manifest>

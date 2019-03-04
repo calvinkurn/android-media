@@ -16,11 +16,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.tkpd.R;
@@ -92,6 +94,16 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     public void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash) {
         Intent intent = ((TokoCashRouter) getApplication()).getNominalActivityIntent(getApplicationContext(), qrcode, infoQrTokoCash);
         startActivityForResult(intent, REQUEST_CODE_NOMINAL);
+    }
+
+    @Override
+    public void goToPaymentPage(JsonObject barcodeData) {
+        SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this,true);
+        cacheManager.put("QR_RESPONSE",barcodeData);
+        Intent intent = ((TokoCashRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
+        intent.putExtra("QR_DATA", cacheManager.getId());
+        startActivity(intent);
+        finish();
     }
 
     @NeedsPermission({Manifest.permission.CAMERA})

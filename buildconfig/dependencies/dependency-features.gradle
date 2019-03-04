@@ -344,6 +344,7 @@ ext {
             session                       : ":tkpdsession",
             transaction                   : ":tkpdtransaction",
             transactioncommon             : ":tkpdtransaction-common",
-            commonTravel                  : ":features:digital:common_travel"
+            commonTravel                  : ":features:digital:common_travel",
+            ovo                           : ":features:fintech:ovo_pay_with_qr"
     ]
 }

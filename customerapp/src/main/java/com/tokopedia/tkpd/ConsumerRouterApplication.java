@@ -305,6 +305,7 @@ import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
+import com.tokopedia.ovo.PaymentQRSummaryActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -1970,6 +1971,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getNominalActivityIntent(Context context, String qrcode, InfoQrTokoCash infoQrTokoCash) {
         return NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
+    }
+
+    @Override
+    public Intent getOvoActivityIntent(Context context) {
+        return new Intent(context,PaymentQRSummaryActivity.class);
     }
 
     @Override

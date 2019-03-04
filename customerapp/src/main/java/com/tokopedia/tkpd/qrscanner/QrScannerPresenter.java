@@ -3,12 +3,18 @@ package com.tokopedia.tkpd.qrscanner;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -22,7 +28,9 @@ import com.tokopedia.tokocash.network.exception.WalletException;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -81,11 +89,52 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else if (host.contains("tokopedia")) {
                 openActivity(barcodeData);
             } else {
-                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                checkBarCode(barcodeData);
+                //getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
         } else {
-            getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+            checkBarCode(barcodeData);
         }
+    }
+
+    private void checkBarCode(String barcodeData) {
+        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put("qr_id", barcodeData);
+        GraphqlRequest graphqlRequest = new GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.verify_ovo_qr_code),
+                JsonObject.class,
+                variables);
+
+        graphqlUseCase.addRequest(graphqlRequest);
+        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                JsonObject response = graphqlResponse.getData(JsonObject.class);
+                JsonObject error;
+                if (response != null) {
+                    error = response.getAsJsonObject("errors");
+                    if (error != null && TextUtils.isEmpty(error.get("message").getAsString())) {
+                        //error
+                        getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                    } else {
+                        getView().goToPaymentPage(response);
+                    }
+                }
+
+            }
+        });
     }
 
     private void onScanBranchIOLink(String qrCode) {

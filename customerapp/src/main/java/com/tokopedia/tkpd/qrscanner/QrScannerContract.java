@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.qrscanner;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
@@ -38,6 +39,8 @@ public interface QrScannerContract {
         Observable<BalanceTokoCash> getBalanceTokoCash();
 
         void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash);
+
+        void goToPaymentPage(JsonObject barcodeData);
     }
 
     interface Presenter extends CustomerPresenter<View> {

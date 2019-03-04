@@ -361,6 +361,7 @@ dependencies {
     implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.tokopoints)
+    implementation project(rootProject.ext.features.ovo)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productCard)
