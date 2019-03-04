@@ -23,9 +23,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -139,7 +136,7 @@ public class SearchActivity extends DiscoveryActivity
         return intent;
     }
 
-    @DeepLink(ApplinkConst.DISCOVERY_AUTOCOMPLETE_SEARCH)
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
         boolean isOfficial = Boolean.parseBoolean(bundle.getString("official"));
         Intent intent = new Intent(context, SearchActivity.class);
