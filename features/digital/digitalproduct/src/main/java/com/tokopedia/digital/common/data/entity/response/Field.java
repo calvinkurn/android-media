@@ -1,9 +1,10 @@
 
 package com.tokopedia.digital.common.data.entity.response;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * Vishal Gupta 7th May, 2018
