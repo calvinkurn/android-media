@@ -67,7 +67,7 @@
     <string name="af_add_video">Tambah Video</string>
     <string name="af_set_main_image">Set Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
-    <string name="af_caption_hint">Tulis caption yuk…</string>
+    <string name="af_caption_hint">Tulis caption, yuk!\nContoh: “Promo! Cek produk terbaru kami…”</string>
     <string name="af_related_product">Produk pada Post</string>
     <string name="af_add_product_tag">Tambah</string>
     <string name="af_change_product_tag">Pilih</string>
@@ -77,6 +77,8 @@
     <string name="af_notif_submit">Menyiapkan post…</string>
     <string name="af_notif_success">Klik untuk melihat post</string>
     <string name="af_notif_error">Gagal mengunggah post, klik untuk coba lagi</string>
+    <string name="af_update_post">Update Post</string>
+    <string name="af_add_image_warning">Foto sebelumnya akan diganti dengan video yang dipilih</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>
