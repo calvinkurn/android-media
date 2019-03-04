@@ -264,8 +264,9 @@ open class PlayViewStateImpl(
     }
 
     private fun showStickComponent(item: StickyComponentViewModel?) {
+        stickyComponent.hide()
         item?.run {
-
+            if(title.isNullOrEmpty()) return
             StickyComponentHelper.setView(stickyComponent, item)
             stickyComponent.setOnClickListener {
                 viewModel?.let {
