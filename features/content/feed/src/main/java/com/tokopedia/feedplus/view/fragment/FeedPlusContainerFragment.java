@@ -14,7 +14,6 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
-import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
@@ -36,7 +35,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
-    private AbTestingOfficialStore abTestingOfficialStore;
 
     private int badgeNumber;
 
@@ -60,7 +58,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initVar();
         initView();
     }
 
@@ -75,7 +72,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
-        notifyToolbarForAbTesting();
     }
 
     @Override
@@ -94,13 +90,8 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
             mainToolbar.setNotificationNumber(number);
         }
     }
-
-    private void initVar() {
-        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
-    }
     
     private void initView() {
-        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
         setAdapter();
         if (hasCategoryIdParam()) {
             goToExplore();
@@ -164,12 +155,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         return viewPager != null
                 && tabLayout != null
                 && tabLayout.getTabCount() - 1 >= 0;
-    }
-
-    public void notifyToolbarForAbTesting() {
-        if (mainToolbar != null) {
-            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
-        }
     }
 
     @Override
