@@ -8,6 +8,13 @@
         tools:node="remove"
         tools:selector="com.google.firebase"/>
 
+    <uses-permission
+        android:name="android.permission.WRITE_CALL_LOG"
+        tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.READ_CALL_LOG"
+        tools:node="remove"/>
+
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
     <application
