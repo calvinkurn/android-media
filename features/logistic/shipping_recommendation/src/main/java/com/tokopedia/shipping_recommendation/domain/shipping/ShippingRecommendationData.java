@@ -12,6 +12,7 @@ import java.util.List;
 public class ShippingRecommendationData implements Parcelable {
 
     private List<ShippingDurationViewModel> shippingDurationViewModels;
+    private String blackboxTextInfo;
     private String errorMessage;
     private String errorId;
 
@@ -20,6 +21,7 @@ public class ShippingRecommendationData implements Parcelable {
 
     protected ShippingRecommendationData(Parcel in) {
         shippingDurationViewModels = in.createTypedArrayList(ShippingDurationViewModel.CREATOR);
+        blackboxTextInfo = in.readString();
         errorMessage = in.readString();
         errorId = in.readString();
     }
@@ -27,6 +29,7 @@ public class ShippingRecommendationData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(shippingDurationViewModels);
+        dest.writeString(blackboxTextInfo);
         dest.writeString(errorMessage);
         dest.writeString(errorId);
     }
@@ -71,4 +74,9 @@ public class ShippingRecommendationData implements Parcelable {
     public void setErrorId(String errorId) {
         this.errorId = errorId;
     }
+
+    public String getBlackboxTextInfo() { return blackboxTextInfo; }
+
+    public void setBlackboxTextInfo(String blackboxTextInfo) {
+        this.blackboxTextInfo = blackboxTextInfo; }
 }

@@ -26,6 +26,9 @@ public class RatesDetailData implements Parcelable {
     @SerializedName("services")
     @Expose
     private List<ServiceData> services;
+    @SerializedName("info")
+    @Expose
+    private InfoRatesDetailData info;
     @SerializedName("error")
     @Expose
     private ErrorRatesDetailData error;
@@ -39,6 +42,7 @@ public class RatesDetailData implements Parcelable {
         type = in.readString();
         services = in.createTypedArrayList(ServiceData.CREATOR);
         error = in.readParcelable(ErrorRatesDetailData.class.getClassLoader());
+        info = in.readParcelable(InfoRatesDetailData.class.getClassLoader());
     }
 
     @Override
@@ -48,6 +52,7 @@ public class RatesDetailData implements Parcelable {
         dest.writeString(type);
         dest.writeTypedList(services);
         dest.writeParcelable(error, flags);
+        dest.writeParcelable(info, flags);
     }
 
     @Override
@@ -106,4 +111,8 @@ public class RatesDetailData implements Parcelable {
     public void setError(ErrorRatesDetailData error) {
         this.error = error;
     }
+
+    public InfoRatesDetailData getInfo() { return info; }
+
+    public void setInfo(InfoRatesDetailData info) { this.info = info; }
 }
