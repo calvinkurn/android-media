@@ -355,19 +355,32 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeKolSuccess(rowNumber: Int) {
-        if (adapter.data[rowNumber] != null && adapter.data[rowNumber] is KolPostViewModel) {
-            val kolPostViewModel = adapter.data[rowNumber] as KolPostViewModel
-            kolPostViewModel.isLiked = !kolPostViewModel.isLiked
-            if (kolPostViewModel.isLiked) {
-                kolPostViewModel.totalLike = kolPostViewModel.totalLike + 1
+        if (adapter.data[rowNumber] != null && adapter.data[rowNumber] is DynamicPostViewModel) {
+            val model = adapter.data[rowNumber] as DynamicPostViewModel
+            val like = model.footer.like
+            like.isChecked = !model.footer.like.isChecked
+            if (like.isChecked) {
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) + 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value + 1
             } else {
-                kolPostViewModel.totalLike = kolPostViewModel.totalLike - 1
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) - 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value - 1
             }
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE)
 
             if (activity != null &&
                     arguments != null &&
-                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.contentId) {
+                    arguments!!.getInt(PARAM_POST_ID, -1) == model.id) {
 
                 if (resultIntent == null) {
                     resultIntent = Intent()
@@ -375,8 +388,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
                 resultIntent!!.putExtra(
                         PARAM_IS_LIKED,
-                        if (kolPostViewModel.isLiked) IS_LIKE_TRUE else IS_LIKE_FALSE)
-                resultIntent!!.putExtra(PARAM_TOTAL_LIKES, kolPostViewModel.totalLike)
+                        if (like.isChecked) IS_LIKE_TRUE else IS_LIKE_FALSE)
+                resultIntent!!.putExtra(PARAM_TOTAL_LIKES, like.value)
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
             }
         }
@@ -1208,6 +1221,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 resultIntent!!.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.totalComment)
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
             }
+        }
+
+        if (rowNumber != -1 &&
+                adapter.data[rowNumber] != null &&
+                adapter.data[rowNumber] is DynamicPostViewModel) {
+            val comment = ((adapter.data[rowNumber]) as DynamicPostViewModel).footer.comment
+            try {
+                val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
+                comment.fmt = commentValue.toString()
+            } catch (ignored: NumberFormatException) {
+            }
+
+            comment.value = comment.value + totalNewComment
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
         }
     }
 
