@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.otaliastudios.cameraview.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
@@ -28,6 +29,7 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.frgament_kyc_selfieid_camera, container, false);
+        ((ImageView)view.findViewById(R.id.iv_capture_image)).setImageResource(R.drawable.ic_button_capture);
         return view;
     }
 

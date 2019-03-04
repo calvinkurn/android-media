@@ -3,14 +3,21 @@ package com.tokopedia.homecredit.view.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.otaliastudios.cameraview.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.homecredit.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,6 +28,14 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
     private ActionDataProvider actionDataProvider;
     public static String ACTION_CREATOR_ARG = "action_creator_arg";
     public static String ACTION_KEYS_PROVIDER_ARG = "action_keys_provider_arg";
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_kyc_cardid_camera, container, false);
+        ((ImageView)view.findViewById(R.id.iv_capture_image)).setImageResource(R.drawable.ic_button_capture);
+        return view;
+    }
 
     @Override
     protected void onSuccessImageTakenFromCamera(File imgFile) {

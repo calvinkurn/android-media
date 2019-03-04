@@ -68,7 +68,7 @@ public class RectangleOverlayView extends LinearLayout {
 
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(getResources().getColor(R.color.light_disabled));
+        paint.setColor(getResources().getColor(R.color.black_99));
 
         paint.setAlpha(255);
         osCanvas.drawRect(mainRectangle, paint);

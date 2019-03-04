@@ -157,19 +157,17 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         int i = buttonView.getId();
+        setNameWrapperLableHint();
+        setNumberWrapperLableHint();
         if (i == R.id.KTP_WNI && isChecked) {
             docType = "KTP";
-            wrapperNumberKtp.setLabel(Constants.Values.NOMOR_KTP);
-            wrapperName.setLabel(Constants.Values.NAMA_GADIS);
-            edtxtName.setHint(Constants.Values.NAMA_GADIS);
-            edtxtNumber.setHint(Constants.Values.NOMOR_KTP);
+            edtxtName.setHint(Constants.HintMsg.EDTXT_NAMA_GADIAS);
+            edtxtNumber.setHint(Constants.HintMsg.EDTXT_KTP_NO);
         }
         else if(i == R.id.passport && isChecked){
             docType = "PASSPORT";
-            wrapperNumberKtp.setLabel(Constants.Values.PASSPORT_NUMBER);
-            wrapperName.setLabel(Constants.Values.MOTHERS_MAIDEN_NAME);
-            edtxtNumber.setHint(Constants.Values.PASSPORT_NUMBER);
-            edtxtName.setHint(Constants.Values.MOTHERS_MAIDEN_NAME);
+            edtxtNumber.setHint(Constants.HintMsg.EDTXT_PASSPORT_NO);
+            edtxtName.setHint(Constants.HintMsg.EDTXT_MOTHERS_NAME);
         }
         setNameWrapperError();
         setNumberWrapperError();
@@ -196,7 +194,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() > 0){
-                    setNameWrapperLable();
+                    setNameWrapperLableHint();
                 }
             }
 
@@ -217,7 +215,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() > 0){
-                    setNumberWrapperLable();
+                    setNumberWrapperLableHint();
                 }
             }
 
@@ -233,21 +231,29 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
                 FragmentTermsAndConditions.TAG);
     }
 
-    private void setNameWrapperLable(){
+    private void setNameWrapperLableHint(){
         if(KTPWNISelection.isChecked()){
             wrapperName.setLabel(Constants.Values.NAMA_GADIS);
+            wrapperName.setHint(Constants.HintMsg.NAMA_GADIAS);
+            wrapperName.setError("");
         }
         else if(passportSelection.isChecked()){
             wrapperName.setLabel(Constants.Values.MOTHERS_MAIDEN_NAME);
+            wrapperName.setHint(Constants.HintMsg.MOTHERS_NAME);
+            wrapperName.setError("");
         }
     }
 
-    private void setNumberWrapperLable(){
+    private void setNumberWrapperLableHint(){
         if(KTPWNISelection.isChecked()){
             wrapperNumberKtp.setLabel(Constants.Values.NOMOR_KTP);
+            wrapperNumberKtp.setHint(Constants.HintMsg.KTP);
+            wrapperNumberKtp.setError("");
         }
         else if(passportSelection.isChecked()){
+            wrapperNumberKtp.setHint(Constants.HintMsg.PASSPORT);
             wrapperNumberKtp.setLabel(Constants.Values.PASSPORT_NUMBER);
+            wrapperNumberKtp.setError("");
         }
     }
 

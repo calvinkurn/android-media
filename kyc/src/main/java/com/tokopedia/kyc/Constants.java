@@ -60,6 +60,17 @@ public interface Constants {
         String FORIEGNER_MOTHERS_NAME = "Mother's maiden name is not valid";
     }
 
+    interface HintMsg{
+        String KTP ="Masukkan 16 digit angka sesuai pada KTP";
+        String NAMA_GADIAS ="Maksimal 30 karakter";
+        String PASSPORT = "Input your passport number";
+        String MOTHERS_NAME = "Maximum 30 characters";
+        String EDTXT_KTP_NO = "Contoh: 320110108960XXXX";
+        String EDTXT_PASSPORT_NO = "Example: 320110108960XXXX";
+        String EDTXT_NAMA_GADIAS = "Contoh: Luna Maya";
+        String EDTXT_MOTHERS_NAME= "Example: Luna Maya";
+    }
+
     interface Status{
         String INPROGRESS = "inprogress";
         String SUCCESSFUL = "successful";
