@@ -74,8 +74,8 @@
             android:scaleType="center"
             android:background="@color/white"
             android:src="@drawable/ic_wishlist_searchbar"
-            app:layout_toStarttOf="@+id/btn_notification"
-            app:layout_toLefttOf="@+id/btn_notification"/>
+            android:layout_toStarttOf="@+id/btn_notification"
+            android:layout_toLefttOf="@+id/btn_notification"/>
 
         <ImageButton
             android:id="@+id/btn_inbox"
@@ -85,8 +85,8 @@
             android:scaleType="center"
             android:background="@color/white"
             android:src="@drawable/ic_inbox_searcbar"
-            app:layout_toStarttOf="@+id/btn_notification"
-            app:layout_toLefttOf="@+id/btn_notification"/>
+            android:layout_toStarttOf="@+id/btn_notification"
+            android:layout_toLefttOf="@+id/btn_notification"/>
 
         <ImageButton
             android:id="@+id/btn_notification"
