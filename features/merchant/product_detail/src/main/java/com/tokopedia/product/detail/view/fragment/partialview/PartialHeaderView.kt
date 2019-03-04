@@ -99,7 +99,7 @@ class PartialHeaderView private constructor(private val view: View,
 
     private fun showCountDownTimer(campaign: Campaign) {
         try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX'Z'", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
             val serverTimeMs = campaign.endDateUnix * ONE_SECOND
             val serverTimeOffset = serverTimeMs - Date().time
             val endDate = dateFormat.parse(campaign.endDate)
