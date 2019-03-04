@@ -10,7 +10,7 @@ public class AccountSettingConfig {
 
     @SerializedName("accountSettingConfig")
     @Expose
-    private AccountSettingConfigResponse  accountSettingConfig;
+    private AccountSettingConfigResponse  accountSettingConfig = new AccountSettingConfigResponse();
 
     public AccountSettingConfigResponse getAccountSettingConfig() {
         return accountSettingConfig;

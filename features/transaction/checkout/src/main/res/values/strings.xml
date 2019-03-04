@@ -105,7 +105,6 @@
     <string name="label_seller_additional_cost">Biaya Tambahan Penjual</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
-    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
     <string name="checkout_module_label_penjual">Penjual :</string>
@@ -144,6 +143,7 @@
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_pay">Bayar</string>
     <string name="label_pay_cod">Bayar di Tempat</string>
+    <string name="label_choose_payment">Pilih Pembayaran</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
     <string name="cart_item_count_format" formatted="false">Harga (%s Barang)</string>
     <string name="cart_item_button_checkout_count_format" formatted="false">Checkout (%s)</string>
@@ -168,6 +168,8 @@
     <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="label_delete_cart_item">Hapus</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
+    <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
+    <string name="label_hardcoded_courier_blackbox_info">Kurir dipilih secara otomatis sesuai dengan layanan pengiriman ini.</string>
     <string name="cart_error_message" formatted="false">Terdapat %d Produk Bermasalah</string>
     <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
@@ -182,17 +184,20 @@
     <string name="cart">Keranjang</string>
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>
     <string name="label_donation">Donasi</string>
+    <string name="label_emas">Pembulatan Emas</string>
     <string name="label_button_change_address">Pilih Alamat Lain</string>
+    <string name="label_button_change_address_new">Ganti Alamat</string>
     <string name="label_button_send_to_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="label_showcase_address_title">Alamat Pengiriman</string>
     <string name="label_showcase_address_message">Pastikan alamat pengiriman sudah sesuai dengan yang kamu inginkan</string>
     <string name="label_total">Jumlah</string>
     <string name="label_change_address">Ganti Alamat</string>
-    <string name="label_button_bottomsheet_close">Tutup</string>
     <string name="note_counter_format" formatted="false">%d/%d</string>
     <string name="promo_format" formatted="false">-%s</string>
     <string name="label_button_choose_courier_recommendation">Pilih</string>
+    <string name="label_button_choose_courier_blackbox">Pilih Pengiriman</string>
     <string name="label_button_change_shipping_duration">Ubah Durasi</string>
+    <string name="label_button_change_shipping">Ubah Pengiriman</string>
     <string name="label_button_change_courier_recommendation">Ubah Kurir</string>
     <string name="label_hardcoded_courier_ticker_bold_part">pk 14:00</string>
     <string name="label_hardcoded_shipping_duration_info">Durasi dihitung sejak barang diserahkan ke kurir</string>
@@ -207,6 +212,7 @@
     <string name="action_label_done">Selesai</string>
     <string name="label_change_courier">Ubah Kurir</string>
     <string name="label_shipping_duration">Durasi Pengiriman</string>
+    <string name="label_shipping">Pengiriman</string>
     <string name="label_shipment_address">Alamat Pengiriman</string>
     <string name="label_ellipsize">...</string>
     <string name="checkout_empty_cart_sub_message">Wujudkan Impian di Wishlist Kamu</string>
@@ -238,5 +244,7 @@
     <string name="bottom_sheet_empty_branch_text">Tidak bisa menemukan daftar cabang Tokopedia Corner</string>
     <string name="technical_problem_text">Ada masalah teknis, coba lagi</string>
     <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
+    <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
+    <string name="emas_checkout_desc">Pembulatan Emas sebesar Rp %s</string>
 
 </resources>
