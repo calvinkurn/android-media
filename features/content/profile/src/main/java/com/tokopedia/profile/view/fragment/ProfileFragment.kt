@@ -326,8 +326,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun hideHeader() {
-        app_bar_layout.visibility = View.GONE
         app_bar_layout.setExpanded(false)
+        app_bar_layout.visibility = View.GONE
         footer.visibility = View.GONE
     }
 
