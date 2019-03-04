@@ -35,5 +35,5 @@ android {
 }
 
 dependencies {
-    implementation (name: 'com.google.android.play.core-1.3.7', ext:'aar')
+    implementation (name: 'core-1.3.7', ext:'aar')
 }
