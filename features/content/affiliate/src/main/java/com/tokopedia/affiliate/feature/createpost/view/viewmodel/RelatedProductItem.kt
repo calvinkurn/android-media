@@ -17,6 +17,7 @@ data class RelatedProductItem(
             source.readString() ?: "",
             source.readString() ?: "",
             source.readString() ?: "",
+            source.readString() ?: "",
             source.readString() ?: ""
     )
 
@@ -27,6 +28,7 @@ data class RelatedProductItem(
         writeString(name)
         writeString(price)
         writeString(image)
+        writeString(type)
     }
 
     companion object {
