@@ -6,9 +6,6 @@ import android.content.res.Resources;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
-import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
@@ -65,6 +62,8 @@ import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.annotation.Resource;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -76,7 +75,7 @@ import retrofit2.Retrofit;
  */
 
 @SellerDashboardScope
-@Module
+@Module(includes = {SellerDashboardGMCommonModule.class})
 public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
@@ -248,75 +247,9 @@ public class SellerDashboardModule {
         return context.getResources();
     }
 
-    @Provides
-    @SellerDashboardScope
-    public GMCommonRepository provideGmCommonRepository(GMCommonDataSource gmCommonDataSource){
-        return new GMCommonRepositoryImpl(gmCommonDataSource);
-    }
-
-    @Provides
-    @SellerDashboardScope
-    public GMCommonApi provideGmCommonApi(@GMProductManageQualifier Retrofit retrofit){
-        return retrofit.create(GMCommonApi.class);
-    }
-
-    @GMProductManageQualifier
     @SellerDashboardScope
     @Provides
-    public Retrofit provideGMRetrofit(@GMProductManageQualifier OkHttpClient okHttpClient,
-                                      Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build();
-    }
-
-    @GMProductManageQualifier
-    @Provides
-    public OkHttpClient provideGMOkHttpClient(GMAuthInterceptor gmAuthInterceptor,
-                                              HttpLoggingInterceptor httpLoggingInterceptor,
-                                              HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                              CacheApiInterceptor cacheApiInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
-                .addInterceptor(gmAuthInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build();
-    }
-
-    @SellerDashboardScope
-    @Provides
-    HeaderErrorResponseInterceptor provideHeaderErrorResponseInterceptor(){
-        return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
-    }
-
-    @SellerDashboardScope
-    @Provides
-    public CacheApiInterceptor provideApiCacheInterceptor() {
-        return new CacheApiInterceptor();
-    }
-
-    @SellerDashboardScope
-    @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
-        return logging;
-    }
-
-    @SellerDashboardScope
-    @Provides
-    public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                                      AbstractionRouter abstractionRouter,
-                                                      UserSession userSession) {
-        return new GMAuthInterceptor(context, abstractionRouter, userSession);
-    }
-
-    @Provides
-    @SellerDashboardScope
-    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
+    public AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context) {
         if(context instanceof AbstractionRouter){
             return ((AbstractionRouter)context);
         }else{
@@ -326,7 +259,7 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
-    UserSession provideUserSessionAbstraction(AbstractionRouter abstractionRouter){
+    public UserSession provideUserSessionAbstract(AbstractionRouter abstractionRouter) {
         return abstractionRouter.getSession();
     }
 
@@ -335,5 +268,4 @@ public class SellerDashboardModule {
     public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new com.tokopedia.user.session.UserSession(context);
     }
-
 }

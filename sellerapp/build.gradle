@@ -76,8 +76,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 1000404;
-        defaultVersionName = "1.0.4";
+        defaultVersionCode = 1320404;
+        defaultVersionName = "1.3.2";
     }
 
     packagingOptions {
@@ -230,7 +230,7 @@ repositories {
 
 afterEvaluate {
     dependencies {
-        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+//        liveDevImplementation rootProject.ext.instabugDependencies.instabug
 //        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
@@ -255,6 +255,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)

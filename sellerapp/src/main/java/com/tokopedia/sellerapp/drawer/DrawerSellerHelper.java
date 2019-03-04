@@ -60,6 +60,7 @@ public class DrawerSellerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerSellerHeaderDataBinder.DrawerHeaderListener {
 
+    private static final String DIGITAL_PATH_MITRA = "mitra";
     private TextView shopName;
     private TextView shopLabel;
     private ImageView shopIcon;
@@ -105,7 +106,7 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getProductMenu());
 
         data.add(getPaymentAndTopupMenu());
-        data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu(false));
+        data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu());
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
@@ -368,16 +369,13 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalCategoryList());
+                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
                     UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    if (remoteConfig.getBoolean(RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
-                        intent = SellerOrderListActivity.getInstance(context);
-                    else
-                        intent = ((IDigitalModuleRouter) context.getApplication())
-                                .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                        + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
+                    intent = ((IDigitalModuleRouter) context.getApplication())
+                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA);
+
                     context.startActivity(intent);
                     UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);
                     break;

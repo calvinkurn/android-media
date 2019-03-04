@@ -112,7 +112,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     }
 
     @Override
-    public boolean isFromCMNotificationPlatform(Map<String ,String > extra) {
+    public boolean isFromCMNotificationPlatform(Map<String, String> extra) {
         return false;
     }
 

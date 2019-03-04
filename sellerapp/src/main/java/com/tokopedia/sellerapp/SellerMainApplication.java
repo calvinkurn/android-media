@@ -267,4 +267,15 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
+
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
+        return null;
+    }
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
+        return null;
+    }
 }

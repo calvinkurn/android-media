@@ -1,9 +1,12 @@
 package com.tokopedia.tkpd.fcm.appupdate;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -12,12 +15,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
  * Created by okasurya on 7/25/17.
  */
 public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
-    private static final String MAINAPP_IS_NEED_UPDATE = "mainapp_is_need_update";
-    private static final String MAINAPP_LATEST_VERSION_CODE = "mainapp_latest_version_code";
-    private static final String MAINAPP_IS_FORCE_UPDATE = "mainapp_is_force_update";
-    private static final String MAINAPP_UPDATE_TITLE = "mainapp_update_title";
-    private static final String MAINAPP_UPDATE_MESSAGE = "mainapp_update_message";
-    private static final String MAINAPP_UPDATE_LINK = "mainapp_update_link";
+    private static final String ANDROID_CUSTOMER_APP_UPDATE = "android_customer_app_update";
 
     private RemoteConfig remoteConfig;
 
@@ -28,23 +26,32 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     @Override
     public void checkApplicationUpdate(final OnUpdateListener listener) {
         if (remoteConfig != null) {
-            DetailUpdate detailUpdate = getDetailUpdate();
-            if (detailUpdate.isNeedUpdate() && GlobalConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
-                listener.onNeedUpdate(detailUpdate);
-            } else {
-                listener.onNotNeedUpdate();
+            String dataAppUpdate = remoteConfig.getString(ANDROID_CUSTOMER_APP_UPDATE);
+            if (!TextUtils.isEmpty(dataAppUpdate)) {
+                Gson gson = new Gson();
+                DataUpdateApp dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp.class);
+                if(dataUpdateApp != null) {
+                    DetailUpdate detailUpdate = generateDetailUpdate(dataUpdateApp);
+                    if (dataUpdateApp.isIsForceEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionForceUpdate()) {
+                        detailUpdate.setForceUpdate(true);
+                        listener.onNeedUpdate(detailUpdate);
+                    } else if (dataUpdateApp.isIsOptionalEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionOptionalUpdate()) {
+                        detailUpdate.setForceUpdate(false);
+                        listener.onNeedUpdate(detailUpdate);
+                    } else {
+                        listener.onNotNeedUpdate();
+                    }
+                }
             }
         }
     }
 
-    private DetailUpdate getDetailUpdate() {
+    private DetailUpdate generateDetailUpdate(DataUpdateApp dataUpdateApp) {
         DetailUpdate detailUpdate = new DetailUpdate();
-        detailUpdate.setNeedUpdate(remoteConfig.getBoolean(MAINAPP_IS_NEED_UPDATE));
-        detailUpdate.setLatestVersionCode(remoteConfig.getLong(MAINAPP_LATEST_VERSION_CODE));
-        detailUpdate.setForceUpdate(remoteConfig.getBoolean(MAINAPP_IS_FORCE_UPDATE));
-        detailUpdate.setUpdateTitle(remoteConfig.getString(MAINAPP_UPDATE_TITLE));
-        detailUpdate.setUpdateMessage(remoteConfig.getString(MAINAPP_UPDATE_MESSAGE));
-        detailUpdate.setUpdateLink(remoteConfig.getString(MAINAPP_UPDATE_LINK));
+        detailUpdate.setNeedUpdate(true);
+        detailUpdate.setUpdateTitle(dataUpdateApp.getTitle());
+        detailUpdate.setUpdateMessage(dataUpdateApp.getMessage());
+        detailUpdate.setUpdateLink(dataUpdateApp.getLink());
         return detailUpdate;
     }
 }
