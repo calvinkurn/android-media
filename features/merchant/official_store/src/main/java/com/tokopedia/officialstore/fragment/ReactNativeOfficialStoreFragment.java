@@ -6,6 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.officialstore.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
@@ -13,9 +17,17 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
+public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
+        implements AllNotificationListener {
 
+    private static final String TOTAL_INBOX = "totalInbox";
+    private static final String TOTAL_NOTIFICATION = "totalNotification";
     private static final String MP_OFFICIAL_STORE = "mp_official_store";
+    private static final String REFRESH_NOTIFICATION = "refreshNotification";
+
+    public static ReactNativeOfficialStoreFragment createInstance() {
+        return new ReactNativeOfficialStoreFragment();
+    }
 
     @Override
     public String getModuleName() {
@@ -36,7 +48,16 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
         return getArguments() != null ? getArguments() : new Bundle();
     }
 
-    public static ReactNativeOfficialStoreFragment createInstance(){
-        return new ReactNativeOfficialStoreFragment();
+    @Override
+    public void onNotificationChanged(int notificationCount, int inboxCount) {
+        if (reactInstanceManager != null && reactInstanceManager.getCurrentReactContext() != null) {
+            WritableMap param = Arguments.createMap();
+            param.putInt(TOTAL_NOTIFICATION, notificationCount);
+            param.putInt(TOTAL_INBOX, inboxCount);
+            reactInstanceManager
+                    .getCurrentReactContext()
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(REFRESH_NOTIFICATION, param);
+        }
     }
 }
