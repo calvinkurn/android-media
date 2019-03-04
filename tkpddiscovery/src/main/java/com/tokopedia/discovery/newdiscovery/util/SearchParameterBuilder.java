@@ -52,7 +52,7 @@ public class SearchParameterBuilder {
         searchParameter.setUserID(userID);
         searchParameter.setStartRow(startRow);
         searchParameter.setDepartmentId(departmentId);
-        searchParameter.setOfficial(isOfficial);
+        searchParameter.setIsOfficial(isOfficial);
         return searchParameter;
     }
 

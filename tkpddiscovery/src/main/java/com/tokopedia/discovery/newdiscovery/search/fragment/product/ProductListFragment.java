@@ -589,7 +589,7 @@ public class ProductListFragment extends SearchSectionFragment
             }
         }
         if (option.isOfficialOption()) {
-            getSearchParameter().setOfficial(isQuickFilterSelected);
+            getSearchParameter().setIsOfficial(isQuickFilterSelected);
         }
         reloadData();
         UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
@@ -602,9 +602,9 @@ public class ProductListFragment extends SearchSectionFragment
             return;
         }
         if (TextUtils.isEmpty(selectedFilter.get("official"))) {
-            getSearchParameter().setOfficial(false);
+            getSearchParameter().setIsOfficial(false);
         } else {
-            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get("official")));
+            getSearchParameter().setIsOfficial(Boolean.parseBoolean(selectedFilter.get("official")));
         }
         if (TextUtils.isEmpty(selectedFilter.get(BrowseApi.SC))) {
             getSearchParameter().setDepartmentId("");
@@ -625,7 +625,7 @@ public class ProductListFragment extends SearchSectionFragment
         if (Option.KEY_CATEGORY.equals(optionKey)) {
             getSearchParameter().setDepartmentId("");
         } else if (Option.KEY_OFFICIAL.equals(optionKey)) {
-            getSearchParameter().setOfficial(false);
+            getSearchParameter().setIsOfficial(false);
         }
         super.removeSelectedFilter(uniqueId);
     }
@@ -852,7 +852,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void addPreFilteredCategoryAndIsOfficial() {
         String preFilteredSc = getSearchParameter().getDepartmentId();
-        boolean isOfficial = getSearchParameter().isOfficial();
+        boolean isOfficial = getSearchParameter().getIsOfficial();
         if (TextUtils.isEmpty(preFilteredSc) && !isOfficial) {
             return;
         }
