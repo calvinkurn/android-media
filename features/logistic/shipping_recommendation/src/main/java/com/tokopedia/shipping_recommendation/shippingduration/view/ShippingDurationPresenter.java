@@ -163,6 +163,9 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
         shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
+        shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
+        shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
+        shippingParam.setAddressId(shipmentDetailData.getAddressId());
         return shippingParam;
     }
 

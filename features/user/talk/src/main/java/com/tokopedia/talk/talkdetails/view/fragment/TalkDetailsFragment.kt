@@ -236,6 +236,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         } else {
             showErrorTalk(ErrorHandler.getErrorMessage(context, throwable) ?: "")
         }
+        stopTrace()
     }
 
     override fun onErrorActionTalk(throwable: Throwable) {
