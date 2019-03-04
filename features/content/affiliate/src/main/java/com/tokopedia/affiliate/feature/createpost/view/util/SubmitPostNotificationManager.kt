@@ -105,7 +105,6 @@ abstract class SubmitPostNotificationManager(
             Glide.with(context.applicationContext)
                     .load(file)
                     .asBitmap()
-                    .placeholder(R.drawable.ic_big_notif_customerapp)
                     .error(R.drawable.ic_big_notif_customerapp)
                     .into(object : SimpleTarget<Bitmap>(100, 100) {
                         override fun onResourceReady(resource: Bitmap?,
