@@ -18,6 +18,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     private static final String MAINAPP_UPDATE_TITLE = "mainapp_update_title";
     private static final String MAINAPP_UPDATE_MESSAGE = "mainapp_update_message";
     private static final String MAINAPP_UPDATE_LINK = "mainapp_update_link";
+    private static final String MAINAPP_INAPPUPDATE_ENABLE = "android_customer_inapp_update";
 
     private RemoteConfig remoteConfig;
 
@@ -40,6 +41,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     private DetailUpdate getDetailUpdate() {
         DetailUpdate detailUpdate = new DetailUpdate();
         detailUpdate.setNeedUpdate(remoteConfig.getBoolean(MAINAPP_IS_NEED_UPDATE));
+        detailUpdate.setInAppUpdateEnabled(remoteConfig.getBoolean(MAINAPP_INAPPUPDATE_ENABLE));
         detailUpdate.setLatestVersionCode(remoteConfig.getLong(MAINAPP_LATEST_VERSION_CODE));
         detailUpdate.setForceUpdate(remoteConfig.getBoolean(MAINAPP_IS_FORCE_UPDATE));
         detailUpdate.setUpdateTitle(remoteConfig.getString(MAINAPP_UPDATE_TITLE));

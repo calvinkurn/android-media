@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.widget.Button;
 
+import com.tokopedia.abstraction.BuildConfig;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 /**
  * Created by okasurya on 7/26/17.
@@ -40,11 +43,18 @@ public class AppUpdateDialogBuilder {
             Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
             positiveButton.setOnClickListener(v -> {
-                activity.startActivity(
-                        new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink()))
-                );
-
-                if (!detail.isForceUpdate()) dialog.dismiss();
+                if (detail.isForceUpdate()) {
+                    goToPlayStore();
+                } else {
+                    //check if inappupdate flag is true
+                    if (detail.isInAppUpdateEnabled() &&
+                            GlobalConfig.VERSION_CODE >= Build.VERSION_CODES.LOLLIPOP) {
+                        
+                    } else {
+                        goToPlayStore();
+                    }
+                    dialog.dismiss();
+                }
                 listener.onPositiveButtonClicked(detail);
             });
 
@@ -56,6 +66,12 @@ public class AppUpdateDialogBuilder {
         });
 
         return alertDialog;
+    }
+
+    private void goToPlayStore(){
+        activity.startActivity(
+                new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink()))
+        );
     }
 
     public interface Listener {

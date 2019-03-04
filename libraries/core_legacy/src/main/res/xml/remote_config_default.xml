@@ -17,6 +17,10 @@
         <value>Update aplikasi sekarang dan nikmati performa yang lebih stabil.</value>
     </entry>
     <entry>
+        <key>android_customer_inapp_update</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_update_title</key>
         <value>Update Aplikasi</value>
     </entry>

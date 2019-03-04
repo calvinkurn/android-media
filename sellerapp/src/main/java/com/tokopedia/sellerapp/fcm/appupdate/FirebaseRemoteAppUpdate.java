@@ -38,6 +38,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
             if (GlobalConfig.VERSION_CODE < latestVersionCode) {
                 DetailUpdate detailUpdate = new DetailUpdate();
                 detailUpdate.setNeedUpdate(true);
+                detailUpdate.setInAppUpdateEnabled(false)
                 detailUpdate.setLatestVersionCode(latestVersionCode);
                 detailUpdate.setForceUpdate(remoteConfig.getBoolean(SELLERAPP_IS_FORCE_UPDATE));
                 detailUpdate.setUpdateTitle(remoteConfig.getString(SELLERAPP_UPDATE_TITLE));
