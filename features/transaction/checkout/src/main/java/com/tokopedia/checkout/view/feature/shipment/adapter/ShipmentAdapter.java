@@ -562,6 +562,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(newCourierItemData);
                 shipmentDetailData.setShipmentCartData(shipmentCartItemModel.getShipmentCartData());
+                shipmentDetailData.setBlackboxInfo(getBlackboxInfo());
                 shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
