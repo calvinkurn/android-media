@@ -947,5 +947,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         mRestoringSavedState = false;
     }
 
-
+    public Boolean isPasswordVisible(){
+        return mPasswordToggledVisible;
+    }
 }

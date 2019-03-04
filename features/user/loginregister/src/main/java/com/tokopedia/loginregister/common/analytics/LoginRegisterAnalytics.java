@@ -14,6 +14,7 @@ import java.util.Map;
 
 /**
  * @author by nisie on 10/2/18.
+ * https://docs.google.com/spreadsheets/d/1TCCs1XsXFtRZR8cO4ZQEDwOHCqCTVMXjDApzZ-fLEC8
  */
 public class LoginRegisterAnalytics {
 
@@ -82,6 +83,155 @@ public class LoginRegisterAnalytics {
         analyticTracker.sendScreen(activity, screenName);
     }
 
+    //#3
+    public void trackClickOnNext() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button selanjutnya",
+                "click"
+        );
+    }
+
+    //#3 //TODO
+    public void trackClickOnNextFail() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button selanjutnya",
+                "failed login phone number"
+        );
+    }
+
+    //#3 //TODO
+    public void trackClickOnNextSuccess() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button selanjutnya",
+                "success login phone number"
+        );
+    }
+
+    //#4
+    public void trackChangeButtonClicked() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button ubah",
+                ""
+        );
+    }
+
+    //#5
+    public void eventClickPasswordHide() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on hide kata sandi",
+                ""
+        );
+    }
+
+    //#6
+    public void eventClickPasswordShow() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on unhide kata sandi",
+                ""
+        );
+    }
+
+    //#7
+    public void trackClickForgotPassword() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on lupa kata sandi",
+                ""
+        );
+    }
+
+    //#8
+    public void trackClickRegisterOnFooter() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar bottom",
+                ""
+        );
+    }
+
+    //#9
+    public void trackClickRegisterOnMenu() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar top",
+                ""
+        );
+    }
+
+    //#10 //TODO
+    public void trackClickOnLoginButtonSuccess() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button masuk",
+                "success"
+        );
+    }
+
+    //#10 //TODO
+    public void trackClickOnLoginButtonError() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar google",
+                ""
+        );
+    }
+
+    //#11, 12, 13
+    public void trackEventSuccessLoginSosmed(String loginMethod) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button " + loginMethod,
+                "success"
+        );
+    }
+
+    //#11, 12, 13
+    public void trackEventFailedLoginSosmed(String loginMethod) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button " + loginMethod,
+                "failed"
+        );
+    }
+
+    //#14
+    public void trackOnBackPressed() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click back",
+                ""
+        );
+    }
+
+    @Deprecated
+    public void eventClickLoginGoogle(Context applicationContext) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+                map, applicationContext);
+    }
+
     public void eventClickLoginButton(Context applicationContext) {
 
         Map<String, Object> map = new HashMap<>();
@@ -126,15 +276,6 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    public void eventSuccessLoginSosmed(String loginMethod) {
-        analyticTracker.sendEventTracking(
-                EVENT_REGISTER_LOGIN,
-                CATEGORY_LOGIN,
-                ACTION_REGISTER,
-                loginMethod
-        );
-    }
-
     public void eventClickLoginWebview(String name) {
         analyticTracker.sendEventTracking(
                 EVENT_LOGIN_CLICK,
@@ -158,13 +299,7 @@ public class LoginRegisterAnalytics {
                 map, applicationContext);
     }
 
-    public void eventClickLoginGoogle(Context applicationContext) {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
-                map, applicationContext);
-    }
 
     public void eventClickLoginFacebook(Context applicationContext) {
 
@@ -400,66 +535,4 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    public void trackClickOnNext() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button selanjutnya",
-                "click"
-        );
-    }
-
-    public void trackChangeButtonClicked() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button ubah",
-                ""
-        );
-    }
-
-    public void trackClickForgotPassword() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on lupa kata sandi",
-                ""
-        );
-    }
-
-    public void trackClickRegisterOnFooter() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button daftar bottom",
-                ""
-        );
-    }
-
-    public void trackClickRegisterOnMenu() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button daftar top",
-                ""
-        );
-    }
-
-    public void trackClickOnLoginButton() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button masuk",
-                ""
-        );
-    }
-
-    public void trackOnBackPressed() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click back",
-                ""
-        );
-    }
 }

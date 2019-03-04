@@ -865,7 +865,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public void onSuccessLoginSosmed(String loginMethod) {
         dismissLoadingLogin();
 
-        analytics.eventSuccessLoginSosmed(loginMethod);
+        analytics.trackEventSuccessLoginSosmed(loginMethod);
         if (getActivity() != null) {
             ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
                     (userSession.getUserId(),

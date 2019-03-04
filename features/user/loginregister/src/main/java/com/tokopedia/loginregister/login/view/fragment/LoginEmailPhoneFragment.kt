@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.design.widget.CheckableImageButton
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
 import android.text.SpannableString
@@ -39,6 +40,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
@@ -135,6 +137,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private var actionLoginMethod: String = ""
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
+    private lateinit var togglePassword : CheckableImageButton
     private lateinit var loginLayout: LinearLayout
     private lateinit var loginButtonsContainer: LinearLayout
     private lateinit var emailPhoneEditText: EditText
@@ -177,6 +180,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun stopTrace() {
+        analytics.trackClickOnLoginButtonError()
+
         if (!isTraceStopped) {
             performanceMonitoring.stopTrace()
             isTraceStopped = true
@@ -281,6 +286,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
         } else {
             showSmartLock()
+        }
+
+        val wrapperPassword = partialRegisterInputView.findViewById<TkpdHintTextInputLayout>(R.id
+                .text_input_password_toggle)
+        togglePassword = wrapperPassword.findViewById(R.id.text_input_password_toggle)
+        togglePassword.setOnClickListener {
+            if(wrapperPassword.isPasswordVisible){
+                analytics.eventClickPasswordHide()
+            }else{
+                analytics.eventClickPasswordShow()
+            }
         }
     }
 
@@ -620,7 +636,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onSuccessLoginSosmed(loginMethod: String?) {
         dismissLoadingLogin()
 
-        analytics.eventSuccessLoginSosmed(loginMethod)
+        analytics.trackEventSuccessLoginSosmed(loginMethod)
         if (activity != null) {
             (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
                     userSession.name,
@@ -637,6 +653,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onSuccessLoginPhoneNumber() {
+        analytics.trackClickOnNextSuccess()
         actionLoginMethod = "phone"
         dismissLoadingLogin()
 
@@ -657,6 +674,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onErrorLoginSosmed(loginMethodName: String, errorMessage: String) {
+        analytics.trackEventFailedLoginSosmed(loginMethodName)
         onErrorLogin(errorMessage)
     }
 
@@ -667,6 +685,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onErrorValidateRegister(throwable: Throwable) {
+        analytics.trackClickOnNextFail()
         dismissLoadingLogin()
         val message = ErrorHandlerSession.getErrorMessage(context, throwable)
         partialRegisterInputView.onErrorValidate(message)
@@ -705,7 +724,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            analytics.trackClickOnLoginButton()
             KeyboardHandler.hideSoftKeyboard(activity)
             presenter.login(email, passwordEditText.text.toString())
         }
@@ -782,6 +800,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onSuccessLoginEmail() {
         dismissLoadingLogin()
         analytics.eventSuccessLoginEmail()
+        analytics.trackClickOnLoginButtonSuccess()
         if (activity != null) {
             (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
                     userSession.name,
