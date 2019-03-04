@@ -68,8 +68,9 @@
     <string name="af_set_main_image">Set Gambar Utama</string>
     <string name="af_main_image">Gambar Utama</string>
     <string name="af_caption_hint">Tulis caption yuk…</string>
-    <string name="af_related_product">Produk Terkait</string>
-    <string name="af_add_product_tag">Pilih Tag</string>
+    <string name="af_related_product">Produk pada Post</string>
+    <string name="af_add_product_tag">Tambah</string>
+    <string name="af_change_product_tag">Pilih</string>
     <string name="af_error_create_post">Gagal mengunggah post</string>
     <string name="af_notif_uploading">"Mengunggah post"</string>
     <string name="af_notif_media" formatted="false">%d dari %d Media…</string>

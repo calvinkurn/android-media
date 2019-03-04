@@ -29,8 +29,6 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewM
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
@@ -65,7 +63,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val REQUEST_IMAGE_PICKER = 1234
         private const val REQUEST_PREVIEW = 13
         private const val REQUEST_LOGIN = 83
-        private const val REQUEST_ATTACH_PRODUCT = 10
     }
 
     override fun initInjector() {
@@ -136,15 +133,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 }
             }
             REQUEST_LOGIN -> fetchContentForm()
-            REQUEST_ATTACH_PRODUCT -> if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
-                val products = data?.getParcelableArrayListExtra<ResultProduct>(
-                        AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
-                        ?: arrayListOf()
-                viewModel.relatedProducts.clear()
-                viewModel.relatedProducts.addAll(convertAttachProduct(products))
-                updateRelatedProduct()
-                updateButton()
-            }
             else -> {
             }
         }
@@ -225,7 +213,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onEmptyProductClick() {
-        goToAttachProduct()
+        onRelatedAddProductClick()
     }
 
     override fun onItemDeleted(position: Int) {
@@ -247,6 +235,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     abstract fun fetchContentForm()
+
+    abstract fun onRelatedAddProductClick()
+
+    protected open fun getAddRelatedProductText(): String = getString(R.string.af_add_product_tag)
 
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -305,8 +297,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
             goToImagePicker()
         }
+        relatedAddBtn.text = getAddRelatedProductText()
         relatedAddBtn.setOnClickListener {
-            goToAttachProduct()
+            onRelatedAddProductClick()
         }
         thumbnail.setOnClickListener {
             goToMediaPreview()
@@ -378,30 +371,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         doneBtn.isEnabled = isButtonEnabled
     }
 
-    private fun goToAttachProduct() {
-        val intent = AttachProductActivity.createInstance(context,
-                userSession.shopId,
-                "",
-                true,
-                "")
-        startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
-    }
-
     private fun updateRelatedProduct() {
         adapter.setList(viewModel.relatedProducts)
-    }
-
-    private fun convertAttachProduct(attachedProducts: MutableList<ResultProduct>): MutableList<RelatedProductItem> {
-        val relatedProducts = arrayListOf<RelatedProductItem>()
-        attachedProducts.forEach {
-            relatedProducts.add(RelatedProductItem(
-                    it.productId.toString(),
-                    it.name,
-                    it.price,
-                    it.productImageThumbnail)
-            )
-        }
-        return relatedProducts
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
