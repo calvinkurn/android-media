@@ -14,14 +14,15 @@
             android:layout_height="match_parent">
 
             <include
-                layout="@layout/kyc_selfie_intro" />
+                layout="@layout/kyc_selfie_intro"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:id="@+id/selfieid_preview_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -30,7 +31,7 @@
 
                     <ImageView
                         android:id="@+id/selfieid_img"
-                        android:layout_width="wrap_content"
+                        android:layout_width="201dp"
                         android:layout_height="260dp"
                         android:layout_gravity="center"
                         android:scaleType="center"

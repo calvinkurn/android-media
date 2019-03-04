@@ -1,10 +1,10 @@
 package com.tokopedia.kyc.view.fragment;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +45,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     private int kycReqId;
     private String imagePath;
     private boolean flipSelfieIdImg;
-    private AlertDialog alertDialog;
+    private Snackbar errorSnackbar;
 
 
     @Override
@@ -69,7 +69,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
 
                 @Override
                 public void onError(Throwable e) {
-                    showErrorAlertDialog();
+                    showErrorSnackbar();
                     loaderUiListener.hideProgressDialog();
                 }
 
@@ -86,7 +86,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
                         goToTandCPage();
                     }
                     else {
-                        showErrorAlertDialog();
+                        showErrorSnackbar();
                     }
                 }
             });
@@ -97,8 +97,8 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
                     getSefieIdImageAction(),
                     Constants.Keys.KYC_SELFIEID_CAMERA, false);
         }
-        else if(i == R.id.error_btn_confirm){
-            alertDialog.dismiss();
+        else if(i == R.id.btn_ok){
+            if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
         }
     }
 
@@ -187,8 +187,8 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
                 FragmentTermsAndConditions.TAG);
     }
 
-    private void showErrorAlertDialog(){
-        alertDialog = KycUtil.getErrorDialogBuilder(getActivity(), FragmentSelfieIdPreviewAndUpload.this::onClick).create();
-        alertDialog.show();
+    private void showErrorSnackbar(){
+        errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), this::onClick) ;
+        errorSnackbar.show();
     }
 }

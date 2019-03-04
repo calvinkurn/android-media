@@ -1,14 +1,10 @@
 package com.tokopedia.kyc.view.fragment;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -38,7 +34,6 @@ import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import rx.Subscriber;
@@ -63,7 +58,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     public static String TAG = "cardId_upload";
     public static String CARDID_IMG_PATH = "cardid_img_path";
     public static String FLAG_IMG_FLIP = "flag_img_flip";
-    private AlertDialog alertDialog;
+    private Snackbar errorSnackbar;
 
     private ActivityListener activityListener;
     private LoaderUiListener loaderUiListener;
@@ -86,7 +81,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
 
                 @Override
                 public void onError(Throwable e) {
-                    showErrorAlertDialog();
+                    showErrorSnackbar();
                     loaderUiListener.hideProgressDialog();
                 }
                 @Override
@@ -112,7 +107,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
                         }
                     }
                     else {
-                        showErrorAlertDialog();
+                        showErrorSnackbar();
                     }
                 }
             });
@@ -138,8 +133,8 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
             KycUtil.createKYCIdCameraFragment(getContext(),
                     activityListener, actionCreator, Constants.Keys.KYC_CARDID_CAMERA, true);
         }
-        else if(i == R.id.error_btn_confirm){
-            alertDialog.dismiss();
+        else if(i == R.id.btn_ok){
+            if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
         }
     }
 
@@ -346,9 +341,9 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
         return false;
     }
 
-    private void showErrorAlertDialog(){
-        alertDialog = KycUtil.getErrorDialogBuilder(getActivity(), FragmentCardIDUpload.this::onClick).create();
-        alertDialog.show();
+    private void showErrorSnackbar(){
+        errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), this::onClick);
+        errorSnackbar.show();
     }
 
 }

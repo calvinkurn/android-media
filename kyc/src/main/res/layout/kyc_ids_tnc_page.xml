@@ -26,7 +26,7 @@
                     android:id="@+id/cardid_img"
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:background="@drawable/bg_transparent_black_rounded_corners" />
 
                 <TextView
@@ -64,7 +64,7 @@
                     android:id="@+id/selfieid_img"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:background="@drawable/bg_transparent_black_rounded_corners" />
 
                 <TextView
@@ -94,33 +94,41 @@
                 android:id="@+id/chkbx_tnc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/cardid_container"
-                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_200"
+                android:layout_toLeftOf="@+id/txtv_tnc"
+                android:textColor="#4a4a4a" />
+            <TextView
+                android:id="@+id/txtv_tnc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_210"
                 android:layout_marginRight="@dimen/dp_30"
-                android:text="Saya setuju dengan Syarat dan Ketentuan yang berlaku"
+                android:layout_marginLeft="@dimen/dp_5"
                 android:textColor="#4a4a4a"
+                android:layout_centerHorizontal="true"
                 android:textSize="12sp" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/chkbx_tnc"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_30"
-                android:background="@drawable/btn_bg_rounded_corners"
-                android:gravity="center"
-                android:text="PROSES"
-                android:enabled="false"
-                android:id="@+id/proceed_tnc"
-                android:textColor="#ffffff"
-                android:textSize="14sp" />
 
         </RelativeLayout>
     </ScrollView>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_30"
+        android:background="@drawable/btn_bg_rounded_corners"
+        android:gravity="center"
+        android:text="PROSES"
+        android:layout_alignParentBottom="true"
+        android:enabled="false"
+        android:layout_marginBottom="@dimen/dp_50"
+        android:id="@+id/proceed_tnc"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+
 
     <include
         layout="@layout/branding_layout"

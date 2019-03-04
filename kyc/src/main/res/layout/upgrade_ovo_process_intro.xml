@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="6sp"
-                android:text="Mohon siapkan KTP Anda bagi WNI dan Passport Anda bagi WNA/Foreigner"
+                android:text="Mohon siapkan KTP Anda bagi WNI dan Passport Anda bagi WNA/Foreigner"
                 android:textColor="#2d263b"
                 android:textSize="14sp"
                 android:paddingTop="@dimen/dp_20"

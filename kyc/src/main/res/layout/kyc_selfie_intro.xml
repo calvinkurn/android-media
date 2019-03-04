@@ -15,7 +15,7 @@
         android:layout_marginTop="@dimen/dp_24"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="8sp"
-        android:text="Selfie dengan KTP (WNI) / Passport (Foreigner)"
+        android:text="Selfie dengan KTP (WNI)/ Passport (Foreigner)"
         android:textColor="#4c2a86"
         android:textSize="16sp" />
 

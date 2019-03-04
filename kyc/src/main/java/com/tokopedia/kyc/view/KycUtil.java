@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -103,4 +106,28 @@ public class KycUtil {
         dialogBuilder.setView(dialogView);
         return dialogBuilder;
     }
+
+    public static AlertDialog.Builder getKycConfirmSubmitAlertDialog(Activity context, View.OnClickListener onClickListener){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = context.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.tnc_confirm_page_submit_dialog, null);
+        dialogView.findViewById(R.id.continue_btn).setOnClickListener(onClickListener);
+        dialogView.findViewById(R.id.back_btn).setOnClickListener(onClickListener);
+        dialogBuilder.setView(dialogView);
+        return dialogBuilder;
+    }
+
+    public static Snackbar createErrorSnackBar(Activity activity,
+                                               View.OnClickListener onClickListener){
+        Snackbar snackbar = Snackbar.make(activity.findViewById(
+                android.R.id.content), "", Snackbar.LENGTH_LONG);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.error_snackbar_layout, null);
+        snackView.findViewById(R.id.btn_ok).setOnClickListener(onClickListener);
+        layout.addView(snackView, 0);
+        return snackbar;
+    }
 }
+
