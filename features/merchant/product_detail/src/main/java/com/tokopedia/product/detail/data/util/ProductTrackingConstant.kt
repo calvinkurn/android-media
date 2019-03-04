@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.util
 object ProductTrackingConstant {
     object Category {
         const val PDP = "Product Detail Page"
+        const val PRODUCT_PAGE = "Product Page"
     }
 
     object Action {
@@ -48,5 +49,10 @@ object ProductTrackingConstant {
 
     object TopAds {
         const val PDP_TOPADS = "/productdetail - top ads'"
+    }
+
+    object Message {
+        const val EVENT = "clickMessageShop"
+        const val LABEL = "Message Shop"
     }
 }

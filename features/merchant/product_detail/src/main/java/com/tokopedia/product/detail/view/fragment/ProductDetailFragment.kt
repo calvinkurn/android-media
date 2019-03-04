@@ -173,6 +173,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ETALASE = 565
         const val REQUEST_CODE_NORMAL_CHECKOUT = 566
         const val REQUEST_CODE_ATC_EXPRESS = 567
+        const val REQUEST_CODE_SHOP_INFO = 998
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -472,7 +473,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
 
         if (!::actionButtonView.isInitialized) {
-            actionButtonView = PartialButtonActionView.build(base_btn_action)
+            actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
         }
 
         if (!::productShopView.isInitialized) {
@@ -485,8 +486,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (!::imageReviewViewView.isInitialized)
             imageReviewViewView = PartialImageReviewView.build(base_image_review)
 
-        if (!::mostHelpfulReviewView.isInitialized)
+        if (!::mostHelpfulReviewView.isInitialized) {
             mostHelpfulReviewView = PartialMostHelpfulReviewView.build(base_view_most_helpful_review)
+            mostHelpfulReviewView.onReviewClicked = this::onReviewClicked
+        }
 
         if (!::latestTalkView.isInitialized)
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
@@ -495,10 +498,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
             otherProductView = PartialOtherProductView.build(base_other_product)
     }
 
-    val onViewClickListener = View.OnClickListener {
+    private val onViewClickListener = View.OnClickListener {
         when(it.id){
             R.id.btn_favorite -> onShopFavoriteClick()
+            R.id.send_msg_shop, R.id.btn_topchat -> onShopChatClicked()
+            R.id.shop_ava, R.id.shop_name -> gotoShopDetail()
             else -> {}
+        }
+    }
+
+    private fun gotoShopDetail() {
+        activity?.let {
+            val shopId = productInfo?.basic?.shopID?.toString() ?: return
+            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.SHOP.replace("{shop_id}", shopId)),
+                    REQUEST_CODE_SHOP_INFO)
         }
     }
 
@@ -800,8 +813,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             ToasterNormal.make(view, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
                 .setAction(getString(R.string.label_atc_open_cart)) { v ->
                     //TODO tracking
-                    val intent = (application as ProductDetailRouter)
-                        .getCartIntent(this)
+
+                    val intent = RouteManager.getIntent(this, ApplinkConst.CART)
                     startActivity(intent)
                 }
                 .show()
@@ -1101,8 +1114,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productDetailTracking.eventTalkClicked()
 
         activity?.let {
-            val router = it.applicationContext as? ProductDetailRouter ?: return
-            startActivityForResult(router.getProductTalk(it, productInfo?.basic?.id.toString()), REQUEST_CODE_TALK_PRODUCT)
+            val intent = RouteManager.getIntent(it,
+                    ApplinkConst.PRODUCT_TALK.replace("{product_id}", productInfo?.basic?.id.toString()))
+            startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
         if (productInfo != null) {
             //TODO SENT MOENGAGE
@@ -1119,6 +1133,27 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     productInfo!!.basic.name))
             }
         }
+    }
+
+    private fun onShopChatClicked(){
+        val shop = shopInfo ?: return
+        val product = productInfo ?: return
+        activity?.let {
+            if (productInfoViewModel.isUserSessionActive()){
+                val intent = RouteManager.getIntent(it,
+                        ApplinkConst.TOPCHAT_ASKSELLER.replace("{toShopId}", shop.shopCore.shopID)
+                                .replace("{customMessage}", product.basic.url)
+                                .replace("{source}", "product")
+                                .replace("{opponent_name}", shop.shopCore.name)
+                                .replace("{avatar}", shop.shopAssets.avatar))
+                startActivity(intent)
+            } else {
+                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+            }
+        }
+        productDetailTracking.eventSendMessage()
+        productDetailTracking.eventSendChat()
     }
 
     /**
@@ -1257,7 +1292,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         context?.run {
             val shopId = productInfo?.basic?.shopID.toString()
             if (shopId.isNotEmpty()) {
-                val etalaseId = productInfo?.menu?.id.toString() ?: ""
+                val etalaseId = productInfo?.menu?.id ?: ""
                 val shopEtalasePickerIntent = ShopEtalasePickerActivity.createIntent(this,
                     shopId, etalaseId, false, true)
                 startActivityForResult(shopEtalasePickerIntent, REQUEST_CODE_ETALASE)
@@ -1298,7 +1333,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             val router = (it.applicationContext as? ProductDetailRouter) ?: return
             if (productInfoViewModel.isUserSessionActive()) {
-                startActivity(router.getCartIntent(it))
+                startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
             } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
