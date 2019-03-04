@@ -11,13 +11,13 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
  */
 class ContentCreatePostFragment: BaseCreatePostFragment() {
     companion object {
+        private const val REQUEST_ATTACH_PRODUCT = 10
+
         fun createInstance(bundle: Bundle): ContentCreatePostFragment {
             val fragment = ContentCreatePostFragment()
             fragment.arguments = bundle
             return fragment
         }
-
-        private const val REQUEST_ATTACH_PRODUCT = 10
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

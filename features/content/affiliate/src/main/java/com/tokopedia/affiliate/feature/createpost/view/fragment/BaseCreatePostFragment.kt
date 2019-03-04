@@ -151,11 +151,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.maxImage = feedContentForm.media.maxMedia
 
         if (feedContentForm.media.media.isNotEmpty()) {
-            if (viewModel.urlImageList.isEmpty()) {
-                viewModel.urlImageList.clear()
-                feedContentForm.media.media.forEach {
-                    viewModel.urlImageList.add(it.mediaUrl)
-                }
+            viewModel.urlImageList.clear()
+            feedContentForm.media.media.forEach {
+                viewModel.urlImageList.add(it.mediaUrl)
             }
         }
 
@@ -240,24 +238,29 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     protected open fun getAddRelatedProductText(): String = getString(R.string.af_add_product_tag)
 
-    private fun initVar(savedInstanceState: Bundle?) {
+    protected open fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
         } else if (arguments != null) {
             if (arguments!!.getString(DRAFT_ID) != null) {
                 initDraft(arguments!!)
             } else {
-                val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "").split(',')
-                val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "").split(',')
-
-                viewModel.productIdList.addAll(productIds)
-                viewModel.adIdList.addAll(adIds)
                 viewModel.postId = arguments!!.getString(CreatePostActivity.PARAM_POST_ID, "")
                 viewModel.authorType = arguments!!.getString(CreatePostActivity.PARAM_TYPE, "")
+
+                initProductIds()
             }
         } else {
             activity?.finish()
         }
+    }
+
+    protected fun initProductIds() {
+        val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "").split(',')
+        val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "").split(',')
+
+        viewModel.productIdList.addAll(productIds)
+        viewModel.adIdList.addAll(adIds)
     }
 
     private fun initDraft(arguments: Bundle) {
