@@ -59,7 +59,11 @@ class SubmitPostService : IntentService(TAG) {
                 CreatePostViewModel::class.java
         ) ?: return
         val notifId = Random().nextInt()
-        notificationManager = getNotificationManager(id, viewModel.authorType, notifId, viewModel.completeImageList.size)
+        notificationManager = getNotificationManager(id,
+                viewModel.authorType,
+                viewModel.completeImageList.firstOrNull() ?: "",
+                notifId,
+                viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
         submitPostUseCase.execute(
                 SubmitPostUseCase.createRequestParams(
@@ -80,9 +84,13 @@ class SubmitPostService : IntentService(TAG) {
                 .inject(this)
     }
 
-    private fun getNotificationManager(draftId: String, authorType: String, notifId: Int, maxCount: Int): SubmitPostNotificationManager {
+    private fun getNotificationManager(draftId: String, authorType: String, firstImage: String,
+                                       notifId: Int, maxCount: Int): SubmitPostNotificationManager {
+
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return object : SubmitPostNotificationManager(notifId, maxCount, manager, this@SubmitPostService) {
+        return object : SubmitPostNotificationManager(notifId, maxCount, firstImage, manager,
+                this@SubmitPostService) {
+
             override fun getSuccessIntent(): PendingIntent {
                 val applink = if (authorType == TYPE_AFFILIATE) {
                     ApplinkConst.PROFILE.replace(USER_ID_PARAM, userSession.userId)
