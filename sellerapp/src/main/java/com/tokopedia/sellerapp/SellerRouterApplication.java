@@ -1127,7 +1127,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void showForceLogoutDialog(Response response) {
-        ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 

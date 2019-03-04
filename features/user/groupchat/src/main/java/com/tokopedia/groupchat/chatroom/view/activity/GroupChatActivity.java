@@ -22,7 +22,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.Fragment.SavedState;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
@@ -96,7 +95,6 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.applink.ApplinkConstant;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
@@ -120,6 +118,7 @@ import javax.inject.Inject;
  * @author by nisie on 2/6/18.
  */
 
+@Deprecated
 public class GroupChatActivity extends BaseSimpleActivity
         implements GroupChatTabAdapter.TabListener, GroupChatContract.View
         , ToolTipUtils.ToolTipListener {
@@ -150,52 +149,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private boolean isTraceStopped = false;
 
     public GroupChatActivity() {
-    }
-
-
-    @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
-    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
-        Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
-        if (extras.get(ApplinkConstant.PARAM_TAB) != null) {
-            detailsIntent = GroupChatActivity.getCallingIntent(context, id, extras.getString(ApplinkConstant.PARAM_TAB));
-        }
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(detailsIntent);
-        return taskStackBuilder;
-    }
-
-    @DeepLink(ApplinkConstant.GROUPCHAT_ROOM_VIA_LIST)
-    public static TaskStackBuilder getCallingTaskStackViaList(Context context, Bundle extras) {
-        String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
-        Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
-        Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
-                .getInboxChannelsIntent(context);
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(detailsIntent);
-        return taskStackBuilder;
-    }
-
-    @DeepLink(ApplinkConstant.GROUPCHAT_VOTE_VIA_LIST)
-    public static TaskStackBuilder getCallingTaskStackVoteViaList(Context context, Bundle extras) {
-        String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
-        Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
-        detailsIntent.putExtra(INITIAL_FRAGMENT, CHANNEL_VOTE_FRAGMENT);
-        Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
-                .getInboxChannelsIntent(context);
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(detailsIntent);
-        return taskStackBuilder;
     }
 
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
@@ -1758,11 +1711,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                         getAttributionTracking(GroupChatAnalytics
                                 .ATTRIBUTE_BANNER)
                 ));
-                analytics.eventClickOverlayImage(
-                        model.getChannelId(),GroupChatAnalytics.COMPONENT_BANNER,
-                        viewModel.getChannelInfoViewModel().getAdsName(),
-                        GroupChatAnalytics.ATTRIBUTE_BANNER,
-                        list);
+//                analytics.eventClickOverlayImage(
+//                        model.getChannelId(),GroupChatAnalytics.COMPONENT_BANNER,
+//                        viewModel.getChannelInfoViewModel().getAdsName(),
+//                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+//                        list);
             });
         } else
             ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
@@ -1788,11 +1741,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                     getAttributionTracking(GroupChatAnalytics
                             .ATTRIBUTE_BANNER)
             ));
-            analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle(),
-                    GroupChatAnalytics.COMPONENT_BANNER,
-                    viewModel.getChannelInfoViewModel().getAdsName(),
-                    GroupChatAnalytics.ATTRIBUTE_BANNER,
-                    list );
+//            analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle(),
+//                    GroupChatAnalytics.COMPONENT_BANNER,
+//                    viewModel.getChannelInfoViewModel().getAdsName(),
+//                    GroupChatAnalytics.ATTRIBUTE_BANNER,
+//                    list );
             if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
                 startApplink(interuptViewModel.getBtnLink());
             }
@@ -1838,8 +1791,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void handleParticipant(ParticipantViewModel map) {
-        if (map.channelId.equals(getChannelInfoViewModel().getChannelId())) {
-            setToolbarParticipantCount(TextFormatter.format(map.totalView));
+        if (map.getChannelId().equals(getChannelInfoViewModel().getChannelId())) {
+            setToolbarParticipantCount(TextFormatter.format(map.getTotalView()));
         }
     }
 
