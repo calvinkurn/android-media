@@ -159,7 +159,7 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
                         public void onClick(View view) {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                                     holder.getContext(),
-                                    channel.getEnhanceClickLegoBannerHomePage(grid, position + 1)
+                                    channel.getEnhanceClickThreeLegoBannerHomePage(grid, position + 1)
                             );
                             listener.onThreeGridItemClicked(getAvailableLink(grid.getApplink(), grid.getUrl()),
                                     channel.getHomeAttribution(position + 1, grid.getAttribution()));

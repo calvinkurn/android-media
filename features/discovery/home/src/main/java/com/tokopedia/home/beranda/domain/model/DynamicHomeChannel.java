@@ -528,6 +528,29 @@ public class DynamicHomeChannel {
             );
         }
 
+        public Map<String, Object> getEnhanceClickThreeLegoBannerHomePage(Grid grid, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "lego banner 3 image click",
+                    "eventLabel", grid.getName(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", grid.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", grid.getAttribution(),
+                                                    "creative_url", grid.getImageUrl(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    ),
+                    "attribution", getHomeAttribution(position, grid.getAttribution())
+            );
+        }
+
         public void setPromoName(String promoName) {
             this.promoName = promoName;
         }
