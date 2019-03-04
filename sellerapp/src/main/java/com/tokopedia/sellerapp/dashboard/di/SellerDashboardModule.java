@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -49,6 +51,7 @@ import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
 import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.annotation.Resource;
 
@@ -61,7 +64,7 @@ import retrofit2.Retrofit;
  */
 
 @SellerDashboardScope
-@Module
+@Module(includes = {SellerDashboardGMCommonModule.class})
 public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
@@ -231,5 +234,27 @@ public class SellerDashboardModule {
     @Provides
     Resources provideResources(@ApplicationContext Context context){
         return context.getResources();
+    }
+
+    @SellerDashboardScope
+    @Provides
+    public AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context) {
+        if(context instanceof AbstractionRouter){
+            return ((AbstractionRouter)context);
+        }else{
+            return null;
+        }
+    }
+
+    @SellerDashboardScope
+    @Provides
+    public UserSession provideUserSessionAbstract(AbstractionRouter abstractionRouter) {
+        return abstractionRouter.getSession();
+    }
+
+    @SellerDashboardScope
+    @Provides
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new com.tokopedia.user.session.UserSession(context);
     }
 }

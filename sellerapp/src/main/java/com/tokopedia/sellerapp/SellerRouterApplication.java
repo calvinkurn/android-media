@@ -111,7 +111,6 @@ import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
-import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
@@ -373,11 +372,6 @@ public abstract class SellerRouterApplication extends MainApplication
             gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
         }
         return gmComponent;
-    }
-
-    @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxListActivity.class);
     }
 
     @Override
@@ -2032,4 +2026,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void openImagePreviewFromChat(@NotNull Context context, @NotNull ArrayList<String> listImage, @NotNull ArrayList<String> imageDesc, @NotNull String title, @NotNull String date) {
 
     }
+
+
 }
