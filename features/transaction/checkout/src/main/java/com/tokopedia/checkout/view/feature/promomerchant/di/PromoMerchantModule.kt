@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.feature.promomerchant.di
 
 import com.tokopedia.checkout.view.feature.promomerchant.view.PromoMerchantAdapter
 import com.tokopedia.checkout.view.feature.promomerchant.view.PromoMerchantContract
-import com.tokopedia.checkout.view.feature.promomerchant.view.PromoMerchantPresenter
 import dagger.Module
 import dagger.Provides
 
@@ -12,7 +11,7 @@ import dagger.Provides
 @Module
 class PromoMerchantModule {
 
-    @Provides
+    /*@Provides
     @PromoMerchantScope
     internal fun providePromoMerchantAdapter(): PromoMerchantAdapter {
         return PromoMerchantAdapter()
@@ -22,7 +21,7 @@ class PromoMerchantModule {
     @PromoMerchantScope
     internal fun provideShippingDurationPresenter(): PromoMerchantContract.Presenter {
         return PromoMerchantPresenter()
-    }
+    }*/
 
     /*@Provides
     @ShippingDurationScope

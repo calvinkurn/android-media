@@ -537,6 +537,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void onTopAdsItemClicked(Product product);
 
-        void onPromoMerchantClicked();
+        void onMerchantPromoClicked();
     }
 }

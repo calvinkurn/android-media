@@ -183,7 +183,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     }
 
     private View.OnClickListener promoShopClickListener() {
-        return v -> cartAdapterListener.onPromoMerchantClicked();
+        return v -> cartAdapterListener.onMerchantPromoClicked();
     }
 
 }

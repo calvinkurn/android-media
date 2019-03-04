@@ -49,11 +49,12 @@ import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheetFragment;
+import com.tokopedia.checkout.view.feature.bottomsheetcod.MerchantPromoBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.checkout.view.feature.promomerchant.view.PromoMerchantBottomsheet;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -120,7 +121,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
     private LinearLayout emptyCartContainer;
-    private PromoMerchantBottomsheet promoMerchantBottomsheet;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -1651,12 +1651,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onPromoMerchantClicked() {
-        System.out.println("++ PROMO SHOP CLICKED!!");
-        promoMerchantBottomsheet = PromoMerchantBottomsheet.newInstance();
-
-        if (getActivity() != null) {
-            promoMerchantBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+    public void onMerchantPromoClicked() {
+        System.out.println("++ MERCHANT PROMO IS CLICKED!!");
+        if (getFragmentManager() != null) {
+            MerchantPromoBottomSheetFragment bottomSheet = MerchantPromoBottomSheetFragment.newInstance();
+            bottomSheet.show(getFragmentManager(), null);
         }
     }
 }

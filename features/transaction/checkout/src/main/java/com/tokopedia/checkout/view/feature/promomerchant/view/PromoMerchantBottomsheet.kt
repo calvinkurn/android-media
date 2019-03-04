@@ -6,7 +6,6 @@ import android.view.View
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.feature.promomerchant.di.PromoMerchantModule
 import com.tokopedia.design.component.BottomSheets
-import javax.inject.Inject
 
 class PromoMerchantBottomsheet : BottomSheets(), PromoMerchantContract.View, PromoMerchantAdapterListener {
     private var rvPromo: RecyclerView? = null
@@ -23,11 +22,11 @@ class PromoMerchantBottomsheet : BottomSheets(), PromoMerchantContract.View, Pro
     }
 
     private fun initializeInjector() {
-        val component = DaggerPromoMerchantComponent.builder()
+        /*val component = DaggerPromoMerchantComponent.builder()
                 .promoMerchantModule(PromoMerchantModule())
                 .build()
 
-        component.inject(this)
+        component.inject(this)*/
     }
 
     override fun onPromoMerchantShown() {
