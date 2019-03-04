@@ -179,7 +179,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val SAVED_QUANTITY = "saved_quantity"
         const val SAVED_VARIANT = "saved_variant"
 
-        private const val PDP_TRACE = "pdp_trace"
+        private const val PDP_P1_TRACE = "mp_pdp_p1"
+        private const val PDP_P2_TRACE = "mp_pdp_p2_p3"
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
 
         private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -211,7 +212,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(PDP_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(PDP_P1_TRACE)
         if (savedInstanceState != null) {
             userInputNotes = savedInstanceState.getString(SAVED_NOTE, "")
             userInputQuantity = savedInstanceState.getInt(SAVED_QUANTITY, 1)
@@ -240,6 +241,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         productInfoViewModel.productInfoP1Resp.observe(this, Observer {
+            performanceMonitoring.stopTrace()
             when (it) {
                 is Success -> onSuccessGetProductInfo(it.data)
                 is Fail -> onErrorGetProductInfo(it.throwable)
@@ -257,6 +259,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
 
         productInfoViewModel.productInfoP3resp.observe(this, Observer {
+            performanceMonitoring.stopTrace()
             it?.run { renderProductInfo3(this) }
         })
 
@@ -986,6 +989,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
+        performanceMonitoring = PerformanceMonitoring.start(PDP_P2_TRACE)
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
