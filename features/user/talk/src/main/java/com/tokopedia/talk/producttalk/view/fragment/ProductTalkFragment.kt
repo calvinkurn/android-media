@@ -327,6 +327,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
             presenter.getProductTalk(productId)
         }
+        stopTrace()
     }
 
     override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {

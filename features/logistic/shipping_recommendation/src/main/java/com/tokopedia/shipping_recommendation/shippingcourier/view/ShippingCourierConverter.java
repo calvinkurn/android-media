@@ -36,6 +36,8 @@ public class ShippingCourierConverter {
         courierItemData.setAllowDropshiper(shippingCourierViewModel.isAllowDropshipper());
         courierItemData.setAdditionalPrice(shippingCourierViewModel.getAdditionalFee());
         courierItemData.setPromoCode(shippingCourierViewModel.getProductData().getPromoCode());
+        courierItemData.setChecksum(shippingCourierViewModel.getProductData().getCheckSum());
+        courierItemData.setUt(shippingCourierViewModel.getProductData().getUnixTime());
         courierItemData.setSelected(true);
 
         return courierItemData;
