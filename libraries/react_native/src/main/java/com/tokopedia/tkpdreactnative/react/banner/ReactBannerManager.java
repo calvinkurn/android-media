@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.banner.BannerView;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,9 +89,9 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
         if (applink.toLowerCase().contains("tokopedia://")) {
             RouteManager.route(context, applink);
         } else {
-            if (context instanceof Activity && context.getApplicationContext() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((Activity)context, applink);
+            if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+                ((ReactNativeRouter) context.getApplicationContext())
+                        .getBrandsWebViewIntent(context, applink);
             }
         }
     }

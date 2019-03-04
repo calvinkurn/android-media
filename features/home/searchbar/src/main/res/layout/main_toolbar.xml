@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_48"
+    android:layout_height="?actionBarSize"
     android:background="@color/white"
     app:contentInsetStart="0dp"
     app:contentInsetEnd="0dp"
@@ -11,7 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="?actionBarSize"
         android:orientation="horizontal"
         android:padding="@dimen/dp_8">
 
