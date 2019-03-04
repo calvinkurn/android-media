@@ -325,6 +325,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun hideHeader() {
+        app_bar_layout.visibility = View.GONE
+    }
+
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
         presenter.cursor = lastCursor
         trackKolPostImpression(visitables)

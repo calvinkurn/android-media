@@ -29,6 +29,8 @@ interface ProfileContract {
         fun showLoadingLayout()
 
         fun hideLoadingLayout()
+
+        fun hideHeader()
     }
     interface Presenter : CustomerPresenter<View> {
         var cursor: String

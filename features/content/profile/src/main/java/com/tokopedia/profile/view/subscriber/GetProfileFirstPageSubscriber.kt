@@ -24,5 +24,6 @@ class GetProfileFirstPageSubscriber(private val view: ProfileContract.View,
             e?.printStackTrace()
         }
         view.showGetListError(e)
+        view.hideHeader()
     }
 }
