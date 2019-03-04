@@ -23,10 +23,6 @@ data class ProductVariant(
         @Expose
         var sizeChart: String = "",
 
-        @SerializedName("Enabled")
-        @Expose
-        var enabled: Boolean? = null,
-
         @SerializedName("AlwaysAvailable")
         @Expose
         var alwaysAvailable: Boolean? = null,

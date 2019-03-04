@@ -359,14 +359,21 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         actionButtonView.addToCartClick = {
-            goToNormalCheckout(ATC_ONLY)
+            //TODO tracking
+            if (productInfoViewModel.isUserSessionActive()) {
+                goToNormalCheckout(ATC_ONLY)
+            } else {
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+                }
+            }
         }
         actionButtonView.buyNowClick = {
             // TODO buy now / buy / preorder
             if (productInfoViewModel.isUserSessionActive()) {
                 //TODO tracking
                 //TODO go to normal checkout or express checkout activity
-
                 var isExpressCheckout = false // TODO will check checkoutType = express
                 if (isExpressCheckout) {
                     goToAtcExpress()
