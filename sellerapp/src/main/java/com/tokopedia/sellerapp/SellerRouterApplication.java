@@ -76,6 +76,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
+import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -285,7 +286,8 @@ public abstract class SellerRouterApplication extends MainApplication
         ChatbotRouter,
         SaldoDetailsRouter,
         TrackingOptimizerRouter ,
-        FlashSaleRouter{
+        FlashSaleRouter,
+        LinkerRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
