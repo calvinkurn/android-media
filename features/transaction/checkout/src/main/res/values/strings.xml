@@ -245,6 +245,7 @@
     <string name="shipping_address">Alamat Pengiriman</string>
     <string name="bottom_sheet_empty_branch_text">Tidak bisa menemukan daftar cabang Tokopedia Corner</string>
     <string name="technical_problem_text">Ada masalah teknis, coba lagi</string>
+    <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
     <string name="emas_checkout_desc">Pembulatan Emas sebesar Rp %s</string>
 
