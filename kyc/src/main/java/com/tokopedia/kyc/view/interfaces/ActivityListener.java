@@ -8,4 +8,5 @@ public interface ActivityListener {
     void addReplaceFragment(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag);
     void showHideActionbar(boolean show);
     ConfirmRequestDataContainer getDataContatainer();
+    boolean isRetryValid();
 }

@@ -57,39 +57,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
                     Constants.Keys.KYC_SELFIEID_CAMERA, false);
         }
         else if(i == R.id.use_img){
-            loaderUiListener.showProgressDialog();
-            kycReqId = activityListener.getDataContatainer().getKycReqId();
-            UploadDocumentUseCase uploadDocumentUseCase = new UploadDocumentUseCase(null,
-                    getContext(), imagePath, Constants.Values.SELFIE, kycReqId);
-            uploadDocumentUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    showErrorSnackbar();
-                    loaderUiListener.hideProgressDialog();
-                }
-
-                @Override
-                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                    loaderUiListener.hideProgressDialog();
-                    KYCDocumentUploadResponse kycDocumentUploadResponse =
-                            (typeRestResponseMap.get(KYCDocumentUploadResponse.class)).getData();
-                    if(kycDocumentUploadResponse != null &&
-                            kycDocumentUploadResponse.getKycImageUploadDataClass() != null &&
-                            kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId() > 0){
-                        activityListener.getDataContatainer().setSelfieIdDocumentId(
-                                kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId());
-                        goToTandCPage();
-                    }
-                    else {
-                        showErrorSnackbar();
-                    }
-                }
-            });
+            makeSelfieUploadRequest();
         }
         else if(i == R.id.retake_image){
             KycUtil.createKYCIdCameraFragment(getContext(),
@@ -98,6 +66,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
                     Constants.Keys.KYC_SELFIEID_CAMERA, false);
         }
         else if(i == R.id.btn_ok){
+            makeSelfieUploadRequest();
             if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
         }
     }
@@ -188,7 +157,47 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     }
 
     private void showErrorSnackbar(){
-        errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), this::onClick) ;
-        errorSnackbar.show();
+        if(activityListener.isRetryValid()) {
+            errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), this::onClick, "");
+            errorSnackbar.show();
+        }else {
+            getActivity().finish();
+        }
+    }
+
+    private void makeSelfieUploadRequest(){
+        loaderUiListener.showProgressDialog();
+        kycReqId = activityListener.getDataContatainer().getKycReqId();
+        UploadDocumentUseCase uploadDocumentUseCase = new UploadDocumentUseCase(null,
+                getContext(), imagePath, Constants.Values.SELFIE, kycReqId);
+        uploadDocumentUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showErrorSnackbar();
+                loaderUiListener.hideProgressDialog();
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                loaderUiListener.hideProgressDialog();
+                KYCDocumentUploadResponse kycDocumentUploadResponse =
+                        (typeRestResponseMap.get(KYCDocumentUploadResponse.class)).getData();
+                if(kycDocumentUploadResponse != null &&
+                        kycDocumentUploadResponse.getKycImageUploadDataClass() != null &&
+                        kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId() > 0){
+                    activityListener.getDataContatainer().setSelfieIdDocumentId(
+                            kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId());
+                    goToTandCPage();
+                }
+                else {
+                    showErrorSnackbar();
+                }
+            }
+        });
     }
 }

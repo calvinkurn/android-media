@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     private Button proceedWithUpgrade;
     private Button upgradeLater;
     public static String TAG = "start_upgrade";
+    private Snackbar errorSnackbar;
 
     @Override
     protected void initInjector() {
@@ -88,11 +90,18 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.upgrade_btn) {
-            loaderUiListener.showProgressDialog();
-            KycUtil.executeEligibilityCheck(getContext(), getEligibilityCheckSubscriber());
+            makeEligibilityRequest();
         } else if (i == R.id.later_btn) {
             getActivity().finish();
+        } else if(i == R.id.btn_ok){
+            makeEligibilityRequest();
+            if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
         }
+    }
+
+    private void makeEligibilityRequest(){
+        loaderUiListener.showProgressDialog();
+        KycUtil.executeEligibilityCheck(getContext(), getEligibilityCheckSubscriber());
     }
 
     private Subscriber getEligibilityCheckSubscriber(){
@@ -117,6 +126,19 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
                     activityListener.getDataContatainer().setKycReqId(eligibilityBase.getGoalKYCRequest().getKycRequestId());
                     activityListener.addReplaceFragment(fragmentIntroToOvoUpgradeSteps,
                             true, FragmentIntroToOvoUpgradeSteps.TAG);
+                }else {
+                    if(eligibilityBase != null && eligibilityBase.getGoalKYCRequest() != null
+                            && eligibilityBase.getGoalKYCRequest().getErrors() != null) {
+                        if(activityListener.isRetryValid()) {
+                            String errorMessage = eligibilityBase.
+                                    getGoalKYCRequest().getErrors().get(Constants.Keys.MESSAGE);
+                            errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), FragmentUpgradeToOvo.this::onClick, errorMessage);
+                            errorSnackbar.show();
+                        }
+                        else {
+                            getActivity().finish();
+                        }
+                    }
                 }
             }
         };

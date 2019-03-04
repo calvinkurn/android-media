@@ -39,6 +39,7 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
     private List<String> permissionsToRequest;
     private boolean isPermissionGotDenied;
     protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
+    private int retryCount = 3;
 
     @DeepLink(Constants.AppLinks.OVOUPGRADE)
     public static Intent getCallingStartUpgradeToOvo(Context context, Bundle extras) {
@@ -78,6 +79,7 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
 
     @Override
     public void addReplaceFragment(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag) {
+        retryCount = 3;
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if(replace) {
             fragmentTransaction.replace(R.id.parent_view, baseDaggerFragment, tag);
@@ -101,6 +103,15 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
             confirmRequestDataContainer = new ConfirmRequestDataContainer();
         }
         return confirmRequestDataContainer;
+    }
+
+    @Override
+    public boolean isRetryValid() {
+        if(retryCount > 0){
+            retryCount--;
+            return true;
+        }
+        return false;
     }
 
     @Override

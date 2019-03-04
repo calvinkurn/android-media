@@ -39,6 +39,7 @@ public interface Constants {
         int KYC_SELFIEID_CAMERA = 2;
         String STATUS = "status";
         String FROM_RETAKE_FLOW = "from_retake_flow";
+        String MESSAGE = "message";
 
     }
 

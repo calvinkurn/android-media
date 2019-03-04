@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -118,7 +119,8 @@ public class KycUtil {
     }
 
     public static Snackbar createErrorSnackBar(Activity activity,
-                                               View.OnClickListener onClickListener){
+                                               View.OnClickListener onClickListener,
+                                               String errorMsg){
         Snackbar snackbar = Snackbar.make(activity.findViewById(
                 android.R.id.content), "", Snackbar.LENGTH_LONG);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
@@ -126,6 +128,7 @@ public class KycUtil {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View snackView = inflater.inflate(R.layout.error_snackbar_layout, null);
         snackView.findViewById(R.id.btn_ok).setOnClickListener(onClickListener);
+        if(!TextUtils.isEmpty(errorMsg)) ((TextView)snackView.findViewById(R.id.error_msg)).setText(errorMsg);
         layout.addView(snackView, 0);
         return snackbar;
     }
