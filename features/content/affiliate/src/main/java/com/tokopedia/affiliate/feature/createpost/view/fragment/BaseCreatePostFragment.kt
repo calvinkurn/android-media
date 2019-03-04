@@ -157,7 +157,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.allowImage = feedContentForm.media.allowImage
         viewModel.allowVideo = feedContentForm.media.allowVideo
 
-        if (feedContentForm.media.media.isNotEmpty()) {
+        if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
             feedContentForm.media.media.forEach {
                 viewModel.urlImageList.add(it.mediaUrl)
