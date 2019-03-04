@@ -1,6 +1,5 @@
 package com.tokopedia.tkpdreactnative.react.banner;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.facebook.react.bridge.ReadableArray;
@@ -8,7 +7,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -75,7 +74,9 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
     public void onPromoScrolled(int position) { }
 
     @Override
-    public void onPromoAllClick() { }
+    public void onPromoAllClick() {
+        RouteManager.route(context, ApplinkConst.PROMO_LIST);
+    }
 
     @Override
     public void onPromoDragStart() { }
