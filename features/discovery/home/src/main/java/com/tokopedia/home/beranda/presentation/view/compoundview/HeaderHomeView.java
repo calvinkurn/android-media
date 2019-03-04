@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.compoundview;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -447,8 +448,11 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private void showAnimationBottomSheetActivation() {
-        Activity activity = (Activity) getContext();
-        activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+        if (!(getContext() instanceof Activity) && (getContext() instanceof ContextWrapper)) {
+            Context context = ((ContextWrapper) getContext()).getBaseContext();
+            Activity activity = (Activity) context;
+            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
+        }
     }
 
     @NonNull

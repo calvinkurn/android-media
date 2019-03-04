@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.addressoptions.adapter;
+package com.tokopedia.checkout.view.feature.addressoptions.addressadapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
