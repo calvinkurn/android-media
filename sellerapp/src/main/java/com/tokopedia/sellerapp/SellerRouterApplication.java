@@ -34,6 +34,9 @@ import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -235,13 +238,12 @@ import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
 import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
-import org.jetbrains.annotations.NotNull;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -282,6 +284,7 @@ public abstract class SellerRouterApplication extends MainApplication
         com.tokopedia.product.detail.ProductDetailRouter,
         CoreNetworkRouter,
         ChatbotRouter,
+        SaldoDetailsRouter,
         TrackingOptimizerRouter ,
         FlashSaleRouter {
 
@@ -370,6 +373,11 @@ public abstract class SellerRouterApplication extends MainApplication
             gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
         }
         return gmComponent;
+    }
+
+    @Override
+    public Intent getInboxTicketCallingIntent(Context context) {
+        return new Intent(context, InboxListActivity.class);
     }
 
     @Override
