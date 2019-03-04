@@ -21,7 +21,7 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
         implements AllNotificationListener {
 
     private static final String TOTAL_INBOX = "totalInbox";
-    private static final String TOTAL_NOTIFICATION = "totalNotification";
+    private static final String TOTAL_NOTIFICATION = "totalNotif";
     private static final String MP_OFFICIAL_STORE = "mp_official_store";
     private static final String REFRESH_NOTIFICATION = "refreshNotification";
 
