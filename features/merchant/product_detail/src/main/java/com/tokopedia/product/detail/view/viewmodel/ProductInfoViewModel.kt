@@ -120,7 +120,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             try {
                 productVariantResp.value = Success(variantJob.await().data!!)
             } catch (e: Exception) {
-                //TODO just testing
                 productVariantResp.value = Fail(e)
             }
         }) {
