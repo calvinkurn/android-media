@@ -30,6 +30,7 @@ public class ShipmentDetailData implements Parcelable {
     private boolean isBlackbox;
     private int addressId;
     private boolean preorder;
+    private String blackboxInfo;
 
     public ShipmentDetailData() {
     }
@@ -56,6 +57,7 @@ public class ShipmentDetailData implements Parcelable {
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
         preorder = in.readByte() != 0;
+        blackboxInfo = in.readString();
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -222,6 +224,10 @@ public class ShipmentDetailData implements Parcelable {
         this.preorder = preorder;
     }
 
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -248,5 +254,6 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeInt(addressId);
         dest.writeByte((byte) (preorder ? 1 : 0));
         dest.writeTypedList(shippingCourierViewModels);
+        dest.writeString(blackboxInfo);
     }
 }

@@ -806,10 +806,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition) {
+    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, String blackboxInfo) {
         checkCourierPromo(courierItemData, itemPosition);
         shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
         shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
+        shipmentAdapter.setBlackboxInfo(blackboxInfo);
         onNeedUpdateViewItem(itemPosition);
     }
 

@@ -89,7 +89,7 @@ public interface ShipmentContract {
 
         void renderCancelAutoApplyCouponSuccess();
 
-        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition);
+        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, String blackboxInfo);
 
         void renderCourierStateFailed(int itemPosition);
 

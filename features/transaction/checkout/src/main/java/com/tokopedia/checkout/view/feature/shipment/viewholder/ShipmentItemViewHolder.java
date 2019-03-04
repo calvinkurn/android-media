@@ -845,8 +845,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
             llCourierBlackboxStateLoading.setVisibility(View.GONE);
             tvShipmentBlackboxTickerInfo.setVisibility(View.VISIBLE);
-            // tvShipmentBlackboxTickerInfo.setText(R.string.label_hardcoded_courier_blackbox_info);
-            tvShipmentBlackboxTickerInfo.setText(shipmentDetailData.get)
+            if (!TextUtils.isEmpty(shipmentDetailData.getBlackboxInfo())) {
+                tvShipmentBlackboxTickerInfo.setText(shipmentDetailData.getBlackboxInfo());
+            } else {
+                tvShipmentBlackboxTickerInfo.setVisibility(View.GONE);
+            }
         } else {
             llSelectedShipmentBlackbox.setVisibility(View.GONE);
             llSelectShipmentBlackbox.setVisibility(View.VISIBLE);
