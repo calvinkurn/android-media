@@ -946,7 +946,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         TokopediaCornerData cornerData = null;
-        if (getRecipientAddressModel().isCornerAddress()) {
+        if (getRecipientAddressModel() != null && getRecipientAddressModel().isCornerAddress()) {
             cornerData = new TokopediaCornerData(
                     getRecipientAddressModel().getUserCornerId(),
                     Integer.parseInt(getRecipientAddressModel().getCornerId())
@@ -958,13 +958,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             egoldData.setEgoldAmount(egoldAttributeModel.getBuyEgoldValue());
         }
 
-        return new CheckoutRequest.Builder()
+        CheckoutRequest.Builder builder = new CheckoutRequest.Builder()
                 .promoCode(promoCode)
                 .isDonation(isDonation)
                 .egoldData(egoldData)
-                .data(dataCheckoutRequestList)
-                .cornerData(cornerData)
-                .build();
+                .data(dataCheckoutRequestList);
+
+        if (cornerData != null) {
+            builder.cornerData(cornerData);
+        }
+
+        return builder.build();
     }
 
     @Override
