@@ -309,7 +309,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                         null
         );
         parameter.setDepartmentId(categoryID);
-        parameter.setOfficial(isOfficial);
+        parameter.setIsOfficial(isOfficial);
         onSearchingStart(keyword);
         setForceSearch(false);
         getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
@@ -339,7 +339,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                         userSession.getUserId() :
                         null
         );
-        parameter.setOfficial(isOfficial);
+        parameter.setIsOfficial(isOfficial);
         onSearchingStart(keyword);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
         getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
