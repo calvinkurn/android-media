@@ -11,10 +11,12 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
@@ -75,7 +77,7 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
                 listener.onItemSearchClicked(
                         element.getKeyword(),
                         element.getCategoryId(),
-                        element.getIsOfficial()
+                        getAutoCompleteItemIsOfficial(element)
                 );
             }
         });
@@ -93,5 +95,17 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
             return displayName.toLowerCase(Locale.getDefault()).indexOf(searchTerm.toLowerCase(Locale.getDefault()));
         }
         return -1;
+    }
+
+    private boolean getAutoCompleteItemIsOfficial(BaseItemAutoCompleteSearch autoCompleteSearch) {
+        boolean isOfficial = false;
+
+        HashMap<String, String> applinkParameterHashMap = autoCompleteSearch.getApplinkParameterHashmap();
+
+        if(applinkParameterHashMap.containsKey("official")) {
+            isOfficial = Boolean.parseBoolean(applinkParameterHashMap.get("official"));
+        }
+
+        return isOfficial;
     }
 }

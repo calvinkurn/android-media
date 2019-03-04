@@ -18,6 +18,7 @@ import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
@@ -110,10 +111,22 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
                         clickListener.onItemSearchClicked(
                                 item.getKeyword(),
                                 item.getCategoryId(),
-                                item.getIsOfficial()
+                                getAutoCompleteItemIsOfficial(item)
                         );
                     }
                 });
+            }
+
+            private boolean getAutoCompleteItemIsOfficial(BaseItemAutoCompleteSearch autoCompleteSearch) {
+                boolean isOfficial = false;
+
+                HashMap<String, String> applinkParameterHashMap = autoCompleteSearch.getApplinkParameterHashmap();
+
+                if(applinkParameterHashMap.containsKey("official")) {
+                    isOfficial = Boolean.parseBoolean(applinkParameterHashMap.get("official"));
+                }
+
+                return isOfficial;
             }
         }
     }
