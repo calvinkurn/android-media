@@ -91,9 +91,7 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
             loaderUiListener.showProgressDialog();
             KycUtil.executeEligibilityCheck(getContext(), getEligibilityCheckSubscriber());
         } else if (i == R.id.later_btn) {
-//            getActivity().finish();
-            activityListener.addReplaceFragment(FragmentTermsAndConditions.newInstance(), true,
-                    FragmentTermsAndConditions.TAG);
+            getActivity().finish();
         }
     }
 
