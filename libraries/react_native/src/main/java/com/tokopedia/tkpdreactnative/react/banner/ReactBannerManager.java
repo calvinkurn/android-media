@@ -1,12 +1,17 @@
 package com.tokopedia.tkpdreactnative.react.banner;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.banner.BannerView;
 
 import java.util.ArrayList;
@@ -17,12 +22,14 @@ import javax.annotation.Nullable;
 /**
  * Created by meta on 28/02/19.
  */
-public class ReactBannerManager extends SimpleViewManager<Banner> implements BannerView.OnPromoAllClickListener, BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoScrolledListener {
+public class ReactBannerManager extends SimpleViewManager<Banner> implements BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener, BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoScrolledListener {
 
     private static final String BANNER_CLASS = "BannerView";
 
     private List<String> redirectUrlList = new ArrayList<>();
     private List<String> imageList = new ArrayList<>();
+
+    private Context context;
 
     @Override
     public String getName() {
@@ -31,13 +38,14 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
 
     @Override
     protected Banner createViewInstance(ThemedReactContext reactContext) {
+        this.context = reactContext;
         return new Banner(reactContext);
     }
 
     @ReactProp(name = "bannerData")
     public void setBannerData(Banner banner, @Nullable ReadableArray readableArray) {
         this.mappingImageBanner(readableArray);
-        banner.setOnPromoClickListener(position -> RouteManager.route(banner.getContext(), redirectUrlList.get(position)));
+        banner.setOnPromoClickListener(this);
         banner.setOnPromoAllClickListener(this);
         banner.setOnPromoScrolledListener(this);
         banner.setOnPromoLoadedListener(this);
@@ -60,27 +68,30 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
     }
 
     @Override
-    public void onPromoLoaded() {
-
-    }
+    public void onPromoLoaded() { }
 
     @Override
-    public void onPromoScrolled(int position) {
-
-    }
+    public void onPromoScrolled(int position) { }
 
     @Override
-    public void onPromoAllClick() {
-
-    }
+    public void onPromoAllClick() { }
 
     @Override
-    public void onPromoDragStart() {
-
-    }
+    public void onPromoDragStart() { }
 
     @Override
-    public void onPromoDragEnd() {
+    public void onPromoDragEnd() { }
 
+    @Override
+    public void onPromoClick(int position) {
+        String applink = redirectUrlList.get(position);
+        if (applink.toLowerCase().contains("tokopedia://")) {
+            RouteManager.route(context, applink);
+        } else {
+            if (context instanceof Activity && context.getApplicationContext() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter) context.getApplicationContext())
+                        .actionOpenGeneralWebView((Activity)context, applink);
+            }
+        }
     }
 }

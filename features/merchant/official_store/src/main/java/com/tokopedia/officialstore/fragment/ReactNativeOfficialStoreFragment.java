@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.fragment;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,10 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ReactUtils.startTracing(MP_OFFICIAL_STORE); // start trace when view created
-        return super.onCreateView(inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
+        if (getActivity() != null) // set background color of react root view
+            reactRootView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white)); /
+        return reactRootView;
     }
 
     @Override
