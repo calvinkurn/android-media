@@ -1,3 +1,4 @@
+include ':cpm'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
