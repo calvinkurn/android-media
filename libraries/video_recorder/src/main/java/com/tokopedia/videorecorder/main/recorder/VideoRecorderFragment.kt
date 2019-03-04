@@ -184,6 +184,6 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         outState.putInt(SAVED_FLASH_INDEX, flashIndex)
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = getString(R.string.app_name)
 
 }
