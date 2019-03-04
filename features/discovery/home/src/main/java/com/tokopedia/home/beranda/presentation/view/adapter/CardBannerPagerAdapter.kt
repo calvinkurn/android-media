@@ -14,9 +14,9 @@ class CardBannerPagerAdapter(bannerImageUrls : List<String>,
         val inflater = LayoutInflater.from(parent.context)
         val itemView = inflater.inflate(R.layout.layout_slider_banner_design_card, parent, false)
 
-//        val layoutParams = itemView.getLayoutParams()
-//        layoutParams.height = (parent.height * 0.7).toInt()
-//        itemView.setLayoutParams(layoutParams)
+        val layoutParams = itemView.getLayoutParams()
+        layoutParams.width = (parent.width * 0.9).toInt()
+        itemView.setLayoutParams(layoutParams)
 
         return BannerViewHolder(itemView)
     }

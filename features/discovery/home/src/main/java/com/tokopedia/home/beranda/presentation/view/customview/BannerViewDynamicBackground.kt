@@ -1,9 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -14,12 +16,13 @@ import com.tokopedia.design.banner.BannerView
 import com.tokopedia.home.beranda.presentation.view.adapter.CardBannerPagerAdapter
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeBannerViewDecorator
+import kotlinx.android.synthetic.main.layout_card_banner_dynamic_background.view.*
 
 import java.util.ArrayList
 
 class BannerViewDynamicBackground : BannerView {
 
-    var isUseCrossfade = true;
+    var isUseCrossfade = false;
 
     internal lateinit var img_banner_background: ImageView
 
@@ -42,6 +45,21 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun buildView() {
         super.buildView()
+
+        val width = (banner_root.width * 0.9).toInt()
+
+        val recyclerHeight = (width/3).toInt()
+
+        img_banner_background.layoutParams.height =
+                ((context.resources.getDimensionPixelOffset(R.dimen.searchbar_size))+recyclerHeight+(context.resources.getDimensionPixelOffset(R.dimen.banner_background_offset)))
+
+        overlay_img.layoutParams.height = ((context.resources.getDimensionPixelOffset(R.dimen.searchbar_size))+recyclerHeight+(context.resources.getDimensionPixelOffset(R.dimen.banner_background_offset)))
+
+        img_banner_background.requestLayout()
+
+        overlay_img.requestLayout()
+
+
         setBackgroundImage()
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
@@ -57,17 +75,18 @@ class BannerViewDynamicBackground : BannerView {
         }
         bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             internal var currentImagePosition = 0
+            var oldImagePosition = 0
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                if (isUseCrossfade) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE
-                            && currentImagePosition != currentPosition
-                            && currentPosition != -1) {
-                        setBackgroundImageCrossfade()
-                        currentImagePosition = currentPosition
-                    }
-                }
-            }
+//            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+//                if (isUseCrossfade) {
+//                    if (newState == RecyclerView.SCROLL_STATE_IDLE
+//                            && currentImagePosition != currentPosition
+//                            && currentPosition != -1) {
+//                        setBackgroundImageCrossfade()
+//                        currentImagePosition = currentPosition
+//                    }
+//                }
+//            }
 
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (!isUseCrossfade) {
@@ -78,16 +97,43 @@ class BannerViewDynamicBackground : BannerView {
                             position != currentImagePosition && position != -1) {
 
                         val url = promoImageUrls[position]
+                        val oldUrl = promoImageUrls[oldImagePosition]
+
                         ImageHandler.loadImageBlur(
                                 context,
                                 img_banner_background,
                                 url
                         )
+                        oldImagePosition = currentImagePosition
+                        currentImagePosition = position
+                    }
+                } else {
+                    val manager : LinearLayoutManager =
+                            recyclerView!!.layoutManager as LinearLayoutManager
+                    val position = manager.findFirstCompletelyVisibleItemPosition()
+                    if (
+                            position != currentImagePosition && position != -1) {
+
+                        val url = promoImageUrls[position]
+                        val oldUrl = promoImageUrls[oldImagePosition]
+
+                        ImageHandler.loadImageBlurCrossfade(
+                                context,
+                                img_banner_background,
+                                url,
+                                oldUrl,
+                                img_banner_background.drawable
+                        )
+                        oldImagePosition = currentImagePosition
                         currentImagePosition = position
                     }
                 }
             }
         })
+    }
+
+    fun convertPixelsToDp(px: Float, context: Context): Float {
+        return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
     private fun setBackgroundImage() {
@@ -101,10 +147,14 @@ class BannerViewDynamicBackground : BannerView {
 
     private fun setBackgroundImageCrossfade() {
         val url = promoImageUrls[currentPosition]
+        val oldUrl = promoImageUrls[currentPosition]
+
         ImageHandler.loadImageBlurCrossfade(
                 context,
                 img_banner_background,
-                url
+                url,
+                oldUrl,
+                img_banner_background.drawable
         )
     }
 

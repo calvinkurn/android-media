@@ -37,4 +37,7 @@
     <dimen name="home_feeds_padding_info">16dp</dimen>
     <dimen name="home_viewholder_below_banner_offset">55dp</dimen>
     <dimen name="home_recyclerview_last_item_offset">10dp</dimen>
+    <dimen name="searchbar_size">72dp</dimen>
+    <dimen name="banner_background_overlay_size">30dp</dimen>
+    <dimen name="banner_background_offset">85dp</dimen>
 </resources>

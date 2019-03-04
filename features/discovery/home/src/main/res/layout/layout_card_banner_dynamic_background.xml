@@ -2,38 +2,52 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/banner_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/img_banner_background"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:scaleType="centerCrop"
+    <FrameLayout
+        android:id="@+id/container_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_icon_market_toped" />
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/img_banner_background"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_icon_market_toped" />
+
+        <ImageView
+            android:id="@+id/overlay_img"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:background="#31353B"
+            android:alpha="0.2" />
+
+        <View
+            android:layout_gravity="bottom"
+            android:id="@+id/overlay_round"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/banner_background_overlay_size"
+            android:background="@drawable/background_banner_image_mask"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </FrameLayout>
 
     <View
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="230dp"
-        android:background="@drawable/background_banner_image_mask"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
+        android:layout_gravity="bottom"
         android:id="@+id/white_space"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_20"
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/overlay" />
+        app:layout_constraintTop_toBottomOf="@+id/container_background" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
