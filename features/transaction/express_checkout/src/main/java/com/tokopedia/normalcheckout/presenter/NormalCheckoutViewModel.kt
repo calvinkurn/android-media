@@ -2,10 +2,7 @@ package com.tokopedia.normalcheckout.presenter
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.res.Resources
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.expresscheckout.R
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -21,6 +18,7 @@ import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,18 +60,7 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                 productInfoResp.value = Success(productInfo)
             }
         }) {
-            //TODO for testing
-            //productInfoP1Resp.value = Fail(it)
-            val gson = Gson()
-            val productInfo = ProductInfoAndVariant()
-            productInfo.productInfo = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_info_p1),
-                    ProductInfo.Response::class.java).data ?: ProductInfo()
-
-            val productVariant = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_product_variant),
-                    ProductDetailVariantResponse::class.java).data ?: ProductVariant()
-            productInfo.productVariant = productVariant
-
-            productInfoResp.value = Success(productInfo)
+            productInfoResp.value = Fail(it)
 
         }
     }

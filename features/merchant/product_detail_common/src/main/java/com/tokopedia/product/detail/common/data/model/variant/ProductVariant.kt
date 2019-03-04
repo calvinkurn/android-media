@@ -4,38 +4,38 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductDetailVariantResponse(
-        @SerializedName("GetProductVariant")
+        @SerializedName("getProductVariant")
         @Expose
         val data: ProductVariant? = ProductVariant()
 )
 
 data class ProductVariant(
 
-        @SerializedName("ParentID")
+        @SerializedName("parentID")
         @Expose
         var parentId: Int? = null,
 
-        @SerializedName("DefaultChild")
+        @SerializedName("defaultChild")
         @Expose
         var defaultChild: Int? = null,
 
-        @SerializedName("SizeChart")
+        @SerializedName("sizeChart")
         @Expose
         var sizeChart: String = "",
 
-        @SerializedName("AlwaysAvailable")
+        @SerializedName("alwaysAvailable")
         @Expose
         var alwaysAvailable: Boolean? = null,
 
-        @SerializedName("Stock")
+        @SerializedName("stock")
         @Expose
         var stock: Int? = null,
 
-        @SerializedName("Variant")
+        @SerializedName("variant")
         @Expose
         var variant: List<Variant> = listOf(),
 
-        @SerializedName("Children")
+        @SerializedName("children")
         @Expose
         var children: List<Child> = listOf()
 ) {
@@ -73,10 +73,10 @@ data class ProductVariant(
 
 data class Picture(
 
-        @SerializedName("URL")
+        @SerializedName("url")
         @Expose
         var original: String? = null,
-        @SerializedName("URL200")
+        @SerializedName("url200")
         @Expose
         var thumbnail: String? = null
 
