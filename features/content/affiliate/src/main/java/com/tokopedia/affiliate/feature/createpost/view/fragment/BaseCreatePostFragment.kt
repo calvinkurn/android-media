@@ -154,6 +154,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
         viewModel.token = feedContentForm.token
         viewModel.maxImage = feedContentForm.media.maxMedia
+        viewModel.allowImage = feedContentForm.media.allowImage
+        viewModel.allowVideo = feedContentForm.media.allowVideo
 
         if (feedContentForm.media.media.isNotEmpty()) {
             viewModel.urlImageList.clear()
@@ -177,6 +179,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         adapter.notifyDataSetChanged()
 
+        updateMedia()
         updateThumbnail()
         updateButton()
     }
@@ -362,6 +365,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             goToProfile()
             it.finish()
         }
+    }
+
+    private fun updateMedia() {
+        addImageBtn.showWithCondition(viewModel.allowImage)
+        addVideoBtn.showWithCondition(viewModel.allowVideo && false)
     }
 
     private fun updateThumbnail() {

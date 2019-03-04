@@ -71,81 +71,90 @@
                 app:layout_constraintTop_toBottomOf="@+id/caption" />
 
             <LinearLayout
-                android:id="@+id/addImageBtn"
-                android:layout_width="0dp"
+                android:id="@+id/addMediaBtn"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:padding="@dimen/dp_20"
-                app:layout_constraintEnd_toStartOf="@+id/addVideoBtn"
+                android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/separatorCaption"
-                tools:ignore="UnusedAttribute,UseCompoundDrawables">
+                app:layout_constraintTop_toBottomOf="@+id/separatorCaption">
 
-                <ImageView
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:contentDescription="@string/af_add_image"
-                    android:src="@drawable/ic_system_action_camera_grayscale_24" />
-
-                <TextView
+                <LinearLayout
+                    android:id="@+id/addImageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="4sp"
-                    android:text="@string/af_add_image"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:padding="@dimen/dp_20"
+                    android:visibility="visible"
+                    tools:ignore="UnusedAttribute,UseCompoundDrawables"
+                    tools:visibility="visible">
 
-            <View
-                android:id="@+id/separatorMedia"
-                android:layout_width="0.5dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:background="@color/white_two"
-                app:layout_constraintBottom_toBottomOf="@+id/addImageBtn"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/addImageBtn" />
+                    <ImageView
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginEnd="@dimen/dp_8"
+                        android:layout_marginRight="@dimen/dp_8"
+                        android:contentDescription="@string/af_add_image"
+                        android:src="@drawable/ic_system_action_camera_grayscale_24" />
 
-            <LinearLayout
-                android:id="@+id/addVideoBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:padding="@dimen/dp_20"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/addImageBtn"
-                app:layout_constraintTop_toBottomOf="@+id/separatorCaption"
-                tools:ignore="UnusedAttribute,UseCompoundDrawables">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/af_add_image"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-                <ImageView
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:contentDescription="@string/af_add_video"
-                    android:src="@drawable/ic_system_action_video_grayscale_24" />
+                <View
+                    android:id="@+id/separatorMedia"
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:background="@color/white_two"
+                    app:layout_constraintBottom_toBottomOf="@+id/addImageBtn"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/addImageBtn" />
 
-                <TextView
+                <LinearLayout
+                    android:id="@+id/addVideoBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="4sp"
-                    android:text="@string/af_add_video"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="bold" />
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:padding="@dimen/dp_20"
+                    android:visibility="visible"
+                    tools:ignore="UnusedAttribute,UseCompoundDrawables"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginEnd="@dimen/dp_8"
+                        android:layout_marginRight="@dimen/dp_8"
+                        android:contentDescription="@string/af_add_video"
+                        android:src="@drawable/ic_system_action_video_grayscale_24" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/af_add_video"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
 
             <View
@@ -154,7 +163,7 @@
                 android:layout_height="@dimen/dp_10"
                 android:background="@drawable/card_shadow_bottom"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addImageBtn" />
+                app:layout_constraintTop_toBottomOf="@+id/addMediaBtn" />
 
             <View
                 android:id="@+id/shadowTop"

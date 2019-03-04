@@ -10,13 +10,14 @@ data class CreatePostViewModel(
         var authorType: String = "",
         var mainImageIndex: Int = 0,
         var maxImage: Int = 5,
+        var allowImage: Boolean = false,
+        var allowVideo: Boolean = false,
         val productIdList: MutableList<String> = arrayListOf(),
         val adIdList: MutableList<String> = arrayListOf(),
         val fileImageList: MutableList<String> = arrayListOf(),
         val urlImageList: MutableList<String> = arrayListOf(),
         val relatedProducts: MutableList<RelatedProductItem> = arrayListOf()
 ) : Parcelable {
-
     val completeImageList: ArrayList<String>
         get() {
             val completeImageList = ArrayList<String>()
@@ -31,6 +32,8 @@ data class CreatePostViewModel(
             source.readString() ?: "",
             source.readInt(),
             source.readInt(),
+            1 == source.readInt(),
+            1 == source.readInt(),
             source.createStringArrayList() ?: arrayListOf(),
             source.createStringArrayList() ?: arrayListOf(),
             source.createStringArrayList() ?: arrayListOf(),
@@ -46,6 +49,8 @@ data class CreatePostViewModel(
         writeString(authorType)
         writeInt(mainImageIndex)
         writeInt(maxImage)
+        writeInt((if (allowImage) 1 else 0))
+        writeInt((if (allowVideo) 1 else 0))
         writeStringList(productIdList)
         writeStringList(adIdList)
         writeStringList(fileImageList)
