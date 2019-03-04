@@ -1,5 +1,9 @@
 package com.tokopedia.discovery.autocomplete.viewmodel;
 
+import com.tkpd.library.utils.URLParser;
+
+import java.util.HashMap;
+
 public class BaseItemAutoCompleteSearch {
 
     private String keyword;
@@ -109,5 +113,9 @@ public class BaseItemAutoCompleteSearch {
 
     public void setIsOfficial(boolean isOfficial) {
         this.isOfficial = isOfficial;
+    }
+
+    public HashMap<String, String> getApplinkParameterHashmap() {
+        return new URLParser(this.applink).getParamKeyValueMap();
     }
 }
