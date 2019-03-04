@@ -90,8 +90,8 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
             RouteManager.route(context, applink);
         } else {
             if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-                ((ReactNativeRouter) context.getApplicationContext())
-                        .getBrandsWebViewIntent(context, applink);
+                context.startActivity(((ReactNativeRouter) context.getApplicationContext())
+                        .getBrandsWebViewIntent(context, applink));
             }
         }
     }
