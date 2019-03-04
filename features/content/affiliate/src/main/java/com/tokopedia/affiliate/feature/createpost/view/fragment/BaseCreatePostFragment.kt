@@ -118,6 +118,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
                 viewModel.fileImageList.clear()
                 viewModel.fileImageList.addAll(imageList)
+
+                if (imageList.isNotEmpty()) {
+                    viewModel.urlImageList.clear()
+                }
+
                 updateThumbnail()
                 updateButton()
             }
