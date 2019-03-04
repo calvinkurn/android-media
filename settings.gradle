@@ -1,4 +1,3 @@
-include ':cpm'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -15,12 +14,22 @@ buildCache {
         }
     }
 }
-
+include ':cpm'
+include ':features:promo:loyalty_common'
+include ':libraries:analytics'
+include ':tkpddesign'
+include ':tkpdabstraction'
+include ':tkpdcore'
+include ':features:transaction:transactionanalytics'
+include ':features:transaction:transactiondata'
+include ':tkpdtransaction-common'
+include ':features:fintech:saldo_details'
+include ':features:im:referral'
 apply from: "buildconfig/appcompile/compile-libraries.gradle"
 //apply from: "buildconfig/appcompile/compile-libraries-no-op.gradle"
-apply from: "buildconfig/appcompile/compile-customerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-customerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-customerapp-no-op.gradle"
-apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
-apply from: "buildconfig/appcompile/compile-mitrapp.gradle"
-apply from: "buildconfig/appcompile/compile-posapp.gradle"
+//apply from: "buildconfig/appcompile/compile-mitrapp.gradle"
+//apply from: "buildconfig/appcompile/compile-posapp.gradle"
