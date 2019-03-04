@@ -327,6 +327,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun hideHeader() {
         app_bar_layout.visibility = View.GONE
+        app_bar_layout.setExpanded(false)
+        footer.visibility = View.GONE
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -598,8 +600,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
 
-//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
-//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
+//        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+//            val trackingPostModel = adapter.list.get(positionInFeed)
 //            trackCardPostClick(
 //                    positionInFeed,
 //                    trackingPostModel,
