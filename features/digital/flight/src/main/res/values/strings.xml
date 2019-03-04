@@ -249,7 +249,7 @@
     <string name="flight_label_refund_time">Waktu Pengajuan Refund</string>
     <string name="flight_label_refund_status">Status Refund</string>
     <string name="flight_label_order_id_detail">Invoice :</string>
-    <string name="flight_label_eticket">KIRIM E-TICKET</string>
+    <string name="flight_label_show_invoice">KIRIM E-TIKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
     <string name="flight_label_cek_t_and_c">* Harap diingat bahwa terminal dapat berubah sewaktu-waktu</string>

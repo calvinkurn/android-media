@@ -3,10 +3,16 @@ package com.tokopedia.profile.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
@@ -15,13 +21,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.Menus
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.component.*
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
@@ -31,6 +37,8 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
@@ -120,21 +128,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         profileAnalytics.sendScreen(activity!!, screenName)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        if (userSession.userId == userId.toString()) {
-            inflater?.inflate(R.menu.menu_profile, menu)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_dashboard) {
-            if (isAffiliate) goToDashboard()
-            else goToAffiliateExplore()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onDestroy() {
         presenter.detachView()
@@ -172,7 +165,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSwipeRefresh() {
         footerOwn.visibility = View.GONE
-        footerOther.visibility = View.GONE
+        app_bar_layout.visibility = View.GONE
         super.onSwipeRefresh()
     }
 
@@ -232,10 +225,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
         affiliatePostQuota = firstPageViewModel.affiliatePostQuota
 
-        val shouldShowDashboard = userSession.userId == userId.toString()
-                && firstPageViewModel.profileHeaderViewModel.isAffiliate
-        setHasOptionsMenu(shouldShowDashboard)
-
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
             addFooter(
@@ -244,8 +233,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             )
         }
 
+        setProfileToolbar(firstPageViewModel.profileHeaderViewModel)
+
         val visitables: ArrayList<Visitable<*>> = ArrayList()
-        visitables.add(firstPageViewModel.profileHeaderViewModel)
         if (!firstPageViewModel.visitableList.isEmpty()) {
             firstPageViewModel.visitableList
                     .filterIsInstance<BaseKolViewModel>()
@@ -568,6 +558,144 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    private fun setProfileToolbar(element: ProfileHeaderViewModel) {
+        app_bar_layout.visibility = View.VISIBLE
+        iv_image_collapse.loadImageRounded(element.avatar)
+        iv_profile.loadImageCircle(element.avatar)
+        tv_name.text = element.name
+        tv_name_parallax.text = element.affiliateName
+        tv_aff_name.text = element.affiliateName
+        iv_back_parallax.setOnClickListener{
+            activity?.finish()
+        }
+        iv_back.setOnClickListener{
+            activity?.finish()
+        }
+        app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+
+            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                val offset = Math.abs(verticalOffset);
+                if (offset >= appBarLayout.totalScrollRange) {
+                    toolbar.visibility = View.VISIBLE
+                } else {
+                    toolbar.visibility = View.GONE
+                }
+            }
+        })
+
+        val selfProfile = userSession.userId == userId.toString()
+                && element.isAffiliate
+        lateinit var action: View.OnClickListener
+        if (!selfProfile) {
+            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
+            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
+            action = shareLinkClickListener(element.link)
+        } else {
+            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
+            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
+            action = View.OnClickListener {
+                goToDashboard()
+            }
+        }
+        iv_action.setOnClickListener(action)
+        iv_action_parallax.setOnClickListener(action)
+
+
+        if (element.isKol || element.isAffiliate) {
+            kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE
+
+            followers.visibility =
+                    if (getFollowersText(element).length > ProfileHeaderViewHolder.TEXT_LENGTH_MIN) View.VISIBLE
+                    else View.GONE
+            followers.text = getFollowersText(element)
+            followers.movementMethod = LinkMovementMethod.getInstance()
+
+            if (GlobalConfig.isCustomerApp()) {
+                if (!element.isOwner) {
+                    editButton.visibility = View.GONE
+                    followBtn.visibility = View.VISIBLE
+                    followBtn.setOnClickListener {
+                        followUnfollowUser(element.userId, !element.isFollowed)
+                    }
+                    updateButtonState(element.isFollowed)
+                } else {
+                    editButton.visibility = View.VISIBLE
+                    followBtn.visibility = View.GONE
+                    editButton.setOnClickListener {
+                        onChangeAvatarClicked()
+                    }
+                }
+            }
+        } else {
+            kolBadge.visibility = View.GONE
+            if (element.isOwner) {
+                followers.visibility =
+                        if (getFollowersText(element).length > ProfileHeaderViewHolder.TEXT_LENGTH_MIN) View.VISIBLE
+                        else View.GONE
+                followers.text = getFollowersText(element)
+                followers.movementMethod = LinkMovementMethod.getInstance()
+            } else {
+                followers.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun getFollowersText(element: ProfileHeaderViewModel): SpannableString {
+        val spannableString: SpannableString
+        val following =
+                if (element.following != ProfileHeaderViewModel.ZERO)
+                    String.format(getString(R.string.profile_following_number), element.following)
+                else ""
+        spannableString = if ((element.isKol || element.isAffiliate)
+                && element.followers != ProfileHeaderViewModel.ZERO) {
+
+            val followers = String.format(
+                    getString(R.string.profile_followers_number),
+                    element.followers
+            )
+            val followersAndFollowing =
+                    if (!TextUtils.isEmpty(following)) String.format(
+                            getString(R.string.profile_followers_and_following),
+                            followers,
+                            following
+                    )
+                    else followers
+            SpannableString(followersAndFollowing)
+
+        } else {
+            SpannableString(following)
+        }
+
+        val goToFollowing = object : ClickableSpan() {
+            override fun onClick(p0: View?) {
+                goToFollowing()
+            }
+
+            override fun updateDrawState(ds: TextPaint?) {
+                super.updateDrawState(ds)
+                ds?.setUnderlineText(false)
+                ds?.color = MethodChecker.getColor(activity, R.color.white)
+            }
+        }
+
+        if (spannableString.indexOf(following) != -1) {
+            spannableString.setSpan(
+                    goToFollowing,
+                    spannableString.indexOf(following),
+                    spannableString.indexOf(following) + following.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        return spannableString
+    }
+
+    private fun updateButtonState(isFollowed: Boolean) {
+        if (isFollowed) {
+            followBtn.text = getString(R.string.profile_following)
+        } else {
+            followBtn.text = getString(R.string.profile_follow)
+        }
+    }
+
     private fun trackKolPostImpression(visitableList: List<Visitable<*>>) {
         visitableList.forEachIndexed { position, model ->
             val adapterPosition = adapter.data.size + position
@@ -605,8 +733,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
-            footerOther.visibility = View.GONE
-
             bindCurationQuota(affiliatePostQuota)
             addCuration.setOnClickListener {
                 goToAffiliateExplore()
@@ -624,13 +750,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         } else {
             footerOwn.visibility = View.GONE
-            footerOther.visibility = View.VISIBLE
-
-            shareOther.setOnClickListener(shareLinkClickListener(headerViewModel.link))
-            shareOther.setOnLongClickListener {
-                showToast(getString(R.string.profile_share_this_profile))
-                true
-            }
         }
     }
 

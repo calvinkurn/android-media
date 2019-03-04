@@ -45,6 +45,7 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
@@ -63,14 +64,13 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.constant.BerandaUrl;
+import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
-import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
@@ -85,6 +85,7 @@ import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -113,14 +114,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    private ActivityStateListener activityStateListener;
 
     public static final long ONE_SECOND = 1000l;
     @Inject
     HomePresenter presenter;
 
-    @Inject
-    UserSessionInterface userSession;
-
+    private UserSessionInterface userSession;
     private View fragmentRootView;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
@@ -137,7 +137,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
-    private AbTestingOfficialStore abTestingOfficialStore;
     private ViewPager homeFeedsViewPager;
     private CollapsingTabLayout homeFeedsTabLayout;
     private AppBarLayout appBarLayout;
@@ -173,7 +172,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
-        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
+        userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
     }
 
@@ -425,14 +424,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
             ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
         }
-        notifyToolbarForAbTesting();
         presenter.onResume();
+        if(activityStateListener!=null){
+            activityStateListener.onResume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         trackingQueue.sendAll();
+        if(activityStateListener!=null) {
+            activityStateListener.onPause();
+        }
     }
 
     @Override
@@ -1048,6 +1052,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void setActivityStateListener(ActivityStateListener activityStateListener) {
+        this.activityStateListener = activityStateListener;
+    }
+
+    @Override
     public void onScrollToTop() {
         if (appBarLayout != null) {
             appBarLayout.setExpanded(true);
@@ -1222,12 +1231,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchTokopointsNotification(String type) {
         TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
-    }
-
-    public void notifyToolbarForAbTesting() {
-        if (mainToolbar != null) {
-            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
-        }
     }
 
     @Override

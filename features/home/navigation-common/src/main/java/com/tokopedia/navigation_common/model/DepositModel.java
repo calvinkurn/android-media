@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class DepositModel {
     @SerializedName("deposit")
     @Expose
-    private Double deposit;
+    private Double deposit = 0.0;
     @SerializedName("deposit_fmt")
     @Expose
-    private String depositFmt;
+    private String depositFmt = "";
 
     public Double getDeposit() {
         return deposit;
