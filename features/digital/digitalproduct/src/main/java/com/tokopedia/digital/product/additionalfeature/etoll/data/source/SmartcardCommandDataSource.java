@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.requestbody.smartcardcommand.RequestBodySmartcardCommand;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.response.ResponseSmartcard;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
@@ -17,10 +17,10 @@ import rx.Observable;
  */
 public class SmartcardCommandDataSource {
 
-    private DigitalEndpointService digitalEndpointService;
+    private DigitalRestApi digitalEndpointService;
     private SmartcardMapper smartcardMapper;
 
-    public SmartcardCommandDataSource(DigitalEndpointService digitalEndpointService,
+    public SmartcardCommandDataSource(DigitalRestApi digitalEndpointService,
                                       SmartcardMapper smartcardMapper) {
         this.digitalEndpointService = digitalEndpointService;
         this.smartcardMapper = smartcardMapper;
@@ -31,7 +31,7 @@ public class SmartcardCommandDataSource {
         final JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
 
-        return digitalEndpointService.getApi().smartcardCommand(requestBody)
+        return digitalEndpointService.smartcardCommand(requestBody)
                 .map(response -> smartcardMapper.map(response.body().convertDataObj(ResponseSmartcard.class)));
     }
 

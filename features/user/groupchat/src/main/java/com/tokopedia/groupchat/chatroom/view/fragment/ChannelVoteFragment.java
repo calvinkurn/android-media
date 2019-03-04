@@ -26,7 +26,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
@@ -53,6 +52,8 @@ import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -89,7 +90,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private VoteInfoViewModel voteInfoViewModel;
     private VoteAdapter voteAdapter;
     private ProgressBarWithTimer progressBarWithTimer;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private Snackbar snackBar;
     private boolean canVote = true;
 
@@ -121,7 +122,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity());
     }
 
     @Nullable
@@ -427,9 +428,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN) {
-            if (getActivity().getApplication() instanceof AbstractionRouter) {
-                userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-            }
+            userSession = new UserSession(getActivity());
             if (getActivity() instanceof GroupChatActivity) {
                 ((GroupChatActivity) getActivity()).onSuccessLogin();
                 getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
