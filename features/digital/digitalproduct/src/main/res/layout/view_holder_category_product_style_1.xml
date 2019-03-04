@@ -24,16 +24,16 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/digital_padding_16"
             android:paddingEnd="@null"
-            android:paddingLeft="@dimen/padding_vvs"
+            android:paddingLeft="@dimen/dp_3"
             android:paddingRight="@null"
-            android:paddingStart="@dimen/padding_vvs"
+            android:paddingStart="@dimen/dp_3"
             tools:text="Beli Pulsa" />
 
         <LinearLayout
             android:id="@+id/holder_client_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
             android:orientation="vertical" />
 
         <LinearLayout
@@ -70,8 +70,8 @@
                 android:layout_marginLeft="@dimen/digital_margin_min_7"
                 android:layout_marginStart="@dimen/digital_margin_min_7"
                 android:text="@string/label_instant_payment_digital"
-                android:textColor="@color/checkbox_text"
-                android:textSize="@dimen/fontvs"
+                android:textColor="@color/light_disabled"
+                android:textSize="@dimen/sp_12"
                 app:theme="@style/DigitalCheckboxAndRadioButton" />
 
             <ImageView
@@ -79,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:layout_toRightOf="@+id/cb_instant_checkout"
                 app:srcCompat="@drawable/info_icon" />
 
@@ -90,7 +90,7 @@
     <TextView
         android:id="@+id/btn_buy_digital"
         style="@style/Button.Submit.Orange"
-        android:layout_height="@dimen/btn_height"
+        android:layout_height="@dimen/dp_44"
         android:layout_marginBottom="@dimen/digital_padding_16"
         android:layout_marginTop="@dimen/digital_padding_16"
         android:layout_weight="0.40"
