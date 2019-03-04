@@ -65,7 +65,7 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
         fun getInstance(context: Context, selectedImageList: ArrayList<String>,
                         maxImage: Int, showWarningDialog: Boolean): Intent {
             val builder = ImagePickerBuilder(
-                    context.getString(R.string.title_af_choose_photo),
+                    context.getString(R.string.title_af_image_picker),
                     intArrayOf(TYPE_GALLERY, TYPE_CAMERA),
                     GalleryType.IMAGE_ONLY,
                     DEFAULT_MAX_IMAGE_SIZE_IN_KB,
@@ -75,10 +75,8 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
                     ImagePickerEditorBuilder(
                             intArrayOf(ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE),
                             false,
-                            null), ImagePickerMultipleSelectionBuilder(
-                    selectedImageList, null,
-                    0,
-                    maxImage))
+                            null),
+                    ImagePickerMultipleSelectionBuilder(selectedImageList, null, 0, maxImage))
             val intent = Intent(context, CreatePostImagePickerActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(ImagePickerActivity.EXTRA_IMAGE_PICKER_BUILDER, builder)
