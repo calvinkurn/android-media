@@ -2,12 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-    flatDir {
-        dirs project(rootProject.ext.libraries.inappupdate).file('libs')
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -41,5 +35,5 @@ android {
 }
 
 dependencies {
-    implementation (name: 'core-1.3.7', ext:'aar')
+    implementation (name: 'com.google.android.play.core-1.3.7', ext:'aar')
 }
