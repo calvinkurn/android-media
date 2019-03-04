@@ -4,31 +4,31 @@
     <item
         android:id="@+id/menu_home"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_home"
+        android:icon="@drawable/ic_home_main"
         android:title="@string/home"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_feed"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_feed"
+        android:icon="@drawable/ic_feed_main"
         android:title="@string/feed"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_os"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_os"
+        android:icon="@drawable/ic_official_main"
         android:title="@string/official"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_cart"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_cart"
+        android:icon="@drawable/ic_cart_main"
         android:title="@string/keranjang"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_account"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_profile"
+        android:icon="@drawable/ic_account_main"
         android:title="@string/akun"
         app:showAsAction="ifRoom" />
 </menu>
