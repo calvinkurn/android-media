@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="8"
+        android:background="#ffffff"
         android:orientation="horizontal">
 
         <com.tokopedia.design.text.SearchInputView
@@ -25,7 +26,9 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:layout_weight="2"
-            android:text="@string/analytics_debugger_label_search" />
+            android:text="@string/analytics_debugger_label_search"
+            android:layout_gravity="center"
+            android:gravity="center"/>
     </LinearLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
