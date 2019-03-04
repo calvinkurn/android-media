@@ -62,7 +62,7 @@ public class GetShopUseCase extends UseCase<ShopViewModel> {
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
         requestParams.putString(BrowseApi.Q, searchParameter.getQueryKey());
         requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
-        requestParams.putString("isofficial", String.valueOf(searchParameter.isOfficial()));
+        requestParams.putString("official", String.valueOf(searchParameter.isOfficial()));
 
         if (!TextUtils.isEmpty(searchParameter.getUserID())) {
             requestParams.putString(BrowseApi.USER_ID, searchParameter.getUserID());

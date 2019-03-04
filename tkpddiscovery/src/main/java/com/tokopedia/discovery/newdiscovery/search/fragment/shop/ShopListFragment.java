@@ -6,19 +6,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -36,6 +34,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.Favori
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameterBuilder;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -94,19 +94,19 @@ public class ShopListFragment extends SearchSectionFragment
         if (savedInstanceState != null) {
             loadDataFromBundle(savedInstanceState);
         } else {
-            loadDataFromArguments();
+            loadDataFromBundle(getArguments());
         }
         userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
-    }
 
-    private void loadDataFromArguments() {
-        loadDataFromBundle(getArguments());
+        getDynamicFilter();
     }
 
     private void loadDataFromBundle(Bundle bundle) {
-        query = bundle.getString(EXTRA_QUERY);
-        isOfficial = bundle.getBoolean(EXTRA_IS_OFFICIAL, false);
+        if (bundle != null) {
+            query = bundle.getString(EXTRA_QUERY);
+            isOfficial = bundle.getBoolean(EXTRA_IS_OFFICIAL, false);
+        }
     }
 
     @Override
@@ -528,20 +528,20 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        super.setSelectedFilter(selectedFilter);
-//        if (selectedFilter == null) {
-//            return;
-//        }
-//        if (TextUtils.isEmpty(selectedFilter.get("official"))) {
-//            getSearchParameter().setOfficial(false);
-//        } else {
-//            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get("official")));
-//        }
-//        if (TextUtils.isEmpty(selectedFilter.get(BrowseApi.SC))) {
-//            getSearchParameter().setDepartmentId("");
-//        } else {
-//            getSearchParameter().setDepartmentId(selectedFilter.get(BrowseApi.SC));
-//        }
+    protected void openFilterPage() {
+        this.addPreFilter();
+        super.openFilterPage();
+    }
+
+    private void addPreFilter() {
+        if(getFlagFilterHelper() == null) {
+            setFlagFilterHelper(new FilterFlagSelectedModel());
+            getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
+            getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
+
+            if (isOfficial) {
+                FilterHelper.addPreFilteredIsOfficial(getFilters(), getFlagFilterHelper());
+            }
+        }
     }
 }

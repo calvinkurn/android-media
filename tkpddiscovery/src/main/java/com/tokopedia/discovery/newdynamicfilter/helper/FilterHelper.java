@@ -74,7 +74,7 @@ public class FilterHelper {
     public static void addPreFilteredIsOfficial(List<Filter> filters, FilterFlagSelectedModel selectedModel) {
         for (Filter filter : filters) {
             for (Option option : filter.getOptions()) {
-                if ("official".equals(option.getKey())) {
+                if (Option.KEY_OFFICIAL.equals(option.getKey())) {
                     selectedModel.getSavedCheckedState().put(option.getUniqueId(), true);
                 }
             }
