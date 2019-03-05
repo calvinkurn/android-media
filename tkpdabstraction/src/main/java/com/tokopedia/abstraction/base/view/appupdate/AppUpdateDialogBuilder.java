@@ -14,9 +14,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function3;
-
 /**
  * Created by okasurya on 7/26/17.
  */
@@ -47,41 +44,48 @@ public class AppUpdateDialogBuilder {
             Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
             positiveButton.setOnClickListener(v -> {
-                if (detail.isForceUpdate()) {
-                    goToPlayStore();
-                } else {
-                    negativeButton.setEnabled(false);
-                    positiveButton.setEnabled(false);
-                    //check if inappupdate flag is true
-                    if (detail.isInAppUpdateEnabled() &&
-                            GlobalConfig.VERSION_CODE >= Build.VERSION_CODES.LOLLIPOP) {
-                        AppUpdateManagerWrapper.checkFlexibleUpdateAllowed(activity, new Function3<Boolean, Boolean, String, Unit>() {
-                            @Override
-                            public Unit invoke(Boolean allowFlexUpdate, Boolean isOnProgress, String onProgressMessage) {
-                                if (allowFlexUpdate) {
-                                    if (isOnProgress) {
-                                        ToasterNormal.show(activity, onProgressMessage);
-                                    } else {
-                                        try {
-                                            boolean successTriggerUpdate = AppUpdateManagerWrapper.doFlexibleUpdate(activity, 12354);
-                                            if (!successTriggerUpdate) {
-                                                goToPlayStore();
-                                            }
-                                        } catch (Exception e) {
-                                            goToPlayStore();
-                                        }
-                                    }
-                                } else {
+                negativeButton.setEnabled(false);
+                positiveButton.setEnabled(false);
+                if (detail.isInAppUpdateEnabled() &&
+                        GlobalConfig.VERSION_CODE >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (detail.isForceUpdate()) {
+                        AppUpdateManagerWrapper.checkImmediateUpdateAllowed(activity, allowImmediateUpdate -> {
+                            if (allowImmediateUpdate) {
+                                boolean successTriggerUpdate = AppUpdateManagerWrapper.doImmediateUpdate(activity);
+                                if (!successTriggerUpdate) {
                                     goToPlayStore();
                                 }
-                                dialog.dismiss();
-                                return null;
+                            } else {
+                                goToPlayStore();
                             }
+                            dialog.dismiss();
+                            return null;
                         });
-                    } else {
-                        goToPlayStore();
-                        dialog.dismiss();
+                    } else { // flexible update
+                        AppUpdateManagerWrapper.checkFlexibleUpdateAllowed(activity, (allowFlexUpdate, isOnProgress, onProgressMessage) -> {
+                            if (allowFlexUpdate) {
+                                if (isOnProgress) {
+                                    ToasterNormal.show(activity, onProgressMessage);
+                                } else {
+                                    try {
+                                        boolean successTriggerUpdate = AppUpdateManagerWrapper.doFlexibleUpdate(activity);
+                                        if (!successTriggerUpdate) {
+                                            goToPlayStore();
+                                        }
+                                    } catch (Exception e) {
+                                        goToPlayStore();
+                                    }
+                                }
+                            } else {
+                                goToPlayStore();
+                            }
+                            dialog.dismiss();
+                            return null;
+                        });
                     }
+                } else {
+                    goToPlayStore();
+                    dialog.dismiss();
                 }
                 listener.onPositiveButtonClicked(detail);
             });
@@ -96,11 +100,7 @@ public class AppUpdateDialogBuilder {
         return alertDialog;
     }
 
-    private void doFlexibleUpdate(){
-
-    }
-
-    private void goToPlayStore(){
+    private void goToPlayStore() {
         activity.startActivity(
                 new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink()))
         );

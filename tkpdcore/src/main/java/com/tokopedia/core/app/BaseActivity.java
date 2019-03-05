@@ -69,7 +69,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected GCMHandler gcmHandler;
 
     private Boolean isPause = false;
-    private boolean isDialogNotConnectionShown = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
     protected GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
@@ -92,35 +91,15 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
-        MainApplication.setActivityname(this.getClass().getSimpleName());
-        forceRotation();
-    }
-
-    protected void forceRotation() {
-        if (!MainApplication.isTablet()) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         unregisterForceLogoutReceiver();
-        MainApplication.setActivityState(0);
-        MainApplication.setActivityname(null);
         unregisterShake();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
-        MainApplication.setActivityname(this.getClass().getSimpleName());
         cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
         if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
             Intent intent = new Intent(this, ForceUpdate.class);

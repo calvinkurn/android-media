@@ -1,18 +1,18 @@
 package com.tokopedia.inappupdate
 
 import android.app.Activity
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.NotificationCompat
+import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.view.View
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import java.lang.Exception
 
 class AppUpdateManagerWrapper {
     companion object {
@@ -31,7 +31,7 @@ class AppUpdateManagerWrapper {
                 appUpdateManager!!.registerListener {
                     if (it.installStatus() == InstallStatus.DOWNLOADED) {
                         LocalBroadcastManager.getInstance(context.applicationContext)
-                            .sendBroadcast(Intent(TAG))
+                            .sendBroadcast(Intent(INAPP_UPDATE))
                     }
                 }
             }
@@ -46,7 +46,8 @@ class AppUpdateManagerWrapper {
         fun checkFlexibleUpdateAllowed(context: Context, onSuccessGetInfo: ((allowUpdate: Boolean,
                                                                              isOnProgress: Boolean,
                                                                              onProgressMessage: String) -> (Unit))) {
-            val appUpdateManager = getInstance(context)
+            val appContext = context.applicationContext
+            val appUpdateManager = getInstance(appContext)
             if (appUpdateManager == null) {
                 onSuccessGetInfo(false, false, "")
                 return
@@ -54,19 +55,14 @@ class AppUpdateManagerWrapper {
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
                 if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                     it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                    // check if previously have denied
                     appUpdateInfo = it
                     val onProgressUpdating = onProgressUpdating(it.installStatus())
-                    val message: String = getProgressMessage(context, it.installStatus())
+                    val message: String = getProgressMessage(appContext, it.installStatus())
                     if (onProgressUpdating) {
                         if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                            appUpdateManager.completeUpdate().addOnSuccessListener {
-                                LocalBroadcastManager.getInstance(context.applicationContext)
-                                    .sendBroadcast(Intent(TAG))
-                            }.addOnFailureListener {
-                                LocalBroadcastManager.getInstance(context.applicationContext)
-                                    .sendBroadcast(Intent(TAG)
-                                        .apply { EXTRA_ERROR = it.localizedMessage })
-                            }
+                            LocalBroadcastManager.getInstance(context.applicationContext)
+                                .sendBroadcast(Intent(INAPP_UPDATE))
                         }
                     }
                     onSuccessGetInfo(true, onProgressUpdating, message)
@@ -79,12 +75,49 @@ class AppUpdateManagerWrapper {
             }
         }
 
+        /**
+         * Boolean = true => success get info and allow immediate update
+         */
         @JvmStatic
-        fun doFlexibleUpdate(activity: Activity, requestCode: Int): Boolean {
-            val appUpdateManager = getInstance(activity.applicationContext) ?: return false
+        fun checkImmediateUpdateAllowed(activity: Activity, onSuccessGetInfo: ((allowUpdate: Boolean) -> (Unit))) {
+            val appUpdateManager = getInstance(activity)
+            if (appUpdateManager == null) {
+                onSuccessGetInfo(false)
+                return
+            }
+            appUpdateManager.appUpdateInfo.addOnSuccessListener {
+                if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                    appUpdateInfo = it
+                    val onProgressUpdating = onProgressUpdating(it.installStatus())
+                    val message: String = getProgressMessage(activity, it.installStatus())
+                    if (onProgressUpdating) {
+                        if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                            onSuccessGetInfo(true)
+                        } else if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                            // If an in-app update is already running, launch the flow UI.
+                            try {
+                                appUpdateManager.startUpdateFlowForResult(
+                                    appUpdateInfo, AppUpdateType.IMMEDIATE, /* activity= */ activity, REQUEST_CODE_IMMEDIATE)
+                            } catch (e: Exception) {
+
+                            }
+                        }
+                    }
+                } else {
+                    appUpdateInfo = null
+                    onSuccessGetInfo(false)
+                }
+            }.addOnFailureListener {
+                onSuccessGetInfo(false)
+            }
+        }
+
+        @JvmStatic
+        fun doFlexibleUpdate(activity: Activity): Boolean {
             if (appUpdateInfo == null) {
                 return false
             }
+            val appUpdateManager = getInstance(activity.applicationContext) ?: return false
             var isSuccess = false
             try {
                 isSuccess = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, activity, requestCode)
@@ -96,6 +129,83 @@ class AppUpdateManagerWrapper {
 
             }
             return isSuccess
+        }
+
+        @JvmStatic
+        fun doImmediateUpdate(activity: Activity): Boolean {
+            if (appUpdateInfo == null) {
+                return false
+            }
+            val appUpdateManager = getInstance(activity.applicationContext) ?: return false
+            var isSuccess = false
+            try {
+                isSuccess = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, activity, REQUEST_CODE_IMMEDIATE)
+            } catch (e: Exception) {
+
+            }
+            return isSuccess
+        }
+
+        @JvmStatic
+        fun checkUpdateInProgressOrCompleted(activity: Activity, onSuccessGetInfo: ((isInProgress: Boolean) -> (Unit))) {
+            val appUpdateManager = getInstance(activity) ?: return
+            appUpdateManager.appUpdateInfo.addOnSuccessListener {
+                if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
+                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    appUpdateInfo = it
+                    onSuccessGetInfo(true)
+                } else if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                    it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                    appUpdateInfo = it
+                    onSuccessGetInfo(true)
+                } else {
+                    appUpdateInfo = null
+                    onSuccessGetInfo(false)
+                }
+            }.addOnFailureListener {
+                onSuccessGetInfo(false)
+            }
+        }
+
+        @JvmStatic
+        fun checkUpdateInProgressOrCompleted(activity: Activity) {
+            val appUpdateManager = getInstance(activity) ?: return
+            appUpdateManager.appUpdateInfo.addOnSuccessListener {
+                if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
+                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    appUpdateInfo = it
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(
+                            appUpdateInfo, AppUpdateType.IMMEDIATE, /* activity= */ activity, REQUEST_CODE_IMMEDIATE)
+                    } catch (e: Exception) {
+
+                    }
+                } else if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                    it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                    appUpdateInfo = it
+                    if (it.installStatus() == InstallStatus.DOWNLOADED) {
+                        showSnackBarComplete(activity)
+                    }
+                } else {
+                    appUpdateInfo = null
+                }
+            }.addOnFailureListener {
+                // no op
+            }
+        }
+
+        @JvmStatic
+        public fun showSnackBarComplete(activity: Activity) {
+            val appUpdateManager = getInstance(activity) ?: return
+            val snackbar = Snackbar.make(
+                activity.findViewById<View>(android.R.id.content),
+                activity.getString(R.string.completion_update_message),
+                Snackbar.LENGTH_INDEFINITE)
+            snackbar.setAction(activity.getString(R.string.restart_app)) {
+                appUpdateManager.completeUpdate()
+            }
+            snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.snackbar_action_green))
+            snackbar.show()
         }
 
         fun buildBaseNotification(context: Context, contentText:String): NotificationCompat.Builder {

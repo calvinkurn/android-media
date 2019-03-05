@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.AbTestingOfficialStore;
@@ -45,7 +46,6 @@ import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
@@ -75,6 +75,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 /**
  * Created by meta on 19/06/18.
@@ -158,7 +161,7 @@ public class MainParentActivity extends BaseActivity implements
     public static Intent getApplinkRecommendationEvent(Context context) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, RECOMENDATION_LIST);
-        intent.putExtra(SCROLL_RECOMMEND_LIST,true);
+        intent.putExtra(SCROLL_RECOMMEND_LIST, true);
         return intent;
     }
 
@@ -215,7 +218,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public boolean isFirstTimeUser(){
+    public boolean isFirstTimeUser() {
         return userSession.isFirstTimeUser();
     }
 
@@ -238,7 +241,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         handleAppLinkBottomNavigation(savedInstanceState);
-        checkAppUpdate();
+        checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
 
         initNewFeedClickReceiver();
@@ -399,6 +402,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        checkForInAppUpdateInProgressOrCompleted();
         presenter.onResume();
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
@@ -410,9 +414,20 @@ public class MainParentActivity extends BaseActivity implements
 
         registerNewFeedClickedReceiver();
 
-        if(!((BaseMainApplication)getApplication()).checkAppSignature()){
+        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
+    }
+
+    /**
+     * While refreshing the app update info, we also check whether we have updates in progress to
+     * complete.
+     *
+     * <p>This is important, so the app doesn't forget about downloaded updates even if it gets killed
+     * during the download or misses some notifications.
+     */
+    private void checkForInAppUpdateInProgressOrCompleted() {
+        AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this);
     }
 
     @Override
@@ -430,7 +445,7 @@ public class MainParentActivity extends BaseActivity implements
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(InboxFragment.newInstance(true));
             cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
@@ -578,7 +593,19 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    private void checkAppUpdate() {
+    private void checkAppUpdateAndInApp() {
+        AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this, new Function1<Boolean, Unit>() {
+            @Override
+            public Unit invoke(Boolean isOnProgress) {
+                if (!isOnProgress) {
+                    checkAppUpdateRemoteConfig();
+                }
+                return null;
+            }
+        });
+    }
+
+    private void checkAppUpdateRemoteConfig(){
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
