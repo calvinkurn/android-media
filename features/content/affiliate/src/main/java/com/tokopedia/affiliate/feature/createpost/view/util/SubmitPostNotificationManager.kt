@@ -40,6 +40,14 @@ abstract class SubmitPostNotificationManager(
         setOnlyAlertOnce(true)
         updateLargeIcon(this)
 
+        val format = context.getString(R.string.af_notif_media)
+        val text = String.format(format, currentProgress, maxCount)
+        setContentText(text)
+        setStyle(NotificationCompat.BigTextStyle().bigText(text))
+        setProgress(maxCount, currentProgress, false)
+        setOngoing(true)
+        setAutoCancel(false)
+
         notificationManager.notify(TAG, id, this.build())
     }
 
@@ -94,9 +102,9 @@ abstract class SubmitPostNotificationManager(
         notificationManager.notify(TAG, id, notification)
     }
 
-    protected abstract fun getSuccessIntent() : PendingIntent
+    protected abstract fun getSuccessIntent(): PendingIntent
 
-    protected abstract fun getFailedIntent(errorMessage: String) : PendingIntent
+    protected abstract fun getFailedIntent(errorMessage: String): PendingIntent
 
     private fun updateLargeIcon(builder: NotificationCompat.Builder) {
         val file: String = if (urlIsFile(firstImage)) {
@@ -112,6 +120,7 @@ abstract class SubmitPostNotificationManager(
                         override fun onResourceReady(resource: Bitmap?,
                                                      glideAnimation: GlideAnimation<in Bitmap>?) {
                             builder.setLargeIcon(resource)
+                            notificationManager.notify(TAG, id, builder.build())
                         }
                     })
         }
