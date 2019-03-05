@@ -6,12 +6,6 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.source.CategoryListDataSource;
-import com.tokopedia.digital.common.data.source.StatusDataSource;
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.data.source.RecommendationListDataSource;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
@@ -134,34 +128,6 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    protected DigitalEndpointService provideDigitalEndpointService(){
-        return new DigitalEndpointService();
-    }
-
-    @HomeScope
-    @Provides
-    protected StatusDataSource provideStatusDataSource(DigitalEndpointService digitalEndpointService,
-                                                       CacheManager cacheManager,
-                                                       StatusMapper statusMapper){
-        return new StatusDataSource(
-                digitalEndpointService,
-                cacheManager,
-                statusMapper);
-    }
-
-    @HomeScope
-    @Provides
-    protected CategoryListDataSource provideCategoryListDataSource(DigitalEndpointService digitalEndpointService,
-                                                                   CacheManager cacheManager,
-                                                                   CategoryMapper categoryMapper){
-        return new CategoryListDataSource(
-                digitalEndpointService,
-                cacheManager,
-                categoryMapper);
-    }
-
-    @HomeScope
-    @Provides
     protected StatusMapper provideStatusMapper(){
         return new StatusMapper();
     }
@@ -170,31 +136,5 @@ public class HomeModule {
     @Provides
     protected CategoryMapper provideCategoryMapper(){
         return new CategoryMapper();
-    }
-
-    @HomeScope
-    @Provides
-    protected DigitalGqlApiService provideDigitalGqlApiService() {
-        return new DigitalGqlApiService();
-    }
-
-    @HomeScope
-    @Provides
-    protected RecommendationListDataSource provideRecommendationListDataSource(
-            DigitalGqlApiService digitalGqlApiService, @ApplicationContext Context context) {
-        return new RecommendationListDataSource(digitalGqlApiService, context);
-    }
-
-    @HomeScope
-    @Provides
-    protected DigitalWidgetRepository providetDigitalWidgetRepository(
-            StatusDataSource statusDataSource,
-            CategoryListDataSource categoryListDataSource,
-            RecommendationListDataSource recommendationListDataSource){
-        return new DigitalWidgetRepository(
-                statusDataSource,
-                categoryListDataSource,
-                recommendationListDataSource
-        );
     }
 }

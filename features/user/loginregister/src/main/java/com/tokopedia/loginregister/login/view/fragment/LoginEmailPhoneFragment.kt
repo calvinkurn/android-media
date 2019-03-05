@@ -831,6 +831,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
+            } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                handleGoogleSignInResult(task)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
