@@ -67,6 +67,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var userId: Int = 0
     private var afterPost: Boolean = false
     private var afterEdit: Boolean = false
+    private var successPost: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var isOwner: Boolean = false
@@ -261,18 +262,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         trackKolPostImpression(visitables)
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
-        if (afterPost) {
-            when {
+        when {
+            afterPost -> {
+                showAfterPostToast()
+                afterPost = false
+
+            }
+            afterEdit -> {
+                showAfterEditToaster()
+                afterEdit = false
+
+            }
+            successPost -> when {
                 isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
                 onlyOnePost -> showShowCaseDialog(shareProfile)
                 else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
             }
-            afterPost = false
-
-        } else if (afterEdit) {
-            showAfterEditToaster()
-            afterEdit = false
-
         }
     }
 
@@ -414,14 +419,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
                                activityType: String) {
-        startActivityForResult(
-                RouteManager.getIntent(
-                        context,
-                        ApplinkConst.AFFILIATE_EDIT_POST.replace(POST_ID, activityId)
-                ),
-                EDIT_POST_CODE
-        )
-        profileAnalytics.eventClickTambahGambar(hasMultipleContent, activityId, activityType)
+        //TODO milhamj
+//        startActivityForResult(
+//                RouteManager.getIntent(
+//                        context,
+//                        ApplinkConst.AFFILIATE_EDIT_POST.replace(POST_ID, activityId)
+//                ),
+//                EDIT_POST_CODE
+//        )
+//        profileAnalytics.eventClickTambahGambar(hasMultipleContent, activityId, activityType)
     }
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
@@ -548,6 +554,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
                     ProfileActivity.TRUE
             )
+            successPost = TextUtils.equals(
+                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_SUCCESS_POST, ""),
+                    ProfileActivity.TRUE
+            )
         }
 
         if (context!!.applicationContext is ProfileModuleRouter) {
@@ -640,6 +650,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         } else {
             val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
             addCuration.text = addCurationText
+        }
+    }
+
+    private fun showAfterPostToast() {
+        context?.let {
+            Toast.makeText(it, R.string.profile_after_post, Toast.LENGTH_LONG).show()
         }
     }
 

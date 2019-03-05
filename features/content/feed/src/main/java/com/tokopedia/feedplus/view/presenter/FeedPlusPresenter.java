@@ -366,15 +366,14 @@ public class FeedPlusPresenter
                         if (hasFeed(model)) {
                             getView().updateCursor(model.getCursor());
                             getView().setLastCursorOnFirstPage(model.getCursor());
+                            getView().onSuccessGetFeedFirstPage(
+                                    new ArrayList<>(model.getPostList())
+                            );
 
                             if (model.getHasNext()) {
-                                getView().onSuccessGetFeedFirstPage(
-                                        new ArrayList<>(model.getPostList())
-                                );
+                                getView().setEndlessScroll();
                             } else {
-                                getView().onSuccessGetFeedFirstPageWithAddFeed(
-                                        new ArrayList<>(model.getPostList())
-                                );
+                                getView().unsetEndlessScroll();
                             }
                         } else {
                             getView().onShowEmpty();

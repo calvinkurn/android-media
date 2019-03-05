@@ -1262,7 +1262,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CommonUtils.dumper(eventTracking.toString());
     }
 
-    @Override
     public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
@@ -1833,18 +1832,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendEnhanceECommerceTracking(Map<String, Object> events) {
         TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
-    }
-
-    @Override
-    public void sendTrackDefaultAuth() {
-        ScreenTracking.sendAuth(this);
-    }
-
-    @Override
-    public void sendTrackCustomAuth(Context context, String shopID,
-                                    String shopType, String pageType,
-                                    String productId) {
-        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
     }
 
     @Override

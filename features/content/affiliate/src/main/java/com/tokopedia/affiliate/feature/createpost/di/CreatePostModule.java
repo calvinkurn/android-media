@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.createpost.di;
 
+import android.app.NotificationManager;
 import android.content.Context;
 
 import com.google.gson.Gson;
@@ -26,6 +27,17 @@ import dagger.Provides;
  */
 @Module(includes = ImageUploaderModule.class)
 public class CreatePostModule {
+
+    private final Context context;
+
+    public CreatePostModule(Context context) {
+        this.context = context;
+    }
+
+    @Provides
+    @ApplicationContext Context provideApplicationContext() {
+        return context.getApplicationContext();
+    }
 
     @Provides
     @CreatePostScope
@@ -62,5 +74,11 @@ public class CreatePostModule {
     AffiliateAnalytics provideAffiliateAnalytics(@ApplicationContext Context context,
                                                  UserSessionInterface userSessionInterface) {
         return new AffiliateAnalytics((AbstractionRouter) context, userSessionInterface);
+    }
+
+    @Provides
+    @CreatePostScope
+    NotificationManager provideNotificationManager(@ApplicationContext Context context) {
+        return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 }

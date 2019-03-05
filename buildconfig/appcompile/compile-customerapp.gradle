@@ -1,6 +1,7 @@
 // Sort alphabetically by name
-include "features:common:nps"
 include "features:common:developer_options"
+include "features:common:nps"
+include "features:common:resources_common"
 
 include "features:communication:broadcast_message_common"
 
@@ -28,12 +29,13 @@ include "features:digital:train"
 include "features:digital:common_travel"
 include "features:digital:common_digital"
 
-include "features:discovery:wishlist_common"
+include "features:discovery:category_common"
 include "features:discovery:home"
 //include "features:discovery:home_no_op"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"
 //include "features:discovery:recentview_no_op"
+include "features:discovery:wishlist_common"
 
 include "features:fintech:home_credit"
 include "features:fintech:mitra_toppers"

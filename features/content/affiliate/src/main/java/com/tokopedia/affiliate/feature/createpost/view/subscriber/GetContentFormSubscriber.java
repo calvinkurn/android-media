@@ -6,27 +6,22 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery;
-import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentResponse;
+import com.tokopedia.affiliate.feature.createpost.domain.entity.GetContentFormDomain;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import rx.Subscriber;
 
 /**
  * @author by milhamj on 9/26/18.
  */
-public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
+@SuppressWarnings("ConstantConditions")
+public class GetContentFormSubscriber extends Subscriber<GetContentFormDomain> {
 
     private CreatePostContract.View view;
-    private boolean isEdit = false;
 
     public GetContentFormSubscriber(CreatePostContract.View view) {
-       this.view = view;
-    }
-
-    public GetContentFormSubscriber(CreatePostContract.View view, boolean isEdit) {
         this.view = view;
-        this.isEdit = isEdit;
     }
 
     @Override
@@ -43,40 +38,29 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
         if (e != null && e.getLocalizedMessage().contains(
                 view.getContext().getString(R.string.error_default_non_affiliate))) {
             view.onErrorNotAffiliate();
-        } else if (!isEdit){
-            view.onErrorGetContentForm(
-                    ErrorHandler.getErrorMessage(view.getContext(), e)
-            );
         } else {
-            view.onErrorGetEditContentForm(
+            view.onErrorGetContentForm(
                     ErrorHandler.getErrorMessage(view.getContext(), e)
             );
         }
     }
 
     @Override
-    public void onNext(GraphqlResponse graphqlResponse) {
-        ContentFormData data = graphqlResponse.getData(ContentFormData.class);
-        if (data == null || data.getFeedContentForm() == null || data.getAffiliateCheck() == null) {
+    public void onNext(GetContentFormDomain domain) {
+        FeedContentResponse data = domain.getFeedContentResponse();
+        if (data == null || data.getFeedContentForm() == null) {
             onError(new RuntimeException());
             return;
         }
-        if (!data.getAffiliateCheck().isIsAffiliate()) {
-            view.onErrorNotAffiliate();
+
+        CheckQuotaQuery checkQuotaQuery = domain.getCheckQuotaQuery();
+        if (checkQuotaQuery == null || checkQuotaQuery.getData() == null) {
+            onError(new RuntimeException());
             return;
         }
-
-        if (!isEdit) {
-            CheckQuotaQuery checkQuotaQuery = graphqlResponse.getData(CheckQuotaQuery.class);
-            if (checkQuotaQuery == null || checkQuotaQuery.getData() == null) {
-                onError(new RuntimeException());
-                return;
-            }
-            if (checkQuotaQuery.getData().getNumber() == 0) {
-                view.onErrorNoQuota();
-                return;
-            }
-
+        if (checkQuotaQuery.getData().getNumber() == 0) {
+            view.onErrorNoQuota();
+            return;
         }
 
         view.hideLoading();

@@ -32,6 +32,8 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 

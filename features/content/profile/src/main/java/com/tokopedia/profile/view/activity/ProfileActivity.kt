@@ -25,6 +25,7 @@ class ProfileActivity : BaseSimpleActivity() {
         const val EXTRA_PARAM_POST_ID = "post_id"
         const val EXTRA_PARAM_AFTER_POST = "after_post"
         const val EXTRA_PARAM_AFTER_EDIT = "after_edit"
+        const val EXTRA_PARAM_SUCCESS_POST = "success_post"
         const val TRUE = "true"
         const val ZERO = "0"
 
