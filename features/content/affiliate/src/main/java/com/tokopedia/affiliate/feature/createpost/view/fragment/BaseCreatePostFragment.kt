@@ -368,8 +368,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateMedia() {
+        val shouldShowVideo = viewModel.allowVideo && false
         addImageBtn.showWithCondition(viewModel.allowImage)
-        addVideoBtn.showWithCondition(viewModel.allowVideo && false)
+        addVideoBtn.showWithCondition(shouldShowVideo)
+        separatorMedia.showWithCondition(viewModel.allowImage || shouldShowVideo)
     }
 
     private fun updateThumbnail() {

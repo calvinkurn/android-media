@@ -74,7 +74,9 @@
                 android:id="@+id/addMediaBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_1"
                 android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/separatorCaption">
 
@@ -90,7 +92,7 @@
                     android:padding="@dimen/dp_20"
                     android:visibility="visible"
                     tools:ignore="UnusedAttribute,UseCompoundDrawables"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <ImageView
                         android:layout_width="@dimen/dp_24"
@@ -118,10 +120,7 @@
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_16"
                     android:background="@color/white_two"
-                    app:layout_constraintBottom_toBottomOf="@+id/addImageBtn"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/addImageBtn" />
+                    android:minHeight="@dimen/dp_1" />
 
                 <LinearLayout
                     android:id="@+id/addVideoBtn"
@@ -135,7 +134,7 @@
                     android:padding="@dimen/dp_20"
                     android:visibility="visible"
                     tools:ignore="UnusedAttribute,UseCompoundDrawables"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <ImageView
                         android:layout_width="@dimen/dp_24"
