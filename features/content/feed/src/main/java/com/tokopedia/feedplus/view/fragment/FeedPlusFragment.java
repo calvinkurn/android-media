@@ -577,11 +577,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
-
-        if (afterPost) {
-            showAfterPostToaster();
-            afterPost = false;
-        }
     }
 
     @Override
@@ -882,12 +877,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void loadData(boolean isVisibleToUser) {
-        if (isVisibleToUser && isAdded()
-                && getActivity() != null && presenter != null) {
+        if (isVisibleToUser && isAdded() && getActivity() != null && presenter != null) {
             if (!isLoadedOnce) {
                 presenter.fetchFirstPage();
-
                 isLoadedOnce = !isLoadedOnce;
+            }
+
+            if (afterPost) {
+                showAfterPostToaster();
+                afterPost = false;
             }
 
             analytics.trackScreen(getActivity(), getScreenName());
