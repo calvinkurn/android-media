@@ -1,7 +1,9 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
+import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.BuildConfig
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
@@ -58,7 +60,9 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
         isContainNull(feedQuery) {
             val exception = ContainNullException("Found $it in ${DynamicFeedMapper::class.java.simpleName}")
-            Crashlytics.logException(exception)
+            if (!BuildConfig.DEBUG) {
+                Crashlytics.logException(exception)
+            }
             throw exception
         }
 

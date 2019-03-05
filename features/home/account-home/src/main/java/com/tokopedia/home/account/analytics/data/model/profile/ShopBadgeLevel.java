@@ -8,10 +8,10 @@ public class ShopBadgeLevel {
 
     @SerializedName("level")
     @Expose
-    private Integer level;
+    private Integer level = 0;
     @SerializedName("set")
     @Expose
-    private Integer set;
+    private Integer set = 0;
 
     public Integer getLevel() {
         return level;

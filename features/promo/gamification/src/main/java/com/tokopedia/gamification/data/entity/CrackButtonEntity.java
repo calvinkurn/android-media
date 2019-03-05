@@ -40,4 +40,20 @@ public class CrackButtonEntity {
     public String getType() {
         return type;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setApplink(String applink) {
+        this.applink = applink;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

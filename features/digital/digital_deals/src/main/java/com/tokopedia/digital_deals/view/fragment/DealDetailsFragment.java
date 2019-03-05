@@ -31,17 +31,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
@@ -68,6 +65,8 @@ import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -694,7 +693,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         if (getActivity() == null)
             return;
         if (requestCode == LIKE_REQUEST_CODE) {
-            UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            UserSessionInterface userSession = new UserSession(getActivity());
             if (userSession.isLoggedIn()) {
                 mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0, dealDetail.getLikes());
                 if (dealDetail.getIsLiked()) {

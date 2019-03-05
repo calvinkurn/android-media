@@ -8,13 +8,13 @@ public class ShopLastSixMonths {
 
     @SerializedName("count_score_good")
     @Expose
-    private String countScoreGood;
+    private String countScoreGood = "";
     @SerializedName("count_score_bad")
     @Expose
-    private String countScoreBad;
+    private String countScoreBad = "";
     @SerializedName("count_score_neutral")
     @Expose
-    private String countScoreNeutral;
+    private String countScoreNeutral = "";
 
     public String getCountScoreGood() {
         return countScoreGood;

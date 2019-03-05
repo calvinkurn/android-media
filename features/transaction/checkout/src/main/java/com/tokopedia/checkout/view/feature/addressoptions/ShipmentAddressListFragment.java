@@ -39,6 +39,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+import com.tokopedia.transactionanalytics.CornerAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Inject ShipmentAddressListAdapter mShipmentAddressListAdapter;
     @Inject ShipmentAddressListPresenter mShipmentAddressListPresenter;
     @Inject CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    @Inject CornerAnalytics mCornerAnalytics;
 
     private Token token;
 
@@ -261,7 +263,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void populateCorner(List<CornerAddressModel> cornerAddressModelList) {
         mCornerBottomSheet = CornerBottomSheet.newInstance(cornerAddressModelList);
         mCornerBottomSheet.setOnBranchChosenListener(
-                corner -> mShipmentAddressListAdapter.setSampai(corner));
+                corner -> {
+                    mCornerAnalytics.sendClickCornerAddress(corner.getCornerBranchName());
+                    mShipmentAddressListAdapter.setSampai(corner);
+                });
     }
 
     @Override
@@ -369,6 +374,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position) {
         mShipmentAddressListAdapter.updateSelected(position);
         if (mCartAddressChoiceActivityListener != null && getActivity() != null && mCurrAddress != null) {
+            mCornerAnalytics.sendChooseCornerAddress();
             RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel, mCurrAddress.getId());
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
         } else {

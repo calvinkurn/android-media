@@ -45,7 +45,8 @@ public class GetShopProductFeaturedWithAttributeUseCase extends BaseGetShopProdu
             @Override
             public Observable<List<ShopProductViewModel>> call(final List<GMFeaturedProduct> gmFeaturedProductList) {
                 List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromProductFeatured(gmFeaturedProductList);
-                return getShopProductViewModelList(isShopOwner(shopId), officialStore, shopProductViewModelList);
+                return getShopProductViewModelList(userSession.isLoggedIn(),
+                        isShopOwner(shopId), officialStore, shopProductViewModelList);
             }
         });
     }
