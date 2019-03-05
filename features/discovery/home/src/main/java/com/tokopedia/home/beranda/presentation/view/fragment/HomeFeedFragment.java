@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -25,7 +24,6 @@ import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
@@ -101,12 +99,13 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         recomId = getArguments().getInt(ARG_RECOM_ID);
         tabName = getArguments().getString(ARG_TAB_NAME);
         super.onViewCreated(view, savedInstanceState);
-        addRecyclerViewItemDecoration();
+        setupRecyclerView();
         loadFirstPageData();
         initListeners();
     }
 
-    private void addRecyclerViewItemDecoration() {
+    private void setupRecyclerView() {
+        getRecyclerView(getView()).setItemAnimator(null);
         getRecyclerView(getView()).addItemDecoration(
                 new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8))
         );
