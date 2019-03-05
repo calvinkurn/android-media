@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -9,8 +8,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -31,9 +28,9 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
 
     private static final String TAG = TickerViewHolder.class.getSimpleName();
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ticker;
+    public static final int LAYOUT = R.layout.layout_ticker_home;
     private TextView textMessage;
-    private ImageView btnClose;
+    private View btnClose;
 
     private HomeCategoryListener listener;
     private Timer timer;

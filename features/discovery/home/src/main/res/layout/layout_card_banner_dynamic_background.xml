@@ -11,16 +11,16 @@
 
     <FrameLayout
         android:id="@+id/container_background"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/img_banner_background"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:scaleType="centerCrop"
             tools:src="@drawable/ic_icon_market_toped" />
 
         <ImageView

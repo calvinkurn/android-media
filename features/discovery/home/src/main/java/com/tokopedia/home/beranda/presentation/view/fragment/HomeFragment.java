@@ -577,11 +577,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         recyclerView.removeOnScrollListener(onEggScrollListener);
         recyclerView.addOnScrollListener(onEggScrollListener);
-        recyclerView.addItemDecoration(new HomeRecyclerViewDecorator(0,
-                0,
-                getActivity().getResources().getDimensionPixelSize(R.dimen.home_recyclerview_last_item_offset),
-                getActivity().getResources().getDimensionPixelSize(R.dimen.home_viewholder_below_banner_offset)
-                ));
+        if (recyclerView.getItemDecorationCount() == 0) {
+            recyclerView.addItemDecoration(new HomeRecyclerViewDecorator(0,
+                    0,
+                    getActivity().getResources().getDimensionPixelSize(R.dimen.home_recyclerview_last_item_offset),
+                    getActivity().getResources().getDimensionPixelSize(R.dimen.home_viewholder_below_banner_offset)
+            ));
+        }
     }
 
     private int getNavigationHeightPixelSize() {
@@ -872,6 +874,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
         Ticker.Tickers tis = new Ticker.Tickers();
         tis.setMessage("halo halo halo halo ini www.tokopedia.com");
+        tis.setColor("#0a8f08");
         tickers.add(tis);
         ((TickerViewModel) dummyTicker).setTickers(tickers);
         items.add(1, dummyTicker);

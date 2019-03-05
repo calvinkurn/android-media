@@ -772,24 +772,23 @@ public class ImageHandler {
 
     public static void loadImageBlurWithViewTarget(final Context context,
                                      String imageUrl,
-                                     ImageView imageView) {
+                                     SimpleTarget<Bitmap> simpleTarget) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
                     .centerCrop()
-                    .into(imageView);
+                    .into(simpleTarget);
         }
 
         if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
-                    .placeholder(imageView.getDrawable())
-                    .crossFade()
+                    .dontAnimate()
                     .transform(blurTransformation(context))
                     .centerCrop()
-                    .into(imageView);
+                    .into(simpleTarget);
         }
     }
 

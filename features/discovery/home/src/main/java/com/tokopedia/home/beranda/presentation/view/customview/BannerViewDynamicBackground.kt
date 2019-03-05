@@ -1,6 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -10,6 +14,9 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.bumptech.glide.request.target.SimpleTarget
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.banner.BannerPagerAdapter
@@ -23,9 +30,12 @@ import java.util.ArrayList
 
 class BannerViewDynamicBackground : BannerView {
 
-    var isUseCrossfade = false;
+    var isUseCrossfade = true
 
     internal lateinit var img_banner_background: ImageView
+
+    internal var currentBitmapDrawable: BitmapDrawable? = null
+
 
     constructor(context: Context) : super(context) {}
 
@@ -64,10 +74,10 @@ class BannerViewDynamicBackground : BannerView {
 
         val url = promoImageUrls[0]
 
-        ImageHandler.loadImageBlur(
+        ImageHandler.loadImageBlurWithViewTarget(
                 context,
-                img_banner_background,
-                url
+                url,
+                getBitmapImageViewTarget()
         )
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
@@ -107,11 +117,11 @@ class BannerViewDynamicBackground : BannerView {
 
                         val url = promoImageUrls[position]
 
-                        ImageHandler.loadImageBlur(
-                                context,
-                                img_banner_background,
-                                url
-                        )
+//                        ImageHandler.loadImageBlur(
+//                                context,
+//                                getBitmapImageViewTarget(img_banner_background.getImg1()),
+//                                url
+//                        )
                         oldImagePosition = currentImagePosition
                         currentImagePosition = position
                     }
@@ -125,7 +135,11 @@ class BannerViewDynamicBackground : BannerView {
                         val url = promoImageUrls[position]
                         val oldUrl = promoImageUrls[oldImagePosition]
 
-
+                        ImageHandler.loadImageBlurWithViewTarget(
+                                context,
+                                url,
+                                getBitmapImageViewTarget()
+                        )
                         oldImagePosition = currentImagePosition
                         currentImagePosition = position
                     }
@@ -134,19 +148,26 @@ class BannerViewDynamicBackground : BannerView {
         })
     }
 
-    fun convertPixelsToDp(px: Float, context: Context): Float {
-        return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    fun getBitmapImageViewTarget() : SimpleTarget<Bitmap> {
+        return object : SimpleTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
+                val blurredBitmap = ImageHandler.blur(context, resource)
+                showImage(blurredBitmap)
+            }
+        }
     }
 
-    private fun setBackgroundImage() {
-        val url = promoImageUrls[currentPosition]
-        ImageHandler.loadImageBlurWithViewTarget(
-                context,
-                url,
-                img_banner_background
-        )
+    fun showImage(bitmap: Bitmap) {
+        if (currentBitmapDrawable == null) {
+            img_banner_background.setImageBitmap(bitmap)
+            currentBitmapDrawable = BitmapDrawable(resources, bitmap)
+        } else {
+            val td = TransitionDrawable(arrayOf<Drawable>(currentBitmapDrawable!!, BitmapDrawable(resources, bitmap)))
+            img_banner_background.setImageDrawable(td)
+            td.startTransition(250)
+            currentBitmapDrawable = BitmapDrawable(resources, bitmap)
+        }
     }
-
 
     override fun getBannerAdapter(): BannerPagerAdapter {
         return CardBannerPagerAdapter(promoImageUrls, onPromoClickListener)
