@@ -58,7 +58,6 @@ public class AppUpdateDialogBuilder {
                             } else {
                                 goToPlayStore();
                             }
-                            dialog.dismiss();
                             return null;
                         });
                     } else { // flexible update
@@ -85,7 +84,9 @@ public class AppUpdateDialogBuilder {
                     }
                 } else {
                     goToPlayStore();
-                    dialog.dismiss();
+                    if (!detail.isForceUpdate()) {
+                        dialog.dismiss();
+                    }
                 }
                 listener.onPositiveButtonClicked(detail);
             });
