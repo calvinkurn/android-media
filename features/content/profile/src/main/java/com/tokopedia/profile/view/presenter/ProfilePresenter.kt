@@ -49,7 +49,7 @@ class ProfilePresenter @Inject constructor(
 
     override fun getProfilePost(userId: Int) {
         getDynamicFeedProfileUseCase.execute(
-                GetContentListUseCase.getProfileParams(userId, cursor),
+                GetDynamicFeedProfileUseCase.createRequestParams(userId, cursor),
                 GetProfilePostSubscriber(view)
         )
     }

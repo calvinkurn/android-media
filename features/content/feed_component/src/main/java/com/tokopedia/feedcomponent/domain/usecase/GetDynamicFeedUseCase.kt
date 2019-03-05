@@ -25,6 +25,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
                                                 private val dynamicPostMapper: DynamicFeedMapper)
     : UseCase<DynamicFeedDomainModel>() {
 
+    var queryRaw = R.raw.query_feed_dynamic;
     init {
         graphqlUseCase.setCacheStrategy(
                 GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
@@ -37,7 +38,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
     override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
         val query: String = GraphqlHelper.loadRawString(
                 context.resources,
-                R.raw.query_feed_dynamic
+                queryRaw
         )
 
         val graphqlRequest = GraphqlRequest(query, FeedQuery::class.java, requestParams?.parameters)
@@ -45,6 +46,10 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map(dynamicPostMapper)
+    }
+
+    public fun setQuery(queryRes: Int) {
+        queryRaw = queryRes
     }
 
     companion object {

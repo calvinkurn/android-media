@@ -12,6 +12,7 @@ import com.tokopedia.profile.data.pojo.affiliatequota.AffiliateQuotaData
 import com.tokopedia.profile.data.pojo.profileheader.Profile
 import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderError
+import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase.Companion.SOURCE_ID
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.usecase.RequestParams
@@ -101,7 +102,6 @@ class GetDynamicFeedProfileFirstUseCase
     }
 
     companion object {
-        val SOURCE_ID = "sourceID"
         fun createRequestParams(selfUserId: String, targetUserId: String): RequestParams {
             val requestParams = GetDynamicFeedUseCase.createRequestParams(selfUserId, "", GetDynamicFeedUseCase.SOURCE_PROFILE)
             requestParams.putString(SOURCE_ID, targetUserId)
