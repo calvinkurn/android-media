@@ -100,12 +100,13 @@ class PartialHeaderView private constructor(private val view: View,
     private fun showCountDownTimer(campaign: Campaign) {
         try {
             val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-            val serverTimeMs = campaign.endDateUnix * ONE_SECOND
+            val endDateTimeMs = campaign.endDateUnix * ONE_SECOND
+            val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
-            val delta = endDate.time - serverTimeMs
+            val delta = endDate.time - endDateTimeMs
 
-            if (TimeUnit.MICROSECONDS.toDays(delta) < 1){
-                view.count_down.setup(serverTimeMs, endDate){
+            if (TimeUnit.MICROSECONDS.toDays(now - endDate.time) < 1){
+                view.count_down.setup(delta, endDate){
                     hideProductCampaign(campaign)
                     showAlertCampaignEnded()
                 }
