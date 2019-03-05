@@ -478,7 +478,8 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void reloadData() {
         adapter.clearData();
-        loadShopFirstTime();
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
+        loadMoreShop(START_ROW_FIRST_TIME_LOAD);
     }
 
     @Override
