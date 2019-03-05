@@ -42,6 +42,8 @@ public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetWhislistIntent();
 
+    Intent getManageProfileIntent(Context context);
+
     Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor();
 
     Interceptor checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor();

@@ -6,6 +6,9 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,6 +104,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         });
 
         if (recipientAddress.isTradeIn()) {
+            formatTradeInInfo();
             llTradeIn.setVisibility(View.VISIBLE);
         } else {
             llTradeIn.setVisibility(View.GONE);
@@ -146,5 +150,28 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         textView.setText(formattedPromoMessage);
     }
 
+    private void formatTradeInInfo() {
+        String clickableText = "Ganti nomor";
+        int startSpan = tvTradeInInfo.getText().toString().indexOf(clickableText);
+        int endSpan = tvTradeInInfo.getText().toString().indexOf(clickableText) + clickableText.length();
+        Spannable formattedPromoMessage = new SpannableString(tvTradeInInfo.getText().toString());
+        final int color = ContextCompat.getColor(tvTradeInInfo.getContext(), R.color.tkpd_green_header);
+        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                shipmentAdapterActionListener.onClickChangePhoneNumber();
+            }
+            @Override
+            public void updateDrawState(TextPaint textPaint) {
+                super.updateDrawState(textPaint);
+                textPaint.setUnderlineText(false);
+            }
+        };
+        formattedPromoMessage.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvTradeInInfo.setText(formattedPromoMessage);
+    }
 
 }

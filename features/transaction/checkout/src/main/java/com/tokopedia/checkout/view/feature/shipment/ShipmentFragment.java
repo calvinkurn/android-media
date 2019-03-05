@@ -112,6 +112,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener, CourierBottomsheet.ActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
 
+    private static final int REQUEST_CODE_MANAGE_PROFILE = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
@@ -950,7 +951,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromCourierPinpoint(resultCode, data);
         } else if (requestCode == REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS) {
             onResultFromMultipleAddress(resultCode, data);
+        } else if (requestCode == REQUEST_CODE_MANAGE_PROFILE) {
+            onResultFromManageProfile();
         }
+    }
+
+    private void onResultFromManageProfile() {
+        shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), null);
     }
 
     private void onResultFromMultipleAddress(int resultCode, Intent data) {
@@ -1893,6 +1900,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 getString(R.string.title_activity_checkout_tnc_webview),
                 CheckoutWebViewActivity.CALLER_CODE_COD);
         startActivity(intent);
+    }
+
+    @Override
+    public void onClickChangePhoneNumber() {
+        if (getActivity() != null) {
+            getActivity().startActivityForResult(checkoutModuleRouter.getManageProfileIntent(getActivity()), 1);
+        }
     }
 
     public int getResultCode() {
