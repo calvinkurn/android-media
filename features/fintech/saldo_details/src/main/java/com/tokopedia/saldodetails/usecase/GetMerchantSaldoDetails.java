@@ -38,7 +38,7 @@ public class GetMerchantSaldoDetails {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_merchant_saldo_details),
                 GqlMerchantSaldoDetailsResponse.class,
-                variables, GET_MERCHANT_SALDO_DETAILS);
+                variables, GET_MERCHANT_SALDO_DETAILS, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);

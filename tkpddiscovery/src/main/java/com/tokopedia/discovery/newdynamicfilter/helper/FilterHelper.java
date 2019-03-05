@@ -5,6 +5,7 @@ import com.tokopedia.core.discovery.model.LevelThreeCategory;
 import com.tokopedia.core.discovery.model.LevelTwoCategory;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +75,7 @@ public class FilterHelper {
     public static void addPreFilteredIsOfficial(List<Filter> filters, FilterFlagSelectedModel selectedModel) {
         for (Filter filter : filters) {
             for (Option option : filter.getOptions()) {
-                if (Option.KEY_OFFICIAL.equals(option.getKey())) {
+                if (SearchApiConst.OFFICIAL.equals(option.getKey())) {
                     selectedModel.getSavedCheckedState().put(option.getUniqueId(), true);
                 }
             }

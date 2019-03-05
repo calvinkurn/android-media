@@ -135,6 +135,7 @@
 /features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
 /features/promo/tokopoints_notification @tokopedia/minion-solo
+/features/promo/gamification            @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda

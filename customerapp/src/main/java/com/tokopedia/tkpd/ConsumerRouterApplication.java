@@ -22,6 +22,8 @@ import android.view.MotionEvent;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -81,6 +83,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -92,9 +95,12 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter;
+import com.tokopedia.inbox.common.ResolutionRouter;
+import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
+import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
@@ -151,18 +157,13 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter;
-import com.tokopedia.gallery.ImageReviewGalleryActivity;
-import com.tokopedia.nps.NpsRouter;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -186,13 +187,11 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.design.utils.DateLabelUtils;
-import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
@@ -228,9 +227,6 @@ import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
-import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
-import com.tokopedia.gallery.ImageReviewGalleryActivity;
-import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
@@ -342,7 +338,6 @@ import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
@@ -421,7 +416,6 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
-import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -580,7 +574,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ChatbotRouter,
         TrackingOptimizerRouter,
         LoginRegisterPhoneRouter,
-        ExpressCheckoutRouter {
+        ExpressCheckoutRouter,
+        ResolutionRouter {
 
 
     private final static int IRIS_ROW_LIMIT = 50;
@@ -619,6 +614,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Hansel.init(this);
         initializeDagger();
         initDaggerInjector();
+        initFirebase();
         initRemoteConfig();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
@@ -691,6 +687,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         dealsComponent = DaggerDealsComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
                 .build();
+    }
+
+    private void initFirebase() {
+        if (com.tokopedia.config.GlobalConfig.DEBUG) {
+            try {
+                FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
+                builder.setApplicationId("1:692092518182:android:f4cc247c743f7921");
+                FirebaseApp.initializeApp(this, builder.build());
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initRemoteConfig() {
@@ -1085,7 +1093,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getTrainOrderListIntent(Context context) {
-        return DigitalWebActivity.newInstance(context, TrainUrl.TRAIN_ORDER_LIST);
+        return getWebviewActivityWithIntent(context, TrainUrl.TRAIN_ORDER_LIST);
     }
 
     @Override
@@ -1274,26 +1282,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
-        if (getBooleanRemoteConfig(DigitalRouter.MULTICHECKOUT_CART_REMOTE_CONFIG, true)) {
-            return DigitalCartActivity.newInstance(this, passData);
-        } else {
-            return CartDigitalActivity.newInstance(this, passData);
-        }
+        return DigitalCartActivity.newInstance(this, passData);
     }
 
-    @Override
-    public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
-        return DigitalProductActivity.newInstance(this, passData);
-    }
 
     @Override
     public Intent instanceIntentDigitalCategoryList() {
         return DigitalCategoryListActivity.newInstance(this);
-    }
-
-    @Override
-    public Intent instanceIntentDigitalWeb(String url) {
-        return DigitalWebActivity.newInstance(this, url);
     }
 
     @Override
@@ -1362,27 +1357,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getLoyaltyActivitySelectedCoupon(Context context, String digitalString, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponActiveAndSelected(
-                context, digitalString, categoryId
-        );
-    }
-
-    @Override
-    public Intent getLoyaltyActivity(Context context, String platform, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponActive(
-                context, platform, categoryId
-        );
-    }
-
-    @Override
-    public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponNotActive(
-                context, platform,
-                categoryId);
-    }
-
-    @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
         Bundle extras = new Bundle();
         extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,
@@ -1428,8 +1402,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
-        return CartDigitalActivity.newInstance(this, bundle);
+    public String getAfUniqueId() {
+        return TrackingUtils.getAfUniqueId(MainApplication.getAppContext());
+    }
+
+    @Override
+    public String getAdsId() {
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
+        return analHandler.getAdsId();
     }
 
     @Override
@@ -1592,10 +1572,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                           String alternateRedirectUrl) {
 
         return appLinkScheme == null || appLinkScheme.isEmpty() ?
-                DigitalWebActivity.newInstance(context, alternateRedirectUrl)
+                getWebviewActivityWithIntent(context, alternateRedirectUrl)
                 : isSupportedDelegateDeepLink(appLinkScheme)
                 ? getApplinkIntent(context, appLinkScheme).setData(Uri.parse(appLinkScheme))
-                : DigitalWebActivity.newInstance(context, appLinkScheme);
+                : getWebviewActivityWithIntent(context, appLinkScheme);
     }
 
     @Override
@@ -1607,12 +1587,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GMFeaturedProductDomainModel gmFeaturedProductDomainModel = new GMFeaturedProductDomainModel();
         gmFeaturedProductDomainModel.setData(new ArrayList<GMFeaturedProductDomainModel.Datum>());
         return Observable.just(gmFeaturedProductDomainModel);
-    }
-
-    @Override
-    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
-        List<DataCashbackModel> dataCashbackModels = new ArrayList<>();
-        return Observable.just(dataCashbackModels);
     }
 
     public void goToAddProduct(Activity activity) {
@@ -1728,6 +1702,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
+        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
+    }
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
+        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId, troubleId, solutionId);
+    }
+
+    @Override
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
@@ -1748,8 +1732,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showForceLogoutDialog(Response response) {
-        ServerErrorHandler.showForceLogoutDialog();
+    public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
@@ -1985,9 +1968,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData> getDigitalTokoCashBalance() {
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
+                .processDigitalGetBalance();
+    }
+
+    @Override
     public Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader() {
         return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
                 .getWalletBalanceHomeHeader();
+    }
+
+    @Override
+    public void showForceLogoutDialog() {
+        ServerErrorHandler.showForceLogoutDialog();
     }
 
     @Override
@@ -2428,7 +2422,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
             UnifyTracking.eventShopSendChat(context);
-            Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
+            Intent intent = getAskSellerIntent(this, shopId, shopName, "",TkpdInboxRouter.SHOP);
             context.startActivity(intent);
         } else {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
@@ -2777,22 +2771,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
-        if (context instanceof Activity) {
-            goToApplinkActivity((Activity) context, applink, new Bundle());
-        } else {
-            Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-            intent.setData(Uri.parse(applink));
-            context.startActivity(intent);
+        if(context != null) {
+            if (context instanceof Activity) {
+                goToApplinkActivity((Activity) context, applink, new Bundle());
+            } else {
+                Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+                intent.setData(Uri.parse(applink));
+                context.startActivity(intent);
+            }
         }
     }
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-        ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.setData(Uri.parse(applink));
-        intent.putExtras(bundle);
-        deepLinkDelegate.dispatchFrom(activity, intent);
+        if(activity != null) {
+            ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
+            Intent intent = activity.getIntent();
+            intent.setData(Uri.parse(applink));
+            intent.putExtras(bundle);
+            deepLinkDelegate.dispatchFrom(activity, intent);
+        }
     }
 
     @Override
@@ -3070,6 +3068,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getCartFragment(Bundle bundle) {
         return CartFragment.newInstance(bundle, CartFragment.class.getSimpleName());
+    }
+
+    @Override
+    public Fragment getOfficialStoreFragment(Bundle bundle) {
+        return ReactNativeOfficialStoreFragment.createInstance();
     }
 
     @Override

@@ -35,6 +35,9 @@ public class VoteInfoViewModel implements Parcelable{
     private long startTime, endTime;
     private String participant;
 
+    public VoteInfoViewModel() {
+    }
+
     public VoteInfoViewModel(String pollId, String title, String question, List<Visitable> listOption, String participant,
                              String voteGiftType, String voteOptionType, String voteStatus, int statusId, boolean voted,
                              int voteInfoStringResId, String voteInfoUrl, long startTime, long endTime) {
