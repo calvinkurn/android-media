@@ -113,7 +113,37 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    //#4
+    //#5
+    public void trackLoginPhoneNumber() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "enter login phone number",
+                "click"
+        );
+    }
+
+    //#5
+    public void trackLoginPhoneNumberSuccess() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "enter login phone number",
+                "success"
+        );
+    }
+
+    //#5
+    public void trackLoginPhoneNumberFailed() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "enter login phone number",
+                "failed"
+        );
+    }
+
+    //#5
     public void trackChangeButtonClicked() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,

@@ -23,9 +23,7 @@ import android.widget.TextView
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
@@ -39,7 +37,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
@@ -281,7 +278,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     emailPhoneEditText.setText(email)
                     passwordEditText.setText(pw)
                     presenter.login(email, pw)
-                    activity?.let{
+                    activity?.let {
                         analytics.eventClickLoginButton(it.applicationContext)
                     }
                 }
@@ -340,7 +337,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
                 presenter.login(emailPhoneEditText.text.toString().trim(),
                         passwordEditText.text.toString())
-                activity?.let{
+                activity?.let {
                     analytics.eventClickLoginButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)
                 }
@@ -651,6 +648,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         actionLoginMethod = "phone"
         dismissLoadingLogin()
 
+        analytics.trackLoginPhoneNumberSuccess()
         analytics.eventSuccessLogin(actionLoginMethod)
         if (activity != null) {
             (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
@@ -695,6 +693,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
+        analytics.trackLoginPhoneNumber()
         activity?.let {
             val intent = (it.applicationContext as LoginRegisterPhoneRouter).getTokoCashOtpIntent(
                     it, phoneNumber, true, RequestOtpUseCase.MODE_SMS
@@ -723,7 +722,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
             presenter.login(email, passwordEditText.text.toString())
-            activity?.let{
+            activity?.let {
                 analytics.eventClickLoginButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
             }
@@ -851,7 +850,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
-                activity?.let{
+                activity?.let {
                     analytics.eventClickLoginButton(it.applicationContext)
                 }
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
@@ -902,6 +901,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 onSuccessLoginPhoneNumber()
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 onSuccessLoginPhoneNumber()
+            } else if (requestCode == REQUEST_LOGIN_PHONE
+                    || requestCode == REQUEST_CHOOSE_ACCOUNT) {
+                analytics.trackLoginPhoneNumberFailed()
+                dismissLoadingLogin()
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
