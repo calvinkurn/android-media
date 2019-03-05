@@ -13,7 +13,6 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -30,8 +29,6 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.util.Base64;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -41,12 +38,8 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.BitmapCrossFadeFactory;
-import com.bumptech.glide.request.animation.DrawableCrossFadeFactory;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.animation.ViewAnimationFactory;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
@@ -752,14 +745,11 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-
-
     public static void loadImageBlur(final Context context, final ImageView imageView, String imageUrl) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .load(imageUrl)
                     .override(80, 80)
-                    .placeholder(imageView.getDrawable())
                     .centerCrop()
                     .into(imageView);
         }
@@ -768,10 +758,11 @@ public class ImageHandler {
             Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
-                    .placeholder(imageView.getDrawable())
-                    .into(new BitmapImageViewTarget(imageView) {
+                    .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
+                    .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        protected void setResource(Bitmap resource) {
+                        public void onResourceReady(Bitmap resource, GlideAnimation
+                                glideAnimation) {
                             Bitmap blurredBitmap = blur(context, resource);
                             imageView.setImageBitmap(blurredBitmap);
                         }
@@ -779,26 +770,25 @@ public class ImageHandler {
         }
     }
 
-    public static void loadImageBlurCrossfade(final Context context,
-                                              final ImageView imageView,
-                                              String imageUrl,
-                                              String oldUrl,
-                                              final Drawable placeholderDrawable) {
+    public static void loadImageBlurWithViewTarget(final Context context,
+                                     String imageUrl,
+                                     ImageView imageView) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .load(imageUrl)
-                    .override(80, 80)
+                    .asBitmap()
                     .centerCrop()
                     .into(imageView);
         }
+
         if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
-                    .placeholder(placeholderDrawable)
-                    .transform(blurTransformation(context))
+                    .placeholder(imageView.getDrawable())
                     .crossFade()
-                    .skipMemoryCache(true)
+                    .transform(blurTransformation(context))
+                    .centerCrop()
                     .into(imageView);
         }
     }
@@ -807,7 +797,7 @@ public class ImageHandler {
         return new BitmapTransformation(context) {
             @Override
             protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-                return blur(context, toTransform);
+                return blurStrong(context, toTransform);
             }
 
             @Override
@@ -817,9 +807,31 @@ public class ImageHandler {
         };
     }
 
+    public static Bitmap blurStrong(Context context, Bitmap image) {
+        final float BITMAP_SCALE = 0.1f;
+        final float BLUR_RADIUS = 25f;
+
+        int width = Math.round(image.getWidth() * BITMAP_SCALE);
+        int height = Math.round(image.getHeight() * BITMAP_SCALE);
+
+        Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
+        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+
+        RenderScript rs = RenderScript.create(context);
+        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
+        Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
+        theIntrinsic.setRadius(BLUR_RADIUS);
+        theIntrinsic.setInput(tmpIn);
+        theIntrinsic.forEach(tmpOut);
+        tmpOut.copyTo(outputBitmap);
+
+        return outputBitmap;
+    }
+
     public static Bitmap blur(Context context, Bitmap image) {
         final float BITMAP_SCALE = 0.4f;
-        final float BLUR_RADIUS = 25f;
+        final float BLUR_RADIUS = 7.5f;
 
         int width = Math.round(image.getWidth() * BITMAP_SCALE);
         int height = Math.round(image.getHeight() * BITMAP_SCALE);

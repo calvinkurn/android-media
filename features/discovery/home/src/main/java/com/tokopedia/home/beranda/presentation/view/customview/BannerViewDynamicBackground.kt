@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -57,10 +58,17 @@ class BannerViewDynamicBackground : BannerView {
 
         img_banner_background.requestLayout()
 
+        banner_root.visibility = View.VISIBLE
+
         overlay_img.requestLayout()
 
+        val url = promoImageUrls[0]
 
-        setBackgroundImage()
+        ImageHandler.loadImageBlur(
+                context,
+                img_banner_background,
+                url
+        )
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
                     HomeBannerViewDecorator(
@@ -93,11 +101,11 @@ class BannerViewDynamicBackground : BannerView {
                     val manager : LinearLayoutManager =
                             recyclerView!!.layoutManager as LinearLayoutManager
                     val position = manager.findFirstCompletelyVisibleItemPosition()
+                    Log.d("Fikry pos", " "+position)
                     if (
                             position != currentImagePosition && position != -1) {
 
                         val url = promoImageUrls[position]
-                        val oldUrl = promoImageUrls[oldImagePosition]
 
                         ImageHandler.loadImageBlur(
                                 context,
@@ -117,13 +125,7 @@ class BannerViewDynamicBackground : BannerView {
                         val url = promoImageUrls[position]
                         val oldUrl = promoImageUrls[oldImagePosition]
 
-                        ImageHandler.loadImageBlurCrossfade(
-                                context,
-                                img_banner_background,
-                                url,
-                                oldUrl,
-                                img_banner_background.drawable
-                        )
+
                         oldImagePosition = currentImagePosition
                         currentImagePosition = position
                     }
@@ -138,25 +140,13 @@ class BannerViewDynamicBackground : BannerView {
 
     private fun setBackgroundImage() {
         val url = promoImageUrls[currentPosition]
-        ImageHandler.loadImageBlur(
+        ImageHandler.loadImageBlurWithViewTarget(
                 context,
-                img_banner_background,
-                url
-        )
-    }
-
-    private fun setBackgroundImageCrossfade() {
-        val url = promoImageUrls[currentPosition]
-        val oldUrl = promoImageUrls[currentPosition]
-
-        ImageHandler.loadImageBlurCrossfade(
-                context,
-                img_banner_background,
                 url,
-                oldUrl,
-                img_banner_background.drawable
+                img_banner_background
         )
     }
+
 
     override fun getBannerAdapter(): BannerPagerAdapter {
         return CardBannerPagerAdapter(promoImageUrls, onPromoClickListener)

@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/banner_root"
+    android:visibility="gone"
+    tools:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -27,7 +29,7 @@
             android:layout_height="250dp"
             android:scaleType="centerCrop"
             android:background="#31353B"
-            android:alpha="0.2" />
+            android:alpha="0.32" />
 
         <View
             android:layout_gravity="bottom"
