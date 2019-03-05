@@ -99,7 +99,7 @@ public class ShopListFragment extends SearchSectionFragment
         userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
 
-        getDynamicFilter();
+//        getDynamicFilter();
     }
 
     private void loadDataFromBundle(Bundle bundle) {
