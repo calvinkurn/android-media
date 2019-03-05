@@ -1,5 +1,5 @@
 query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String) {
-  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, $sourceID: sourceID) {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID) {
     data {
       id
       createTime
