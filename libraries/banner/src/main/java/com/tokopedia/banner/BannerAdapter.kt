@@ -25,26 +25,5 @@ class BannerAdapter(bannerImageUrls : List<String>,
 
         return BannerViewHolder(itemView)
     }
-
-    override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
-        if (bannerImageUrls[position] != null && bannerImageUrls[position].length > 0) {
-            holder.bannerImage.setOnClickListener(
-                    getBannerImageOnClickListener(position)
-            )
-        }
-        try {
-            Glide.with(holder.itemView.context)
-                    .load(bannerImageUrls[position])
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .error(com.tokopedia.design.R.drawable.ic_loading_image)
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .centerCrop()
-                    .into(holder.bannerImage)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
 }
 
