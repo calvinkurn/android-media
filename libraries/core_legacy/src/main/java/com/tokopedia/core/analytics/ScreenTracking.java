@@ -55,6 +55,16 @@ public class ScreenTracking extends TrackingUtils {
             e.printStackTrace();
         }
     }
+    public static void sendScreen(Context context, String screenName, String deepLink) {
+        try {
+            ScreenTrackingBuilder
+                    .newInstance(screenName)
+                    .setDeepLinkUrl(deepLink)
+                    .execute(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void screen(Context context, String screen) {
         if (TextUtils.isEmpty(screen)) {

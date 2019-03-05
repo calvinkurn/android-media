@@ -256,7 +256,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     if(responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1){
                         getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }else{
-                        getView().showSucessMessage( StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),","));
+                        getView().showErrorMessage( StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),","));
                     }
                 }
 
@@ -279,14 +279,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().setInvoice(details.invoice());
         getView().setOrderToken(details.orderToken());
         for (int i = 0; i < details.detail().size(); i++) {
-            if (i == 2) {
-                if (details.getDriverDetails() != null) {
-                    getView().showDriverInfo(details.getDriverDetails());
+            if ((orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
+                if (i == 2) {
+                    if (details.getDriverDetails() != null) {
+                        getView().showDriverInfo(details.getDriverDetails());
+                    }
                 }
-            }
-            if (i == details.detail().size()-1) {
-                if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
-                    getView().showDropshipperInfo(details.getDropShipper());
+                if (i == details.detail().size() - 1) {
+                    if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
+                        getView().showDropshipperInfo(details.getDropShipper());
+                    }
                 }
             }
             getView().setDetail(details.detail().get(i));

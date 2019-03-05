@@ -18,8 +18,8 @@
             android:layout_width="50dp"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/small_dp"
-            android:layout_marginStart="@dimen/small_dp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
             tools:ignore="ContentDescription"
             tools:src="@drawable/icon_bca"/>
 
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:padding="@dimen/small_dp"
+            android:padding="@dimen/dp_10"
             tools:text="Operator"/>
     </LinearLayout>
 

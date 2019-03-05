@@ -47,6 +47,8 @@ public interface UserSessionInterface {
 
     boolean hasPassword();
 
+    String getGCToken();
+
 
         /**
          * SETTER METHOD
@@ -101,5 +103,8 @@ public interface UserSessionInterface {
     void setProfilePicture(String profilePicture);
 
     void setSaldoWithdrawalWaring(boolean value);
+
+    void setGCToken(String gcToken);
+
 
 }

@@ -2,7 +2,9 @@ package com.tokopedia.digital.nostylecategory.digitalcategory.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.nostylecategory.digitalcategory.domain.usecase.DigitalCategoryNoStyleUseCase;
 import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.mapper.RechargeCategoryDetailMapper;
 import com.tokopedia.graphql.data.model.CacheType;
@@ -32,6 +34,12 @@ public class DigitalCategoryNoStyleModule {
                 .setExpiryTime(900)
                 .build());
         return new DigitalCategoryNoStyleUseCase(context, graphqlUseCase);
+    }
+
+    @Provides
+    @DigitalCategoryNoStyleScope
+    DigitalAnalytics provideDigitalAnalytics(AbstractionRouter abstractionRouter, @ApplicationContext Context context) {
+        return new DigitalAnalytics(abstractionRouter.getAnalyticTracker(), context);
     }
 
 }
