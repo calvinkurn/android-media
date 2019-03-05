@@ -29,4 +29,23 @@ public class TradeInInfo {
     @Expose
     public String oldDevicePriceFmt = "";
 
+    public boolean isValidTradeIn() {
+        return isValidTradeIn;
+    }
+
+    public int getNewDevicePrice() {
+        return newDevicePrice;
+    }
+
+    public String getNewDevicePriceFmt() {
+        return newDevicePriceFmt;
+    }
+
+    public int getOldDevicePrice() {
+        return oldDevicePrice;
+    }
+
+    public String getOldDevicePriceFmt() {
+        return oldDevicePriceFmt;
+    }
 }
