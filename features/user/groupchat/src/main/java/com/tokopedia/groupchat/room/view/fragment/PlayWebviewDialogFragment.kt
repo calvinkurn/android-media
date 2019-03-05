@@ -78,9 +78,10 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     private fun setupViewModel(savedInstanceState: Bundle?) {
         activity?.run {
 
-            url = getParamString(ApplinkConst.Play.PARAM_URL, arguments,
-                    savedInstanceState, "")
-
+            if(url.isNullOrEmpty()) {
+                url = getParamString(ApplinkConst.Play.PARAM_URL, arguments,
+                        savedInstanceState, "")
+            }
             if (url.isBlank())
                 finish()
 
