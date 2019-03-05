@@ -16,11 +16,11 @@ import com.google.android.play.core.install.model.UpdateAvailability
 
 class AppUpdateManagerWrapper {
     companion object {
-        private var TAG = AppUpdateManagerWrapper::class.java.simpleName
-        private var EXTRA_ERROR = "extra_error"
-        private var ANDROID_GENERAL_CHANNEL = "ANDROID_GENERAL_CHANNEL"
-        private var NOTIFICATION_GROUP = "com.tokopedia"
-        private var NOTIFICATION_ID = 7564786
+        private var REQUEST_CODE_IMMEDIATE = 12135
+        private var INAPP_UPDATE = "inappupdate"
+
+        @JvmField
+        var REQUEST_CODE_FLEXIBLE = 12136
 
         private var appUpdateManager: AppUpdateManager? = null
         private var appUpdateInfo: AppUpdateInfo? = null
@@ -120,11 +120,7 @@ class AppUpdateManagerWrapper {
             val appUpdateManager = getInstance(activity.applicationContext) ?: return false
             var isSuccess = false
             try {
-                isSuccess = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, activity, requestCode)
-                val notification = buildBaseNotification(activity)
-                    .build()
-                (activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                    .notify( NOTIFICATION_ID, notification)
+                isSuccess = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, activity, REQUEST_CODE_FLEXIBLE)
             } catch (e: Exception) {
 
             }
@@ -206,18 +202,6 @@ class AppUpdateManagerWrapper {
             }
             snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.snackbar_action_green))
             snackbar.show()
-        }
-
-        fun buildBaseNotification(context: Context, contentText:String): NotificationCompat.Builder {
-            val title = context.getString(R.string.downloading_update)
-            return NotificationCompat.Builder(context, ANDROID_GENERAL_CHANNEL)
-                .setProgress(0, 0, true)
-                .setContentTitle(title)
-                .setContentText(contentText)
-                .setSmallIcon(R.drawable.notification_action_background)
-                .setAutoCancel(true)
-                .setGroup(NOTIFICATION_GROUP)
-                .setOnlyAlertOnce(true)
         }
 
         private fun onProgressUpdating(installStatus: Int): Boolean {
