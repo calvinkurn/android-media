@@ -36,22 +36,11 @@ class Banner : BannerView {
             bannerRecyclerView.addItemDecoration(
                     BannerDecorator(
                             context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_4),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_4))
+                            context.resources.getDimensionPixelSize(R.dimen.dp_0),
+                            context.resources.getDimensionPixelSize(R.dimen.dp_0),
+                            context.resources.getDimensionPixelSize(R.dimen.dp_0))
             )
         }
-        bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var currentImagePosition = currentPosition
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE
-                        && currentImagePosition != currentPosition
-                        && currentPosition != -1) {
-                    currentImagePosition = currentPosition
-                }
-            }
-        })
     }
 
     override fun getBannerPagerAdapter(): BannerPagerAdapter {
@@ -64,9 +53,5 @@ class Banner : BannerView {
 
     override fun getIndicatorFocus(): Int {
         return R.drawable.indicator_focus
-    }
-
-    fun getBannerSeeAll() : View {
-        return bannerSeeAll
     }
 }

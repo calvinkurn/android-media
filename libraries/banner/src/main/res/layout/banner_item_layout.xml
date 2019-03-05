@@ -18,7 +18,6 @@
         android:layout_height="@dimen/dp_96"
         android:adjustViewBounds="true"
         android:focusable="true"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/ic_loading_image" />
+        android:scaleType="centerCrop" />
 
 </android.support.v7.widget.CardView>
