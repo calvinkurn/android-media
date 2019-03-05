@@ -232,7 +232,7 @@ open class PlayViewStateImpl(
         viewModel?.let { viewModel ->
             dynamicButtonsViewModel = it
 
-            if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
+            if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.contentLinkUrl.isBlank()) {
                 it.floatingButton.run {
                     setFloatingIcon(this)
                 }
@@ -354,6 +354,7 @@ open class PlayViewStateImpl(
     override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
 
         viewModel = it
+        viewModel?.infoUrl = it.infoUrl
 
         loadingView.hide()
 
@@ -372,7 +373,6 @@ open class PlayViewStateImpl(
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
         }
-
         onBackgroundUpdated(it.backgroundViewModel)
         errorView.hide()
 
@@ -423,6 +423,7 @@ open class PlayViewStateImpl(
             hideStickyComponent()
             hidePinnedMessage()
             setQuickReply(null)
+            stickyComponent.hide()
         }
     }
 
@@ -905,8 +906,8 @@ open class PlayViewStateImpl(
 
     private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
         if (floatingButton.imageUrl.isBlank()
-                || floatingButton.linkUrl.isBlank()
-                || !RouteManager.isSupportApplink(view.context, floatingButton.linkUrl)) {
+                || floatingButton.contentLinkUrl.isBlank()
+                || !RouteManager.isSupportApplink(view.context, floatingButton.contentLinkUrl)) {
             return
         }
 
@@ -925,7 +926,7 @@ open class PlayViewStateImpl(
             viewModel?.let {
                 analytics.eventClickProminentButton(it, floatingButton)
 
-                RouteManager.routeWithAttribution(view.context, floatingButton.linkUrl, GroupChatAnalytics.generateTrackerAttribution(
+                RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
                         GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
                         it.channelUrl,
                         it.title
@@ -1229,7 +1230,7 @@ open class PlayViewStateImpl(
     }
 
     override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
-        showWebviewBottomSheet(it.linkUrl)
+        showWebviewBottomSheet(it.contentLinkUrl)
     }
 
     override fun destroy() {
