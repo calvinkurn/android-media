@@ -47,6 +47,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.newcart.data.DigitalDealsUrl;
@@ -184,13 +185,26 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
+
+        if(callback == null)
+            callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
+        registerActivityLifecycleCallbacks(callback);
     }
+
+    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     @Override
     public void onTerminate() {
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
+        unregisterActivityLifecycleCallbacks(callback);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        unregisterActivityLifecycleCallbacks(callback);
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -543,7 +557,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return DeepLinkActivity.class;
     }
 
-    GlobalCacheManager cacheManager;
+    GlobalCacheManager cacheManager = new GlobalCacheManager();
 
     @Override
     public void saveCPM(@NonNull String cpm) {
@@ -557,7 +571,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean isEnable() {
-        return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
+        return true; // getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
     }
 
 

@@ -69,7 +69,7 @@ public class FingerprintInterceptor implements Interceptor {
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, fingerprintModel.getAdsId());
 
-        if(characterPerMinuteInterface.isEnable()){
+        if(characterPerMinuteInterface != null && characterPerMinuteInterface.isEnable()){
             if(characterPerMinuteInterface.getCPM()!=null)
                 newRequest.addHeader("Fingerprint-Velocity", characterPerMinuteInterface.getCPM());
         }

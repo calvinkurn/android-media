@@ -22,11 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CharacterPerMinuteActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
 
     protected final Map<EditText, TextWatcher> map = new ConcurrentHashMap<>();
-
-    private RemoteConfig remoteConfig;
-
     protected ArrayList<EditText> texts = new ArrayList<>();
-
+    private RemoteConfig remoteConfig;
     private CharacterPerMinuteInterface characterPerMinuteInterface;
 
     public CharacterPerMinuteActivityLifecycleCallbacks(CharacterPerMinuteInterface characterPerMinuteInterface) {
@@ -47,19 +44,21 @@ public class CharacterPerMinuteActivityLifecycleCallbacks implements Application
     public void onActivityResumed(Activity activity) {
         traverseEditTexts((ViewGroup) activity.findViewById(android.R.id.content));
 
+        boolean enabled = true;
         if (remoteConfig == null) {
             remoteConfig = new FirebaseRemoteConfigImpl(activity);
-            boolean enabled = remoteConfig.getBoolean("android_customer_typing_tracker_enabled");
-            if (enabled) {
-                Log.d(this.getClass().getName(), "Jumlah Edittext : " + texts.size());
-                for (EditText editText : texts) {
-                    editText.setFocusable(true);
-                    editText.setFocusableInTouchMode(true);
-                    if (!map.containsKey(editText)) {
-                        map.put(editText, new CharacterPerMinuteTextWatcher(characterPerMinuteInterface));
-                    }
-                    editText.addTextChangedListener(map.get(editText));
+            enabled = remoteConfig.getBoolean("android_customer_typing_tracker_enabled");
+        }
+
+        if (enabled) {
+            Log.d(this.getClass().getName(), "Jumlah Edittext : " + texts.size());
+            for (EditText editText : texts) {
+                editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
+                if (!map.containsKey(editText)) {
+                    map.put(editText, new CharacterPerMinuteTextWatcher(characterPerMinuteInterface));
                 }
+                editText.addTextChangedListener(map.get(editText));
             }
         }
 
