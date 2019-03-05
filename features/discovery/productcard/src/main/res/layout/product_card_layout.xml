@@ -23,6 +23,7 @@
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:corner_radius="0"
                 android:adjustViewBounds="true" />
 
             <TextView
@@ -34,6 +35,7 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
                 android:textColor="@color/charcoal_grey_88"
+                android:maxLines="2"
                 android:ellipsize="end"
                 tools:text="Nama"/>
 
