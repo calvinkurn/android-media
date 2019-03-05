@@ -21,7 +21,6 @@ class BannerAdapter(bannerImageUrls : List<String>,
         val layoutParams = itemView.getLayoutParams()
         layoutParams.width = (parent.width * 0.9).toInt()
         itemView.setLayoutParams(layoutParams)
-        itemView.banner_card.visibility = View.VISIBLE
 
         return BannerViewHolder(itemView)
     }
