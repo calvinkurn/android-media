@@ -53,10 +53,12 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     if (listener != null) {
                         listener.onDynamicIconScrollStart();
+                        recyclerView.requestDisallowInterceptTouchEvent(true);
                     }
                 } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (listener != null) {
                         listener.onDynamicIconScrollEnd();
+                        recyclerView.requestDisallowInterceptTouchEvent(false);
                     }
                 }
             }
