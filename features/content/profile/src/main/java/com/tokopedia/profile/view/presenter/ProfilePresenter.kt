@@ -42,14 +42,14 @@ class ProfilePresenter @Inject constructor(
     override fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean) {
         cursor = ""
         getDynamicFeedProfileFirstUseCase.execute(
-                GetDynamicFeedProfileFirstUseCase.createRequestParams(view.getUserSession().userId, targetUserId.toString()),
+                GetDynamicFeedProfileFirstUseCase.createRequestParams(getUserId(), targetUserId.toString()),
                 GetProfileFirstPageSubscriber(view, isFromLogin)
         )
     }
 
     override fun getProfilePost(targetUserId: Int) {
         getDynamicFeedProfileUseCase.execute(
-                GetDynamicFeedProfileUseCase.createRequestParams(view.getUserSession().userId, targetUserId.toString(), cursor),
+                GetDynamicFeedProfileUseCase.createRequestParams(getUserId(), targetUserId.toString(), cursor),
                 GetProfilePostSubscriber(view)
         )
     }
@@ -100,5 +100,13 @@ class ProfilePresenter @Inject constructor(
                 ),
                 TrackPostClickSubscriber()
         )
+    }
+
+    fun getUserId(): String {
+        var userId: String = "0"
+        if (!view.getUserSession().userId.isEmpty()) {
+            userId = view.getUserSession().userId
+        }
+        return userId
     }
 }
