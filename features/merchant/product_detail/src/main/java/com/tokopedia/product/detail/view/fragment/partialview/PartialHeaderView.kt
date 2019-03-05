@@ -101,15 +101,15 @@ class PartialHeaderView private constructor(private val view: View,
         try {
             val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
             val serverTimeMs = campaign.endDateUnix * ONE_SECOND
-            val serverTimeOffset = serverTimeMs - Date().time
             val endDate = dateFormat.parse(campaign.endDate)
-            val endDelta = endDate.time - serverTimeMs
+            val delta = endDate.time - serverTimeMs
 
-            if (TimeUnit.MICROSECONDS.toDays(endDelta) < 1){
-                view.count_down.setup(serverTimeOffset, endDate){
+            if (TimeUnit.MICROSECONDS.toDays(delta) < 1){
+                view.count_down.setup(serverTimeMs, endDate){
                     hideProductCampaign(campaign)
                     showAlertCampaignEnded()
                 }
+                view.discount_timer_holder.visible()
             }
         } catch (ex: Exception){
             view.discount_timer_holder.visibility = View.GONE

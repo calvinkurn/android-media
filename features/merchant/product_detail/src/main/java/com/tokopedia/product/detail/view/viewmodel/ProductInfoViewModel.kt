@@ -81,18 +81,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
             val productInfoP1 = ProductInfoP1()
 
-            // for unsigned in jenkins
-            /*val error = data.getError(ProductInfo.Response::class.java)
-            if (error == null || error.isEmpty()){
-                data.getData<ProductInfo.Response>(ProductInfo.Response::class.java).data?.let {
-                    productInfoP1.productInfo =  it
-                    productInfoP1Resp.value = Success(productInfoP1)
-                }
-            } else {
-                throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-            }*/
-
-            // for signed
             data.getSuccessData<ProductInfo.Response>().data?.let {
                 productInfoP1.productInfo = it
                 productInfoP1Resp.value = Success(productInfoP1)
@@ -352,15 +340,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 DataFollowShop::class.java, param)
             val result = withContext(Dispatchers.IO) { graphqlRepository.getReseponse(listOf(request)) }
 
-            // for unsigned in jenkins
-            /*val error = result.getError(DataFollowShop::class.java)
-            if (error == null || error.isEmpty()){
-                onSuccess(result.getData<DataFollowShop>(DataFollowShop::class.java).followShop.isSuccess)
-            } else {
-                throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-            }*/
-
-            // for signed
             onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
         }) { onError(it) }
     }

@@ -1226,33 +1226,19 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
             val isOwned = productInfoViewModel.isShopOwner(productInfo!!.basic.shopID)
             val isSellerApp = GlobalConfig.isSellerApp()
-            val isWareHousing = productInfo!!.basic.status == ProductStatusTypeDef.WAREHOUSE
 
             val isValidCustomer = !isOwned && !isSellerApp
             menuCart.isVisible = isValidCustomer
             menuCart.isEnabled = isValidCustomer
 
-            setBadgeMenuCart(menuCart)
+            if (isValidCustomer) setBadgeMenuCart(menuCart)
 
-            // handled on P2 when shop is loaded
-            //TODO show visible/hide Warehouse by other criteria?
-            if (isOwned) {
-                if (isWareHousing) {
-                    menuWarehouse.isVisible = false
-                    menuWarehouse.isEnabled = false
-                    menuEtalase.isEnabled = true
-                    menuEtalase.isVisible = true
-                } else {
-                    menuWarehouse.isVisible = true
-                    menuWarehouse.isEnabled = true
-                    menuEtalase.isEnabled = false
-                    menuEtalase.isVisible = false
-                }
-            }
-
-
-            menuReport.isVisible = !isOwned && !isWareHousing
-            menuReport.isEnabled = !isOwned && !isWareHousing
+            menuReport.isVisible = !isOwned && (productInfo!!.basic.status != ProductStatusTypeDef.WAREHOUSE)
+            menuReport.isEnabled = !isOwned && (productInfo!!.basic.status != ProductStatusTypeDef.WAREHOUSE)
+            menuWarehouse.isVisible = isOwned && (productInfo!!.basic.status !in arrayOf(ProductStatusTypeDef.WAREHOUSE, ProductStatusTypeDef.PENDING))
+            menuWarehouse.isEnabled = isOwned && (productInfo!!.basic.status !in arrayOf(ProductStatusTypeDef.WAREHOUSE, ProductStatusTypeDef.PENDING))
+            menuEtalase.isVisible = isOwned && (productInfo!!.basic.status !in arrayOf(ProductStatusTypeDef.ACTIVE, ProductStatusTypeDef.PENDING))
+            menuEtalase.isEnabled = isOwned && (productInfo!!.basic.status !in arrayOf(ProductStatusTypeDef.ACTIVE, ProductStatusTypeDef.PENDING))
         }
     }
 
