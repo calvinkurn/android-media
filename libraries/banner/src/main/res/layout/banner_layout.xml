@@ -29,7 +29,8 @@
         android:orientation="horizontal"
         android:paddingBottom="@dimen/dp_5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner_recyclerview"
+        app:layout_constraintTop_toTopOf="@+id/banner_see_all"
+        app:layout_constraintBottom_toBottomOf="@+id/banner_see_all"
         tools:layout_height="50dp"
         tools:layout_width="100dp" />
 
