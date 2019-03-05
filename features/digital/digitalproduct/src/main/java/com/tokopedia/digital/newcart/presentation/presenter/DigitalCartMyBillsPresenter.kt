@@ -5,14 +5,12 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
-import com.tokopedia.digital.R
-import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache
-import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor
-import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase
+import com.tokopedia.digital.common.analytic.DigitalAnalytics
 import com.tokopedia.digital.common.router.DigitalModuleRouter
-import com.tokopedia.digital.common.util.DigitalAnalytics
 import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType
-import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract
+import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache
+import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor
+import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -34,38 +32,40 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                 digitalInstantCheckoutUseCase,
                 digitalPostPaidLocalCache), DigitalCartMyBillsContract.Presenter {
     override fun onSubcriptionCheckedListener(checked: Boolean) {
-        when (checked) {
-            true -> {
-                view.renderMyBillsDescriptionView(view.cartInfoData.crossSellingConfig.bodyContentAfter)
-            }
 
-            false -> {
-                view.renderMyBillsDescriptionView(view.cartInfoData.crossSellingConfig.bodyContentBefore)
-            }
+        if (checked) {
+            view.renderMyBillsDescriptionView(view.cartInfoData.crossSellingConfig!!.bodyContentAfter)
+        } else {
+            view.renderMyBillsDescriptionView(view.cartInfoData.crossSellingConfig!!.bodyContentBefore)
         }
     }
 
     override fun onMyBillsViewCreated() {
         view.setCheckoutParameter(buildCheckoutData(view.cartInfoData, userSession?.accessToken))
         renderBaseCart(view.cartInfoData)
-        view.renderCategoryInfo(view.cartInfoData.attributes.categoryName)
+        view.renderCategoryInfo(view.cartInfoData.attributes!!.categoryName)
         if (view.cartInfoData.crossSellingConfig != null) {
-            view.updateCheckoutButtonText(view.cartInfoData.crossSellingConfig.checkoutButtonText)
-            view.updateToolbarTitle(view.cartInfoData.crossSellingConfig.headerTitle)
+            view.updateCheckoutButtonText(view.cartInfoData.crossSellingConfig!!.checkoutButtonText)
+            view.updateToolbarTitle(view.cartInfoData.crossSellingConfig!!.headerTitle)
         }
 
-        val description = if (view.cartInfoData.crossSellingConfig.isChecked) view.cartInfoData.crossSellingConfig.bodyContentAfter else view.cartInfoData.crossSellingConfig.bodyContentBefore
+        val description = if (view.cartInfoData.crossSellingConfig!!.isChecked) {
+            view.cartInfoData!!.crossSellingConfig!!.bodyContentAfter
+        } else {
+            view.cartInfoData!!.crossSellingConfig!!.bodyContentBefore
+        }
+
         view.renderMyBillsView(
-                view.cartInfoData.crossSellingConfig.bodyTitle,
+                view.cartInfoData.crossSellingConfig!!.bodyTitle,
                 description,
-                view.cartInfoData.crossSellingConfig.isChecked
+                view.cartInfoData.crossSellingConfig!!.isChecked
         )
     }
 
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {
         val bodyCheckout = super.getRequestBodyCheckout(parameter)
         if (view.cartInfoData.crossSellingType == DigitalCartCrossSellingType.MYBILLS) {
-            bodyCheckout.attributes.setSubscribe(view.isSubscriptionChecked())
+            bodyCheckout.attributes!!.subscribe = view.isSubscriptionChecked()
         }
         return bodyCheckout
     }
