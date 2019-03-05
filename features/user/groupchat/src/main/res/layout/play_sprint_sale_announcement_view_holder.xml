@@ -6,8 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginStart="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_4"
-    android:paddingTop="@dimen/dp_4"
     tools:background="@color/red_150">
 
 
@@ -48,8 +46,8 @@
                 android:textColorLink="@color/quiz_start"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
-                android:layout_toRightOf="@id/spac"
-                android:layout_toEndOf="@id/spac"
+                android:layout_toRightOf="@+id/spac"
+                android:layout_toEndOf="@+id/spac"
                 android:layout_alignTop="@id/icon"
                 android:layout_alignBottom="@id/icon"
                 android:gravity="center"
@@ -98,6 +96,8 @@
                 android:layout_alignBottom="@id/content_image_container"
                 android:layout_toRightOf="@id/space2"
                 android:layout_toEndOf="@id/space2"
+                android:layout_marginRight="@dimen/dp_24"
+                android:layout_marginEnd="@dimen/dp_24"
                 android:orientation="vertical"
                 android:gravity="center_vertical"
                 >
@@ -116,6 +116,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_14"
                     android:textColor="#ff5722"
+                    android:textStyle="bold"
                     android:lineSpacingExtra="4sp"
                     tools:text="Rp2.150.000"
                     android:layout_weight="1"

@@ -113,11 +113,14 @@ open class PlayViewStateImpl(
     private val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
     private var errorView: View = view.findViewById(R.id.card_retry)
     private var loadingView: View = view.findViewById(R.id.loading_view)
+    private var bottomSheet: View = view.findViewById(R.id.bottom_sheet)
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
     private lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
     private lateinit var webviewDialog: PlayWebviewDialogFragment
+
+//    private var bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
     private var youtubeRunnable: Handler = Handler()
     private var layoutManager: LinearLayoutManager
@@ -226,6 +229,19 @@ open class PlayViewStateImpl(
                 sendMessage(pendingChatViewModel)
             }
         }
+//
+//        bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+//            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+//                Log.d("bottomsheetevl", slideOffset.toString() + " " + bottomSheet.javaClass.name)
+//            }
+//
+//            override fun onStateChanged(bottomSheet: View, newState: Int) {
+//                Log.d("bottomsheetev", newState.toString() + " " +bottomSheet.javaClass.name)
+//            }
+//
+//        })
+//
+//        bottomSheetBehavior.peekHeight = 200
     }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
@@ -238,9 +254,11 @@ open class PlayViewStateImpl(
                 }
             }
 
+            dynamicButtonRecyclerView.hide()
             if (!it.listDynamicButton.isEmpty()) {
                 analytics.eventViewDynamicButtons(viewModel, it.listDynamicButton)
                 dynamicButtonAdapter.setList(it.listDynamicButton)
+                dynamicButtonRecyclerView.show()
             }
         }
 
@@ -905,6 +923,7 @@ open class PlayViewStateImpl(
 
 
     private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
+        webviewIcon.hide()
         if (floatingButton.imageUrl.isBlank()
                 || floatingButton.contentLinkUrl.isBlank()
                 || !RouteManager.isSupportApplink(view.context, floatingButton.contentLinkUrl)) {
@@ -951,7 +970,8 @@ open class PlayViewStateImpl(
             webviewDialog.setUrl(url)
         }
 
-        webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
+        if(!webviewDialog.isAdded)
+            webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
 
     }
 
@@ -1190,10 +1210,10 @@ open class PlayViewStateImpl(
 
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
         var space = when {
-            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_32)
+            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
             else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
         }
-        chatRecyclerView.setPadding(0, space, 0, 0)
+        chatRecyclerView.setFadingEdgeLength(space)
     }
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {

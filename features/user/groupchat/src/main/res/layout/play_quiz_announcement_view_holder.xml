@@ -16,8 +16,8 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="@dimen/dp_14"
-        android:layout_height="@dimen/dp_14"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
         app:srcCompat="@drawable/ic_quiz_start"
         android:layout_alignTop="@+id/title"
         android:layout_alignBottom="@+id/title" />
