@@ -33,11 +33,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
                 DataUpdateApp dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp.class);
                 if(dataUpdateApp != null) {
                     DetailUpdate detailUpdate = generateDetailUpdate(dataUpdateApp);
-                    if (dataUpdateApp.isIsForceEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionForceUpdate()) {
-                        detailUpdate.setForceUpdate(true);
-                        listener.onNeedUpdate(detailUpdate);
-                    } else if (dataUpdateApp.isIsOptionalEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionOptionalUpdate()) {
-                        detailUpdate.setForceUpdate(false);
+                    if (detailUpdate.isNeedUpdate()) {
                         listener.onNeedUpdate(detailUpdate);
                     } else {
                         listener.onNotNeedUpdate();
@@ -49,7 +45,15 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
 
     private DetailUpdate generateDetailUpdate(DataUpdateApp dataUpdateApp) {
         DetailUpdate detailUpdate = new DetailUpdate();
-        detailUpdate.setNeedUpdate(true);
+        if (dataUpdateApp.isIsForceEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionForceUpdate()) {
+            detailUpdate.setNeedUpdate(true);
+            detailUpdate.setForceUpdate(true);
+        } else if (dataUpdateApp.isIsOptionalEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionOptionalUpdate()) {
+            detailUpdate.setNeedUpdate(true);
+            detailUpdate.setForceUpdate(false);
+        } else {
+            detailUpdate.setNeedUpdate(false);
+        }
         detailUpdate.setUpdateTitle(dataUpdateApp.getTitle());
         detailUpdate.setUpdateMessage(dataUpdateApp.getMessage());
         detailUpdate.setUpdateLink(dataUpdateApp.getLink());
