@@ -16,6 +16,7 @@ import com.tokopedia.affiliate.analytics.AffiliateEventTracking
 import com.tokopedia.affiliate.feature.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Author
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
@@ -24,8 +25,10 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImageP
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
+import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -182,6 +185,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateMedia()
         updateThumbnail()
         updateButton()
+        updateHeader(feedContentForm.authors)
     }
 
     override fun onErrorGetContentForm(message: String) {
@@ -401,6 +405,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 && viewModel.relatedProducts.isNotEmpty()
                 && (viewModel.adIdList.isNotEmpty() || viewModel.productIdList.isNotEmpty())
         doneBtn.isEnabled = isButtonEnabled
+    }
+
+    private fun updateHeader(authors: List<Author>) {
+        if (activity is CreatePostActivityListener && authors.isNotEmpty()){
+            (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
+                    authors.first().name,
+                    authors.first().thumbnail,
+                    ""
+
+            ))
+        }
     }
 
     private fun updateRelatedProduct() {

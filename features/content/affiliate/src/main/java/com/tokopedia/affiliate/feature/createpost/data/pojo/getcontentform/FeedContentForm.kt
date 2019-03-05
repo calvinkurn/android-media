@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class FeedContentForm(
         @SerializedName("authors")
-        val authors: List<Any> = listOf(),
+        val authors: List<Author> = listOf(),
         @SerializedName("error")
         val error: String = "",
         @SerializedName("maxTag")

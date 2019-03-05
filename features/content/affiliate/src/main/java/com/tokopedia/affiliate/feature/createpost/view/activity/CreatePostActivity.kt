@@ -11,9 +11,11 @@ import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.affiliate.feature.createpost.view.fragment.AffiliateCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePostFragment
+import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.applink.ApplinkConst
 
-class CreatePostActivity : BaseSimpleActivity() {
+class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
@@ -82,5 +84,9 @@ class CreatePostActivity : BaseSimpleActivity() {
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
+    }
+
+    override fun updateHeader(header: HeaderViewModel) {
+
     }
 }
