@@ -29,6 +29,8 @@
         android:id="@+id/title"
         android:layout_width="@dimen/dp_56"
         android:layout_height="wrap_content"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal|top"
         android:lineSpacingExtra="4sp"
