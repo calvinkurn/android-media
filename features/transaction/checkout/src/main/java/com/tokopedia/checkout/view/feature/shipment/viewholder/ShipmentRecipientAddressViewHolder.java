@@ -155,10 +155,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         int startSpan = tvTradeInInfo.getText().toString().indexOf(clickableText);
         int endSpan = tvTradeInInfo.getText().toString().indexOf(clickableText) + clickableText.length();
         Spannable formattedPromoMessage = new SpannableString(tvTradeInInfo.getText().toString());
-        final int color = ContextCompat.getColor(tvTradeInInfo.getContext(), R.color.tkpd_green_header);
-        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View textView) {
@@ -171,6 +167,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             }
         };
         formattedPromoMessage.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        final int color = ContextCompat.getColor(tvTradeInInfo.getContext(), R.color.tkpd_green_header);
+        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
         tvTradeInInfo.setText(formattedPromoMessage);
     }
 

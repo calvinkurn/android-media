@@ -83,6 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
+                    android:clickable="true"
                     android:text="Kurir akan menelfon 08138888888 untuk tukar HP di tujuan pengiriman. Ganti nomor" />
 
             </LinearLayout>
