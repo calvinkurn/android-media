@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.TaskStackBuilder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videorecorder.main.VideoPickerActivity
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -61,6 +63,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val PARAM_USER_ID = "{user_id}"
         private const val PRODUCT_ID_QUERY_PARAM = "?product_id="
         private const val REQUEST_IMAGE_PICKER = 1234
+        private const val REQUEST_VIDEO_PICKER = 1235
         private const val REQUEST_PREVIEW = 13
         private const val REQUEST_LOGIN = 83
     }
@@ -125,6 +128,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
                 updateThumbnail()
                 updateButton()
+            }
+            REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
+                val videos = data?.getStringArrayListExtra(VideoPickerActivity.VIDEOS_RESULT)?: arrayListOf()
+                for (video: String in videos) {
+                    Log.d("TKPDVideo", video)
+                }
             }
             REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
                 val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
@@ -308,6 +317,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
             goToImagePicker()
         }
+        addVideoBtn.setOnClickListener {
+            activity?.let {
+                startActivityForResult(Intent(it, VideoPickerActivity::class.java), REQUEST_VIDEO_PICKER)
+            }
+        }
         relatedAddBtn.text = getAddRelatedProductText()
         relatedAddBtn.setOnClickListener {
             onRelatedAddProductClick()
@@ -383,7 +397,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun updateMedia() {
         val shouldShowVideo = viewModel.allowVideo && false
         addImageBtn.showWithCondition(viewModel.allowImage)
-        addVideoBtn.showWithCondition(shouldShowVideo)
+        addVideoBtn.showWithCondition(true)
         separatorMedia.showWithCondition(viewModel.allowImage || shouldShowVideo)
     }
 

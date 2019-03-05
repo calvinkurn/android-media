@@ -1,6 +1,8 @@
 package com.tokopedia.videorecorder.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -26,6 +28,10 @@ import java.util.ArrayList
 class VideoPickerActivity: BaseSimpleActivity(), VideoPickerCallback,
         ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
+    companion object {
+        const val VIDEOS_RESULT = "video_result"
+    }
+
     override fun getNewFragment(): Fragment? = null
 
     private lateinit var videoPath: String
@@ -45,6 +51,17 @@ class VideoPickerActivity: BaseSimpleActivity(), VideoPickerCallback,
 
         //remove recording result
         btnDeleteVideo.setOnClickListener { cancelVideo() }
+
+        btnDone.setOnClickListener {
+            //testing purpose
+            val videos = arrayListOf<String>()
+            videos.add(videoPath)
+
+            val intent = Intent()
+            intent.putStringArrayListExtra(VIDEOS_RESULT, videos)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
     @SuppressLint("MissingPermission")

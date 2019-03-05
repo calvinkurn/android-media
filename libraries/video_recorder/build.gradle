@@ -12,11 +12,11 @@ buildscript {
     }
 }
 
-android {
-    defaultConfig {
-        vectorDrawables.useSupportLibrary = true
-    }
-}
+//android {
+//    defaultConfig {
+//        vectorDrawables.useSupportLibrary = true
+//    }
+//}
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.exifinterface
@@ -25,7 +25,4 @@ dependencies {
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.imagePicker)
 
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
 }
