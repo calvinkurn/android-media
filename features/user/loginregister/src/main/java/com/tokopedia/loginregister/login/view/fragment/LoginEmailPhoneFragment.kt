@@ -281,6 +281,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     emailPhoneEditText.setText(email)
                     passwordEditText.setText(pw)
                     presenter.login(email, pw)
+                    analytics.eventClickLoginButton(activity.applicationContext)
                 }
                 else -> showSmartLock()
             }
@@ -348,6 +349,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
                 presenter.login(emailPhoneEditText.text.toString().trim(),
                         passwordEditText.text.toString())
+                analytics.eventClickLoginButton(activity.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(activity)
                 performanceMonitoring = PerformanceMonitoring.start(LOGIN_SUBMIT_TRACE)
                 true
@@ -653,7 +655,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onSuccessLoginPhoneNumber() {
-        analytics.trackClickOnNextSuccess()
         actionLoginMethod = "phone"
         dismissLoadingLogin()
 
@@ -682,6 +683,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         return (activity != null
                 && activity!!.intent != null
                 && activity!!.intent.getBooleanExtra(IS_FROM_REGISTER, false))
+    }
+
+    override fun trackSuccessValidate() {
+        analytics.trackClickOnNextSuccess()
     }
 
     override fun onErrorValidateRegister(throwable: Throwable) {
@@ -726,6 +731,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialActionButton.setOnClickListener {
             KeyboardHandler.hideSoftKeyboard(activity)
             presenter.login(email, passwordEditText.text.toString())
+            analytics.eventClickLoginButton(activity.applicationContext)
         }
     }
 
@@ -850,6 +856,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
+                analytics.eventClickLoginButton(activity.applicationContext)
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)

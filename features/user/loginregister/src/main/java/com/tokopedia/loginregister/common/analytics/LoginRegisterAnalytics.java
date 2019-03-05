@@ -93,7 +93,7 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    //#3 //TODO
+    //#3
     public void trackClickOnNextFail() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,
@@ -103,7 +103,7 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    //#3 //TODO
+    //#3
     public void trackClickOnNextSuccess() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,
@@ -173,7 +173,22 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    //#10 //TODO
+    //#11
+    public void eventClickLoginButton(Context applicationContext) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button masuk",
+                "click"
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN,
+                map, applicationContext);
+
+    }
+
+    //#11
     public void trackClickOnLoginButtonSuccess() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,
@@ -183,17 +198,65 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    //#10 //TODO
+    //#11
     public void trackClickOnLoginButtonError() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
-                "click on button daftar google",
-                ""
+                "click on button masuk",
+                "failed"
         );
     }
 
-    //#11, 12, 13
+
+    //#12
+    public void eventClickLoginGoogle(Context applicationContext) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button google",
+                "click"
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+                map, applicationContext);
+    }
+
+    //#13
+    public void eventClickLoginFacebook(Context applicationContext) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button facebook",
+                "click"
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Facebook");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK,
+                map, applicationContext);
+    }
+
+    //#14
+    public void eventClickLoginWebview(String name) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button yahoo",
+                "click"
+        );
+
+        analyticTracker.sendEventTracking(
+                EVENT_LOGIN_CLICK,
+                CATEGORY_LOGIN,
+                ACTION_CLICK,
+                name
+        );
+    }
+
+    //#12, 13, 14
     public void trackEventSuccessLoginSosmed(String loginMethod) {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,
@@ -203,7 +266,7 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    //#11, 12, 13
+    //#12, 13, 14
     public void trackEventFailedLoginSosmed(String loginMethod) {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,
@@ -213,7 +276,7 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    //#14
+    //#15
     public void trackOnBackPressed() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,
@@ -223,22 +286,6 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    @Deprecated
-    public void eventClickLoginGoogle(Context applicationContext) {
-
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
-                map, applicationContext);
-    }
-
-    public void eventClickLoginButton(Context applicationContext) {
-
-        Map<String, Object> map = new HashMap<>();
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN,
-                map, applicationContext);
-
-    }
 
     public void eventClickRegisterFromLogin() {
         analyticTracker.sendEventTracking(
@@ -276,15 +323,6 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    public void eventClickLoginWebview(String name) {
-        analyticTracker.sendEventTracking(
-                EVENT_LOGIN_CLICK,
-                CATEGORY_LOGIN,
-                ACTION_CLICK,
-                name
-        );
-    }
-
     public void eventClickLoginPhoneNumber(Context applicationContext) {
         analyticTracker.sendEventTracking(
                 EVENT_LOGIN_CLICK,
@@ -299,15 +337,6 @@ public class LoginRegisterAnalytics {
                 map, applicationContext);
     }
 
-
-
-    public void eventClickLoginFacebook(Context applicationContext) {
-
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Facebook");
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK,
-                map, applicationContext);
-    }
 
     public void eventClickForgotPasswordFromLogin(Context applicationContext) {
         Map<String, Object> map = new HashMap<>();
