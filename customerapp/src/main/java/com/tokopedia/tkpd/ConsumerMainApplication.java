@@ -186,8 +186,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
 
-        if(callback == null)
+        cacheManager = new GlobalCacheManager();
+        cacheManager.setCacheDuration(600);
+        if(callback == null) {
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
+        }
         registerActivityLifecycleCallbacks(callback);
     }
 
@@ -557,7 +560,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return DeepLinkActivity.class;
     }
 
-    GlobalCacheManager cacheManager = new GlobalCacheManager();
+    GlobalCacheManager cacheManager;
 
     @Override
     public void saveCPM(@NonNull String cpm) {
