@@ -77,7 +77,8 @@
     <string name="af_notif_success">Klik untuk melihat post</string>
     <string name="af_notif_error">Gagal mengunggah post, klik untuk coba lagi</string>
     <string name="af_update_post">Update Post</string>
-    <string name="af_add_image_warning">Foto sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_add_image_warning">Foto sebelumnya akan diganti dengan foto yang dipilih</string>
+    <string name="af_add_video_warning">Foto sebelumnya akan diganti dengan video yang dipilih</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>
