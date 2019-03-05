@@ -34,6 +34,7 @@
     <string name="profile_tokopedia_app">Segera coba fiturnya di aplikasi Tokopedia versi terbaru.</string>
     <string name="profile_try_now">Coba Sekarang</string>
     <string name="profile_surprise">Ssst, Akan Ada Kejutan di Profilmu!</string>
+    <string name="profile_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
 
     <string name="title_profile_following">Following</string>
     <string name="fl_toppers_title">Toppers</string>

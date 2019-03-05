@@ -93,7 +93,7 @@ class SubmitPostService : IntentService(TAG) {
 
             override fun getSuccessIntent(): PendingIntent {
                 val applink = if (authorType == TYPE_AFFILIATE) {
-                    ApplinkConst.PROFILE.replace(USER_ID_PARAM, userSession.userId)
+                    ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
                 } else {
                     ApplinkConst.FEED
                 }
