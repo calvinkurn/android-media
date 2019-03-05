@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:clipToPadding="false"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/toolbar"
@@ -16,13 +16,12 @@
 
         <ImageView
             android:id="@+id/backBtn"
-            android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_28"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_4"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_4"
-            android:src="@drawable/ic_icon_back_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="?attr/homeAsUpIndicator"
             tools:ignore="ContentDescription" />
 
         <ImageView
