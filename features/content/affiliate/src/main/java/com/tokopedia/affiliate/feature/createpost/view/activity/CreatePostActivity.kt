@@ -14,6 +14,10 @@ import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePos
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import kotlinx.android.synthetic.main.activity_create_post.*
 
 class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
@@ -84,9 +88,15 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
+        backBtn.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     override fun updateHeader(header: HeaderViewModel) {
-
+        avatar.loadImageCircle(header.avatar)
+        badge.loadImage(header.badge)
+        badge.showWithCondition(header.badge.isNotBlank())
+        name.text = header.title
     }
 }
