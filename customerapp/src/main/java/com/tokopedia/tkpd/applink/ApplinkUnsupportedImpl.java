@@ -87,6 +87,7 @@ public class ApplinkUnsupportedImpl implements ApplinkUnsupported {
 
     private DetailUpdate generateDetailUpdate(DataUpdateApp dataUpdateApp) {
         DetailUpdate detailUpdate = new DetailUpdate();
+        detailUpdate.setInAppUpdateEnabled(false);
         if (dataUpdateApp.isIsForceEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionForceUpdate()) {
             detailUpdate.setLatestVersionCode(dataUpdateApp.getLatestVersionForceUpdate());
             detailUpdate.setNeedUpdate(true);
