@@ -98,8 +98,6 @@ public class ShopListFragment extends SearchSectionFragment
         }
         userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
-
-//        getDynamicFilter();
     }
 
     private void loadDataFromBundle(Bundle bundle) {
@@ -201,53 +199,66 @@ public class ShopListFragment extends SearchSectionFragment
 
     private void loadShopFirstTime() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
-        loadMoreShop(START_ROW_FIRST_TIME_LOAD);
+
+        loadMoreShopFirstTime(START_ROW_FIRST_TIME_LOAD);
     }
 
-    private void loadMoreShop(final int startRow) {
-        SearchParameter searchParameter
-                = generateLoadMoreParameter(startRow);
+    private void loadMoreShopFirstTime(int startRow) {
+        SearchParameter searchParameter = generateLoadMoreParameter(startRow);
+        searchParameter.setIsOfficial(isOfficial);
+        loadMoreShop(startRow, searchParameter);
+    }
 
+    private void loadMoreShop(int startRow) {
+        SearchParameter searchParameter = generateLoadMoreParameter(startRow);
+        loadMoreShop(startRow, searchParameter);
+    }
+
+    private void loadMoreShop(final int startRow, SearchParameter searchParameter) {
         isLoadingData = true;
         presenter.loadShop(searchParameter, new ShopListPresenterImpl.LoadMoreListener() {
             @Override
             public void onSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage) {
-                if (shopItemList.isEmpty()) {
-                    handleEmptySearchResult();
-                } else {
-                    if (performanceMonitoring != null) {
-                        performanceMonitoring.stopTrace();
-                    }
-                    handleSearchResult(shopItemList, isHasNextPage, startRow);
-                }
-                isLoadingData = false;
-                hideRefreshLayout();
+                handleOnSuccessLoadMoreShop(shopItemList, isHasNextPage, startRow);
             }
 
             @Override
             public void onFailed() {
-                adapter.removeLoading();
-
-                if (adapter.isListEmpty()) {
-                    NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            loadMoreShop(startRow);
-                        }
-                    });
-                } else {
-                    NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            loadMoreShop(startRow);
-                        }
-                    }).showRetrySnackbar();
-                }
-
-                isLoadingData = false;
-                hideRefreshLayout();
+                handleOnFailedLoadMoreShop(startRow);
             }
         });
+    }
+
+    private void handleOnSuccessLoadMoreShop(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage, int startRow) {
+        if (shopItemList.isEmpty()) {
+            handleEmptySearchResult();
+        } else {
+            if (performanceMonitoring != null) {
+                performanceMonitoring.stopTrace();
+            }
+            handleSearchResult(shopItemList, isHasNextPage, startRow);
+        }
+
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    private void handleOnFailedLoadMoreShop(int startRow) {
+        adapter.removeLoading();
+
+        NetworkErrorHelper.RetryClickedListener retryClickedListener = () -> loadMoreShop(startRow);
+
+        if (adapter.isListEmpty()) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), retryClickedListener).showRetrySnackbar();
+        }
+
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    private void stopLoadingAndHideRefreshLayout() {
+        isLoadingData = false;
+        hideRefreshLayout();
     }
 
     private SearchParameter generateLoadMoreParameter(int startRow) {
@@ -256,7 +267,6 @@ public class ShopListFragment extends SearchSectionFragment
         builder.setUserID(generateUserId());
         builder.setQueryKey(query);
         builder.setStartRow(startRow);
-        builder.setOfficial(isOfficial);
         return builder.build();
     }
 
