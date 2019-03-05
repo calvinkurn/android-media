@@ -344,6 +344,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun goToFeed() {
+        activity?.let {
+            val applink = ApplinkConst.FEED.plus("?after_post=true")
+            val intent = RouteManager.getIntent(it, applink)
+            startActivity(intent)
+        }
+    }
+
     private fun goToMediaPreview() {
         context?.let {
             startActivityForResult(MediaPreviewActivity.createIntent(it, viewModel), REQUEST_PREVIEW)
@@ -362,7 +370,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             it.startService(intent)
 
             hideLoading()
-            goToProfile()
+
+            if (isTypeAffiliate()) {
+                goToProfile()
+            } else {
+                goToFeed()
+            }
             it.finish()
         }
     }

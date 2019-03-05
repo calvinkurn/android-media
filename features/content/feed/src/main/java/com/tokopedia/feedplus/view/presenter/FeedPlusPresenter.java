@@ -371,6 +371,7 @@ public class FeedPlusPresenter
                                 getView().onSuccessGetFeedFirstPage(
                                         new ArrayList<>(model.getPostList())
                                 );
+
                             } else {
                                 getView().onSuccessGetFeedFirstPageWithAddFeed(
                                         new ArrayList<>(model.getPostList())
