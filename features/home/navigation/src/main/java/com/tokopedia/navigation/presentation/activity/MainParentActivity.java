@@ -427,7 +427,9 @@ public class MainParentActivity extends BaseActivity implements
      * during the download or misses some notifications.
      */
     private void checkForInAppUpdateInProgressOrCompleted() {
-        AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this);
+        }
     }
 
     @Override
@@ -594,15 +596,19 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAppUpdateAndInApp() {
-        AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this, new Function1<Boolean, Unit>() {
-            @Override
-            public Unit invoke(Boolean isOnProgress) {
-                if (!isOnProgress) {
-                    checkAppUpdateRemoteConfig();
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this, new Function1<Boolean, Unit>() {
+                @Override
+                public Unit invoke(Boolean isOnProgress) {
+                    if (!isOnProgress) {
+                        checkAppUpdateRemoteConfig();
+                    }
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        } else {
+            checkAppUpdateRemoteConfig();
+        }
     }
 
     private void checkAppUpdateRemoteConfig(){
