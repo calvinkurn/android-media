@@ -59,7 +59,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             variables.put(ORDER_STATUS, Integer.parseInt(getView().getSelectedFilter()));
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderlist_marketplace), Data.class, variables);
+                    R.raw.orderlist_marketplace), Data.class, variables, false);
         } else {
             variables.put(OrderCategory.KEY_LABEL, orderCategory);
             variables.put(OrderCategory.PAGE, page);
@@ -67,7 +67,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             variables.put(ORDER_ID, orderId);
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderlist), Data.class, variables);
+                    R.raw.orderlist), Data.class, variables, false);
         }
         getOrderListUseCase = new GraphqlUseCase();
         getOrderListUseCase.clearRequest();

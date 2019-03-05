@@ -54,7 +54,7 @@ public class GetCampaignUseCase {
         String query = GraphqlHelper.loadRawString(resources, R.raw.query_get_campaign_list);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                CampaignGqlResponse.class, requestParams);
+                CampaignGqlResponse.class, requestParams, false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
