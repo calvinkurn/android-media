@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 
@@ -102,8 +103,8 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
 
         HashMap<String, String> applinkParameterHashMap = autoCompleteSearch.getApplinkParameterHashmap();
 
-        if(applinkParameterHashMap.containsKey("official")) {
-            isOfficial = Boolean.parseBoolean(applinkParameterHashMap.get("official"));
+        if(applinkParameterHashMap.containsKey(SearchApiConst.OFFICIAL)) {
+            isOfficial = Boolean.parseBoolean(applinkParameterHashMap.get(SearchApiConst.OFFICIAL));
         }
 
         return isOfficial;

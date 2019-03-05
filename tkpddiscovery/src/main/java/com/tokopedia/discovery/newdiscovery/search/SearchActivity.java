@@ -23,6 +23,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -121,8 +122,8 @@ public class SearchActivity extends DiscoveryActivity
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        String departmentId = bundle.getString("sc");
-        boolean isOfficial = Boolean.parseBoolean(bundle.getString("official"));
+        String departmentId = bundle.getString(SearchApiConst.SC);
+        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
         Intent intent = new Intent(context, SearchActivity.class);
 
         if (!TextUtils.isEmpty(departmentId)) {
@@ -131,14 +132,14 @@ public class SearchActivity extends DiscoveryActivity
 
         intent.putExtra(EXTRA_OFFICIAL, isOfficial);
 
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString("q", bundle.getString("keyword", "")));
+        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(SearchApiConst.Q, bundle.getString(SearchApiConst.KEYWORD, "")));
         intent.putExtras(bundle);
         return intent;
     }
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
-        boolean isOfficial = Boolean.parseBoolean(bundle.getString("official"));
+        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
         Intent intent = new Intent(context, SearchActivity.class);
 
         intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);

@@ -30,6 +30,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -601,15 +602,15 @@ public class ProductListFragment extends SearchSectionFragment
         if (selectedFilter == null) {
             return;
         }
-        if (TextUtils.isEmpty(selectedFilter.get("official"))) {
+        if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.OFFICIAL))) {
             getSearchParameter().setOfficial(false);
         } else {
-            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get("official")));
+            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get(SearchApiConst.OFFICIAL)));
         }
-        if (TextUtils.isEmpty(selectedFilter.get(BrowseApi.SC))) {
+        if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.SC))) {
             getSearchParameter().setDepartmentId("");
         } else {
-            getSearchParameter().setDepartmentId(selectedFilter.get(BrowseApi.SC));
+            getSearchParameter().setDepartmentId(selectedFilter.get(SearchApiConst.SC));
         }
     }
 
