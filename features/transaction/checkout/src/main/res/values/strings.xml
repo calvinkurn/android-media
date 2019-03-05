@@ -248,5 +248,6 @@
     <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
     <string name="emas_checkout_desc">Pembulatan Emas sebesar Rp %s</string>
+    <string name="checkout_shipment_label_tradein" formatted="false">Kurir akan menelfon %s untuk tukar HP di tujuan pengiriman. Ganti nomor</string>
 
 </resources>

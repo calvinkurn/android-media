@@ -20,11 +20,9 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
-import com.tokopedia.design.component.TextViewCompat;
-import com.tokopedia.design.pickuppoint.PickupPointLayout;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
 
@@ -35,7 +33,6 @@ import java.util.ArrayList;
 public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
-    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
 
     private CardView cardAddress;
     private RelativeLayout rlRecipientAddressLayout;
@@ -84,43 +81,22 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         } else {
             tvAddressStatus.setVisibility(View.GONE);
         }
-        // tvAddressName.setVisibility(View.GONE);
         tvAddressName.setText(recipientAddress.getAddressName());
         tvRecipientName.setText(recipientAddress.getRecipientName());
-        // formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
         tvRecipientAddress.setText(getFullAddress(recipientAddress));
         tvRecipientPhone.setVisibility(View.GONE);
 
-        tvRecipientChangeAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shipmentAdapterActionListener.onChangeAddress();
-            }
-        });
-
-        tvSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress, cartIds);
-            }
-        });
+        tvRecipientChangeAddress.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
+        tvSendToMultipleAddress.setOnClickListener(v -> shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress, cartIds));
 
         if (recipientAddress.isTradeIn()) {
-            formatTradeInInfo();
+            formatTradeInInfo(recipientAddress);
             llTradeIn.setVisibility(View.VISIBLE);
         } else {
             llTradeIn.setVisibility(View.GONE);
         }
 
         setShowCase(rlRecipientAddressLayout, showCaseObjectList);
-    }
-
-    private void setMargin(int topMargin) {
-        ViewGroup.MarginLayoutParams layoutParams =
-                (ViewGroup.MarginLayoutParams) cardAddress.getLayoutParams();
-        int sideMargin = (int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_16);
-        layoutParams.setMargins(sideMargin, topMargin, sideMargin, 0);
-        cardAddress.requestLayout();
     }
 
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
@@ -139,20 +115,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                 + recipientAddress.getRecipientPhoneNumber();
     }
 
-    private void formatAddressName(TextView textView, String recipientName, String addressName) {
-        // addressName = " (" + addressName + ")";
-        recipientName += addressName;
-        int startSpan = recipientName.indexOf(addressName);
-        int endSpan = recipientName.indexOf(addressName) + addressName.length();
-        Spannable formattedPromoMessage = new SpannableString(recipientName);
-        final int color = ContextCompat.getColor(textView.getContext(), R.color.black_38);
-        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
-        textView.setText(formattedPromoMessage);
-    }
-
-    private void formatTradeInInfo() {
+    private void formatTradeInInfo(RecipientAddressModel recipientAddressModel) {
+        tvTradeInInfo.setText(String.format(tvTradeInInfo.getContext().getString(R.string.checkout_shipment_label_tradein), recipientAddressModel.getRecipientPhoneNumber()));
         String clickableText = "Ganti nomor";
         int startSpan = tvTradeInInfo.getText().toString().indexOf(clickableText);
         int endSpan = tvTradeInInfo.getText().toString().indexOf(clickableText) + clickableText.length();
@@ -171,10 +135,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             }
         };
         formattedTrandeInInfoText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-//        final int color = ContextCompat.getColor(tvTradeInInfo.getContext(), R.color.tkpd_green_header);
-//        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-//                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         tvTradeInInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvTradeInInfo.setText(formattedTrandeInInfoText);
