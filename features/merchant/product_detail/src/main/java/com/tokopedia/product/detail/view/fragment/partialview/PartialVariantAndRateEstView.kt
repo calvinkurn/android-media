@@ -87,6 +87,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                 txt_priority_order_title.visible()
                 txt_priority_order_message.visible()
                 txt_priority_order_message.text = MethodChecker.fromHtml(shopCommitment.staticMessages.pdpMessage)
+                visible()
             } else {
                 priority_order_divider.gone()
                 icon_priority_order.gone()
