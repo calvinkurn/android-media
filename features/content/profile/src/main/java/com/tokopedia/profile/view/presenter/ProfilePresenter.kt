@@ -42,7 +42,7 @@ class ProfilePresenter @Inject constructor(
     override fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean) {
         cursor = ""
         getDynamicFeedProfileFirstUseCase.execute(
-                GetDynamicFeedProfileFirstUseCase.createRequestParams(view.getUserSession().userId, targetUserId),
+                GetDynamicFeedProfileFirstUseCase.createRequestParams(view.getUserSession().userId, targetUserId.toString()),
                 GetProfileFirstPageSubscriber(view, isFromLogin)
         )
     }
