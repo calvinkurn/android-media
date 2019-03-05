@@ -23,7 +23,7 @@ interface ExpressCheckoutRouter {
 
     fun getGeolocationIntent(context: Context, locationPass: LocationPass): Intent
 
-    fun getCheckoutIntent(context: Context): Intent
+    fun getCheckoutIntent(context: Context, isTradeIn: Boolean): Intent
 
     fun addToCartProduct(addToCartRequest: AddToCartRequest, isOneClickShipment: Boolean): Observable<AddToCartResult>
 

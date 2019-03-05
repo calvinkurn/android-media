@@ -327,7 +327,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, @Nullable String cornerId) {
+    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment,
+                                               boolean isTradeIn, @Nullable String cornerId) {
         if (isFromMultipleAddress) {
             getView().showLoading();
         } else {
@@ -495,7 +496,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment) {
+    public void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn) {
         getView().showLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
@@ -528,10 +529,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId) {
+    public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, @Nullable String cornerId) {
         boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
-            processCheckout(voucherCode, isOneClickShipment);
+            processCheckout(voucherCode, isOneClickShipment, isTradeIn);
         } else {
             getView().showLoading();
             TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
@@ -579,7 +580,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout(String voucherCode, boolean isOneClickShipment) {
+    public void processCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 !TextUtils.isEmpty(voucherCode) ?
                         voucherCode : "",
@@ -596,7 +597,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment))
+                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn))
             );
         } else {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -753,7 +754,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @NonNull
     private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest,
-                                                               boolean isOneClickShipment) {
+                                                               boolean isOneClickShipment,
+                                                               boolean isTradeIn) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -764,7 +766,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
-                processReloadCheckoutPageBecauseOfError(isOneClickShipment);
+                processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn);
             }
 
             @Override
@@ -1442,7 +1444,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout(String voucherCode, boolean isOneClickShipment) {
+    public void proceedCodCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 !TextUtils.isEmpty(voucherCode) ?
                         voucherCode : "",
@@ -1461,7 +1463,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 CommonUtils.dumper(e);
                 mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
-                processReloadCheckoutPageBecauseOfError(isOneClickShipment);
+                processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn);
             }
 
             @Override
@@ -1470,7 +1472,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
                     mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
-                    processReloadCheckoutPageBecauseOfError(isOneClickShipment);
+                    processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn);
                     getView().showToastError("");
                 } else if (response.getValidateCheckoutCod().getData() != null &&
                         response.getValidateCheckoutCod().getData().getData() != null) {

@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,6 +41,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private TextView tvRecipientPhone;
     private TextView tvRecipientChangeAddress;
     private TextView tvSendToMultipleAddress;
+    private LinearLayout llTradeIn;
+    private TextView tvTradeInInfo;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -57,6 +60,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
         tvRecipientChangeAddress = itemView.findViewById(R.id.tv_change_recipient_address);
         tvSendToMultipleAddress = itemView.findViewById(R.id.tv_send_to_multiple_address);
+        llTradeIn = itemView.findViewById(R.id.ll_trade_in);
+        tvTradeInInfo = itemView.findViewById(R.id.tv_trade_in_info);
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
@@ -94,6 +99,12 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                 shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress, cartIds);
             }
         });
+
+        if (recipientAddress.isTradeIn()) {
+            llTradeIn.setVisibility(View.VISIBLE);
+        } else {
+            llTradeIn.setVisibility(View.GONE);
+        }
 
         setShowCase(rlRecipientAddressLayout, showCaseObjectList);
     }

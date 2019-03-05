@@ -42,6 +42,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private String cornerId;
     private String userCornerId;
 
+    private boolean isTradeIn;
+
     public RecipientAddressModel() {
     }
 
@@ -237,6 +239,14 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.userCornerId = userCornerId;
     }
 
+    public boolean isTradeIn() {
+        return isTradeIn;
+    }
+
+    public void setTradeIn(boolean tradeIn) {
+        isTradeIn = tradeIn;
+    }
+
     /*
     // Constructor for corner Address mapping, please don't use it otherwise
      */
@@ -356,6 +366,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeByte(this.isCornerAddress ? (byte) 1 : (byte) 0);
         dest.writeString(this.cornerId);
         dest.writeString(this.userCornerId);
+        dest.writeByte(this.isTradeIn ? (byte) 1 : (byte) 0);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -383,6 +394,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.isCornerAddress = in.readByte() != 0;
         this.cornerId = in.readString();
         this.userCornerId = in.readString();
+        this.isTradeIn = in.readByte() != 0;
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

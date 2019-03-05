@@ -207,7 +207,7 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
+        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn, String cornerId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
@@ -217,11 +217,11 @@ public interface ShipmentContract {
                                                           ShipmentDonationModel shipmentDonationModel,
                                                           boolean isOneClickShipment);
 
-        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment);
+        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn);
 
-        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId);
+        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, @Nullable String cornerId);
 
-        void processCheckout(String voucherCode, boolean isOneClickShipment);
+        void processCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn);
 
         void processVerifyPayment(String transactionId);
 
@@ -302,7 +302,7 @@ public interface ShipmentContract {
 
         CodModel getCodData();
 
-        void proceedCodCheckout(String voucherCode, boolean isOneClickShipment);
+        void proceedCodCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn);
 
     }
 

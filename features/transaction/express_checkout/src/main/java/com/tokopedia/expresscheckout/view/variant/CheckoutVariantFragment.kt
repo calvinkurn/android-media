@@ -576,7 +576,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun navigateCheckoutToOcs() {
-        if (activity != null) startActivity(router.getCheckoutIntent(activity as Context))
+        if (activity != null) startActivity(router.getCheckoutIntent(activity as Context, false))
         activity?.finish()
     }
 

@@ -57,7 +57,7 @@ public interface PdpRouter {
 
     Intent getCartIntent(Activity activity);
 
-    Intent getCheckoutIntent(Context context);
+    Intent getCheckoutIntent(Context context, boolean isTradeIn);
 
     Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam);
 

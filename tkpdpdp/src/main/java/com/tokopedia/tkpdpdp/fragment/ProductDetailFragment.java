@@ -2523,7 +2523,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 startActivity(intent);
             } else {
                 Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                        .getCheckoutIntent(getActivity());
+                        .getCheckoutIntent(getActivity(), false);
                 startActivity(intent);
             }
         }

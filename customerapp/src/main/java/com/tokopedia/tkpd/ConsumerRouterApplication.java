@@ -2160,8 +2160,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @NonNull
     @Override
-    public Intent getCheckoutIntent(@NonNull Context context) {
-        return ShipmentActivity.createInstance(context);
+    public Intent getCheckoutIntent(@NonNull Context context, boolean isTradeIn) {
+        return ShipmentActivity.createInstance(context, isTradeIn);
     }
 
     @Override

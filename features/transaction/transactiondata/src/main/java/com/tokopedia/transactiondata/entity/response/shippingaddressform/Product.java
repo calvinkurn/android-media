@@ -125,6 +125,9 @@ public class Product {
     @SerializedName("wholesale_price")
     @Expose
     private List<WholesalePrice> wholesalePrice;
+    @SerializedName("tradein_info")
+    @Expose
+    private TradeInInfo tradeInInfo;
 
     public String getProductCategory() {
         return productCategory;
@@ -272,5 +275,9 @@ public class Product {
 
     public List<WholesalePrice> getWholesalePrice() {
         return wholesalePrice;
+    }
+
+    public TradeInInfo getTradeInInfo() {
+        return tradeInInfo;
     }
 }

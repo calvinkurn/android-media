@@ -119,7 +119,7 @@
     <string name="checkout_module_message_cart_error_action">Hapus produk yang berkendala</string>
     <string name="checkout_module_label_biaya_asuransi">Biaya Asuransi</string>
     <string name="checkout_module_keranjang_belanja_kosong">Keranjang Belanja Kosong</string>
-
+    <string name="checkout_module_label_trade_in">Tukar Tambah</string>
     <string name="checkout_module_buat_impian_anda_jadi_kenyataan_sekarang">Buat impian Anda jadi kenyataan sekarang!</string>
     <string name="checkout_module_untuk_saat_ini_anda_tidak_ada_keranjang_belanja">Untuk saat ini Anda tidak ada keranjang belanja</string>
     <string name="checkout_module_belanja_sekarang">Belanja Sekarang</string>

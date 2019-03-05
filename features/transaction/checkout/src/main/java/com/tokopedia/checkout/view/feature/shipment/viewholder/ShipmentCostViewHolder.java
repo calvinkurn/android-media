@@ -47,6 +47,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvDonationPrice;
     private TextView mTvEmasLabel;
     private TextView mTvEmasPrice;
+    private TextView mTvTradeInLabel;
+    private TextView mTvTradeInPrice;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -71,6 +73,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvDonationPrice = itemView.findViewById(R.id.tv_donation_price);
         mTvEmasLabel = itemView.findViewById(R.id.tv_emas_label);
         mTvEmasPrice = itemView.findViewById(R.id.tv_emas_price);
+        mTvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
+        mTvTradeInPrice = itemView.findViewById(R.id.tv_trade_in);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -91,6 +95,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
         mTvEmasPrice.setText(getPriceFormat(mTvEmasLabel, mTvEmasPrice, shipmentCost.getEmasPrice()));
+        mTvTradeInPrice.setText(getPriceFormat(mTvTradeInLabel, mTvTradeInPrice, shipmentCost.getTradeInPrice()));
     }
 
     private String getTotalItemLabel(Context context, int totalItem) {
