@@ -85,7 +85,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);
         getCrackResultEggUseCase.clearRequest();
         GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.crack_egg_result_mutation),
-                ResponseCrackResultEntity.class, queryParams);
+                ResponseCrackResultEntity.class, queryParams, false);
         getCrackResultEggUseCase.addRequest(sumTokenRequest);
         getCrackResultEggUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -136,10 +136,10 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     public void getRewardsCount() {
         getRewardsUseCase.clearRequest();
         GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_sum_coupon),
-                GamificationSumCouponOuter.class);
+                GamificationSumCouponOuter.class, false);
         getRewardsUseCase.addRequest(sumTokenRequest);
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_current_points),
-                TokoPointDetailEntity.class);
+                TokoPointDetailEntity.class, false);
         getRewardsUseCase.addRequest(graphqlRequestPoints);
         getRewardsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -177,7 +177,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         getRewardsCount();
         getTokenTokopointsUseCase.clearRequest();
         GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.token_tokopoint_query),
-                ResponseTokenTokopointEntity.class);
+                ResponseTokenTokopointEntity.class, false);
         getTokenTokopointsUseCase.addRequest(tokenTokopointsRequest);
         getTokenTokopointsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
