@@ -13,5 +13,7 @@ data class Author(
         @SerializedName("name")
         val name: String = "",
         @SerializedName("thumbnail")
-        val thumbnail: String = ""
+        val thumbnail: String = "",
+        @SerializedName("badge")
+        val badge: String = ""
 )

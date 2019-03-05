@@ -37,7 +37,6 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
-import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -428,7 +427,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
                     authors.first().name,
                     authors.first().thumbnail,
-                    ""
+                    authors.first().badge
 
             ))
         }
