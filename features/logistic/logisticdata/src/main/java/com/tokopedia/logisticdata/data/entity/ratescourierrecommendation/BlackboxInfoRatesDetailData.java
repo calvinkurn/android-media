@@ -7,9 +7,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Irfan Khoirul on 11/10/18.
+ * Created by fwidjaja on 05/03/19.
  */
-
 public class BlackboxInfoRatesDetailData implements Parcelable {
 
     @SerializedName("text_info")

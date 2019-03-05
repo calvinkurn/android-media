@@ -19,6 +19,7 @@ public class ShippingCourierViewModel implements Parcelable {
     private boolean allowDropshipper;
     private boolean selected;
 
+
     public ShippingCourierViewModel() {
     }
 

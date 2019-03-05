@@ -31,14 +31,13 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     private final ShipmentCartItemModel shipmentCartItemModel;
     private final List<ShopShipment> shopShipmentList;
     private final boolean isInitialLoad;
-    private final String blackboxInfo;
 
     public GetCourierRecommendationSubscriber(ShipmentContract.View view, ShipmentContract.Presenter presenter,
                                               int shipperId, int spId, int itemPosition,
                                               ShippingCourierConverter shippingCourierConverter,
                                               ShipmentCartItemModel shipmentCartItemModel,
                                               List<ShopShipment> shopShipmentList,
-                                              boolean isInitialLoad, String blackboxInfo) {
+                                              boolean isInitialLoad) {
         this.view = view;
         this.presenter = presenter;
         this.shipperId = shipperId;
@@ -48,7 +47,6 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         this.shipmentCartItemModel = shipmentCartItemModel;
         this.shopShipmentList = shopShipmentList;
         this.isInitialLoad = isInitialLoad;
-        this.blackboxInfo = blackboxInfo;
     }
 
     @Override
@@ -89,7 +87,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     shippingCourierViewModel.setSelected(true);
                                     presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList(), itemPosition);
                                     CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
-                                    view.renderCourierStateSuccess(courierItemData, itemPosition, blackboxInfo);
+                                    view.renderCourierStateSuccess(courierItemData, itemPosition);
                                     return;
                                 }
                             }

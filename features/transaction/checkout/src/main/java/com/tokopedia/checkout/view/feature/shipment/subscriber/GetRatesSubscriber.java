@@ -42,7 +42,7 @@ public class GetRatesSubscriber extends Subscriber<ShipmentDetailData> {
             for (ShipmentItemData shipmentItemData : shipmentDetailData.getShipmentItemData()) {
                 for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
                     if (courierItemData.getShipperId() == shipperId && courierItemData.getShipperProductId() == spId) {
-                        view.renderCourierStateSuccess(courierItemData, itemPosition, "");
+                        view.renderCourierStateSuccess(courierItemData, itemPosition);
                         return;
                     }
                 }

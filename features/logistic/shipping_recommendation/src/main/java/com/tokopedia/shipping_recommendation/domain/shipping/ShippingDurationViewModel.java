@@ -20,6 +20,7 @@ public class ShippingDurationViewModel implements Parcelable {
     private String errorMessage;
     private boolean isCodAvailable;
     private String codText;
+    private String blackboxInfo;
 
     public ShippingDurationViewModel() {
     }
@@ -30,6 +31,7 @@ public class ShippingDurationViewModel implements Parcelable {
         selected = in.readByte() != 0;
         showShowCase = in.readByte() != 0;
         errorMessage = in.readString();
+        blackboxInfo = in.readString();
     }
 
     @Override
@@ -39,6 +41,7 @@ public class ShippingDurationViewModel implements Parcelable {
         dest.writeByte((byte) (selected ? 1 : 0));
         dest.writeByte((byte) (showShowCase ? 1 : 0));
         dest.writeString(errorMessage);
+        dest.writeString(blackboxInfo);
     }
 
     @Override
@@ -113,4 +116,8 @@ public class ShippingDurationViewModel implements Parcelable {
     public void setCodText(String codText) {
         this.codText = codText;
     }
+
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
 }

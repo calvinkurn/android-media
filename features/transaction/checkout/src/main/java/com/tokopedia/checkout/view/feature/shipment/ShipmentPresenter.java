@@ -1368,12 +1368,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerId = getRecipientAddressModel().getCornerId();
         }
 
-        String blackboxInfo = shippingParam.getBlackboxInfo();
-
         getCourierRecommendationUseCase.execute(query, counter, cornerId, shippingParam, spId, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
-                        shipmentCartItemModel, shopShipmentList, isInitialLoad, blackboxInfo));
+                        shipmentCartItemModel, shopShipmentList, isInitialLoad));
     }
 
     @NonNull
@@ -1398,7 +1396,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
-        shippingParam.setBlackboxInfo(shipmentDetailData.getBlackboxInfo());
         return shippingParam;
     }
 

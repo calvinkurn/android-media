@@ -41,8 +41,8 @@ public class RatesDetailData implements Parcelable {
         ratesId = in.readString();
         type = in.readString();
         services = in.createTypedArrayList(ServiceData.CREATOR);
-        error = in.readParcelable(ErrorRatesDetailData.class.getClassLoader());
         info = in.readParcelable(InfoRatesDetailData.class.getClassLoader());
+        error = in.readParcelable(ErrorRatesDetailData.class.getClassLoader());
     }
 
     @Override
@@ -51,8 +51,8 @@ public class RatesDetailData implements Parcelable {
         dest.writeString(ratesId);
         dest.writeString(type);
         dest.writeTypedList(services);
-        dest.writeParcelable(error, flags);
         dest.writeParcelable(info, flags);
+        dest.writeParcelable(error, flags);
     }
 
     @Override

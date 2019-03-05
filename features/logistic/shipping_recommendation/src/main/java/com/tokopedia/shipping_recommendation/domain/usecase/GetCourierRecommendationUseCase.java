@@ -86,11 +86,12 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 }
 
                                 // Check if has info
+                                String blackboxInfo = "";
                                 if (data.getRatesData().getRatesDetailData().getInfo() != null &&
                                         !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo())) {
-                                    shippingRecommendationData.setBlackboxTextInfo(data.getRatesData()
-                                            .getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo());
+                                    blackboxInfo = data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo();
                                 }
+                                System.out.println("++ blackboxInfo = "+blackboxInfo);
 
                                 String ratesId = data.getRatesData().getRatesDetailData().getRatesId();
                                 // Has service / duration list
