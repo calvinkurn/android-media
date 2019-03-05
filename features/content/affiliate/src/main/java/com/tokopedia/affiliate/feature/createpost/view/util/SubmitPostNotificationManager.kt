@@ -39,6 +39,8 @@ abstract class SubmitPostNotificationManager(
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
         updateLargeIcon(this)
+
+        notificationManager.notify(TAG, id, this.build())
     }
 
     private var currentProgress = 0
