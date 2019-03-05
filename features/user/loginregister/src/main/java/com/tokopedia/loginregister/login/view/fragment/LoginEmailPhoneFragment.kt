@@ -281,7 +281,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     emailPhoneEditText.setText(email)
                     passwordEditText.setText(pw)
                     presenter.login(email, pw)
-                    analytics.eventClickLoginButton(activity.applicationContext)
+                    activity?.let{
+                        analytics.eventClickLoginButton(it.applicationContext)
+                    }
                 }
                 else -> showSmartLock()
             }
@@ -349,8 +351,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
                 presenter.login(emailPhoneEditText.text.toString().trim(),
                         passwordEditText.text.toString())
-                analytics.eventClickLoginButton(activity.applicationContext)
-                KeyboardHandler.hideSoftKeyboard(activity)
+                activity?.let{
+                    analytics.eventClickLoginButton(it.applicationContext)
+                    KeyboardHandler.hideSoftKeyboard(it)
+                }
                 performanceMonitoring = PerformanceMonitoring.start(LOGIN_SUBMIT_TRACE)
                 true
             } else {
@@ -729,9 +733,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            KeyboardHandler.hideSoftKeyboard(activity)
             presenter.login(email, passwordEditText.text.toString())
-            analytics.eventClickLoginButton(activity.applicationContext)
+            activity?.let{
+                analytics.eventClickLoginButton(it.applicationContext)
+                KeyboardHandler.hideSoftKeyboard(it)
+            }
         }
     }
 
@@ -856,7 +862,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
-                analytics.eventClickLoginButton(activity.applicationContext)
+                activity?.let{
+                    analytics.eventClickLoginButton(it.applicationContext)
+                }
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
