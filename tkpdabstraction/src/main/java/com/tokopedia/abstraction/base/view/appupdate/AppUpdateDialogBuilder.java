@@ -47,7 +47,7 @@ public class AppUpdateDialogBuilder {
                 negativeButton.setEnabled(false);
                 positiveButton.setEnabled(false);
                 if (detail.isInAppUpdateEnabled() &&
-                        GlobalConfig.VERSION_CODE >= Build.VERSION_CODES.LOLLIPOP) {
+                        android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (detail.isForceUpdate()) {
                         AppUpdateManagerWrapper.checkImmediateUpdateAllowed(activity, allowImmediateUpdate -> {
                             if (allowImmediateUpdate) {
