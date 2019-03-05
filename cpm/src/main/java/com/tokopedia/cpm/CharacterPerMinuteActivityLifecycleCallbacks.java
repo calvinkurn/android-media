@@ -45,7 +45,7 @@ public class CharacterPerMinuteActivityLifecycleCallbacks implements Application
 
     @Override
     public void onActivityResumed(Activity activity) {
-        traverseEditTexts(activity.findViewById(android.R.id.content));
+        traverseEditTexts((ViewGroup) activity.findViewById(android.R.id.content));
 
         if (remoteConfig == null) {
             remoteConfig = new FirebaseRemoteConfigImpl(activity);
