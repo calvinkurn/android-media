@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.profile.R
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliateQuotaData
 import com.tokopedia.profile.data.pojo.profileheader.Profile
@@ -47,6 +48,7 @@ class GetDynamicFeedProfileFirstUseCase
 
 
     private fun getDynamicFeed(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
+        getDynamicFeedUseCase.setQuery(R.raw.query_feed_profile_dynamic)
         return getDynamicFeedUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
     }
 

@@ -47,9 +47,9 @@ class ProfilePresenter @Inject constructor(
         )
     }
 
-    override fun getProfilePost(userId: Int) {
+    override fun getProfilePost(targetUserId: Int) {
         getDynamicFeedProfileUseCase.execute(
-                GetDynamicFeedProfileUseCase.createRequestParams(userId, cursor),
+                GetDynamicFeedProfileUseCase.createRequestParams(view.getUserSession().userId, targetUserId.toString(), cursor),
                 GetProfilePostSubscriber(view)
         )
     }

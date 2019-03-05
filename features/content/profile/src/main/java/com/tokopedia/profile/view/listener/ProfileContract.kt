@@ -37,7 +37,7 @@ interface ProfileContract {
 
         fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean)
 
-        fun getProfilePost(userId: Int)
+        fun getProfilePost(targetUserId: Int)
 
         fun followKol(id: Int)
 
