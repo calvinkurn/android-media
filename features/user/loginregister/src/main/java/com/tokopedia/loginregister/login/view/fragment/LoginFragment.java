@@ -857,6 +857,11 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     @Override
+    public void trackErrorLoginEmail() {
+        analytics.trackClickOnLoginButtonError();
+    }
+
+    @Override
     public void onErrorLoginSosmed(String loginMethodName, String errorMessage) {
         onErrorLogin(errorMessage);
     }
