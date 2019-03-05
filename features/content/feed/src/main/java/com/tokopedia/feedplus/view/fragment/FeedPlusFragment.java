@@ -577,27 +577,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
-        adapter.setEndlessScrollListener();
 
         if (afterPost) {
             showAfterPostToaster();
             afterPost = false;
         }
-    }
-
-    private void showAfterPostToaster() {
-        if (getContext() != null) {
-            Toast.makeText(getContext(), R.string.feed_after_post, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
-        trackFeedImpression(listFeed);
-
-        adapter.setList(listFeed);
-        adapter.notifyDataSetChanged();
-        adapter.unsetEndlessScrollListener();
     }
 
     @Override
@@ -611,6 +595,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void clearData() {
         adapter.clearData();
+    }
+
+    @Override
+    public void setEndlessScroll() {
+        adapter.setEndlessScrollListener();
     }
 
     @Override
@@ -2094,4 +2083,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 userId
         );
     }
+
+    private void showAfterPostToaster() {
+        if (getContext() != null) {
+            Toast.makeText(getContext(), R.string.feed_after_post, Toast.LENGTH_LONG).show();
+        }
+    }
+
 }
