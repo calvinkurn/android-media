@@ -21,7 +21,6 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/banner_see_all"
         app:layout_constraintBottom_toBottomOf="@+id/banner_see_all"

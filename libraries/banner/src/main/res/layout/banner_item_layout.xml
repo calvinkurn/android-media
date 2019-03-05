@@ -14,10 +14,11 @@
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_290"
+        android:layout_height="@dimen/dp_96"
         android:adjustViewBounds="true"
         android:focusable="true"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_loading_image" />
 
 </android.support.v7.widget.CardView>
