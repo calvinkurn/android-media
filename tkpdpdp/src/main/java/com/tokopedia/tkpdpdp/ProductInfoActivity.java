@@ -63,11 +63,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     ProductInfoResultReceiver mReceiver;
 
-    @Override
-    protected void forceRotation() {
-
-    }
-
     @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
     public static Intent getAffiliateIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();

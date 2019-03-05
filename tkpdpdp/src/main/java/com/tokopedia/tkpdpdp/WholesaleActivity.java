@@ -37,11 +37,6 @@ public class WholesaleActivity extends TActivity {
     private LocalCacheHandler localCacheHandler;
 
     @Override
-    protected void forceRotation() {
-
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         localCacheHandler = new LocalCacheHandler(WholesaleActivity.this, PRODUCT_DETAIL);

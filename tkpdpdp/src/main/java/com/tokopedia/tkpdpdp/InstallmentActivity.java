@@ -39,11 +39,6 @@ public class InstallmentActivity extends TActivity {
     ArrayList<MonthsInstallmentItem> monthsInstallmentItemss12 = new ArrayList<>();
 
     @Override
-    protected void forceRotation() {
-
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         localCacheHandler = new LocalCacheHandler(InstallmentActivity.this, PRODUCT_DETAIL);
