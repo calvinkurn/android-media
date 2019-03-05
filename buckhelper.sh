@@ -87,7 +87,7 @@ elif [ $1 = "sync" ]; then
     syncProject
 elif [ $1 = "build" ]; then
     buckBuild $2
-elif [ $1 = "sync" ]; then
+elif [ $1 = "install" ]; then
     buckInstall $2
 else
     showHelp

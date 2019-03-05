@@ -26,6 +26,6 @@ interface Iris {
     fun setDeviceId(deviceId: String)
 
     companion object {
-        fun init(context: Context): Iris? = null
+        fun init(context: Context): Iris? = IrisAnalytics(context)
     }
 }

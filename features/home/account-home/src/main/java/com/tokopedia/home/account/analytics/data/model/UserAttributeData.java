@@ -8,25 +8,25 @@ public class UserAttributeData {
 
     @SerializedName("shopInfoMoengage")
     @Expose
-    private ShopInfoMoengage shopInfoMoengage;
+    private ShopInfoMoengage shopInfoMoengage = new ShopInfoMoengage();
     @SerializedName("profile")
     @Expose
-    private Profile profile;
+    private Profile profile = new Profile();
     @SerializedName("wallet")
     @Expose
-    private Wallet wallet;
+    private Wallet wallet = new Wallet();
     @SerializedName("saldo")
     @Expose
-    private Saldo saldo;
+    private Saldo saldo = new Saldo();
     @SerializedName("paymentAdminProfile")
     @Expose
-    private PaymentAdminProfile paymentAdminProfile;
+    private PaymentAdminProfile paymentAdminProfile = new PaymentAdminProfile();
     @SerializedName("topadsDeposit")
     @Expose
-    private TopadsDeposit topadsDeposit;
+    private TopadsDeposit topadsDeposit = new TopadsDeposit();
     @SerializedName("notifications")
     @Expose
-    private Notifications notifications;
+    private Notifications notifications = new Notifications();
 
     public ShopInfoMoengage getShopInfoMoengage() {
         return shopInfoMoengage;

@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -63,6 +62,8 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -98,9 +99,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     ShopProductListPresenter shopProductListPresenter;
 
     ShopPageTrackingBuyer shopPageTracking;
-    @Inject
-    UserSession userSession;
 
+    private UserSessionInterface userSession;
     private ShopModuleRouter shopModuleRouter;
 
     private String shopId;
@@ -188,6 +188,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        userSession = new UserSession(getActivity());
         attribution = getArguments().getString(ShopParamConstant.EXTRA_ATTRIBUTION, "");
         setHasOptionsMenu(true);
 

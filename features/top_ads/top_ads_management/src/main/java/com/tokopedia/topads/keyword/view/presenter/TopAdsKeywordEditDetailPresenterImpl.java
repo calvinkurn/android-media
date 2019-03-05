@@ -1,6 +1,6 @@
 package com.tokopedia.topads.keyword.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.keyword.domain.interactor.EditTopAdsKeywordDetailUseCase;

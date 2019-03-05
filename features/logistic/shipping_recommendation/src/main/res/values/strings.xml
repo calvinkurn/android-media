@@ -2,6 +2,7 @@
     <string name="app_name">shipping_rates_recommendation</string>
 
     <string name="title_bottomsheet_shipment_duration">Pilih Durasi Pengiriman</string>
+    <string name="title_bottomsheet_shipment">Pilih Pengiriman</string>
     <string name="title_shipment_courier_bottomsheet">Pilih Kurir Pengiriman</string>
     <string name="label_title_showcase_shipping_duration">Pengiriman</string>
     <string name="label_body_showcase_shipping_duration">Durasi dihitung sejak barang diserahkan ke kurir.</string>
