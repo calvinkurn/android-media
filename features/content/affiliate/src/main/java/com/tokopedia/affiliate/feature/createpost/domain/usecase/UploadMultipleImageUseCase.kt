@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.createpost.domain.usecase
 
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
-import com.tokopedia.affiliate.util.urlIsFile
+import com.tokopedia.affiliate.feature.createpost.view.util.urlIsFile
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel

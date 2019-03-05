@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.util
+package com.tokopedia.affiliate.feature.createpost.view.util
 
 import java.io.File
 
