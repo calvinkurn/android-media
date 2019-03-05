@@ -178,12 +178,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun stopTrace() {
-        analytics.trackClickOnLoginButtonError()
-
         if (!isTraceStopped) {
             performanceMonitoring.stopTrace()
             isTraceStopped = true
         }
+    }
+
+    override fun trackErrorLoginEmail() {
+        analytics.trackClickOnLoginButtonError()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

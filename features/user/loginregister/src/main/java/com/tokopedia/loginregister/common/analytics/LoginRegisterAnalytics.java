@@ -99,7 +99,7 @@ public class LoginRegisterAnalytics {
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on button selanjutnya",
-                "failed login phone number"
+                "failed validasi"
         );
     }
 
@@ -109,7 +109,7 @@ public class LoginRegisterAnalytics {
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on button selanjutnya",
-                "success login phone number"
+                "success validasi"
         );
     }
 
