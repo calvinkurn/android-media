@@ -169,8 +169,6 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
             edtxtNumber.setHint(Constants.HintMsg.EDTXT_PASSPORT_NO);
             edtxtName.setHint(Constants.HintMsg.EDTXT_MOTHERS_NAME);
         }
-        setNameWrapperError();
-        setNumberWrapperError();
     }
 
     @Override
@@ -234,12 +232,12 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     private void setNameWrapperLableHint(){
         if(KTPWNISelection.isChecked()){
             wrapperName.setLabel(Constants.Values.NAMA_GADIS);
-            wrapperName.setHint(Constants.HintMsg.NAMA_GADIAS);
+            wrapperName.setHelper(Constants.HintMsg.NAMA_GADIAS);
             wrapperName.setError("");
         }
         else if(passportSelection.isChecked()){
             wrapperName.setLabel(Constants.Values.MOTHERS_MAIDEN_NAME);
-            wrapperName.setHint(Constants.HintMsg.MOTHERS_NAME);
+            wrapperName.setHelper(Constants.HintMsg.MOTHERS_NAME);
             wrapperName.setError("");
         }
     }
@@ -247,17 +245,18 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     private void setNumberWrapperLableHint(){
         if(KTPWNISelection.isChecked()){
             wrapperNumberKtp.setLabel(Constants.Values.NOMOR_KTP);
-            wrapperNumberKtp.setHint(Constants.HintMsg.KTP);
+            wrapperNumberKtp.setHelper(Constants.HintMsg.KTP);
             wrapperNumberKtp.setError("");
         }
         else if(passportSelection.isChecked()){
-            wrapperNumberKtp.setHint(Constants.HintMsg.PASSPORT);
+            wrapperNumberKtp.setHelper(Constants.HintMsg.PASSPORT);
             wrapperNumberKtp.setLabel(Constants.Values.PASSPORT_NUMBER);
             wrapperNumberKtp.setError("");
         }
     }
 
     private boolean setNumberWrapperError(){
+        wrapperNumberKtp.setHelper("");
         if(TextUtils.isEmpty(edtxtNumber.getText())){
             if(KTPWNISelection.isChecked()){
                 wrapperNumberKtp.setError(Constants.ErrorMsg.KTP_NUMBER);
@@ -279,6 +278,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     }
 
     private boolean setNameWrapperError(){
+        wrapperName.setHelper("");
         if(TextUtils.isEmpty(edtxtName.getText())){
             if(KTPWNISelection.isChecked()){
                 wrapperName.setError(Constants.ErrorMsg.MOTHERS_NAME);

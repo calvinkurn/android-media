@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,6 +133,9 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
                         if(activityListener.isRetryValid()) {
                             String errorMessage = eligibilityBase.
                                     getGoalKYCRequest().getErrors().get(Constants.Keys.MESSAGE);
+                            if(TextUtils.isEmpty(errorMessage)){
+                                errorMessage = Constants.ErrorMsg.SOMETHING_WENT_WRONG;
+                            }
                             errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), FragmentUpgradeToOvo.this::onClick, errorMessage);
                             errorSnackbar.show();
                         }

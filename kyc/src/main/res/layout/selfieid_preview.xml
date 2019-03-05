@@ -14,15 +14,14 @@
             android:layout_height="match_parent">
 
             <include
-                layout="@layout/kyc_selfie_intro"
-                android:visibility="gone"/>
+                layout="@layout/kyc_selfie_intro" />
 
             <LinearLayout
                 android:id="@+id/selfieid_preview_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <FrameLayout
                     android:layout_width="match_parent"

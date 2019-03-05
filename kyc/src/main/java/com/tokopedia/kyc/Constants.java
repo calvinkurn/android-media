@@ -58,6 +58,7 @@ public interface Constants {
         String MOTHERS_NAME = "Nama gadis ibu kandung maksimal 30 karakter";
         String PASSPORT_NUMBER = "Passport number is not valid";
         String FORIEGNER_MOTHERS_NAME = "Mother's maiden name is not valid";
+        String SOMETHING_WENT_WRONG = "Ada yang salah, harap coba lagi";
     }
 
     interface HintMsg{

@@ -87,4 +87,9 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
     public ConfirmRequestDataContainer getDataContatainer() {
         return null;
     }
+
+    @Override
+    public boolean isRetryValid() {
+        return false;
+    }
 }
