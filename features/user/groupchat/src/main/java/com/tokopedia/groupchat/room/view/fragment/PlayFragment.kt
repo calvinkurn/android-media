@@ -379,6 +379,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onVoteComponentClicked(type: String?, name: String?) {
         analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name)
+        if(!userSession.isLoggedIn){
+            onLoginClicked(viewState.getChannelInfo()?.channelId)
+        }
     }
 
     override fun onSprintSaleProductClicked(productViewModel: SprintSaleProductViewModel?, position: Int) {
@@ -548,7 +551,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onLoginClicked(channelId: String?) {
         analytics.eventClickLogin(channelId)
-
         startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
                 .getLoginIntent(activity), REQUEST_LOGIN)
     }

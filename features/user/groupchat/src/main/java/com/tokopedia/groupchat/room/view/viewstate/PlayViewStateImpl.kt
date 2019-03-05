@@ -926,11 +926,15 @@ open class PlayViewStateImpl(
             viewModel?.let {
                 analytics.eventClickProminentButton(it, floatingButton)
 
-                RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
-                        GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
-                        it.channelUrl,
-                        it.title
-                ))
+                if(!userSession.isLoggedIn) {
+                    listener.onLoginClicked(it.channelId)
+                } else {
+                    RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
+                            GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
+                            it.channelUrl,
+                            it.title
+                    ))
+                }
             }
         }
 
@@ -1025,24 +1029,25 @@ open class PlayViewStateImpl(
     override fun onReceiveOverlayMessageFromWebsocket(channelInfoViewModel: ChannelInfoViewModel) {
         viewModel = channelInfoViewModel
         viewModel?.let {
+            if (userSession.isLoggedIn) {
+                if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
+                    welcomeInfoDialog.setOnDismissListener { onDismiss ->
+                        checkShowWhichBottomSheet(channelInfoViewModel)
+                    }
+                } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
+                    pinnedMessageDialog.setOnDismissListener { onDismiss ->
+                        checkShowWhichBottomSheet(channelInfoViewModel)
 
-            if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
-                welcomeInfoDialog.setOnDismissListener { onDismiss ->
+                    }
+                } else if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
+                    overlayDialog.dismiss()
+                    checkShowWhichBottomSheet(channelInfoViewModel)
+
+                } else {
                     checkShowWhichBottomSheet(channelInfoViewModel)
                 }
-            } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
-                pinnedMessageDialog.setOnDismissListener { onDismiss ->
-                    checkShowWhichBottomSheet(channelInfoViewModel)
 
-                }
-            } else if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
-                overlayDialog.dismiss()
-                checkShowWhichBottomSheet(channelInfoViewModel)
-
-            } else {
-                checkShowWhichBottomSheet(channelInfoViewModel)
             }
-
         }
     }
 
