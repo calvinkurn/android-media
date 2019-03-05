@@ -9,8 +9,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.tome.FavoriteCheckResult;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.data.repository.ShopRepository;
-import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
@@ -62,7 +62,7 @@ public class GetShopUseCase extends UseCase<ShopViewModel> {
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
         requestParams.putString(BrowseApi.Q, searchParameter.getQueryKey());
         requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
-        requestParams.putString("official", String.valueOf(searchParameter.getIsOfficial()));
+        requestParams.putString(SearchApiConst.OFFICIAL, String.valueOf(searchParameter.getIsOfficial()));
 
         if (!TextUtils.isEmpty(searchParameter.getUserID())) {
             requestParams.putString(BrowseApi.USER_ID, searchParameter.getUserID());

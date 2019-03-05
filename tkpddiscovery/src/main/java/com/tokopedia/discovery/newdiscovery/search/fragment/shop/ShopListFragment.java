@@ -21,6 +21,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -318,7 +319,18 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
+
+        setSelectedFilterIfIsOfficial();
+
         loadShopFirstTime();
+    }
+
+    private void setSelectedFilterIfIsOfficial() {
+        if(isOfficial) {
+            HashMap<String, String> selectedFilterIsOfficial = new HashMap<>();
+            selectedFilterIsOfficial.put(SearchApiConst.OFFICIAL, String.valueOf(isOfficial));
+            setSelectedFilter(selectedFilterIsOfficial);
+        }
     }
 
     @Override
