@@ -9,6 +9,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,7 +33,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ticker;
     private TextView textMessage;
-    private RelativeLayout btnClose;
+    private ImageView btnClose;
 
     private HomeCategoryListener listener;
     private Timer timer;

@@ -50,6 +50,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -67,6 +68,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerViewDecorator;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.DummyModel;
@@ -866,8 +868,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
             updateHeaderItem(dataHeader);
         }
-        Visitable dummyVisitable = new DummyModel();
-        items.add(1, dummyVisitable);
+        Visitable dummyTicker = new TickerViewModel();
+        ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
+        Ticker.Tickers tis = new Ticker.Tickers();
+        tis.setMessage("halo halo halo halo ini www.tokopedia.com");
+        tickers.add(tis);
+        ((TickerViewModel) dummyTicker).setTickers(tickers);
+        items.add(1, dummyTicker);
         adapter.setItems(items);
     }
 
