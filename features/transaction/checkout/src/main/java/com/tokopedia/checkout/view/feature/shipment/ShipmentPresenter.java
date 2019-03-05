@@ -339,10 +339,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                getGeneratedAuthParamNetwork(paramGetShipmentForm));
+        Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
 
         if (isOneClickShipment) {
+//            params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+//            params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_DEVICE_ID, userSessionInterface.getDeviceId());
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
             compositeSubscription.add(
                     getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
@@ -352,6 +354,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     isReloadData, true))
             );
         } else {
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
             compositeSubscription.add(
                     getShipmentAddressFormUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
@@ -414,8 +417,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                              RecipientAddressModel oldRecipientAddressModel,
                                                              ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels,
                                                              ShipmentCostModel oldShipmentCostModel,
-                                                             ShipmentDonationModel oldShipmentDonationModel,
-                                                             boolean isOneClickShipment) {
+                                                             ShipmentDonationModel oldShipmentDonationModel) {
         getView().showLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
@@ -424,27 +426,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
                 getGeneratedAuthParamNetwork(paramGetShipmentForm));
 
-        if (isOneClickShipment) {
-            compositeSubscription.add(
-                    getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormReloadFromMultipleAddressSubscriber(
-                                    this, getView(), oldRecipientAddressModel, oldShipmentCartItemModels)
-                            )
-            );
-        } else {
-            compositeSubscription.add(
-                    getShipmentAddressFormUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormReloadFromMultipleAddressSubscriber(
-                                    this, getView(), oldRecipientAddressModel, oldShipmentCartItemModels)
-                            )
-            );
-        }
+        compositeSubscription.add(
+                getShipmentAddressFormUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new GetShipmentAddressFormReloadFromMultipleAddressSubscriber(
+                                this, getView(), oldRecipientAddressModel, oldShipmentCartItemModels)
+                        )
+        );
     }
 
     public boolean checkAddressHasChanged(RecipientAddressModel oldModel, RecipientAddressModel newModel) {
@@ -502,10 +492,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         paramGetShipmentForm.put("lang", "id");
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                getGeneratedAuthParamNetwork(paramGetShipmentForm));
+        Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
 
         if (isOneClickShipment) {
+//            params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+//            params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_DEVICE_ID, userSessionInterface.getDeviceId());
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
             compositeSubscription.add(
                     getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
@@ -516,6 +508,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             )
             );
         } else {
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
             compositeSubscription.add(
                     getShipmentAddressFormUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
@@ -540,10 +533,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
 
             RequestParams requestParams = RequestParams.create();
-            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                    getGeneratedAuthParamNetwork(paramGetShipmentForm));
+            Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
 
             if (isOneClickShipment) {
+//                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+//                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_DEVICE_ID, userSessionInterface.getDeviceId());
+                requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
                 compositeSubscription.add(
                         getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
                                 .subscribeOn(Schedulers.io())
@@ -555,6 +550,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 )
                 );
             } else {
+                requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
                 compositeSubscription.add(
                         getShipmentAddressFormUseCase.createObservable(requestParams)
                                 .subscribeOn(Schedulers.io())

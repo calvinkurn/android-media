@@ -973,7 +973,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentDonationModel shipmentDonationModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_DONATION_DATA);
             shipmentPresenter.processReloadCheckoutPageFromMultipleAddress(
                     promoData, cartPromoSuggestion, recipientAddressModel, shipmentCartItemModels,
-                    shipmentCostModel, shipmentDonationModel, isOneClickShipment()
+                    shipmentCostModel, shipmentDonationModel
             );
         } else {
             shipmentSelectionStateDataHashSet.clear();

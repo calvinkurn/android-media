@@ -214,8 +214,7 @@ public interface ShipmentContract {
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
                                                           ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel,
-                                                          boolean isOneClickShipment);
+                                                          ShipmentDonationModel shipmentDonationModel);
 
         void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn);
 
