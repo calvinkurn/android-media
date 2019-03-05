@@ -37,6 +37,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
+import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -409,7 +410,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateMaxCharacter() {
-        maxCharacter.text = String.format(Locale.FRENCH, "%d/%d", viewModel.caption.length, MAX_CHAR)
+        maxCharacter.text = String.format(Locale.GERMAN, "%,d/%,d",
+                viewModel.caption.length,
+                MAX_CHAR
+        )
     }
 
     private fun updateButton() {
