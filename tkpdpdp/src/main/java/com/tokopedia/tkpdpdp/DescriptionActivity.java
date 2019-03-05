@@ -38,6 +38,12 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
     private LocalCacheHandler localCacheHandler;
 
     @Override
+    protected void forceRotation() {
+
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         localCacheHandler = new LocalCacheHandler(DescriptionActivity.this, PRODUCT_DETAIL);

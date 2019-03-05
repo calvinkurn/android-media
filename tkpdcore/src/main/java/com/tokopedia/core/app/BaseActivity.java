@@ -56,7 +56,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
 
-
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
@@ -95,6 +94,16 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onPause();
         unregisterForceLogoutReceiver();
         unregisterShake();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        forceRotation();
+    }
+
+    protected void forceRotation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
@@ -162,8 +171,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             finish();
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
-                intent = ((TkpdCoreRouter)MainApplication.getAppContext()).getHomeIntent(this);
-            } else if(GlobalConfig.isPosApp()) {
+                intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
+            } else if (GlobalConfig.isPosApp()) {
                 intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
             } else {
                 invalidateCategoryCache();
@@ -242,12 +251,13 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                         sessionHandler.forceLogout();
                         try {
                             ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
-                        } catch (Exception ex) {}
+                        } catch (Exception ex) {
+                        }
                         if (GlobalConfig.isSellerApp()) {
                             Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                        } else if(GlobalConfig.isPosApp()) {
+                        } else if (GlobalConfig.isPosApp()) {
                             Intent intent = PosAppRouter.getSplashScreenIntent(getBaseContext(), true);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
@@ -306,7 +316,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             if (screenName == null) {
                 screenName = this.getClass().getSimpleName();
             }
-            ((AbstractionRouter) getApplication()).registerShake(screenName,this);
+            ((AbstractionRouter) getApplication()).registerShake(screenName, this);
         }
     }
 

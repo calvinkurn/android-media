@@ -108,6 +108,11 @@ public class VariantActivity extends TActivity  implements
     private LocalCacheHandler localCacheHandler;
 
     @Override
+    protected void forceRotation() {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
