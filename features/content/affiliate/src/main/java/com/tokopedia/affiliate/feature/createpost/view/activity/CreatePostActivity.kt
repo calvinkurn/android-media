@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.affiliate.feature.createpost.view.fragment.AffiliateCreatePostFragment
@@ -13,21 +14,6 @@ import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePos
 import com.tokopedia.applink.ApplinkConst
 
 class CreatePostActivity : BaseSimpleActivity() {
-
-    override fun getNewFragment(): Fragment? {
-        val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        return when(intent?.extras?.get(PARAM_TYPE)) {
-            TYPE_AFFILIATE -> AffiliateCreatePostFragment.createInstance(bundle)
-            TYPE_CONTENT_SHOP -> ContentCreatePostFragment.createInstance(bundle)
-            else -> {
-                finish()
-                return null
-            }
-        }
-    }
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
@@ -73,5 +59,28 @@ class CreatePostActivity : BaseSimpleActivity() {
         fun getInstanceDraftContent(context: Context, bundle: Bundle): Intent {
             return getInstanceContent(context, bundle)
         }
+    }
+
+    override fun getNewFragment(): Fragment? {
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        return when(intent?.extras?.get(PARAM_TYPE)) {
+            TYPE_AFFILIATE -> AffiliateCreatePostFragment.createInstance(bundle)
+            TYPE_CONTENT_SHOP -> ContentCreatePostFragment.createInstance(bundle)
+            else -> {
+                finish()
+                return null
+            }
+        }
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_create_post
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        setContentView(layoutRes)
     }
 }
