@@ -8,7 +8,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.design.widget.CheckableImageButton
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
 import android.text.SpannableString
@@ -137,7 +136,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private var actionLoginMethod: String = ""
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
-    private lateinit var togglePassword : CheckableImageButton
     private lateinit var loginLayout: LinearLayout
     private lateinit var loginButtonsContainer: LinearLayout
     private lateinit var emailPhoneEditText: EditText
@@ -289,17 +287,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
         } else {
             showSmartLock()
-        }
-
-        val wrapperPassword = partialRegisterInputView.findViewById<TkpdHintTextInputLayout>(R.id
-                .text_input_password_toggle)
-        togglePassword = wrapperPassword.findViewById(R.id.text_input_password_toggle)
-        togglePassword.setOnClickListener {
-            if(wrapperPassword.isPasswordVisible){
-                analytics.eventClickPasswordHide()
-            }else{
-                analytics.eventClickPasswordShow()
-            }
         }
     }
 
