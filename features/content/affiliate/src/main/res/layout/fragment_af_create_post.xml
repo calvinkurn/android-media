@@ -55,10 +55,26 @@
                 android:lines="4"
                 android:textColor="@color/black_54"
                 android:textCursorDrawable="@color/black"
+                android:maxLength="2000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/thumbnail"
                 app:layout_constraintTop_toTopOf="@+id/thumbnail"
                 tools:text="Hahaha\nhahaha" />
+
+            <TextView
+                android:id="@+id/maxCharacter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:gravity="end"
+                android:lineSpacingExtra="8sp"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_10"
+                app:layout_constraintBottom_toTopOf="@+id/separatorCaption"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="0/2.000" />
 
             <View
                 android:id="@+id/separatorCaption"

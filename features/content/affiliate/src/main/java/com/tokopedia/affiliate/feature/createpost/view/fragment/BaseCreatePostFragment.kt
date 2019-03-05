@@ -37,6 +37,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -66,6 +67,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val REQUEST_IMAGE_PICKER = 1234
         private const val REQUEST_PREVIEW = 13
         private const val REQUEST_LOGIN = 83
+        private const val MAX_CHAR = 2000
     }
 
     override fun initInjector() {
@@ -319,6 +321,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         thumbnail.setOnClickListener {
             goToMediaPreview()
         }
+        caption.afterTextChanged {
+            viewModel.caption = it
+            updateMaxCharacter()
+        }
+        caption.setText(viewModel.caption)
+        updateMaxCharacter()
         updateButton()
     }
 
@@ -398,6 +406,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         } else {
             thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
         }
+    }
+
+    private fun updateMaxCharacter() {
+        maxCharacter.text = String.format(Locale.FRENCH, "%d/%d", viewModel.caption.length, MAX_CHAR)
     }
 
     private fun updateButton() {

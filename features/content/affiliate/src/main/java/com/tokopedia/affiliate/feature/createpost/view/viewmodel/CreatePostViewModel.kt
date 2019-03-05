@@ -8,6 +8,7 @@ data class CreatePostViewModel(
         var postId: String = "",
         var token: String = "",
         var authorType: String = "",
+        var caption: String = "",
         var mainImageIndex: Int = 0,
         var maxImage: Int = 5,
         var allowImage: Boolean = false,
@@ -30,6 +31,7 @@ data class CreatePostViewModel(
             source.readString() ?: "",
             source.readString() ?: "",
             source.readString() ?: "",
+            source.readString() ?: "",
             source.readInt(),
             source.readInt(),
             1 == source.readInt(),
@@ -47,6 +49,7 @@ data class CreatePostViewModel(
         writeString(postId)
         writeString(token)
         writeString(authorType)
+        writeString(caption)
         writeInt(mainImageIndex)
         writeInt(maxImage)
         writeInt((if (allowImage) 1 else 0))
