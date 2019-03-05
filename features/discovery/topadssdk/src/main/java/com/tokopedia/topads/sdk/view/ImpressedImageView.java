@@ -194,7 +194,7 @@ public class ImpressedImageView extends AppCompatImageView {
      */
     public void setImage(ProductImage image) {
         this.holder = image;
-        ImageHandler.loadImageThumbs(getContext(), this, image.getM_ecs());
+        Glide.with(getContext()).load(image.getM_ecs()).into(this);
     }
 
     /**
