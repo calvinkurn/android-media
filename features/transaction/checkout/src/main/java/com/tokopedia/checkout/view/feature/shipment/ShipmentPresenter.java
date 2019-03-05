@@ -327,9 +327,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment,
+    public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                                boolean isTradeIn, @Nullable String cornerId) {
-        if (isFromMultipleAddress) {
+        if (isReloadData) {
             getView().showLoading();
         } else {
             getView().showInitialLoading();
@@ -349,7 +349,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isFromMultipleAddress, true))
+                                    isReloadData, true))
             );
         } else {
             compositeSubscription.add(
@@ -358,7 +358,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isFromMultipleAddress, false))
+                                    isReloadData, false))
             );
         }
     }

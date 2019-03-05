@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
@@ -154,25 +156,28 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         String clickableText = "Ganti nomor";
         int startSpan = tvTradeInInfo.getText().toString().indexOf(clickableText);
         int endSpan = tvTradeInInfo.getText().toString().indexOf(clickableText) + clickableText.length();
-        Spannable formattedPromoMessage = new SpannableString(tvTradeInInfo.getText().toString());
+        Spannable formattedTrandeInInfoText = new SpannableString(tvTradeInInfo.getText().toString());
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
-            public void onClick(View textView) {
+            public void onClick(@NonNull View textView) {
                 shipmentAdapterActionListener.onClickChangePhoneNumber();
             }
+
             @Override
-            public void updateDrawState(TextPaint textPaint) {
+            public void updateDrawState(@NonNull TextPaint textPaint) {
                 super.updateDrawState(textPaint);
                 textPaint.setUnderlineText(false);
+                textPaint.setColor(ContextCompat.getColor(tvTradeInInfo.getContext(), R.color.tkpd_green_header));
             }
         };
-        formattedPromoMessage.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        formattedTrandeInInfoText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        final int color = ContextCompat.getColor(tvTradeInInfo.getContext(), R.color.tkpd_green_header);
-        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//        final int color = ContextCompat.getColor(tvTradeInInfo.getContext(), R.color.tkpd_green_header);
+//        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+//                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        tvTradeInInfo.setText(formattedPromoMessage);
+        tvTradeInInfo.setMovementMethod(LinkMovementMethod.getInstance());
+        tvTradeInInfo.setText(formattedTrandeInInfoText);
     }
 
 }

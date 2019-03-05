@@ -23,16 +23,16 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
 
     private final ShipmentPresenter shipmentPresenter;
     private final ShipmentContract.View view;
-    private final boolean isFromMultipleAddress;
+    private final boolean isReloadData;
     private final boolean isFromPdp;
 
     public GetShipmentAddressFormSubscriber(ShipmentPresenter shipmentPresenter,
                                             ShipmentContract.View view,
-                                            boolean isFromMultipleAddress,
+                                            boolean isReloadData,
                                             boolean isFromPdp) {
         this.shipmentPresenter = shipmentPresenter;
         this.view = view;
-        this.isFromMultipleAddress = isFromMultipleAddress;
+        this.isReloadData = isReloadData;
         this.isFromPdp = isFromPdp;
     }
 
@@ -44,7 +44,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        if (isFromMultipleAddress) {
+        if (isReloadData) {
             view.hideLoading();
         } else {
             view.hideInitialLoading();
@@ -73,7 +73,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
 
     @Override
     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        if (isFromMultipleAddress) {
+        if (isReloadData) {
             view.hideLoading();
         } else {
             view.hideInitialLoading();
@@ -86,7 +86,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
-                view.renderCheckoutPage(!isFromMultipleAddress, isFromPdp);
+                view.renderCheckoutPage(!isReloadData, isFromPdp);
                 view.stopTrace();
             }
         }

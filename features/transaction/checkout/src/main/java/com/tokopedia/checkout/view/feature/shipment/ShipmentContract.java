@@ -207,7 +207,7 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn, String cornerId);
+        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn, String cornerId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
