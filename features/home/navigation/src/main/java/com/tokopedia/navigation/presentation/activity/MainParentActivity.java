@@ -65,6 +65,7 @@ import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -563,6 +564,11 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment instanceof InboxNotificationListener && notification != null) {
             ((InboxNotificationListener) fragment).onNotifyBadgeInboxNotification(notification.getTotalInbox());
         }
+
+        if (fragment instanceof AllNotificationListener && notification != null) {
+            ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
+        }
+
         invalidateOptionsMenu();
     }
 
