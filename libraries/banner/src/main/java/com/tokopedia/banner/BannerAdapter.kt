@@ -15,14 +15,10 @@ class BannerAdapter(bannerImageUrls : List<String>,
         BannerPagerAdapter(bannerImageUrls, onPromoClickListener) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.banner_item_layout, parent, false)
-
-        val layoutParams = itemView.getLayoutParams()
-        layoutParams.width = (parent.width * 0.9).toInt()
-        itemView.setLayoutParams(layoutParams)
-
-        return BannerViewHolder(itemView)
+        return BannerViewHolder(
+                LayoutInflater.from(parent.context)
+                        .inflate(R.layout.banner_item_layout, parent, false)
+        )
     }
 }
 
