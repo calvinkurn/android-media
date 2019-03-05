@@ -1060,6 +1060,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onDynamicIconScrollStart() {
+        refreshLayout.setCanChildScrollUp(true);
+    }
+
+    @Override
+    public void onDynamicIconScrollEnd() {
+        if (isAppBarFullyExpanded(lastOffset)) {
+            refreshLayout.setCanChildScrollUp(false);
+        }
+    }
+
+    @Override
     public void onScrollToTop() {
         if (appBarLayout != null) {
             appBarLayout.setExpanded(true);

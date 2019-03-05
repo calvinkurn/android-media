@@ -45,6 +45,22 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.clearOnScrollListeners();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if (listener != null) {
+                        listener.onDynamicIconScrollStart();
+                    }
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (listener != null) {
+                        listener.onDynamicIconScrollEnd();
+                    }
+                }
+            }
+        });
     }
 
     @Override
