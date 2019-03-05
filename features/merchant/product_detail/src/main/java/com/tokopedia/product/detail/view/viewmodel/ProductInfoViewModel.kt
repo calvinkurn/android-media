@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import android.content.res.Resources
 import android.util.SparseArray
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -68,7 +67,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val userId: String
         get() = userSessionInterface.userId
 
-    fun getProductInfo(productParams: ProductParams, resources: Resources) {
+    fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
@@ -76,7 +75,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     PARAM_PRODUCT_KEY to productParams.productName)
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO],
                     ProductInfo.Response::class.java, paramsInfo)
-                val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                val cacheStrategy = GraphqlCacheStrategy
+                        .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             val productInfoP1 = ProductInfoP1()
@@ -99,12 +99,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
-                productInfoP1.productInfo.basic.id,
-                productInfoP1.productInfo.basic.price, resources)
+                productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price, forceRefresh)
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
-            productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, resources)
+            productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, forceRefresh)
 
             try {
                 val result = variantJob.await()
@@ -119,7 +118,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2(shopId: Int, productId: Int, productPrice: Float, resources: Resources): ProductInfoP2 = withContext(Dispatchers.IO) {
+    private suspend fun getProductInfoP2(shopId: Int, productId: Int, productPrice: Float,
+                                         forceRefresh: Boolean): ProductInfoP2 = withContext(Dispatchers.IO) {
         val productInfoP2 = ProductInfoP2()
 
         val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
@@ -151,7 +151,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val installmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSTALLMENT],
             InstallmentResponse::class.java, installmentParams)
 
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         try {
             val gqlResponse = graphqlRepository.getReseponse(listOf(shopRequest, ratingRequest,
                 wishlistCountRequest, voucherRequest, shopBadgeRequest, shopCommitmentRequest,
@@ -221,7 +221,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
 
-    private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String, resources: Resources): ProductInfoP3 = withContext(Dispatchers.IO) {
+    private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String, forceRefresh: Boolean): ProductInfoP3 = withContext(Dispatchers.IO) {
         val productInfoP3 = ProductInfoP3()
         val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id.toString())
         val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],

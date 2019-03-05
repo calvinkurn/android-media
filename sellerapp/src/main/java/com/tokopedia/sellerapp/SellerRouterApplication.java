@@ -239,6 +239,8 @@ import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActiv
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -2019,7 +2021,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     }
 
-    @Override
     public String getContactUsBaseURL() {
         return TkpdBaseURL.ContactUs.URL_HELP;
     }

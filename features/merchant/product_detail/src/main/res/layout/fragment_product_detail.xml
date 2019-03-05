@@ -1,212 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinator"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
-    
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_360"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:visibility="gone"
-        tools:visibility="visible">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:minHeight="?attr/actionBarSize"
-            app:contentScrim="@color/white"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
-
-            <com.tokopedia.product.detail.view.widget.PictureScrollingView
-                android:id="@+id/view_picture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="none"
-                app:scrimAnimationDuration="50"/>
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:gravity="top"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nested_scroll"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="fill_vertical"
-        android:background="@color/white"
-        android:clipToPadding="false"
-        android:descendantFocusability="blocksDescendants"
-        android:fillViewport="true"
-        android:paddingBottom="@dimen/dp_20"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fitsSystemWindows="true">
 
-        <LinearLayout android:id="@+id/root_view"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_360"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:minHeight="?attr/actionBarSize"
+                app:contentScrim="@color/white"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+                <com.tokopedia.product.detail.view.widget.PictureScrollingView
+                    android:id="@+id/view_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="none"
+                    app:scrimAnimationDuration="50"/>
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:gravity="top"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingBottom="?attr/actionBarSize"
-            android:descendantFocusability="blocksDescendants">
+            android:layout_gravity="fill_vertical"
+            android:background="@color/white"
+            android:clipToPadding="false"
+            android:descendantFocusability="blocksDescendants"
+            android:fillViewport="true"
+            android:paddingBottom="@dimen/dp_20"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <include layout="@layout/partial_product_detail_header"/>
-            <include layout="@layout/partial_product_rating_talk_courier"/>
-            <include layout="@layout/partial_product_detail_visibility"/>
-
-            <include layout="@layout/partial_variant_rate_estimation" />
-
-            <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
-                android:id="@+id/merchantVoucherListWidget"
+            <LinearLayout android:id="@+id/root_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
-                android:textColor="@color/black_70"
-                android:textStyle="bold"
-                app:mvlwTitleString="@string/promo"
-                app:mvlwTitleTextSize="@dimen/sp_16" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="?attr/actionBarSize"
+                android:descendantFocusability="blocksDescendants">
 
-            <include layout="@layout/partial_product_detail_wholesale"/>
-            <include layout="@layout/partial_product_full_descr"/>
-            <include layout="@layout/partial_product_shop_info"/>
-            <include layout="@layout/partial_product_image_review"/>
-            <include layout="@layout/partial_most_helpful_review_view"/>
-            <include layout="@layout/partial_product_latest_talk"/>
-            <include layout="@layout/partial_other_product"/>
+                <include layout="@layout/partial_product_detail_header"/>
+                <include layout="@layout/partial_product_rating_talk_courier"/>
+                <include layout="@layout/partial_product_detail_visibility"/>
 
-            <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
-                android:layout_margin="@dimen/dp_6"
-                android:id="@+id/topads_carousel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:descendantFocusability="blocksDescendants"
-                android:visibility="gone" />
+                <include layout="@layout/partial_variant_rate_estimation" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/txt_last_update"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/dp_10"
-                android:padding="@dimen/dp_12"
-                android:background="@drawable/bg_border_top_bottom"
-                tools:text="Last Update"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:fontSize="micro"
-                app:textViewTheme="lightDisabled"/>
+                <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+                    android:id="@+id/merchantVoucherListWidget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:textColor="@color/black_70"
+                    android:textStyle="bold"
+                    app:mvlwTitleString="@string/promo"
+                    app:mvlwTitleTextSize="@dimen/sp_16" />
 
-        </LinearLayout>
+                <include layout="@layout/partial_product_detail_wholesale"/>
+                <include layout="@layout/partial_product_full_descr"/>
+                <include layout="@layout/partial_product_shop_info"/>
+                <include layout="@layout/partial_product_image_review"/>
+                <include layout="@layout/partial_most_helpful_review_view"/>
+                <include layout="@layout/partial_product_latest_talk"/>
+                <include layout="@layout/partial_other_product"/>
 
-    </android.support.v4.widget.NestedScrollView>
+                <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
+                    android:layout_margin="@dimen/dp_6"
+                    android:id="@+id/topads_carousel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:descendantFocusability="blocksDescendants"
+                    android:visibility="gone" />
 
-    <FrameLayout android:id="@+id/base_btn_affiliate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dp_8"
-        android:background="@color/white"
-        android:layout_gravity="bottom"
-        app:layout_anchorGravity="bottom"
-        android:visibility="gone">
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/txt_last_update"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:padding="@dimen/dp_12"
+                    android:background="@drawable/bg_border_top_bottom"
+                    tools:text="Last Update"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:fontSize="micro"
+                    app:textViewTheme="lightDisabled"/>
 
-        <LinearLayout android:id="@+id/btn_affiliate"
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <FrameLayout android:id="@+id/base_btn_affiliate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/green_button_rounded"
-            android:gravity="center"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8">
+            android:padding="@dimen/dp_8"
+            android:background="@color/white"
+            android:layout_gravity="bottom"
+            app:layout_anchorGravity="bottom"
+            android:visibility="gone">
 
-            <ProgressBar
-                android:id="@+id/loadingAffiliate"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:indeterminateDrawable="@drawable/ic_progress_loading"
-                style="?android:attr/progressBarStyleInverse" />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:layout_width="wrap_content"
+            <LinearLayout android:id="@+id/btn_affiliate"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/button_affiliate"
-                android:fontFamily="sans-serif-medium"
-                app:fontSize="small"
-                app:textViewTheme="darkPrimary"/>
+                android:orientation="horizontal"
+                android:background="@drawable/green_button_rounded"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8">
 
-        </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/loadingAffiliate"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:indeterminateDrawable="@drawable/ic_progress_loading"
+                    style="?android:attr/progressBarStyleInverse" />
 
-    </FrameLayout>
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_affiliate"
+                    android:fontFamily="sans-serif-medium"
+                    app:fontSize="small"
+                    app:textViewTheme="darkPrimary"/>
 
-    <include layout="@layout/partial_layout_button_action"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:layout_anchorGravity="bottom" />
+            </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:backgroundTint="@color/white"
-        app:borderWidth="0dp"
-        app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|right|end"
-        app:srcCompat="@drawable/ic_wishlist_grey" />
+        </FrameLayout>
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/label_cod"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title_cod"
-        android:background="@drawable/bg_cod_label"
-        app:fontSize="small"
-        android:textColor="@color/white"
-        app:weight="medium"
-        app:drawableLeftCompat="@drawable/ic_pdp_cod"
-        android:visibility="gone"
-        android:drawablePadding="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_4"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|left|start"
-        app:layout_behavior="com.tokopedia.product.detail.view.util.BadgeCodBehavior"/>
+        <include layout="@layout/partial_layout_button_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:layout_anchorGravity="bottom" />
 
-    <ProgressBar android:id="@+id/pb_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:backgroundTint="@color/white"
+            app:borderWidth="0dp"
+            app:layout_anchor="@id/appbar"
+            app:layout_anchorGravity="bottom|right|end"
+            app:srcCompat="@drawable/ic_wishlist_grey" />
 
-</android.support.design.widget.CoordinatorLayout>
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/label_cod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_cod"
+            android:background="@drawable/bg_cod_label"
+            app:fontSize="small"
+            android:textColor="@color/white"
+            app:weight="medium"
+            app:drawableLeftCompat="@drawable/ic_pdp_cod"
+            android:visibility="gone"
+            android:drawablePadding="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_4"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            app:layout_anchor="@id/appbar"
+            app:layout_anchorGravity="bottom|left|start"
+            app:layout_behavior="com.tokopedia.product.detail.view.util.BadgeCodBehavior"/>
+
+        <ProgressBar android:id="@+id/pb_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

@@ -279,6 +279,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
 
+        appbar.addOnOffsetChangedListener { _, verticalOffset -> swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
+        swipe_refresh_layout.setOnRefreshListener { loadProductData(true) }
+
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
             override val isOwner: Boolean
                 get() = productInfo?.basic?.shopID?.let { productInfoViewModel.isShopOwner(it) }
@@ -696,9 +699,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadProductData() {
+    private fun loadProductData(forceRefresh: Boolean = false) {
         if (productId != null || (productKey != null && shopDomain != null)) {
-            productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), resources)
+            productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
         }
     }
 
