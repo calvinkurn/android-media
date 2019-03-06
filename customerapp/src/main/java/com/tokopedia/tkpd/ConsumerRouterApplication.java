@@ -1729,12 +1729,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onForceLogout(Activity activity) {
-        SessionHandler sessionHandler = new SessionHandler(activity);
-        sessionHandler.forceLogout();
-        invalidateCategoryMenuData();
-        Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        //TODO milhamj revert
+//        SessionHandler sessionHandler = new SessionHandler(activity);
+//        sessionHandler.forceLogout();
+//        invalidateCategoryMenuData();
+//        Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
     }
 
     @Override
@@ -1749,14 +1750,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showForceLogoutDialog(Response response) {
-        ServerErrorHandler.showForceLogoutDialog();
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+        //TODO milhamj revert
+//        ServerErrorHandler.showForceLogoutDialog();
+//        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
     @Override
     public void showForceLogoutTokenDialog(String response) {
-        ServerErrorHandler.showForceLogoutDialog();
-        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+        //TODO milhamj revert
+//        ServerErrorHandler.showForceLogoutDialog();
+//        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
     }
 
     @Override
