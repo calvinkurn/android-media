@@ -9,16 +9,18 @@ import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressMod
 /**
  * Created by fajarnuha on 27/02/19.
  */
-public class AddressAdapterTypeFactory extends BaseAdapterTypeFactory implements AddressTypeFactory{
+public class AddressAdapterTypeFactory extends BaseAdapterTypeFactory {
 
-
-    @Override
     public int type(RecipientAddressModel viewHolder) {
         return RecipientAddressViewHolder.TYPE;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        return super.createViewHolder(parent, type);
+        if (type == RecipientAddressViewHolder.TYPE) {
+//            return new RecipientAddressViewHolder(parent);
+            return null;
+        } else return super.createViewHolder(parent, type);
     }
+
 }
