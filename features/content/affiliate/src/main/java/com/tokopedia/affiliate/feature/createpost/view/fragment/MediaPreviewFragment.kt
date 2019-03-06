@@ -105,7 +105,11 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         }
 
         mainImageText.setOnClickListener {
-            viewModel.mainImageIndex = tabLayout.selectedTabPosition
+            if (tabLayout.selectedTabPosition > 0) {
+                viewModel.mainImageIndex = tabLayout.selectedTabPosition
+            } else {
+                viewModel.mainImageIndex = 0
+            }
             updateMainImageText()
             updateResultIntent()
         }
