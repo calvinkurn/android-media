@@ -39,10 +39,10 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
     fun getProductInfo(productParams: ProductParams, resources: Resources) {
 
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val productInfoData = withContext(Dispatchers.IO) {
                 val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
-                        PARAM_SHOP_DOMAIN to productParams.shopDomain,
-                        PARAM_PRODUCT_KEY to productParams.productName)
+                    PARAM_SHOP_DOMAIN to productParams.shopDomain,
+                    PARAM_PRODUCT_KEY to productParams.productName)
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
 
                 val paramsVariant = mapOf(PARAM_PRODUCT_ID to productParams.productId)
@@ -51,11 +51,11 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest, graphqlVariantRequest), cacheStrategy)
             }
-            data.getSuccessData<ProductInfo.Response>().data?.let {
+            productInfoData.getSuccessData<ProductInfo.Response>().data?.let {
                 val productInfo = ProductInfoAndVariant()
                 productInfo.productInfo = it
-                data.getSuccessData<ProductVariant>().let { productVariant ->
-                    productInfo.productVariant = productVariant
+                productInfoData.getSuccessData<ProductDetailVariantResponse>().let { productVariant ->
+                    productInfo.productVariant = productVariant.data
                 }
                 productInfoResp.value = Success(productInfo)
             }

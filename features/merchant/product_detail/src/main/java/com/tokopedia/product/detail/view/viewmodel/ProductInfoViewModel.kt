@@ -89,7 +89,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             //if fail, will not interrupt the product info
             val variantJob = async {
                 try {
-                    val paramsVariant = mapOf(PARAM_PRODUCT_ID to productInfoP1.productInfo.basic.id)
+                    val paramsVariant = mapOf(PARAM_PRODUCT_ID to productInfoP1.productInfo.basic.id.toString())
                     val graphqlVariantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT], ProductDetailVariantResponse::class.java, paramsVariant)
                     val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                     graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy).getSuccessData<ProductDetailVariantResponse>()
@@ -108,7 +108,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             try {
                 val result = variantJob.await()
                 if (result is Throwable) throw  result
-                productVariantResp.value = Success((result as Success<ProductVariant>).data)
+                productVariantResp.value = Success((result as ProductDetailVariantResponse).data)
             } catch (e: Exception) {
                 productVariantResp.value = Fail(e)
             }
@@ -404,6 +404,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         private const val PARAM_PAGE = "page"
         private const val PARAM_USER_ID = "user_id"
+        private const val PARAM_USER_ID_CAMEL = "userID"
+        private const val PARAM_INCLUDE_CAMPAIGN = "includeCampaign"
         private const val PARAM_TOTAL = "total"
 
         private const val DEFAULT_NUM_VOUCHER = 3
