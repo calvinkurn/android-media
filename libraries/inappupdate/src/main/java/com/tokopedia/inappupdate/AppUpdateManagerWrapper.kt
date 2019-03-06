@@ -19,6 +19,8 @@ class AppUpdateManagerWrapper {
     companion object {
         private var REQUEST_CODE_IMMEDIATE = 12135
         private var INAPP_UPDATE = "inappupdate"
+        private var INAPP_UPDATE_PREF = "inappupdate_pref"
+        private var KEY_INAPP_TYPE = "inapp_type"
 
         @JvmField
         var REQUEST_CODE_FLEXIBLE = 12136
@@ -75,6 +77,7 @@ class AppUpdateManagerWrapper {
                     }
                 } else {
                     appUpdateInfo = null
+                    clearInAppPref(appContext)
                     onError()
                 }
                 onFinished()
@@ -85,6 +88,7 @@ class AppUpdateManagerWrapper {
 
         @JvmStatic
         fun checkAndDoImmediateUpdate(activity: Activity, onError: (() -> (Unit)), onFinished: () -> Unit) {
+            val appContext = activity.applicationContext
             val appUpdateManager = getInstance(activity)
             if (appUpdateManager == null) {
                 onError()
@@ -105,6 +109,7 @@ class AppUpdateManagerWrapper {
                     }
                 } else {
                     appUpdateInfo = null
+                    clearInAppPref(appContext)
                     onError()
                 }
             }.addOnFailureListener {
@@ -121,7 +126,11 @@ class AppUpdateManagerWrapper {
             }
             val appUpdateManager = getInstance(activity.applicationContext) ?: return false
             return try {
-                appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, activity, REQUEST_CODE_FLEXIBLE)
+                val success = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, activity, REQUEST_CODE_FLEXIBLE)
+                if (success) {
+                    setPrefInAppType(activity, AppUpdateType.FLEXIBLE)
+                }
+                return success
             } catch (e: Exception) {
                 false
             }
@@ -134,10 +143,25 @@ class AppUpdateManagerWrapper {
             }
             val appUpdateManager = getInstance(activity.applicationContext) ?: return false
             return try {
-                appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, activity, REQUEST_CODE_IMMEDIATE)
+                val success = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, activity, REQUEST_CODE_IMMEDIATE)
+                if (success) {
+                    setPrefInAppType(activity, AppUpdateType.IMMEDIATE)
+                }
+                return success
             } catch (e: Exception) {
                 false
             }
+        }
+
+        fun setPrefInAppType(context: Context, appUpdateType: Int) {
+            context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).edit().putInt(KEY_INAPP_TYPE, appUpdateType).apply()
+        }
+
+        fun getPrefInAppType(context: Context): Int =
+            context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).getInt(KEY_INAPP_TYPE, AppUpdateType.IMMEDIATE)
+
+        fun clearInAppPref(context: Context){
+            context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).edit().clear().apply()
         }
 
         @JvmStatic
@@ -145,7 +169,8 @@ class AppUpdateManagerWrapper {
             val appUpdateManager = getInstance(activity) ?: return
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
                 if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
-                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                    getPrefInAppType(activity) == AppUpdateType.IMMEDIATE) {
                     appUpdateInfo = it
                     Toast.makeText(activity, "In Progress Immediate", Toast.LENGTH_SHORT).show()
                     onSuccessGetInfo(true)
@@ -201,6 +226,7 @@ class AppUpdateManagerWrapper {
                 Snackbar.LENGTH_INDEFINITE)
             snackbar.setAction(activity.getString(R.string.restart_app)) {
                 appUpdateManager.completeUpdate()
+                clearInAppPref(activity)
             }
             snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.snackbar_action_green))
             snackbar.show()
