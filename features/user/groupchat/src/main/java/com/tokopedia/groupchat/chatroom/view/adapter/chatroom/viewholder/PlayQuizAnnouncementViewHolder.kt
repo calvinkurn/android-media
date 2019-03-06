@@ -15,7 +15,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncement
 /**
  * @author : Steven 18/02/19
  */
-class PlayQuizAnnouncementViewHolder(itemView: View, var listener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener) : AbstractViewHolder<VoteAnnouncementViewModel>(itemView) {
+class PlayQuizAnnouncementViewHolder(itemView: View,
+                                     var listener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener) : AbstractViewHolder<VoteAnnouncementViewModel>(itemView) {
 
 
     companion object {
@@ -46,32 +47,36 @@ class PlayQuizAnnouncementViewHolder(itemView: View, var listener: ChatroomContr
             content.text = MethodChecker.fromHtml(it)
         }
 
-        itemView.setOnClickListener { listener.onVoteComponentClicked(type, element.message) }
+        itemView.setOnClickListener {
+            element.voteInfoViewModel?.let {
+                listener.onVoteComponentClicked(type, element.message, it.voteUrl)
+            }
+        }
     }
 
     private fun getIcon(voteType: String?): Int {
-        return when (voteType){
+        return when (voteType) {
             VoteAnnouncementViewModel.POLLING_START -> R.drawable.ic_quiz_start
             VoteAnnouncementViewModel.POLLING_FINISHED,
-            VoteAnnouncementViewModel.POLLING_END-> R.drawable.ic_quiz_end
+            VoteAnnouncementViewModel.POLLING_END -> R.drawable.ic_quiz_end
             else -> 0
         }
     }
 
     private fun getTitle(voteType: String?): CharSequence? {
-        return when (voteType){
+        return when (voteType) {
             VoteAnnouncementViewModel.POLLING_START -> itemView.context.getString(R.string.play_quiz_started)
             VoteAnnouncementViewModel.POLLING_FINISHED,
-            VoteAnnouncementViewModel.POLLING_END-> itemView.context.getString(R.string.play_quiz_ended)
+            VoteAnnouncementViewModel.POLLING_END -> itemView.context.getString(R.string.play_quiz_ended)
             else -> null
         }
     }
 
     private fun getTitleTextColor(voteType: String?): Int {
-        return when (voteType){
+        return when (voteType) {
             VoteAnnouncementViewModel.POLLING_START -> ContextCompat.getColor(itemView.context, R.color.quiz_start)
             VoteAnnouncementViewModel.POLLING_FINISHED,
-            VoteAnnouncementViewModel.POLLING_END-> ContextCompat.getColor(itemView.context, R.color.quiz_end)
+            VoteAnnouncementViewModel.POLLING_END -> ContextCompat.getColor(itemView.context, R.color.quiz_end)
             else -> 0
         }
     }

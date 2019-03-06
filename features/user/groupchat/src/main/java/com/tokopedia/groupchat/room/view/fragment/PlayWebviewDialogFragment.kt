@@ -20,6 +20,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -169,6 +170,9 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebview(view: View) {
         CookieManager.getInstance().setAcceptCookie(true)
+        if(GlobalConfig.isAllowDebuggingTools())
+            WebView.setWebContentsDebuggingEnabled(true)
+
         webview = view.findViewById(R.id.webview)
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
