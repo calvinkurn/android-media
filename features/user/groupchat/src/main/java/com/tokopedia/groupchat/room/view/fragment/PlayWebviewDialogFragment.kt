@@ -2,15 +2,21 @@ package com.tokopedia.groupchat.room.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
+import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
@@ -75,12 +81,36 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         setupViewModel(savedInstanceState)
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val temp = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        temp.setOnShowListener(object : DialogInterface.OnShowListener {
+            override fun onShow(dialog: DialogInterface?) {
+                var finalDialog = dialog as BottomSheetDialog
+                val bottomSheet = finalDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+                var behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.peekHeight = 600
+                activity?.windowManager?.defaultDisplay?.let {
+                    var displayMetrics = DisplayMetrics()
+                    it.getMetrics(displayMetrics)
+
+                    behavior.peekHeight = displayMetrics.heightPixels*9/16
+                }
+
+            }
+
+        })
+
+        return temp
+    }
+
     private fun setupViewModel(savedInstanceState: Bundle?) {
         activity?.run {
 
-            url = getParamString(ApplinkConst.Play.PARAM_URL, arguments,
-                    savedInstanceState, "")
-
+            if(url.isNullOrEmpty()) {
+                url = getParamString(ApplinkConst.Play.PARAM_URL, arguments,
+                        savedInstanceState, "")
+            }
             if (url.isBlank())
                 finish()
 
@@ -134,6 +164,21 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         webview.settings.domStorageEnabled = true
         webview.webViewClient = getWebviewClient()
         webview.webChromeClient = getWebviewChromeClient()
+//        webview.run {
+//            setOnDragListener(object : View.OnDragListener{
+//            override fun onDrag(v: View?, event: DragEvent?): Boolean {
+//                Log.d("bottomsheetevdrag", event.toString())
+//                return true
+//            }
+//        })
+//
+//            setOnTouchListener(object : View.OnTouchListener{
+//            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+//                Log.d("bottomsheetevtouch", event.toString())
+//                return false
+//            }
+//        })
+//        }
     }
 
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
@@ -276,5 +321,4 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         header[PARAM_HEADER_GC_TOKEN] = gcToken
         return header
     }
-
 }

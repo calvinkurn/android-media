@@ -26,9 +26,9 @@ public class RouteManager {
                                             String trackerAttribution) {
         String attributionApplink;
         if (applink.contains("?")) {
-            attributionApplink = String.format(applink + "&%s", trackerAttribution);
+            attributionApplink = applink + "&"+ trackerAttribution;
         } else {
-            attributionApplink = String.format(applink + "?%s", trackerAttribution);
+            attributionApplink = applink + "?"+ trackerAttribution;
         }
 
         ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, attributionApplink);

@@ -16,10 +16,11 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="@dimen/dp_14"
-        android:layout_height="@dimen/dp_14"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
         app:srcCompat="@drawable/ic_quiz_start"
-        />
+        android:layout_alignTop="@+id/title"
+        android:layout_alignBottom="@+id/title" />
 
     <android.widget.Space
         android:id="@+id/spac"
@@ -38,8 +39,6 @@
         android:textStyle="bold"
         android:layout_toRightOf="@id/spac"
         android:layout_toEndOf="@id/spac"
-        android:layout_alignTop="@id/icon"
-        android:gravity="center"
         tools:text="Quiz Telah berakhir"/>
 
     <android.widget.Space

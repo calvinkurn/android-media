@@ -563,7 +563,7 @@ public class GroupChatAnalytics {
             list.add(new EEPromotion(button.getButtonId(),
                     EEPromotion.NAME_GROUPCHAT + "-dynamicbuttons",
                     GroupChatAnalytics.DEFAULT_EE_POSITION,
-                    button.getLinkUrl(),
+                    button.getContentLinkUrl(),
                     button.getImageUrl(),
                     generateTrackerAttribution(GroupChatAnalytics
                             .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
@@ -591,7 +591,7 @@ public class GroupChatAnalytics {
             list.add(new EEPromotion(button.getButtonId(),
                     EEPromotion.NAME_GROUPCHAT + "-dynamicbuttons",
                     GroupChatAnalytics.DEFAULT_EE_POSITION,
-                    button.getLinkUrl(),
+                    button.getContentLinkUrl(),
                     button.getImageUrl(),
                     generateTrackerAttribution(GroupChatAnalytics
                             .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())

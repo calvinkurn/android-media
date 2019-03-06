@@ -300,7 +300,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 dialog.setOnOkClickListener {
                     viewState.getChannelInfo()?.let {
                         analytics.eventUserExit(it.channelId + " " + (System.currentTimeMillis() - enterTimeStamp))
-                        analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
+                        if(!viewState.getDurationWatchVideo().isNullOrBlank() &&
+                                !viewState.getDurationWatchVideo().equals("0")) {
+                            analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
+                        }
                     }
 
                     activity?.let {
@@ -379,6 +382,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onVoteComponentClicked(type: String?, name: String?) {
         analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name)
+        if(!userSession.isLoggedIn){
+            onLoginClicked(viewState.getChannelInfo()?.channelId)
+        }
     }
 
     override fun onSprintSaleProductClicked(productViewModel: SprintSaleProductViewModel?, position: Int) {
@@ -473,7 +479,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun handleEvent(it: EventGroupChatViewModel) {
         when {
-            it.isFreeze -> viewState.onChannelFrozen(it.channelId)
+            it.isFreeze -> {
+                viewState.onChannelFrozen(it.channelId)
+                onToolbarEnabled(false)
+            }
             it.isBanned -> viewState.banUser(it.userId)
         }
     }
@@ -545,7 +554,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onLoginClicked(channelId: String?) {
         analytics.eventClickLogin(channelId)
-
         startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
                 .getLoginIntent(activity), REQUEST_LOGIN)
     }
@@ -591,7 +599,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button) {
         when (it.contentType) {
-            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.linkUrl)
+            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.contentLinkUrl)
             DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
             DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
         }
@@ -662,7 +670,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         Log.i("play pause now", System.currentTimeMillis().toString())
         var duration = PlayActivity.KICK_THRESHOLD_TIME
         viewState.getChannelInfo()?.kickViewModel?.kickDuration?.let {
-            if (it > 0) duration = it
+            if (it > 0) duration = TimeUnit.SECONDS.toMillis(it)
         }
         if (timeStampAfterPause > 0
                 && System.currentTimeMillis() - timeStampAfterPause > duration && duration > 0) {

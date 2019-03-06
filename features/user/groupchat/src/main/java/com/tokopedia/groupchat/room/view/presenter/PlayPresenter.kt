@@ -221,7 +221,10 @@ class PlayPresenter @Inject constructor(
         }
         val rxWebSocket = RxWebSocket[
                 webSocketUrlWithToken,
-                accessToken
+                accessToken,
+                settings.delay,
+                settings.pingInterval,
+                settings.maxRetries
         ]
         val subscription = rxWebSocket?.subscribe(subscriber)
 
