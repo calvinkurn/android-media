@@ -76,6 +76,7 @@
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_byme_blue"
+                    android:layout_marginRight="@dimen/dp_4"
                     android:visibility="gone"
                     tools:visibility="visible"
                     />
@@ -84,7 +85,6 @@
                     android:id="@+id/text_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_4"
                     android:maxLines="1"
                     app:fontSize="title"
                     app:weight="medium"
