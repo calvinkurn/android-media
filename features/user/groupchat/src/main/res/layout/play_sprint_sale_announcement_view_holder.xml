@@ -63,7 +63,7 @@
                 android:id="@+id/content_image_container"
                 android:layout_width="@dimen/dp_44"
                 android:layout_height="@dimen/dp_44"
-                app:cardCornerRadius="@dimen/dp_4"
+                app:cardCornerRadius="@dimen/dp_6"
                 app:cardElevation="0dp"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true"

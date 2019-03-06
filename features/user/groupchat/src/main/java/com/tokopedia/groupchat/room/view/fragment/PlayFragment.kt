@@ -300,7 +300,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 dialog.setOnOkClickListener {
                     viewState.getChannelInfo()?.let {
                         analytics.eventUserExit(it.channelId + " " + (System.currentTimeMillis() - enterTimeStamp))
-                        analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
+                        if(!viewState.getDurationWatchVideo().isNullOrBlank() &&
+                                !viewState.getDurationWatchVideo().equals("0")) {
+                            analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
+                        }
                     }
 
                     activity?.let {
