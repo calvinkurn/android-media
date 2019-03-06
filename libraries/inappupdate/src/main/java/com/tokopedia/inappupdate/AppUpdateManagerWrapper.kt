@@ -153,14 +153,14 @@ class AppUpdateManagerWrapper {
             }
         }
 
-        fun setPrefInAppType(context: Context, appUpdateType: Int) {
+        private fun setPrefInAppType(context: Context, appUpdateType: Int) {
             context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).edit().putInt(KEY_INAPP_TYPE, appUpdateType).apply()
         }
 
-        fun getPrefInAppType(context: Context): Int =
+        private fun getPrefInAppType(context: Context): Int =
             context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).getInt(KEY_INAPP_TYPE, AppUpdateType.IMMEDIATE)
 
-        fun clearInAppPref(context: Context){
+        private fun clearInAppPref(context: Context){
             context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).edit().clear().apply()
         }
 
@@ -169,8 +169,7 @@ class AppUpdateManagerWrapper {
             val appUpdateManager = getInstance(activity) ?: return
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
                 if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
-                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
-                    getPrefInAppType(activity) == AppUpdateType.IMMEDIATE) {
+                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                     appUpdateInfo = it
                     Toast.makeText(activity, "In Progress Immediate", Toast.LENGTH_SHORT).show()
                     onSuccessGetInfo(true)
@@ -195,7 +194,8 @@ class AppUpdateManagerWrapper {
             val appUpdateManager = getInstance(activity) ?: return
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
                 if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
-                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                    getPrefInAppType(activity) == AppUpdateType.IMMEDIATE) {
                     appUpdateInfo = it
                     try {
                         appUpdateManager.startUpdateFlowForResult(
