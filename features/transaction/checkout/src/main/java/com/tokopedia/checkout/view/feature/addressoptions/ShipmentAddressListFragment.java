@@ -440,9 +440,16 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressModelMapper mapper = new AddressModelMapper();
 
         if (getActivity() != null) {
-            Intent intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
-                    getActivity(), mapper.transform(model), token
-            );
+            Intent intent;
+            if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
+                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutMultipleAddressForm(
+                        getActivity(), mapper.transform(model), token
+                );
+            } else {
+                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
+                        getActivity(), mapper.transform(model), token
+                );
+            }
             startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
         }
     }
