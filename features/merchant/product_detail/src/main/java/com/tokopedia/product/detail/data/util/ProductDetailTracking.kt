@@ -2,8 +2,10 @@ package com.tokopedia.product.detail.data.util
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.track.TrackApp
 
 class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
 
@@ -151,6 +153,24 @@ class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
                 ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
                 ProductTrackingConstant.Action.CLICK,
                 ProductTrackingConstant.Message.LABEL.toLowerCase())
+    }
+
+    fun eventPDPWishlit() {
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(mapOf(
+                KEY_EVENT to ProductTrackingConstant.Wishlist.EVENT,
+                KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
+                KEY_ACTION to ProductTrackingConstant.Action.CLICK,
+                KEY_LABEL to ProductTrackingConstant.Wishlist.LABEL
+        ))
+    }
+
+    fun eventPDPAddToWishlist(name: String) {
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(mapOf(
+                KEY_EVENT to ProductTrackingConstant.Wishlist.EVENT,
+                KEY_CATEGORY to ProductTrackingConstant.Wishlist.CATEGORY,
+                KEY_ACTION to ProductTrackingConstant.Action.CLICK,
+                KEY_LABEL to "${ProductTrackingConstant.Wishlist.LABEL} - ${MethodChecker.fromHtml(name)}"
+        ))
     }
 
     companion object {

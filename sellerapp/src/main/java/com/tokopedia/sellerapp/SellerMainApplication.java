@@ -23,6 +23,9 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.chat_common.network.ChatUrl;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.gcm.Constants;
@@ -56,6 +59,7 @@ import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 /**
@@ -152,6 +156,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         generateSellerAppBaseUrl();
         generateSellerAppNetworkKeys();
+
+        TrackApp.initTrackApp(this);
+
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
+
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);

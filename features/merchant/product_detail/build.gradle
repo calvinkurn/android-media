@@ -28,6 +28,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.cacheManager)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.expressCheckout)

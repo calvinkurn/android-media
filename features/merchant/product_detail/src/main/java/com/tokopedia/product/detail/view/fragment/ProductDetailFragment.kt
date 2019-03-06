@@ -241,6 +241,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         productInfoViewModel.productInfoP1Resp.observe(this, Observer {
+            swipe_refresh_layout.isRefreshing = false
             performanceMonitoring.stopTrace()
             when (it) {
                 is Success -> onSuccessGetProductInfo(it.data)
@@ -333,7 +334,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfoViewModel.removeWishList(it,
                                 onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
                                 onErrorRemoveWishList = this::onErrorRemoveWishList)
-                            // TODO tracking
                         }
 
                     } else {
@@ -341,7 +341,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfoViewModel.addWishList(it,
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
                                 onErrorAddWishList = this::onErrorAddWishList)
-                            // TODO tracking
+                            productDetailTracking.eventPDPWishlit()
+                            // TODO APPFLYER IMPL 943
+                            productInfo?.basic?.let { productDetailTracking.eventPDPAddToWishlist(it.name) }
                         }
                     }
                     // TODO tracking for affiliate

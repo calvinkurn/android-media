@@ -25,6 +25,12 @@ object ProductTrackingConstant {
         const val EVENT = "clickPDP"
     }
 
+    object Wishlist{
+        const val EVENT = "clickWishlist"
+        const val CATEGORY = "Wishlist"
+        const val LABEL = "Add To Wishlist"
+    }
+
     object Affiliate {
         const val EVENT = "clickAffiliate"
         const val CATEGORY = "product detail page tokopedia by.me"
