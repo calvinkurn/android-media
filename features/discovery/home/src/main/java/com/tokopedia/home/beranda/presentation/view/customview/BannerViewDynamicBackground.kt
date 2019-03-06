@@ -57,20 +57,7 @@ class BannerViewDynamicBackground : BannerView {
     override fun buildView() {
         super.buildView()
 
-        val width = (banner_root.width * 0.9).toInt()
-
-        val recyclerHeight = (width/3).toInt()
-
-        img_banner_background.layoutParams.height =
-                ((context.resources.getDimensionPixelOffset(R.dimen.searchbar_size))+recyclerHeight+(context.resources.getDimensionPixelOffset(R.dimen.banner_background_offset)))
-
-        overlay_img.layoutParams.height = ((context.resources.getDimensionPixelOffset(R.dimen.searchbar_size))+recyclerHeight+(context.resources.getDimensionPixelOffset(R.dimen.banner_background_offset)))
-
-        img_banner_background.requestLayout()
-
         banner_root.visibility = View.VISIBLE
-
-        overlay_img.requestLayout()
 
         val url = promoImageUrls[0]
 
@@ -151,7 +138,7 @@ class BannerViewDynamicBackground : BannerView {
     fun getBitmapImageViewTarget() : SimpleTarget<Bitmap> {
         return object : SimpleTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                val blurredBitmap = ImageHandler.blur(context, resource)
+                val blurredBitmap = ImageHandler.blurStrong(context, resource)
                 showImage(blurredBitmap)
             }
         }

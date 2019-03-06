@@ -17,4 +17,5 @@
     <color name="home_ticker_background">#fffae6</color>
     <color name="home_ticker_text_color">#ae31353b</color>
     <color name="home_ticker_info_lengkap_color">#03ac0e</color>
+    <color name="home_banner_lihat_semua_color">#03ac0e</color>
 </resources>

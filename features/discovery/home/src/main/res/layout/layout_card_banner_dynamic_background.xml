@@ -20,13 +20,13 @@
             android:scaleType="centerCrop"
             android:id="@+id/img_banner_background"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             tools:src="@drawable/ic_icon_market_toped" />
 
         <ImageView
             android:id="@+id/overlay_img"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:background="#31353B"
             android:alpha="0.32" />

@@ -807,8 +807,8 @@ public class ImageHandler {
     }
 
     public static Bitmap blurStrong(Context context, Bitmap image) {
-        final float BITMAP_SCALE = 0.1f;
-        final float BLUR_RADIUS = 25f;
+        final float BITMAP_SCALE = 0.04f;
+        final float BLUR_RADIUS = 7.5f;
 
         int width = Math.round(image.getWidth() * BITMAP_SCALE);
         int height = Math.round(image.getHeight() * BITMAP_SCALE);
