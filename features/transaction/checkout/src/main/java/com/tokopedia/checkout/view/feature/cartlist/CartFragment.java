@@ -54,10 +54,10 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.checkout.view.feature.promostacking.MerchantPromoBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.merchantvoucher.voucherList.MerchantBottomSheetFragment;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -1654,7 +1654,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onMerchantPromoClicked() {
         System.out.println("++ MERCHANT PROMO IS CLICKED!!");
         if (getFragmentManager() != null) {
-            MerchantPromoBottomSheetFragment bottomSheet = MerchantPromoBottomSheetFragment.newInstance();
+            MerchantBottomSheetFragment bottomSheet = MerchantBottomSheetFragment.newInstance("3385304");
             bottomSheet.show(getFragmentManager(), null);
         }
     }

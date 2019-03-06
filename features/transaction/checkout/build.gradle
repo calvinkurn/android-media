@@ -1,7 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 
@@ -41,7 +39,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
-    implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -56,12 +53,13 @@ dependencies {
     implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.shippingRecommendation)
+    implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation project(rootProject.ext.features.promoCheckoutCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps
@@ -77,9 +75,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    compile project(path: ':features:promo:merchant_voucher')
-    compile project(path: ':tkpdpdp')
-
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 apply from: "$rootProject.projectDir/publish_local.gradle"

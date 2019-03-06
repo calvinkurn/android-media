@@ -20,7 +20,6 @@
     <string name="label_sent_by">Dikirim oleh :</string>
     <string name="label_courier">Kurir Pengiriman</string>
     <string name="label_subtotal">Subtotal</string>
-    <string name="label_promo">Promo</string>
     <string name="label_coupon">Kupon</string>
     <string name="label_payment_total">Total Tagihan</string>
     <string name="label_button_choose_payment_method">Pilih Metode Pembayaran</string>
@@ -235,7 +234,6 @@
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="recomendasi_untuk_anda" tools:ignore="ExtraTranslation">Rekomendasi untuk Anda</string>
     <string name="label_cod">Bayar di Tempat</string>
-    <string name="label_promo_merchant">Promo Merchant</string>
     <string name="lebel_understood">Mengerti</string>
     <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
     <string name="change_address">Ubah Alamat</string>
@@ -243,7 +241,5 @@
     <string name="shipping_address">Alamat Pengiriman</string>
     <string name="bottom_sheet_empty_branch_text">Tidak bisa menemukan daftar cabang Tokopedia Corner</string>
     <string name="technical_problem_text">Ada masalah teknis, coba lagi</string>
-
-    <string name="hint_promo_code">Ketik di sini</string>
-    <string name="use_promo_label_button">Gunakan</string>
+    <string name="label_promo">Promo</string>
 </resources>

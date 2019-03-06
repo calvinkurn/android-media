@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.promostacking
+package com.tokopedia.merchantvoucher.voucherList
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -9,12 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.checkout.R
-import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.merchantvoucher.R
+import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -22,36 +22,51 @@ import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPr
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
-import com.tokopedia.tkpdpdp.customview.PromoWidgetView
-import kotlinx.android.synthetic.main.item_promo_merchant.*
-import kotlinx.android.synthetic.main.widget_bottomsheet.*
+import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 03/03/19.
  */
 
-open class MerchantPromoBottomSheetFragment : BottomSheetDialogFragment(), MerchantVoucherListView {
+open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVoucherListView {
+    lateinit var voucherShopId: String
     private var mTitle: String? = null
     private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
     @Suppress("DEPRECATION")
     private var loadingUseMerchantVoucher: ProgressDialog? = null
-    private var promoWidgetView: PromoWidgetView? = null
 
     @Inject
     lateinit var merchantVoucherListPresenter: MerchantVoucherListPresenter
 
     companion object {
         @JvmStatic
-        fun newInstance(): MerchantPromoBottomSheetFragment {
-            return MerchantPromoBottomSheetFragment()
+        fun newInstance(shopId: String): MerchantBottomSheetFragment {
+            return MerchantBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putString(MerchantVoucherListFragment.EXTRA_SHOP_ID, shopId)
+                }
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
         super.onCreate(savedInstanceState)
         if (activity != null) {
-            mTitle = activity!!.getString(R.string.label_promo_merchant)
+            initInjector()
+            mTitle = activity!!.getString(R.string.merchant_bottomsheet_title)
+        }
+    }
+
+    fun initInjector() {
+        activity?.run {
+            DaggerMerchantVoucherComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .shopCommonModule(ShopCommonModule())
+                    .build()
+                    .inject(this@MerchantBottomSheetFragment)
+            merchantVoucherListPresenter.attachView(this@MerchantBottomSheetFragment)
         }
     }
 
@@ -63,7 +78,7 @@ open class MerchantPromoBottomSheetFragment : BottomSheetDialogFragment(), Merch
 
     fun loadPromo() {
         // hardcode shopId & numVoucher
-        merchantVoucherListPresenter.getVoucherList("3385304", 1)
+        merchantVoucherListPresenter.getVoucherList(voucherShopId, 1)
 
     }
 
@@ -73,7 +88,7 @@ open class MerchantPromoBottomSheetFragment : BottomSheetDialogFragment(), Merch
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val container = view.findViewById<FrameLayout>(R.id.bottomsheet_container)
-        View.inflate(context, R.layout.item_promo_merchant, container)
+        View.inflate(context, R.layout.bottomsheet_merchant_voucher, container)
 
         val textViewTitle = view.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
         textViewTitle.text = mTitle
@@ -142,19 +157,13 @@ open class MerchantPromoBottomSheetFragment : BottomSheetDialogFragment(), Merch
     override fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>) {
         if (merchantVoucherViewModelList.size == 0) {
             merchantVoucherListWidget?.setData(null)
-            promoWidgetView?.visibility = View.GONE
-            promoContainer.visibility = View.GONE
             return
         }
         merchantVoucherListWidget?.setData(merchantVoucherViewModelList)
-        promoWidgetView?.visibility = View.GONE
-        promoContainer.visibility = View.VISIBLE
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
         merchantVoucherListWidget?.setData(null)
-        promoWidgetView?.visibility = View.GONE
-        promoContainer.visibility = View.GONE
     }
 
     private fun hideUseMerchantVoucherLoading() {
