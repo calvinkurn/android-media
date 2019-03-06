@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdreactnative.react.banner;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -52,6 +53,13 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
         banner.setOnPromoDragListener(this);
         banner.setPromoList(imageList);
         banner.buildView();
+    }
+
+    @ReactProp(name = "setSeeAllPromoTextColor")
+    public void setSeeAllPromoTextColor(Banner banner, @Nullable String string) {
+        try {
+            banner.setBannerSeeAllTextColor(Color.parseColor(string));
+        } catch (Exception ignored) { }
     }
 
     private void mappingImageBanner(ReadableArray readableArray) {

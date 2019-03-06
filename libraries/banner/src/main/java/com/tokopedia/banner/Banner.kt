@@ -54,4 +54,8 @@ class Banner : BannerView {
     override fun getIndicatorFocus(): Int {
         return R.drawable.indicator_focus
     }
+
+    fun setBannerSeeAllTextColor(color: Int) {
+        bannerSeeAll.setTextColor(color)
+    }
 }
