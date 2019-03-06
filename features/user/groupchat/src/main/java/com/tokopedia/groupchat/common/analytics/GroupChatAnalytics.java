@@ -146,13 +146,23 @@ public class GroupChatAnalytics {
         );
     }
 
+    //#8
+    public void eventClickVoteComponent(@NotNull ChannelInfoViewModel channelInfoViewModel, String voteName) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                "click on component - vote",
+                String.format("%s - %s", channelInfoViewModel.getChannelId(),voteName)
+
+        );
+    }
+
     //#9
     public void eventViewBanner(ChannelInfoViewModel viewModel,
                                 String adsId, String adsName, String adsImageUrl) {
         analyticTracker.sendEventTracking(EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
-                String.format("%s - %s", viewModel.getChannelId(), adsName)
+                String.format("%s - %s", viewModel.getChannelId(), adsId)
         );
 
         ArrayList<EEPromotion> list = new ArrayList<>();
@@ -162,14 +172,14 @@ public class GroupChatAnalytics {
                 adsName,
                 adsImageUrl,
                 generateTrackerAttribution(GroupChatAnalytics
-                        .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
+                        .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), adsId)
         ));
 
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
-                EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsName),
+                EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsId),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle()
@@ -177,11 +187,11 @@ public class GroupChatAnalytics {
     }
 
     //#9
-    public void eventClickVoteComponent(String componentType, String componentName) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+    public void eventViewVote(@NotNull ChannelInfoViewModel channelInfoViewModel, String voteName) {
+        analyticTracker.sendEventTracking(EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION_CLICK_COMPONENT + componentType,
-                componentType + " " + componentName
+                "view on component - vote",
+                String.format("%s - %s", channelInfoViewModel.getChannelId(),voteName)
         );
     }
 
@@ -251,7 +261,7 @@ public class GroupChatAnalytics {
     //#10
     public void eventClickBanner(ChannelInfoViewModel viewModel,
                                  String adsId, String adsName, String adsImageUrl) {
-        analyticTracker.sendEventTracking(EVENT_NAME_PROMO_VIEW,
+        analyticTracker.sendEventTracking(EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
                 String.format("%s - %s", viewModel.getChannelId(), adsId
@@ -269,7 +279,7 @@ public class GroupChatAnalytics {
         ));
 
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
-                EVENT_NAME, EVENT_NAME_PROMO_VIEW,
+                EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
                 EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsId),
@@ -794,6 +804,15 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
                 channelLabel
+        );
+    }
+
+    @Deprecated
+    public void eventClickVoteComponent(String componentType, String componentName) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_COMPONENT + "vote",
+                componentType + " " + componentName
         );
     }
 

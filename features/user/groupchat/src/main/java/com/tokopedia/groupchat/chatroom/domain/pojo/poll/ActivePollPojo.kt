@@ -53,7 +53,10 @@ data class ActivePollPojo (
         var isIsAnswered: Boolean = false,
         @SerializedName("winner_url")
         @Expose
-        var winnerUrl: String = ""
+        var winnerUrl: String = "",
+        @SerializedName("link_url")
+        @Expose
+        var voteUrl: String = ""
 ) : BaseGroupChatPojo() {
 
 }
