@@ -55,7 +55,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".feature.createpost.view.activity.MediaPreviewActivity"
-            android:label="@string/title_af_preview"
+            android:label="@string/af_title_edit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />

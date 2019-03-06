@@ -321,6 +321,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         thumbnail.setOnClickListener {
             goToMediaPreview()
         }
+        carouselIcon.setOnClickListener {
+            goToMediaPreview()
+        }
+        edit.setOnClickListener {
+            goToMediaPreview()
+        }
         caption.afterTextChanged {
             viewModel.caption = it
             updateMaxCharacter()
