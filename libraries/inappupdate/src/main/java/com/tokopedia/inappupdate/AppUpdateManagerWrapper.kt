@@ -56,7 +56,6 @@ class AppUpdateManagerWrapper {
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
                 if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                     it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
-                    // check if previously have denied
                     appUpdateInfo = it
                     val onProgressUpdating = onProgressUpdating(it.installStatus())
                     val message: String = getProgressMessage(appContext, it.installStatus())
@@ -152,8 +151,9 @@ class AppUpdateManagerWrapper {
                     appUpdateInfo = it
                     Toast.makeText(activity, "In Progress Immediate", Toast.LENGTH_SHORT).show()
                     onSuccessGetInfo(true)
-                } else if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                    it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                } else if (it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) &&
+                    it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                    onProgressUpdating(it.installStatus())) {
                     appUpdateInfo = it
                     Toast.makeText(activity, "In Progress Fleexible", Toast.LENGTH_SHORT).show()
                     onSuccessGetInfo(true)
