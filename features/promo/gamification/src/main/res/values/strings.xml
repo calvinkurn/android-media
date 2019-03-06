@@ -1,5 +1,6 @@
 <resources>
     <string name="toko_points_title">Crack the Egg</string>
+    <string name="tap_tap_title">Tap the Egg</string>
     <string name="title_activity_gamification">GamificationActivity</string>
     <string name="countdown_format" formatted="false">%02d:%02d:%02d</string>
     <string name="egg_crack_x_token_left">%1$s %2$s %3$s</string>
