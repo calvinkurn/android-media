@@ -262,6 +262,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun loadData(page: Int) {
+        footerOwn.visibility = View.GONE
+        app_bar_layout.visibility = View.GONE
         if (isLoadingInitialData) {
             presenter.getProfileFirstPage(userId, false)
         } else {
