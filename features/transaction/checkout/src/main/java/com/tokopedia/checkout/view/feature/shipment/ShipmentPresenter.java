@@ -294,7 +294,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
         this.shipmentCostModel = shipmentCostModel;
-        updateEgoldBuyValue();
+
+        if (getEgoldAttributeModel() != null && getEgoldAttributeModel().isEligible()) {
+            updateEgoldBuyValue();
+        }
     }
 
     @Override
@@ -954,7 +957,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             );
         }
         EgoldData egoldData = new EgoldData();
-        if (egoldAttributeModel != null) {
+
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             egoldData.setEgold(egoldAttributeModel.isChecked());
             egoldData.setEgoldAmount(egoldAttributeModel.getBuyEgoldValue());
         }
