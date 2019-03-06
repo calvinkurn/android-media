@@ -210,6 +210,7 @@ public interface ApplinkConst {
 
     String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
     String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+    String INBOX = "tokopedia://inbox";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

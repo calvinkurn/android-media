@@ -15,6 +15,11 @@ import com.tokopedia.navigation.presentation.fragment.InboxFragment;
  */
 public class InboxMainActivity extends BaseSimpleActivity {
 
+    @DeepLink(ApplinkConst.INBOX)
+    public static Intent applinkIntent(Context context, Bundle bundle) {
+        return start(context).putExtras(bundle);
+    }
+
     public static Intent start(Context context) {
         return new Intent(context, InboxMainActivity.class);
     }
