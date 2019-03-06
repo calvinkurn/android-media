@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -597,6 +598,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void checkAppUpdateAndInApp() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Toast.makeText(this, "In App Version Test", Toast.LENGTH_SHORT).show();
             AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this, new Function1<Boolean, Unit>() {
                 @Override
                 public Unit invoke(Boolean isOnProgress) {
@@ -615,6 +617,7 @@ public class MainParentActivity extends BaseActivity implements
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
+                Toast.makeText(MainParentActivity.this, new Gson().toJson(detail), Toast.LENGTH_SHORT).show();
                 AppUpdateDialogBuilder appUpdateDialogBuilder =
                         new AppUpdateDialogBuilder(
                                 MainParentActivity.this,
@@ -642,6 +645,7 @@ public class MainParentActivity extends BaseActivity implements
 
             @Override
             public void onNotNeedUpdate() {
+                Toast.makeText(MainParentActivity.this, "Not need update", Toast.LENGTH_SHORT).show();
                 checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
             }
         });

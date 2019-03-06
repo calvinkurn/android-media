@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
@@ -31,6 +32,7 @@ public class AppUpdateDialogBuilder {
     }
 
     public AlertDialog getAlertDialog() {
+        Toast.makeText(activity, "In App Create Dialog", Toast.LENGTH_SHORT).show();
         alertDialog = new AlertDialog.Builder(activity)
                 .setTitle(detail.getUpdateTitle())
                 .setMessage(detail.getUpdateMessage())

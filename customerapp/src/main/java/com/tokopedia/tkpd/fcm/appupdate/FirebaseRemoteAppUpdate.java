@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.fcm.appupdate;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
@@ -28,7 +29,6 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     public void checkApplicationUpdate(final OnUpdateListener listener) {
         if (remoteConfig != null) {
             String dataAppUpdate = remoteConfig.getString(ANDROID_CUSTOMER_APP_UPDATE);
-            Log.i("FirebaseRemoteApp", dataAppUpdate);
             if (!TextUtils.isEmpty(dataAppUpdate)) {
                 Gson gson = new Gson();
                 DataUpdateApp dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp.class);
