@@ -41,6 +41,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
+    implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -77,6 +78,8 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    compile project(path: ':features:promo:merchant_voucher')
+    compile project(path: ':tkpdpdp')
 
 }
 apply from: "$rootProject.projectDir/publish_local.gradle"

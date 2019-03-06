@@ -235,6 +235,7 @@
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="recomendasi_untuk_anda" tools:ignore="ExtraTranslation">Rekomendasi untuk Anda</string>
     <string name="label_cod">Bayar di Tempat</string>
+    <string name="label_promo_merchant">Promo Merchant</string>
     <string name="lebel_understood">Mengerti</string>
     <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
     <string name="change_address">Ubah Alamat</string>

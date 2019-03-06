@@ -68,6 +68,40 @@
                         android:text="@string/use_promo_label_button" />
 
                 </RelativeLayout>
+
+                <FrameLayout
+                    android:id="@+id/promoContainer"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:orientation="vertical"
+                        android:paddingRight="@dimen/dp_2">
+
+                        <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+                            android:id="@+id/merchantVoucherListWidget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_10"
+                            android:textColor="@color/black_70"
+                            android:textStyle="bold"
+                            app:mvlwTitleString="@string/promo"
+                            app:mvlwTitleTextSize="@dimen/pdp_title_text_size" />
+                    </LinearLayout>
+
+                    <com.tokopedia.tkpdpdp.customview.PromoWidgetView
+                        android:id="@+id/view_promo_widget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"/>
+                </FrameLayout>
             <!--</android.support.v7.widget.CardView>-->
 
             <!--<LinearLayout
