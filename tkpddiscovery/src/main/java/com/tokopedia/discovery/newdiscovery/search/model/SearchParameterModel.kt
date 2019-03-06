@@ -17,14 +17,26 @@ class SearchParameterModel(deepLinkUri: String = "") : Serializable {
         return searchParameterHashMap.contains(key)
     }
 
+    fun set(key: String, value: String) {
+        searchParameterHashMap[key] = value
+    }
+
     fun get(key: String) : String? {
         return searchParameterHashMap[key]
+    }
+
+    fun remove(key: String) {
+        searchParameterHashMap.remove(key)
     }
 
     fun getBoolean(key: String) : Boolean {
         val booleanAsString = get(key) ?: return false
 
         return booleanAsString.toBoolean()
+    }
+
+    fun setSearchQuery(query: String) {
+        set(SearchApiConst.Q, query)
     }
 
     fun getSearchQuery() : String? {

@@ -208,20 +208,14 @@ public class SearchActivity extends DiscoveryActivity
         initPresenter();
         initResources();
 
-        ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-
+        boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
         searchParameterModel = getSearchParameterModelFromIntent(intent);
 
-        handleIntentActivityPaused();
-
-        handleIntentAutoComplete();
-
-        if (productViewModel != null) {
-            handleIntentWithProductViewModel(productViewModel);
-        } else if (!TextUtils.isEmpty(searchParameterModel.getSearchQuery())) {
-            handleIntentWithSearchQuery();
-        } else {
-            searchView.showSearch(true, false, searchParameterModel);
+        if(isAutoComplete) {
+            handleIntentAutoComplete();
+        }
+        else {
+            handleIntentSearch(intent);
         }
 
         if (intent != null &&
@@ -242,15 +236,27 @@ public class SearchActivity extends DiscoveryActivity
         return searchParameterModel;
     }
 
-    private void handleIntentActivityPaused() {
-        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
-            moveTaskToBack(true);
+    private void handleIntentAutoComplete() {
+        searchView.showSearch(true, false, searchParameterModel);
+    }
+
+    private void handleIntentSearch(Intent intent) {
+        ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
+
+        handleIntentActivityPaused();
+
+        if (productViewModel != null) {
+            handleIntentWithProductViewModel(productViewModel);
+        } else if (!TextUtils.isEmpty(searchParameterModel.getSearchQuery())) {
+            handleIntentWithSearchQuery();
+        } else {
+            searchView.showSearch(true, false, searchParameterModel);
         }
     }
 
-    private void handleIntentAutoComplete() {
-        if(getIntent().getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false)) {
-            searchView.showSearch(true, false, searchParameterModel);
+    private void handleIntentActivityPaused() {
+        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
         }
     }
 
