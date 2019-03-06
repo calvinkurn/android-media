@@ -64,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -703,7 +704,7 @@ public class WishListImpl implements WishList {
                     if (!BuildConfig.DEBUG) {
                         Crashlytics.logException(exception);
                     }
-                    throw exception;
+                    return Unit.INSTANCE;
                 });
 
                 wishListView.dismissProgressDialog();

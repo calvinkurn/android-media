@@ -16,15 +16,10 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
-import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
-import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -37,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
 import rx.Subscriber;
 
 /**
@@ -254,7 +250,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                     if (!BuildConfig.DEBUG) {
                         Crashlytics.logException(exception);
                     }
-                    throw exception;
+                    return Unit.INSTANCE;
                 });
 
                 view.hideLoading();

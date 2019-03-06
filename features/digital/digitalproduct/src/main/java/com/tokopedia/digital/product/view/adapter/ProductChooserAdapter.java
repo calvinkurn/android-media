@@ -1,7 +1,7 @@
 package com.tokopedia.digital.product.view.adapter;
 
-import android.app.Fragment;
 import android.graphics.Paint;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 
 import java.util.ArrayList;
@@ -101,7 +101,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             emptyStockNotification = itemView.findViewById(R.id.empty_stock_notification);
 
             itemView.setOnClickListener(v -> {
-                if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                if (product.getStatus() != Product.Companion.getSTATUS_OUT_OF_STOCK()) {
                     actionListener.onProductItemSelected(product);
                 }
             });
@@ -129,7 +129,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void setProductAvailability(final Product product) {
-            if (product.getStatus() == Product.STATUS_OUT_OF_STOCK) {
+            if (product.getStatus() == Product.Companion.getSTATUS_OUT_OF_STOCK()) {
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
@@ -165,7 +165,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                    if (product.getStatus() != Product.Companion.getSTATUS_OUT_OF_STOCK()) {
                         actionListener.onProductItemSelected(product);
                     }
                 }
@@ -202,7 +202,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void setProductAvailability(final Product product) {
-            if (product.getStatus() == Product.STATUS_OUT_OF_STOCK) {
+            if (product.getStatus() == Product.Companion.getSTATUS_OUT_OF_STOCK()) {
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
@@ -244,7 +244,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             emptyStockNotification = itemView.findViewById(R.id.empty_stock_notification);
 
             itemView.setOnClickListener(v -> {
-                if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                if (product.getStatus() != Product.Companion.getSTATUS_OUT_OF_STOCK()) {
                     actionListener.onProductItemSelected(product);
                 }
             });
@@ -278,7 +278,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void setProductAvailability(final Product product) {
-            if (product.getStatus() == Product.STATUS_OUT_OF_STOCK) {
+            if (product.getStatus() == Product.Companion.getSTATUS_OUT_OF_STOCK()) {
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
