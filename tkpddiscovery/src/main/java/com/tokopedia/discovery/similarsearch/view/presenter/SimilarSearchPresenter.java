@@ -60,19 +60,23 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
 
             @Override
             public void onError(Throwable e) {
-                SimilarSearchTracking.eventUserSeeNoSimilarProduct(getView().getAppContext(), getView().getProductID(),getView().getScreenName());
-                getView().setEmptyLayoutVisible();
-                getView().setContentLayoutGone();
+                if(getView() != null && getView().getAppContext() != null) {
+                    SimilarSearchTracking.eventUserSeeNoSimilarProduct(getView().getAppContext(), getView().getProductID(), getView().getScreenName());
+                    getView().setEmptyLayoutVisible();
+                    getView().setContentLayoutGone();
+                }
             }
 
             @Override
             public void onNext(List<ProductsItem> productsItems) {
-                if(productsItems != null && productsItems.size() > 0) {
-                    getView().setProductList(productsItems);
-                }else {
-                    getView().setEmptyLayoutVisible();
-                    SimilarSearchTracking.eventUserSeeNoSimilarProduct((getView().getAppContext()), getView().getProductID(),getView().getScreenName());
-                    getView().setContentLayoutGone();
+                if(getView() != null && getView().getAppContext() != null) {
+                    if (productsItems != null && productsItems.size() > 0) {
+                        getView().setProductList(productsItems);
+                    } else {
+                        getView().setEmptyLayoutVisible();
+                        SimilarSearchTracking.eventUserSeeNoSimilarProduct((getView().getAppContext()), getView().getProductID(), getView().getScreenName());
+                        getView().setContentLayoutGone();
+                    }
                 }
             }
         });

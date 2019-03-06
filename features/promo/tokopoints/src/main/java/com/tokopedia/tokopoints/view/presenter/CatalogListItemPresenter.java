@@ -88,7 +88,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
 
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_listing),
                 CatalogListingOuter.class,
-                variablesMain);
+                variablesMain, false);
         mGetHomePageData.addRequest(graphqlRequestMain);
 
 
@@ -134,7 +134,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
         variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, item.getId());
         variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 0);   //Never be a gift
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_validate_redeem),
-                ValidateCouponBaseEntity.class, variables);
+                ValidateCouponBaseEntity.class, variables, false);
         mValidateCouponUseCase.clearRequest();
         mValidateCouponUseCase.addRequest(graphqlRequest);
         mValidateCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -155,7 +155,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                 String title;
                 ValidateCouponBaseEntity validateCoupon = response.getData(ValidateCouponBaseEntity.class);
 
-                if (validateCoupon.getValidateCoupon() != null) {
+                if (validateCoupon!=null && validateCoupon.getValidateCoupon() != null) {
                     validateResponseCode = CommonConstant.CouponRedemptionCode.SUCCESS;
                     message = validateCoupon.getValidateCoupon().getMessageSuccess();
                     title = validateCoupon.getValidateCoupon().getMessageTitle();
@@ -179,7 +179,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_tokopoint_apply_coupon),
                 com.tokopedia.tokopoints.view.model.ApplyCouponBaseEntity.class,
-                variables);
+                variables, false);
         mSaveCouponUseCase.clearRequest();
         mSaveCouponUseCase.addRequest(request);
         mSaveCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -209,7 +209,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_tokopoint_redeem_coupon),
                 com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity.class,
-                variables);
+                variables, false);
         mRedeemCouponUseCase.clearRequest();
         mRedeemCouponUseCase.addRequest(request);
         mRedeemCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -226,7 +226,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
             @Override
             public void onNext(GraphqlResponse response) {
                 RedeemCouponBaseEntity redeemCouponBaseEntity = response.getData(RedeemCouponBaseEntity.class);
-                if (redeemCouponBaseEntity != null) {
+                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem()!=null) {
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
@@ -234,12 +234,16 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                     String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
                     if (errorsMessage != null && errorsMessage.length > 0) {
                         String title = errorsMessage[0];
-                        if (errorsMessage.length <= 2) {
-                            getView().showRedeemFullError(item, null, title);
-                        } else {
-                            String desc = errorsMessage[1];
-                            getView().showRedeemFullError(item, title, desc);
+                        String desc = null;
+                        int validateResponseCode = 0;
+
+                        if (errorsMessage.length >= 2) {
+                            desc = errorsMessage[1];
                         }
+                        if (errorsMessage.length >= 3)
+                            validateResponseCode = Integer.parseInt(errorsMessage[2]);
+                        getView().showValidationMessageDialog(item, title, desc, validateResponseCode);
+
                     }
                 }
             }
@@ -254,7 +258,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_catalog_status),
                 CatalogStatusOuter.class,
-                variables);
+                variables, false);
         mFetchCatalogStatusUseCase.clearRequest();
         mFetchCatalogStatusUseCase.addRequest(request);
         mFetchCatalogStatusUseCase.execute(new Subscriber<GraphqlResponse>() {

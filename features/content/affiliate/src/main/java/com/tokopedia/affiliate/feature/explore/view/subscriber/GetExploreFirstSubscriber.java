@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.feature.explore.data.pojo.CategoryPojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreProductPojo;
@@ -56,10 +55,12 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
-        if (mainView == null)
+        if (mainView == null) {
             return;
+        }
         mainView.hideLoading();
         mainView.onErrorGetFirstData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
+        mainView.stopTrace();
     }
 
     @Override
@@ -96,6 +97,8 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
                 );
             }
         }
+
+        mainView.stopTrace();
     }
 
     private SortFilterModel mappingSortFilter(FilterQuery filterPojo, SortQuery sortPojo) {

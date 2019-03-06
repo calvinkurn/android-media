@@ -49,6 +49,7 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         }
         view.dismissLoading();
         view.onErrorGetKolPostDetail(ErrorHandler.getErrorMessage(view.getContext(), e));
+        view.stopTrace();
     }
 
     @Override
@@ -75,6 +76,7 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         list.addAll(kolCommentViewModels);
 
         view.onSuccessGetKolPostDetail(list);
+        view.stopTrace();
     }
 
     private KolPostViewModel convertToKolPostViewModel(PostKol postKol) {

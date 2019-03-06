@@ -11,7 +11,10 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.ResolutionRouter;
+import com.tokopedia.inbox.common.ResolutionUrl;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseProductTroubleFragment;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseSolutionFragment;
 import com.tokopedia.inbox.rescenter.create.listener.CreateResCenterListener;
@@ -20,10 +23,15 @@ import com.tokopedia.inbox.rescenter.create.presenter.CreateResCenterImpl;
 import com.tokopedia.inbox.rescenter.create.presenter.CreateResCenterPresenter;
 import com.tokopedia.inbox.rescenter.create.service.CreateResCenterReceiver;
 import com.tokopedia.inbox.rescenter.create.service.CreateResCenterService;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
 public class CreateResCenterActivity extends BasePresenterActivity<CreateResCenterPresenter>
         implements CreateResCenterListener, CreateResCenterReceiver.Receiver, HasComponent {
 
+    public static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     public static final String KEY_PARAM_ORDER_ID = "ORDER_ID";
     public static final String KEY_PARAM_FLAG_RECEIVED = "FLAG_RECEIVED";
     public static final String KEY_PARAM_TROUBLE_ID = "TROUBLE_ID";
@@ -43,21 +51,65 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         return AppScreen.SCREEN_RESOLUTION_CENTER_ADD;
     }
 
+    public static Intent getCreateResCenterActivityIntent(Context context, String orderId) {
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getApplinkIntent(context, orderId);
+        }
+        if (intent == null) {
+            intent = new Intent(context, CreateResCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(EXTRA_ORDER_ID, orderId);
+            bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 1);
+            intent.putExtras(bundle);
+        }
+        return intent;
+    }
+
+    public static Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getApplinkIntent(context, orderId);
+        }
+        if (intent == null) {
+            intent = new Intent(context, CreateResCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(InboxRouter.EXTRA_ORDER_ID, orderId);
+            bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 0);
+            bundle.putInt(InboxRouter.EXTRA_TROUBLE_ID, troubleId);
+            bundle.putInt(InboxRouter.EXTRA_SOLUTION_ID, solutionId);
+            intent.putExtras(bundle);
+        }
+        return intent;
+    }
+
     public static Intent newInstance(Context context, String orderID) {
-        Intent intent = new Intent(context, CreateResCenterActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_PARAM_ORDER_ID, orderID);
-        bundle.putInt(KEY_PARAM_FLAG_RECEIVED, 1);
-        intent.putExtras(bundle);
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getApplinkIntent(context, orderID);
+        }
+        if (intent == null) {
+            intent = new Intent(context, CreateResCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_PARAM_ORDER_ID, orderID);
+            bundle.putInt(KEY_PARAM_FLAG_RECEIVED, 1);
+            intent.putExtras(bundle);
+        }
         return intent;
     }
 
     public static Intent newRecomplaintInstance(Context context, String orderID, String resolutionId) {
-        Intent intent = new Intent(context, CreateResCenterActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_PARAM_ORDER_ID, orderID);
-        bundle.putString(KEY_PARAM_RESOLUTION_ID, resolutionId);
-        intent.putExtras(bundle);
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getApplinkIntent(context, orderID);
+        }
+        if (intent == null) {
+            intent = new Intent(context, CreateResCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_PARAM_ORDER_ID, orderID);
+            bundle.putString(KEY_PARAM_RESOLUTION_ID, resolutionId);
+            intent.putExtras(bundle);
+        }
         return intent;
     }
 
@@ -73,6 +125,19 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         bundle.putInt(KEY_PARAM_SOLUTION_ID, solutionID);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    private static boolean isToggleResoEnabled(Context context) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+    }
+
+    private static Intent getApplinkIntent(Context context, String orderId) {
+        if (context.getApplicationContext() instanceof ResolutionRouter) {
+            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_CREATE, orderId));
+        }
+        return null;
     }
 
     @Override

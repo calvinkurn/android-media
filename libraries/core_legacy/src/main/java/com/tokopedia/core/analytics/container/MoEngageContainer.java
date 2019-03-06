@@ -69,6 +69,7 @@ public class MoEngageContainer implements IMoengageContainer {
                         context.getResources().getString(R.string.key_moengage))
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
+                        .optOutTokenRegistration()
                         .build();
         MoEngage.initialise(moEngage);
 

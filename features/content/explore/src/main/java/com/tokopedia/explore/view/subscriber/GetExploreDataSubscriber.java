@@ -48,6 +48,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
             e.printStackTrace();
         }
         view.dismissLoading();
+        view.stopTrace();
         if (clearData) {
             view.onErrorGetExploreDataFirstPage(ErrorHandler.getErrorMessage(view.getContext(), e));
         } else {
@@ -80,6 +81,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 clearData
         );
         view.dismissLoading();
+        view.stopTrace();
     }
 
     private List<ExploreImageViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {

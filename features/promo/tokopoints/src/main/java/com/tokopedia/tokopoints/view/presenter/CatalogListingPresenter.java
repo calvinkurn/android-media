@@ -63,12 +63,12 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
             variablesBanner.put(CommonConstant.GraphqlVariableKeys.DEVICE, CommonConstant.DEVICE_ID_BANNER);
             GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners),
                     CatalogBannerOuter.class,
-                    variablesBanner);
+                    variablesBanner, false);
             mGetHomePageData.addRequest(graphqlRequestBanners);
         }
 
         GraphqlRequest graphqlRequestTokenDetail = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_detail),
-                TokoPointDetailEntity.class);
+                TokoPointDetailEntity.class, false);
         mGetHomePageData.addRequest(graphqlRequestTokenDetail);
 
         Map<String, Object> variableFilter = new HashMap<>();
@@ -76,11 +76,11 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_SUB_CATEGORY, slugSubCategory);
         GraphqlRequest graphqlRequestFilter = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_filter),
                 CatalogFilterOuter.class,
-                variableFilter);
+                variableFilter, false);
         mGetHomePageData.addRequest(graphqlRequestFilter);
 
         GraphqlRequest graphqlRequestEgg = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
-                TokenDetailOuter.class);
+                TokenDetailOuter.class, false);
         mGetHomePageData.addRequest(graphqlRequestEgg);
 
         mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
@@ -134,7 +134,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         mGetPointData.clearRequest();
 
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_current_points),
-                TokoPointDetailEntity.class);
+                TokoPointDetailEntity.class, false);
         mGetPointData.addRequest(graphqlRequestPoints);
 
         mGetPointData.execute(new Subscriber<GraphqlResponse>() {

@@ -14,10 +14,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.orderlist.contract.FlightResendETicketContract;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
-import com.tokopedia.flight.orderlist.presenter.FlightResendETicketPresenter;
+import com.tokopedia.flight.orderlist.view.presenter.FlightResendETicketPresenter;
+import com.tokopedia.flight.orderlist.view.contract.FlightResendETicketContract;
 
 import javax.inject.Inject;
 

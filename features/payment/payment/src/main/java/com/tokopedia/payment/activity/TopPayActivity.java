@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -37,6 +39,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
@@ -51,6 +54,7 @@ import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -172,7 +176,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
         WebSettings webSettings = scroogeWebView.getSettings();
 
-        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), BuildConfig.VERSION_NAME);
+        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), GlobalConfig.VERSION_NAME);
         webSettings.setUserAgentString(userAgent);
 
         webSettings.setJavaScriptEnabled(true);
@@ -661,6 +665,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
+            String base64 = encodeToBase64(imagePath);
             if (imagePath != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
@@ -670,10 +675,18 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                         .append("'")
                         .append(", ")
                         .append("'")
-                        .append(ImageHandler.encodeToBase64(imagePath))
+                        .append(base64)
                         .append("')");
                 scroogeWebView.loadUrl(jsCallbackBuilder.toString());
             }
         }
+    }
+
+    public static String encodeToBase64(String imagePath) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 }

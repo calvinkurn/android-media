@@ -1,15 +1,13 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -25,12 +23,8 @@ public class TopAdsGetSuggestionUseCase extends UseCase<GetSuggestionResponse> {
     private ShopInfoRepository shopInfoRepository;
 
     @Inject
-    public TopAdsGetSuggestionUseCase(ThreadExecutor threadExecutor,
-                                        PostExecutionThread postExecutionThread,
-                                        TopAdsGroupAdsRepository topAdsGroupAdsRepository,
-                                        ShopInfoRepository shopInfoRepository
-                                      ) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsGetSuggestionUseCase(TopAdsGroupAdsRepository topAdsGroupAdsRepository, ShopInfoRepository shopInfoRepository) {
+        super();
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
         this.shopInfoRepository = shopInfoRepository;
     }

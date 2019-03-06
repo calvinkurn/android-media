@@ -15,13 +15,16 @@ public class ProductDataCheckoutRequest {
     @SerializedName("is_ppp")
     @Expose
     public boolean isPurchaseProtection;
+    @SerializedName("product_quantity")
+    public int productQuantity;
+    @SerializedName("product_notes")
+    public String productNotes;
 
     private String productName;
     private String productPrice;
     private String productBrand;
     private String productCategory;
     private String productVariant;
-    private String productQuantity;
     private String productShopId;
     private String productShopType;
     private String productShopName;
@@ -29,6 +32,9 @@ public class ProductDataCheckoutRequest {
     private String productListName;
     private String productAttribution;
     private long cartId;
+
+    public ProductDataCheckoutRequest() {
+    }
 
     private ProductDataCheckoutRequest(Builder builder) {
         productId = builder.productId;
@@ -46,6 +52,7 @@ public class ProductDataCheckoutRequest {
         productListName = builder.productListName;
         productAttribution = builder.productAttribution;
         cartId = builder.cartId;
+        productNotes = builder.productNotes;
     }
 
     public int getProductId() {
@@ -84,7 +91,7 @@ public class ProductDataCheckoutRequest {
         return productVariant;
     }
 
-    public String getProductQuantity() {
+    public int getProductQuantity() {
         return productQuantity;
     }
 
@@ -116,7 +123,7 @@ public class ProductDataCheckoutRequest {
         private String productBrand;
         private String productCategory;
         private String productVariant;
-        private String productQuantity;
+        private int productQuantity;
         private String productShopId;
         private String productShopType;
         private String productShopName;
@@ -124,6 +131,7 @@ public class ProductDataCheckoutRequest {
         private String productListName;
         private String productAttribution;
         private long cartId;
+        private String productNotes;
 
         public Builder() {
         }
@@ -163,7 +171,7 @@ public class ProductDataCheckoutRequest {
             return this;
         }
 
-        public Builder productQuantity(String val) {
+        public Builder productQuantity(int val) {
             productQuantity = val;
             return this;
         }
@@ -200,6 +208,11 @@ public class ProductDataCheckoutRequest {
 
         public Builder cartId(long val) {
             cartId = val;
+            return this;
+        }
+
+        public Builder productNotes(String val) {
+            productNotes = val;
             return this;
         }
 

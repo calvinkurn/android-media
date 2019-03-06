@@ -49,8 +49,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentRole = ""
     protected var shopId = 0
 
-    protected var toShopId = 0
-    protected var toUserId = 0
+    protected var toShopId = "0"
+    protected var toUserId = "0"
     protected var source = ""
 
 
@@ -97,8 +97,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         opponentName = getParamString(ApplinkConst.Chat.OPPONENT_NAME, arguments, savedInstanceState)
         opponentRole = getParamString(ApplinkConst.Chat.OPPONENT_ROLE, arguments, savedInstanceState)
         source = getParamString(ApplinkConst.Chat.SOURCE, arguments, savedInstanceState)
-        toShopId = getParamInt(ApplinkConst.Chat.TO_SHOP_ID, arguments, savedInstanceState)
-        toUserId = getParamInt(ApplinkConst.Chat.TO_USER_ID, arguments, savedInstanceState)
+        toShopId = getParamString(ApplinkConst.Chat.TO_SHOP_ID, arguments, savedInstanceState)
+        toUserId = getParamString(ApplinkConst.Chat.TO_USER_ID, arguments, savedInstanceState)
     }
 
     open fun getParamString(paramName: String, arguments: Bundle?,

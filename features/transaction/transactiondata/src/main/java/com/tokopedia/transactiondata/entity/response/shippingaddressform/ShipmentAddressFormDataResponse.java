@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyV2;
+import com.tokopedia.transactiondata.entity.response.cartlist.EgoldAttributes;
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion;
 
 import java.util.ArrayList;
@@ -47,6 +48,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_robinhood")
     @Expose
     private int isRobinhood;
+    @SerializedName("is_blackbox")
+    @Expose
+    private int isBlackbox;
     @SerializedName("promo_suggestion")
     @Expose
     private PromoSuggestion promoSuggestion;
@@ -56,6 +60,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("autoapply_v2")
     @Expose
     private AutoapplyV2 autoapplyV2;
+    @SerializedName("egold_attributes")
+    @Expose
+    private EgoldAttributes egoldAttributes;
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -105,6 +112,10 @@ public class ShipmentAddressFormDataResponse {
         return isRobinhood;
     }
 
+    public int getIsBlackbox() {
+        return isBlackbox;
+    }
+
     public PromoSuggestion getPromoSuggestion() {
         return promoSuggestion;
     }
@@ -113,4 +124,11 @@ public class ShipmentAddressFormDataResponse {
         return autoApply;
     }
 
+    public EgoldAttributes getEgoldAttributes() {
+        return egoldAttributes;
+    }
+
+    public void setEgoldAttributes(EgoldAttributes egoldAttributes) {
+        this.egoldAttributes = egoldAttributes;
+    }
 }

@@ -30,7 +30,11 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.ticker.TravelTickerUtils;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.banner.BannerView;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.service.GetAirportListJobService;
@@ -52,8 +56,11 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
-import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
 
 import org.jetbrains.annotations.NotNull;
@@ -80,12 +87,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
     private static final String TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture";
     private static final String TAG_RETURN_CALENDAR = "flightCalendarReturn";
+    private static final String FLIGHT_TRACE = "tr_flight";
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
+
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -102,12 +111,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View returnDateSeparatorView;
     View bannerLayout;
     BannerView bannerView;
+    TickerView tickerView;
     List<BannerDetail> bannerList;
 
     @Inject
     FlightDashboardPresenter presenter;
     private FlightDashboardViewModel viewModel;
     private FlightDashboardPassDataViewModel passData;
+
+    private RemoteConfig remoteConfig;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStop = false;
 
     public static FlightDashboardFragment getInstance() {
         return new FlightDashboardFragment();
@@ -128,6 +142,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     protected void initInjector() {
         getComponent(FlightDashboardComponent.class).inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_TRACE);
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Nullable
@@ -151,6 +172,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView = view.findViewById(R.id.banner);
         progressBar = view.findViewById(R.id.progress_bar);
         formContainerLayout = view.findViewById(R.id.dashboard_container);
+        tickerView = view.findViewById(R.id.flight_ticker_view);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -274,10 +296,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        stopTrace();
+
         passData = new FlightDashboardPassDataViewModel();
         presenter.attachView(this);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
+
+        presenter.fetchTickerData();
     }
 
     @Override
@@ -551,6 +577,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void navigateToLoginPage() {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            stopTrace();
             startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
         }
     }
@@ -583,6 +610,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
+    }
+
+    @Override
     public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
         FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
@@ -593,7 +625,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setIsOneWay(currentDashboardViewModel.isOneWay())
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
-        startActivityForResult(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW)) {
+            startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
+                    getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+        } else {
+            startActivityForResult(com.tokopedia.flight.search.presentation.activity.
+                    FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+        }
     }
 
     @Override
@@ -629,6 +668,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
+        }
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring.stopTrace();
+            isTraceStop = true;
         }
     }
 

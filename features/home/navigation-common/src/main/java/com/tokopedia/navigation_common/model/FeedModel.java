@@ -10,7 +10,7 @@ public class FeedModel {
 
     @SerializedName("newFeeds")
     @Expose
-    private Boolean newFeeds;
+    private Boolean newFeeds = false;
 
     public Boolean getNewFeeds() {
         return newFeeds;

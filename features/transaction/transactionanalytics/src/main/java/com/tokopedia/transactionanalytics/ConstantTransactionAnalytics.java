@@ -38,6 +38,10 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
+        String CLICK_REGISTER = "clickRegister";
+        String VIEW_REGISTER = "viewRegister";
+        String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
+        String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
     }
 
     interface EventCategory {
@@ -49,6 +53,8 @@ public interface ConstantTransactionAnalytics {
         String ORDER_TRACKING = "order tracking";
         String PRODUCT_DETAIL_PAGE = "product detail page";
         String PURCHASE_PROTECTION = "fin - mp checkout";
+        String CORNER_ADDRES = "tokopedia corner address";
+        String EXPRESS_CHECKOUT = "express checkout";
     }
 
     interface EventAction {
@@ -212,6 +218,19 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PELAJARI = "pp - pelajari click";
         String CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click";
         String IMPRESSION_PELAJARI = "pp - pelajari impression";
+
+        //TOKOPEDIA CORNER
+        String CHOOSE_LOCATION_CORNER = "click pilih lokasi tokopedia corner";
+        String CLICK_CORNER_ADDRESS = "click alamat tokopedia corner";
+        String VIEW_CORNER_ERROR = "view tokopedia corner not available";
+        String VIEW_CORNER_PO_ERROR = "view error pre order tokopedia corner";
+
+        //EXPRESS CHECKOUT
+        String VIEW_EXPRESS_CHECKOUT = "view express checkout";
+        String CLICK_LANJUTKAN_TANPA_TEMPLATE = "click lanjutkan tanpa template";
+        String CLICK_X = "click x";
+        String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
+
     }
 
     interface EventLabel {
@@ -230,6 +249,12 @@ public interface ConstantTransactionAnalytics {
         String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
 
+        String CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD = "success - default - cod";
+        String CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD = "success - check all - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD = "success - partial shop - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD = "success - partial product - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD = "success - partial shop and product - cod";
+
         String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
         String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
 
@@ -240,6 +265,9 @@ public interface ConstantTransactionAnalytics {
         String SUCCESS_TICKED_PPP = "success - yes";
         String SUCCESS_UNTICKED_PPP = "success - no";
         String APPEAR = "appear";
+
+        String SUCCESS_DEFAULT = "success - default";
+        String SUCCESS_NOT_DEFAULT = "success - not default";
     }
 
     interface ScreenName {
@@ -257,6 +285,7 @@ public interface ConstantTransactionAnalytics {
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
         String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
         String ADD_NEW_ADDRESS_PAGE_USER = "/user/address/create";
+        String EXPRESS_CHECKOUT = "/express-checkout";
     }
 
     interface CustomDimension {

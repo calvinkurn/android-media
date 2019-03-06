@@ -2,8 +2,10 @@ package com.tokopedia.gm.common.data.source.cloud.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestCashbackModel;
+import com.tokopedia.gm.common.data.source.cloud.model.RequestGetCashbackModel;
 
 import java.util.List;
 
@@ -25,4 +27,7 @@ public interface GMCommonApi {
 
     @POST(GMCommonUrl.SET_CASHBACK_PRODUCTS)
     Observable<Response<DataResponse<String>>> setCashback(@Body RequestCashbackModel cashback);
+
+    @POST(GMCommonUrl.GET_CASHBACK_PRODUCTS)
+    Observable<Response<DataResponse<List<GMGetCashbackModel>>>> getCashbackList(@Body RequestGetCashbackModel requestGetCashbackModel);
 }

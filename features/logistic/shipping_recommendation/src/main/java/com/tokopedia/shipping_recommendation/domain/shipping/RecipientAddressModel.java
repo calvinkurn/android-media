@@ -3,6 +3,8 @@ package com.tokopedia.shipping_recommendation.domain.shipping;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.lang.reflect.Constructor;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -35,6 +37,10 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
 
     // Flag for one click shipment
     private boolean isDisableMultipleAddress;
+
+    private boolean isCornerAddress;
+    private String cornerId;
+    private String userCornerId;
 
     public RecipientAddressModel() {
     }
@@ -207,6 +213,65 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         isDisableMultipleAddress = disableMultipleAddress;
     }
 
+    public boolean isCornerAddress() {
+        return isCornerAddress;
+    }
+
+    public void setCornerAddress(boolean cornerAddress) {
+        isCornerAddress = cornerAddress;
+    }
+
+    public String getCornerId() {
+        return cornerId;
+    }
+
+    public void setCornerId(String cornerId) {
+        this.cornerId = cornerId;
+    }
+
+    public String getUserCornerId() {
+        return userCornerId;
+    }
+
+    public void setUserCornerId(String userCornerId) {
+        this.userCornerId = userCornerId;
+    }
+
+    /*
+    // Constructor for corner Address mapping, please don't use it otherwise
+     */
+    public RecipientAddressModel(String id, String cornerId, String addressName, String cityName, String street,
+                                 String recipientName, String destinationDistrictName, String recipientPhoneNumber,
+                                 String provinceName, String cityId, String districtId,
+                                 String provinceId, String postalCode, String latitude,
+                                 String longitude, String userCornerId) {
+        this.id = id;
+        this.addressName = addressName;
+        this.cityName = cityName;
+        this.street = street;
+        this.recipientName = recipientName;
+        this.destinationDistrictName = destinationDistrictName;
+        this.isCornerAddress = true;
+        this.isDisableMultipleAddress = true;
+        this.recipientPhoneNumber = recipientPhoneNumber;
+        this.provinceName = provinceName;
+        this.destinationDistrictId = districtId;
+        this.postalCode = postalCode;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.userCornerId = userCornerId;
+        this.cityId = cityId;
+        this.provinceId = provinceId;
+        this.cornerId = cornerId;
+    }
+
+    public boolean equalCorner(RecipientAddressModel that) {
+        return getCityId().equals(that.getCityId()) &&
+                getDestinationDistrictId().equals(that.getDestinationDistrictId()) &&
+                getId().equals(that.getId()) && getPostalCode().equals(that.getPostalCode())
+                && getProvinceId().equals(that.getProvinceId());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -288,6 +353,9 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
         dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isDisableMultipleAddress ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isCornerAddress ? (byte) 1 : (byte) 0);
+        dest.writeString(this.cornerId);
+        dest.writeString(this.userCornerId);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -312,6 +380,9 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.selected = in.readByte() != 0;
         this.stateExtraPaddingTop = in.readByte() != 0;
         this.isDisableMultipleAddress = in.readByte() != 0;
+        this.isCornerAddress = in.readByte() != 0;
+        this.cornerId = in.readString();
+        this.userCornerId = in.readString();
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

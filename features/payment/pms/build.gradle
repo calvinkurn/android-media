@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.miscDependencies.reactNative
 

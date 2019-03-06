@@ -1,0 +1,39 @@
+query get_profile_expresscheckout {
+  get_profile_expresscheckout {
+    status
+    error_message
+    data {
+      profiles {
+        id
+        status
+        address {
+          address_id
+          receiver_name
+          address_name
+          address_street
+          district_id
+          district_name
+          postal_code
+          city_id
+          city_name
+          province_id
+          province_name
+          phone
+          longitude
+          latitude
+        }
+        payment {
+          gateway_code
+          image
+          description
+          url
+        }
+        shipment {
+          service_id
+          service_duration
+        }
+      }
+      default_profile_id
+    }
+  }
+}

@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -51,6 +52,7 @@ import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
+import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.user.session.UserSessionInterface
@@ -74,7 +76,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     lateinit var analytics: TopChatAnalytics
 
     @Inject
+    lateinit var settingAnalytics: ChatSettingsAnalytics
+
+    @Inject
     lateinit var session: UserSessionInterface
+
+    private lateinit var fpm: PerformanceMonitoring
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
@@ -111,6 +118,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
@@ -127,8 +139,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onSuccessGetExistingChatFirstTime())
             presenter.connectWebSocket(messageId)
         } else {
-            presenter.getMessageId(toUserId.toString(),
-                    toShopId.toString(),
+            presenter.getMessageId(toUserId,
+                    toShopId,
                     source,
                     onError(),
                     onSuccessGetMessageId())
@@ -137,7 +149,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onUnblockChatClicked(): () -> Unit {
         return {
-            analytics.trackClickUnblockChat()
+            analytics.trackClickUnblockChat(shopId)
             presenter.unblockChat(messageId, opponentRole, onError(), onSuccessUnblockChat())
         }
     }
@@ -180,6 +192,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
                 }
             }
+
+            fpm.stopTrace()
         }
     }
 
@@ -243,7 +257,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return {
             hideLoading()
             showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
-            presenter.getChatCache(messageId, onError(), onSuccessGetExistingChatFirstTime());
+            fpm.stopTrace()
         }
     }
 
@@ -566,7 +580,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
         return ImageUploadViewModel(
                 messageId,
-                arguments!!.getString(ApplinkConst.Chat.OPPONENT_ID),
+                opponentId,
                 (System.currentTimeMillis() / 1000).toString(),
                 imageUrl,
                 SendableViewModel.generateStartTime()
@@ -585,15 +599,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
-        var router = (activity?.application as TopChatRouter)
-        presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
-                shopId)
+        activity?.let {
+            val router = (it.application as TopChatRouter)
+            presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
+                    element.shopId)
+        }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        var router = (activity?.application as TopChatRouter)
-        presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
-                shopId)
+        activity?.let {
+            val router = (it.application as TopChatRouter)
+            presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
+                    element.shopId)
+        }
     }
 
     private fun onSuccessAddToCart(): (addToCartResult: AddToCartResult) -> Unit {
@@ -656,7 +674,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     opponentName,
                     blockedStatus.isBlocked,
                     blockedStatus.isPromoBlocked,
-                    blockedStatus.blockedUntil)
+                    blockedStatus.blockedUntil,
+                    shopId)
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_CHAT)
         }
 

@@ -18,8 +18,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
@@ -30,11 +32,14 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
+import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
+import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
@@ -88,6 +93,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private TextView secondaryActionBtn;
     private RecyclerView recyclerView;
     LinearLayout paymentMethodInfo;
+    FrameLayout progressBarLayout;
     private boolean isSingleButton;
 
 
@@ -132,6 +138,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         recyclerView = view.findViewById(R.id.recycler_view);
         paymentMethodInfo = view.findViewById(R.id.info_payment);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         recyclerView.setNestedScrollingEnabled(false);
 
         initInjector();
@@ -168,11 +175,18 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(9);
-        shape.setColor(Color.parseColor(conditionalInfo.color().background()));
-        shape.setStroke(1, Color.parseColor(conditionalInfo.color().border()));
+        if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
+            shape.setColor(Color.parseColor(conditionalInfo.color().background()));
+        }
+        if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
+            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+        }
         conditionalInfoText.setBackground(shape);
-        conditionalInfoText.setPadding(16, 16, 16, 16);
+        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
         conditionalInfoText.setText(conditionalInfo.text());
+        if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
+            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
+        }
 
     }
 
@@ -340,15 +354,15 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setItems(List<Items> items) {
-        List<Items> itemsList=new ArrayList<>();
+        List<Items> itemsList = new ArrayList<>();
         for (Items item : items) {
             if (!CATEGORY_GIFT_CARD.equalsIgnoreCase(item.getCategory())) {
                 itemsList.add(item);
             }
         }
-        if(itemsList.size()>0){
+        if (itemsList.size() > 0) {
             recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter));
-        }else{
+        } else {
             detailsLayout.setVisibility(View.GONE);
         }
     }
@@ -379,6 +393,63 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setButtonMargin() {
         isSingleButton = true;
+    }
+
+    @Override
+    public void showDropshipperInfo(DropShipper dropShipper) {
+
+    }
+
+    @Override
+    public void showDriverInfo(DriverDetails driverDetails) {
+
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBarLayout.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setActionButtons(List<ActionButton> actionButtons) {
+
+    }
+
+    @Override
+    public void setShopInfo(ShopInfo shopInfo) {
+
+    }
+
+    @Override
+    public void showReplacementView(List<String> reasons) {
+
+    }
+
+    @Override
+    public void finishOrderDetail() {
+
+    }
+
+    @Override
+    public void showSucessMessage(String message) {
+        Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorMessage (String message) {
+
+    }
+
+    @Override
+    public void clearDynamicViews() {
+
     }
 
     @Override

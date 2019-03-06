@@ -15,6 +15,7 @@
         <activity
             android:name=".view.feature.addressoptions.CartAddressChoiceActivity"
             android:label="@string/checkout_module_title_shipping_dest"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity

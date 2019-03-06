@@ -30,7 +30,7 @@
                 app:driv_label_max="@string/flight_search_filter_price_max_label"
                 app:driv_label_min="@string/flight_search_filter_price_min_label"
                 app:driv_typable="false"
-                app:driv_value_max_length="@integer/max_length_price_input"
+                app:driv_value_max_length="@integer/max_length_duration_input"
                 app:driv_value_text_appearance="@style/TextView.Small.Bold" />
 
             <com.tokopedia.design.text.RangeInputView
