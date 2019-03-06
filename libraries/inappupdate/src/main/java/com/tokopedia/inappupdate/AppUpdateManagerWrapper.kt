@@ -160,7 +160,7 @@ class AppUpdateManagerWrapper {
         private fun getPrefInAppType(context: Context): Int =
             context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).getInt(KEY_INAPP_TYPE, AppUpdateType.IMMEDIATE)
 
-        private fun clearInAppPref(context: Context){
+        private fun clearInAppPref(context: Context) {
             context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).edit().clear().apply()
         }
 
@@ -168,19 +168,12 @@ class AppUpdateManagerWrapper {
         fun checkUpdateInProgressOrCompleted(activity: Activity, onSuccessGetInfo: ((isInProgress: Boolean) -> (Unit))) {
             val appUpdateManager = getInstance(activity) ?: return
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
-                if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
-                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                    appUpdateInfo = it
+                appUpdateInfo = it
+                if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS ||
+                    it.installStatus() == InstallStatus.DOWNLOADED) {
                     Toast.makeText(activity, "In Progress Immediate", Toast.LENGTH_SHORT).show()
                     onSuccessGetInfo(true)
-                } else if (it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) &&
-                    it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                    onProgressUpdating(it.installStatus())) {
-                    appUpdateInfo = it
-                    Toast.makeText(activity, "In Progress Fleexible", Toast.LENGTH_SHORT).show()
-                    onSuccessGetInfo(true)
                 } else {
-                    appUpdateInfo = null
                     onSuccessGetInfo(false)
                 }
             }.addOnFailureListener {
@@ -193,27 +186,21 @@ class AppUpdateManagerWrapper {
         fun checkUpdateInProgressOrCompleted(activity: Activity) {
             val appUpdateManager = getInstance(activity) ?: return
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
-                if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
-                    it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                appUpdateInfo = it
+                if (it.installStatus() == InstallStatus.DOWNLOADED) {
+                    showSnackBarComplete(activity)
+                } else if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
                     getPrefInAppType(activity) == AppUpdateType.IMMEDIATE) {
-                    appUpdateInfo = it
                     try {
                         appUpdateManager.startUpdateFlowForResult(
                             appUpdateInfo, AppUpdateType.IMMEDIATE, /* activity= */ activity, REQUEST_CODE_IMMEDIATE)
                     } catch (e: Exception) {
 
                     }
-                } else if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                    it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
-                    appUpdateInfo = it
-                    if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                        showSnackBarComplete(activity)
-                    }
-                } else {
-                    appUpdateInfo = null
                 }
             }.addOnFailureListener {
                 // no op
+                appUpdateInfo = null
             }
         }
 
