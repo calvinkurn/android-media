@@ -89,11 +89,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else if (host.contains("tokopedia")) {
                 openActivity(barcodeData);
             } else {
-                checkBarCode(barcodeData);
-                //getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
-        } else {
+        } else if(barcodeData.contains("ovo") || barcodeData.contains("OVO")
+                || barcodeData.contains("GPNQR") || barcodeData.contains("gpnqr")){
             checkBarCode(barcodeData);
+        } else {
+            getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
         }
     }
 
@@ -125,12 +127,12 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 JsonObject error;
                 if (response != null) {
                     error = response.getAsJsonObject("errors");
-                    if (error != null && TextUtils.isEmpty(error.get("message").getAsString())) {
-                        //error
-                        getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                    } else {
-                        getView().goToPaymentPage(response);
-                    }
+//                    if (error != null && TextUtils.isEmpty(error.get("message").getAsString())) {
+//                        //error
+//                        getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+//                    } else {
+//                        getView().goToPaymentPage(response);
+//                    }
                 }
 
             }

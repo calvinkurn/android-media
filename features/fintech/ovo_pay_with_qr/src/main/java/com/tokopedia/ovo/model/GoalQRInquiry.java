@@ -37,7 +37,7 @@ private Merchant merchant;
 private Promo promo;
 @SerializedName("errors")
 @Expose
-private Errors errors;
+private List<Errors> errors;
 
 public String getRedirectUrl() {
 return redirectUrl;
@@ -119,11 +119,11 @@ public void setPromo(Promo promo) {
 this.promo = promo;
 }
 
-public Errors getErrors() {
+public List<Errors> getErrors() {
 return errors;
 }
 
-public void setErrors(Errors errors) {
+public void setErrors(List<Errors> errors) {
 this.errors = errors;
 }
 
