@@ -26,6 +26,8 @@ import javax.annotation.Nullable;
 public class ReactBannerManager extends SimpleViewManager<Banner> implements BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener, BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoScrolledListener {
 
     private static final String BANNER_CLASS = "BannerView";
+    private static final String IMAGE_URL = "imageUrl";
+    private static final String REDIRECT_URL = "redirectUrl";
 
     private List<String> redirectUrlList = new ArrayList<>();
     private List<String> imageList = new ArrayList<>();
@@ -45,7 +47,7 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
 
     @ReactProp(name = "bannerData")
     public void setBannerData(Banner banner, @Nullable ReadableArray readableArray) {
-        this.mappingImageBanner(readableArray);
+        mapBannerData(readableArray);
         banner.setOnPromoClickListener(this);
         banner.setOnPromoAllClickListener(this);
         banner.setOnPromoScrolledListener(this);
@@ -62,15 +64,17 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
         } catch (Exception ignored) { }
     }
 
-    private void mappingImageBanner(ReadableArray readableArray) {
+    private void mapBannerData(ReadableArray readableArray) {
+        imageList.clear();
+        redirectUrlList.clear();
         if (readableArray != null && readableArray.size() > 0) {
             for (int i = 0; i < readableArray.size(); i++) {
                 ReadableMap map = readableArray.getMap(i);
-                String imageUrl = map.getString("imageUrl");
-                String redirectUrl = map.getString("redirectUrl");
+                String imageUrl = map.getString(IMAGE_URL);
+                String redirectUrl = map.getString(REDIRECT_URL);
 
-                this.imageList.add(imageUrl);
-                this.redirectUrlList.add(redirectUrl);
+                imageList.add(imageUrl);
+                redirectUrlList.add(redirectUrl);
             }
         }
     }
