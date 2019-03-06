@@ -57,6 +57,7 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
@@ -268,7 +269,7 @@ open class PlayViewStateImpl(
     private fun showStickComponent(item: StickyComponentViewModel?) {
         stickyComponent.hide()
         item?.run {
-            if(title.isNullOrEmpty()) return
+            if(title.isNullOrEmpty() || !userSession.isLoggedIn) return
             StickyComponentHelper.setView(stickyComponent, item)
             stickyComponent.setOnClickListener {
                 viewModel?.let {
@@ -379,6 +380,8 @@ open class PlayViewStateImpl(
         errorView.hide()
 
         autoAddSprintSale()
+
+        setPinnedMessage(it)
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
@@ -425,7 +428,6 @@ open class PlayViewStateImpl(
             hideStickyComponent()
             hidePinnedMessage()
             setQuickReply(null)
-            stickyComponent.hide()
         }
     }
 
@@ -1195,9 +1197,15 @@ open class PlayViewStateImpl(
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
         var space = when {
             hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
-            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
+            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
         }
+        var padding = when {
+            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
+            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+        }
+        chatRecyclerView.setMargin(0, padding, 0,0)
         chatRecyclerView.setFadingEdgeLength(space)
+        chatRecyclerView.invalidate()
     }
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {

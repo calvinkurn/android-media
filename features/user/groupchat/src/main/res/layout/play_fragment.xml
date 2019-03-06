@@ -188,7 +188,6 @@
             android:id="@+id/chat_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dp_40"
             android:fadingEdge="vertical"
             android:fadingEdgeLength="@dimen/dp_24"
             android:overScrollMode="never"
@@ -218,10 +217,11 @@
             layout="@layout/input_play"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_weight="1.0"/>
+            app:layout_constraintVertical_weight="1.0"
+            tools:visibility="gone"/>
 
         <TextView
             android:id="@+id/login"
@@ -242,7 +242,7 @@
             android:textStyle="normal"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:visibility="gone"/>
+            tools:visibility="visible"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/quick_reply"
@@ -256,7 +256,7 @@
             app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintEnd_toEndOf="parent"
             tools:listitem="@layout/item_quick_reply"
-            tools:visibility="visible"/>
+            tools:visibility="gone"/>
 
         <View
             android:id="@+id/view"
