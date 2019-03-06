@@ -4,4 +4,5 @@
     <string name="delete_recording">Hapus Rekaman</string>
     <string name="menu_video_picker">Ambil Video</string>
     <string name="menu_recorder">Recorder</string>
+    <string name="videopicker_duration_default">01:00</string>
 </resources>

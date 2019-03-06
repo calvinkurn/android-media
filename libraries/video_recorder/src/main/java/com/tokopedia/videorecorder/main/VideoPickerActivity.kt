@@ -1,16 +1,23 @@
 package com.tokopedia.videorecorder.main
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
+import android.widget.Toast
 import com.tokopedia.videorecorder.R
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
 import com.tokopedia.videorecorder.utils.FileUtils
@@ -25,29 +32,40 @@ import java.util.ArrayList
  * github: @isfaaghyth
  * imagePickerGallery: henry
  */
-class VideoPickerActivity: BaseSimpleActivity(), VideoPickerCallback,
+class VideoPickerActivity: BaseSimpleActivity(),
+        VideoPickerCallback,
         ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
     companion object {
         const val VIDEOS_RESULT = "video_result"
+        const val VIDEO_MAX_SIZE = 50000L
     }
 
     override fun getNewFragment(): Fragment? = null
 
-    private lateinit var videoPath: String
-    private var videoGalleryPaths = arrayListOf<String>()
+    //vpager adapter
+    private lateinit var adapter: ViewPagerAdapter
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_video_picker
-    }
+    //catch videoPath uri
+    private var videoGalleryPaths = arrayListOf<String>()
+    private lateinit var videoPath: String
+
+    //saved state of tab layout
+    private var currentSelectedTab: Int = 0
+
+    //runtime permission handle
+    private var permissionList = arrayListOf<String>()
+
+    override fun getLayoutRes(): Int = R.layout.activity_video_picker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //support actionbar
+        setSupportActionBar(toolbar)
 
         //initial of adapter for viewPager and tabPicker
-        val adapter = viewPagerAdapter()
-        vpVideoPicker.adapter = adapter
-        tabPicker.setupWithViewPager(vpVideoPicker)
+        setupViewPager()
+        setupTabLayout()
 
         //remove recording result
         btnDeleteVideo.setOnClickListener { cancelVideo() }
@@ -64,14 +82,37 @@ class VideoPickerActivity: BaseSimpleActivity(), VideoPickerCallback,
         }
     }
 
+    private fun setupViewPager() {
+        adapter = ViewPagerAdapter(supportFragmentManager)
+        adapter = viewPagerAdapter()
+        vpVideoPicker.adapter = adapter
+
+        vpVideoPicker.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                currentSelectedTab = position
+            }
+        })
+    }
+
+    private fun setupTabLayout() {
+        tabPicker.setupWithViewPager(vpVideoPicker)
+    }
+
+    private fun refreshViewPager() {
+        adapter.destroyAllView()
+        adapter = viewPagerAdapter()
+        adapter.notifyDataSetChanged()
+    }
+
     @SuppressLint("MissingPermission")
     private fun viewPagerAdapter(): ViewPagerAdapter {
-        val adapter = ViewPagerAdapter(supportFragmentManager)
-
         val videoPickerGallery = ImagePickerGalleryFragment.newInstance(
                 GalleryType.VIDEO_ONLY,
                 false,
-                720)
+                0)
 
         adapter.addFragment(videoPickerGallery, getString(R.string.menu_video_picker))
         adapter.addFragment(VideoRecorderFragment(), getString(R.string.menu_recorder))
@@ -125,6 +166,7 @@ class VideoPickerActivity: BaseSimpleActivity(), VideoPickerCallback,
     override fun onAlbumItemClicked(item: MediaItem?, isChecked: Boolean) {
         //get single image
         videoPath = item?.realPath.toString()
+        Toast.makeText(this, videoPath, Toast.LENGTH_LONG).show()
     }
 
     override fun isMaxImageReached(): Boolean = false
@@ -133,7 +175,6 @@ class VideoPickerActivity: BaseSimpleActivity(), VideoPickerCallback,
         return videoGalleryPaths
     }
 
-    override fun getMaxFileSize(): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getMaxFileSize(): Long = VIDEO_MAX_SIZE
+
 }

@@ -299,10 +299,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         //check image resolution
         if (item.isVideo() && item.getDuration() > 0) { // it is video
             int minVideoResolution = item.getMinimumVideoResolution();
-            if (minVideoResolution < minImageResolution) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.video_under_resolution, item.getVideoResolution()));
-                return false;
-            }
+//            if (minVideoResolution < minImageResolution) {
+//                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.video_under_resolution, item.getVideoResolution()));
+//                return false;
+//            }
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
                 return false;

@@ -58,7 +58,6 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //camera prepared
         cameraView.mode = Mode.VIDEO
         cameraView.addCameraListener(cameraListener())
         cameraView.setVideoSize(VideoUtils.squareSize())

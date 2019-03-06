@@ -86,8 +86,13 @@
             android:id="@+id/tabPicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             style="@style/ImagePickerTab"
+            app:tabGravity="fill"
             app:tabIndicatorColor="@null"
+            app:tabMinWidth="@dimen/image_picker_tab_min_width"
+            app:tabMode="fixed"
             android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>

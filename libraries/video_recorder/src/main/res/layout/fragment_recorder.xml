@@ -36,7 +36,7 @@
             android:padding="@dimen/dp_8"
             android:visibility="gone"
             android:layout_alignParentBottom="true"
-            app:srcCompat="@drawable/ic_auto_flash"
+            android:src="@drawable/ic_auto_flash"
             tools:visibility="visible" />
 
         <FrameLayout
@@ -73,7 +73,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            app:srcCompat="@drawable/ic_flip_camera" />
+            android:src="@drawable/ic_flip_camera" />
 
     </com.tokopedia.videorecorder.utils.DynamicSquareLayout>
 
@@ -101,7 +101,8 @@
                 android:textSize="@dimen/sp_16"
                 android:layout_margin="6dp"
                 android:textColor="@android:color/darker_gray"
-                tools:text="@string/title_record_duration"/>
+                tools:text="@string/title_record_duration"
+                android:text="@string/title_record_duration" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -110,7 +111,8 @@
                 android:textStyle="bold"
                 android:layout_margin="6dp"
                 android:textColor="@android:color/black"
-                tools:text="01:00"/>
+                tools:text="01:00"
+                android:text="@string/videopicker_duration_default" />
 
         </LinearLayout>
 
