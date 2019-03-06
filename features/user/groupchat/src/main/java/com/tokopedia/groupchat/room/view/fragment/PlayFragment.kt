@@ -380,10 +380,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                         channelInfoViewModel.title))
     }
 
-    override fun onVoteComponentClicked(type: String?, name: String?) {
-        analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name)
+    override fun onVoteComponentClicked(type: String?, name: String?, voteUrl : String) {
+        analytics.eventClickVoteComponent(channelInfoViewModel, name)
         if(!userSession.isLoggedIn){
             onLoginClicked(viewState.getChannelInfo()?.channelId)
+        }else{
+            viewState.onShowOverlayFromVoteComponent(voteUrl)
         }
     }
 
@@ -574,6 +576,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     it.contentImageId,
                     it.contentImageId)
         }
+        else if (it is VoteAnnouncementViewModel){
+            analytics.eventViewVote(channelInfoViewModel, it.message)
+        }
     }
 
 
@@ -598,6 +603,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button) {
+        analytics.eventClickDynamicButtons(channelInfoViewModel, it)
         when (it.contentType) {
             DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.contentLinkUrl)
             DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)

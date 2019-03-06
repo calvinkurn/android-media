@@ -20,6 +20,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -41,7 +42,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     private var gcToken: String = ""
     private val REQUEST_CODE_LOGIN = 123
     private val PARAM_HEADER_GC_TOKEN: String = "X-User-Token"
-    private var isBottomSheetCloseable: Boolean = false
+    private var isBottomSheetCloseable: Boolean = true
 
     //Chrome Client
     val ATTACH_FILE_REQUEST = 1
@@ -96,6 +97,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 behavior.peekHeight = displayMetrics.heightPixels * 9 / 16
             }
 
+            isBottomSheetCloseable = true
             behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
@@ -168,6 +170,9 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebview(view: View) {
         CookieManager.getInstance().setAcceptCookie(true)
+        if(GlobalConfig.isAllowDebuggingTools())
+            WebView.setWebContentsDebuggingEnabled(true)
+
         webview = view.findViewById(R.id.webview)
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
@@ -335,4 +340,5 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         header[PARAM_HEADER_GC_TOKEN] = gcToken
         return header
     }
+
 }

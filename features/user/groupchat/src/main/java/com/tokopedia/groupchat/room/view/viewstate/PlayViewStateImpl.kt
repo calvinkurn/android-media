@@ -1246,6 +1246,10 @@ open class PlayViewStateImpl(
         viewModel?.sprintSaleViewModel = item
     }
 
+    override fun onShowOverlayFromVoteComponent(voteUrl: String) {
+        showWebviewBottomSheet(voteUrl)
+    }
+
     override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
         showWebviewBottomSheet(it.contentLinkUrl)
     }
