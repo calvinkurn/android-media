@@ -319,4 +319,5 @@ Anda di sini.</string>
     <string name="average_rating">Cukup</string>
     <string name="good_rating">Mengerti</string>
     <string name="very_good_rating">Sangat Mengerti</string>
+    <string name="survey_submit">"Terimakasih atas pendapat anda</string>
 </resources>

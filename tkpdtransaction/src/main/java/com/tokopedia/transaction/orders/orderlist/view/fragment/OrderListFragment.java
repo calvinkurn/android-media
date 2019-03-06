@@ -101,6 +101,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private ArrayList<Order> mOrderDataList;
     private String mOrderCategory;
     private OrderLabelList orderLabelList;
+    private boolean isSurveyBtnVisible = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -188,7 +189,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onDestroyView() {
         saveStateToArguments();
-        presenter.onDestroy();
         presenter.detachView();
         super.onDestroyView();
     }
@@ -305,8 +305,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if (dy > 0 || dy < 0 && surveyBtn.getVisibility() == View.VISIBLE)
-                surveyBtn.setVisibility(View.GONE);
+            if (dy > 0 || dy < 0 && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja")))
+                setVisibilitySurveyBtn(false);
             if (!isLoading && hasRecyclerListener) {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 if (linearLayoutManager != null) {
@@ -321,8 +321,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                surveyBtn.setVisibility(View.VISIBLE);
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja"))) {
+                setVisibilitySurveyBtn(true);
             }
             super.onScrollStateChanged(recyclerView, newState);
         }
@@ -582,6 +582,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onClick(View v) {
         if (v.getId() == R.id.survey_bom) {
             startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), "2"), SUBMIT_SURVEY_REQUEST);
+        }
+    }
+
+    private void setVisibilitySurveyBtn(boolean isVisible) {
+        if (isVisible && !isSurveyBtnVisible) {
+           surveyBtn.animate().translationY(0).setDuration(500).start();
+            isSurveyBtnVisible=true;
+        } else if(!isVisible && isSurveyBtnVisible){
+            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(R.dimen.dp_10)).setDuration(500).start();
+            isSurveyBtnVisible=false;
         }
     }
 }

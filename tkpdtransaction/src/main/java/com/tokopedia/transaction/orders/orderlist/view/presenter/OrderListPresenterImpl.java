@@ -39,6 +39,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private static final String ORDER_ID = "orderId";
     private static final int PER_PAGE_COUNT = 10;
     GraphqlUseCase getOrderListUseCase;
+    GraphqlUseCase checkBomSurveyUseCase;
+    GraphqlUseCase insertBomSurveyUseCase;
 
     @Inject
     public OrderListPresenterImpl() {
@@ -85,7 +87,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("error =" + e.toString());
+                e.printStackTrace();
                 getView().removeProgressBarView();
                 getView().unregisterScrollListener();
                 getView().showErrorNetwork(
@@ -102,7 +104,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     if (!data.orders().isEmpty()) {
                         getView().renderDataList(data.orders());
                         getView().setLastOrderId(data.orders().get(0).getOrderId());
-                        checkBomSurveyEligibility();
+                        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                            checkBomSurveyEligibility();
+                        }
                     } else {
                         getView().unregisterScrollListener();
                         getView().renderEmptyList(typeRequest);
@@ -138,10 +142,18 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         getView().renderOrderStatus(quickFilterItems, selctedIndex);
     }
 
-    public void onDestroy() {
-        getOrderListUseCase.unsubscribe();
-    }
 
+    @Override
+    public void detachView() {
+        getOrderListUseCase.unsubscribe();
+        if (checkBomSurveyUseCase != null) {
+            checkBomSurveyUseCase.unsubscribe();
+        }
+        if (insertBomSurveyUseCase != null) {
+            insertBomSurveyUseCase.unsubscribe();
+        }
+        super.detachView();
+    }
 
 
     public void checkBomSurveyEligibility() {
@@ -155,11 +167,12 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.checkbomsurvey), CheckSurveyResponse.class, variables);
-        getOrderListUseCase.clearRequest();
-        getOrderListUseCase.addRequest(graphqlRequest);
+        checkBomSurveyUseCase = new GraphqlUseCase();
+        checkBomSurveyUseCase.clearRequest();
+        checkBomSurveyUseCase.addRequest(graphqlRequest);
 
 
-        getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
+        checkBomSurveyUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -167,22 +180,23 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-
+                if (isViewAttached()) {
+                    getView().showFailureMessage(e.getMessage());
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                if (graphqlResponse != null) {
-
-                    CheckSurveyResponse checkSurveyResponse = graphqlResponse.getData(CheckSurveyResponse.class);
-                    if (checkSurveyResponse != null && checkSurveyResponse.getCheckResponseData() != null) {
-                        getView().showSurveyButton(checkSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isEligible());
-                    } else {
-                        getView().showFailureMessage("Something went Wrong");
+                if (isViewAttached()) {
+                    if (graphqlResponse != null) {
+                        CheckSurveyResponse checkSurveyResponse = graphqlResponse.getData(CheckSurveyResponse.class);
+                        if (checkSurveyResponse != null && checkSurveyResponse.getCheckResponseData() != null) {
+                            getView().showSurveyButton(checkSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isEligible());
+                        } else {
+                            getView().showFailureMessage(checkSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
+                        }
                     }
-
                 }
-
             }
         });
 
@@ -201,10 +215,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.insertbomsurvey), InsertSurveyResponse.class, variables);
-        getOrderListUseCase.clearRequest();
-        getOrderListUseCase.addRequest(graphqlRequest);
+        insertBomSurveyUseCase = new GraphqlUseCase();
+        insertBomSurveyUseCase.clearRequest();
+        insertBomSurveyUseCase.addRequest(graphqlRequest);
 
-        getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
+        insertBomSurveyUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -212,20 +227,22 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-
+                if (isViewAttached())
+                    getView().showFailureMessage(e.getMessage());
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-
-                if (graphqlResponse != null) {
-                    InsertSurveyResponse insertSurveyResponse = graphqlResponse.getData(InsertSurveyResponse.class);
-                    if (insertSurveyResponse != null && insertSurveyResponse.getCheckResponseData() != null) {
-                        if (insertSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isSuccess()) {
-                            getView().showSuccessMessage("Terimakasih atas pendapat anda");
-                            getView().showSurveyButton(false);
-                        } else {
-                            getView().showFailureMessage(insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
+                if (isViewAttached()) {
+                    if (graphqlResponse != null) {
+                        InsertSurveyResponse insertSurveyResponse = graphqlResponse.getData(InsertSurveyResponse.class);
+                        if (insertSurveyResponse != null && insertSurveyResponse.getCheckResponseData() != null) {
+                            if (insertSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isSuccess()) {
+                                getView().showSuccessMessage(getView().getAppContext().getResources().getString(R.string.survey_submit));
+                                getView().showSurveyButton(false);
+                            } else {
+                                getView().showFailureMessage(insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
+                            }
                         }
                     }
                 }
