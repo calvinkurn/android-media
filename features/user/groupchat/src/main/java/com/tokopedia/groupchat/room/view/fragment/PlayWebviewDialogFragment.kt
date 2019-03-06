@@ -41,7 +41,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     private var gcToken: String = ""
     private val REQUEST_CODE_LOGIN = 123
     private val PARAM_HEADER_GC_TOKEN: String = "X-User-Token"
-    private var isBottomSheetCloseable: Boolean = false
+    private var isBottomSheetCloseable: Boolean = true
 
     //Chrome Client
     val ATTACH_FILE_REQUEST = 1
@@ -96,6 +96,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 behavior.peekHeight = displayMetrics.heightPixels * 9 / 16
             }
 
+            isBottomSheetCloseable = true
             behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
@@ -335,4 +336,5 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         header[PARAM_HEADER_GC_TOKEN] = gcToken
         return header
     }
+
 }
