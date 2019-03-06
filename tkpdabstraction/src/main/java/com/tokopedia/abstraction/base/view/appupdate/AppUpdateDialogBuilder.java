@@ -78,7 +78,10 @@ public class AppUpdateDialogBuilder {
                     }
                 } else {
                     goToPlayStore();
-                    if (!detail.isForceUpdate()) {
+                    if (detail.isForceUpdate()) {
+                        negativeButton.setEnabled(true);
+                        positiveButton.setEnabled(true);
+                    } else {
                         dialog.dismiss();
                     }
                 }
