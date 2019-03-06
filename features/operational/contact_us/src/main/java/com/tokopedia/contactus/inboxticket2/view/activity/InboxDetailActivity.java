@@ -31,7 +31,6 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -306,19 +305,24 @@ public class InboxDetailActivity extends InboxBaseActivity
     @OnClick({R2.id.btn_inactive_1,R2.id.btn_inactive_2,R2.id.btn_inactive_3,R2.id.btn_inactive_4,R2.id.btn_inactive_5,})
     void onEmojiClick(View v) {
             if(v.getId() == R.id.btn_inactive_1) {
-                startActivityForResult(ActivityProvideRating.getInstance(this, 1,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
-            }else if (v.getId() == R.id.btn_inactive_2) {
-                startActivityForResult(ActivityProvideRating.getInstance(this, 2,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(1);
+                  }else if (v.getId() == R.id.btn_inactive_2) {
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(2);
             }else if (v.getId() == R.id.btn_inactive_3) {
-                startActivityForResult(ActivityProvideRating.getInstance(this, 3,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(3);
             }else if (v.getId() == R.id.btn_inactive_4) {
-                startActivityForResult(ActivityProvideRating.getInstance(this, 4,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(4);
             }else if (v.getId() == R.id.btn_inactive_5) {
-                startActivityForResult(ActivityProvideRating.getInstance(this, 5,getIntent().getStringExtra(PARAM_TICKET_ID),rateCommentID),REQUEST_SUBMIT_FEEDBACK);
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(5);
+
             }
     }
 
 
+    @Override
+    public String getCommentID() {
+        return rateCommentID;
+    }
 
 
     @OnClick(R2.id.iv_send_button)
@@ -513,6 +517,11 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public String getUserMessage() {
         return edMessage.getText().toString();
+    }
+
+    @Override
+    public String getTicketID() {
+        return getIntent().getStringExtra(PARAM_TICKET_ID);
     }
 
     @Override

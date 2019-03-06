@@ -25,6 +25,8 @@ public interface InboxDetailContract {
 
         String getUserMessage();
 
+        String getTicketID();
+
         void showSendProgress();
 
         void hideSendProgress();
@@ -44,6 +46,8 @@ public interface InboxDetailContract {
         void setCurrentRes(int currentRes);
 
         void updateClosedStatus(String subject);
+
+        String getCommentID();
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {
@@ -68,5 +72,7 @@ public interface InboxDetailContract {
         Utils getUtils();
 
         void showImagePreview(int position, List<AttachmentItem> imagesURL);
+
+        void onClickEmoji(int number);
     }
 }

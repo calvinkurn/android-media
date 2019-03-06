@@ -45,6 +45,7 @@ public interface InboxBaseContract {
         boolean isSearchMode();
 
         void toggleSearch(int visibility);
+        void startActivityForResult(Intent intent, int requestCode);
     }
 
     interface InboxBasePresenter extends CustomerPresenter<InboxBaseView> {

@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
@@ -23,12 +22,12 @@ import com.tokopedia.contactus.inboxticket2.domain.CreatedBy;
 import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse;
 import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
-import com.tokopedia.contactus.inboxticket2.domain.TicketDetailResponse;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.InboxOptionUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
+import com.tokopedia.contactus.inboxticket2.view.activity.ActivityProvideRating;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -44,7 +43,6 @@ import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;
@@ -122,11 +120,13 @@ public class InboxDetailPresenterImpl
         return this;
     }
 
+    boolean isIssueClosed = false;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
      if (requestCode == REQUEST_SUBMIT_FEEDBACK && resultCode == RESULT_OK) {
-            mView.showMessage("Terima kasih atas masukannyaTerima kasih atas masukannya");
+            mView.showMessage("Terima kasih atas masukannya");
             mView.showIssueClosed();
+            isIssueClosed = true;
             getTicketDetails();
         }
     }
@@ -253,6 +253,10 @@ public class InboxDetailPresenterImpl
                             }
                         }
                         item.setShortTime(createTime.substring(0, i));
+                    }
+                    if(isIssueClosed) {
+                        mTicketDetail.setShowRating(false);
+                        isIssueClosed = false;
                     }
                     mView.renderMessageList(mTicketDetail);
                     mView.hideProgressBar();
@@ -757,6 +761,11 @@ public class InboxDetailPresenterImpl
                 imagesURL.add(item.getThumbnail());
         }
         mView.showImagePreview(position, imagesURL);
+    }
+
+    @Override
+    public void onClickEmoji(int number) {
+        mView.startActivityForResult(ActivityProvideRating.getInstance(mView.getActivity(), number,mView.getCommentID(),mTicketDetail.getBadCsatReasonList()),REQUEST_SUBMIT_FEEDBACK);
     }
 
     private void addNewLocalComment() {

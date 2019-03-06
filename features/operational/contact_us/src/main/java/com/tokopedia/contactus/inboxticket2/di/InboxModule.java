@@ -61,7 +61,7 @@ public class InboxModule {
 
     @InboxScope
     @Provides
-    ProvideRatingContract.ProvideRatingPresenter provideRatingPresenter(InboxOptionUseCase inboxOptionUseCase, SubmitRatingUseCase submitRatingUseCase) {
-        return new ProvideRatingFragmentPresenter(inboxOptionUseCase, submitRatingUseCase);
+    ProvideRatingContract.ProvideRatingPresenter provideRatingPresenter(SubmitRatingUseCase submitRatingUseCase) {
+        return new ProvideRatingFragmentPresenter(submitRatingUseCase);
     }
 }

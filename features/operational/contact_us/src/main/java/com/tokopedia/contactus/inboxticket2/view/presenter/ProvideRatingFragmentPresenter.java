@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxticket2.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail;
-import com.tokopedia.contactus.inboxticket2.domain.usecase.InboxOptionUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.SubmitRatingUseCase;
 import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract;
 import com.tokopedia.contactus.inboxticket2.view.presenter.screenState.FifthScreenState;
@@ -18,13 +17,11 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideRatingContract.ProvideRatingView>  implements ProvideRatingContract.ProvideRatingPresenter {
-    InboxOptionUseCase inboxOptionUseCase;
     SubmitRatingUseCase submitRatingUseCase;
     int emojiState = 0;
 
     @Inject
-    public ProvideRatingFragmentPresenter(InboxOptionUseCase inboxOptionUseCase, SubmitRatingUseCase submitRatingUseCase) {
-        this.inboxOptionUseCase = inboxOptionUseCase;
+    public ProvideRatingFragmentPresenter(SubmitRatingUseCase submitRatingUseCase) {
         this.submitRatingUseCase = submitRatingUseCase;
     }
 
@@ -33,29 +30,7 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
         super.attachView(view);
         emojiState = getView().getSelectedEmoji();
         updateScreenState();
-        inboxOptionUseCase.createRequestParams(getView().getTicketId());
-        inboxOptionUseCase.execute(new Subscriber<ChipGetInboxDetail>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().showErrorMessage(e.getMessage());
-            }
-
-            @Override
-            public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
-                if(chipGetInboxDetail.getMessageError() != null && chipGetInboxDetail.getMessageError().size() > 0) {
-                    getView().showErrorMessage(chipGetInboxDetail.getMessageError().get(0));
-                }else {
-                    if(chipGetInboxDetail.getData().getTickets().getBadCsatReasonList().size() > 0) {
-                        getView().setFilterList(chipGetInboxDetail.getData().getTickets().getBadCsatReasonList());
-                    }
-                }
-            }
-        });
+        getView().setFilterList(getView().getReasonList());
     }
 
     public ScreenState getScreenState(int emoji) {
@@ -130,6 +105,7 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
     @Override
     public void onSubmitClick() {
         RequestParams requestParams = submitRatingUseCase.createRequestParams(getView().getCommentId(),emojiState+"",getView().getSelectedItem());
+        getView().showProgress();
         submitRatingUseCase.execute(requestParams, new Subscriber<ChipGetInboxDetail>() {
             @Override
             public void onCompleted() {
@@ -138,11 +114,13 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
 
             @Override
             public void onError(Throwable e) {
+                getView().hideProgress();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
+                getView().hideProgress();
                 if(chipGetInboxDetail.getMessageError() != null && chipGetInboxDetail.getMessageError().size() > 0) {
                     getView().showErrorMessage(chipGetInboxDetail.getMessageError().get(0));
                 }else {

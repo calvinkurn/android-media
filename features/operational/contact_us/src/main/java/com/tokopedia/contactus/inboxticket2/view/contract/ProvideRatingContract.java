@@ -20,13 +20,18 @@ public interface ProvideRatingContract {
         public void clearEmoji();
         public void showErrorMessage(String o);
         public void setFilterList(List<BadCsatReasonListItem> filterList);
-        public String getTicketId();
         public String getSelectedItem();
         public String getCommentId();
-
+        List<BadCsatReasonListItem> getReasonList();
         void onSuccessSubmit();
+
+        void showProgress();
+
+        void hideProgress();
+
     }
     public interface ProvideRatingPresenter extends CustomerPresenter<ProvideRatingView> {
+
         public void onFirstEmojiClick();
         public void onSecondEmojiClick();
         public void onThirdEmojiClick();

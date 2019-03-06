@@ -1,6 +1,7 @@
 package com.tokopedia.contactus.inboxticket2.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -24,7 +24,6 @@ import com.tokopedia.contactus.inboxticket2.di.InboxModule;
 import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomQuickOptionView;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
@@ -45,9 +44,11 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     private TextView mTxtSmileSelected;
     private TextView mTxtFeedbackQuestion;
     private TextView mTxtFinished;
+    private ProgressDialog progress;
     public static final String CLICKED_EMOJI = "clicked_emoji";
-    public static final String PARAM_TICKET_ID = "ticket_id";
     public static final String PARAM_COMMENT_ID = "comment_id";
+    public static final String PARAM_OPTIONS_CSAT = "options_csat";
+
     private CustomQuickOptionView mFilterReview;
 
     public static FragmentProvideRating newInstance(Bundle bundle) {
@@ -205,10 +206,6 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     }
 
 
-    @Override
-    public String getTicketId() {
-        return getArguments().getString(PARAM_TICKET_ID);
-    }
 
     @Override
     public String getSelectedItem() {
@@ -226,9 +223,36 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     }
 
     @Override
+    public List<BadCsatReasonListItem> getReasonList() {
+        return getArguments().getParcelableArrayList(PARAM_OPTIONS_CSAT);
+
+    }
+
+    @Override
     public void onSuccessSubmit() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
+    }
+
+    @Override
+    public void showProgress() {
+        if (progress == null) {
+            progress = new ProgressDialog(getContext());
+        }
+        if (!progress.isShowing()) {
+            progress.setMessage("Updating");
+            progress.setIndeterminate(true);
+            progress.setCanceledOnTouchOutside(false);
+            progress.show();
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progress != null && progress.isShowing()) {
+            progress.dismiss();
+            progress = null;
+        }
     }
 
     private void initView(View view) {
