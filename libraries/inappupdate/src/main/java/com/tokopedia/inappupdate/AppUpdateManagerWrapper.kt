@@ -17,7 +17,8 @@ import com.google.android.play.core.install.model.UpdateAvailability
 
 class AppUpdateManagerWrapper {
     companion object {
-        private var REQUEST_CODE_IMMEDIATE = 12135
+        @JvmField
+        var REQUEST_CODE_IMMEDIATE = 12135
         private var INAPP_UPDATE = "inappupdate"
         private var INAPP_UPDATE_PREF = "inappupdate_pref"
         private var KEY_INAPP_TYPE = "inapp_type"
@@ -165,12 +166,16 @@ class AppUpdateManagerWrapper {
             context.getSharedPreferences(INAPP_UPDATE_PREF, Context.MODE_PRIVATE).edit().clear().apply()
         }
 
+        /**
+         * If flexible update is in progress, or download update is finished, then isInProgress = true,
+         */
         @JvmStatic
-        fun checkUpdateInProgressOrCompleted(activity: Activity, onSuccessGetInfo: ((isInProgress: Boolean) -> (Unit))) {
+        fun checkUpdateInFlexibleProgressOrCompleted(activity: Activity, onSuccessGetInfo: ((isInProgress: Boolean) -> (Unit))) {
             val appUpdateManager = getInstance(activity) ?: return
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
                 appUpdateInfo = it
-                if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS ||
+                if ((it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                        getPrefInAppType(activity) == AppUpdateType.FLEXIBLE) ||
                     it.installStatus() == InstallStatus.DOWNLOADED) {
                     onSuccessGetInfo(true)
                 } else {

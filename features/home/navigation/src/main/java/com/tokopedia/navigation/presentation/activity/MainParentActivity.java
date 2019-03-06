@@ -31,17 +31,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
-import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
-import com.tokopedia.navigation_common.AbTestingOfficialStore;
-import com.tokopedia.navigation_common.listener.CartNotifyListener;
-import com.tokopedia.navigation_common.listener.InboxNotificationListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
@@ -54,17 +45,25 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
+import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.AbTestingOfficialStore;
+import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.InboxNotificationListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -76,9 +75,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 /**
  * Created by meta on 19/06/18.
@@ -403,6 +399,8 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        // if user is downloading the update (in app update feature),
+        // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
         presenter.onResume();
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
@@ -598,14 +596,12 @@ public class MainParentActivity extends BaseActivity implements
 
     private void checkAppUpdateAndInApp() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this, new Function1<Boolean, Unit>() {
-                @Override
-                public Unit invoke(Boolean isOnProgress) {
-                    if (!isOnProgress) {
-                        checkAppUpdateRemoteConfig();
-                    }
-                    return null;
+            // if download finished or flexible update is in progress, we do not need to show the update dialog
+            AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
+                if (!isOnProgress) {
+                    checkAppUpdateRemoteConfig();
                 }
+                return null;
             });
         } else {
             checkAppUpdateRemoteConfig();
