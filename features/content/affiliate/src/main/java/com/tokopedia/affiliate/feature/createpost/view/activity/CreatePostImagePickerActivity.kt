@@ -32,7 +32,8 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
     override fun getEditorIntent(selectedImagePaths: ArrayList<String>): Intent {
         return CreatePostImageEditorActivity.getInstance(this, selectedImagePaths,
                 imageDescriptionList,
-                imagePickerBuilder.minResolution, imagePickerBuilder.imageEditActionType,
+                imagePickerBuilder.minResolution,
+                imagePickerBuilder.imageEditActionType,
                 imagePickerBuilder.imageRatioTypeDef,
                 imagePickerBuilder.isCirclePreview,
                 imagePickerBuilder.maxFileSizeInKB,
