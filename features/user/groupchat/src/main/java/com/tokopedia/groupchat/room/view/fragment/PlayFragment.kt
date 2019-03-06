@@ -373,11 +373,13 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onImageAnnouncementClicked(image: ImageAnnouncementViewModel) {
         analytics.eventClickThumbnail(channelInfoViewModel, image.contentImageUrl, image
                 .contentImageId, image.contentImageId)
-        RouteManager.routeWithAttribution(context,  image.redirectUrl,
+        var applink = RouteManager.routeWithAttribution(context,  image.redirectUrl,
                 GroupChatAnalytics.generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_IMAGE_ANNOUNCEMENT,
                         channelInfoViewModel.channelUrl,
                         channelInfoViewModel.title))
+
+        openRedirectUrl(applink)
     }
 
     override fun onVoteComponentClicked(type: String?, name: String?, voteUrl : String) {

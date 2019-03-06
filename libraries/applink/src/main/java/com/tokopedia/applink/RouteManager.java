@@ -22,7 +22,7 @@ public class RouteManager {
         return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
     }
 
-    public static void routeWithAttribution(Context context, String applink,
+    public static String routeWithAttribution(Context context, String applink,
                                             String trackerAttribution) {
         String attributionApplink;
         if (applink.contains("?")) {
@@ -31,6 +31,7 @@ public class RouteManager {
             attributionApplink = applink + "?"+ trackerAttribution;
         }
 
-        ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, attributionApplink);
+//        ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, attributionApplink);
+        return attributionApplink;
     }
 }

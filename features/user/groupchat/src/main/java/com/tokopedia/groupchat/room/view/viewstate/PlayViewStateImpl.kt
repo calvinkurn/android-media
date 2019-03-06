@@ -274,12 +274,13 @@ open class PlayViewStateImpl(
             stickyComponent.setOnClickListener {
                 viewModel?.let {
                     analytics.eventClickStickyComponent(item, it)
-                    RouteManager.routeWithAttribution(activity, item.redirectUrl,
+                    var applink = RouteManager.routeWithAttribution(activity, item.redirectUrl,
                             GroupChatAnalytics.generateTrackerAttribution(
                                     GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
                                     it.channelUrl,
                                     it.title
                             ))
+                    listener.openRedirectUrl(applink)
                 }
 
             }
@@ -610,12 +611,13 @@ open class PlayViewStateImpl(
                 ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
                 overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
                     if (!TextUtils.isEmpty(interruptViewModel.imageLink)) {
-                        RouteManager.routeWithAttribution(view.context, interruptViewModel.imageLink,
+                        var applink = RouteManager.routeWithAttribution(view.context, interruptViewModel.imageLink,
                                 GroupChatAnalytics.generateTrackerAttribution(
                                         GroupChatAnalytics.ATTRIBUTE_OVERLAY_IMAGE,
                                         channelInfoViewModel.channelUrl,
                                         channelInfoViewModel.title
                                 ))
+                        listener.openRedirectUrl(applink)
                         closeOverlayDialog()
                     }
 
@@ -644,12 +646,13 @@ open class PlayViewStateImpl(
                         interruptViewModel.imageUrl)
 
                 if (!TextUtils.isEmpty(interruptViewModel.btnLink)) {
-                    RouteManager.routeWithAttribution(view.context, interruptViewModel.btnLink,
+                    var applink = RouteManager.routeWithAttribution(view.context, interruptViewModel.btnLink,
                             GroupChatAnalytics.generateTrackerAttribution(
                                     GroupChatAnalytics.ATTRIBUTE_OVERLAY_BUTTON,
                                     channelInfoViewModel.channelUrl,
                                     channelInfoViewModel.title
                             ))
+                    listener.openRedirectUrl(applink)
                 }
                 closeOverlayDialog()
             }
@@ -934,11 +937,12 @@ open class PlayViewStateImpl(
                 if(!userSession.isLoggedIn) {
                     listener.onLoginClicked(it.channelId)
                 } else {
-                    RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
+                    var applink = RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
                             GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
                             it.channelUrl,
                             it.title
                     ))
+                    listener.openRedirectUrl(applink)
                 }
             }
         }
