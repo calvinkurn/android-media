@@ -598,7 +598,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void checkAppUpdateAndInApp() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Toast.makeText(this, "In App Version Test", Toast.LENGTH_SHORT).show();
             AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this, new Function1<Boolean, Unit>() {
                 @Override
                 public Unit invoke(Boolean isOnProgress) {
@@ -614,11 +613,9 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAppUpdateRemoteConfig(){
-        Toast.makeText(this, "Check remote config", Toast.LENGTH_SHORT).show();
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
-                Toast.makeText(MainParentActivity.this, new Gson().toJson(detail), Toast.LENGTH_SHORT).show();
                 AppUpdateDialogBuilder appUpdateDialogBuilder =
                         new AppUpdateDialogBuilder(
                                 MainParentActivity.this,
@@ -646,7 +643,6 @@ public class MainParentActivity extends BaseActivity implements
 
             @Override
             public void onNotNeedUpdate() {
-                Toast.makeText(MainParentActivity.this, "Not need update", Toast.LENGTH_SHORT).show();
                 checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
             }
         });

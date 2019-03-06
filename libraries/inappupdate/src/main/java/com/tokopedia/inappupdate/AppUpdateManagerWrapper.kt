@@ -129,6 +129,7 @@ class AppUpdateManagerWrapper {
                 val success = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, activity, REQUEST_CODE_FLEXIBLE)
                 if (success) {
                     setPrefInAppType(activity, AppUpdateType.FLEXIBLE)
+                    Toast.makeText(activity, R.string.update_install_see_notif, Toast.LENGTH_SHORT).show()
                 }
                 return success
             } catch (e: Exception) {
@@ -171,13 +172,11 @@ class AppUpdateManagerWrapper {
                 appUpdateInfo = it
                 if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS ||
                     it.installStatus() == InstallStatus.DOWNLOADED) {
-                    Toast.makeText(activity, "In Progress Immediate", Toast.LENGTH_SHORT).show()
                     onSuccessGetInfo(true)
                 } else {
                     onSuccessGetInfo(false)
                 }
             }.addOnFailureListener {
-                Toast.makeText(activity, "Fail get Info", Toast.LENGTH_SHORT).show()
                 onSuccessGetInfo(false)
             }
         }

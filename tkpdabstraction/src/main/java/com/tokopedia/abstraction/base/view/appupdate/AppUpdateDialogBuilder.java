@@ -31,7 +31,6 @@ public class AppUpdateDialogBuilder {
     }
 
     public AlertDialog getAlertDialog() {
-        Toast.makeText(activity, "In App Create Dialog", Toast.LENGTH_SHORT).show();
         alertDialog = new AlertDialog.Builder(activity)
                 .setTitle(detail.getUpdateTitle())
                 .setMessage(detail.getUpdateMessage())
@@ -50,18 +49,16 @@ public class AppUpdateDialogBuilder {
                 if (detail.isInAppUpdateEnabled() &&
                         android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (detail.isForceUpdate()) {
-                        Toast.makeText(activity, "checking force update", Toast.LENGTH_SHORT).show();
                         AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, () -> {
-                            // if immediate update fail or cannot be operated
+                            /* on Error */
                             goToPlayStore();
                             return null;
-                        }, () -> {
+                        }, /* onFinished */ () -> {
                             negativeButton.setEnabled(true);
                             positiveButton.setEnabled(true);
                             return null;
                         });
                     } else { // flexible update
-                        Toast.makeText(activity, "checking flex update", Toast.LENGTH_SHORT).show();
                         AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, onProgressMessage -> {
                             // if in progress
                             ToasterNormal.show(activity, onProgressMessage);
