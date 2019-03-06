@@ -29,6 +29,8 @@ import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterModel;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
@@ -48,8 +50,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
-    private static final String SEARCH_INIT_KEY = "SEARCH_INIT_KEY";
-    private static final String SEARCH_IS_OFFICIAL = "SEARCH_IS_OFFICIAL";
+    private static final String SEARCH_PARAMETER_MODEL = "SEARCH_PARAMETER_MODEL";
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -58,8 +59,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     SearchPresenter presenter;
 
     private HostAutoCompleteAdapter adapter;
-    private String mSearch = "";
-    private boolean mIsOfficial = false;
+    private SearchParameterModel searchParameterModel = new SearchParameterModel();
     private String networkErrorMessage;
     private boolean onTabShop;
 
@@ -78,6 +78,16 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         args.putString(INIT_QUERY, query);
         SearchMainFragment fragment = new SearchMainFragment();
         fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static SearchMainFragment newInstance(SearchParameterModel searchParameterModel) {
+        Bundle args = new Bundle();
+        args.putSerializable(SEARCH_PARAMETER_MODEL, searchParameterModel);
+
+        SearchMainFragment fragment = new SearchMainFragment();
+        fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -176,24 +186,21 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState!=null) {
-            mSearch = savedInstanceState.getString(SEARCH_INIT_KEY);
-            mIsOfficial = savedInstanceState.getBoolean(SEARCH_IS_OFFICIAL);
-            presenter.search(mSearch, mIsOfficial);
+        if(savedInstanceState != null) {
+            searchParameterModel = (SearchParameterModel) savedInstanceState.getSerializable(SEARCH_PARAMETER_MODEL);
+            presenter.search(searchParameterModel);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(SEARCH_INIT_KEY, mSearch);
-        outState.putBoolean(SEARCH_IS_OFFICIAL, mIsOfficial);
+        outState.putSerializable(SEARCH_PARAMETER_MODEL, searchParameterModel);
     }
 
-    public void search(String query, boolean isOfficial){
-        this.mSearch = query;
-        this.mIsOfficial = isOfficial;
-        presenter.search(mSearch, mIsOfficial);
+    public void search(SearchParameterModel searchParameterModel){
+        this.searchParameterModel = searchParameterModel;
+        presenter.search(searchParameterModel);
     }
 
     public void deleteAllRecentSearch(){

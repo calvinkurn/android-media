@@ -8,7 +8,9 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -40,11 +42,11 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         return autoCompleteRepository.getSearchData(requestParams.getParameters());
     }
 
-    public static RequestParams getParams(String query, String registrationId, String userId) {
-        return getParams(query, false, registrationId, userId);
+    public static RequestParams getParams(String registrationId, String userId) {
+        return getParams(new HashMap<>(), registrationId, userId);
     }
 
-    public static RequestParams getParams(String query, boolean isOfficial, String registrationId, String userId) {
+    public static RequestParams getParams(Map<String, Object> searchParameter, String registrationId, String userId) {
         RequestParams params = RequestParams.create();
         params.putString(KEY_DEVICE, DEFAULT_DEVICE);
         params.putString(KEY_SOURCE, DEFAULT_SOURCE);
@@ -56,8 +58,9 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         }
         params.putString(KEY_UNIQUE_ID, uniqueId);
         params.putString(DEVICE_ID, registrationId);
-        params.putString(KEY_QUERY, (query.isEmpty() ? "" : query));
-        params.putBoolean(KEY_IS_OFFICIAL, isOfficial);
+
+        params.putAll(searchParameter);
+
         return params;
     }
 }

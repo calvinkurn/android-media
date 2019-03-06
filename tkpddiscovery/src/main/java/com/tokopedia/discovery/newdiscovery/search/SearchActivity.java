@@ -105,6 +105,7 @@ public class SearchActivity extends DiscoveryActivity
     private boolean forceSwipeToShop;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
+    private SearchParameterModel searchParameterModel;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -209,19 +210,18 @@ public class SearchActivity extends DiscoveryActivity
 
         ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
 
-        @SuppressWarnings("unchecked")
-        SearchParameterModel searchParameterModel = getSearchParameterModelFromIntent(intent);
+        searchParameterModel = getSearchParameterModelFromIntent(intent);
 
         handleIntentActivityPaused();
 
-        handleIntentAutoComplete(false); // TODO:: Send searchParameterModel instead
+        handleIntentAutoComplete();
 
         if (productViewModel != null) {
             handleIntentWithProductViewModel(productViewModel);
         } else if (!TextUtils.isEmpty(searchParameterModel.getSearchQuery())) {
-            handleIntentWithSearchQuery(searchParameterModel);
+            handleIntentWithSearchQuery();
         } else {
-            searchView.showSearch(true, false, false); // TODO:: Send searchParameterModel instead
+            searchView.showSearch(true, false, searchParameterModel);
         }
 
         if (intent != null &&
@@ -248,9 +248,9 @@ public class SearchActivity extends DiscoveryActivity
         }
     }
 
-    private void handleIntentAutoComplete(boolean isOfficial) {
+    private void handleIntentAutoComplete() {
         if(getIntent().getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false)) {
-            searchView.showSearch(true, false, isOfficial);
+            searchView.showSearch(true, false, searchParameterModel);
         }
     }
 
@@ -261,7 +261,7 @@ public class SearchActivity extends DiscoveryActivity
         bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
     }
 
-    private void handleIntentWithSearchQuery(SearchParameterModel searchParameterModel) {
+    private void handleIntentWithSearchQuery() {
         // TODO:: Fix onSuggestionProductClick to receive SearchParameterModel instead
         String searchQuery = searchParameterModel.getSearchQuery();
         String categoryId = searchParameterModel.get(SearchApiConst.SC);

@@ -46,7 +46,6 @@ public class DeleteRecentSearchUseCase extends UseCase<List<SearchData>> {
                     @Override
                     public Observable<List<SearchData>> call(Response<Void> voidResponse) {
                         RequestParams params = AutoCompleteUseCase.getParams(
-                                "",
                                 requestParams.getString(DEVICE_ID, ""),
                                 requestParams.getString(KEY_USER_ID, "")
                         );

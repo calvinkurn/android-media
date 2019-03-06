@@ -33,13 +33,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterModel;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -96,9 +98,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private SearchViewListener mSearchViewListener;
     private AppCompatActivity activity;
     private boolean finishOnClose = false;
-    private boolean isOfficial = false;
     private SavedState mSavedState;
     private boolean submit = false;
+    private SearchParameterModel searchParameterModel = new SearchParameterModel();
 
     private boolean ellipsize = false;
 
@@ -458,14 +460,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mOldQueryText = newText.toString();
 
         if (mSuggestionFragment != null) {
-            mSuggestionFragment.search(newText.toString(), isOfficial);
+            mSuggestionFragment.search(searchParameterModel);
         }
     }
 
     private void onSubmitQuery() {
         CharSequence query = mSearchSrcTextView.getText();
         if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString(), isOfficial)) {
+            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString(), getIsOfficial())) {// TODO:: Send SearchParameterModel instead
                 closeSearch();
                 mSearchSrcTextView.setText(null);
             }
@@ -687,8 +689,8 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         showSearch(true);
     }
 
-    public void showSearch(boolean finishOnClose, boolean animate, boolean isOfficial) {
-        this.isOfficial = isOfficial;
+    public void showSearch(boolean finishOnClose, boolean animate, SearchParameterModel searchParameterModel) {
+        this.searchParameterModel = searchParameterModel;
         showSearch(finishOnClose, animate);
     }
 
@@ -822,7 +824,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     public boolean getIsOfficial() {
-        return isOfficial;
+        return searchParameterModel.getBoolean(SearchApiConst.OFFICIAL);
+    }
+
+    private SearchParameterModel getSearchParameterModel() {
+        return searchParameterModel;
     }
 
     /**

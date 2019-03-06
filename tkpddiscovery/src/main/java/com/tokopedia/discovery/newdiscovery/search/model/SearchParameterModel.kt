@@ -3,10 +3,15 @@ package com.tokopedia.discovery.newdiscovery.search.model
 import com.tkpd.library.utils.URLParser
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import java.io.Serializable
+import java.util.*
 
 class SearchParameterModel(deepLinkUri: String = "") : Serializable {
 
     private val searchParameterHashMap = URLParser(deepLinkUri).paramKeyValueMap
+
+    fun getSearchParameterMap() : Map<String, Any> {
+        return Collections.unmodifiableMap(searchParameterHashMap) as Map<String, Any>
+    }
 
     fun contains(key: String) : Boolean {
         return searchParameterHashMap.contains(key)
