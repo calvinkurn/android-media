@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.view.View
+import android.widget.Toast
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -149,16 +150,19 @@ class AppUpdateManagerWrapper {
                 if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) &&
                     it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                     appUpdateInfo = it
+                    Toast.makeText(activity, "In Progress Immediate", Toast.LENGTH_SHORT).show()
                     onSuccessGetInfo(true)
                 } else if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                     it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
                     appUpdateInfo = it
+                    Toast.makeText(activity, "In Progress Fleexible", Toast.LENGTH_SHORT).show()
                     onSuccessGetInfo(true)
                 } else {
                     appUpdateInfo = null
                     onSuccessGetInfo(false)
                 }
             }.addOnFailureListener {
+                Toast.makeText(activity, "Fail get Info", Toast.LENGTH_SHORT).show()
                 onSuccessGetInfo(false)
             }
         }
