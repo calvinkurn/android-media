@@ -1,0 +1,71 @@
+package com.tokopedia.flight.airport.domain.interactor
+
+import android.content.Context
+import android.text.TextUtils
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.flight.R
+import com.tokopedia.flight.airport.data.source.cloud.model.ResponseFlightPopularCity
+import com.tokopedia.flight.airport.domain.FlightAirportMapper
+import com.tokopedia.flight.airport.domain.model.FlightAirport
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
+import rx.Observable
+import rx.functions.Func1
+import javax.inject.Inject
+
+/**
+ * Created by nabillasabbaha on 05/03/19.
+ */
+class FlightAirportPopularCityUseCase @Inject constructor(@ApplicationContext val context: Context,
+                                                          val graphqlUseCase: GraphqlUseCase,
+                                                          val flightAirportMapper: FlightAirportMapper)
+    : UseCase<@JvmSuppressWildcards List<Visitable<*>>>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<List<Visitable<*>>> {
+        return Observable.just(requestParams)
+                .flatMap(Func1<RequestParams, Observable<GraphqlResponse>> {
+                    val query = GraphqlHelper.loadRawString(context.resources, R.raw.flight_airport_popular_city)
+                    if (!TextUtils.isEmpty(query)) {
+                        graphqlUseCase.clearRequest()
+                        graphqlUseCase.addRequest(GraphqlRequest(query, ResponseFlightPopularCity::class.java))
+                        return@Func1 graphqlUseCase.createObservable(null)
+                    }
+                    return@Func1 Observable.error(Exception("Query variable are empty"))
+                })
+                .map(Func1<GraphqlResponse, ResponseFlightPopularCity> { it.getData(ResponseFlightPopularCity::class.java) })
+                .map { flightAirportMapper.groupingCountry(it.flightPopularCities) }
+                .map { mapCountryAirport ->
+                    val visitables: ArrayList<Visitable<*>> = ArrayList()
+
+                    mapCountryAirport.map {
+                        val flightAirportList: List<FlightAirport> = it.value
+
+                        val countryAirportViewModel = FlightCountryAirportViewModel(
+                                flightAirportList.get(0).countryId,
+                                flightAirportList.get(0).countryName,
+                                mutableListOf())
+                        visitables.add(countryAirportViewModel)
+
+                        flightAirportList.map {
+                            val airportViewModel = FlightAirportViewModel()
+                            airportViewModel.airportName = it.airportName
+                            airportViewModel.countryName = it.countryName
+                            airportViewModel.airportCode = it.airportCode
+                            airportViewModel.cityCode = it.cityCode
+                            airportViewModel.cityId = it.cityId
+                            airportViewModel.cityName = it.cityName
+                            return@map visitables.add(airportViewModel)
+                        }
+
+                    }
+                    return@map visitables
+                }
+    }
+}
