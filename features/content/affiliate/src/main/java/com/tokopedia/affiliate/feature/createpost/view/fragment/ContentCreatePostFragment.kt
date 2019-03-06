@@ -16,6 +16,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
 
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
+        private const val REQUEST_ATTACH_PRODUCT_FIRST = 11
 
         fun createInstance(bundle: Bundle): ContentCreatePostFragment {
             val fragment = ContentCreatePostFragment()
@@ -27,14 +28,15 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_ATTACH_PRODUCT -> if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
-                val products = data?.getParcelableArrayListExtra<ResultProduct>(
-                        AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
-                        ?: arrayListOf()
-                viewModel.productIdList.clear()
-                products.forEach {
-                    viewModel.productIdList.add(it.productId.toString())
+                getAttachProductResult(data)
+            }
+            REQUEST_ATTACH_PRODUCT_FIRST -> {
+                if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK
+                        && data != null) {
+                    getAttachProductResult(data)
+                } else {
+                    activity?.finish()
                 }
-                fetchContentForm()
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -49,7 +51,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
         super.onSuccessGetContentForm(feedContentForm)
         if (shouldGoAttachProduct) {
             if (viewModel.productIdList.isEmpty() || viewModel.productIdList.first().isBlank()) {
-                goToAttachProduct()
+                goToAttachProduct(true)
             }
             shouldGoAttachProduct = false
         }
@@ -58,16 +60,31 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
     override fun getAddRelatedProductText(): String = getString(R.string.af_change_product_tag)
 
     override fun onRelatedAddProductClick() {
-        goToAttachProduct()
+        goToAttachProduct(false)
     }
 
-    private fun goToAttachProduct() {
+    private fun goToAttachProduct(isFirstTime: Boolean) {
         val intent = AttachProductActivity.createInstance(context,
                 userSession.shopId,
                 "",
                 true,
                 "",
-                viewModel.maxProduct)
-        startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
+                viewModel.maxProduct
+        )
+        startActivityForResult(
+                intent,
+                if (isFirstTime) REQUEST_ATTACH_PRODUCT_FIRST else REQUEST_ATTACH_PRODUCT
+        )
+    }
+
+    private fun getAttachProductResult(data: Intent?) {
+        val products = data?.getParcelableArrayListExtra<ResultProduct>(
+                AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                ?: arrayListOf()
+        viewModel.productIdList.clear()
+        products.forEach {
+            viewModel.productIdList.add(it.productId.toString())
+        }
+        fetchContentForm()
     }
 }
