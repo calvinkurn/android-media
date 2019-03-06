@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.room.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -42,6 +41,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     private var gcToken: String = ""
     private val REQUEST_CODE_LOGIN = 123
     private val PARAM_HEADER_GC_TOKEN: String = "X-User-Token"
+    private var isBottomSheetCloseable: Boolean = true
 
     //Chrome Client
     val ATTACH_FILE_REQUEST = 1
@@ -84,22 +84,36 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val temp = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
-        temp.setOnShowListener(object : DialogInterface.OnShowListener {
-            override fun onShow(dialog: DialogInterface?) {
-                var finalDialog = dialog as BottomSheetDialog
-                val bottomSheet = finalDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
-                var behavior = BottomSheetBehavior.from(bottomSheet)
-                behavior.peekHeight = 600
-                activity?.windowManager?.defaultDisplay?.let {
-                    var displayMetrics = DisplayMetrics()
-                    it.getMetrics(displayMetrics)
+        temp.setOnShowListener { dialog ->
+            var finalDialog = dialog as BottomSheetDialog
+            val bottomSheet = finalDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            var behavior = BottomSheetBehavior.from(bottomSheet)
+            behavior.peekHeight = 600
+            activity?.windowManager?.defaultDisplay?.let {
+                var displayMetrics = DisplayMetrics()
+                it.getMetrics(displayMetrics)
 
-                    behavior.peekHeight = displayMetrics.heightPixels*9/16
-                }
-
+                behavior.peekHeight = displayMetrics.heightPixels * 9 / 16
             }
 
-        })
+            isBottomSheetCloseable = true
+            behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+                }
+
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (!isBottomSheetCloseable && newState == BottomSheetBehavior
+                                    .STATE_DRAGGING) {
+                        behavior.state = BottomSheetBehavior.STATE_EXPANDED;
+                    }
+
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        finalDialog.cancel()
+                    }
+                }
+            })
+        }
 
         return temp
     }
@@ -107,7 +121,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     private fun setupViewModel(savedInstanceState: Bundle?) {
         activity?.run {
 
-            if(url.isNullOrEmpty()) {
+            if (url.isNullOrEmpty()) {
                 url = getParamString(ApplinkConst.Play.PARAM_URL, arguments,
                         savedInstanceState, "")
             }
@@ -164,21 +178,22 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         webview.settings.domStorageEnabled = true
         webview.webViewClient = getWebviewClient()
         webview.webChromeClient = getWebviewChromeClient()
-//        webview.run {
-//            setOnDragListener(object : View.OnDragListener{
-//            override fun onDrag(v: View?, event: DragEvent?): Boolean {
-//                Log.d("bottomsheetevdrag", event.toString())
-//                return true
-//            }
-//        })
-//
-//            setOnTouchListener(object : View.OnTouchListener{
-//            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-//                Log.d("bottomsheetevtouch", event.toString())
-//                return false
-//            }
-//        })
-//        }
+        webview.setWebviewScrollListener(object : TkpdWebView.WebviewScrollListener {
+            override fun onTopReached() {
+                isBottomSheetCloseable = true
+
+            }
+
+            override fun onEndReached() {
+                isBottomSheetCloseable = false
+
+            }
+
+            override fun onHasScrolled() {
+                isBottomSheetCloseable = false
+            }
+        })
+
     }
 
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
@@ -321,4 +336,5 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         header[PARAM_HEADER_GC_TOKEN] = gcToken
         return header
     }
+
 }
