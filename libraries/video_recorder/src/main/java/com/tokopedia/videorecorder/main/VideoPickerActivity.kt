@@ -21,6 +21,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
 import com.tokopedia.videorecorder.utils.FileUtils
+import com.tokopedia.videorecorder.utils.RuntimePermission
 import com.tokopedia.videorecorder.utils.hide
 import com.tokopedia.videorecorder.utils.show
 import kotlinx.android.synthetic.main.activity_video_picker.*
@@ -54,12 +55,17 @@ class VideoPickerActivity: BaseSimpleActivity(),
     private var currentSelectedTab: Int = 0
 
     //runtime permission handle
+    private lateinit var runtimePermission: RuntimePermission
     private var permissionList = arrayListOf<String>()
 
     override fun getLayoutRes(): Int = R.layout.activity_video_picker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //init runtime permission
+        runtimePermission = RuntimePermission(this)
+        runtimePermission.requestPermissionForRecord()
+
         //support actionbar
         setSupportActionBar(toolbar)
 
