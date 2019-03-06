@@ -94,33 +94,8 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                     var displayMetrics = DisplayMetrics()
                     it.getMetrics(displayMetrics)
 
-                    behavior.peekHeight = displayMetrics.heightPixels*16/9
+                    behavior.peekHeight = displayMetrics.heightPixels*9/16
                 }
-//                behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-//                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-//                        Log.d(
-//                                "bottomsheetevl",
-//                                slideOffset.toString() + " " + behavior.state + " " + behavior.isHideable
-//                        )
-//                        if(slideOffset < 0 && behavior.state == BottomSheetBehavior.STATE_SETTLING){
-//                            if(slideOffset < -0.35){
-//                                behavior.isHideable = true
-//                                behavior.state = BottomSheetBehavior.STATE_HIDDEN
-//                            } else {
-//                                behavior.isHideable = false
-//                                behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-//                            }
-//                        }
-//                    }
-//
-//                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-//                        Log.d("bottomsheetev", newState.toString() + " " + bottomSheet.javaClass.name)
-//                        if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-//                            finalDialog.cancel()
-//                        }
-//                    }
-//                })
-
 
             }
 
