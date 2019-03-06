@@ -16,7 +16,6 @@ import java.util.List;
 
 public class SurveyBottomSheet extends BottomSheets implements View.OnClickListener {
 
-    public static final String TITLE = "Beri Tanggapan Anda";
 
     private ImageView veryBadRating, badRating, averageRating, goodRating, veryGoodRating;
     private TextView submitBtn, ratingTextView;
@@ -72,7 +71,7 @@ public class SurveyBottomSheet extends BottomSheets implements View.OnClickListe
 
     @Override
     protected String title() {
-        return TITLE;
+        return getResources().getString(R.string.survey_bottomsheet_title);
     }
 
     @Override

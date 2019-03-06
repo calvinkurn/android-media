@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="center_horizontal"
-        android:text="Seberapa mengerti Anda terhadap tampilan baru laman Daftar Transaksi ini?"
+        android:text="@string/bom_survey_description"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_12" />
 
@@ -73,7 +73,6 @@
         android:visibility="invisible"
         android:enabled="false"
         tools:visibility="visible"
-        android:text="Mengerti"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/sp_12" />
 
@@ -83,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="Apa yang bisa ditingkatkan pada laman ini?"
+        android:text="@string/survey_suggestion_text"
         android:textColor="@color/black_56"
         android:textSize="@dimen/sp_12" />
 
@@ -93,7 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
-        android:hint="Saran anda (opsional)"
+        android:hint="@string/survey_suggestion_hint"
         android:textColor="@color/black_56"
         android:textColorHint="@color/grey_400"
         android:textSize="@dimen/sp_16" />
@@ -108,7 +107,7 @@
         android:background="@drawable/save_date_btn_bg"
         android:gravity="center"
         android:padding="@dimen/dp_16"
-        android:text="Submit"
+        android:text="@string/submit_survey_bom"
         android:alpha="0.5"
         android:enabled="false"
         android:textColor="@color/white"

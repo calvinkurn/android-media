@@ -61,7 +61,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ORDER_TAB_LIST = "TAB_LIST";
     private static final int MINIMUM_CHARATERS_HIT_API = 3;
     private static final int FILTER_DATE_REQUEST = 1;
+    private static final int ANIMATION_DURATION = 500;
     private static final int SUBMIT_SURVEY_REQUEST = 2;
+    public static final String OPEN_SURVEY_PAGE = "2";
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -305,7 +307,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if (dy > 0 || dy < 0 && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja")))
+            if (dy > 0 || dy < 0 && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA)))
                 setVisibilitySurveyBtn(false);
             if (!isLoading && hasRecyclerListener) {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -321,7 +323,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja"))) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA))) {
                 setVisibilitySurveyBtn(true);
             }
             super.onScrollStateChanged(recyclerView, newState);
@@ -520,7 +522,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSurveyButton(boolean isEligible) {
-        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase("belanja"))) {
+        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA))) {
             surveyBtn.setVisibility(View.VISIBLE);
         } else {
             surveyBtn.setVisibility(View.GONE);
@@ -581,16 +583,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.survey_bom) {
-            startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), "2"), SUBMIT_SURVEY_REQUEST);
+            startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), OPEN_SURVEY_PAGE), SUBMIT_SURVEY_REQUEST);
         }
     }
 
     private void setVisibilitySurveyBtn(boolean isVisible) {
         if (isVisible && !isSurveyBtnVisible) {
-           surveyBtn.animate().translationY(0).setDuration(500).start();
+           surveyBtn.animate().translationY(0).setDuration(ANIMATION_DURATION).start();
             isSurveyBtnVisible=true;
         } else if(!isVisible && isSurveyBtnVisible){
-            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(R.dimen.dp_10)).setDuration(500).start();
+            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
             isSurveyBtnVisible=false;
         }
     }

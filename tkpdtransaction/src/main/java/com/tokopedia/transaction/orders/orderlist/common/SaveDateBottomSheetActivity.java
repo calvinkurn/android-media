@@ -13,7 +13,9 @@ import com.tokopedia.design.component.BottomSheets;
 public class SaveDateBottomSheetActivity extends BaseSimpleActivity implements SaveDateBottomSheet.DateFilterResult, SurveyBottomSheet.SurveyResult {
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
-    public static final String DATE_OR_SURVEY = "1";
+    public static final String DATE_OR_SURVEY = "2";
+    public static final String OPEN_SURVEY_PAGE = "2";
+    public static final String OPEN_DATE_PAGE = "1";
     public static final String SURVEY_RATING = "1";
     public static final String SURVEY_COMMENT = "good";
 
@@ -21,6 +23,7 @@ public class SaveDateBottomSheetActivity extends BaseSimpleActivity implements S
         Intent intent = new Intent(context, SaveDateBottomSheetActivity.class);
         intent.putExtra(START_DATE, startDate);
         intent.putExtra(END_DATE, endDate);
+        intent.putExtra(DATE_OR_SURVEY, OPEN_DATE_PAGE);
         return intent;
     }
 
@@ -35,7 +38,7 @@ public class SaveDateBottomSheetActivity extends BaseSimpleActivity implements S
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getIntent() != null) {
-            if (getIntent().getStringExtra(DATE_OR_SURVEY).equals("2")) {
+            if (getIntent().getStringExtra(DATE_OR_SURVEY).equals(OPEN_SURVEY_PAGE)) {
                 SurveyBottomSheet surveyBottomSheet = new SurveyBottomSheet();
                 surveyBottomSheet.show(getSupportFragmentManager(), "");
                 surveyBottomSheet.setDismissListener(new BottomSheets.BottomSheetDismissListener() {

@@ -38,6 +38,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private static final String ORDER_STATUS = "OrderStatus";
     private static final String ORDER_ID = "orderId";
     private static final int PER_PAGE_COUNT = 10;
+    private static final String SOURCE = "1";
+    private static final String DEVICE_TYPE = "android";
     GraphqlUseCase getOrderListUseCase;
     GraphqlUseCase checkBomSurveyUseCase;
     GraphqlUseCase insertBomSurveyUseCase;
@@ -55,7 +57,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
 
-        if (orderCategory.equalsIgnoreCase("MarketPlace")) {
+        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
             variables.put(OrderCategory.KEY_LABEL, orderCategory);
             variables.put(OrderCategory.PAGE, page);
             variables.put(OrderCategory.PER_PAGE, PER_PAGE_COUNT);
@@ -160,7 +162,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         Map<String, Object> variables = new HashMap<>();
 
         CheckBOMSurveyParams checkBOMSurveyParams = new CheckBOMSurveyParams();
-        checkBOMSurveyParams.setSource("1");
+        checkBOMSurveyParams.setSource(SOURCE);
 
         variables.put(OrderCategory.SURVEY_PARAM, checkBOMSurveyParams);
 
@@ -191,9 +193,13 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     if (graphqlResponse != null) {
                         CheckSurveyResponse checkSurveyResponse = graphqlResponse.getData(CheckSurveyResponse.class);
                         if (checkSurveyResponse != null && checkSurveyResponse.getCheckResponseData() != null) {
-                            getView().showSurveyButton(checkSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isEligible());
-                        } else {
-                            getView().showFailureMessage(checkSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
+                            if (checkSurveyResponse.getCheckResponseData().getCheckResponseHeaders() != null && checkSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages() != null && checkSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().size() > 0) {
+                                getView().showFailureMessage(checkSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
+                            } else {
+                                if (checkSurveyResponse.getCheckResponseData().getCheckResponseSurveyData() != null) {
+                                    getView().showSurveyButton(checkSurveyResponse.getCheckResponseData().getCheckResponseSurveyData().isEligible());
+                                }
+                            }
                         }
                     }
                 }
@@ -208,7 +214,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         InsertBOMSurveyParams insertBOMSurveyParams = new InsertBOMSurveyParams();
         insertBOMSurveyParams.setRating(rating);
         insertBOMSurveyParams.setComments(comment);
-        insertBOMSurveyParams.setDeviceType("android");
+        insertBOMSurveyParams.setDeviceType(DEVICE_TYPE);
 
         variables.put(OrderCategory.SURVEY_PARAM, insertBOMSurveyParams);
 
@@ -241,7 +247,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                 getView().showSuccessMessage(getView().getAppContext().getResources().getString(R.string.survey_submit));
                                 getView().showSurveyButton(false);
                             } else {
-                                getView().showFailureMessage(insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
+                                if (insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders() != null && insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages() != null && insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().size() > 0) {
+                                    getView().showFailureMessage(insertSurveyResponse.getCheckResponseData().getCheckResponseHeaders().getMessages().get(0));
+                                }
                             }
                         }
                     }

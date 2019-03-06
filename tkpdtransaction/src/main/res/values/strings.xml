@@ -319,5 +319,10 @@ Anda di sini.</string>
     <string name="average_rating">Cukup</string>
     <string name="good_rating">Mengerti</string>
     <string name="very_good_rating">Sangat Mengerti</string>
-    <string name="survey_submit">"Terimakasih atas pendapat anda</string>
+    <string name="survey_submit">Terimakasih atas pendapat anda</string>
+    <string name="survey_bottomsheet_title">Beri Tanggapan Anda</string>
+    <string name="bom_survey_description">Seberapa mengerti Anda terhadap tampilan baru laman Daftar Transaksi ini?</string>
+    <string name="survey_suggestion_text">Apa yang bisa ditingkatkan pada laman ini?</string>
+    <string name="survey_suggestion_hint">Saran anda (opsional)</string>
+    <string name="submit_survey_bom">Submit</string>
 </resources>
