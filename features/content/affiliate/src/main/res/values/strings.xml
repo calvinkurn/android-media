@@ -79,6 +79,8 @@
     <string name="af_update_post">Update Post</string>
     <string name="af_add_image_warning">Foto sebelumnya akan diganti dengan foto yang dipilih</string>
     <string name="af_add_video_warning">Foto sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_leave_warning">Apa Kamu yakin ingin keluar?</string>
+    <string name="af_leave_warning_desc">Jika kamu keluar dari form, maka media dan produk akan hilang</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>

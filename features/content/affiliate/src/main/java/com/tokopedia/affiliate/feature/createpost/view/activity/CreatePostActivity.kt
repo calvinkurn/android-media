@@ -14,6 +14,7 @@ import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePos
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -98,5 +99,22 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         badge.loadImage(header.badge)
         badge.showWithCondition(header.badge.isNotBlank())
         name.text = header.title
+    }
+
+    override fun onBackPressed() {
+        val dialog = Dialog(this, Dialog.Type.PROMINANCE)
+        dialog.setTitle(getString(R.string.af_leave_warning))
+        dialog.setDesc(getString(R.string.af_leave_warning_desc))
+        dialog.setBtnOk(getString(R.string.cancel))
+        dialog.setBtnCancel(getString(R.string.af_continue))
+        dialog.setOnOkClickListener{
+            dialog.dismiss()
+        }
+        dialog.setOnCancelClickListener{
+            dialog.dismiss()
+            super.onBackPressed()
+        }
+        dialog.setCancelable(true)
+        dialog.show()
     }
 }
