@@ -383,12 +383,6 @@ open class PlayViewStateImpl(
         autoAddSprintSale()
 
         setPinnedMessage(it)
-
-        onReceiveGamificationNotif(GroupChatPointsViewModel(
-                "Selamat anda mendapatkan lalala points",
-                "tokopedia://gamification",
-                "1401"
-        ))
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
