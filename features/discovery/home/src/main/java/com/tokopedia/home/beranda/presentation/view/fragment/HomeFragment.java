@@ -35,8 +35,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -64,8 +64,8 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.constant.BerandaUrl;
+import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
@@ -86,6 +86,7 @@ import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -120,9 +121,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     HomePresenter presenter;
 
-    @Inject
-    UserSessionInterface userSession;
-
+    private UserSessionInterface userSession;
     private View fragmentRootView;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
@@ -160,9 +159,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isTraceStopped = false;
     private boolean isFeedLoaded = false;
 
-    @Inject
-    DigitalWidgetRepository digitalWidgetRepository;
-
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -176,6 +172,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         abTestingOfficialStore = new AbTestingOfficialStore(getContext());
+        userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
     }
 
@@ -270,8 +267,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initResources() {
         TypedValue typedValue = new TypedValue();
         if (getActivity() != null && getActivity().getTheme() != null &&
-                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
-        {
+                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
         }
     }
@@ -429,7 +425,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
         notifyToolbarForAbTesting();
         presenter.onResume();
-        if(activityStateListener!=null){
+        if (activityStateListener != null) {
             activityStateListener.onResume();
         }
     }
@@ -438,7 +434,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onPause() {
         super.onPause();
         trackingQueue.sendAll();
-        if(activityStateListener!=null) {
+        if (activityStateListener != null) {
             activityStateListener.onPause();
         }
     }
@@ -573,7 +569,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this,
                 this
-        );
+                );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -1039,6 +1035,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isHomeFragment() {
+        if (getActivity() == null) {
+            return false;
+        }
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
         return (fragment instanceof HomeFragment);
     }
@@ -1162,7 +1161,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             Intent intentBalanceWalet = RouteManager.getIntent(getActivity(), applinkActivation);
             getContext().startActivity(intentBalanceWalet);
             Activity activity = (Activity) getContext();
-            activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
         }
     }
 

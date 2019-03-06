@@ -1,25 +1,20 @@
 package com.tokopedia.kol.feature.createpost.view.activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.common.di.DaggerKolComponent;
 import com.tokopedia.kol.common.di.KolComponent;
@@ -28,6 +23,8 @@ import com.tokopedia.kol.feature.createpost.di.DaggerCreatePostComponent;
 import com.tokopedia.kol.feature.createpost.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.kol.feature.createpost.view.viewmodel.MediaUploadViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,12 +40,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 /**
  * @author by yfsx on 20/06/18.
@@ -66,7 +59,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     @Inject
     UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
 
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     private static final int CREATE_FORM_REQUEST = 1234;
 
@@ -96,7 +89,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.compositeSubscription = new CompositeSubscription();
-        userSession = ((AbstractionRouter)getApplication()).getSession();
+        userSession = new UserSession(this);
         initInjector();
     }
 

@@ -39,6 +39,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
@@ -175,7 +176,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
         WebSettings webSettings = scroogeWebView.getSettings();
 
-        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), BuildConfig.VERSION_NAME);
+        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), GlobalConfig.VERSION_NAME);
         webSettings.setUserAgentString(userAgent);
 
         webSettings.setJavaScriptEnabled(true);

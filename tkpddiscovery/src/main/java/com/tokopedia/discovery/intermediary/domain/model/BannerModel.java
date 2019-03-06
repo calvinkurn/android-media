@@ -13,6 +13,9 @@ public class BannerModel {
     private String imageUrl;
     private String url;
     private String applink;
+    private boolean isTracked;
+    private String title;
+    private String categoryName;
 
     public Integer getPosition() {
         return position;
@@ -44,5 +47,29 @@ public class BannerModel {
 
     public String getApplink() {
         return applink;
+    }
+
+    public boolean isTracked() {
+        return isTracked;
+    }
+
+    public void setTracked(boolean tracked) {
+        isTracked = tracked;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

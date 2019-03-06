@@ -24,7 +24,7 @@ import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
+import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
 import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
@@ -113,11 +113,6 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<Boolean> checkPreloadAirport() {
-        return flightAirportDataListSource.checkPreloadAirport();
-    }
-
-    @Override
     public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
         return flightAirportDataListSource.getPhoneCodeList(query);
     }
@@ -201,24 +196,13 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<FlightOrder>> getOrders(Map<String, Object> maps) {
         return flightOrderDataSource.getOrders(maps)
-                .map(new Func1<List<OrderEntity>, List<FlightOrder>>() {
-                    @Override
-                    public List<FlightOrder> call(List<OrderEntity> orderEntities) {
-                        return flightOrderMapper.transform(orderEntities);
-                    }
-                });
-
+                .map(it -> flightOrderMapper.transform(it));
     }
 
     @Override
     public Observable<FlightOrder> getOrder(String id) {
         return flightOrderDataSource.getOrder(id)
-                .map(new Func1<OrderEntity, FlightOrder>() {
-                    @Override
-                    public FlightOrder call(OrderEntity orderEntity) {
-                        return flightOrderMapper.transform(orderEntity);
-                    }
-                });
+                .map(it -> flightOrderMapper.transform(it));
     }
 
     @Override

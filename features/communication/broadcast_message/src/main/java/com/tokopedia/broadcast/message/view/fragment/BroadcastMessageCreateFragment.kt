@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
@@ -35,6 +34,8 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import kotlinx.android.synthetic.main.fragment_broadcast_message_create.*
 import javax.inject.Inject
 
@@ -53,10 +54,12 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         private const val PARAM_PRODUCT_THUMBNAIL = "thumbnail"
     }
 
-    @Inject lateinit var userSession: UserSession
     @Inject lateinit var presenter: BroadcastMessageCreatePresenter
     private val router: BroadcastMessageRouter? by lazy {
         activity?.application as? BroadcastMessageRouter
+    }
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(activity)
     }
     private var shopName: String = ""
     private var savedLocalImageUrl: String? = null

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -71,9 +72,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     if (data != null && !data.isJsonNull()) {
                         Type type = requests.get(i).getTypeOfT();
                         Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
-                        if (requests.get(i).isCheckNull()) {
-                            checkForNull(object);
-                        }
+                        checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
                         //Lookup for data
                         results.put(type, object);
                     }
@@ -105,14 +104,23 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
         }
     }
 
-    private void checkForNull(Object object) {
+    private void checkForNull(Object object, String query, boolean shouldThrow) {
         NullCheckerKt.isContainNull(object, errorMessage -> {
-            String message = String.format("Found %s in %s", errorMessage, GraphqlUseCase.class.getSimpleName());
+            String subQuery = (query.length() >= 16) ? query.substring(0, 16) : query;
+            String message = String.format("Found %s in %s | shouldThrowException: %s | query: %s",
+                    errorMessage,
+                    GraphqlUseCase.class.getSimpleName(),
+                    shouldThrow,
+                    subQuery
+            );
             ContainNullException exception = new ContainNullException(message);
             if (!BuildConfig.DEBUG) {
                 Crashlytics.logException(exception);
             }
-            throw exception;
+            if (shouldThrow) {
+                throw exception;
+            }
+            return Unit.INSTANCE;
         });
     }
 }
