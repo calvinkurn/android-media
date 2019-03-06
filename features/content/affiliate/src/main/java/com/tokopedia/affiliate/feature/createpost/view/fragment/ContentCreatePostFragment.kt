@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 
@@ -40,18 +41,18 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun fetchContentForm() {
+        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType)
+    }
+
+    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
+        super.onSuccessGetContentForm(feedContentForm)
         if (shouldGoAttachProduct) {
             if (viewModel.productIdList.isEmpty() || viewModel.productIdList.first().isBlank()) {
                 goToAttachProduct()
             }
             shouldGoAttachProduct = false
         }
-    }
-
-    override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType)
     }
 
     override fun getAddRelatedProductText(): String = getString(R.string.af_change_product_tag)
@@ -65,7 +66,8 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
                 userSession.shopId,
                 "",
                 true,
-                "")
+                "",
+                viewModel.maxProduct)
         startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
     }
 }

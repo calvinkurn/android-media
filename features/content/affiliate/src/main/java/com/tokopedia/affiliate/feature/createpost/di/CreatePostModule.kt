@@ -30,13 +30,13 @@ class CreatePostModule(private val context: Context) {
 
     @Provides
     @ApplicationContext
-    internal fun provideApplicationContext(): Context {
+    fun provideApplicationContext(): Context {
         return context.applicationContext
     }
 
     @Provides
     @CreatePostScope
-    internal fun provideUploadImageUseCase(
+    fun provideUploadImageUseCase(
             @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
             @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
             @ImageUploaderQualifier gson: Gson,
@@ -54,26 +54,26 @@ class CreatePostModule(private val context: Context) {
 
     @Provides
     @CreatePostScope
-    internal fun providePresenter(createPostPresenter: CreatePostPresenter): CreatePostContract.Presenter {
+    fun providePresenter(createPostPresenter: CreatePostPresenter): CreatePostContract.Presenter {
         return createPostPresenter
     }
 
     @Provides
     @CreatePostScope
-    internal fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
     @CreatePostScope
-    internal fun provideAffiliateAnalytics(@ApplicationContext context: Context,
-                                           userSessionInterface: UserSessionInterface): AffiliateAnalytics {
+    fun provideAffiliateAnalytics(@ApplicationContext context: Context,
+                                  userSessionInterface: UserSessionInterface): AffiliateAnalytics {
         return AffiliateAnalytics(context as AbstractionRouter, userSessionInterface)
     }
 
     @Provides
     @CreatePostScope
-    internal fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager {
+    fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager {
         return context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 }

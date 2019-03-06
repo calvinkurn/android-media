@@ -8,7 +8,7 @@ data class FeedContentForm(
         @SerializedName("error")
         val error: String = "",
         @SerializedName("maxTag")
-        val maxTag: Int = 0,
+        val maxTag: Int = 1,
         @SerializedName("media")
         val media: Media = Media(),
         @SerializedName("relatedItems")

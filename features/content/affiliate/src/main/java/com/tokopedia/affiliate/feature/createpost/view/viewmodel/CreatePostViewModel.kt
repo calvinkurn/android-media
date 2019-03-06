@@ -11,6 +11,7 @@ data class CreatePostViewModel(
         var caption: String = "",
         var mainImageIndex: Int = 0,
         var maxImage: Int = 5,
+        var maxProduct: Int = 1,
         var allowImage: Boolean = false,
         var allowVideo: Boolean = false,
         val productIdList: MutableList<String> = arrayListOf(),
@@ -34,6 +35,7 @@ data class CreatePostViewModel(
             source.readString() ?: "",
             source.readInt(),
             source.readInt(),
+            source.readInt(),
             1 == source.readInt(),
             1 == source.readInt(),
             source.createStringArrayList() ?: arrayListOf(),
@@ -52,6 +54,7 @@ data class CreatePostViewModel(
         writeString(caption)
         writeInt(mainImageIndex)
         writeInt(maxImage)
+        writeInt(maxProduct)
         writeInt((if (allowImage) 1 else 0))
         writeInt((if (allowVideo) 1 else 0))
         writeStringList(productIdList)

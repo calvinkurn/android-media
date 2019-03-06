@@ -161,6 +161,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.maxImage = feedContentForm.media.maxMedia
         viewModel.allowImage = feedContentForm.media.allowImage
         viewModel.allowVideo = feedContentForm.media.allowVideo
+        viewModel.maxProduct = feedContentForm.maxTag
 
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
