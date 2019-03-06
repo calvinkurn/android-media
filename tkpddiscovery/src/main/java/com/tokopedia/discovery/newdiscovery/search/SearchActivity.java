@@ -39,6 +39,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListF
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
@@ -63,8 +64,6 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.DEPARTMENT_ID;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 
 /**
  * Created by henrypriyono on 10/6/17.
@@ -78,11 +77,13 @@ public class SearchActivity extends DiscoveryActivity
     public static final int TAB_SECOND_POSITION = 1;
     public static final int TAB_PRODUCT = 0;
 
+    private static final String DEEP_LINK_URI = "deep_link_uri";
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
     private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
     private static final String EXTRA_OFFICIAL = "EXTRA_OFFICIAL";
     private static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
+    private static final String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
@@ -122,32 +123,30 @@ public class SearchActivity extends DiscoveryActivity
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        String departmentId = bundle.getString(SearchApiConst.SC);
-        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
-        Intent intent = new Intent(context, SearchActivity.class);
-
-        if (!TextUtils.isEmpty(departmentId)) {
-            intent.putExtra(DEPARTMENT_ID, departmentId);
-        }
-
-        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
-
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(SearchApiConst.Q, bundle.getString(SearchApiConst.KEYWORD, "")));
-        intent.putExtras(bundle);
-        return intent;
+        return createIntentToSearchActivityFromBundle(context, bundle);
     }
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
-        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
-        Intent intent = new Intent(context, SearchActivity.class);
+        Intent intent = createIntentToSearchActivityFromBundle(context, bundle);
 
         intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
-        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
-
-        intent.putExtras(bundle);
 
         return intent;
+    }
+
+    private static Intent createIntentToSearchActivityFromBundle(Context context, Bundle bundle) {
+        SearchParameterModel searchParameterModel = createSearchParameterModelFromBundle(bundle);
+
+        Intent intent = new Intent(context, SearchActivity.class);
+        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameterModel);
+
+        return intent;
+    }
+
+    private static SearchParameterModel createSearchParameterModelFromBundle(Bundle bundle) {
+        String deepLinkURI = bundle.getString(DEEP_LINK_URI);
+        return new SearchParameterModel(deepLinkURI == null ? "" : deepLinkURI);
     }
 
     @Override
@@ -178,58 +177,69 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initActivityOnCreate(savedInstanceState);
+
+        handleIntent(getIntent());
+    }
+
+    private void initActivityOnCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
         initInjector();
+        initForceSwipeToShop(savedInstanceState);
+        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
+    }
 
+    private void initForceSwipeToShop(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             forceSwipeToShop = isForceSwipeToShop();
         } else {
             forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         }
-        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
-        handleIntent(getIntent());
-    }
-
-    private void handleIntent(Intent intent) {
-        initPresenter();
-        initResources();
-
-        ProductViewModel productViewModel =
-                intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-        String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
-        String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
-        boolean isOfficial = getIntent().getBooleanExtra(EXTRA_OFFICIAL, false);
-
-        handleIntentActivityPaused();
-
-        handleIntentAutoComplete(isOfficial);
-
-        if (productViewModel != null) {
-            setLastQuerySearchView(productViewModel.getQuery());
-            loadSection(productViewModel, forceSwipeToShop);
-            setToolbarTitle(productViewModel.getQuery());
-            bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
-        } else if (!TextUtils.isEmpty(searchQuery)) {
-            if (!TextUtils.isEmpty(categoryId)) {
-                onSuggestionProductClick(searchQuery, categoryId, isOfficial);
-            } else {
-                onSuggestionProductClick(searchQuery, isOfficial);
-            }
-        } else {
-            searchView.showSearch(true, false, isOfficial);
-        }
-
-        if (intent != null &&
-                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            searchTracking.eventSearchShortcut();
-        }
-        handleImageUri(intent);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        initPresenter();
+        initResources();
+
+        ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
+
+        @SuppressWarnings("unchecked")
+        SearchParameterModel searchParameterModel = getSearchParameterModelFromIntent(intent);
+
+        handleIntentActivityPaused();
+
+        handleIntentAutoComplete(false); // TODO:: Send searchParameterModel instead
+
+        if (productViewModel != null) {
+            handleIntentWithProductViewModel(productViewModel);
+        } else if (!TextUtils.isEmpty(searchParameterModel.getSearchQuery())) {
+            handleIntentWithSearchQuery(searchParameterModel);
+        } else {
+            searchView.showSearch(true, false, false); // TODO:: Send searchParameterModel instead
+        }
+
+        if (intent != null &&
+                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            searchTracking.eventSearchShortcut();
+        }
+
+        handleImageUri(intent);
+    }
+
+    private SearchParameterModel getSearchParameterModelFromIntent(Intent intent) {
+        SearchParameterModel searchParameterModel = (SearchParameterModel)intent.getSerializableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
+
+        if(searchParameterModel == null) {
+            searchParameterModel = new SearchParameterModel();
+        }
+
+        return searchParameterModel;
     }
 
     private void handleIntentActivityPaused() {
@@ -241,6 +251,26 @@ public class SearchActivity extends DiscoveryActivity
     private void handleIntentAutoComplete(boolean isOfficial) {
         if(getIntent().getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false)) {
             searchView.showSearch(true, false, isOfficial);
+        }
+    }
+
+    private void handleIntentWithProductViewModel(ProductViewModel productViewModel) {
+        setLastQuerySearchView(productViewModel.getQuery());
+        loadSection(productViewModel, forceSwipeToShop);
+        setToolbarTitle(productViewModel.getQuery());
+        bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
+    }
+
+    private void handleIntentWithSearchQuery(SearchParameterModel searchParameterModel) {
+        // TODO:: Fix onSuggestionProductClick to receive SearchParameterModel instead
+        String searchQuery = searchParameterModel.getSearchQuery();
+        String categoryId = searchParameterModel.get(SearchApiConst.SC);
+        boolean isOfficial = searchParameterModel.getBoolean(SearchApiConst.OFFICIAL);
+
+        if (!TextUtils.isEmpty(searchParameterModel.get(SearchApiConst.SC))) {
+            onSuggestionProductClick(searchQuery, categoryId, isOfficial);
+        } else {
+            onSuggestionProductClick(searchQuery, isOfficial);
         }
     }
 
