@@ -71,9 +71,9 @@ ext {
     ]
 
     dbDependencies = [
-            dbFlow         : "com.github.agrosner.DBFlow:dbflow:${dbFlowVersion}",
-            dbFlowCore     : "com.github.agrosner.DBFlow:dbflow-core:${dbFlowVersion}",
-            dbFlowProcessor: "com.github.agrosner.DBFlow:dbflow-processor:${dbFlowVersion}",
+            dbFlow         : "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}",
+            dbFlowCore     : "com.github.Raizlabs.DBFlow:dbflow-core:${dbFlowVersion}",
+            dbFlowProcessor: "com.github.Raizlabs.DBFlow:dbflow-processor:${dbFlowVersion}",
             dbRoomRuntime  : "android.arch.persistence.room:runtime:${roomVersion}",
             dbRoomCompiler : "android.arch.persistence.room:compiler:${roomVersion}",
             dbRoomTesting  : "android.arch.persistence.room:testing:${roomVersion}"
