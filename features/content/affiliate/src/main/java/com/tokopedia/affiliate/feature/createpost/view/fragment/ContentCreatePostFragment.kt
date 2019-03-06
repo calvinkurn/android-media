@@ -9,7 +9,10 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 /**
  * @author by milhamj on 01/03/19.
  */
-class ContentCreatePostFragment: BaseCreatePostFragment() {
+class ContentCreatePostFragment : BaseCreatePostFragment() {
+
+    private var shouldGoAttachProduct = true
+
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
 
@@ -35,6 +38,16 @@ class ContentCreatePostFragment: BaseCreatePostFragment() {
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (shouldGoAttachProduct) {
+            if (viewModel.productIdList.isEmpty() || viewModel.productIdList.first().isBlank()) {
+                goToAttachProduct()
+            }
+            shouldGoAttachProduct = false
+        }
     }
 
     override fun fetchContentForm() {
