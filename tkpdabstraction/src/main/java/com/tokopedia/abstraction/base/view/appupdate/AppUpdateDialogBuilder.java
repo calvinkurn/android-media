@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 
@@ -51,35 +50,24 @@ public class AppUpdateDialogBuilder {
                 if (detail.isInAppUpdateEnabled() &&
                         android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (detail.isForceUpdate()) {
-                        AppUpdateManagerWrapper.checkImmediateUpdateAllowed(activity, allowImmediateUpdate -> {
-                            if (allowImmediateUpdate) {
-                                boolean successTriggerUpdate = AppUpdateManagerWrapper.doImmediateUpdate(activity);
-                                if (!successTriggerUpdate) {
-                                    goToPlayStore();
-                                }
-                            } else {
-                                goToPlayStore();
-                            }
+                        Toast.makeText(activity, "checking force update", Toast.LENGTH_SHORT).show();
+                        AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, () -> {
+                            // if immediate update fail or cannot be operated
+                            goToPlayStore();
                             return null;
                         });
                     } else { // flexible update
-                        AppUpdateManagerWrapper.checkFlexibleUpdateAllowed(activity, (allowFlexUpdate, isOnProgress, onProgressMessage) -> {
-                            if (allowFlexUpdate) {
-                                if (isOnProgress) {
-                                    ToasterNormal.show(activity, onProgressMessage);
-                                } else {
-                                    try {
-                                        boolean successTriggerUpdate = AppUpdateManagerWrapper.doFlexibleUpdate(activity);
-                                        if (!successTriggerUpdate) {
-                                            goToPlayStore();
-                                        }
-                                    } catch (Exception e) {
-                                        goToPlayStore();
-                                    }
-                                }
-                            } else {
-                                goToPlayStore();
-                            }
+                        Toast.makeText(activity, "checking flex update", Toast.LENGTH_SHORT).show();
+                        AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, onProgressMessage -> {
+                            // if in progress
+                            ToasterNormal.show(activity, onProgressMessage);
+                            return null;
+                        }, () -> {
+                            // if flexible update fail or cannot be operated
+                            goToPlayStore();
+                            return null;
+                        }, () -> {
+                            // action after do the checking, close the dialog
                             dialog.dismiss();
                             return null;
                         });

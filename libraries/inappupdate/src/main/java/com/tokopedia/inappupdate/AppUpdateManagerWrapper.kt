@@ -39,18 +39,15 @@ class AppUpdateManagerWrapper {
             return appUpdateManager
         }
 
-        /**
-         * 1st Boolean = true => success get info and allow flexible update
-         * 2nd Boolean = true => download/install status in Progress
-         */
         @JvmStatic
-        fun checkFlexibleUpdateAllowed(context: Context, onSuccessGetInfo: ((allowUpdate: Boolean,
-                                                                             isOnProgress: Boolean,
-                                                                             onProgressMessage: String) -> (Unit))) {
-            val appContext = context.applicationContext
+        fun checkAndDoFlexibleUpdate(activity: Activity,
+                                     onProgress: ((onProgressMessage: String) -> (Unit)),
+                                     onError: (() -> (Unit)),
+                                     onFinished: (() -> (Unit))) {
+            val appContext = activity.applicationContext
             val appUpdateManager = getInstance(appContext)
             if (appUpdateManager == null) {
-                onSuccessGetInfo(false, false, "")
+                onError()
                 return
             }
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
@@ -58,57 +55,67 @@ class AppUpdateManagerWrapper {
                     it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
                     appUpdateInfo = it
                     val onProgressUpdating = onProgressUpdating(it.installStatus())
-                    val message: String = getProgressMessage(appContext, it.installStatus())
                     if (onProgressUpdating) {
+                        val message: String = getProgressMessage(appContext, it.installStatus())
+                        onProgress(message)
                         if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                            LocalBroadcastManager.getInstance(context.applicationContext)
+                            LocalBroadcastManager.getInstance(appContext)
                                 .sendBroadcast(Intent(INAPP_UPDATE))
                         }
+                    } else {
+                        try {
+                            val successTriggerUpdate = AppUpdateManagerWrapper.doFlexibleUpdate(activity)
+                            if (!successTriggerUpdate) {
+                                onError()
+                            }
+                        } catch (e: Exception) {
+                            onError()
+                        }
+
                     }
-                    onSuccessGetInfo(true, onProgressUpdating, message)
                 } else {
                     appUpdateInfo = null
-                    onSuccessGetInfo(false, false, "")
+                    onError()
                 }
+                onFinished()
             }.addOnFailureListener {
-                onSuccessGetInfo(false, false, "")
+                onError()
             }
         }
 
-        /**
-         * Boolean = true => success get info and allow immediate update
-         */
         @JvmStatic
-        fun checkImmediateUpdateAllowed(activity: Activity, onSuccessGetInfo: ((allowUpdate: Boolean) -> (Unit))) {
+        fun checkAndDoImmediateUpdate(activity: Activity, onError: (() -> (Unit))) {
             val appUpdateManager = getInstance(activity)
             if (appUpdateManager == null) {
-                onSuccessGetInfo(false)
+                onError()
                 return
             }
             appUpdateManager.appUpdateInfo.addOnSuccessListener {
                 if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                     appUpdateInfo = it
                     val onProgressUpdating = onProgressUpdating(it.installStatus())
-                    val message: String = getProgressMessage(activity, it.installStatus())
                     if (onProgressUpdating) {
                         if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                            onSuccessGetInfo(true)
+                            val successTriggerUpdate = AppUpdateManagerWrapper.doImmediateUpdate(activity)
+                            if (!successTriggerUpdate) {
+                                onError()
+                            }
                         } else if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                             // If an in-app update is already running, launch the flow UI.
                             try {
                                 appUpdateManager.startUpdateFlowForResult(
                                     appUpdateInfo, AppUpdateType.IMMEDIATE, /* activity= */ activity, REQUEST_CODE_IMMEDIATE)
                             } catch (e: Exception) {
-
+                                onError()
                             }
                         }
                     }
                 } else {
                     appUpdateInfo = null
-                    onSuccessGetInfo(false)
+                    onError()
                 }
             }.addOnFailureListener {
-                onSuccessGetInfo(false)
+                onError()
             }
         }
 
