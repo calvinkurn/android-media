@@ -40,26 +40,6 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
                 imagePickerBuilder.ratioOptionList)
     }
 
-    override fun onDoneClicked() {
-        if (intent.getBooleanExtra(ARGS_SHOW_WARNING, true)) {
-            val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-            dialog.setTitle(getString(R.string.af_update_post))
-            dialog.setDesc(getString(R.string.af_add_image_warning))
-            dialog.setBtnOk(getString(R.string.af_continue))
-            dialog.setBtnCancel(getString(R.string.cancel))
-            dialog.setOnOkClickListener{
-                dialog.dismiss()
-                super.onDoneClicked()
-            }
-            dialog.setOnCancelClickListener{
-                dialog.dismiss()
-            }
-            dialog.show()
-        } else {
-            super.onDoneClicked()
-        }
-    }
-
     companion object {
         private const val ARGS_SHOW_WARNING = "show_warning"
 
