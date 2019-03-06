@@ -16,9 +16,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -36,6 +34,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -122,12 +121,12 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
         MainApplication.setActivityname(this.getClass().getSimpleName());
         cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
-        if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
-            Intent intent = new Intent(this, ForceUpdate.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(new Intent(this, ForceUpdate.class));
-            finish();
-        }
+//        if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
+//            Intent intent = new Intent(this, ForceUpdate.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(new Intent(this, ForceUpdate.class));
+//            finish();
+//        }
 
         initGTM();
         sendScreenAnalytics();
