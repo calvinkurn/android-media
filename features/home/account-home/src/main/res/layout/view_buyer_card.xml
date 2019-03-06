@@ -60,18 +60,37 @@
 
             </RelativeLayout>
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/text_username"
+            <LinearLayout
+                android:id="@+id/layout_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
-                android:maxLines="1"
-                app:fontSize="title"
-                app:weight="medium"
+                android:orientation="horizontal"
                 android:layout_toRightOf="@+id/holder_photo_progress"
                 android:layout_toEndOf="@+id/holder_photo_progress"
-                tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16">
+
+                <ImageView
+                    android:id="@+id/ic_affiliate_byme"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_byme_blue"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/text_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:maxLines="1"
+                    app:fontSize="title"
+                    app:weight="medium"
+                    tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
+            </LinearLayout>
+
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/text_profile_completion"
@@ -81,7 +100,7 @@
                 app:textViewTheme="lightSecondary"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
-                android:layout_below="@+id/text_username"
+                android:layout_below="@+id/layout_username"
                 android:layout_toRightOf="@+id/holder_photo_progress"
                 android:layout_toEndOf="@+id/holder_photo_progress"
                 tools:text="Kelengkapan Profile 75%" />

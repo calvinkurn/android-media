@@ -63,6 +63,9 @@ public class AccountModel {
     @SerializedName("kycStatus")
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
+    @SerializedName("isAffiliate")
+    private boolean isAffiliate = false;
+
     private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();
 
     public Integer getIsAuthenticated() {
@@ -172,5 +175,9 @@ public class AccountModel {
 
     public KycStatusPojo getKycStatusPojo() {
         return kycStatusPojo;
+    }
+
+    public boolean isAffiliate() {
+        return isAffiliate;
     }
 }
