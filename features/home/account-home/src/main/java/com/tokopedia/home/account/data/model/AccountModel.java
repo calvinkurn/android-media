@@ -180,4 +180,8 @@ public class AccountModel {
     public boolean isAffiliate() {
         return isAffiliate;
     }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
+    }
 }

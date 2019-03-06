@@ -62,6 +62,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 checkIsAffiliate(requestParams),
                 (accountModel, walletModel, isAffiliate) -> {
                     accountModel.setWallet(walletModel);
+                    accountModel.setAffiliate(isAffiliate);
                     return accountModel;
                 })
                 .doOnNext(this::saveLocallyWallet)
