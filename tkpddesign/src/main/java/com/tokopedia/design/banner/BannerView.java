@@ -198,7 +198,7 @@ public class BannerView extends BaseCustomView {
                     if (onPromoDragListener != null) {
                         onPromoDragListener.onPromoDragStart();
                     }
-                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE && !isAutoScrollOnProgress()) {
                     if (onPromoDragListener != null) {
                         onPromoDragListener.onPromoDragEnd();
                     }
