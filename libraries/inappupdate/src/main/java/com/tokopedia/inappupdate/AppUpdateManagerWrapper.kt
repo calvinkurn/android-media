@@ -18,13 +18,13 @@ import com.google.android.play.core.install.model.UpdateAvailability
 class AppUpdateManagerWrapper {
     companion object {
         @JvmField
-        var REQUEST_CODE_IMMEDIATE = 12135
+        val REQUEST_CODE_IMMEDIATE = 12135
         private var INAPP_UPDATE = "inappupdate"
         private var INAPP_UPDATE_PREF = "inappupdate_pref"
         private var KEY_INAPP_TYPE = "inapp_type"
 
         @JvmField
-        var REQUEST_CODE_FLEXIBLE = 12136
+        val REQUEST_CODE_FLEXIBLE = 12136
 
         private var appUpdateManager: AppUpdateManager? = null
         private var appUpdateInfo: AppUpdateInfo? = null
@@ -88,6 +88,19 @@ class AppUpdateManagerWrapper {
         }
 
         @JvmStatic
+        fun onActivityResult(activity: Activity,
+                             requestCode: Int,
+                             resultCode: Int) {
+            if (requestCode == REQUEST_CODE_FLEXIBLE) {
+                if (resultCode == Activity.RESULT_OK){
+                    Toast.makeText(activity, activity.getString(R.string.update_install_see_notif), Toast.LENGTH_LONG).show();
+                }
+                // in else, we do not store the timestamp yet. No requirement for it.
+            }
+            //request code immediate always forcing
+        }
+
+        @JvmStatic
         fun checkAndDoImmediateUpdate(activity: Activity, onError: (() -> (Unit)), onFinished: () -> Unit) {
             val appContext = activity.applicationContext
             val appUpdateManager = getInstance(activity)
@@ -130,7 +143,6 @@ class AppUpdateManagerWrapper {
                 val success = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, activity, REQUEST_CODE_FLEXIBLE)
                 if (success) {
                     setPrefInAppType(activity, AppUpdateType.FLEXIBLE)
-                    Toast.makeText(activity, R.string.update_install_see_notif, Toast.LENGTH_SHORT).show()
                 }
                 return success
             } catch (e: Exception) {

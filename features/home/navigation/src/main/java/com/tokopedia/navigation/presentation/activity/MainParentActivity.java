@@ -418,6 +418,12 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     /**
      * While refreshing the app update info, we also check whether we have updates in progress to
      * complete.
