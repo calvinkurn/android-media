@@ -38,7 +38,6 @@ class CardBannerPagerAdapter(bannerImageUrls : List<String>,
                     .load(bannerImageUrls[position])
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .error(com.tokopedia.design.R.drawable.ic_loading_image)
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .centerCrop()
                     .into(holder.bannerImage)

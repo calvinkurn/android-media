@@ -32,6 +32,7 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
+                android:textColorLink="@color/home_ticker_info_lengkap_color"
                 android:text="Akan ada perubahan batas waktu respon pesanan."
                 android:textColor="@color/home_ticker_text_color"
                 app:layout_constraintBottom_toBottomOf="parent"

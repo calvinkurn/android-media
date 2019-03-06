@@ -866,7 +866,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         Visitable dummyTicker = new TickerViewModel();
         ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
         Ticker.Tickers tis = new Ticker.Tickers();
-        tis.setMessage("halo halo halo halo ini www.tokopedia.com");
+        tis.setMessage("Ayo\u003cb\u003e mari kita berbelanja di \u003c/b\u003e\u003ci\u003eBukalapak\u0026nbsp;\u003ca href=\"https://www.tokopedia.com/\" title=\"#KeTokopedia\"\u003e#KeTokopedia\u003c/a\u003e\u003c/i\u003e");
         tis.setColor("#0a8f08");
         tickers.add(tis);
         ((TickerViewModel) dummyTicker).setTickers(tickers);
