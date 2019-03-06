@@ -55,6 +55,10 @@ public class AppUpdateDialogBuilder {
                             // if immediate update fail or cannot be operated
                             goToPlayStore();
                             return null;
+                        }, () -> {
+                            negativeButton.setEnabled(true);
+                            positiveButton.setEnabled(true);
+                            return null;
                         });
                     } else { // flexible update
                         Toast.makeText(activity, "checking flex update", Toast.LENGTH_SHORT).show();
