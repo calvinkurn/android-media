@@ -28,7 +28,6 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.otp)
@@ -49,6 +48,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.features.common_promo)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -87,7 +87,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.network)
 }
 
 apply from: '../../../publish_local.gradle'

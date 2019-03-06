@@ -55,9 +55,9 @@
     <string name="flight_dashboard_arrival_empty_error">Anda belum memilih airport kedatangan</string>
     <string name="flight_dashboard_arrival_departure_same_error">Airport kedatangan dan keberangkatan tidak boleh sama</string>
     <string name="flight_dashboard_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
-    <string name="flight_dashboard_departure_max_two_years_from_today_error">Tanggal keberangkatan maksimal dua tahun dari hari ini</string>
+    <string name="flight_dashboard_departure_max_one_years_from_today_error">Tanggal keberangkatan maksimal satu tahun dari hari ini</string>
     <string name="flight_dashboard_return_should_greater_equal_error">Tanggal keberangkatan pulang harus lebih besar sama dengan tanggal keberangkatan</string>
-    <string name="flight_dashboard_return_max_two_years_from_today_error">Tanggal keberangkatan pulang maksimal dua tahun dari hari ini</string>
+    <string name="flight_dashboard_return_max_one_years_from_today_error">Tanggal keberangkatan pulang maksimal satu tahun dari hari ini</string>
     <string name="flight_dashboard_at_least_one_adult_error">Harus ada penumpang dewasa</string>
     <string name="flight_dashboard_fligh_class_is_empty">Jenis Kelas penerbangan tidak boleh kosong</string>
     <string name="flight_label_refundable_info">Refundable</string>
@@ -249,10 +249,10 @@
     <string name="flight_label_refund_time">Waktu Pengajuan Refund</string>
     <string name="flight_label_refund_status">Status Refund</string>
     <string name="flight_label_order_id_detail">Invoice :</string>
-    <string name="flight_label_eticket">KIRIM E-TICKET</string>
+    <string name="flight_label_show_invoice">KIRIM E-TIKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
-    <string name="flight_label_cek_t_and_c">* Harap cek syarat dan ketentuan pada e-tiket Anda</string>
+    <string name="flight_label_cek_t_and_c">* Harap diingat bahwa terminal dapat berubah sewaktu-waktu</string>
     <string name="flight_order_failed_title">Transaksi Tidak Berhasil</string>
     <string name="flight_order_expire_title">Transaksi kadaluarsa</string>
     <string name="flight_order_order_id_prefix">Invoice :</string>
@@ -456,16 +456,15 @@
     <string name="flight_change_search_content_button">Ganti Pencarian</string>
     <string name="flight_cancellation_less_than_6_hours_confirmation_dialog">OK</string>
     <string name="flight_search_best_pairing_tag">Best Pairing</string>
-    <string name="flight_search_selengkapnya_label">Lihat penerbangan selain Best Pairing</string>
-    <string name="flight_search_selengkapnya_desc">Anda dapat memilih opsi penerbangan lain namun biaya penerbangan pergi Anda akan mengalami perubahan.</string>
+    <string name="flight_search_selengkapnya_label">Pilih Penerbangan Pulang Lainnya</string>
+    <string name="flight_search_selengkapnya_desc"><![CDATA[Harga penerbangan pergi Anda berubah menjadi <font color="#ff5722">%s</font> karena memilih penerbangan selain Best Pairing.]]></string>
     <string name="flight_search_show_all_label">Lihat Selengkapnya</string>
-    <string name="flight_search_show_best_pairing_label">Lihat Sekarang</string>
+    <string name="flight_search_show_best_pairing_desc"><![CDATA[Dengan memilih Best Pairing, harga penerbangan pergi Anda berubah menjadi <font color="#ff5722">%s</font>.]]></string>
+    <string name="flight_search_show_best_pairing_label">Lihat Best Pairing</string>
     <string name="flight_search_dialog_proceed_button_text">Lanjutkan</string>
-    <string name="flight_search_choose_except_best_pairing_dialog_title">Pilih Penerbangan Pulang Lainnya</string>
-    <string name="flight_search_choose_except_best_pairing_dialog_description"><![CDATA[Dengan memilih opsi selain Best Pairing, harga penerbangan pergi Anda berubah dari <b>%1$s</b> menjadi <font color="#ff5722">%2$s</font>.]]></string>
-    <string name="flight_search_choose_best_pairing_dialog_title">Pilih Penerbangan Best Pairing</string>
-    <string name="flight_search_choose_best_pairing_dialog_description"><![CDATA[Dengan memilih kombinasi Best Pairing, harga penerbangan pergi Anda berubah dari <b>%1$s</b> menjadi <font color="#ff5722">%2$s</font>.]]></string>
-    <string name="flight_search_best_pairing_label">Lihat Penerbangan Best Pairing</string>
+    <string name="flight_search_return_price_change_title_dialog">Terjadi Perubahan Harga</string>
+    <string name="flight_search_return_price_change_desc_dialog"><![CDATA[Harga penerbangan pergi Anda berubah menjadi <b>%s</b>. Lanjutkan pesanan dengan harga terbaru?]]></string>
+    <string name="flight_search_best_pairing_label">Pilih Penerbangan Best Pairing</string>
     <string name="flight_search_return_dialog_abort">Batal</string>
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
     <string name="flight_cancellation_upload_percentage_label">sedang diupload %s</string>
@@ -481,4 +480,7 @@
     <string name="flight_cancellation_auto_check_dialog_button">OK, Mengerti</string>
     <string name="flight_cancellation_reason_view_image_label">Lihat</string>
     <string name="flight_bottom_sheet_tag">Flight Sort</string>
+    <string name="flight_search_choose_departure_flight">Pilih Penerbangan Pergi</string>
+    <string name="flight_search_choose_return_flight">Pilih Penerbangan Pulang</string>
+    <string name="flight_terminal_info">Terminal %s*</string>
 </resources>

@@ -55,12 +55,15 @@ public class DeepLinkChecker {
     public static final int GROUPCHAT = 21;
     public static final int SALE = 22;
     public static final int WALLET_OVO = 23;
+    public static final int PLAY = 24;
+
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "flight";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
+    private static final String PLAY_SEGMENT = "play";
     private static final String MYBILLS = "mybills";
 
     private static final String APP_EXCLUDED_URL = "app_excluded_url";
@@ -79,6 +82,8 @@ public class DeepLinkChecker {
         try {
             if (isExcludedHostUrl(uriData))
                 return OTHER;
+            else if (isPlay(linkSegment))
+                return PLAY;
             else if (isGroupChat(linkSegment))
                 return GROUPCHAT;
             else if (isExcludedUrl(uriData))
@@ -138,6 +143,10 @@ public class DeepLinkChecker {
 
     private static boolean isGroupChat(List<String> linkSegment) {
         return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(GROUPCHAT_SEGMENT);
+    }
+
+    private static boolean isPlay(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(PLAY_SEGMENT);
     }
 
     private static boolean isFlight(List<String> linkSegment) {
@@ -246,7 +255,8 @@ public class DeepLinkChecker {
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
-                && !isMyBills(linkSegment);
+                && !isMyBills(linkSegment)
+                && !linkSegment.get(0).equals("contact-us");
     }
 
     private static boolean isSearch(String url) {

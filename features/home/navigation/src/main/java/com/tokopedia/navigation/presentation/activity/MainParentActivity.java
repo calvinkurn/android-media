@@ -37,6 +37,7 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.AbTestingOfficialStore;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
+import com.tokopedia.navigation_common.listener.InboxNotificationListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -512,8 +513,12 @@ public class MainParentActivity extends BaseActivity implements
 
         if (fragment instanceof NotificationListener && notification != null) {
             ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
-            invalidateOptionsMenu();
         }
+
+        if (fragment instanceof InboxNotificationListener && notification != null) {
+            ((InboxNotificationListener) fragment).onNotifyBadgeInboxNotification(notification.getTotalInbox());
+        }
+        invalidateOptionsMenu();
     }
 
     @Override

@@ -47,5 +47,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
 
 }

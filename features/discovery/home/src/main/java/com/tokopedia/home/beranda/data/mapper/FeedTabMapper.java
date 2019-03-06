@@ -1,0 +1,33 @@
+package com.tokopedia.home.beranda.data.mapper;
+
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse;
+import com.tokopedia.home.beranda.domain.gql.feed.RecommendationTab;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import rx.functions.Func1;
+
+public class FeedTabMapper implements Func1<GraphqlResponse, List<FeedTabModel>> {
+    @Override
+    public List<FeedTabModel> call(GraphqlResponse graphqlResponse) {
+        HomeFeedTabGqlResponse gqlResponse = graphqlResponse.getData(HomeFeedTabGqlResponse.class);
+        return convertToFeedTabModelList(gqlResponse.getHomeRecommendation().getRecommendationTabs());
+    }
+
+    private List<FeedTabModel> convertToFeedTabModelList(List<RecommendationTab> recommendationTabs) {
+        List<FeedTabModel> feedTabModelList = new ArrayList<>();
+        for (int position = 0 ; position < recommendationTabs.size() ; position++){
+            RecommendationTab recommendationTab = recommendationTabs.get(position);
+            feedTabModelList.add(new FeedTabModel(
+                    recommendationTab.getId(),
+                    recommendationTab.getName(),
+                    recommendationTab.getImageUrl(),
+                    (position+1)
+                    ));
+        }
+        return feedTabModelList;
+    }
+}

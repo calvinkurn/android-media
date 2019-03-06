@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -176,11 +177,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     public void setData(TopAdsModel data) {
-        if (data != null && data.getError() == null && data.getStatus().getErrorCode() == 0) {
+        if (data != null && data.getStatus().getErrorCode() == 0) {
             List<Item> visitables = new ArrayList<>();
             for (int i = 0; i < data.getData().size(); i++) {
                 Data d = data.getData().get(i);
-                if (d.getProduct() != null) {
+                if (d.getProduct() != null && !TextUtils.isEmpty(d.getProduct().getId())) {
                     visitables.add(ModelConverter.convertToCarouselListViewModel(d));
                 }
             }

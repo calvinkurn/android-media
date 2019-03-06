@@ -11,13 +11,13 @@ public class Donation {
 
     @SerializedName("Title")
     @Expose
-    private String title;
+    private String title = "";
     @SerializedName("Nominal")
     @Expose
     private int nominal;
     @SerializedName("Description")
     @Expose
-    private String description;
+    private String description = "";
 
     public String getTitle() {
         return title;

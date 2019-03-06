@@ -6,16 +6,6 @@ repositories {
     maven { url 'https://hansel.io/maven' }
 }
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdTrain']
-            }
-        }
-    }
-}
-
 project.ext {
     artifactId = 'train'
     groupId = 'com.tokopedia.train'
@@ -50,9 +40,10 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
 
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
+    // Room components
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
@@ -65,5 +56,4 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     implementation rootProject.ext.debugToolsDependencies.stetho
-    implementation project(rootProject.ext.libraries.core_legacy)
 }

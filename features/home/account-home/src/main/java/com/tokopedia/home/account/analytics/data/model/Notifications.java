@@ -8,34 +8,34 @@ public class Notifications {
 
     @SerializedName("sales")
     @Expose
-    private Sales sales;
+    private Sales sales = new Sales();
     @SerializedName("inbox")
     @Expose
-    private Inbox inbox;
+    private Inbox inbox = new Inbox();
     @SerializedName("purchase")
     @Expose
-    private Purchase purchase;
+    private Purchase purchase = new Purchase();
     @SerializedName("resolution_as")
     @Expose
-    private ResolutionAs resolutionAs;
+    private ResolutionAs resolutionAs = new ResolutionAs();
     @SerializedName("total_notif")
     @Expose
-    private int totalNotif;
+    private int totalNotif = 0;
     @SerializedName("total_cart")
     @Expose
-    private int totalCart;
+    private int totalCart = 0;
     @SerializedName("resolution")
     @Expose
-    private int resolution;
+    private int resolution = 0;
     @SerializedName("shop_id")
     @Expose
-    private int shopId;
+    private int shopId = 0;
     @SerializedName("chat")
     @Expose
-    private Chat chat;
+    private Chat chat = new Chat();
     @SerializedName("incr_notif")
     @Expose
-    private int incrNotif;
+    private int incrNotif = 0;
 
     public Sales getSales() {
         return sales;

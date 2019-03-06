@@ -50,6 +50,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     public DynamicChannelSprintViewHolder(View itemView, HomeCategoryListener listener, CountDownView.CountDownListener countDownListener) {
         super(itemView);
+        context = itemView.getContext();
         this.countDownListener = countDownListener;
         this.listener = listener;
         initResources(itemView.getContext());

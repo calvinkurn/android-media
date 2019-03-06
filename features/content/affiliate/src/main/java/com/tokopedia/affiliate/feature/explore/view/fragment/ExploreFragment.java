@@ -33,7 +33,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
-import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.common.preference.AffiliatePreference;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
@@ -55,6 +54,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.affiliate.util.AffiliateHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.button.BottomActionView;
@@ -91,7 +91,7 @@ public class ExploreFragment
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
     private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
-    private static final String KEY_DATA_FIRST_QUERY = "KEY_DATA_FIRST_QUERY";
+    private static final String PERFORMANCE_AFFILIATE = "mp_affiliate";
 
     private static final int ITEM_COUNT = 10;
     private static final int IMAGE_SPAN_COUNT = 2;
@@ -107,11 +107,11 @@ public class ExploreFragment
     private ExploreParams exploreParams;
     private FilterAdapter filterAdapter;
     private EmptyModel emptyResultModel;
-    private int oldScrollY = 0;
     private String firstCursor = "";
     private List<Visitable> tempFirstData = new ArrayList<>();
     private SortFilterModel tempLocalSortFilterData = new SortFilterModel();
     private RemoteConfig remoteConfig;
+    private PerformanceMonitoring performanceMonitoring;
 
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
@@ -125,7 +125,9 @@ public class ExploreFragment
     private CardView btnFilterMore;
     private BottomActionView sortButton;
     private FloatingActionButton btnBackToTop;
+
     private boolean isCanDoAction;
+    private boolean isTraceStopped;
 
     @Inject
     UserSessionInterface userSession;
@@ -145,6 +147,11 @@ public class ExploreFragment
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_AFFILIATE);
+    }
 
     @Nullable
     @Override
@@ -529,7 +536,7 @@ public class ExploreFragment
     private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
         return filters -> {
             getFilteredFirstData(filters);
-            rvFilter.scrollTo(0,0);
+            rvFilter.smoothScrollToPosition(0);
         };
     }
 
@@ -698,6 +705,14 @@ public class ExploreFragment
     @Override
     public void onAutoCompleteIconClicked(String keyword) {
         clearAutoCompleteAdapter(keyword);
+    }
+
+    @Override
+    public void stopTrace() {
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     private void clearAutoCompleteAdapter(String keyword) {

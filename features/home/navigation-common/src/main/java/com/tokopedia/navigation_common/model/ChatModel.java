@@ -10,7 +10,7 @@ public class ChatModel {
 
     @SerializedName("unreads")
     @Expose
-    private String unreads;
+    private String unreads = "";
 
     public String getUnreads() {
         return unreads;

@@ -40,7 +40,7 @@ public class RegisterIdentificationUseCase {
                 .mutation_register_kyc);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                RegisterIdentificationPojo.class, params.getParameters());
+                RegisterIdentificationPojo.class, params.getParameters(), false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

@@ -60,7 +60,9 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
             final ShopProductRequestModel shopProductRequestModel, final PagingList<ShopProduct> shopProductPagingList) {
         List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromShopProduct(
                 shopProductPagingList.getList(), shopProductRequestModel.getPage(), ShopPageConstant.DEFAULT_PER_PAGE);
-        return super.getShopProductViewModelList(isShopOwner(shopProductRequestModel.getShopId()),
+        return super.getShopProductViewModelList(
+                userSession.isLoggedIn(),
+                isShopOwner(shopProductRequestModel.getShopId()),
                 shopProductRequestModel.isOfficialStore(), shopProductViewModelList)
                 .flatMap(new Func1<List<ShopProductViewModel>, Observable<PagingList<ShopProductViewModel>>>() {
                     @Override
