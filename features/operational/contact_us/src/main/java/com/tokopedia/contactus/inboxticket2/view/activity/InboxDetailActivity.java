@@ -162,12 +162,7 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvIdNum.setVisibility(View.VISIBLE);
         } else
             tvIdNum.setVisibility(View.GONE);
-        /*if(!TextUtils.isEmpty(ticketDetail.getInvoice())){
-            viewTransaction.setText(ticketDetail.getInvoice());
-            viewTransaction.setVisibility(View.VISIBLE);
-        } else
-            viewTransaction.setVisibility(View.GONE);
-*/
+
         if (ticketDetail.getComments() != null && ticketDetail.getComments().size() > 0) {
             detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(), ticketDetail.isNeedAttachment(),
                     (InboxDetailContract.InboxDetailPresenter) mPresenter);
