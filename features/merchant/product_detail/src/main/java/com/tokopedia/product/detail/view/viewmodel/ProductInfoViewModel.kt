@@ -26,7 +26,6 @@ import com.tokopedia.product.detail.common.data.model.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.product.detail.data.model.holder.RatesEstSummarize
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
@@ -283,10 +282,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)
                     .data.data
-                val addressDest = ratesEstModel.address.cityName
-                val minPrice = ratesEstModel.rates.services.flatMap { it.products.map { it.price.price } }.minBy { it }
-                    ?: 0
-                productInfoP3.rateEstimation = RatesEstSummarize(minPrice, addressDest)
+
+                productInfoP3.rateEstSummarizeText = ratesEstModel.texts
             }
 
             if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)

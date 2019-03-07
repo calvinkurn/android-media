@@ -23,6 +23,16 @@ data class ETD(
         val maxEtd: Int = 0
 )
 
+data class SummaryText(
+        @SerializedName("text_min_price")
+        @Expose
+        val minPrice: String = "",
+
+        @SerializedName("text_destination")
+        @Expose
+        val destination: String = ""
+)
+
 data class Texts(
         @SerializedName("text_range_price")
         @Expose

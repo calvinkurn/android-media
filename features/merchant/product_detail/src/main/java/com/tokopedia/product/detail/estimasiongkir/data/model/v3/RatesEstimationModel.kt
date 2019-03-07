@@ -12,6 +12,10 @@ data class RatesEstimationModel(
         @Expose
         val address: AddressModel = AddressModel(),
 
+        @SerializedName("texts")
+        @Expose
+        val texts: SummaryText = SummaryText(),
+
         @SerializedName("rates")
         @Expose
         val rates: RatesModel = RatesModel(),

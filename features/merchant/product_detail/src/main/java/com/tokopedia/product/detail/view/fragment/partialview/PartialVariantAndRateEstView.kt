@@ -8,10 +8,8 @@ import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.shop.ShopCommitment
-import com.tokopedia.product.detail.estimasiongkir.data.model.RatesModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.data.model.holder.RatesEstSummarize
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 
 class PartialVariantAndRateEstView private constructor(private val view: View) {
@@ -51,18 +49,17 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     }
 
-    fun renderRateEstimation(summarize: RatesEstSummarize, shopLocation: String, onRateEstimationClicked: (()-> Unit)? = null) {
-        if (summarize.addressDest.isBlank()) return
+    fun renderRateEstimation(summarize: SummaryText, shopLocation: String, onRateEstimationClicked: (()-> Unit)? = null) {
+        if (summarize.destination.isBlank()) return
 
         with(view){
-            txt_rate_estimation_start.text = context.getString(R.string.template_rates_estimate_start_price,
-                    summarize.minPrice.getCurrencyFormatted())
+            txt_rate_estimation_start.text = summarize.minPrice
             txt_rate_estimation_start.visible()
             icon_shop_location.visible()
             txt_shop_location.text = shopLocation
             txt_shop_location.visible()
             icon_courier_est.visible()
-            txt_courier_dest.text = summarize.addressDest
+            txt_courier_dest.text = summarize.destination
             txt_courier_dest.visible()
 
             if (label_variant.isVisible) {

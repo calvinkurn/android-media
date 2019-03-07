@@ -838,7 +838,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
-        productInfoP3.rateEstimation?.let {
+        productInfoP3.rateEstSummarizeText?.let {
             partialVariantAndRateEstView.renderRateEstimation(it,
                     shopInfo?.location ?: "", ::gotoRateEstimation)
         }
@@ -990,7 +990,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
-        ToasterError.make(coordinator, throwable.localizedMessage).show()
+        context?.let { ToasterError.make(coordinator, ErrorHandler.getErrorMessage(it, throwable)).show() }
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
