@@ -121,7 +121,7 @@ class TickerCheckoutView @JvmOverloads constructor(
     }
 
     private fun getLayout(): Int {
-        return R.layout.layout_checkout_ticker
+        return R.layout.layout_checkout_ticker_new
     }
 
     enum class State(val id: Int) : Parcelable {

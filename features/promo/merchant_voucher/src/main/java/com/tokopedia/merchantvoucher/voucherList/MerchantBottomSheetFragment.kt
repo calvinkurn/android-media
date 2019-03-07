@@ -2,6 +2,7 @@ package com.tokopedia.merchantvoucher.voucherList
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.R
@@ -18,23 +21,26 @@ import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.ShopCommonModule
+import kotlinx.android.synthetic.main.bottomsheet_merchant_voucher.*
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 03/03/19.
  */
 
-open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVoucherListView {
+open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVoucherListView, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
     lateinit var voucherShopId: String
     private var mTitle: String? = null
     private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
     @Suppress("DEPRECATION")
     private var loadingUseMerchantVoucher: ProgressDialog? = null
+    private var progressDialog: ProgressDialog? = null
 
     @Inject
     lateinit var merchantVoucherListPresenter: MerchantVoucherListPresenter
@@ -93,11 +99,12 @@ open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVo
         val textViewTitle = view.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
         textViewTitle.text = mTitle
 
-        /*view.findViewById<View>(R.id.button_bottom_sheet_cod).setOnClickListener { view1 ->
-            dismiss()
-        }*/
+        @Suppress("DEPRECATION")
+        progressDialog = ProgressDialog(activity)
+        progressDialog?.setMessage(getString(R.string.title_loading))
 
         merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget)
+        loadPromo()
 
         val layoutTitle = view.findViewById<View>(com.tokopedia.design.R.id.layout_title)
         layoutTitle.setOnClickListener {
@@ -160,6 +167,7 @@ open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVo
             return
         }
         merchantVoucherListWidget?.setData(merchantVoucherViewModelList)
+        promoContainer.visibility = View.VISIBLE
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
@@ -170,5 +178,47 @@ open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVo
         if (loadingUseMerchantVoucher != null) {
             loadingUseMerchantVoucher!!.dismiss()
         }
+    }
+
+    override val isOwner: Boolean
+        get() = true
+
+    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
+        println("++ onMerchantUseVoucherClicked")
+        if (context == null) {
+            return
+        }
+        if (!merchantVoucherListPresenter.isLogin()) {
+            if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
+                val intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN)
+                startActivity(intent)
+            }
+        } else if (!merchantVoucherListPresenter.isMyShop(voucherShopId)) {
+            showUseMerchantVoucherLoading();
+            merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode,
+                    merchantVoucherViewModel.voucherId)
+        }
+    }
+
+    override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+        val intent = MerchantVoucherDetailActivity.createIntent(context!!, merchantVoucherViewModel.voucherId,
+                merchantVoucherViewModel, voucherShopId)
+        startActivity(intent)
+    }
+
+    override fun onSeeAllClicked() {
+        // no see all implementation
+    }
+
+    private fun showUseMerchantVoucherLoading() {
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(activity)
+            progressDialog?.setCancelable(false)
+            progressDialog?.setMessage(getString(R.string.title_loading))
+        }
+        if (progressDialog!!.isShowing()) {
+            progressDialog?.dismiss()
+        }
+        progressDialog?.show()
     }
 }

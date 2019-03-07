@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/layoutUsePromo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_8"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:cardElevation="@dimen/dp_3">
+
+        <!--<RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">-->
+
+            <FrameLayout
+                android:id="@+id/frame_voucher_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingLeft="16dp">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/textview_voucher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:drawableLeft="@drawable/ic_kupon_telur"
+                    android:drawableStart="@drawable/ic_kupon_telur"
+                    android:drawableRight="@drawable/bg_button_promo"
+                    android:drawableEnd="@drawable/bg_button_promo"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:gravity="center"
+                    android:text="@string/use_tokopedia_promo"
+                    android:textStyle="bold"
+                    android:textColor="@color/tkpd_main_green"
+                    app:drawableLeftCompat="@drawable/ic_kupon_telur"
+                    app:drawableRightCompat="@drawable/bg_button_promo"
+                    tools:text="Pakai Promo Tokopedia" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:text="Lihat"/>
+
+            </FrameLayout>
+
+            <!--<ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_button_promo"
+                android:layout_toRightOf="@id/frame_voucher_title"
+                android:layout_toEndOf="@id/frame_voucher_title"/>-->
+
+        <!--</RelativeLayout>-->
+
+    </android.support.v7.widget.CardView>
+
+    <FrameLayout
+        android:id="@+id/layoutTicker"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_checkout_ticker_view">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_checkout_ticker_view_white"
+            android:paddingBottom="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10">
+
+            <ImageView
+                android:id="@+id/imageCheck"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_30"
+                android:layout_centerVertical="true"
+                android:background="@drawable/half_circle_green"
+                android:paddingRight="@dimen/dp_6"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:src="@drawable/ic_check_black" />
+
+            <ImageView
+                android:id="@+id/imageClose"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
+                android:src="@drawable/ic_close_green_promo_checkout" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_toEndOf="@+id/imageCheck"
+                android:layout_toLeftOf="@+id/imageClose"
+                android:layout_toRightOf="@+id/imageCheck"
+                android:layout_toStartOf="@+id/imageClose"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageTitleCoupon"
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:adjustViewBounds="true"
+                        tools:src="@drawable/ic_coupon_grey_promo_checkout" />
+
+                    <TextView
+                        android:id="@+id/titleCoupon"
+                        style="@style/TextView.Micro.Bold"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        tools:text="Kupon Gratis Ongkir JT Rp 50000" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/descCoupon"
+                    style="@style/TextView.Micro"
+                    tools:text="Pilih Kurir terlebih dahulu untuk memastikan benefit yang akan didapat" />
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
+
+</LinearLayout>
