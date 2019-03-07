@@ -499,10 +499,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
 
                 float offsetAlpha = (appBarLayout.getY() / 100) * -1;
+                Log.d("Fikry appBarLayout.getY()", appBarLayout.getY()+"");
+
+                Log.d("Fikry offset", offset+"");
+
                 Log.d("Fikry offsetAlpha", offsetAlpha+"");
                 float offsetAlphaFeedShadow = ((float) appBarLayout.getTotalScrollRange() / 100) -
                         offsetAlpha;
 
+                offsetAlpha-=2.5;
+                if (offsetAlpha < 0) {
+                    offsetAlpha = 0;
+                }
                 if (offsetAlpha >= 2.55) {
                     offsetAlpha = 2.55f;
                     homeMainToolbar.switchToDarkToolbar();
