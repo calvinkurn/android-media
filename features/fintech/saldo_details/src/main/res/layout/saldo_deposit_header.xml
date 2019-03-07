@@ -232,8 +232,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_8"
-                        android:paddingLeft="@dimen/dp_8"
-                        android:paddingRight="@dimen/dp_8">
+                        android:padding="@dimen/dp_8">
 
                         <TextView
                             android:id="@+id/saldo_seller_deposit_text"
