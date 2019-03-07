@@ -27,11 +27,22 @@ public class GraphqlRequest {
     private transient Type typeOfT; /*Mandatory parameter*/
 
     /*transient by nature hence it will not be part of request body*/
-    private transient boolean shouldThrow = false; /*Optional parameter*/
+    private transient boolean shouldThrow = true; /*Optional parameter*/
 
     public GraphqlRequest(String query, Type typeOfT) {
         this.query = query;
         this.typeOfT = typeOfT;
+    }
+
+    /**
+     * Use constructor without param shouldThrow for null checker
+     * @param query
+     * @param typeOfT
+     * @param shouldThrow
+     */
+    public GraphqlRequest(String query, Type typeOfT, boolean shouldThrow) {
+        this(query, typeOfT);
+        this.shouldThrow = shouldThrow;
     }
 
     public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables) {
@@ -39,6 +50,14 @@ public class GraphqlRequest {
         this.variables = variables;
     }
 
+    /**
+     * Use constructor without param shouldThrow for null checker
+     * @param query
+     * @param typeOfT
+     * @param variables
+     * @param shouldThrow
+     */
+    @Deprecated
     public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
                           boolean shouldThrow) {
         this(query, typeOfT, variables);
@@ -51,6 +70,15 @@ public class GraphqlRequest {
         this.operationName = operationName;
     }
 
+    /**
+     * Use constructor without param shouldThrow for null checker
+     * @param query
+     * @param typeOfT
+     * @param variables
+     * @param operationName
+     * @param shouldThrow
+     */
+    @Deprecated
     public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
                           String operationName, boolean shouldThrow) {
         this(query, typeOfT, variables, operationName);
@@ -81,6 +109,11 @@ public class GraphqlRequest {
         return shouldThrow;
     }
 
+    /**
+     * Should use nullCheker
+     * @param shouldThrow
+     */
+    @Deprecated
     public void setShouldThrow(boolean shouldThrow) {
         this.shouldThrow = shouldThrow;
     }

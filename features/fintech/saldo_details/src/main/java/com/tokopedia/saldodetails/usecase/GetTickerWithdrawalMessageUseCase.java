@@ -44,7 +44,7 @@ public class GetTickerWithdrawalMessageUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_withdrawal_ticker),
                 GqlWithdrawalTickerResponse.class,
-                usableRequestMap);
+                usableRequestMap, false);
 
         GraphqlCacheStrategy cacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)

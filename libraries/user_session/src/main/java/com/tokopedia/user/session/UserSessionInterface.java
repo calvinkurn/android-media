@@ -47,6 +47,8 @@ public interface UserSessionInterface {
 
     boolean hasPassword();
 
+    String getGCToken();
+
 
         /**
          * SETTER METHOD
@@ -96,8 +98,6 @@ public interface UserSessionInterface {
 
     void setIsMSISDNVerified(boolean isMsisdnVerified);
 
-    void setIsAffiliateStatus(boolean isAffiliate);
-
     void setHasPassword(boolean hasPassword);
 
     void setProfilePicture(String profilePicture);
@@ -105,5 +105,8 @@ public interface UserSessionInterface {
     void setSaldoWithdrawalWaring(boolean value);
 
     void setSaldoIntroPageStatus(boolean value);
+
+    void setGCToken(String gcToken);
+
 
 }

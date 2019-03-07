@@ -29,7 +29,7 @@
         android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:textColor="@color/digital_item_sub_title"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/sp_12"
         android:visibility="visible"
         tools:text="Tokocash" />
 

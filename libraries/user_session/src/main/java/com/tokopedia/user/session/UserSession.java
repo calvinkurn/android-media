@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * @author by milhamj on 04/04/18.
  * Please avoid using this class to get data. Use {@link UserSessionInterface} instead.
@@ -24,6 +26,7 @@ public class UserSession implements UserSessionInterface {
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     private static final String IS_AFFILIATE = "is_affiliate";
     private static final String PHONE_NUMBER = "PHONE_NUMBER";
+    private static final String GC_TOKEN = "GC_TOKEN";
 
     private static final String TEMP_USER_ID = "temp_login_id";
     private static final String TEMP_EMAIL = "TEMP_EMAIL";
@@ -106,6 +109,14 @@ public class UserSession implements UserSessionInterface {
     @Override
     public boolean hasShop() {
         return !TextUtils.isEmpty(getShopId()) && !DEFAULT_EMPTY_SHOP_ID.equals(getShopId());
+    }
+
+    @Override
+    @Nullable
+    public String getGCToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(GC_TOKEN, "");
     }
 
     @Override
@@ -417,6 +428,14 @@ public class UserSession implements UserSessionInterface {
         editor.apply();
     }
 
+    @Override
+    public void setGCToken(String gcToken) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(GC_TOKEN, gcToken);
+        editor.apply();
+    }
+
     public void logoutSession() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -434,6 +453,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(TOKEN_TYPE, null);
         editor.putString(ACCESS_TOKEN, null);
         editor.putString(PROFILE_PICTURE, null);
+        editor.putString(GC_TOKEN, "");
         editor.apply();
     }
 }

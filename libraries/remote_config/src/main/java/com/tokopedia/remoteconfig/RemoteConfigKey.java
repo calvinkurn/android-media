@@ -77,5 +77,7 @@ public class RemoteConfigKey {
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 
+    public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
+
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
 }
