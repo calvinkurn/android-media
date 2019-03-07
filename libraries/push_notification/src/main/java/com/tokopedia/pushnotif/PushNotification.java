@@ -40,8 +40,7 @@ public class PushNotification {
                 notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else if (notificationId == Constant.NotificationId.CHAT) {
                 notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-            } else if (notificationId == Constant.NotificationId.GROUPCHAT ||
-                    (applinkNotificationModel.getTkpCode() >= 1400 && applinkNotificationModel.getTkpCode() < 1410)) {
+            } else if (notificationId == Constant.NotificationId.GROUPCHAT) {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
