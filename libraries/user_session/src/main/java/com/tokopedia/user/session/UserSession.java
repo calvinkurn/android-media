@@ -370,13 +370,13 @@ public class UserSession implements UserSessionInterface {
         editor.apply();
     }
 
-    /*@Override
+    @Override
     public void setIsAffiliateStatus(boolean isAffiliate) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(IS_AFFILIATE, isAffiliate);
         editor.apply();
-    }*/
+    }
 
     @Override
     public void setTempPhoneNumber(String userPhone) {

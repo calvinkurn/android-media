@@ -76,6 +76,8 @@ public interface UserSessionInterface {
 
     void setTempUserId(String userId);
 
+    void setIsAffiliateStatus(boolean isAffiliate);
+
     void setTempPhoneNumber(String userPhone);
 
     void setTempLoginEmail(String email);
