@@ -39,11 +39,8 @@ public class InboxOptionUseCase extends UseCase<ChipGetInboxDetail> {
     public Observable<ChipGetInboxDetail> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.inbox_question_query), ChipInboxDetails.class, this.requestParams.getParameters());
+                R.raw.inbox_question_query), ChipInboxDetails.class, this.requestParams.getParameters(),false);
         graphqlUseCase.addRequest(graphqlRequest);
-        /*graphqlUseCase.setCacheStrategy(
-                new GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setSessionIncluded(true).build());*/
         return graphqlUseCase.createObservable(requestParams).map(new Func1<GraphqlResponse, ChipGetInboxDetail>() {
             @Override
             public ChipGetInboxDetail call(GraphqlResponse graphqlResponse) {

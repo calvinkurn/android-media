@@ -40,7 +40,7 @@ public class SubmitRatingUseCase  extends UseCase<ChipGetInboxDetail> {
     public Observable<ChipGetInboxDetail> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.submit_rating), ChipInboxDetails.class, requestParams.getParameters());
+                R.raw.submit_rating), ChipInboxDetails.class, requestParams.getParameters(),false);
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(requestParams).map(new Func1<GraphqlResponse, ChipGetInboxDetail>() {
             @Override
