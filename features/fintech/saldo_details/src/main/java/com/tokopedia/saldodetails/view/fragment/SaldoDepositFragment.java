@@ -421,7 +421,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBalance(float totalBalance, String summaryUsebleDepositIdr) {
+    public void setBalance(long totalBalance, String summaryUsebleDepositIdr) {
         totalSaldoBalance = totalBalance;
         if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
             totalBalanceTV.setText(summaryUsebleDepositIdr);

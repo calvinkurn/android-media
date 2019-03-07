@@ -128,7 +128,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                         gqlSaldoBalanceResponse.getSaldo().getBuyerUsableFmt());
                 getView().showBuyerSaldoRL();
 
-                float totalBalance = gqlSaldoBalanceResponse.getSaldo().getBuyerUsable() +
+                long totalBalance = gqlSaldoBalanceResponse.getSaldo().getBuyerUsable() +
                         gqlSaldoBalanceResponse.getSaldo().getSellerUsable();
 
                 getView().setBalance(totalBalance, CurrencyFormatUtil.

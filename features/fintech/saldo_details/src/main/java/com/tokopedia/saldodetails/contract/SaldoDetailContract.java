@@ -38,7 +38,7 @@ public interface SaldoDetailContract {
 
         void showWithdrawalNoPassword();
 
-        void setBalance(float totalBalance, String summaryUsableDepositIdr);
+        void setBalance(long totalBalance, String summaryUsableDepositIdr);
 
         void setWithdrawButtonState(boolean state);
 

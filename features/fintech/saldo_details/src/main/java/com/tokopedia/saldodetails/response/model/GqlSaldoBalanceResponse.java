@@ -18,34 +18,34 @@ public class GqlSaldoBalanceResponse {
     public class Saldo {
 
         @SerializedName("buyer_hold")
-        private float buyerHold;
+        private long buyerHold;
 
         @SerializedName("buyer_hold_fmt")
         private String buyerHoldFmt;
 
         @SerializedName("buyer_usable")
-        private float buyerUsable;
+        private long buyerUsable;
 
         @SerializedName("buyer_usable_fmt")
         private String buyerUsableFmt;
 
         @SerializedName("seller_hold")
-        private float sellerHold;
+        private long sellerHold;
 
         @SerializedName("seller_hold_fmt")
         private String sellerHoldFmt;
 
         @SerializedName("seller_usable")
-        private float sellerUsable;
+        private long sellerUsable;
 
         @SerializedName("seller_usable_fmt")
         private String sellerUsableFmt;
 
-        public float getBuyerHold() {
+        public long getBuyerHold() {
             return buyerHold;
         }
 
-        public void setBuyerHold(float buyerHold) {
+        public void setBuyerHold(long buyerHold) {
             this.buyerHold = buyerHold;
         }
 
@@ -57,11 +57,11 @@ public class GqlSaldoBalanceResponse {
             this.buyerHoldFmt = buyerHoldFmt;
         }
 
-        public float getBuyerUsable() {
+        public long getBuyerUsable() {
             return buyerUsable;
         }
 
-        public void setBuyerUsable(float buyerUsable) {
+        public void setBuyerUsable(long buyerUsable) {
             this.buyerUsable = buyerUsable;
         }
 
@@ -73,11 +73,11 @@ public class GqlSaldoBalanceResponse {
             this.buyerUsableFmt = buyerUsableFmt;
         }
 
-        public float getSellerHold() {
+        public long getSellerHold() {
             return sellerHold;
         }
 
-        public void setSellerHold(float sellerHold) {
+        public void setSellerHold(long sellerHold) {
             this.sellerHold = sellerHold;
         }
 
@@ -89,11 +89,11 @@ public class GqlSaldoBalanceResponse {
             this.sellerHoldFmt = sellerHoldFmt;
         }
 
-        public float getSellerUsable() {
+        public long getSellerUsable() {
             return sellerUsable;
         }
 
-        public void setSellerUsable(float sellerUsable) {
+        public void setSellerUsable(long sellerUsable) {
             this.sellerUsable = sellerUsable;
         }
 
