@@ -62,7 +62,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .doOnNext(this::saveLocallyWallet)
                 .doOnNext(this::saveLocallyVccUserStatus)
                 .doOnNext(this::savePhoneVerified)
-                .doOnNext(this::saveIsAffiliateStatus)
+                //.doOnNext(this::saveIsAffiliateStatus)
                 .map(mapper);
     }
 
@@ -118,9 +118,9 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
         }
     }
 
-    private void saveIsAffiliateStatus(AccountModel accountModel) {
+    /*private void saveIsAffiliateStatus(AccountModel accountModel) {
         if (accountModel.getAffiliateModel() != null) {
             userSession.setIsAffiliateStatus(accountModel.getAffiliateModel().isAffiliate());
         }
-    }
+    }*/
 }
