@@ -51,7 +51,7 @@ public class GetAllTransactionUsecase {
         String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_all_transaction);
 
         graphqlRequest = new GraphqlRequest(query, GqlCompleteTransactionResponse.class,
-                variables, GET_SUMMARY_DEPOSIT);
+                variables, GET_SUMMARY_DEPOSIT, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);

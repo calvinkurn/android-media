@@ -45,8 +45,7 @@ public class GetSaldoBalanceUseCase {
         HashMap<String, Object> usableRequestMap = new HashMap<>();
         GraphqlRequest graphqlRequestForUsable = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_saldo_balance),
-                GqlSaldoBalanceResponse.class,
-                usableRequestMap);
+                GqlSaldoBalanceResponse.class, usableRequestMap, false);
         GraphqlCacheStrategy cacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                         .setExpiryTime(cacheDuration).setSessionIncluded(true).build();

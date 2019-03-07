@@ -46,11 +46,11 @@ public class GetDepositSummaryUseCase {
 
         String query;
         GraphqlRequest graphqlRequest;
-        query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_details_for_all);
+        query = GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.query_deposit_details_for_all);
 
-        graphqlRequest = new GraphqlRequest(
-                query, GqlAllDepositSummaryResponse.class,
-                variables, GET_SUMMARY_DEPOSIT);
+        graphqlRequest = new GraphqlRequest( query, GqlAllDepositSummaryResponse.class,
+                variables, GET_SUMMARY_DEPOSIT, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
