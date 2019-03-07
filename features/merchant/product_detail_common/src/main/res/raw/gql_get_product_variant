@@ -1,5 +1,5 @@
-query getProductVariant($productID:String!, $userID: String, $includeCampaign: Boolean){
-    getProductVariant(productID: $productID, option:{userID:$userID, includeCampaign:$includeCampaign}){
+query getProductVariant($productID:String!){
+    getProductVariant(productID: $productID){
     parentID
     defaultChild
     sizeChart

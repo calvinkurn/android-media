@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ProductDetailVariantResponse(
         @SerializedName("getProductVariant")
         @Expose
-        val data: ProductVariant? = ProductVariant()
+        val data: ProductVariant = ProductVariant()
 )
 
 data class ProductVariant(

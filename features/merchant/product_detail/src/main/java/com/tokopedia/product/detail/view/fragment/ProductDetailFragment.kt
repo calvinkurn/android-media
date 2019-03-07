@@ -46,7 +46,6 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
-import com.tokopedia.normalcheckout.constant.ATC_AND_SELECT
 import com.tokopedia.normalcheckout.constant.ATC_ONLY
 import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
@@ -1188,7 +1187,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onVariantClicked() {
-        goToNormalCheckout(ATC_AND_SELECT)
+        goToNormalCheckout(ATC_AND_BUY)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

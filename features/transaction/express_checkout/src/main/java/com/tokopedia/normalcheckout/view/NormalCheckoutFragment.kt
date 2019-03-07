@@ -37,7 +37,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
-import com.tokopedia.normalcheckout.constant.ATC_AND_SELECT
 import com.tokopedia.normalcheckout.constant.ATC_ONLY
 import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
@@ -232,7 +231,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             productInfo.basic.isActive()) {
             button_buy_full.gone()
             rl_bottom_action_container.visible()
-            if (action == ATC_AND_SELECT || action == ATC_AND_BUY) {
+            if (action == ATC_AND_BUY) {
                 button_cart.visible()
             } else {
                 button_cart.gone()
@@ -241,10 +240,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 getString(R.string.add_to_cart)
             } else if (productInfo.isPreorderActive) {
                 getString(R.string.label_button_preorder)
-            } else if (action == ATC_AND_SELECT) {
-                getString(R.string.label_button_buy)
             } else {
-                getString(R.string.label_button_buy_now)
+                getString(R.string.label_button_buy)
             }
             if (hasError()) {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
@@ -355,11 +352,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (action == ATC_ONLY) {
                 addToCart()
             } else {
-                if (action == ATC_AND_SELECT) {
-                    selectVariantAndFinish()
-                } else {
-                    doBuyOrPreorder()
-                }
+                doBuyOrPreorder()
             }
         }
         button_cart.setOnClickListener {
@@ -371,7 +364,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     /**
-     * called when click button select (when action is ATC_AND_SELECT) or when backpressed
+     * called when backpressed
      */
     fun selectVariantAndFinish() {
         activity?.run {
@@ -426,19 +419,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         //TODO do buy or preorder
         // skipToCart (in this case is true)
         //TODO oneClickShipment = !isBigPromo && skipToCart
-        var isBigPromo = false
         val oneClickShipment = true
         addToCart(oneClickShipment, onFinish = {
             onFinishAddToCart(it)
             // TODO if bigpromo, route to cart, else to checkout
             activity?.run {
-                if (isBigPromo) {
-                    val intent = router.getCartIntent(this)
-                    startActivity(intent)
-                } else {
-                    val intent = router.getCheckoutIntent(this)
-                    startActivity(intent)
-                }
+                val intent = router.getCheckoutIntent(this)
+                startActivity(intent)
             }
         }, onRetryWhenError = {
             doBuyOrPreorder()
