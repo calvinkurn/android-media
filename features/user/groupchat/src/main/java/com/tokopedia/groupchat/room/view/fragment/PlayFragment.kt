@@ -87,7 +87,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     lateinit var analytics: GroupChatAnalytics
 
     lateinit var viewState: PlayViewState
-    private lateinit var notifReceiver: BroadcastReceiver
+    private var notifReceiver: BroadcastReceiver? = null
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var networkPreference: SharedPreferences
 
@@ -618,9 +618,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         timeStampAfterPause = System.currentTimeMillis()
         presenter.destroyWebSocket()
         if (canPause()) {
-            if (::notifReceiver.isInitialized) {
+            notifReceiver?.let {
+                tempNotifReceiver ->
                 context?.let {
-                    LocalBroadcastManager.getInstance(it).unregisterReceiver(notifReceiver)
+                    LocalBroadcastManager.getInstance(it).unregisterReceiver(tempNotifReceiver)
                 }
             }
             timeStampAfterPause = System.currentTimeMillis()
@@ -639,7 +640,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
             }
 
-            if (::notifReceiver.isInitialized) {
+            if (notifReceiver == null) {
                 notifReceiver = object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) {
                         if (intent.extras != null) {
@@ -649,14 +650,18 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 }
             }
 
-            activity?.applicationContext?.let {
-                try {
-                    LocalBroadcastManager.getInstance(it).registerReceiver(notifReceiver, IntentFilter
-                    (TkpdState.LOYALTY_GROUP_CHAT))
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            notifReceiver?.let {
+                temp ->
+                activity?.applicationContext?.let {
+                    try {
+                        LocalBroadcastManager.getInstance(it).registerReceiver(temp, IntentFilter
+                        (TkpdState.LOYALTY_GROUP_CHAT))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
+
 
             timeStampAfterResume = System.currentTimeMillis()
         }
