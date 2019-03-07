@@ -255,7 +255,8 @@ public class DeepLinkChecker {
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
-                && !isMyBills(linkSegment);
+                && !isMyBills(linkSegment)
+                && !linkSegment.get(0).equals("contact-us");
     }
 
     private static boolean isSearch(String url) {

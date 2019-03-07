@@ -649,7 +649,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 }
             }
 
-            context?.let {
+            activity?.applicationContext?.let {
                 try {
                     LocalBroadcastManager.getInstance(it).registerReceiver(notifReceiver, IntentFilter
                     (TkpdState.LOYALTY_GROUP_CHAT))

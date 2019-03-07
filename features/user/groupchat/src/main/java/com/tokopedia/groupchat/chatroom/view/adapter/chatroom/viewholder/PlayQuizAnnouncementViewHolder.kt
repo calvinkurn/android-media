@@ -59,7 +59,7 @@ class PlayQuizAnnouncementViewHolder(itemView: View,
             VoteAnnouncementViewModel.POLLING_START -> R.drawable.ic_quiz_start
             VoteAnnouncementViewModel.POLLING_FINISHED,
             VoteAnnouncementViewModel.POLLING_END -> R.drawable.ic_quiz_end
-            else -> 0
+            else ->  R.drawable.ic_quiz_end
         }
     }
 

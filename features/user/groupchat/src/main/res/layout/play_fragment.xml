@@ -316,7 +316,7 @@
             android:paddingRight="@dimen/space_med"
             android:paddingBottom="@dimen/space_small"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/chat_list"
+            app:layout_constraintBottom_toTopOf="@+id/bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:targetApi="lollipop"

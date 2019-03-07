@@ -344,6 +344,7 @@ public class FeedPlusPresenter
                         getView().onErrorGetFeedFirstPage(
                                 ErrorHandler.getErrorMessage(getView().getContext(), e)
                         );
+                        getView().stopTracePerformanceMon();
                     }
 
                     @Override

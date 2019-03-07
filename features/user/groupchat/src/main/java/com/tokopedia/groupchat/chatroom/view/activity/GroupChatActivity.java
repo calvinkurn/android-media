@@ -965,6 +965,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
         });
         setVisibilityHeader(View.GONE);
+        stopTrace();
     }
 
     void setVisibilityHeader(int visible) {

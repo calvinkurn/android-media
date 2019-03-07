@@ -73,7 +73,7 @@ public class GroupChatAnalytics {
     private static final String EVENT_NAME_PROMO_VIEW = "promoView";
     private static final String EVENT_NAME_CLICK_BACK = "clickBack";
     private static final String EVENT_NAME_INTERNAL_PROMOTION = "InternalPromotion";
-
+    private static final String EVENT_NAME_PRODUCT_CLICK = "productClick";
 
     public static final String COMPONENT_FLASH_SALE = "flashsale";
     public static final String COMPONENT_BANNER = "banner"; //Sponsor Banner
@@ -162,7 +162,7 @@ public class GroupChatAnalytics {
         analyticTracker.sendEventTracking(EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
-                String.format("%s - %s", viewModel.getChannelId(), adsId)
+                String.format("%s - %s", viewModel.getChannelId(), adsName)
         );
 
         ArrayList<EEPromotion> list = new ArrayList<>();
@@ -172,14 +172,14 @@ public class GroupChatAnalytics {
                 adsName,
                 adsImageUrl,
                 generateTrackerAttribution(GroupChatAnalytics
-                        .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), adsId)
+                        .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
-                EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsId),
+                EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsName),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle()
@@ -264,7 +264,7 @@ public class GroupChatAnalytics {
         analyticTracker.sendEventTracking(EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
-                String.format("%s - %s", viewModel.getChannelId(), adsId
+                String.format("%s - %s", viewModel.getChannelId(), adsName
                 )
         );
 
@@ -282,7 +282,7 @@ public class GroupChatAnalytics {
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
-                EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsId),
+                EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsName),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle()
@@ -509,7 +509,7 @@ public class GroupChatAnalytics {
                 EVENT_NAME, EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view on sticky product",
-                EVENT_LABEL, viewModel.getChannelId() + " - " + item.getComponentId(),
+                EVENT_LABEL, viewModel.getChannelId(),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
@@ -530,10 +530,10 @@ public class GroupChatAnalytics {
         ));
 
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
-                EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_NAME, EVENT_NAME_PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on sticky product",
-                EVENT_LABEL, viewModel.getChannelId() + " - " + item.getComponentId(),
+                EVENT_LABEL, viewModel.getChannelId(),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())

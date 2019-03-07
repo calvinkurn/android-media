@@ -86,8 +86,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     @Inject
     lateinit var itemDecorator: CheckoutVariantItemDecorator
     @Inject
-    lateinit var tkpdProgressDialog: TkpdProgressDialog
-    @Inject
     lateinit var fragmentViewModel: FragmentViewModel
     @Inject
     lateinit var compositeSubscription: CompositeSubscription
@@ -107,6 +105,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var recyclerView: RecyclerView
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
+    private lateinit var tkpdProgressDialog: TkpdProgressDialog
 
     private var isDataLoaded = false
 
@@ -139,7 +138,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_detail_product_page, container, false)
-
+        tkpdProgressDialog = TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         recyclerView = getRecyclerView(view)
         recyclerView.addItemDecoration(itemDecorator)
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -809,6 +808,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?) {
         if (shippingCourierViewModels != null) {
+            for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
+                if (shippingCourierViewModel.productData.isRecommend) {
+                    shippingCourierViewModel.isSelected = true
+                    break
+                }
+            }
             fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
         }
 
