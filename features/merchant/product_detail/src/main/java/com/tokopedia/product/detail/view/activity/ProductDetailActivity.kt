@@ -80,13 +80,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         if (uri != null) {
-            if (uri.scheme == getString(R.string.internal_scheme) && uri.path.startsWith("/product")){
+            if (uri.scheme == getString(R.string.internal_scheme) && uri.path?.startsWith("/product") == true){
                 productId = uri.lastPathSegment
             } else {
                 val segmentUri: List<String> = uri.pathSegments
                 if (segmentUri.size > 1) {
                     shopDomain = segmentUri[0]
                     productKey = segmentUri[1]
+                } else {
+                    productId = intent.getStringExtra(PARAM_PRODUCT_ID)
                 }
             }
         } else {
