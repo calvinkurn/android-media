@@ -328,7 +328,7 @@ public class ProductListFragment extends SearchSectionFragment
         for (Visitable object : list) {
             if (object instanceof ProductItem) {
                 ProductItem item = (ProductItem) object;
-                if (item.isTopAds()) {
+                if (!item.isTopAds()) {
                     dataLayerList.add(item.getProductAsObjectDataLayer(userId));
                 }
             }
