@@ -315,9 +315,9 @@ public abstract class MainApplication extends MainRouterApplication{
      * Intialize the request manager and the image cache
      */
     private void init() {
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
-        }
+//        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+//        }
     }
 
     protected void initializeAnalytics() {
