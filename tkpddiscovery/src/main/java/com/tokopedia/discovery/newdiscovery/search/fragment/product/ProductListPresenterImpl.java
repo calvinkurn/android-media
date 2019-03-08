@@ -241,6 +241,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 if (productViewModel.getAdsModel().getTemplates().get(i).isIsAd()) {
                     Data topAds = productViewModel.getAdsModel().getData().get(j);
                     ProductItem item = new ProductItem();
+                    item.setProductID(topAds.getProduct().getId());
                     item.setTopAds(true);
                     item.setTopadsImpressionUrl(topAds.getProduct().getImage().getS_url());
                     item.setTopadsClickUrl(topAds.getProductClickUrl());
