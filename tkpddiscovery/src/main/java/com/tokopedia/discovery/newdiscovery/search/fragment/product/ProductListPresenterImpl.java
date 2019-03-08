@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -166,9 +167,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_PRODUCT);
         requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(BrowseApi.Q, getView().getQueryKey());
-        if (getView().getSearchParameter().getDepartmentId() != null
-                && !getView().getSearchParameter().getDepartmentId().isEmpty()) {
-            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().getDepartmentId());
+        if(!TextUtils.isEmpty(getView().getSearchParameter().get(SearchApiConst.SC))) {
+            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().get(SearchApiConst.SC));
         } else {
             requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
         }
@@ -325,9 +325,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_QUICK_FILTER);
         requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(BrowseApi.Q, getView().getQueryKey());
-        if (getView().getSearchParameter().getDepartmentId() != null
-                && !getView().getSearchParameter().getDepartmentId().isEmpty()) {
-            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().getDepartmentId());
+        if (!TextUtils.isEmpty(getView().getSearchParameter().get(SearchApiConst.SC))) {
+            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().get(SearchApiConst.SC));
         } else {
             requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
         }

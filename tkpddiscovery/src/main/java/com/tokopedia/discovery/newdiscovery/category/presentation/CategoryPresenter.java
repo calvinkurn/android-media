@@ -16,9 +16,10 @@ import com.tokopedia.discovery.newdiscovery.category.domain.usecase.GetCategoryH
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -61,25 +62,36 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
     public void getCategoryPage1(CategoryHeaderModel categoryHeaderModel) {
         if (isViewAttached()) {
             getView().showLoading();
-            SearchParameter searchParameter = new SearchParameter();
-            searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
-            searchParameter.setDepartmentId(categoryHeaderModel.getDepartementId());
-            searchParameter.setUniqueID(
-                    userSession.isLoggedIn() ?
-                            AuthUtil.md5(userSession.getUserId()) :
-                            AuthUtil.md5(gcmHandler.getRegistrationId())
-            );
-            searchParameter.setUserID(
-                    userSession.isLoggedIn() ?
-                            userSession.getUserId() :
-                            null
-            );
-            searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+
+            SearchParameter searchParameter = generateSearchParameter(categoryHeaderModel.getDepartementId());
+
             getProductUseCase.execute(
                     GetProductUseCase.createInitializeSearchParam(searchParameter, false),
                     new CategoryProductSubscriber(categoryHeaderModel)
             );
         }
+    }
+
+    private SearchParameter generateSearchParameter(String departementID) {
+        SearchParameter searchParameter = new SearchParameter();
+        searchParameter.set(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        searchParameter.set(SearchApiConst.SC, departementID);
+        searchParameter.set(SearchApiConst.UNIQUE_ID, generateUniqueID());
+        searchParameter.set(SearchApiConst.USER_ID, generateUserID());
+
+        return searchParameter;
+    }
+
+    private String generateUniqueID() {
+        return userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
+                AuthUtil.md5(gcmHandler.getRegistrationId());
+    }
+
+    private String generateUserID() {
+        return userSession.isLoggedIn() ?
+                userSession.getUserId() :
+                "";
     }
 
     private class CategoryHeaderSubscriber extends DefaultSubscriber<CategoryHeaderModel> {
@@ -103,19 +115,8 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onNext(CategoryHeaderModel categoryHeaderModel) {
             if (isViewAttached()) {
-                SearchParameter searchParameter = new SearchParameter();
-                searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
-                searchParameter.setDepartmentId(categoryHeaderModel.getDepartementId());
-                searchParameter.setUniqueID(
-                        userSession.isLoggedIn() ?
-                                AuthUtil.md5(userSession.getUserId()) :
-                                AuthUtil.md5(gcmHandler.getRegistrationId())
-                );
-                searchParameter.setUserID(
-                        userSession.isLoggedIn() ?
-                                userSession.getUserId() :
-                                null
-                );
+                SearchParameter searchParameter = generateSearchParameter(categoryHeaderModel.getDepartementId());
+
                 RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
                 if (filterParam != null && filterParam.size() > 0) {
                     requestParams.putAll(filterParam);

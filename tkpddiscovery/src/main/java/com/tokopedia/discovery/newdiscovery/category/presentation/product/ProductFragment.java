@@ -44,12 +44,13 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -357,22 +358,14 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     private void loadDataProduct(final int startRow) {
-        SearchParameter searchParameter = new SearchParameter();
-        searchParameter.setUniqueID(generateUniqueId());
-        searchParameter.setUserID(generateUserId());
-        searchParameter.setDepartmentId(productViewModel.getCategoryHeaderModel().getDepartementId());
-        searchParameter.setStartRow(startRow);
-        searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        SearchParameter searchParameter = generateSearchParameter(startRow, productViewModel.getCategoryHeaderModel().getDepartementId());
+
         presenter.loadDataProduct(searchParameter, productViewModel.getCategoryHeaderModel());
     }
 
     private void loadMoreProduct(final int startRow) {
-        SearchParameter searchParameter = new SearchParameter();
-        searchParameter.setUniqueID(generateUniqueId());
-        searchParameter.setUserID(generateUserId());
-        searchParameter.setDepartmentId(productViewModel.getCategoryHeaderModel().getDepartementId());
-        searchParameter.setStartRow(startRow);
-        searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        SearchParameter searchParameter = generateSearchParameter(startRow, productViewModel.getCategoryHeaderModel().getDepartementId());
+
         isLoadingData = true;
         presenter.loadMore(searchParameter, new ProductPresenter.LoadMoreListener() {
             @Override
@@ -402,6 +395,17 @@ public class ProductFragment extends BrowseSectionFragment
         });
     }
 
+    private SearchParameter generateSearchParameter(int startRow, String departementID) {
+        SearchParameter searchParameter = new SearchParameter();
+        searchParameter.set(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        searchParameter.set(SearchApiConst.SC, departementID);
+        searchParameter.set(SearchApiConst.UNIQUE_ID, generateUniqueId());
+        searchParameter.set(SearchApiConst.USER_ID, generateUserId());
+        searchParameter.set(SearchApiConst.START, String.valueOf(startRow));
+
+        return searchParameter;
+    }
+
     @Override
     public void showNetworkError(final int startRow) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
@@ -413,7 +417,7 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : "";
     }
 
     private String generateUniqueId() {
