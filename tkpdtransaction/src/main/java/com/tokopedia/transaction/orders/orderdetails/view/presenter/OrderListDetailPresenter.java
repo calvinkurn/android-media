@@ -463,9 +463,15 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     @Override
     public void detachView() {
         orderDetailsUseCase.unsubscribe();
-        postCancelReasonUseCase.unsubscribe();
-        finishOrderUseCase.unsubscribe();
-        buyAgainUseCase.unsubscribe();
+        if (postCancelReasonUseCase != null) {
+            postCancelReasonUseCase.unsubscribe();
+        }
+        if (finishOrderUseCase != null) {
+            finishOrderUseCase.unsubscribe();
+        }
+        if (buyAgainUseCase != null) {
+            buyAgainUseCase.unsubscribe();
+        }
         super.detachView();
     }
 }
