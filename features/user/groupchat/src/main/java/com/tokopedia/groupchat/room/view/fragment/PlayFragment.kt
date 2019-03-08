@@ -87,7 +87,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     lateinit var analytics: GroupChatAnalytics
 
     lateinit var viewState: PlayViewState
-    private lateinit var notifReceiver: BroadcastReceiver
+    private var notifReceiver: BroadcastReceiver? = null
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var networkPreference: SharedPreferences
 
@@ -300,7 +300,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 dialog.setOnOkClickListener {
                     viewState.getChannelInfo()?.let {
                         analytics.eventUserExit(it.channelId + " " + (System.currentTimeMillis() - enterTimeStamp))
-                        analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
+                        if(!viewState.getDurationWatchVideo().isNullOrBlank() &&
+                                !viewState.getDurationWatchVideo().equals("0")) {
+                            analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
+                        }
                     }
 
                     activity?.let {
@@ -370,15 +373,22 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onImageAnnouncementClicked(image: ImageAnnouncementViewModel) {
         analytics.eventClickThumbnail(channelInfoViewModel, image.contentImageUrl, image
                 .contentImageId, image.contentImageId)
-        RouteManager.routeWithAttribution(context,  image.redirectUrl,
+        var applink = RouteManager.routeWithAttribution(context,  image.redirectUrl,
                 GroupChatAnalytics.generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_IMAGE_ANNOUNCEMENT,
                         channelInfoViewModel.channelUrl,
                         channelInfoViewModel.title))
+
+        openRedirectUrl(applink)
     }
 
-    override fun onVoteComponentClicked(type: String?, name: String?) {
-        analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name)
+    override fun onVoteComponentClicked(type: String?, name: String?, voteUrl : String) {
+        analytics.eventClickVoteComponent(channelInfoViewModel, name)
+        if(!userSession.isLoggedIn){
+            onLoginClicked(viewState.getChannelInfo()?.channelId)
+        }else{
+            viewState.onShowOverlayFromVoteComponent(voteUrl)
+        }
     }
 
     override fun onSprintSaleProductClicked(productViewModel: SprintSaleProductViewModel?, position: Int) {
@@ -473,7 +483,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun handleEvent(it: EventGroupChatViewModel) {
         when {
-            it.isFreeze -> viewState.onChannelFrozen(it.channelId)
+            it.isFreeze -> {
+                viewState.onChannelFrozen(it.channelId)
+                onToolbarEnabled(false)
+            }
             it.isBanned -> viewState.banUser(it.userId)
         }
     }
@@ -545,7 +558,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onLoginClicked(channelId: String?) {
         analytics.eventClickLogin(channelId)
-
         startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
                 .getLoginIntent(activity), REQUEST_LOGIN)
     }
@@ -565,6 +577,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     it.contentImageUrl,
                     it.contentImageId,
                     it.contentImageId)
+        }
+        else if (it is VoteAnnouncementViewModel){
+            analytics.eventViewVote(channelInfoViewModel, it.message)
         }
     }
 
@@ -590,8 +605,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button) {
+        analytics.eventClickDynamicButtons(channelInfoViewModel, it)
         when (it.contentType) {
-            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.linkUrl)
+            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.contentLinkUrl)
             DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
             DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
         }
@@ -602,9 +618,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         timeStampAfterPause = System.currentTimeMillis()
         presenter.destroyWebSocket()
         if (canPause()) {
-            if (::notifReceiver.isInitialized) {
+            notifReceiver?.let {
+                tempNotifReceiver ->
                 context?.let {
-                    LocalBroadcastManager.getInstance(it).unregisterReceiver(notifReceiver)
+                    LocalBroadcastManager.getInstance(it).unregisterReceiver(tempNotifReceiver)
                 }
             }
             timeStampAfterPause = System.currentTimeMillis()
@@ -623,7 +640,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
             }
 
-            if (::notifReceiver.isInitialized) {
+            if (notifReceiver == null) {
                 notifReceiver = object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) {
                         if (intent.extras != null) {
@@ -633,14 +650,18 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 }
             }
 
-            context?.let {
-                try {
-                    LocalBroadcastManager.getInstance(it).registerReceiver(notifReceiver, IntentFilter
-                    (TkpdState.LOYALTY_GROUP_CHAT))
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            notifReceiver?.let {
+                temp ->
+                activity?.applicationContext?.let {
+                    try {
+                        LocalBroadcastManager.getInstance(it).registerReceiver(temp, IntentFilter
+                        (TkpdState.LOYALTY_GROUP_CHAT))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
+
 
             timeStampAfterResume = System.currentTimeMillis()
         }
@@ -662,7 +683,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         Log.i("play pause now", System.currentTimeMillis().toString())
         var duration = PlayActivity.KICK_THRESHOLD_TIME
         viewState.getChannelInfo()?.kickViewModel?.kickDuration?.let {
-            if (it > 0) duration = it
+            if (it > 0) duration = TimeUnit.SECONDS.toMillis(it)
         }
         if (timeStampAfterPause > 0
                 && System.currentTimeMillis() - timeStampAfterPause > duration && duration > 0) {
