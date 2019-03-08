@@ -2,4 +2,6 @@
 <resources>
     <color name="green_tradein_button">#03ac0e</color>
     <color name="yellow_tradein_button">#ffe38f</color>
+    <color name="tradein_black">#ae31353b</color>
+    <color name="tradein_blue">#32afff</color>
 </resources>

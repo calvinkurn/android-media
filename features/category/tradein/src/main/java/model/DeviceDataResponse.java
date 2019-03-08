@@ -6,33 +6,23 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class DeviceDataResponse {
-
     @SerializedName("IsEligible")
-    @Expose
     private Boolean isEligible;
     @SerializedName("OldPrice")
-    @Expose
     private Integer oldPrice;
     @SerializedName("RemainingPrice")
-    @Expose
     private Integer remainingPrice;
     @SerializedName("DeviceDiagId")
-    @Expose
     private Integer deviceDiagId;
     @SerializedName("DeviceAttr")
-    @Expose
     private DeviceAttr deviceAttr;
     @SerializedName("DeviceReview")
-    @Expose
     private List<String> deviceReview = null;
     @SerializedName("ExpiryTimeFmt")
-    @Expose
     private String expiryTimeFmt;
     @SerializedName("ConvenienceFee")
-    @Expose
     private ConvenienceFee convenienceFee;
     @SerializedName("CommissionFee")
-    @Expose
     private CommissionFee commissionFee;
     @SerializedName("Message")
     @Expose

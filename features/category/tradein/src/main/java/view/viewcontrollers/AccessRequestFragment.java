@@ -1,14 +1,12 @@
 package view.viewcontrollers;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,23 +25,11 @@ public class AccessRequestFragment extends DialogFragment {
 
     private AccessRequestViewModel mViewModel;
 
-    private int newPrice;
-
     private IAccessRequestListener accessRequestListener;
 
-    public static AccessRequestFragment newInstance(int price) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("NEW PRICE",price);
+    public static AccessRequestFragment newInstance() {
         AccessRequestFragment accessRequestFragment = new AccessRequestFragment();
-        accessRequestFragment.setArguments(bundle);
         return accessRequestFragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        assert getArguments() != null;
-        newPrice = getArguments().getInt("NEW PRICE");
     }
 
     @Override
@@ -76,31 +62,27 @@ public class AccessRequestFragment extends DialogFragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        accessRequestListener = (IAccessRequestListener) activity;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(AccessRequestViewModel.class);
-        accessRequestListener = mViewModel;
-        mViewModel.getPermissionLiveData().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isAllow) {
-                if (isAllow != null && isAllow) {
-                    Intent tradeInHomeIntent = new Intent(getContext(), TradeInHomeActivity.class);
-                    tradeInHomeIntent.putExtra("NEW PRICE",newPrice);
-                    startActivityForResult(tradeInHomeIntent, 1001);
-                } else
-                    dismiss();
-            }
-        });
     }
 
     public class AccessRequestClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.button_accept)
+            if (v.getId() == R.id.button_accept) {
                 accessRequestListener.clickAccept();
+                dismiss();
+            }
             else
-                accessRequestListener.clickDeny();
+                dismiss();
         }
     }
 

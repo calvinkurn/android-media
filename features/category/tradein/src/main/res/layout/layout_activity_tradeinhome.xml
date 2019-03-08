@@ -11,10 +11,10 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="@dimen/dp_4"
         android:theme="@style/Toolbar.White"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:elevation="@dimen/dp_4"
         app:subtitleTextAppearance="@style/SubTitleTextAppearance"
         app:titleTextAppearance="@style/TitleTextAppearance" />
 

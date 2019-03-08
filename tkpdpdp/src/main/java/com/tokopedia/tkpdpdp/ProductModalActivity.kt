@@ -9,8 +9,11 @@ import com.tokopedia.core.network.entity.variant.ProductVariant
 import com.tokopedia.core.product.model.productdetail.ProductDetailData
 import com.tokopedia.tkpdpdp.fragment.ProductModalFragment
 import model.TradeInParams
+import view.viewcontrollers.TradeInHomeActivity
+import viewmodel.IAccessRequestListener
 
-class ProductModalActivity : BaseSimpleActivity() {
+
+class ProductModalActivity : BaseSimpleActivity(), IAccessRequestListener {
 
     private var variant: ProductVariant? = null
     private var data: ProductDetailData? = null
@@ -54,6 +57,24 @@ class ProductModalActivity : BaseSimpleActivity() {
 
     override fun isShowCloseButton(): Boolean {
         return true
+    }
+
+    override fun clickAccept() {
+        val intent = TradeInHomeActivity.getIntent(this)
+        val tradeInData = Bundle()
+
+        tradeInData.putInt(TradeInParams.PARAM_NEW_PRICE, tradeInParams!!.newPrice)
+        tradeInData.putString(TradeInParams.PARAM_DEVICE_ID, tradeInParams!!.deviceId)
+        tradeInData.putInt(TradeInParams.PARAM_USER_ID, tradeInParams!!.userId)
+        tradeInData.putString(TradeInParams.PARAM_NEW_DEVICE_NAME, tradeInParams!!.productName)
+        tradeInData.putBoolean(TradeInParams.PARAM_USE_KYC, tradeInParams!!.isUseKyc == 1)
+
+        intent.putExtras(tradeInData)
+        startActivityForResult(intent, 22345)
+    }
+
+    override fun clickDeny() {
+
     }
 
     override fun getNewFragment(): Fragment {

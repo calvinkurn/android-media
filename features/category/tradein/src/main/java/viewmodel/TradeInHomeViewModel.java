@@ -10,17 +10,36 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.tradein.R;
+import com.google.gson.Gson;
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import model.DeviceAttr;
+import model.DeviceDiagInput;
+import model.DeviceDiagInputResponse;
+import model.DeviceDiagnostics;
+import model.TradeInParams;
+import rx.Subscriber;
+import view.viewcontrollers.FinalPriceActivity;
 
 public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver, Laku6TradeIn.TradeInListener {
     private MutableLiveData<String> eligibileTickerData;
@@ -28,6 +47,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
     private MutableLiveData<JSONObject> priceFailData;
 
     private WeakReference<FragmentActivity> activityWeakReference;
+    private Bundle inData;
     private Laku6TradeIn laku6TradeIn;
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
 
@@ -35,6 +55,58 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
         @Override
         public void onReceive(Context context, Intent intent) {
             String result = intent.getStringExtra("test-result");
+            DeviceDiagnostics diagnostics = new Gson().fromJson(result, DeviceDiagnostics.class);
+            Map<String, Object> variables = new HashMap<>();
+            try {
+                DeviceDiagInput deviceDiagInput = new DeviceDiagInput();
+                deviceDiagInput.setUniqueCode(diagnostics.getTradeInUniqueCode());
+                DeviceAttr deviceAttr = new DeviceAttr();
+                deviceAttr.setBrand(diagnostics.getBrand());
+                deviceAttr.setGrade(diagnostics.getGrade());
+                List<String> imei = new ArrayList<>();
+                imei.add(diagnostics.getImei());
+                deviceAttr.setImei(imei);
+                deviceAttr.setModel(diagnostics.getModel());
+                deviceAttr.setModelId(diagnostics.getModelId());
+                deviceAttr.setRam(diagnostics.getRam());
+                deviceAttr.setStorage(diagnostics.getStorage());
+                deviceDiagInput.setDeviceAttr(deviceAttr);
+                deviceDiagInput.setDeviceId(activityWeakReference.get().getIntent().getStringExtra(TradeInParams.PARAM_DEVICE_ID));
+                deviceDiagInput.setDeviceReview(diagnostics.getReviewDetails());
+                deviceDiagInput.setNewPrice(activityWeakReference.get().getIntent().getIntExtra(TradeInParams.PARAM_NEW_PRICE, 0));
+                deviceDiagInput.setOldPrice(diagnostics.getTradeInPrice());
+                variables.put("params", deviceDiagInput);
+                GraphqlUseCase gqlDeviceDiagInput = new GraphqlUseCase();
+                gqlDeviceDiagInput.clearRequest();
+                gqlDeviceDiagInput.addRequest(new
+                        GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
+                        R.raw.gql_insert_device_diag), DeviceDiagInputResponse.class, variables));
+                gqlDeviceDiagInput.execute(new Subscriber<GraphqlResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(GraphqlResponse graphqlResponse) {
+                        if (graphqlResponse != null) {
+                            if (graphqlResponse.getData(DeviceDiagInputResponse.class) != null) {
+                                Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
+                                finalPriceIntent.putExtras(inData);
+                                activityWeakReference.get().startActivityForResult(finalPriceIntent, 10101);
+                            }
+                        }
+
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
     private BroadcastReceiver mBackReceiver = new BroadcastReceiver() {
@@ -49,7 +121,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
         activityWeakReference = new WeakReference<>(activity);
         eligibileTickerData = new MutableLiveData<>();
         minPriceData = new MutableLiveData<>();
-        priceFailData= new MutableLiveData<>();
+        priceFailData = new MutableLiveData<>();
     }
 
     public MutableLiveData<String> getEligibileTickerData() {
@@ -68,6 +140,8 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
     public void getPriceFromSDK() {
         laku6TradeIn = Laku6TradeIn.getInstance(activityWeakReference.get());
         laku6TradeIn.setCampaignTradeInId("tokopediaSandbox");
+        inData = activityWeakReference.get().getIntent().getExtras();
+        requestPermission();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -75,7 +149,6 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
         if (activityWeakReference != null && activityWeakReference.get() != null) {
             LocalBroadcastManager.getInstance(activityWeakReference.get()).registerReceiver(mMessageReceiver, new IntentFilter("laku6-test-end"));
             LocalBroadcastManager.getInstance(activityWeakReference.get()).registerReceiver(mBackReceiver, new IntentFilter("laku6-back-action"));
-            requestPermission();
         }
     }
 

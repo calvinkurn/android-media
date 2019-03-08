@@ -35,6 +35,9 @@ import java.util.List;
 
 import model.TradeInParams;
 import view.customview.TradeInTextView;
+import view.viewcontrollers.FinalPriceActivity;
+import view.viewcontrollers.TradeInHomeActivity;
+import viewmodel.IAccessRequestListener;
 
 import static android.view.View.VISIBLE;
 import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
@@ -42,7 +45,7 @@ import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 
 public class VariantActivity extends TActivity implements
-        VariantOptionAdapter.OnVariantOptionChoosedListener {
+        VariantOptionAdapter.OnVariantOptionChoosedListener, IAccessRequestListener {
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
@@ -101,6 +104,7 @@ public class VariantActivity extends TActivity implements
     private View viewContainerQty;
     private View viewContainerRemark;
     private View viewContainerButton;
+    private TradeInTextView tradeInTextView;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
@@ -176,8 +180,13 @@ public class VariantActivity extends TActivity implements
         viewContainerQty = findViewById(R.id.view_qty_product);
         viewContainerRemark = findViewById(R.id.view_remark_for_seller);
         viewContainerButton = findViewById(R.id.all_kind_button_buy);
-        TradeInTextView tradeInTextView = findViewById(R.id.tv_trade_in);
-        tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams);
+        tradeInTextView = findViewById(R.id.tv_trade_in);
+        if (tradeInParams != null) {
+            if (tradeInParams.getUsedPrice() > 0)
+                tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, true);
+            else
+                tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, false);
+        }
 
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
@@ -227,32 +236,35 @@ public class VariantActivity extends TActivity implements
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
         etNotesSeller.setText(selectedRemarkNotes);
-        widgetQty.setOnPickerActionListener(new com.tokopedia.design.component.NumberPickerWithCounterView.OnPickerActionListener() {
-            @Override
-            public void onNumberChange(int num) {
-                selectedQuantity = num;
-                textCartPrice.setText(VariantActivity.this.generateTextCartPrice());
+        if (stateFormVariantPage != STATE_BUTTON_TRADEIN) {
+            widgetQty.setOnPickerActionListener(new com.tokopedia.design.component.NumberPickerWithCounterView.OnPickerActionListener() {
+                @Override
+                public void onNumberChange(int num) {
+                    selectedQuantity = num;
+                    textCartPrice.setText(VariantActivity.this.generateTextCartPrice());
 
-                if (num < widgetQty.getMinValue()) {
-                    buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this, R.drawable.button_save_grey));
-                    buttonBuy.setClickable(false);
-                } else {
-                    buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this, R.drawable.orange_button_rounded));
-                    buttonBuy.setClickable(true);
+                    if (num < widgetQty.getMinValue()) {
+                        buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this, R.drawable.button_save_grey));
+                        buttonBuy.setClickable(false);
+                    } else {
+                        buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this, R.drawable.orange_button_rounded));
+                        buttonBuy.setClickable(true);
+                    }
                 }
+            });
+            try {
+                widgetQty.setInitialState(
+                        Integer.parseInt(productDetailData.getInfo().getProductMinOrder()),
+                        DEFAULT_MAXIMUM_STOCK_PICKER,
+                        selectedQuantity);
+            } catch (NumberFormatException e) {
+                widgetQty.setInitialState(
+                        DEFAULT_MINIMUM_STOCK_PICKER,
+                        DEFAULT_MAXIMUM_STOCK_PICKER,
+                        selectedQuantity);
             }
-        });
-        try {
-            widgetQty.setInitialState(
-                    Integer.parseInt(productDetailData.getInfo().getProductMinOrder()),
-                    DEFAULT_MAXIMUM_STOCK_PICKER,
-                    selectedQuantity);
-        } catch (NumberFormatException e) {
-            widgetQty.setInitialState(
-                    DEFAULT_MINIMUM_STOCK_PICKER,
-                    DEFAULT_MAXIMUM_STOCK_PICKER,
-                    selectedQuantity);
-        }
+        } else
+            widgetQty.setVisibility(View.GONE);
         if (isCampaign()) {
             textOriginalPrice.setText(productDetailData.getCampaign().getOriginalPriceFmt());
             textOriginalPrice.setPaintFlags(
@@ -276,6 +288,10 @@ public class VariantActivity extends TActivity implements
     private String generateTextCartPrice() {
         if (isCampaign()) {
             return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * selectedQuantity, true);
+        } else if (stateFormVariantPage == STATE_BUTTON_TRADEIN) {
+            long finalprice = productDetailData.getInfo().getProductPriceUnformatted().longValue() -
+                    tradeInParams.getUsedPrice();
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(finalprice, true);
         } else {
             for (ProductWholesalePrice item : productDetailData.getWholesalePrice()) {
                 if (selectedQuantity >= item.getWholesaleMinRaw() && selectedQuantity <= item.getWholesaleMaxRaw()) {
@@ -328,6 +344,12 @@ public class VariantActivity extends TActivity implements
                 }
             case STATE_BUTTON_CART:
                 return getResources().getString(R.string.title_add_to_cart);
+            case STATE_BUTTON_TRADEIN:
+                if (tradeInParams.getUsedPrice() > 0) {
+                    return getResources().getString(R.string.buy_now);
+                } else {
+                    getResources().getString(R.string.tukar_tambah);
+                }
             default:
                 if (isPreOrder()) {
                     return getResources().getString(R.string.title_pre_order);
@@ -397,10 +419,19 @@ public class VariantActivity extends TActivity implements
             buttonCart.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? VISIBLE : View.GONE);
 
             buttonBuy.setClickable(true);
-            buttonBuy.setOnClickListener(
-                    stateFormVariantPage == STATE_BUTTON_CART ?
-                            onButtonCartClick() :
-                            onButtonBuyClick()
+            buttonBuy.setOnClickListener(v -> {
+                        if (stateFormVariantPage == STATE_BUTTON_CART) {
+                            onButtonCartClick();
+                        } else if (stateFormVariantPage == STATE_BUTTON_TRADEIN) {
+                            if (tradeInParams.getUsedPrice() > 0) {
+                                goToHargaFinal();
+                            } else {
+                                tradeInTextView.performClick();
+                            }
+                        } else {
+                            onButtonBuyClick();
+                        }
+                    }
             );
             buttonCart.setOnClickListener(onButtonCartClick());
         } else if (child.isIsBuyable() == false) {
@@ -656,5 +687,37 @@ public class VariantActivity extends TActivity implements
         setResult(RESULT_OK, intent);
         finish();
         VariantActivity.this.overridePendingTransition(0, com.tokopedia.core2.R.anim.push_down);
+    }
+
+    @Override
+    public void clickAccept() {
+        Intent tradeInHomeIntent = TradeInHomeActivity.getIntent(this);
+        Bundle tradeInData = new Bundle();
+        tradeInData.putInt(TradeInParams.PARAM_NEW_PRICE, tradeInParams.getNewPrice());
+        tradeInData.putString(TradeInParams.PARAM_DEVICE_ID, tradeInParams.getDeviceId());
+        tradeInData.putInt(TradeInParams.PARAM_PRODUCT_ID, tradeInParams.getProductId());
+        tradeInData.putString(TradeInParams.PARAM_NEW_DEVICE_NAME, tradeInParams.getProductName());
+        tradeInData.putBoolean(TradeInParams.PARAM_USE_KYC, tradeInParams.isUseKyc() == 1);
+        tradeInHomeIntent.putExtras(tradeInData);
+        startActivityForResult(tradeInHomeIntent, 22345);
+    }
+
+    private void goToHargaFinal() {
+        Intent intent = FinalPriceActivity.getHargaFinalIntent(this);
+        Bundle tradeInData = new Bundle();
+
+        tradeInData.putInt(TradeInParams.PARAM_NEW_PRICE, tradeInParams.getNewPrice());
+        tradeInData.putString(TradeInParams.PARAM_DEVICE_ID, tradeInParams.getDeviceId());
+        tradeInData.putInt(TradeInParams.PARAM_USER_ID, tradeInParams.getUserId());
+        tradeInData.putString(TradeInParams.PARAM_NEW_DEVICE_NAME, tradeInParams.getProductName());
+        tradeInData.putBoolean(TradeInParams.PARAM_USE_KYC, tradeInParams.isUseKyc() == 1);
+
+        intent.putExtras(tradeInData);
+        startActivityForResult(intent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
+    }
+
+    @Override
+    public void clickDeny() {
+
     }
 }

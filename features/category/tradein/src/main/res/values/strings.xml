@@ -15,9 +15,9 @@
         \n• Akses accelero meter</string>
     <string name="tradein_tnc">1. Hanya berlaku untuk pengguna baru yang belum pernah berbelanja di Tokopedia.
 
-\n\n2. Pengguna baru yang melakukan transaksi di Toko tanpa Power Badge akan mendapatkan Cashback OVO Points 10% hingga Rp50,000.
+\n\n2. Pengguna baru yang melakukan transaksi di Toko tanpa Power Badge akan mendapatkan Cashback OVO Points 10\%% hingga Rp50,000.
 
-\n\n3. Mulai tanggal 21 Januari 2019 pukul 10.00 WIB, pengguna baru akan mendapatkan Ekstra Cashback OVO Points 10% hingga Rp50,000  khusus untuk pembelanjaan di Toko dengan Power Badge.
+\n\n3. Mulai tanggal 21 Januari 2019 pukul 10.00 WIB, pengguna baru akan mendapatkan Ekstra Cashback OVO Points 10\%% hingga Rp50,000  khusus untuk pembelanjaan di Toko dengan Power Badge.
 
 \n\n4. Promo berlaku selama periode 1 – 31 Januari 2019 untuk pembelanjaan produk di Marketplace dan Official Store.
 
@@ -31,4 +31,14 @@
     <string name="text_request_access">Meminta Izin Akses</string>
     <string name="accept">Setuju</string>
     <string name="depends_on_test">Harga final sesuai dengan hasil test.</string>
+    <string name="price_elligible">Selamat! HP kamu memenuhi persyaratan.</string>
+    <string name="price_valid_until">Harga final berlaku sampai %1$s</string>
+    <string name="text_model">HP Kamu:  </string>
+    <string name="text_final_price">Harga Jual:  </string>
+    <string name="tukar_tambah">Tukar Tambah</string>
+    <string name="total_price">Total Harga Barang</string>
+    <string name="buy_now">Beli Sekarang</string>
+    <string name="do_ktp">Lanjut Foto KTP</string>
+    <string name="harga_tnc_kyc"><![CDATA[Dengan lanjut foto KTP, Kamu menyetujui Syarat & Ketentuan tukar tambah Tokopedia.]]></string>
+    <string name="harga_tnc"><![CDATA[Dengan klik beli sekarang, Kamu menyetujui Syarat & Ketentuan tukar tambah Tokopedia.]]></string>
 </resources>

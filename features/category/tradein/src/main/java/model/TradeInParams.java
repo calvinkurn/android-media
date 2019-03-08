@@ -6,6 +6,12 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class TradeInParams implements Parcelable {
+    public static final String PARAM_NEW_PRICE = "NEW PRICE";
+    public static final String PARAM_DEVICE_ID = "DEVICE ID";
+    public static final String PARAM_USER_ID = "USER ID";
+    public static final String PARAM_PRODUCT_ID ="PRODUCT ID";
+    public static final String PARAM_NEW_DEVICE_NAME = "NEW DEVICE NAME";
+    public static final String PARAM_USE_KYC = "USE KYC";
     @SerializedName("ProductId")
     private int productId;
     @SerializedName("ShopId")
@@ -17,9 +23,11 @@ public class TradeInParams implements Parcelable {
     @SerializedName("DeviceId")
     private String deviceId;
     @SerializedName("NewPrice")
-    private int price;
+    private int newprice;
     @SerializedName("Source")
     private String source = "pdp-android";
+
+    private String productName;
 
     private int usedPrice;
     private int remainingPrice;
@@ -66,12 +74,12 @@ public class TradeInParams implements Parcelable {
         this.deviceId = deviceId;
     }
 
-    public int getPrice() {
-        return price;
+    public int getNewPrice() {
+        return newprice;
     }
 
     public void setPrice(int price) {
-        this.price = price;
+        this.newprice = price;
     }
 
     public String getSource() {
@@ -114,6 +122,17 @@ public class TradeInParams implements Parcelable {
         this.isEligible = isEligible;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public TradeInParams() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -121,18 +140,29 @@ public class TradeInParams implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.price);
+        dest.writeInt(this.productId);
+        dest.writeInt(this.shopId);
+        dest.writeInt(this.categoryId);
+        dest.writeInt(this.userId);
+        dest.writeString(this.deviceId);
+        dest.writeInt(this.newprice);
+        dest.writeString(this.source);
+        dest.writeString(this.productName);
         dest.writeInt(this.usedPrice);
         dest.writeInt(this.remainingPrice);
         dest.writeInt(this.useKyc);
         dest.writeInt(this.isEligible);
     }
 
-    public TradeInParams() {
-    }
-
     protected TradeInParams(Parcel in) {
-        this.price = in.readInt();
+        this.productId = in.readInt();
+        this.shopId = in.readInt();
+        this.categoryId = in.readInt();
+        this.userId = in.readInt();
+        this.deviceId = in.readString();
+        this.newprice = in.readInt();
+        this.source = in.readString();
+        this.productName = in.readString();
         this.usedPrice = in.readInt();
         this.remainingPrice = in.readInt();
         this.useKyc = in.readInt();

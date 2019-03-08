@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -33,12 +36,14 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
 
     abstract boolean doNeedReattach();
 
+    private boolean isTncShowing = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //executeInjector();
         NetworkClient.init(this);
-        setViewModel(); //Todo:add code for getting default viewmodel
+        setViewModel();
 
         initView();
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
@@ -129,5 +134,49 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
     @Override
     public void toggleSearch(int visibility) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.item_show_tnc) {
+            showTnC(R.string.tradein_tnc);
+            return true;
+        } else {
+            if (isTncShowing) {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+                    getSupportActionBar().setTitle(getTitle());
+                }
+                isTncShowing = false;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTncShowing) {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+                getSupportActionBar().setTitle(getTitle());
+            }
+            isTncShowing = false;
+        }
+        super.onBackPressed();
+    }
+
+    protected void showTnC(int tncResId) {
+        isTncShowing = true;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
+            getSupportActionBar().setTitle("Syarat dan Ketentuan");
+        }
+
+        TnCFragment fragment = TnCFragment.getInstance(tncResId);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.addToBackStack("TNC");
+        transaction.replace(R.id.root_view, fragment);
+        transaction.commit();
     }
 }

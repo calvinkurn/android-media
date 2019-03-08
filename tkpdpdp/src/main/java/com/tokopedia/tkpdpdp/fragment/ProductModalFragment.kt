@@ -23,8 +23,11 @@ import kotlinx.android.synthetic.main.layout_variant_activity_section_notes.*
 import kotlinx.android.synthetic.main.layout_variant_activity_section_quantity.*
 import kotlinx.android.synthetic.main.variant_title_item.*
 import model.TradeInParams
+import view.viewcontrollers.FinalPriceActivity
+
 
 class ProductModalFragment : BaseDaggerFragment() {
+
 
     companion object {
 
@@ -67,6 +70,7 @@ class ProductModalFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? {
         return null
     }
+
 
     private var productVariant: ProductVariant? = null
     private var productData: ProductDetailData? = null
@@ -125,6 +129,13 @@ class ProductModalFragment : BaseDaggerFragment() {
     private fun generateTextCartPrice(): String {
         if (isCampaign()) {
             return CurrencyFormatUtil.convertPriceValueToIdrFormat(productData?.campaign?.discountedPrice!! * selectedQuantity!!, true)
+        } else if (stateProductModal == STATE_BUTTON_TRADEIN) {
+            var price = productData?.info?.productPriceUnformatted!!.toLong() *
+                    selectedQuantity!!.toLong()
+            price -= tradeInParams!!.usedPrice
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    price,
+                    true)
         } else {
             for (item in productData!!.wholesalePrice) {
                 if (selectedQuantity!! >= item.wholesaleMinRaw && selectedQuantity!! <= item.wholesaleMaxRaw) {
@@ -172,7 +183,15 @@ class ProductModalFragment : BaseDaggerFragment() {
 
             new_button_save.isClickable = true
             new_button_save.setOnClickListener {
-                if (stateProductModal == STATE_BUTTON_CART) onButtonCartClick() else onButtonBuyClick()
+                if (stateProductModal == STATE_BUTTON_CART)
+                    onButtonCartClick()
+                else if (stateProductModal == STATE_BUTTON_TRADEIN) {
+                    if (tradeInParams!!.usedPrice > 0)
+                        goToHargaFinal()
+                    else
+                        tv_trade_in.performClick()
+                } else
+                    onButtonBuyClick()
             }
             action_button_cart.setOnClickListener {
                 onButtonCartClick()
@@ -245,34 +264,40 @@ class ProductModalFragment : BaseDaggerFragment() {
                 text_variant_stock.setTextColor(ContextCompat.getColor(it, R.color.black_70))
             }
         }
-        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams)
-        if (isFromTradeIn!!){
-            if (tradeInParams!!.usedPrice > 0)
-                tv_trade_in.visibility = View.GONE
-            else
-                tv_trade_in.visibility = View.VISIBLE
+
+        if (stateProductModal == STATE_BUTTON_TRADEIN) {
+            if (tradeInParams!!.usedPrice > 0) {
+                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams,true)
+            }
+            else {
+                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams,false)
+            }
         }
 
-        number_picker_quantitiy_product.setInitialState(
-                Integer.parseInt(productData?.info?.productMinOrder),
-                DEFAULT_MAXIMUM_STOCK_PICKER,
-                selectedQuantity!!
-        )
+        if (stateProductModal == STATE_BUTTON_TRADEIN) {
+            view_qty_product.visibility = View.GONE
+        } else {
+            number_picker_quantitiy_product.setInitialState(
+                    Integer.parseInt(productData?.info?.productMinOrder),
+                    DEFAULT_MAXIMUM_STOCK_PICKER,
+                    selectedQuantity!!
+            )
 
-        number_picker_quantitiy_product.setOnPickerActionListener { num ->
-            selectedQuantity = num
-            text_product_price.text = generateTextCartPrice()
+            number_picker_quantitiy_product.setOnPickerActionListener { num ->
+                selectedQuantity = num
+                text_product_price.text = generateTextCartPrice()
 
-            if (num < number_picker_quantitiy_product.getMinValue()) {
-                activity?.let {
-                    new_button_save.background = ContextCompat.getDrawable(it, R.drawable.button_save_grey)
+                if (num < number_picker_quantitiy_product.getMinValue()) {
+                    activity?.let {
+                        new_button_save.background = ContextCompat.getDrawable(it, R.drawable.button_save_grey)
+                    }
+                    new_button_save.isClickable = false;
+                } else {
+                    activity?.let {
+                        new_button_save.background = ContextCompat.getDrawable(it, R.drawable.orange_button_rounded)
+                    }
+                    new_button_save.isClickable = true;
                 }
-                new_button_save.isClickable = false;
-            } else {
-                activity?.let {
-                    new_button_save.background = ContextCompat.getDrawable(it, R.drawable.orange_button_rounded)
-                }
-                new_button_save.isClickable = true;
             }
         }
 
@@ -290,6 +315,20 @@ class ProductModalFragment : BaseDaggerFragment() {
             text_discount.visibility = View.GONE
             text_original_price.visibility = View.GONE
         }
+    }
+
+    private fun goToHargaFinal() {
+        val intent = FinalPriceActivity.getHargaFinalIntent(context)
+        val tradeInData = Bundle()
+
+        tradeInData.putInt(TradeInParams.PARAM_NEW_PRICE, tradeInParams!!.newPrice)
+        tradeInData.putString(TradeInParams.PARAM_DEVICE_ID, tradeInParams!!.deviceId)
+        tradeInData.putInt(TradeInParams.PARAM_USER_ID, tradeInParams!!.userId)
+        tradeInData.putString(TradeInParams.PARAM_NEW_DEVICE_NAME, tradeInParams!!.productName)
+        tradeInData.putBoolean(TradeInParams.PARAM_USE_KYC, tradeInParams!!.isUseKyc == 1)
+
+        intent.putExtras(tradeInData)
+        startActivityForResult(intent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

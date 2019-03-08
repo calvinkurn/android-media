@@ -2,8 +2,10 @@ package viewmodel;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.example.tradein.R;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -19,12 +21,12 @@ import model.TradeInParams;
 import model.ValidateTradeInResponse;
 import model.ValidateTradePDP;
 import rx.Subscriber;
+import view.customview.TradeInTextView;
 import view.viewcontrollers.AccessRequestFragment;
 
 public class TradeInTextViewModel extends ViewModel implements ITradeInParamReceiver {
     private MutableLiveData<ValidateTradeInResponse> responseData;
     private WeakReference<FragmentActivity> activityWeakReference;
-    private int newPrice;
 
     public TradeInTextViewModel(FragmentActivity activity) {
         activityWeakReference = new WeakReference<>(activity);
@@ -34,7 +36,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
     public void showAccessRequestDialog() {
         if (activityWeakReference.get() != null) {
             FragmentManager fragmentManager = activityWeakReference.get().getSupportFragmentManager();
-            AccessRequestFragment accessDialog = AccessRequestFragment.newInstance(newPrice);
+            AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
             accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         }
     }
@@ -47,7 +49,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
         this.responseData.setValue(responseData);
     }
 
-    public void checkTradeIn(TradeInParams tradeInParams) {
+    public void checkTradeIn(TradeInParams tradeInParams, boolean hide) {
         if (tradeInParams.getIsEligible() == 0) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("params", tradeInParams);
@@ -75,6 +77,10 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                         ValidateTradeInResponse tradeInResponse = tradePDP.getResponse();
                         if (tradeInResponse != null) {
                             responseData.setValue(tradeInResponse);
+                            if(tradeInResponse.isEligible()){
+                                LocalBroadcastManager.getInstance(activityWeakReference.get()).sendBroadcast(new Intent(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE));
+
+                            }
                             tradeInParams.setIsEligible(tradeInResponse.isEligible() ? 1 : 0);
                             tradeInParams.setUsedPrice(tradeInResponse.getUsedPrice());
                             tradeInParams.setRemainingPrice(tradeInResponse.getRemainingPrice());
@@ -84,13 +90,18 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                 }
             });
         } else {
-            ValidateTradeInResponse response = new ValidateTradeInResponse();
-            response.setEligible(true);
-            response.setRemainingPrice(tradeInParams.getRemainingPrice());
-            response.setUsedPrice(tradeInParams.getUsedPrice());
-            response.setUseKyc(tradeInParams.isUseKyc() != 0);
-            newPrice = tradeInParams.getPrice();
-            responseData.setValue(response);
+            if (!hide) {
+                ValidateTradeInResponse response = new ValidateTradeInResponse();
+                response.setEligible(true);
+                response.setRemainingPrice(tradeInParams.getRemainingPrice());
+                response.setUsedPrice(tradeInParams.getUsedPrice());
+                response.setUseKyc(tradeInParams.isUseKyc() != 0);
+                responseData.setValue(response);
+            } else {
+                ValidateTradeInResponse response = new ValidateTradeInResponse();
+                response.setEligible(false);
+                responseData.setValue(response);
+            }
         }
     }
 }

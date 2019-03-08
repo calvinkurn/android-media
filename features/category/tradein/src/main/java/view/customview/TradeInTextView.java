@@ -25,6 +25,7 @@ public class TradeInTextView extends ConstraintLayout {
     public TextView titleTextView;
     public TextView priceTextView;
     private TradeInTextView thisInstance;
+    public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";
 
     private View.OnClickListener clickListener = new OnClickListener() {
         @Override
@@ -54,7 +55,7 @@ public class TradeInTextView extends ConstraintLayout {
             this.setBackgroundResource(R.drawable.bg_rect_white);
             this.setElevation(TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    getResources().getDimension(R.dimen.dp_4),
+                    getResources().getDimension(R.dimen.dp_1),
                     getResources().getDisplayMetrics()
             ));
         } else

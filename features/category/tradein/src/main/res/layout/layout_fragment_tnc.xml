@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@color/white">
+
     <TextView
+        android:id="@+id/tv_tnc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/tradein_tnc"
-        android:lineHeight="@dimen/dp_20"
         android:layout_margin="@dimen/sp_16"
+        android:lineHeight="@dimen/dp_20"
+        android:text="@string/tradein_tnc"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_16"/>
+        android:textSize="@dimen/sp_16" />
 
 </ScrollView>

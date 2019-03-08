@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -540,10 +541,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             tradeInParams.setCategoryId(24);
                             tradeInParams.setDeviceId(userSession.getDeviceId());
                             tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
+                            productDetailData.getInfo().setProductPriceUnformatted(3000000);  //todo remove later
                             tradeInParams.setPrice(productDetailData.getInfo().getProductPriceUnformatted());
                             tradeInParams.setProductId(productDetailData.getInfo().getProductId());
                             //tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
                             tradeInParams.setShopId(2400899);
+                            tradeInParams.setProductName(productDetailData.getInfo().getProductName());
 
                             viewListener.checkTradeIn(tradeInParams);
 
@@ -1137,10 +1140,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         tradeInParams.setCategoryId(24);
                         tradeInParams.setDeviceId(userSession.getDeviceId());
                         tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
+                        data.getInfo().setProductPriceUnformatted(3000000); //todo remove later
                         tradeInParams.setPrice(data.getInfo().getProductPriceUnformatted());
                         tradeInParams.setProductId(data.getInfo().getProductId());
 //                        tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
                         tradeInParams.setShopId(2400899);
+                        tradeInParams.setProductName(data.getInfo().getProductName());
 
                         viewListener.checkTradeIn(tradeInParams);
 

@@ -4,8 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
@@ -20,6 +22,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -314,6 +317,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
+    private TextView tvTradeInPromoView;
     private ProductInfoAttributeView productInfoAttributeView;
     private PictureView pictureView;
     private RatingTalkCourierView ratingTalkDescriptionView;
@@ -359,6 +363,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ReportProductDialogFragment fragment;
     private Bundle recentBundle;
     private com.tokopedia.abstraction.common.utils.LocalCacheHandler localCacheHandler;
+    private ElligibleBroadcastReceiver receiver;
     private PerformanceMonitoring performanceMonitoring;
 
     private ProductPass productPass;
@@ -457,6 +462,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
         localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
         localCacheHandler.applyEditor();
+        receiver = new ElligibleBroadcastReceiver();
     }
 
     private void initInjector() {
@@ -500,6 +506,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     protected void initView(View view) {
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
         tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
+        tvTradeInPromoView = view.findViewById(R.id.tv_trade_in_promo);
         headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
         productInfoAttributeView = view.findViewById(R.id.view_product_info_attribute);
         pictureView = (PictureView) view.findViewById(R.id.view_picture);
@@ -1774,6 +1781,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onStop() {
         super.onStop();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
     }
 
     @Override
@@ -2881,7 +2889,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 checkVariant(ProductDetailView.SOURCE_BUTTON_TRADEIN);
             }
         });
-        tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams);
+        IntentFilter intentFilter = new IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
+        tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, false);
     }
 
     public void routeToReviewGallery() {
@@ -2908,5 +2918,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private String getUserId() {
         return userSession.getUserId();
+    }
+
+    public class ElligibleBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            tvTradeInPromoView.setVisibility(View.VISIBLE);
+        }
     }
 }

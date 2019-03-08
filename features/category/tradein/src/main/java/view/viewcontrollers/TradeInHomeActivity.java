@@ -2,14 +2,14 @@ package view.viewcontrollers;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
@@ -35,7 +35,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private TextView mTvGoToProductDetails;
     private TradeInHomeViewModel tradeInHomeViewModel;
     private int newPrice;
-    private boolean isShowingTnC;
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context, TradeInHomeActivity.class);
+    }
 
 
     @Override
@@ -84,19 +87,22 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                         ClickableSpan clickableSpan = new ClickableSpan() {
                             @Override
                             public void onClick(View widget) {
-
+                                showTnC(R.string.tradein_tnc);
                             }
                         };
                         int greenColor = getResources().getColor(R.color.green_nob);
                         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
-                        spannableString.setSpan(clickableSpan, 66, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        spannableString.setSpan(foregroundColorSpan, 66, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        mTvPriceElligible.setText(spannableString);
                         mTvPriceElligible.setVisibility(View.VISIBLE);
+                        mTvPriceElligible.setClickable(true);
+                        mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
                         mTvInitialPrice.setText(String.format("%1$s - %2$s",
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, false),
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, false)));
+                                CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+                                CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
                     }
-                    mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, false));
+                    mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -124,12 +130,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 }
             }
         });
-
     }
 
     @Override
     int getMenuRes() {
-        return 0;
+        return R.menu.trade_in_home;
     }
 
     @Override
@@ -168,15 +173,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.item_show_tnc) {
-            showTnC();
-            return true;
-        } else
-            return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
     }
@@ -184,19 +180,5 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    private void showTnC() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
-            getSupportActionBar().setTitle("Syarat dan Ketentuan");
-        }
-        isShowingTnC = true;
-        TnCFragment fragment = TnCFragment.getInstance();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.addToBackStack("TNC");
-        transaction.replace(R.id.root_view, fragment);
-        transaction.commit();
     }
 }
