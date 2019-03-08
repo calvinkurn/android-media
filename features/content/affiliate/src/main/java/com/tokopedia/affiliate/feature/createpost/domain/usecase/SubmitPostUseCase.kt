@@ -37,27 +37,23 @@ open class SubmitPostUseCase @Inject constructor(
         val tags = getListOfTag(relatedIdList, type)
 
         val imageList = requestParams.getObject(PARAM_IMAGE_LIST) as List<String>
-        val mainImageIndex = requestParams.getInt(PARAM_MAIN_IMAGE_INDEX, 0)
         uploadMultipleImageUseCase.notificationManager = notificationManager
         return uploadMultipleImageUseCase
                 .createObservable(
                         UploadMultipleImageUseCase.createRequestParams(
-                                getMediumList(imageList, tags, mainImageIndex)
+                                getMediumList(imageList, tags)
                         )
                 )
                 .map(rearrangeMedia())
                 .flatMap(submitPostToGraphql(requestParams))
     }
 
-    private fun getMediumList(imageList: List<String>, tags: List<MediaTag>, mainImageIndex: Int)
+    private fun getMediumList(imageList: List<String>, tags: List<MediaTag>)
             : List<SubmitPostMedium> {
 
         val mediumList = ArrayList<SubmitPostMedium>()
-        mediumList.add(SubmitPostMedium(imageList[mainImageIndex], 0, tags ))
-        for (i in imageList.indices) {
-            if (i != mainImageIndex) {
-                mediumList.add(SubmitPostMedium(imageList[i], mediumList.size))
-            }
+        imageList.forEachIndexed { index, image ->
+            mediumList.add(SubmitPostMedium(image, index, if (index == 0) tags else arrayListOf()))
         }
         return mediumList
     }
@@ -138,7 +134,6 @@ open class SubmitPostUseCase @Inject constructor(
         private const val PARAM_CAPTION = "caption"
         private const val PARAM_IMAGE_LIST = "image_list"
         private const val PARAM_TAGS = "tags"
-        private const val PARAM_MAIN_IMAGE_INDEX = "main_image_index"
 
         private const val PARAM_INPUT = "input"
 
@@ -148,8 +143,7 @@ open class SubmitPostUseCase @Inject constructor(
         const val SUCCESS = 1
 
         fun createRequestParams(type: String, token: String, authorId: String, caption: String,
-                                imageList: List<String>, relatedIdList: List<String>,
-                                mainImageIndex: Int): RequestParams {
+                                imageList: List<String>, relatedIdList: List<String>): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_TYPE, type)
             requestParams.putString(PARAM_TOKEN, token)
@@ -158,7 +152,6 @@ open class SubmitPostUseCase @Inject constructor(
             requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_IMAGE_LIST, imageList)
             requestParams.putObject(PARAM_TAGS, relatedIdList)
-            requestParams.putInt(PARAM_MAIN_IMAGE_INDEX, mainImageIndex)
             return requestParams
         }
     }

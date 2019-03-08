@@ -448,7 +448,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            thumbnail.loadImageRounded(viewModel.completeImageList[viewModel.mainImageIndex], 25f)
+            thumbnail.loadImageRounded(viewModel.completeImageList.first(), 25f)
             edit.show()
             thumbnail.setOnClickListener {
                 goToMediaPreview()

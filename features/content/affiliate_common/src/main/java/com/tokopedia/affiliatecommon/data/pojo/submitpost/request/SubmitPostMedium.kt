@@ -12,10 +12,9 @@ data class SubmitPostMedium(
         @Expose
         val order: Int = 0,
 
-
         @SerializedName("tags")
         @Expose
-        val tags: List<MediaTag> = arrayListOf(),
+        var tags: List<MediaTag> = arrayListOf(),
 
         @SerializedName("type")
         @Expose
