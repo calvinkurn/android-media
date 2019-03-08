@@ -110,6 +110,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
             maxChecked = getArguments().getInt(MAX_CHECKED, MAX_CHECKED_DEFAULT);
             hiddenProducts = getArguments().getStringArrayList(HIDDEN_PRODUCTS);
         }
+
+        updateButtonBasedOnChecked(adapter.getCheckedCount());
     }
 
     @Override
