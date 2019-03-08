@@ -53,6 +53,7 @@ include "features:home:account-home"
 include "features:im:challenges"
 //include "features:im:challenges_no_op"
 include "features:im:referral"
+include "features:kyc"
 
 include "features:logistic:tracking"
 //include 'features:logistic:tracking_no_op'
