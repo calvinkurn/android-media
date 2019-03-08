@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core2.R;
@@ -132,13 +134,10 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, ReferralActivity.class.getCanonicalName(), AppEventTracking.EventLabel.REFERRAL);
 
                 break;
-            case TkpdState.DrawerPosition.CONTACT_US:
-                intent = InboxRouter.getContactUsActivityIntent(context);
-                intent.putExtra(InboxRouter.PARAM_URL,
-                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
-                context.startActivity(intent);
-                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), "Contact_Us");
 
+            case TkpdState.DrawerPosition.CONTACT_US:
+                RouteManager.route(context, ApplinkConst.CONTACT_US_NATIVE);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), "Contact_Us");
                 break;
             case TkpdState.DrawerPosition.HELP:
                 intent = InboxRouter.getContactUsActivityIntent(context);
