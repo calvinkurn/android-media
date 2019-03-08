@@ -40,7 +40,7 @@ public interface QrScannerContract {
 
         void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash);
 
-        void goToPaymentPage(JsonObject barcodeData);
+        void goToPaymentPage(String imeiNumber, JsonObject barcodeData);
     }
 
     interface Presenter extends CustomerPresenter<View> {

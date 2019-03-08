@@ -49,6 +49,10 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final int REQUEST_CODE_NOMINAL = 211;
     private static final int REQUEST_CODE_LOGIN = 3;
 
+    private static final String QR_DATA = "QR_DATA";
+    private static final String IMEI = "IMEI";
+    private static final String QR_RESPONSE = "QR_RESPONSE";
+
     private CampaignComponent campaignComponent;
     private boolean isTorchOn;
     private ProgressBar progressBar;
@@ -97,11 +101,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public void goToPaymentPage(JsonObject barcodeData) {
+    public void goToPaymentPage(String imeiNumber, JsonObject barcodeData) {
         SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this,true);
-        cacheManager.put("QR_RESPONSE",barcodeData);
+        cacheManager.put(QR_RESPONSE,barcodeData);
         Intent intent = ((TokoCashRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
-        intent.putExtra("QR_DATA", cacheManager.getId());
+        intent.putExtra(QR_DATA, cacheManager.getId());
+        intent.putExtra(IMEI,imeiNumber);
         startActivity(intent);
         finish();
     }

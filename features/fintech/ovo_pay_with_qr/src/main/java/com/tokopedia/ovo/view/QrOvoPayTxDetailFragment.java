@@ -1,15 +1,21 @@
-package com.tokopedia.ovo;
+package com.tokopedia.ovo.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.ovo.R;
 
-public class QrPayTxProgressFragment extends BaseDaggerFragment {
+public class QrOvoPayTxDetailFragment extends BaseDaggerFragment {
+    public static Fragment createInstance() {
+        return new QrOvoPayTxDetailFragment();
+    }
+
     @Override
     protected void initInjector() {
 
@@ -23,7 +29,7 @@ public class QrPayTxProgressFragment extends BaseDaggerFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.qr_pay_transaction_progress, container, false);
+        View view = inflater.inflate(R.layout.qr_pay_tx_detail_success, container, false);
         return view;
     }
 

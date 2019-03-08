@@ -3,6 +3,8 @@ package com.tokopedia.ovo.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class GoalQRInquiry {
 
 @SerializedName("redirect_url")
@@ -10,10 +12,10 @@ public class GoalQRInquiry {
 private String redirectUrl;
 @SerializedName("amount")
 @Expose
-private Integer amount;
+private Float amount;
 @SerializedName("fee")
 @Expose
-private Integer fee;
+private Float fee;
 @SerializedName("transfer_id")
 @Expose
 private Integer transferId;
@@ -39,7 +41,21 @@ private Promo promo;
 @Expose
 private List<Errors> errors;
 
-public String getRedirectUrl() {
+    public GoalQRInquiry(String redirectUrl, Float amount, Float fee, Integer transferId, Boolean isCashEnabled, Boolean isPointEnabled, Boolean isInputFeeEnabled, Boolean showUsePointToggle, Merchant merchant, Promo promo, List<Errors> errors) {
+        this.redirectUrl = redirectUrl;
+        this.amount = amount;
+        this.fee = fee;
+        this.transferId = transferId;
+        this.isCashEnabled = isCashEnabled;
+        this.isPointEnabled = isPointEnabled;
+        this.isInputFeeEnabled = isInputFeeEnabled;
+        this.showUsePointToggle = showUsePointToggle;
+        this.merchant = merchant;
+        this.promo = promo;
+        this.errors = errors;
+    }
+
+    public String getRedirectUrl() {
 return redirectUrl;
 }
 
@@ -47,19 +63,19 @@ public void setRedirectUrl(String redirectUrl) {
 this.redirectUrl = redirectUrl;
 }
 
-public Integer getAmount() {
+public Float getAmount() {
 return amount;
 }
 
-public void setAmount(Integer amount) {
+public void setAmount(Float amount) {
 this.amount = amount;
 }
 
-public Integer getFee() {
+public Float getFee() {
 return fee;
 }
 
-public void setFee(Integer fee) {
+public void setFee(Float fee) {
 this.fee = fee;
 }
 

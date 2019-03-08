@@ -12,7 +12,12 @@ private String name;
 @Expose
 private String description;
 
-public String getName() {
+    public Merchant(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public String getName() {
 return name;
 }
 

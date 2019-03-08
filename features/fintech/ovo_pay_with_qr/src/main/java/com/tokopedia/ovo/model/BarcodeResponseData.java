@@ -9,7 +9,11 @@ public class BarcodeResponseData {
 @Expose
 private GoalQRInquiry goalQRInquiry;
 
-public GoalQRInquiry getGoalQRInquiry() {
+    public BarcodeResponseData(GoalQRInquiry goalQRInquiry) {
+        this.goalQRInquiry = goalQRInquiry;
+    }
+
+    public GoalQRInquiry getGoalQRInquiry() {
 return goalQRInquiry;
 }
 

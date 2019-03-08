@@ -23,7 +23,15 @@ private String endDate;
 @Expose
 private List<Object> descriptions = null;
 
-public String getBanner() {
+    public Promo(String banner, String name, String startDate, String endDate, List<Object> descriptions) {
+        this.banner = banner;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.descriptions = descriptions;
+    }
+
+    public String getBanner() {
 return banner;
 }
 

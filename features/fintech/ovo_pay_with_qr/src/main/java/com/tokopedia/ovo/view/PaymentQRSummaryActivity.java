@@ -1,4 +1,4 @@
-package com.tokopedia.ovo;
+package com.tokopedia.ovo.view;
 
 import android.support.v4.app.Fragment;
 
@@ -12,6 +12,6 @@ public class PaymentQRSummaryActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return PaymentQRSummaryFragment.createInstance(getIntent().getStringExtra("QR_DATA"));
+        return PaymentQRSummaryFragment.createInstance(getIntent().getStringExtra("QR_DATA"), getIntent().getStringExtra("IMEI"));
     }
 }

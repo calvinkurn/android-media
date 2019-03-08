@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -52,6 +53,10 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     private static final String TAG_QR_PAYMENT = "QR";
     private static final String IDENTIFIER = "identifier";
+    private static final String GOAL_QR_INQUIRY = "goalQRInquiry";
+    private static final String ERRORS = "errors";
+    private static final String MESSAGE = "message";
+    private static final String QR_ID = "qr_id";
 
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
@@ -91,8 +96,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
-        } else if(barcodeData.contains("ovo") || barcodeData.contains("OVO")
-                || barcodeData.contains("GPNQR") || barcodeData.contains("gpnqr")){
+        } else if (barcodeData.contains("ovo") || barcodeData.contains("OVO")
+                || barcodeData.contains("GPNQR") || barcodeData.contains("gpnqr")) {
             checkBarCode(barcodeData);
         } else {
             getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
@@ -103,7 +108,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put("qr_id", barcodeData);
+        variables.put(QR_ID, barcodeData);
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.verify_ovo_qr_code),
                 JsonObject.class,
@@ -124,15 +129,22 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 JsonObject response = graphqlResponse.getData(JsonObject.class);
-                JsonObject error;
+                JsonArray error;
                 if (response != null) {
-                    error = response.getAsJsonObject("errors");
-//                    if (error != null && TextUtils.isEmpty(error.get("message").getAsString())) {
-//                        //error
-//                        getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-//                    } else {
-//                        getView().goToPaymentPage(response);
-//                    }
+                    JsonObject object = response.getAsJsonObject(GOAL_QR_INQUIRY);
+                    if (object != null) {
+                        error = object.getAsJsonArray(ERRORS);
+                        if (error != null && error.size() > 0) {
+                            JsonObject errorObject = error.get(0).getAsJsonObject();
+                            if (errorObject != null && errorObject.get(MESSAGE) != null
+                                    && !TextUtils.isEmpty(errorObject.get(MESSAGE).getAsString())) {
+                                //error
+                                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                            }
+                        } else {
+                            getView().goToPaymentPage(barcodeData, response);
+                        }
+                    }
                 }
 
             }

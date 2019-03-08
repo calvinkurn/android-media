@@ -2,4 +2,6 @@
 <resources>
     <color name="header_bg">#4c2a86</color>
     <color name="green_text">#73bd00</color>
+    <color name="error_color">#cc003d</color>
+    <color name="grey_error">#80000000</color>
 </resources>
