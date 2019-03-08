@@ -1,0 +1,10 @@
+query validateTradeInPDP($params:TradeInValidationInput){
+ validateTradeInPDP(params:$params) {
+   IsEligible
+   IsDiagnosed
+   UseKyc
+   UsedPrice
+   RemainingPrice
+   Message
+ }
+}

@@ -103,6 +103,7 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse;
 import com.tokopedia.transactiondata.usecase.GetProfileListUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -120,6 +121,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import model.TradeInParams;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -160,6 +162,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private RetrofitInteractor retrofitInteractor;
     private CacheInteractor cacheInteractor;
     private TopAdsSourceTaggingLocal topAdsSourceTaggingLocal;
+    private TradeInParams tradeInParams;
     private int counter = 0;
     LocalCacheHandler cacheHandler;
     DateFormat df;
@@ -206,6 +209,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         getImageReviewUseCase.execute(requestParams,
                 new ImageReviewSubscriber(viewListener));
     }
+
 
     @Override
     public void initRetrofitInteractor() {
@@ -557,6 +561,18 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.onProductDetailLoaded(productDetailData, mappingToViewData(productDetailData));
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
+                            UserSession userSession = new UserSession(viewListener.getActivityContext());
+                            TradeInParams tradeInParams = new TradeInParams();
+                            //tradeInParams.setCategoryId(Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId()));
+                            tradeInParams.setCategoryId(24);
+                            tradeInParams.setDeviceId(userSession.getDeviceId());
+                            tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
+                            tradeInParams.setPrice(productDetailData.getInfo().getProductPriceUnformatted());
+                            tradeInParams.setProductId(productDetailData.getInfo().getProductId());
+                            //tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
+                            tradeInParams.setShopId(2400899);
+
+                            viewListener.checkTradeIn(tradeInParams);
 
                             checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
 
@@ -1144,6 +1160,19 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
 
                         viewListener.onProductDetailLoaded(data, mappingToViewData(data));
+
+                        TradeInParams tradeInParams = new TradeInParams();
+                        UserSession userSession = new UserSession(viewListener.getActivityContext());
+//                        tradeInParams.setCategoryId(Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId()));
+                        tradeInParams.setCategoryId(24);
+                        tradeInParams.setDeviceId(userSession.getDeviceId());
+                        tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
+                        tradeInParams.setPrice(data.getInfo().getProductPriceUnformatted());
+                        tradeInParams.setProductId(data.getInfo().getProductId());
+//                        tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
+                        tradeInParams.setShopId(2400899);
+
+                        viewListener.checkTradeIn(tradeInParams);
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 

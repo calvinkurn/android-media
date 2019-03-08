@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.tradein">
+
+    <application
+        android:allowBackup="true"
+        android:label="Tukar Tambah"
+        android:supportsRtl="true">
+        <activity
+            android:name="view.viewcontrollers.TradeInHomeActivity"
+            android:label="Tukar Tambah" />
+    </application>
+</manifest>
