@@ -61,7 +61,7 @@ class SubmitPostService : IntentService(TAG) {
         val notifId = Random().nextInt()
         notificationManager = getNotificationManager(id,
                 viewModel.authorType,
-                viewModel.completeImageList.firstOrNull() ?: "",
+                viewModel.completeImageList.getOrNull(viewModel.mainImageIndex) ?: "",
                 notifId,
                 viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
@@ -69,6 +69,9 @@ class SubmitPostService : IntentService(TAG) {
                 SubmitPostUseCase.createRequestParams(
                         viewModel.authorType,
                         viewModel.token,
+                        if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                        else userSession.shopId,
+                        viewModel.caption,
                         viewModel.completeImageList,
                         if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
                         else viewModel.productIdList,

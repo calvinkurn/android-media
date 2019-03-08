@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
+import com.tokopedia.affiliate.feature.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
@@ -70,7 +70,7 @@ open class SubmitPostUseCase @Inject constructor(
     }
 
     private fun getTagType(type: String): String {
-        return if (type == TYPE_AFFILIATE) type else TAGS_TYPE_PRODUCT
+        return if (type == TYPE_CONTENT_SHOP) TAGS_TYPE_PRODUCT else type
     }
 
     private fun submitPostToGraphql(requestParams: RequestParams): Func1<List<SubmitPostMedium>, Observable<SubmitPostData>> {
@@ -102,33 +102,49 @@ open class SubmitPostUseCase @Inject constructor(
         return Func1 { graphqlResponse -> graphqlResponse.getData(SubmitPostData::class.java) }
     }
 
+    private fun getInputType(type: String): String {
+        return if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
+    }
+
     protected open fun getContentSubmitInput(requestParams: RequestParams,
                                              mediumList: List<SubmitPostMedium>): ContentSubmitInput {
         val input = ContentSubmitInput()
-        input.type = requestParams.getString(PARAM_TYPE, "")
+        input.type = getInputType(requestParams.getString(PARAM_TYPE, ""))
         input.token = requestParams.getString(PARAM_TOKEN, "")
+        input.authorID = requestParams.getString(PARAM_AUTHOR_ID, "")
+        input.authorType = requestParams.getString(PARAM_AUTHOR_TYPE, "")
+        input.caption = requestParams.getString(PARAM_CAPTION, "")
         input.media = mediumList
+
         return input
     }
 
     companion object {
-        internal const val PARAM_TYPE = "type"
-        internal const val PARAM_TOKEN = "token"
-        internal const val PARAM_IMAGE_LIST = "image_list"
-        internal const val PARAM_TAGS = "tags"
-        internal const val PARAM_MAIN_IMAGE_INDEX = "main_image_index"
+        private const val PARAM_TYPE = "type"
+        private const val PARAM_TOKEN = "token"
+        private const val PARAM_AUTHOR_ID = "authorID"
+        private const val PARAM_AUTHOR_TYPE = "authorType"
+        private const val PARAM_CAPTION = "caption"
+        private const val PARAM_IMAGE_LIST = "image_list"
+        private const val PARAM_TAGS = "tags"
+        private const val PARAM_MAIN_IMAGE_INDEX = "main_image_index"
 
         private const val PARAM_INPUT = "input"
 
+        private const val INPUT_TYPE_CONTENT = "content"
         private const val TAGS_TYPE_PRODUCT = "product"
 
         const val SUCCESS = 1
 
-        fun createRequestParams(type: String, token: String, imageList: List<String>,
-                                relatedIdList: List<String>, mainImageIndex: Int): RequestParams {
+        fun createRequestParams(type: String, token: String, authorId: String, caption: String,
+                                imageList: List<String>, relatedIdList: List<String>,
+                                mainImageIndex: Int): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_TYPE, type)
             requestParams.putString(PARAM_TOKEN, token)
+            requestParams.putString(PARAM_AUTHOR_ID, authorId)
+            requestParams.putString(PARAM_AUTHOR_TYPE, type)
+            requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_IMAGE_LIST, imageList)
             requestParams.putObject(PARAM_TAGS, relatedIdList)
             requestParams.putInt(PARAM_MAIN_IMAGE_INDEX, mainImageIndex)
