@@ -13,23 +13,23 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
@@ -46,16 +46,16 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.He
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -98,7 +98,6 @@ public class ProductListFragment extends SearchSectionFragment
     private ProductListAdapter adapter;
     private ProductViewModel productViewModel;
     private ProductListTypeFactory productListTypeFactory;
-    private SearchParameter searchParameter;
     private boolean forceSearch;
 
     private SimilarSearchManager similarSearchManager;
@@ -108,11 +107,11 @@ public class ProductListFragment extends SearchSectionFragment
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
+        args.putParcelable(EXTRA_SEARCH_PARAMETER, productViewModel.getSearchParameter());
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
         return productListFragment;
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,13 +123,14 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void loadDataFromArguments() {
-        productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
-        if (productViewModel != null) {
+        if(getArguments() != null) {
+            productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
+            if (productViewModel != null) {
+                setForceSearch(productViewModel.isForceSearch());
+                renderDynamicFilter(productViewModel.getDynamicFilterModel());
+            }
 
-            if (productViewModel.getSearchParameter() != null)
-                setSearchParameter(productViewModel.getSearchParameter());
-            setForceSearch(productViewModel.isForceSearch());
-            renderDynamicFilter(productViewModel.getDynamicFilterModel());
+            searchParameter = getArguments().getParcelable(EXTRA_SEARCH_PARAMETER);
         }
     }
 
@@ -282,13 +282,16 @@ public class ProductListFragment extends SearchSectionFragment
         if (getFlagFilterHelper() != null &&
                 !TextUtils.isEmpty(getFlagFilterHelper().getCategoryId())) {
             adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getFlagFilterHelper().getCategoryId());
-        } else if (getSearchParameter().getDepartmentId() != null &&
-                !getSearchParameter().getDepartmentId().isEmpty() &&
-                !getSearchParameter().getDepartmentId().equals("0")) {
-            adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().getDepartmentId());
+        } else if (canGetDepartmentIdFromSearchParameter()) {
+            adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().get(SearchApiConst.SC));
         }
         enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
+    }
+
+    private boolean canGetDepartmentIdFromSearchParameter() {
+        String departmentId = getSearchParameter().get(SearchApiConst.SC);
+        return !departmentId.isEmpty() && !departmentId.equals("0");
     }
 
     @Override
@@ -335,11 +338,12 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void loadMoreProduct(final int startRow) {
-        SearchParameter searchParameter
-                = generateLoadMoreParameter(startRow, productViewModel.getQuery());
+        generateLoadMoreParameter(startRow);
+
         HashMap<String, String> additionalParams
                 = NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams());
-        presenter.loadMoreData(searchParameter, additionalParams);
+
+        presenter.loadMoreData(getSearchParameter(), additionalParams);
     }
 
     @Override
@@ -362,14 +366,10 @@ public class ProductListFragment extends SearchSectionFragment
         }
     }
 
-    private SearchParameter generateLoadMoreParameter(int startRow, String query) {
-        SearchParameter searchParameter = getSearchParameter();
-        searchParameter.setUniqueID(generateUniqueId());
-        searchParameter.setUserID(generateUserId());
-        searchParameter.setQueryKey(query);
-        searchParameter.setStartRow(startRow);
-        searchParameter.setDepartmentId(getSearchParameter().getDepartmentId());
-        return searchParameter;
+    private void generateLoadMoreParameter(int startRow) {
+        getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
+        getSearchParameter().set(SearchApiConst.USER_ID, generateUserId());
+        getSearchParameter().set(SearchApiConst.START, String.valueOf(startRow));
     }
 
     private String generateUserId() {
@@ -503,8 +503,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onLongClick(ProductItem item, int adapterPosition) {
-        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getQueryKey(), item);
-
+        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item);
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
@@ -584,13 +583,13 @@ public class ProductListFragment extends SearchSectionFragment
         clearDataFilterSort();
         if (option.isCategoryOption()) {
             if (isQuickFilterSelected) {
-                getSearchParameter().setDepartmentId(option.getValue());
+                getSearchParameter().set(SearchApiConst.SC, option.getValue());
             } else {
-                getSearchParameter().setDepartmentId("");
+                getSearchParameter().remove(SearchApiConst.SC);
             }
         }
         if (option.isOfficialOption()) {
-            getSearchParameter().setIsOfficial(isQuickFilterSelected);
+            getSearchParameter().set(SearchApiConst.OFFICIAL, String.valueOf(isQuickFilterSelected));
         }
         reloadData();
         UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
@@ -602,16 +601,8 @@ public class ProductListFragment extends SearchSectionFragment
         if (selectedFilter == null) {
             return;
         }
-        if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.OFFICIAL))) {
-            getSearchParameter().setIsOfficial(false);
-        } else {
-            getSearchParameter().setIsOfficial(Boolean.parseBoolean(selectedFilter.get(SearchApiConst.OFFICIAL)));
-        }
-        if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.SC))) {
-            getSearchParameter().setDepartmentId("");
-        } else {
-            getSearchParameter().setDepartmentId(selectedFilter.get(SearchApiConst.SC));
-        }
+
+        getSearchParameter().getSearchParameterMap().putAll(selectedFilter);
     }
 
     @Override
@@ -623,11 +614,8 @@ public class ProductListFragment extends SearchSectionFragment
     protected void removeSelectedFilter(String uniqueId) {
         String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
 
-        if (Option.KEY_CATEGORY.equals(optionKey)) {
-            getSearchParameter().setDepartmentId("");
-        } else if (Option.KEY_OFFICIAL.equals(optionKey)) {
-            getSearchParameter().setIsOfficial(false);
-        }
+        searchParameter.remove(optionKey);
+
         super.removeSelectedFilter(uniqueId);
     }
 
@@ -717,7 +705,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     protected void updateDepartmentId(String deptId) {
-        getSearchParameter().setDepartmentId(deptId);
+        getSearchParameter().set(SearchApiConst.SC, deptId);
     }
 
     @Override
@@ -729,10 +717,9 @@ public class ProductListFragment extends SearchSectionFragment
         adapter.clearData();
         adapter.notifyDataSetChanged();
         initTopAdsParams();
-        SearchParameter searchParameter
-                = generateLoadMoreParameter(0, productViewModel.getQuery());
+        generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
-        presenter.loadData(searchParameter, isForceSearch(), getAdditionalParams());
+        presenter.loadData(getSearchParameter(), isForceSearch(), getAdditionalParams());
     }
 
     private HashMap<String, String> getAdditionalParams() {
@@ -852,8 +839,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void addPreFilteredCategoryAndIsOfficial() {
-        String preFilteredSc = getSearchParameter().getDepartmentId();
-        boolean isOfficial = getSearchParameter().getIsOfficial();
+        String preFilteredSc = getSearchParameter().get(SearchApiConst.SC);
+        boolean isOfficial = getSearchParameter().getBoolean(SearchApiConst.OFFICIAL);
         if (TextUtils.isEmpty(preFilteredSc) && !isOfficial) {
             return;
         }

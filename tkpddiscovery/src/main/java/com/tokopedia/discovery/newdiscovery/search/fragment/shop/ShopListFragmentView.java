@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 /**
  * Created by henrypriyono on 10/23/17.
@@ -17,4 +18,6 @@ public interface ShopListFragmentView extends SearchSectionFragmentView {
     void enableFavoriteButton(int adapterPosition);
     String getQueryKey();
     void backToTop();
+    void setSearchParameter(SearchParameter searchParameter);
+    SearchParameter getSearchParameter();
 }

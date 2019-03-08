@@ -10,15 +10,15 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
@@ -79,38 +79,75 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
 
     public static RequestParams createInitializeSearchParam(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner) {
         mRequestOfficialStoreBanner = requestOfficialStoreBanner;
+
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(BrowseApi.SOURCE, !TextUtils.isEmpty(
-                searchParameter.getSource()) ? searchParameter.getSource() : BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
-        requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(BrowseApi.ROWS, (changeParamRow) ? PARAMETER_ROWS : BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS);
-        requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
-        requestParams.putString(BrowseApi.START, Integer.toString(searchParameter.getStartRow()));
-        requestParams.putString(BrowseApi.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
-        requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(BrowseApi.Q, omitNewline(searchParameter.getQueryKey()));
-        requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
-        requestParams.putBoolean(BrowseApi.REFINED, forceSearch);
+
+        requestParams.putAll(searchParameter.getSearchParameterMap());
+        putRequestParamsOtherParameters(requestParams, searchParameter, forceSearch);
+
+        return requestParams;
+    }
+
+    private static void putRequestParamsOtherParameters(RequestParams requestParams, SearchParameter searchParameter, boolean forceSearch) {
+        putRequestParamsSearchParameters(requestParams, searchParameter, forceSearch);
+
+        putRequestParamsTopAdsParameters(requestParams, searchParameter);
+
+        putRequestParamsDepartmentIdIfNotEmpty(requestParams, searchParameter);
+    }
+
+    private static void putRequestParamsSearchParameters(RequestParams requestParams, SearchParameter searchParameter, boolean forceSearch) {
+        requestParams.putString(SearchApiConst.SOURCE, getSearchSource(searchParameter));
+        requestParams.putString(SearchApiConst.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(SearchApiConst.ROWS, getSearchRows());
+        requestParams.putString(SearchApiConst.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        requestParams.putString(SearchApiConst.START, getSearchStart(searchParameter));
+        requestParams.putString(SearchApiConst.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
+        requestParams.putString(SearchApiConst.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
+        requestParams.putString(SearchApiConst.Q, omitNewline(searchParameter.getSearchQuery()));
+        requestParams.putString(SearchApiConst.UNIQUE_ID, searchParameter.get(SearchApiConst.UNIQUE_ID));
+        requestParams.putBoolean(SearchApiConst.REFINED, forceSearch);
+    }
+
+    private static void putRequestParamsTopAdsParameters(RequestParams requestParams, SearchParameter searchParameter) {
         requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
         requestParams.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
-        requestParams.putString(TopAdsParams.KEY_SRC, requestParams.getString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH));
-        requestParams.putInt(TopAdsParams.KEY_PAGE, (searchParameter.getStartRow() /
-                Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1));
-        if (!TextUtils.isEmpty(searchParameter.getUserID())) {
-            requestParams.putString(BrowseApi.USER_ID, searchParameter.getUserID());
+        requestParams.putString(TopAdsParams.KEY_SRC, getSearchSource(searchParameter));
+        requestParams.putInt(TopAdsParams.KEY_PAGE, getTopAdsKeyPage(searchParameter));
+    }
+
+    private static void putRequestParamsDepartmentIdIfNotEmpty(RequestParams requestParams, SearchParameter searchParameter) {
+        String departmentId = searchParameter.get(SearchApiConst.SC);
+
+        if (!TextUtils.isEmpty(departmentId)) {
+            requestParams.putString(SearchApiConst.SC, departmentId);
+            requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
         }
-        if (!TextUtils.isEmpty(searchParameter.getDepartmentId())) {
-            requestParams.putString(BrowseApi.SC, searchParameter.getDepartmentId());
-            requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, searchParameter.getDepartmentId());
-        }
-        if (searchParameter.getIsOfficial()) {
-            requestParams.putString(SearchApiConst.OFFICIAL, String.valueOf(searchParameter.getIsOfficial()));
-        }
-        return requestParams;
+    }
+
+    private static String getSearchSource(SearchParameter searchParameter) {
+        String sourceFromParamModel = searchParameter.get(SearchApiConst.SOURCE);
+
+        return !TextUtils.isEmpty(sourceFromParamModel) ?
+                sourceFromParamModel :
+                BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH;
+    }
+
+    private static String getSearchRows() {
+        return (changeParamRow) ? PARAMETER_ROWS : BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS;
+    }
+
+    private static String getSearchStart(SearchParameter searchParameter) {
+        return String.valueOf(searchParameter.getInteger(SearchApiConst.START));
     }
 
     private static String omitNewline(String text) {
         return text.replace("\n", "");
+    }
+
+    private static int getTopAdsKeyPage(SearchParameter searchParameter) {
+        return (searchParameter.getInteger(SearchApiConst.START) /
+                Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1);
     }
 
     @Override

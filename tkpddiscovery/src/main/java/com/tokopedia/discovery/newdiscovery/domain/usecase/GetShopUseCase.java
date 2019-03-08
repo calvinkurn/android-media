@@ -12,7 +12,7 @@ import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.data.repository.ShopRepository;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,21 +53,20 @@ public class GetShopUseCase extends UseCase<ShopViewModel> {
      */
     public static RequestParams createInitializeSearchParam(SearchParameter searchParameter) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(searchParameter.getSearchParameterMap());
+
+        putRequestParamsOtherParameters(requestParams);
+
+        return requestParams;
+    }
+
+    private static void putRequestParamsOtherParameters(RequestParams requestParams) {
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
         requestParams.putString(BrowseApi.ROWS, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS);
-        requestParams.putString(BrowseApi.START, Integer.toString(searchParameter.getStartRow()));
         requestParams.putString(BrowseApi.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(BrowseApi.Q, searchParameter.getQueryKey());
-        requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
-        requestParams.putString(SearchApiConst.OFFICIAL, String.valueOf(searchParameter.getIsOfficial()));
-
-        if (!TextUtils.isEmpty(searchParameter.getUserID())) {
-            requestParams.putString(BrowseApi.USER_ID, searchParameter.getUserID());
-        }
-        return requestParams;
     }
 
     @Override

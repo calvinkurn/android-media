@@ -10,7 +10,7 @@ import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
@@ -26,10 +26,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.He
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -40,7 +39,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
 
@@ -227,10 +225,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 if (isViewAttached()) {
                     getView().removeLoading();
                     getView().hideRefreshLayout();
-                    getView().showNetworkError(searchParameter.getStartRow());
+                    getView().showNetworkError(searchParameter.getInteger(SearchApiConst.START));
                 }
             }
         };
+
         GqlSearchHelper.requestProductLoadMore(context, requestParams, graphqlUseCase, subscriber);
     }
 
@@ -311,6 +310,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 }
             }
         };
+
         GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase, subscriber);
     }
 

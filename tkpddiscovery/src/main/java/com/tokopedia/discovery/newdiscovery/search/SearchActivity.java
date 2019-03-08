@@ -39,7 +39,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListF
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterModel;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
@@ -71,7 +71,10 @@ import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 
 @RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
-        implements SearchContract.View, RedirectionListener, BottomSheetListener, SearchNavigationListener {
+        implements SearchContract.View,
+                    RedirectionListener,
+                    BottomSheetListener,
+                    SearchNavigationListener {
 
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
@@ -105,7 +108,6 @@ public class SearchActivity extends DiscoveryActivity
     private boolean forceSwipeToShop;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
-    private SearchParameterModel searchParameterModel;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -137,17 +139,17 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private static Intent createIntentToSearchActivityFromBundle(Context context, Bundle bundle) {
-        SearchParameterModel searchParameterModel = createSearchParameterModelFromBundle(bundle);
+        SearchParameter searchParameter = createSearchParameterFromBundle(bundle);
 
         Intent intent = new Intent(context, SearchActivity.class);
-        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameterModel);
+        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
 
         return intent;
     }
 
-    private static SearchParameterModel createSearchParameterModelFromBundle(Bundle bundle) {
+    private static SearchParameter createSearchParameterFromBundle(Bundle bundle) {
         String deepLinkURI = bundle.getString(DEEP_LINK_URI);
-        return new SearchParameterModel(deepLinkURI == null ? "" : deepLinkURI);
+        return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
     }
 
     @Override
@@ -209,13 +211,13 @@ public class SearchActivity extends DiscoveryActivity
         initResources();
 
         boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
-        searchParameterModel = getSearchParameterModelFromIntent(intent);
+        SearchParameter searchParameter = getSearchParameterFromIntent(intent);
 
         if(isAutoComplete) {
-            handleIntentAutoComplete();
+            handleIntentAutoComplete(searchParameter);
         }
         else {
-            handleIntentSearch(intent);
+            handleIntentSearch(intent, searchParameter);
         }
 
         if (intent != null &&
@@ -226,31 +228,31 @@ public class SearchActivity extends DiscoveryActivity
         handleImageUri(intent);
     }
 
-    private SearchParameterModel getSearchParameterModelFromIntent(Intent intent) {
-        SearchParameterModel searchParameterModel = (SearchParameterModel)intent.getSerializableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
+    private SearchParameter getSearchParameterFromIntent(Intent intent) {
+        SearchParameter searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
 
-        if(searchParameterModel == null) {
-            searchParameterModel = new SearchParameterModel();
+        if(searchParameter == null) {
+            searchParameter = new SearchParameter();
         }
 
-        return searchParameterModel;
+        return searchParameter;
     }
 
-    private void handleIntentAutoComplete() {
-        searchView.showSearch(true, false, searchParameterModel);
+    private void handleIntentAutoComplete(SearchParameter searchParameter) {
+        searchView.showSearch(true, false, searchParameter);
     }
 
-    private void handleIntentSearch(Intent intent) {
+    private void handleIntentSearch(Intent intent, SearchParameter searchParameter) {
         ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
 
         handleIntentActivityPaused();
 
         if (productViewModel != null) {
             handleIntentWithProductViewModel(productViewModel);
-        } else if (!TextUtils.isEmpty(searchParameterModel.getSearchQuery())) {
-            handleIntentWithSearchQuery();
+        } else if (!TextUtils.isEmpty(searchParameter.getSearchQuery())) {
+            handleIntentWithSearchQuery(searchParameter);
         } else {
-            searchView.showSearch(true, false, searchParameterModel);
+            handleIntentAutoComplete(searchParameter);
         }
     }
 
@@ -267,17 +269,8 @@ public class SearchActivity extends DiscoveryActivity
         bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
     }
 
-    private void handleIntentWithSearchQuery() {
-        // TODO:: Fix onSuggestionProductClick to receive SearchParameterModel instead
-        String searchQuery = searchParameterModel.getSearchQuery();
-        String categoryId = searchParameterModel.get(SearchApiConst.SC);
-        boolean isOfficial = searchParameterModel.getBoolean(SearchApiConst.OFFICIAL);
-
-        if (!TextUtils.isEmpty(searchParameterModel.get(SearchApiConst.SC))) {
-            onSuggestionProductClick(searchQuery, categoryId, isOfficial);
-        } else {
-            onSuggestionProductClick(searchQuery, isOfficial);
-        }
+    private void handleIntentWithSearchQuery(SearchParameter searchParameter) {
+        onSuggestionProductClick(searchParameter);
     }
 
     private void handleImageUri(Intent intent) {
@@ -421,8 +414,8 @@ public class SearchActivity extends DiscoveryActivity
                                       ProductViewModel productViewModel) {
 
         productListFragment = getProductFragment(productViewModel);
-        catalogFragment = getCatalogFragment(productViewModel.getQuery());
-        shopListFragment = getShopFragment(productViewModel.getQuery(), productViewModel.getSearchParameter().getIsOfficial());
+        catalogFragment = getCatalogFragment(getSearchParameter().getSearchQuery());
+        shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
@@ -475,8 +468,8 @@ public class SearchActivity extends DiscoveryActivity
         return ProductListFragment.newInstance(productViewModel);
     }
 
-    private ShopListFragment getShopFragment(String query, boolean isOfficial) {
-        return ShopListFragment.newInstance(query, isOfficial);
+    private ShopListFragment getShopFragment() {
+        return ShopListFragment.newInstance(getSearchParameter());
     }
 
     private ProfileListFragment getProfileListFragment(String query, SearchNavigationListener searchNavigationListener) {
@@ -487,7 +480,7 @@ public class SearchActivity extends DiscoveryActivity
                                       ProductViewModel productViewModel) {
 
         productListFragment = getProductFragment(productViewModel);
-        shopListFragment = getShopFragment(productViewModel.getQuery(), productViewModel.getSearchParameter().getIsOfficial());
+        shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
@@ -651,6 +644,7 @@ public class SearchActivity extends DiscoveryActivity
         setForceSearch(forceSearch);
         setForceSwipeToShop(false);
         setRequestOfficialStoreBanner(true);
+
         performRequestProduct(query);
     }
 

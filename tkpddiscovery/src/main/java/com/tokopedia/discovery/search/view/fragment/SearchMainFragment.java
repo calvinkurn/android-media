@@ -14,28 +14,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteAdapter;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteFactory;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteTypeFactory;
-import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
-import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
+import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterModel;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterOwnerListener;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,7 +47,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
-    private static final String SEARCH_PARAMETER_MODEL = "SEARCH_PARAMETER_MODEL";
+    private static final String SEARCH_PARAMETER_OWNER = "SEARCH_PARAMETER_OWNER";
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -59,14 +56,15 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     SearchPresenter presenter;
 
     private HostAutoCompleteAdapter adapter;
-    private SearchParameterModel searchParameterModel = new SearchParameterModel();
     private String networkErrorMessage;
     private boolean onTabShop;
 
+    private SearchParameterOwnerListener searchParameterOwner;
+
     public static SearchMainFragment newInstance() {
-        
+
         Bundle args = new Bundle();
-        
+
         SearchMainFragment fragment = new SearchMainFragment();
         fragment.setArguments(args);
         return fragment;
@@ -81,9 +79,9 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         return fragment;
     }
 
-    public static SearchMainFragment newInstance(SearchParameterModel searchParameterModel) {
+    public static SearchMainFragment newInstance(SearchParameterOwnerListener searchParameter) {
         Bundle args = new Bundle();
-        args.putSerializable(SEARCH_PARAMETER_MODEL, searchParameterModel);
+        args.putSerializable(SEARCH_PARAMETER_OWNER, searchParameter);
 
         SearchMainFragment fragment = new SearchMainFragment();
         fragment.setArguments(args);
@@ -186,21 +184,24 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+
         if(savedInstanceState != null) {
-            searchParameterModel = (SearchParameterModel) savedInstanceState.getSerializable(SEARCH_PARAMETER_MODEL);
-            presenter.search(searchParameterModel);
+            searchParameterOwner = (SearchParameterOwnerListener) savedInstanceState.getSerializable(SEARCH_PARAMETER_OWNER);
+
+            if (searchParameterOwner != null) {
+                presenter.search(searchParameterOwner.getSearchParameter());
+            }
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(SEARCH_PARAMETER_MODEL, searchParameterModel);
+        outState.putSerializable(SEARCH_PARAMETER_OWNER, searchParameterOwner);
     }
 
-    public void search(SearchParameterModel searchParameterModel){
-        this.searchParameterModel = searchParameterModel;
-        presenter.search(searchParameterModel);
+    public void search(SearchParameter searchParameter){
+        presenter.search(searchParameter);
     }
 
     public void deleteAllRecentSearch(){
@@ -246,12 +247,14 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     @Override
-    public void onItemSearchClicked(String keyword, String categoryId, boolean isOfficial) {
+    public void onItemSearchClicked(String applink) {
         dropKeyBoard();
-        if (!TextUtils.isEmpty(categoryId)) {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId, isOfficial);
-        } else {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, isOfficial);
+
+        SearchParameter searchParameter = new SearchParameter(applink);
+        DiscoveryActivity discoveryActivity = (DiscoveryActivity)getActivity();
+
+        if(discoveryActivity != null) {
+            discoveryActivity.onSuggestionProductClick(searchParameter);
         }
     }
 
@@ -277,5 +280,9 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public boolean isOnTabShop() {
         return onTabShop;
+    }
+
+    public void setSearchParameterOwner(SearchParameterOwnerListener searchParameterOwner) {
+        this.searchParameterOwner = searchParameterOwner;
     }
 }

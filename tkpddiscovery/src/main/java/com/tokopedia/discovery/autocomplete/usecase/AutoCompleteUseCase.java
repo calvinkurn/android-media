@@ -48,6 +48,9 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
 
     public static RequestParams getParams(Map<String, Object> searchParameter, String registrationId, String userId) {
         RequestParams params = RequestParams.create();
+
+        params.putAll(searchParameter);
+
         params.putString(KEY_DEVICE, DEFAULT_DEVICE);
         params.putString(KEY_SOURCE, DEFAULT_SOURCE);
         params.putString(KEY_COUNT, DEFAULT_COUNT);
@@ -58,8 +61,6 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         }
         params.putString(KEY_UNIQUE_ID, uniqueId);
         params.putString(DEVICE_ID, registrationId);
-
-        params.putAll(searchParameter);
 
         return params;
     }

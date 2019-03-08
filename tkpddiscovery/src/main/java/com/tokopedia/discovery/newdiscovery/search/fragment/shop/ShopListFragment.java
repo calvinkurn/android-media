@@ -33,8 +33,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listene
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameterBuilder;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.user.session.UserSession;
@@ -55,8 +54,6 @@ public class ShopListFragment extends SearchSectionFragment
         FavoriteActionListener, SearchSectionGeneralAdapter.OnItemChangeView, ShopListener {
 
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
-    private static final String EXTRA_QUERY = "EXTRA_QUERY";
-    private static final String EXTRA_IS_OFFICIAL = "EXTRA_IS_OFFICIAL";
     private static final int REQUEST_CODE_GOTO_SHOP_DETAIL = 125;
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_ACTIVITY_SORT_SHOP = 1235;
@@ -65,8 +62,6 @@ public class ShopListFragment extends SearchSectionFragment
 
     private RecyclerView recyclerView;
     private ShopListAdapter adapter;
-    private String query;
-    private boolean isOfficial;
 
     @Inject
     ShopListPresenter presenter;
@@ -80,13 +75,14 @@ public class ShopListFragment extends SearchSectionFragment
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
-    public static ShopListFragment newInstance(String query, boolean isOfficial) {
+    public static ShopListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
-        args.putString(EXTRA_QUERY, query);
-        args.putBoolean(EXTRA_IS_OFFICIAL, isOfficial);
-        ShopListFragment ShopListFragment = new ShopListFragment();
-        ShopListFragment.setArguments(args);
-        return ShopListFragment;
+
+        args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+
+        ShopListFragment shopListFragment = new ShopListFragment();
+        shopListFragment.setArguments(args);
+        return shopListFragment;
     }
 
     @Override
@@ -103,8 +99,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     private void loadDataFromBundle(Bundle bundle) {
         if (bundle != null) {
-            query = bundle.getString(EXTRA_QUERY);
-            isOfficial = bundle.getBoolean(EXTRA_IS_OFFICIAL, false);
+            searchParameter = bundle.getParcelable(EXTRA_SEARCH_PARAMETER);
         }
     }
 
@@ -201,23 +196,14 @@ public class ShopListFragment extends SearchSectionFragment
     private void loadShopFirstTime() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
 
-        loadMoreShopFirstTime(START_ROW_FIRST_TIME_LOAD);
+        loadMoreShop(START_ROW_FIRST_TIME_LOAD);
     }
 
-    private void loadMoreShopFirstTime(int startRow) {
-        SearchParameter searchParameter = generateLoadMoreParameter(startRow);
-        searchParameter.setIsOfficial(isOfficial);
-        loadMoreShop(startRow, searchParameter);
-    }
+    private void loadMoreShop(final int startRow) {
+        generateLoadMoreParameter(startRow);
 
-    private void loadMoreShop(int startRow) {
-        SearchParameter searchParameter = generateLoadMoreParameter(startRow);
-        loadMoreShop(startRow, searchParameter);
-    }
-
-    private void loadMoreShop(final int startRow, SearchParameter searchParameter) {
         isLoadingData = true;
-        presenter.loadShop(searchParameter, new ShopListPresenterImpl.LoadMoreListener() {
+        presenter.loadShop(getSearchParameter(), new ShopListPresenterImpl.LoadMoreListener() {
             @Override
             public void onSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage) {
                 handleOnSuccessLoadMoreShop(shopItemList, isHasNextPage, startRow);
@@ -262,13 +248,10 @@ public class ShopListFragment extends SearchSectionFragment
         hideRefreshLayout();
     }
 
-    private SearchParameter generateLoadMoreParameter(int startRow) {
-        SearchParameterBuilder builder = SearchParameterBuilder.createInstance();
-        builder.setUniqueID(generateUniqueId());
-        builder.setUserID(generateUserId());
-        builder.setQueryKey(query);
-        builder.setStartRow(startRow);
-        return builder.build();
+    private void generateLoadMoreParameter(int startRow) {
+        getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
+        getSearchParameter().set(SearchApiConst.USER_ID, generateUserId());
+        getSearchParameter().set(SearchApiConst.START, String.valueOf(startRow));
     }
 
     private String generateUserId() {
@@ -306,8 +289,8 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            adapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.shop_tab_title).toLowerCase());
-            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
+            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), getFlagFilterHelper(), getString(R.string.shop_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), getSearchParameter().getSearchQuery(), getScreenName(), getSelectedFilter());
         }
     }
 
@@ -326,6 +309,7 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void setSelectedFilterIfIsOfficial() {
+        boolean isOfficial = getSearchParameter().getBoolean(SearchApiConst.OFFICIAL);
         if(isOfficial) {
             HashMap<String, String> selectedFilterIsOfficial = new HashMap<>();
             selectedFilterIsOfficial.put(SearchApiConst.OFFICIAL, String.valueOf(isOfficial));
@@ -343,7 +327,7 @@ public class ShopListFragment extends SearchSectionFragment
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
-        SearchTracking.eventSearchResultShopItemClick(getActivity(), query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
@@ -351,7 +335,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onFavoriteButtonClicked(ShopViewModel.ShopItem shopItem,
                                         int adapterPosition) {
-        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
     }
@@ -430,7 +414,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public String getQueryKey() {
-        return query;
+        return getSearchParameter().getSearchQuery();
     }
 
     @Override
@@ -513,8 +497,6 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_QUERY, query);
-        outState.putBoolean(EXTRA_IS_OFFICIAL, isOfficial);
     }
 
     @Override
@@ -540,6 +522,16 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void setSearchParameter(SearchParameter searchParameter) {
+        this.searchParameter = searchParameter;
+    }
+
+    @Override
+    public SearchParameter getSearchParameter() {
+        return this.searchParameter;
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
@@ -562,7 +554,7 @@ public class ShopListFragment extends SearchSectionFragment
             getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
             getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
 
-            if (isOfficial) {
+            if (getSearchParameter().getBoolean(SearchApiConst.OFFICIAL)) {
                 FilterHelper.addPreFilteredIsOfficial(getFilters(), getFlagFilterHelper());
             }
         }

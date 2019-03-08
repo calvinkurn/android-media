@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -26,7 +26,6 @@ public class ProductViewModel implements Parcelable {
     private String additionalParams;
     private SuggestionModel suggestionModel;
     private int totalData;
-    private SearchParameter searchParameter;
     private boolean forceSearch;
     private boolean imageSearch;
     private DynamicFilterModel dynamicFilterModel;
@@ -35,6 +34,7 @@ public class ProductViewModel implements Parcelable {
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
     private RelatedSearchModel relatedSearchModel;
+    private SearchParameter searchParameter;
 
     public TopAdsModel getAdsModel() {
         return adsModel;

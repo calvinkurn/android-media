@@ -2,26 +2,16 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
-import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
-import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by hangnadi on 9/28/17.
@@ -63,11 +53,11 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     }
 
     private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
-        requestParams.putBoolean(BrowseApi.REFINED, isForceSearch);
+        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
     }
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams, boolean relatedSearchEnabled) {
-        requestParams.putBoolean(BrowseApi.RELATED, relatedSearchEnabled);
+        requestParams.putBoolean(SearchApiConst.RELATED, relatedSearchEnabled);
     }
 
     @Override

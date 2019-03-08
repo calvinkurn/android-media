@@ -4,7 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterModel;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 /**
  * @author erry on 23/02/17.
@@ -17,7 +17,7 @@ public interface SearchContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void search(SearchParameterModel searchParameterModel);
+        void search(SearchParameter searchParameter);
 
         void deleteRecentSearchItem(String keyword);
 

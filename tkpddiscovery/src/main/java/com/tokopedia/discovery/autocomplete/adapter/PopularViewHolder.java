@@ -109,11 +109,7 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
                                         item.getApplink()
                                 )
                         );
-                        clickListener.onItemSearchClicked(
-                                item.getKeyword(),
-                                item.getCategoryId(),
-                                getAutoCompleteItemIsOfficial(item)
-                        );
+                        clickListener.onItemSearchClicked(item.getApplink());
                     }
                 });
             }
