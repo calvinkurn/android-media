@@ -18,6 +18,9 @@ public class CheckoutRequest {
     @SerializedName("is_donation")
     @Expose
     public int isDonation;
+    @SerializedName("egold_data")
+    @Expose
+    public EgoldData egoldData;
     @SerializedName("data")
     @Expose
     public List<DataCheckoutRequest> data = new ArrayList<>();
@@ -45,6 +48,7 @@ public class CheckoutRequest {
         promoCode = builder.promoCode;
         isDonation = builder.isDonation;
         data = builder.data;
+        egoldData = builder.egoldData;
         cornerData = builder.cornerData;
     }
 
@@ -52,6 +56,7 @@ public class CheckoutRequest {
     public static final class Builder {
         private String promoCode;
         private int isDonation;
+        private EgoldData egoldData;
         private List<DataCheckoutRequest> data;
         private TokopediaCornerData cornerData;
 
@@ -75,6 +80,11 @@ public class CheckoutRequest {
 
         public Builder data(List<DataCheckoutRequest> val) {
             data = val;
+            return this;
+        }
+
+        public Builder egoldData(EgoldData val) {
+            egoldData = val;
             return this;
         }
 

@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nisie on 11/30/16.
@@ -22,6 +24,7 @@ public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
+    private static final String GET = "GET";
 
     public TkpdWebView(Context context) {
         super(context);
@@ -46,7 +49,7 @@ public class TkpdWebView extends WebView {
             loadUrl(generateUri(url), AuthUtil.generateHeadersWithBearer(
                     Uri.parse(url).getPath(),
                     getQuery(Uri.parse(url).getQuery()),
-                    "GET",
+                    GET,
                     AuthUtil.KEY.KEY_WSV4, userId, accessToken));
         }
     }
@@ -62,7 +65,7 @@ public class TkpdWebView extends WebView {
             loadUrl(url, AuthUtil.generateHeaders(
                     Uri.parse(url).getPath(),
                     getQuery(Uri.parse(url).getQuery()),
-                    "GET",
+                    GET,
                     AuthUtil.KEY.KEY_WSV4, userId));
         }
     }
@@ -74,10 +77,26 @@ public class TkpdWebView extends WebView {
             loadUrl(url, AuthUtil.generateHeadersWithBearer(
                     Uri.parse(url).getPath(),
                     getQuery(Uri.parse(url).getQuery()),
-                    "GET",
+                    GET,
                     AuthUtil.KEY.KEY_WSV4, userId, accessToken));
         }
     }
+
+    public void loadAuthUrl(String url, String userId, String accessToken, HashMap<String,
+            String> additionalHeaders) {
+        if (TextUtils.isEmpty(userId)) {
+            loadUrl(url);
+        } else {
+            Map<String,String> header =  AuthUtil.generateHeadersWithBearer(
+                    Uri.parse(url).getPath(),
+                    getQuery(Uri.parse(url).getQuery()),
+                    GET,
+                    AuthUtil.KEY.KEY_WSV4, userId, accessToken);
+            header.putAll(additionalHeaders);
+            loadUrl(url,header);
+        }
+    }
+
 
     private String getQuery(String query) {
         return query != null ? query : "";

@@ -30,7 +30,7 @@
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="@android:color/white" />
+            <solid android:color="@android:color/black" />
         </shape>
     </item>
 

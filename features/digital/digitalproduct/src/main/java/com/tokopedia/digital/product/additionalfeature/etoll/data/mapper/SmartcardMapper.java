@@ -5,10 +5,16 @@ import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryB
 import com.tokopedia.digital.product.view.model.CardInfo;
 import com.tokopedia.digital.utils.NFCUtils;
 
+import javax.inject.Inject;
+
 /**
  * Created by Rizky on 18/05/18.
  */
 public class SmartcardMapper {
+
+    @Inject
+    public SmartcardMapper() {
+    }
 
     public InquiryBalanceModel map(ResponseSmartcard responseSmartcard) {
         String errorMessage = null;

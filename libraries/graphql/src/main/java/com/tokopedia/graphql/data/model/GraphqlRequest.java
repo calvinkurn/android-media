@@ -26,6 +26,9 @@ public class GraphqlRequest {
     /*transient by nature hence it will not be part of request body*/
     private transient Type typeOfT; /*Mandatory parameter*/
 
+    /*transient by nature hence it will not be part of request body*/
+    private transient boolean shouldThrow = false; /*Optional parameter*/
+
     public GraphqlRequest(String query, Type typeOfT) {
         this.query = query;
         this.typeOfT = typeOfT;
@@ -36,9 +39,22 @@ public class GraphqlRequest {
         this.variables = variables;
     }
 
-    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables, String operationName) {
+    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
+                          boolean shouldThrow) {
+        this(query, typeOfT, variables);
+        this.shouldThrow = shouldThrow;
+    }
+
+    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
+                          String operationName) {
         this(query, typeOfT, variables);
         this.operationName = operationName;
+    }
+
+    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
+                          String operationName, boolean shouldThrow) {
+        this(query, typeOfT, variables, operationName);
+        this.shouldThrow = shouldThrow;
     }
 
     public String getQuery() {
@@ -61,6 +77,13 @@ public class GraphqlRequest {
         return typeOfT;
     }
 
+    public boolean isShouldThrow() {
+        return shouldThrow;
+    }
+
+    public void setShouldThrow(boolean shouldThrow) {
+        this.shouldThrow = shouldThrow;
+    }
 
     //Do not rewrite on remove it
     @Override
@@ -70,6 +93,7 @@ public class GraphqlRequest {
                 ", variables=" + variables +
                 ", operationName='" + operationName + '\'' +
                 ", typeOfT=" + typeOfT +
+                ", shouldThrow=" + shouldThrow +
                 '}';
     }
 }

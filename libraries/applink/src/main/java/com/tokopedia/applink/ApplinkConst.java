@@ -33,7 +33,7 @@ public interface ApplinkConst {
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
-    String ADD_CREDIT_CARD= "tokopedia://payment/credit-card/add";
+    String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -114,6 +114,16 @@ public interface ApplinkConst {
     String EVENTS_ORDER = "tokopedia://events/order";
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
+
+
+    String MARKETPLACE_ORDER = "tokopedia://belanja/order";
+    String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
+
+    String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
+    String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
+    String MARKETPLACE_ORDER_PROCESSED = "tokopedia://order/marketplace/filter/12";
+    String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
+
 
     String BUYER_INFO = "tokopedia://buyerinfo";
     String SELLER_INFO = "tokopedia://sellerinfo";
@@ -196,9 +206,10 @@ public interface ApplinkConst {
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
-
     String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
     String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+
+    String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
@@ -242,7 +253,12 @@ public interface ApplinkConst {
         String TO_SHOP_ID = "toShopId";
         String CUSTOM_MESSAGE = "customMessage";
         String AVATAR = "avatar";
-
+        String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
+    }
+
+    interface Play {
+        String PARAM_HAS_TITLEBAR = "titlebar";
+        String PARAM_URL = "url";
     }
 }

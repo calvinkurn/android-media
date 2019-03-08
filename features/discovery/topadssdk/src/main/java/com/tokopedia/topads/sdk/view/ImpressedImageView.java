@@ -20,6 +20,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+
 import android.view.ViewTreeObserver;
 
 /**
@@ -52,13 +53,17 @@ public class ImpressedImageView extends AppCompatImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        invoke();
+        if (holder != null && !holder.isInvoke()) {
+            invoke();
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        revoke();
+        if (holder != null && holder.isInvoke()) {
+            revoke();
+        }
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -92,11 +97,11 @@ public class ImpressedImageView extends AppCompatImageView {
         return scrollChangedListener;
     }
 
-    private void revoke(){
+    private void revoke() {
         getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
     }
 
-    private void invoke(){
+    private void invoke() {
         getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -113,9 +118,7 @@ public class ImpressedImageView extends AppCompatImageView {
                         }
                         holder.invoke();
                     }
-                    if (getViewTreeObserver().isAlive()) {
-                        getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
-                    }
+                    revoke();
                 }
             }
         });
@@ -150,7 +153,7 @@ public class ImpressedImageView extends AppCompatImageView {
     }
 
     private int getOffsetHeight() {
-        if(offset > 0){
+        if (offset > 0) {
             return getScreenHeight() - offset;
         } else {
             return getScreenHeight() - getResources().getDimensionPixelOffset(R.dimen.dp_45);
@@ -165,18 +168,43 @@ public class ImpressedImageView extends AppCompatImageView {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
+    /**
+     * Use this for non topads
+     *
+     * @param holder
+     * @param hintListener
+     */
+    public void setViewHintListener(ImpressHolder holder, ViewHintListener hintListener) {
+        this.holder = holder;
+        this.hintListener = hintListener;
+    }
+
+    @Deprecated
+    /**
+     * Use setViewHintListener(ImageHolder holder, ViewHintListener hintListener)
+     */
     public void setViewHintListener(ViewHintListener hintListener) {
         this.hintListener = hintListener;
     }
 
+    /**
+     * Use this for topads product image
+     *
+     * @param image
+     */
     public void setImage(ProductImage image) {
         this.holder = image;
-        ImageHandler.loadImageThumbs(getContext(), this, image.getM_url());
+        Glide.with(getContext()).load(image.getM_ecs()).into(this);
     }
 
+    /**
+     * Use this for topads shop product image
+     *
+     * @param image
+     */
     public void setImage(ImageProduct image) {
         this.holder = image;
-        if(image.getImageUrl().isEmpty()){
+        if (image.getImageUrl().isEmpty()) {
             setBackgroundColor(
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
@@ -185,9 +213,14 @@ public class ImpressedImageView extends AppCompatImageView {
         }
     }
 
+    /**
+     * Use this for topads headline shop
+     *
+     * @param image
+     */
     public void setImage(CpmImage image) {
         this.holder = image;
-        if(image.getFullEcs().isEmpty()){
+        if (image.getFullEcs().isEmpty()) {
             setBackgroundColor(
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
