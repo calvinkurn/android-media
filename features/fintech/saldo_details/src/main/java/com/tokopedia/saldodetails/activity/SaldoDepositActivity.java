@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
@@ -107,7 +106,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         } else {
             toolbar.setNavigationIcon(R.drawable.ic_icon_back_black);
         }
-        toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), 30, toolbar.getPaddingBottom());
+        toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), getResources().getDimensionPixelOffset(R.dimen.dp_12), toolbar.getPaddingBottom());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
