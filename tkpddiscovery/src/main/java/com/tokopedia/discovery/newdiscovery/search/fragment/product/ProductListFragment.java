@@ -41,6 +41,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -58,6 +59,8 @@ import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -232,10 +235,7 @@ public class ProductListFragment extends SearchSectionFragment
             headerViewModel.setCpmModel(productViewModel.getCpmModel());
         }
         list.add(headerViewModel);
-        if (!productViewModel.getAdsModel().getData().isEmpty()) {
-            list.add(new TopAdsViewModel(productViewModel.getAdsModel(), productViewModel.getQuery()));
-        }
-        list.addAll(productViewModel.getProductList());
+        list.addAll(ProductListPresenterImpl.enrich(productViewModel));
         if (productViewModel.getRelatedSearchModel() != null) {
             list.add(productViewModel.getRelatedSearchModel());
         }
@@ -416,7 +416,6 @@ public class ProductListFragment extends SearchSectionFragment
                 if (adapter.isEmptyItem(position) ||
                         adapter.isRelatedSearch(position) ||
                         adapter.isHeaderBanner(position) ||
-                        adapter.isTopAds(position) ||
                         adapter.isLoading(position)) {
                     return spanCount;
                 } else {

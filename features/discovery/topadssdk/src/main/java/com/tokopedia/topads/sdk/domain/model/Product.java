@@ -61,7 +61,7 @@ public class Product implements Parcelable {
     @SerializedName(KEY_COUNT_TALK_FORMAT)
     private String countTalkFormat = "";
     @SerializedName(KEY_COUNT_REVIEW_FORMAT)
-    private String countReviewFormat = "";
+    private int countReviewFormat = 0;
     @SerializedName(KEY_CATEGORY)
     private Category category = new Category();
     @SerializedName(KEY_PRODUCT_PREORDER)
@@ -121,7 +121,7 @@ public class Product implements Parcelable {
             setCountTalkFormat(object.getString(KEY_COUNT_TALK_FORMAT));
         }
         if(!object.isNull(KEY_COUNT_REVIEW_FORMAT)){
-            setCountReviewFormat(object.getString(KEY_COUNT_REVIEW_FORMAT));
+            setCountReviewFormat(object.getInt(KEY_COUNT_REVIEW_FORMAT));
         }
         if(!object.isNull(KEY_CATEGORY)){
             setCategory(new Category(object.getJSONObject(KEY_CATEGORY)));
@@ -341,7 +341,7 @@ public class Product implements Parcelable {
         this.countTalkFormat = countTalkFormat;
     }
 
-    public String getCountReviewFormat() {
+    public int getCountReviewFormat() {
         return countReviewFormat;
     }
 
@@ -353,7 +353,7 @@ public class Product implements Parcelable {
         this.productNewLabel = productNewLabel;
     }
 
-    public void setCountReviewFormat(String countReviewFormat) {
+    public void setCountReviewFormat(int countReviewFormat) {
         this.countReviewFormat = countReviewFormat;
     }
 
