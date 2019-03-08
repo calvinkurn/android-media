@@ -255,7 +255,7 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : "";
     }
 
     private String generateUniqueId() {
