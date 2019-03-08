@@ -115,7 +115,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
     fun clearCache() {
         deleteShopInfoCacheUseCase.executeSync()
         deleteShopProductUseCase.executeSync()
-        deleteShopEtalaseUseCase.executeSync()
         deleteShopNoteUseCase.executeSync()
         deleteFeatureProductListCacheUseCase.executeSync()
         deleteReputationSpeedDailyUseCase.executeSync()
@@ -129,7 +128,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe()
         deleteShopInfoCacheUseCase.unsubscribe()
         deleteShopProductUseCase.unsubscribe()
-        deleteShopEtalaseUseCase.unsubscribe()
         deleteShopNoteUseCase.unsubscribe()
         deleteFeatureProductListCacheUseCase.unsubscribe()
         deleteReputationSpeedDailyUseCase.unsubscribe()
