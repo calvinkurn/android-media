@@ -107,6 +107,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
                 viewModel.urlImageList.add(0, image)
             }
             imageAdapter.setList(viewModel.completeImageList)
+            mediaViewPager.currentItem = 0
 
             updateMainImageText()
             updateResultIntent()
