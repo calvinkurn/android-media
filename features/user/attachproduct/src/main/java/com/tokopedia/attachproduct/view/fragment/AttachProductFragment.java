@@ -30,6 +30,7 @@ import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter;
 import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,7 +49,6 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     private static final String MAX_CHECKED = "max_checked";
     private Button sendButton;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private int maxChecked = MAX_CHECKED_DEFAULT;
 
     @Inject
     AttachProductPresenter presenter;
@@ -58,6 +58,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     private boolean isSeller = false;
     private String source = "";
+    private int maxChecked = MAX_CHECKED_DEFAULT;
+    private ArrayList<String> hiddenProducts = new ArrayList<>();
 
     public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView,
                                                     boolean isSeller, String source,
@@ -226,6 +228,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
             sendButton.setVisibility(View.VISIBLE);
         }
 
+        removeHiddenProducts(products);
         renderList(products, hasNextPage);
     }
 
@@ -289,6 +292,22 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     public void addProductClicked() {
         activityContract.goToAddProduct(activityContract.getShopId());
+    }
+
+    private void removeHiddenProducts(List<AttachProductItemViewModel> products) {
+        for (AttachProductItemViewModel product : products) {
+            boolean shouldHide = false;
+            for (String hiddenProduct : hiddenProducts) {
+                if (TextUtils.equals(String.valueOf(product.getProductId()), hiddenProduct)) {
+                    shouldHide = true;
+                    break;
+                }
+            }
+
+            if (shouldHide) {
+                products.remove(product);
+            }
+        }
     }
 
     private void trackAction(String source, int productId) {

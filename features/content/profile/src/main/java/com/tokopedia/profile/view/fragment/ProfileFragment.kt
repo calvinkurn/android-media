@@ -85,7 +85,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     lateinit var profileAnalytics: ProfileAnalytics
 
     companion object {
-        private const val POST_ID = "{post_id}"
         private const val PARAM_TAB_NAME = "{tab_name}"
         private const val PARAM_CATEGORY_ID = "{category_id}"
         private const val TAB_INSPIRASI = "inspirasi"
