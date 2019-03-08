@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.TaskStackBuilder
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -338,6 +339,15 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.afterTextChanged {
             viewModel.caption = it
             updateMaxCharacter()
+        }
+        caption.setOnTouchListener { v, event ->
+            if (v.id == R.id.caption) {
+                v.parent.requestDisallowInterceptTouchEvent(true)
+                when (event.action and MotionEvent.ACTION_MASK) {
+                    MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+            false
         }
         caption.setText(viewModel.caption)
         updateMaxCharacter()
