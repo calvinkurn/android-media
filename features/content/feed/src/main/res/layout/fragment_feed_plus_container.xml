@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    android:layout_marginTop="23dp">
+    android:paddingTop="@dimen/dp_24">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

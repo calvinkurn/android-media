@@ -5,7 +5,8 @@
     android:id="@+id/home_swipe_refresh_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_marginTop="23dp">
+    android:background="@color/white"
+    android:paddingTop="@dimen/dp_24">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/root"
