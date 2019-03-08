@@ -2,6 +2,7 @@ package com.tokopedia.kyc.view.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,6 +27,7 @@ import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
 import com.tokopedia.kyc.view.fragment.FragmentUpgradeToOvo;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
+import com.tokopedia.kyc.viewmodel.KycViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
         HasComponent<KYCComponent>, ActivityListener, LoaderUiListener {
 
     private KYCComponent KYCComponent = null;
-    private ConfirmRequestDataContainer confirmRequestDataContainer;
+    private KycViewModel kycViewModel;
     private ProgressDialog loading;
     private List<String> permissionsToRequest;
     private boolean isPermissionGotDenied;
@@ -99,10 +101,10 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
 
     @Override
     public ConfirmRequestDataContainer getDataContatainer() {
-        if(confirmRequestDataContainer == null){
-            confirmRequestDataContainer = new ConfirmRequestDataContainer();
+        if(kycViewModel == null) {
+            kycViewModel = ViewModelProviders.of(this).get(KycViewModel.class);
         }
-        return confirmRequestDataContainer;
+        return kycViewModel.getConfirmRequestDataContainer();
     }
 
     @Override

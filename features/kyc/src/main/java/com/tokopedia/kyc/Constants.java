@@ -23,6 +23,7 @@ public interface Constants {
         String SUCCESS = "success";
         int MAIDEN_NAME_LENGTH = 30;
         int KTP_NUMBER_LENGTH = 16;
+        int PASSPORT_NO_MAX_LENGTH = 11;
         String WEB_VIEW_TITLE = "Sayarat dan Ketentuan";
         String SELFIE = "SELFIE";
     }
@@ -60,6 +61,7 @@ public interface Constants {
         String MOTHERS_NAME = "Nama gadis ibu kandung tidak valid";
         String MOTHERS_NAME_LENGTH = "Nama gadis ibu kandung maksimal 30 karakter";
         String PASSPORT_NUMBER = "Passport number is not valid";
+        String PASSPORT_NUMBER_LENGTH = "Passport number must be 11 characters or less";
         String FORIEGNER_MOTHERS_NAME = "Mother's maiden name is not valid";
         String FORIEGNER_MOTHERS_NAME_LENGTH = "Maximum mother's maiden name is 30 characters";
         String SOMETHING_WENT_WRONG = "Ada yang salah, harap coba lagi";

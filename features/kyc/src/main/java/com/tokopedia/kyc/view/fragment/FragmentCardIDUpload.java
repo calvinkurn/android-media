@@ -271,8 +271,13 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
                 if(!edtxtNumber.getText().toString().matches(Constants.RegEx.ktp)){
                     wrapperNumberKtp.setError(Constants.ErrorMsg.KTP_NUMBER);
                     return true;
-                }else if(edtxtNumber.getText().length() != 16){
+                }else if(edtxtNumber.getText().length() != Constants.Values.KTP_NUMBER_LENGTH){
                     wrapperNumberKtp.setError(Constants.ErrorMsg.KTP_NUMBER_LENGTH);
+                    return true;
+                }
+            }else if(passportSelection.isChecked()){
+                if(edtxtNumber.getText().length() > Constants.Values.PASSPORT_NO_MAX_LENGTH){
+                    wrapperNumberKtp.setError(Constants.ErrorMsg.PASSPORT_NUMBER_LENGTH);
                     return true;
                 }
             }

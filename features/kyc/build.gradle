@@ -29,6 +29,8 @@ dependencies {
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+
     compile project(path: ':libraries:common_network')
     compile project(path: ':libraries:graphql')
 }
