@@ -285,13 +285,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     protected fun updateAddTagText() {
-        val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
-            viewModel.productIdList.size
-        relatedAddBtn.setTextColor(MethodChecker.getColor(
-                context!!,
-                if (numberOfProducts < viewModel.maxProduct) R.color.medium_green
-                else R.color.af_add_disabled)
-        )
+        context?.let {
+            val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
+                viewModel.productIdList.size
+            if (numberOfProducts < viewModel.maxProduct) {
+                relatedAddBtn.setOnClickListener { onRelatedAddProductClick() }
+                relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.medium_green))
+            } else {
+                relatedAddBtn.setOnClickListener { }
+                relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.af_add_disabled))
+            }
+        }
     }
 
     private fun initDraft(arguments: Bundle) {
@@ -330,9 +334,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             goToImagePicker()
         }
         relatedAddBtn.text = getAddRelatedProductText()
-        relatedAddBtn.setOnClickListener {
-            onRelatedAddProductClick()
-        }
         caption.afterTextChanged {
             viewModel.caption = it
             updateMaxCharacter()
@@ -340,6 +341,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.setText(viewModel.caption)
         updateMaxCharacter()
         updateThumbnail()
+        updateAddTagText()
     }
 
     private fun goToImagePicker() {
