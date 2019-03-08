@@ -84,7 +84,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onStart() {
         super.onStart()
-        affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
+        if (isTypeAffiliate()) {
+            affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -219,7 +221,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show()
             it.finish()
-            affiliateAnalytics.onJatahRekomendasiHabisPdp()
+            if (isTypeAffiliate()) {
+                affiliateAnalytics.onJatahRekomendasiHabisPdp()
+            }
         }
     }
 
@@ -345,7 +349,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun goToImagePicker() {
-        affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
+        if (isTypeAffiliate()) {
+            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
+        }
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -387,7 +393,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun saveDraftAndSubmit() {
-        affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
+        if (isTypeAffiliate()) {
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
+        }
 
         if (isFormInvalid()) {
             return
@@ -472,7 +480,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateHeader(authors: List<Author>) {
-        if (activity is CreatePostActivityListener && authors.isNotEmpty()){
+        if (activity is CreatePostActivityListener && authors.isNotEmpty()) {
             (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
                     authors.first().name,
                     authors.first().thumbnail,
