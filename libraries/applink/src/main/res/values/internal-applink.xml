@@ -2,5 +2,5 @@
 <resources>
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
     <string name="host_merchant" translatable="false">merchant</string>
-    <string name="path_product_detail" translatable="false">/product/.*</string>
+    <string name="path_product_detail" translatable="false">/product/.*\\/</string>
 </resources>

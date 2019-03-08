@@ -9,6 +9,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.Video
 import com.tokopedia.product.detail.data.util.thumbnailUrl
@@ -36,10 +37,9 @@ class YoutubeThumbnailAdapter(private val videos: MutableList<Video>,
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(object : RequestListener<String, GlideDrawable> {
                         override fun onException(e: Exception?, model: String?, target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
-//                            videos.removeAt(position)
-//                            notifyDataSetChanged()
                             if (videos.isEmpty())
                                 recyclerView.visibility = View.GONE
+                            holder.itemView.gone()
                             youtube_thumbnail_loading_bar.visibility = View.GONE
                             return false
                         }

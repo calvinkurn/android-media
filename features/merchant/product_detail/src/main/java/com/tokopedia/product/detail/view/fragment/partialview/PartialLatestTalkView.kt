@@ -16,7 +16,7 @@ class PartialLatestTalkView  private constructor(private val view: View) {
         fun build(_view: View) = PartialLatestTalkView(_view)
     }
 
-    fun renderData(talk: Talk, totalTalk: Int, productShopId: Int){
+    fun renderData(talk: Talk, totalTalk: Int, productShopId: Int, onDiscussionClicked: (()-> Unit)? = null){
         with(view){
             if (talk.id.isNotBlank()){
                 ImageHandler.loadImageRounded2(context, iv_talk_user_ava, talk.userImage)
@@ -44,6 +44,7 @@ class PartialLatestTalkView  private constructor(private val view: View) {
                     txt_resp_message.gone()
                 }
                 txt_see_all_talk.text = context.getString(R.string.label_see_all_talk, totalTalk.thousandFormatted())
+                txt_see_all_talk.setOnClickListener { onDiscussionClicked?.invoke() }
                 visible()
             } else {
                 gone()

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">App L</string>
+    <string name="template_applink">%1$s://%2$s/%3$s/</string>
 </resources>

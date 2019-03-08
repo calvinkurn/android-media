@@ -20,7 +20,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var isFromAffiliate = false
     private var shopDomain: String? = null
     private var productKey: String? = null
-    private var productId: String = ""
+    private var productId: String? = null
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -80,8 +80,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         if (uri != null) {
-            if (uri.scheme == getString(R.string.internal_scheme) && uri.path.startsWith("product")){
-                productId = uri.lastPathSegment ?: ""
+            if (uri.scheme == getString(R.string.internal_scheme) && uri.path.startsWith("/product")){
+                productId = uri.lastPathSegment
             } else {
                 val segmentUri: List<String> = uri.pathSegments
                 if (segmentUri.size > 1) {

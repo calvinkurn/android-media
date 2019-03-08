@@ -453,7 +453,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         if (actionMode == null) {
             ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
             adapter.notifyDataSetChanged();
-            goToPDP(productManageViewModel.getProductUrl());
+            goToPDP(productManageViewModel.getProductId());
             UnifyTracking.eventProductManageClickDetail(getActivity());
         }
     }
@@ -462,11 +462,17 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
      */
-    private void goToPDP(String productURL) {
-        Intent intent = new Intent();
-        intent.setClassName(getContext().getPackageName(),
-                "com.tokopedia.product.detail.view.activity.ProductDetailActivity");
-        intent.setData(Uri.parse(productURL));
+    private void goToPDP(String productId) {
+        String fullUrl = getString(R.string.template_applink,
+                getString(R.string.internal_scheme), getString(R.string.host_merchant),
+                "product/"+productId);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl))
+                .addCategory(Intent.CATEGORY_DEFAULT)
+                .addCategory(Intent.CATEGORY_BROWSABLE);
+        if (getContext() != null){
+            intent.setPackage(getContext().getPackageName());
+        }
         startActivity(intent);
     }
 

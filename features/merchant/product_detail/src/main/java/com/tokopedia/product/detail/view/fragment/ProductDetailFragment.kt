@@ -846,7 +846,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         mostHelpfulReviewView.renderData(productInfoP3.helpfulReviews, productInfo?.stats?.countReview
             ?: 0)
         latestTalkView.renderData(productInfoP3.latestTalk, productInfo?.stats?.countTalk ?: 0,
-            productInfo?.basic?.shopID ?: 0)
+            productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
         productInfoP3.displayAds?.let { topads_carousel.setData(it) }
         otherProductView.renderData(productInfoP3.productOthers)
 

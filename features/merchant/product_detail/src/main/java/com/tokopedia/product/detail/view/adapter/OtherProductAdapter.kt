@@ -1,7 +1,5 @@
 package com.tokopedia.product.detail.view.adapter
 
-import android.content.Intent
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +31,10 @@ class OtherProductAdapter(private val products: List<ProductOther>): RecyclerVie
                 tv_price.text = product.price.getCurrencyFormatted()
                 ImageHandler.loadImage(context, iv_pic, product.imageUrl300, -1)
                 setOnClickListener {
-                    val fullUrl = "${context.getString(R.string.internal_scheme)}:" +
-                            "${context.getString(R.string.host_merchant)}/product/${product.id}"
+                    val fullUrl = context.getString(R.string.template_applink,
+                            context.getString(R.string.internal_scheme),
+                            context.getString(R.string.host_merchant),
+                            "/product/${product.id}")
                     context.startActivity(context.getIntentUrl(fullUrl))
                 }
             }
