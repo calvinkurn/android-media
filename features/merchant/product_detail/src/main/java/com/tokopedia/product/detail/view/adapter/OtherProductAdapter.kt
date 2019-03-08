@@ -34,7 +34,7 @@ class OtherProductAdapter(private val products: List<ProductOther>): RecyclerVie
                     val fullUrl = context.getString(R.string.template_applink,
                             context.getString(R.string.internal_scheme),
                             context.getString(R.string.host_merchant),
-                            "/product/${product.id}")
+                            "product/${product.id}")
                     context.startActivity(context.getIntentUrl(fullUrl))
                 }
             }

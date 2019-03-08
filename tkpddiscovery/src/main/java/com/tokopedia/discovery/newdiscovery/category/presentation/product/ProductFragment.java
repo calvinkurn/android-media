@@ -570,7 +570,7 @@ public class ProductFragment extends BrowseSectionFragment
     private Intent getProductIntent(String productId){
         String url = getString(R.string.template_applink,
                 getString(R.string.internal_scheme), getString(R.string.host_merchant),
-                "/product/"+productId);
+                "product/"+productId);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 .addCategory(Intent.CATEGORY_DEFAULT)
