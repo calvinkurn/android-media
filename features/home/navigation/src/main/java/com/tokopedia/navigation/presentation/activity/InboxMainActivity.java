@@ -31,6 +31,6 @@ public class InboxMainActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return InboxFragment.newInstance(false);
+        return InboxFragment.newInstance();
     }
 }

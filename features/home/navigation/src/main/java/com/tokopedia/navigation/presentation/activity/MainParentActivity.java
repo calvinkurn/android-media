@@ -60,12 +60,10 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.InboxNotificationListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -330,11 +328,7 @@ public class MainParentActivity extends BaseActivity implements
             return false;
         }
 
-        if (position == OS_MENU) {
-            setHomeStatusBar();
-        } else {
-            setDefaultStatusBar();
-        }
+        hideStatusBar();
 
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
@@ -344,7 +338,7 @@ public class MainParentActivity extends BaseActivity implements
         return true;
     }
 
-    private void setHomeStatusBar() {
+    private void hideStatusBar() {
         //apply inset to allow recyclerview scrolling behind status bar
         fragmentContainer.setFitsSystemWindows(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -370,26 +364,6 @@ public class MainParentActivity extends BaseActivity implements
         if (Build.VERSION.SDK_INT >= 21) {
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
-    private void setDefaultStatusBar() {
-        fragmentContainer.setFitsSystemWindows(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            fragmentContainer.requestApplyInsets();
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                w.setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.setStatusBarColor(ContextCompat
-                    .getColor(this,R.color.green_600));
         }
     }
 
@@ -556,14 +530,6 @@ public class MainParentActivity extends BaseActivity implements
     private void setBadgeNotifCounter(Fragment fragment) {
         if (fragment == null)
             return;
-
-        if (fragment instanceof NotificationListener && notification != null) {
-            ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
-        }
-
-        if (fragment instanceof InboxNotificationListener && notification != null) {
-            ((InboxNotificationListener) fragment).onNotifyBadgeInboxNotification(notification.getTotalInbox());
-        }
 
         if (fragment instanceof AllNotificationListener && notification != null) {
             ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
