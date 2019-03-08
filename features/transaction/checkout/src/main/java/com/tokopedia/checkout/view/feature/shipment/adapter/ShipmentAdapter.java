@@ -698,10 +698,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
 
                     if (cartItemModel.isValidTradeIn()) {
-                        tradeInPrice += (cartItemModel.getNewDevicePrice() - cartItemModel.getOldDevicePrice());
-                    } else {
-                        totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
+                        tradeInPrice += cartItemModel.getOldDevicePrice();
                     }
+
+                    totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
                 }
 
                 if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&

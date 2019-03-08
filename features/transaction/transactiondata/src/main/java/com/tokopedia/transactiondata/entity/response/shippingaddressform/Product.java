@@ -158,7 +158,7 @@ public class Product {
     }
 
     public int getProductPrice() {
-        return 300;
+        return productPrice;
     }
 
     public int getProductWholesalePrice() {

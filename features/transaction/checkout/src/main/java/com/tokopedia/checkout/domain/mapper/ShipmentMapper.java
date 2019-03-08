@@ -253,6 +253,9 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductCategoryId(String.valueOf(product.getProductCatId()));
                                 analyticsProductCheckoutData.setProductName(product.getProductName());
                                 analyticsProductCheckoutData.setProductPrice(String.valueOf(product.getProductPrice()));
+                                if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                                    analyticsProductCheckoutData.setProductPrice(String.valueOf(product.getTradeInInfo().getNewDevicePrice()));
+                                }
                                 analyticsProductCheckoutData.setProductShopId(String.valueOf(groupShop.getShop().getShopId()));
                                 analyticsProductCheckoutData.setProductShopName(groupShop.getShop().getShopName());
                                 analyticsProductCheckoutData.setProductShopType(generateShopType(groupShop.getShop()));
@@ -271,6 +274,9 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductName(product.getProductName());
                                 productResult.setProductPriceFmt(product.getProductPriceFmt());
                                 productResult.setProductPrice(product.getProductPrice());
+                                if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                                    productResult.setProductPrice(product.getTradeInInfo().getNewDevicePrice());
+                                }
                                 productResult.setProductWholesalePrice(product.getProductWholesalePrice());
                                 productResult.setProductWholesalePriceFmt(product.getProductWholesalePriceFmt());
                                 productResult.setProductWeightFmt(product.getProductWeightFmt());

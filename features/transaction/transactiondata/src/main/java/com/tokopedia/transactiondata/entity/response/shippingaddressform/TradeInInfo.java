@@ -15,7 +15,7 @@ public class TradeInInfo {
 
     @SerializedName("new_device_price")
     @Expose
-    public int newDevicePrice = 500;
+    public int newDevicePrice = 799;
 
     @SerializedName("new_device_price_fmt")
     @Expose
@@ -23,7 +23,7 @@ public class TradeInInfo {
 
     @SerializedName("old_device_price")
     @Expose
-    public int oldDevicePrice = 200;
+    public int oldDevicePrice = 100;
 
     @SerializedName("old_device_price_fmt")
     @Expose
