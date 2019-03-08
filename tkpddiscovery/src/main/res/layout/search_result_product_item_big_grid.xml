@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,8 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/dp_4"
-        app:cardPreventCornerOverlap="false"
         app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.core.customwidget.SquareImageView
@@ -24,62 +24,76 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
-            tools:src="@color/red_100"/>
+            tools:src="@color/red_100" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="24dp"
+            android:layout_height="22dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_preorder_label"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@id/info_topads"
+                android:layout_width="16dp"
+                android:layout_height="10dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_toa" />
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/topLabel"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_alignLeft="@id/image_card"
+        android:layout_alignTop="@id/image_card"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginTop="@dimen/dp_9"
-        android:layout_alignTop="@id/image_card"
-        android:layout_alignLeft="@id/image_card"
-        style="@style/TextView.Micro.BlackDisabled"
+        android:background="@drawable/quick_filter_item_background_neutral"
         android:paddingLeft="@dimen/padding_ms"
-        android:paddingRight="@dimen/padding_ms"
         android:paddingTop="@dimen/padding_vvs"
-        android:paddingBottom="@dimen/padding_vvs"
-        android:background="@drawable/quick_filter_item_background_neutral"/>
+        android:paddingRight="@dimen/padding_ms"
+        android:paddingBottom="@dimen/padding_vvs" />
 
     <TextView
         android:id="@+id/bottomLabel"
+        style="@style/TextView.Micro.Green"
+        android:layout_alignLeft="@id/image_card"
+        android:layout_alignBottom="@id/image_card"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginBottom="@dimen/dp_9"
-        android:layout_alignBottom="@id/image_card"
-        android:layout_alignLeft="@id/image_card"
-        style="@style/TextView.Micro.Green"
+        android:background="@drawable/quick_filter_item_background_selected"
         android:paddingLeft="@dimen/padding_ms"
-        android:paddingRight="@dimen/padding_ms"
         android:paddingTop="@dimen/padding_vvs"
-        android:paddingBottom="@dimen/padding_vvs"
-        android:background="@drawable/quick_filter_item_background_selected"/>
+        android:paddingRight="@dimen/padding_ms"
+        android:paddingBottom="@dimen/padding_vvs" />
 
     <RelativeLayout
         android:id="@id/wishlist_button_container"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="2dp"
         android:layout_marginRight="2dp"
         android:background="@drawable/circle_white"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <View
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:background="@color/white"/>
+            android:layout_alignParentRight="true"
+            android:background="@color/white" />
 
         <ImageView
             android:id="@id/wishlist_button"
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
-            android:layout_marginLeft="5dp"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_wishlist"
-            />
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/ic_wishlist" />
 
     </RelativeLayout>
 
@@ -90,14 +104,14 @@
         android:layout_below="@+id/image_card"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="5sp"
         android:maxLines="2"
         android:minHeight="@dimen/product_item_title_min_height"
-        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
-        android:textSize="@dimen/sp_14"
-        android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
         android:textColor="@color/black_70"
-        android:lineSpacingExtra="5sp" />
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold" />
 
     <TextView
         android:id="@+id/text_original_price"
@@ -106,45 +120,46 @@
         android:layout_below="@id/title"
         android:textColor="@color/warm_grey"
         android:textSize="@dimen/fontvvs"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_original_price"
-        android:layout_marginBottom="5dp"
-        android:ellipsize="end"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
         android:layout_marginTop="4dp"
-        tools:text="Rp 3.121.500"
-        android:textSize="@dimen/sp_14"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
+        android:gravity="center_vertical"
+        android:lineSpacingExtra="5sp"
         android:textColor="@color/orange_red"
-        android:lineSpacingExtra="5sp" />
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        tools:text="Rp 3.121.500" />
 
     <TextView
         android:id="@+id/text_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="@dimen/fontvvs"
-        android:layout_toEndOf="@id/price"
-        android:layout_toRightOf="@id/price"
         android:layout_below="@id/text_original_price"
         android:layout_alignBottom="@id/price"
-        android:gravity="center"
+        android:layout_toEndOf="@id/price"
+        android:layout_toRightOf="@id/price"
         android:background="@drawable/bg_rounded_corners_red"
-        android:paddingTop="@dimen/margin_vvvs"
-        android:paddingBottom="@dimen/margin_vvvs"
+        android:gravity="center"
         android:paddingLeft="@dimen/padding_vvs"
+        android:paddingTop="@dimen/margin_vvvs"
         android:paddingRight="@dimen/padding_vvs"
-        tools:text="10%OFF"
-        android:visibility="gone"/>
+        android:paddingBottom="@dimen/margin_vvvs"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontvvs"
+        android:visibility="gone"
+        tools:text="10%OFF" />
 
     <LinearLayout
+        android:id="@+id/review_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/price"
@@ -161,16 +176,16 @@
             android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:gravity="center_vertical"
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_12"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"/>
+            android:textStyle="normal" />
 
         <android.support.v4.widget.Space
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <LinearLayout
             android:id="@+id/rating_review_container"
@@ -183,8 +198,7 @@
             <ImageView
                 android:id="@+id/rating"
                 android:layout_width="51dp"
-                android:layout_height="10dp"
-                />
+                android:layout_height="10dp" />
 
             <TextView
                 android:id="@+id/review_count"
@@ -192,11 +206,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/sp_12"
-                />
+                android:textSize="@dimen/sp_12" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/new_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/review_container"
+        android:background="@drawable/bg_new_label"
+        android:textColor="@color/new_label_color"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/baru"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_3"
+        android:paddingBottom="@dimen/dp_3"
+        android:textSize="@dimen/sp_11"
+        android:visibility="gone" />
 
 </RelativeLayout>

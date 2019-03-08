@@ -48,6 +48,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     protected Context context;
     private TextView topLabel;
     private TextView bottomLabel;
+    private TextView newLabel;
 
     public GridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
@@ -64,6 +65,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.rating_review_container);
         topLabel = itemView.findViewById(R.id.topLabel);
         bottomLabel = itemView.findViewById(R.id.bottomLabel);
+        newLabel = itemView.findViewById(R.id.new_label);
         context = itemView.getContext();
         this.itemClickListener = itemClickListener;
     }
@@ -149,7 +151,11 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         } else {
             ratingReviewContainer.setVisibility(View.GONE);
         }
-
+        if(productItem.isNew()){
+            newLabel.setVisibility(View.VISIBLE);
+        } else {
+            newLabel.setVisibility(View.GONE);
+        }
         renderBadges(productItem.getBadgesList());
     }
 
