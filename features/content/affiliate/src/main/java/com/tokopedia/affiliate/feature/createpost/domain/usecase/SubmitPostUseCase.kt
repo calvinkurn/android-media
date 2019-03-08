@@ -45,6 +45,7 @@ open class SubmitPostUseCase @Inject constructor(
                                 getMediumList(imageList, tags, mainImageIndex)
                         )
                 )
+                .map(rearrangeMedia())
                 .flatMap(submitPostToGraphql(requestParams))
     }
 
@@ -52,10 +53,10 @@ open class SubmitPostUseCase @Inject constructor(
             : List<SubmitPostMedium> {
 
         val mediumList = ArrayList<SubmitPostMedium>()
-        mediumList.add(SubmitPostMedium(imageList[mainImageIndex], tags))
+        mediumList.add(SubmitPostMedium(imageList[mainImageIndex], 0, tags ))
         for (i in imageList.indices) {
             if (i != mainImageIndex) {
-                mediumList.add(SubmitPostMedium(imageList[i]))
+                mediumList.add(SubmitPostMedium(imageList[i], mediumList.size))
             }
         }
         return mediumList
@@ -71,6 +72,16 @@ open class SubmitPostUseCase @Inject constructor(
 
     private fun getTagType(type: String): String {
         return if (type == TYPE_CONTENT_SHOP) TAGS_TYPE_PRODUCT else type
+    }
+
+    private fun rearrangeMedia(): Func1<List<SubmitPostMedium>, List<SubmitPostMedium>> {
+        return Func1 {
+            val rearrangedList: MutableList<SubmitPostMedium> = ArrayList(it)
+            it.forEach { media ->
+                rearrangedList[media.order] = media
+            }
+            rearrangedList
+        }
     }
 
     private fun submitPostToGraphql(requestParams: RequestParams): Func1<List<SubmitPostMedium>, Observable<SubmitPostData>> {
