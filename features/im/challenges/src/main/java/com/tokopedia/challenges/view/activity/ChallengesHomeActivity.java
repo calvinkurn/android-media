@@ -79,7 +79,7 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
             @Override
             public void onPageSelected(int position) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_HOME_PAGE,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         String.valueOf(adapter.getPageTitle(position)));
                 if (position == 1) {

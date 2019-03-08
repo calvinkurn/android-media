@@ -17,7 +17,7 @@ import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.adapter.viewHolder.SubmissionViewHolder;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
-import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -114,8 +114,8 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
     public void onFragmentResume() {
         if (VIDEO_POS != 0) {
             if (customVideoPlayer != null) {
-                customVideoPlayer.startPlay(VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
-                ChallegeneSubmissionFragment.isVideoPlaying = false;
+                customVideoPlayer.startPlay(VIDEO_POS, ChallengeDetailsFragment.isVideoPlaying);
+                ChallengeDetailsFragment.isVideoPlaying = false;
             }
 
         }
@@ -125,10 +125,10 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
         if (customVideoPlayer != null) {
             VIDEO_POS = customVideoPlayer.getPosition();
             if (customVideoPlayer.isVideoPlaying()) {
-                ChallegeneSubmissionFragment.isVideoPlaying = true;
+                ChallengeDetailsFragment.isVideoPlaying = true;
                 customVideoPlayer.pause();
             } else
-                ChallegeneSubmissionFragment.isVideoPlaying = false;
+                ChallengeDetailsFragment.isVideoPlaying = false;
         }
     }
 
@@ -162,7 +162,7 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
                 viewHolder.tvShortDescription.setText(new StringBuilder().append(description).append("...").toString());
                 viewHolder.tvShortDescription.setTag(true);
                 viewHolder.tvShortDescription
-                        .append(Html.fromHtml("<font color='#42b549'>More</font>"));
+                        .append(Html.fromHtml("<font color='#42b549'>Lebih</font>"));
             } else {
                 viewHolder.tvShortDescription.setText(description);
             }
@@ -334,102 +334,3 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
     }
 
 }
-
-
-   /* private class ChallengeDetailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private final RecyclerView prizeRecyclerView;
-        TextView tvShortDescription, tvSeeMoreLessButton, seeMoreBuzzPoints;
-        WebView fullDescriptionWebView;
-        Result challengeResult;
-
-        View containerPrize, containerVideo, containerBuzzPoint;
-        LinearLayout bulletTextContainer;
-        CustomVideoPlayer customVideoPlayer;
-
-        public ChallengeDetailViewHolder(View view) {
-            super(view);
-            tvShortDescription = view.findViewById(R.id.short_description);
-            tvSeeMoreLessButton = view.findViewById(R.id.seemorebutton_description);
-            fullDescriptionWebView = view.findViewById(R.id.markdownView);
-            tvSeeMoreLessButton.setOnClickListener(this);
-            containerPrize = view.findViewById(R.id.cl_awards);
-            prizeRecyclerView = view.findViewById(R.id.rv_awards);
-            containerVideo = view.findViewById(R.id.cl_video_player);
-            customVideoPlayer = view.findViewById(R.id.video_player);
-
-
-            containerBuzzPoint = view.findViewById(R.id.cl_how_buzzpoints);
-            seeMoreBuzzPoints = view.findViewById(R.id.seemorebutton_buzzpoints);
-            bulletTextContainer = view.findViewById(R.id.tv_how_buzz_points_text);
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (fullDescriptionWebView.getVisibility() == View.GONE) {
-                tvSeeMoreLessButton.setText(R.string.ch_see_less);
-                MarkdownProcessor m = new MarkdownProcessor();
-                String html = m.markdown(challengeResult.getDescription());
-                fullDescriptionWebView.loadDataWithBaseURL("fake://", html, "text/html",
-                        "UTF-8", null);
-                tvShortDescription.setVisibility(View.GONE);
-                fullDescriptionWebView.setVisibility(View.VISIBLE);
-            } else {
-                tvSeeMoreLessButton.setText(R.string.ch_see_more);
-                tvShortDescription.setVisibility(View.VISIBLE);
-                fullDescriptionWebView.setVisibility(View.GONE);
-            }
-        }
-    }
-*/
-/*
-
-    private void populatePastDescription(ChallengeDetailPastViewHolder viewHolder) {
-       */
-/* View itemView = viewHolder.itemView;
-        if (itemView.getTag() == null) {
-            viewHolder.challengeResult = challengeResult;
-            itemView.setTag(true);
-            String buzzPointText = ((ChallengesModuleRouter) context.getApplicationContext())
-                    .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
-            if (!TextUtils.isEmpty(buzzPointText)) {
-                viewHolder.containerBuzzPoint.setVisibility(View.VISIBLE);
-                Utils.generateBulletText(viewHolder.bulletTextContainer, buzzPointText);
-            }
-            viewHolder.tvShortDescription.setText(challengeResult.getDescription());
-            if (challengeResult.getPrizes() != null
-                    && challengeResult.getPrizes().size() > 0) {
-                LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-                viewHolder.prizeRecyclerView.setLayoutManager(mLayoutManager1);
-                AwardAdapter awardAdapter = new AwardAdapter(challengeResult.getPrizes());
-                viewHolder.prizeRecyclerView.setAdapter(awardAdapter);
-
-                if (challengeResult.getSharing().getAssets() != null
-                        && !TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
-                    customVideoPlayer = viewHolder.customVideoPlayer;
-                    viewHolder.customVideoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(),
-                            challengeResult.getSharing().getAssets().getVideo(), false, null, false);
-                } else {
-                    viewHolder.containerVideo.setVisibility(View.GONE);
-                }
-
-            } else {
-                viewHolder.containerPrize.setVisibility(View.GONE);
-            }
-        }
-        if (isPastChallenge && viewHolder.containerWinners.getTag() == null)
-            if (viewHolder.containerWinners.getVisibility() == View.GONE
-                    && submissionWinnerResults != null &&
-                    submissionWinnerResults.size() > 0) {
-                viewHolder.containerWinners.setVisibility(View.VISIBLE);
-                viewHolder.containerWinners.setTag(true);
-                LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-                viewHolder.winnerRecyclerView.setLayoutManager(mLayoutManager);
-                SubmissionItemAdapter winnerItemAdapter = new SubmissionItemAdapter(submissionWinnerResults
-                        , request, LinearLayoutManager.HORIZONTAL, isPastChallenge);
-                winnerItemAdapter.isWinnerLayout(true);
-                viewHolder.winnerRecyclerView.setAdapter(winnerItemAdapter);
-            }*//*
-
-    }
-*/

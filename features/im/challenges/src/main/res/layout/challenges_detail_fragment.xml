@@ -163,7 +163,6 @@
                             android:layout_height="28dp"
                             android:layout_marginTop="@dimen/dp_16"
                             android:indeterminate="false"
-                            android:progress="50"
                             android:progressDrawable="@drawable/background_progress_timer"
                             app:layout_constraintLeft_toLeftOf="@+id/count_down"
                             app:layout_constraintRight_toRightOf="@+id/count_down" />

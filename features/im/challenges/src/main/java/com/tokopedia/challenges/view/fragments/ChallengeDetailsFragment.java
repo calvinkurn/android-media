@@ -42,8 +42,10 @@ import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
 import com.tokopedia.challenges.view.adapter.ChallengeMainDetailsAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.adapter.viewHolder.SubmissionViewHolder;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.contractor.ChallengeDetailsContract;
 import com.tokopedia.challenges.view.customview.CountDownView;
+import com.tokopedia.challenges.view.customview.FloatingTextButton;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.TermsNCondition;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
@@ -78,11 +80,18 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     @Inject
     ChallengeDetailsPresenter mPresenter;
 
+    @Inject
+    ChallengesGaAnalyticsTracker analytics;
+
     private String challengeId;
     private Boolean isPastChallenge;
     SortBy sortBy = SortBy.Recent;
 
     private Result challengeResult;
+
+
+    public static int VIDEO_POS = -1;
+    public static boolean isVideoPlaying = false;
 
     /*Views*/
     View mainContentView;
@@ -113,6 +122,10 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     private AppBarLayout appBarLayout;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
+    private FloatingTextButton sortFloatingTextButton;
+    private boolean isSubmissionLoaded;
+    private View progressView;
+
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallengeDetailsFragment();
@@ -160,12 +173,18 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         countDownView = view.findViewById(R.id.count_down);
         mainRecyclerView = view.findViewById(R.id.recyclerView_challengeDetailsMain);
         submitPhoto = view.findViewById(R.id.submit_photo);
+        sortFloatingTextButton = view.findViewById(R.id.sort_action_button);
+        progressView = view.findViewById(R.id.progress_bar_layout);
 
         bottomButtons = view.findViewById(R.id.ll_continue);
         view.findViewById(R.id.iv_sort).setOnClickListener(this);
         view.findViewById(R.id.iv_share).setOnClickListener(this);
         if (isPastChallenge) {
             bottomButtons.setVisibility(View.GONE);
+            sortFloatingTextButton.setVisibility(View.INVISIBLE);
+            sortFloatingTextButton.setOnClickListener(this);
+        } else {
+            submitPhoto.setOnClickListener(this);
         }
 
         if (!TextUtils.isEmpty(challengeId) || challengeResult == null) {
@@ -173,6 +192,10 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         } else {
             challengeId = challengeResult.getId();
             mPresenter.initialize(false, challengeResult);
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE_CHALLENEGE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
+                    challengeResult.getTitle());
         }
         return view;
     }
@@ -237,8 +260,6 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     @Override
     public void onStart() {
         super.onStart();
-        //if (ChallengesCacheHandler.CHALLENGES_DETAILS_CACHE) {
-        //}
     }
 
     @Override
@@ -248,16 +269,24 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     @Override
     public void showProgressBar() {
-        //TODO show Progress dialog here
+        progressView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
-        //Todo hide Progress dialog here
+        progressView.setVisibility(View.GONE);
     }
 
     @Override
     public void renderChallengeDetail(Result challengeResult) {
+        if (this.challengeResult == null && challengeResult != null) {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE_CHALLENEGE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
+                    challengeResult.getTitle());
+        }
+
+        this.challengeResult = challengeResult;
         ImageHandler.loadImage(getActivity(), challengeImage, Utils.getImageUrl(challengeResult.getThumbnailUrl()),
                 R.color.grey_1100, R.color.grey_1100);
         if (!TextUtils.isEmpty(challengeResult.getTitle())) {
@@ -284,7 +313,6 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             createChallengeDescriptionText(challengeResult.getDescription());
         addChallengeDetailToAdapter();
     }
-
 
     @Override
     public void renderTnC(TermsNCondition termsNCondition) {
@@ -364,12 +392,16 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
                     if (newState != RecyclerView.SCROLL_STATE_IDLE) {
                         mainDetailsAdapter.onViewScrolled();
                     }
-                    if (!isPastChallenge) {
-                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (!isPastChallenge)
                             showBottomButton(true);
-                        } else {
+                        else
+                            showFloatingSortButton();
+                    } else {
+                        if (!isPastChallenge)
                             showBottomButton(false);
-                        }
+                        else
+                            hideFloatingSortButton();
                     }
                 }
             });
@@ -380,6 +412,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     boolean isBottomVisible = true;
 
     private void showBottomButton(boolean show) {
+
         if (!show && isBottomVisible) {
             isBottomVisible = false;
             Animation slide = null;
@@ -488,6 +521,10 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     @Override
     public void renderSubmissions(List<SubmissionResult> submissionResults) {
         if (mainDetailsAdapter != null) {
+            if (isPastChallenge) {
+                isSubmissionLoaded = true;
+                sortFloatingTextButton.setVisibility(View.VISIBLE);
+            }
             mainDetailsAdapter.setSubmissionList(submissionResults);
         }
     }
@@ -592,6 +629,18 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             mPresenter.loadMoreItems();
         }, 100L);
 
+        if (isPastChallenge) {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SORT_BY,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_PAST_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                    ChallengesGaAnalyticsTracker.EVENT_SORT_RECENT);
+        } else {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SORT_BY,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                    ChallengesGaAnalyticsTracker.EVENT_SORT_RECENT);
+        }
+
     }
 
     public void sortByBuzzPoints() {
@@ -604,6 +653,18 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             mPresenter.loadMoreItems();
         }, 100L);
 
+        if (isPastChallenge) {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SORT_BY,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_PAST_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                    ChallengesGaAnalyticsTracker.EVENT_SORT_BUZZ_POINT);
+        } else {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SORT_BY,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                    ChallengesGaAnalyticsTracker.EVENT_SORT_BUZZ_POINT);
+        }
+
     }
 
     @Override
@@ -613,11 +674,17 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             sortByBuzzPoints();
         } else if (viewId == R.id.tv_most_recent) {
             sortByRecent();
-        } else if (viewId == R.id.ll_continue) {
+        } else if (viewId == R.id.submit_photo) {
             mPresenter.onSubmitButtonClick();
-        } else if (viewId == R.id.fab_share || viewId == R.id.iv_share) {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
-        } else if (viewId == R.id.iv_sort) {
+        } else if (viewId == R.id.iv_share) {
+            if (null != challengeResult) {
+                ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SORT_BY,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
+                        challengeResult.getTitle());
+            }
+        } else if (viewId == R.id.iv_sort || viewId == R.id.layout_button_container) {
             showSortingDialog();
         }
     }
@@ -660,6 +727,17 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     public void onTncClick() {
         if (tncHtml == null)
             return;
+        if (isPastChallenge) {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_PAST_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                    ChallengesGaAnalyticsTracker.EVENT_TNC);
+        } else {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                    ChallengesGaAnalyticsTracker.EVENT_TNC);
+        }
         tncCloseableDialog.show();
     }
 
@@ -685,6 +763,19 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             sortingDialog.setContentView(sortingView, "Buzz Point");
             sortingView.setOnClickListener(null);
             sortingDialog.show();
+
+            if (isPastChallenge) {
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_PAST_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                        ChallengesGaAnalyticsTracker.EVENT_BUZZ_POINT);
+            } else {
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                        ChallengesGaAnalyticsTracker.EVENT_BUZZ_POINT);
+            }
+
         }
     }
 
@@ -727,13 +818,14 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     }
 
     public enum SortBy {
-        BuzzPoint, Recent;
+        BuzzPoint, Recent
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
+
 
     public void createChallengeDescriptionText(String text) {
         Observable.fromCallable(() -> new MarkdownProcessor().markdown(text))
@@ -777,5 +869,15 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
                         tncHtml = s;
                     }
                 });
+    }
+
+    private void showFloatingSortButton() {
+        if (isSubmissionLoaded)
+            sortFloatingTextButton.show();
+    }
+
+    private void hideFloatingSortButton() {
+        if (sortFloatingTextButton.getVisibility() == View.VISIBLE)
+            sortFloatingTextButton.hide();
     }
 }

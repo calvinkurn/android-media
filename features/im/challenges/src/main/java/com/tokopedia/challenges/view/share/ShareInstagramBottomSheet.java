@@ -148,6 +148,16 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         ClipData clip = ClipData.newPlainText("Tokopedia", contents);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(getActivity(), R.string.ch_copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
+        if (challengeItem != null) {
+            if (challengeItem.getMe() != null)
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CHALLENGE_MY_SUBMISSION,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_COPY, contents);
+            else
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CHALLENGE_MY_SUBMISSION,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_COPY, contents);
+        }
     }
 
     @Override

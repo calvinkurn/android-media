@@ -10,6 +10,7 @@
 
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/col_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -84,6 +85,7 @@
                             android:layout_marginStart="@dimen/dp_16"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginTop="@dimen/dp_8"
+                            android:textColor="@color/accepted_green_textcolor"
                             tools:text="#challenge" />
 
                         <RelativeLayout
@@ -182,6 +184,17 @@
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+
+        <com.tokopedia.challenges.view.customview.FloatingTextButton
+            android:id="@+id/sort_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_margin="@dimen/dp_20"
+            android:visibility="gone"
+            app:floating_left_icon="@drawable/img_sort"
+            app:floating_title="Sort BY"
+            app:floating_title_allcaps="false" />
     </android.support.design.widget.CoordinatorLayout>
 
 
@@ -222,9 +235,9 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
+                android:background="@drawable/bg_round_grey_share"
                 android:padding="@dimen/dp_8"
                 android:src="@drawable/ic_share_grey"
-                android:background="@drawable/bg_round_grey_share"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="W,1:1"
                 app:layout_constraintStart_toEndOf="@+id/iv_sort"
@@ -234,10 +247,9 @@
                 android:id="@+id/iv_sort"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:padding="@dimen/dp_10"
-                android:tint="#666666"
-                android:src="@drawable/img_sort"
                 android:background="@drawable/bg_round_grey_share"
+                android:padding="@dimen/dp_7"
+                android:src="@drawable/img_sort"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="W,1:1"
                 app:layout_constraintStart_toStartOf="parent"
@@ -254,7 +266,7 @@
         android:background="@color/black_12"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ProgressBar
             android:id="@+id/prog_bar"
@@ -263,7 +275,6 @@
             android:layout_gravity="center" />
     </FrameLayout>
 </RelativeLayout>
-
 
 
     <!--

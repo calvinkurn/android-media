@@ -104,9 +104,9 @@ public class MExpandableTextView extends FrameLayout {
 
     private void showMore(boolean expand) {
         if (expand) {
-            mTxtDescription.append(Html.fromHtml("<font color='#42b549'>More</font>"));
+            mTxtDescription.append(Html.fromHtml("<font color='#42b549'>Lebih</font>"));
         } else {
-            mTxtDescription.append(Html.fromHtml("<font color='#42b549'> Less</font>"));
+            mTxtDescription.append(Html.fromHtml("<font color='#42b549'> </font>"));
         }
 
     }

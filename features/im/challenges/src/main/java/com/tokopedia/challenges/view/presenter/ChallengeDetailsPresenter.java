@@ -91,19 +91,23 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
     }
 
     private void checkSettings() {
+        if (getView() == null)
+            return;
         getView().showProgressBar();
         getChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeId());
         getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
 
             @Override
             public void onCompleted() {
-                getView().hideProgressBar();
+                if (getView() != null)
+                    getView().hideProgressBar();
             }
 
             @Override
             public void onError(Throwable e) {
                 if (!isViewAttached()) return;
-                getView().hideProgressBar();
+                if (getView() != null)
+                    getView().hideProgressBar();
                 getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_network_error_msg));
 
             }
@@ -135,14 +139,12 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
             getChallengeDetailsUseCase.execute(getView().getChallengeDetailsParams(), new Subscriber<Map<Type, RestResponse>>() {
                 @Override
                 public void onCompleted() {
-
+                    getView().hideProgressBar();
                 }
 
                 @Override
                 public void onError(Throwable e) {
                     if (!isViewAttached()) return;
-                    e.printStackTrace();
-                    getView().hideProgressBar();
                     NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(),
                             () -> getSubmissionChallenges(true, null));
                 }
@@ -154,7 +156,6 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
                     Result challengeResult = res1.getData();
                     boolean isPastChallenge = checkIsPastChallenge(challengeResult);
                     getView().setIsPastChallenge(isPastChallenge);
-                    getView().hideProgressBar();
                     getView().setChallengeResult(challengeResult);
                     getView().renderChallengeDetail(challengeResult);
                     getTermsNCondition(challengeResult.getId());
@@ -167,6 +168,7 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
                 }
             });
         } else {
+            getView().hideProgressBar();
             getView().renderChallengeDetail(challengeResult);
             boolean isPastChallenge = checkIsPastChallenge(challengeResult);
             getView().setIsPastChallenge(isPastChallenge);
@@ -212,7 +214,6 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
             @Override
             public void onError(Throwable e) {
                 if (getView() == null) return;
-                //TODO remove loader
                 getView().hideSubmissionListLoader();
                 Log.d("ChallengeMain", "LOAD_MORE: Hide Loader onError");
                 if (pageStart > 0)
@@ -306,7 +307,6 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
     }
 
     private void getSubmissionInChallenge() {
-        getView().showProgressBar();
         getSubmissionInChallengeUseCase.setRequestParams(getView().getChallengeId());
         getSubmissionInChallengeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -318,13 +318,11 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
             public void onError(Throwable e) {
                 if (!isViewAttached())
                     return;
-                getView().hideProgressBar();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
                 if (!isViewAttached()) return;
-                getView().hideProgressBar();
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
                 SubmissionResponse mainDataObject = res1.getData();
 

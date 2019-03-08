@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
@@ -170,9 +169,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void onResume() {
-        if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
+        if (ChallengeDetailsFragment.VIDEO_POS != -1) {
             if (challengeImage != null)
-                challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
+                challengeImage.startPlay(ChallengeDetailsFragment.VIDEO_POS, ChallengeDetailsFragment.isVideoPlaying);
         }
         analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
         super.onResume();
@@ -183,8 +182,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void onPause() {
         if (challengeImage != null && challengeImage.isVideoPlaying()) {
             challengeImage.pause();
-            ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
-            ChallegeneSubmissionFragment.isVideoPlaying = false;
+            ChallengeDetailsFragment.VIDEO_POS = challengeImage.getPosition();
+            ChallengeDetailsFragment.isVideoPlaying = false;
         }
         super.onPause();
     }
@@ -320,6 +319,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         this.participateTitle.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ChallengeDetailsActivity.class);
             intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
+            intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
             navigateToActivity(intent);
         });
     }

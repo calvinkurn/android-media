@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
-import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.customview.MExpandableTextView;
 import com.tokopedia.challenges.view.model.User;
@@ -21,7 +19,10 @@ import com.tokopedia.challenges.view.utils.Utils;
 /**
  * @author lalit.singh
  */
-public class SubmissionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, MExpandableTextView.OnExpandListener {
+public class SubmissionViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener, MExpandableTextView.OnExpandListener {
+
+    private final ChallengesGaAnalyticsTracker analytics;
     public View itemView;
     private ImageView submissionImage;
     private TextView tvBuzzPoints;
@@ -57,6 +58,7 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
         tvWinnerNumber = itemView.findViewById(R.id.tv_winner_number);
         tvPostDescription = itemView.findViewById(R.id.tv_submission_description);
         itemView.findViewById(R.id.cl_participant).setVisibility(View.VISIBLE);
+        analytics = new ChallengesGaAnalyticsTracker(context);
     }
 
     public void bindData(final SubmissionResult submissionResult, SubmissionViewHolderListener listener) {
@@ -127,7 +129,6 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
     }
 
     private void setLikes(boolean isLiked) {
-        //todo hit server... liked
         if (((SubmissionResult) itemView.getTag()).getMe() != null) {
             ((SubmissionResult) itemView.getTag()).getMe().setLiked(isLiked);
             if (isLiked) {
@@ -151,18 +152,20 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder implements Vie
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE :
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
                 if (result.getCollection() != null) {
-                   /* analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
-                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,
-                            action, categoryItems.get(getIndex()).getCollection().getTitle());*/
+                    analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
+                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGE_OTHER_SUBMISSION,
+                            action, result.getCollection().getTitle());
                 }
             }
 
-        } else if(v.getId() == R.id.iv_share){
+        } else if (v.getId() == R.id.iv_share) {
             listener.onShareClick(result);
-            //Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
-            //detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, result);
-            //detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
-            //listener.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, 0);
+            if (result.getCollection() != null) {
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGE_OTHER_SUBMISSION,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
+                        result.getCollection().getTitle());
+            }
         }
     }
 

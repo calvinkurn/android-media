@@ -34,6 +34,7 @@ public class CountDownView extends FrameLayout {
     public CountDownView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
+        lastProgress = 0;
     }
 
 
@@ -71,13 +72,16 @@ public class CountDownView extends FrameLayout {
         timer = new CountDownTimer(currentDuration, 100) {
             @Override
             public void onTick(long millis) {
-                currentDuration = millis;
-                int currentProgress =  100 - (int) ((millis / (float) startDuration) * 100.0f);
-                if(lastProgress != currentProgress) {
-                    lastProgress = currentProgress;
-                    progressBar.setProgress(currentProgress);
-                }
-                updateText(millis);
+                try {
+                    currentDuration = millis;
+                    int currentProgress = 100 - (int) ((millis / (float) startDuration) * 100.0f);
+                    if (lastProgress != currentProgress) {
+                        lastProgress = currentProgress;
+                        if(CountDownView.this.progressBar != null)
+                            CountDownView.this.progressBar.setProgress(currentProgress);
+                    }
+                    updateText(millis);
+                }catch (Exception e){}
             }
 
             @Override
