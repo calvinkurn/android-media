@@ -105,15 +105,15 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         setImageProduct(productItem);
         if(productItem.isTopAds()) {
             topadsIcon.setVisibility(View.VISIBLE);
-            productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
-                @Override
-                public void onViewHint() {
-                    new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
-                }
-            });
         }else {
             topadsIcon.setVisibility(View.GONE);
         }
+        productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
+            }
+        });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
 

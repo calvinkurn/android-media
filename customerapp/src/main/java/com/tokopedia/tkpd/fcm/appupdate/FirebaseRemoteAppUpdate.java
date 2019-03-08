@@ -30,7 +30,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
         if (remoteConfig != null) {
             DetailUpdate detailUpdate = getDetailUpdate();
             if (detailUpdate.isNeedUpdate() && GlobalConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
-                listener.onNeedUpdate(detailUpdate);
+//                listener.onNeedUpdate(detailUpdate);
             } else {
                 listener.onNotNeedUpdate();
             }
