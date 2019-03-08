@@ -354,7 +354,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     CreatePostImagePickerActivity.getInstance(
                             it,
                             ArrayList(viewModel.fileImageList),
-                            viewModel.maxImage - viewModel.urlImageList.size,
+                            viewModel.maxImage,
                             viewModel.fileImageList.isEmpty()
                     ),
                     REQUEST_IMAGE_PICKER)
