@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.domain.entity.GetContentFormDomain
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import rx.Subscriber
@@ -11,7 +12,8 @@ import rx.Subscriber
 /**
  * @author by milhamj on 9/26/18.
  */
-class GetContentFormSubscriber(private val view: CreatePostContract.View)
+class GetContentFormSubscriber(private val view: CreatePostContract.View,
+                               private val type: String)
     : Subscriber<GetContentFormDomain>() {
 
     override fun onCompleted() {
@@ -40,6 +42,19 @@ class GetContentFormSubscriber(private val view: CreatePostContract.View)
             return
         }
 
+        if (type == TYPE_AFFILIATE) {
+            handleCheckQuota(domain)
+        }
+
+        view.hideLoading()
+        if (!TextUtils.isEmpty(data.feedContentForm.error)) {
+            view.onErrorGetContentForm(data.feedContentForm.error)
+            return
+        }
+        view.onSuccessGetContentForm(data.feedContentForm)
+    }
+
+    private fun handleCheckQuota(domain: GetContentFormDomain) {
         val checkQuotaQuery = domain.checkQuotaQuery
         if (checkQuotaQuery == null || checkQuotaQuery.data == null) {
             onError(RuntimeException())
@@ -49,12 +64,5 @@ class GetContentFormSubscriber(private val view: CreatePostContract.View)
             view.onErrorNoQuota()
             return
         }
-
-        view.hideLoading()
-        if (!TextUtils.isEmpty(data.feedContentForm.error)) {
-            view.onErrorGetContentForm(data.feedContentForm.error)
-            return
-        }
-        view.onSuccessGetContentForm(data.feedContentForm)
     }
 }
