@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -27,7 +26,8 @@ public class MainToolbar extends Toolbar {
     private ImageButton btnNotification;
     private ImageButton btnInbox;
     private ImageButton btnWishlist;
-    private BadgeView badgeView;
+    private BadgeView badgeViewInbox;
+    private BadgeView badgeViewNotification;
 
     private SearchBarAnalytics searchBarAnalytics;
     private UserSessionInterface userSession;
@@ -51,23 +51,23 @@ public class MainToolbar extends Toolbar {
 
     public void setNotificationNumber(int badgeNumber) {
         if (btnNotification != null) {
-            if (badgeView == null)
-                badgeView = new BadgeView(getContext());
+            if (badgeViewNotification == null)
+                badgeViewNotification = new BadgeView(getContext());
 
-            badgeView.bindTarget(btnNotification);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(badgeNumber);
+            badgeViewNotification.bindTarget(btnNotification);
+            badgeViewNotification.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewNotification.setBadgeNumber(badgeNumber);
         }
     }
 
     public void setInboxNumber(int badgeNumber) {
         if (btnInbox != null) {
-            if (badgeView == null)
-                badgeView = new BadgeView(getContext());
+            if (badgeViewInbox == null)
+                badgeViewInbox = new BadgeView(getContext());
 
-            badgeView.bindTarget(btnInbox);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(badgeNumber);
+            badgeViewInbox.bindTarget(btnInbox);
+            badgeViewInbox.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewInbox.setBadgeNumber(badgeNumber);
         }
     }
 

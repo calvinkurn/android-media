@@ -35,7 +35,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
@@ -71,9 +70,8 @@ import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.InboxNotificationListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -102,9 +100,8 @@ import rx.Observable;
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        CountDownView.CountDownListener,
-        NotificationListener, FragmentListener, HomeEggListener,
-        InboxNotificationListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
+        CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
+        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -1123,13 +1120,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     };
 
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        if (mainToolbar != null) {
-            mainToolbar.setNotificationNumber(number);
-        }
-    }
-
     public void startShopInfo(String shopId) {
         if (getActivity() != null
                 && getActivity().getApplication() != null
@@ -1233,13 +1223,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onNotifyBadgeInboxNotification(int number) {
-        if (mainToolbar != null) {
-            mainToolbar.setInboxNumber(number);
-        }
-    }
-
-    @Override
     public void hideEggOnScroll() {
         hideEggFragmentOnScrolling();
     }
@@ -1272,6 +1255,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     name,
                     price
             );
+        }
+    }
+
+    @Override
+    public void onNotificationChanged(int notificationCount, int inboxCount) {
+        if (mainToolbar != null) {
+            mainToolbar.setNotificationNumber(notificationCount);
+            mainToolbar.setInboxNumber(inboxCount);
         }
     }
 }

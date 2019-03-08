@@ -60,12 +60,10 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.InboxNotificationListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -556,14 +554,6 @@ public class MainParentActivity extends BaseActivity implements
     private void setBadgeNotifCounter(Fragment fragment) {
         if (fragment == null)
             return;
-
-        if (fragment instanceof NotificationListener && notification != null) {
-            ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
-        }
-
-        if (fragment instanceof InboxNotificationListener && notification != null) {
-            ((InboxNotificationListener) fragment).onNotifyBadgeInboxNotification(notification.getTotalInbox());
-        }
 
         if (fragment instanceof AllNotificationListener && notification != null) {
             ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
