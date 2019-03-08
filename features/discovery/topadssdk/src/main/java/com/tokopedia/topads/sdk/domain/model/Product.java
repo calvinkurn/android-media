@@ -190,7 +190,7 @@ public class Product implements Parcelable {
         relativeUri = in.readString();
         priceFormat = in.readString();
         countTalkFormat = in.readString();
-        countReviewFormat = in.readString();
+        countReviewFormat = in.readInt();
         category = in.readParcelable(Category.class.getClassLoader());
         productPreorder = in.readByte() != 0;
         productWholesale = in.readByte() != 0;
@@ -219,7 +219,7 @@ public class Product implements Parcelable {
         dest.writeString(relativeUri);
         dest.writeString(priceFormat);
         dest.writeString(countTalkFormat);
-        dest.writeString(countReviewFormat);
+        dest.writeInt(countReviewFormat);
         dest.writeParcelable(category, flags);
         dest.writeByte((byte) (productPreorder ? 1 : 0));
         dest.writeByte((byte) (productWholesale ? 1 : 0));
