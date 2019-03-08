@@ -129,7 +129,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 }
 
                 updateThumbnail()
-                updateButton()
             }
             REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
                 val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
@@ -139,7 +138,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     viewModel = resultViewModel
                     updateRelatedProduct()
                     updateThumbnail()
-                    updateButton()
                 }
             }
             REQUEST_LOGIN -> fetchContentForm()
@@ -187,7 +185,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
         updateMedia()
         updateThumbnail()
-        updateButton()
         updateHeader(feedContentForm.authors)
     }
 
@@ -244,7 +241,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.urlImageList.removeAll { it == relatedProductItem.image }
 
         updateThumbnail()
-        updateButton()
     }
 
     abstract fun fetchContentForm()
@@ -314,11 +310,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.adapter = adapter
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
             saveDraftAndSubmit()
         }
         addImageBtn.setOnClickListener {
-            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
             goToImagePicker()
         }
         relatedAddBtn.text = getAddRelatedProductText()
@@ -332,10 +326,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.setText(viewModel.caption)
         updateMaxCharacter()
         updateThumbnail()
-        updateButton()
     }
 
     private fun goToImagePicker() {
+        affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -377,6 +371,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun saveDraftAndSubmit() {
+        affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
+
+        if (isFormInvalid()) {
+            return
+        }
+
         activity?.let {
             showLoading()
 
@@ -395,6 +395,27 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
             it.finish()
         }
+    }
+
+    private fun isFormInvalid(): Boolean {
+        var isFormInvalid = false
+        if (isTypeAffiliate() && viewModel.adIdList.isEmpty()) {
+            isFormInvalid = true
+            view?.showErrorToaster(getString(R.string.af_warning_empty_product), R.string.label_add) {
+                onRelatedAddProductClick()
+            }
+        } else if (!isTypeAffiliate() && viewModel.productIdList.isEmpty()) {
+            isFormInvalid = true
+            view?.showErrorToaster(getString(R.string.af_warning_empty_product), R.string.label_add) {
+                onRelatedAddProductClick()
+            }
+        } else if (viewModel.completeImageList.isEmpty()) {
+            isFormInvalid = true
+            view?.showErrorToaster(getString(R.string.af_warning_empty_photo), R.string.label_add) {
+                goToImagePicker()
+            }
+        }
+        return isFormInvalid
     }
 
     private fun updateMedia() {
@@ -432,13 +453,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 viewModel.caption.length,
                 MAX_CHAR
         )
-    }
-
-    private fun updateButton() {
-        val isButtonEnabled = viewModel.completeImageList.isNotEmpty()
-                && viewModel.relatedProducts.isNotEmpty()
-                && (viewModel.adIdList.isNotEmpty() || viewModel.productIdList.isNotEmpty())
-        doneBtn.isEnabled = isButtonEnabled
     }
 
     private fun updateHeader(authors: List<Author>) {
