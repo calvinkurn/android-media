@@ -448,6 +448,8 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mEmptyBtn.setVisibility(VISIBLE);
             showVoice(false);
             showImageSearch(false);
+
+            searchParameter.setSearchQuery(newText.toString()); // TODO:: Fix this to always set the value regardless of newText
         } else {
             mEmptyBtn.setVisibility(GONE);
             showVoice(true);
@@ -459,8 +461,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         mOldQueryText = newText.toString();
-
-        searchParameter.setSearchQuery(newText.toString());
 
         if (mSuggestionFragment != null) {
             mSuggestionFragment.search(searchParameter);
