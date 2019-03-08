@@ -12,13 +12,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'webview'
-    groupId = 'com.tokopedia.webview'
-    versionName = "2.23"
-    artifactName ="webview-release"
-}
-
 dependencies {
 
     implementation project(rootProject.ext.libraries.abstraction)
@@ -26,5 +19,3 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
 }
-
-apply from: '../../publish_local.gradle'

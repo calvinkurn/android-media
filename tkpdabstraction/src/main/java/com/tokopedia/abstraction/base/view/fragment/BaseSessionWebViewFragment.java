@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.user.session.UserSession;
 
+/**
+ * Please use from module webview instead.
+ */
 @Deprecated
 public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public static final String ARGS_URL = "arg_url";
