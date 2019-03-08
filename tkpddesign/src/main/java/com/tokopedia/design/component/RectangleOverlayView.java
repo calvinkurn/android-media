@@ -2,6 +2,7 @@ package com.tokopedia.design.component;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.widget.LinearLayout;
 
 import com.tokopedia.design.R;
@@ -20,6 +22,11 @@ import com.tokopedia.design.R;
 public class RectangleOverlayView extends LinearLayout {
 
     private Bitmap bitmap;
+    private float insetDist;
+    private int outLineImageId;
+    private int colorId;
+
+
 
     public RectangleOverlayView(Context context) {
         super(context);
@@ -27,6 +34,11 @@ public class RectangleOverlayView extends LinearLayout {
 
     public RectangleOverlayView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.RectangleOverlayView);
+        insetDist = convertPixelsToDp(
+                arr.getDimension(R.styleable.RectangleOverlayView_inset_distance, 0), context);
+        outLineImageId = arr.getResourceId(R.styleable.RectangleOverlayView_outline_img, -1);
+        colorId = arr.getResourceId(R.styleable.RectangleOverlayView_fg_color, -1);
     }
 
     public RectangleOverlayView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -61,19 +73,25 @@ public class RectangleOverlayView extends LinearLayout {
                 getHeight() / 2 + getResources().getDimensionPixelSize(R.dimen.ktp_view_height));
 
         RectF ktpRectangle_2 = new RectF(
-                (getWidth() / 2 - getResources().getDimensionPixelSize(R.dimen.ktp_view_width))+20,
-                (getHeight() / 2 - getResources().getDimensionPixelSize(R.dimen.ktp_view_height))+20,
-                (getWidth() / 2 + getResources().getDimensionPixelSize(R.dimen.ktp_view_width))-20,
-                (getHeight() / 2 + getResources().getDimensionPixelSize(R.dimen.ktp_view_height))-20);
+                (getWidth() / 2 - getResources().getDimensionPixelSize(R.dimen.ktp_view_width))+ insetDist,
+                (getHeight() / 2 - getResources().getDimensionPixelSize(R.dimen.ktp_view_height))+insetDist,
+                (getWidth() / 2 + getResources().getDimensionPixelSize(R.dimen.ktp_view_width))-insetDist,
+                (getHeight() / 2 + getResources().getDimensionPixelSize(R.dimen.ktp_view_height))-insetDist);
 
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(getResources().getColor(R.color.black_99));
+        if(colorId != -1){
+            paint.setColor(getResources().getColor(colorId));
+        }else {
+            paint.setColor(getResources().getColor(R.color.colorPrimary));
+        }
 
         paint.setAlpha(255);
         osCanvas.drawRect(mainRectangle, paint);
 
-        osCanvas.drawBitmap(drawableToBitmap(getResources().getDrawable(R.drawable.img_frame_id)), null, ktpRectangle, null);
+        if(outLineImageId != -1) {
+            osCanvas.drawBitmap(drawableToBitmap(getResources().getDrawable(outLineImageId)), null, ktpRectangle, null);
+        }
 
         paint.setColor(Color.TRANSPARENT);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
@@ -97,6 +115,10 @@ public class RectangleOverlayView extends LinearLayout {
             bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         }
         return bitmap;
+    }
+
+    public static float convertPixelsToDp(float px, Context context){
+        return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
 }

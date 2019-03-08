@@ -288,4 +288,9 @@
     <declare-styleable name="TouchViewPager">
         <attr name="can_swipe" format="boolean" />
     </declare-styleable>
+    <declare-styleable name="RectangleOverlayView">
+        <attr name="fg_color" format="reference"/>
+        <attr name="inset_distance" format="dimension"/>
+        <attr name="outline_img" format="reference"/>
+    </declare-styleable>
 </resources>

@@ -40,7 +40,10 @@
     <com.tokopedia.design.component.RectangleOverlayView
         android:id="@+id/cicleOverlay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:fg_color="@color/black_99"
+        app:inset_distance="@dimen/dp_20"
+        app:outline_img="@drawable/img_frame_id"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

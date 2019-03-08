@@ -53,6 +53,7 @@ public interface Constants {
     interface RegEx{
         String name = "^[a-zA-Z\\s]+";
         String ktp = "^[0-9]+";
+        String passport = "^[a-zA-Z0-9\\s]+";
     }
 
     interface ErrorMsg{
