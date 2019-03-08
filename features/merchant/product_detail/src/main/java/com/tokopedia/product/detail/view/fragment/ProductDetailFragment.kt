@@ -188,6 +188,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
 
+        private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+
         fun newInstance(productId: String? = null,
                         shopDomain: String? = null,
                         productKey: String? = null,
@@ -1110,6 +1113,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
         updateWishlist(false)
         //TODO clear cache
         //TODO action success remove wishlist. in old version, will broadcast
+        sendIntentResusltWishlistChange(productId ?: "", false)
+
+    }
+
+    private fun sendIntentResusltWishlistChange(productId: String, isInWishlist: Boolean){
+        val resultIntent = Intent()
+                .putExtra(WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1))
+        resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
+        resultIntent.putExtra("product_id", productId)
+        activity!!.setResult(Activity.RESULT_CANCELED, resultIntent)
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {
@@ -1122,6 +1135,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         updateWishlist(true)
         //TODO clear cache
         //TODO action success add wishlist. in old version, will broadcast
+        sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
     private fun onDiscussionClicked() {
