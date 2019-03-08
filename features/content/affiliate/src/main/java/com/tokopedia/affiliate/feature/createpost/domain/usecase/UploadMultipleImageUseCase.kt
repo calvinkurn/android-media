@@ -49,8 +49,8 @@ class UploadMultipleImageUseCase @Inject constructor(
     private fun mapToUrl(
             medium: SubmitPostMedium): Func1<ImageUploadDomainModel<UploadImageResponse>, SubmitPostMedium> {
         return Func1 { uploadDomainModel ->
-            var imageUrl: String? = uploadDomainModel.dataResultImageUpload.data.picSrc
-            if (imageUrl != null && imageUrl.contains(DEFAULT_RESOLUTION)) {
+            var imageUrl: String = uploadDomainModel.dataResultImageUpload.data.picSrc ?: ""
+            if (imageUrl.contains(DEFAULT_RESOLUTION)) {
                 imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
             }
             medium.mediaURL = imageUrl

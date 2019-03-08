@@ -9,14 +9,14 @@ import com.google.gson.annotations.SerializedName
 class UploadImageData {
     @SerializedName("pic_obj")
     @Expose
-    val picObj: String = ""
+    val picObj: String? = ""
     @SerializedName("pic_src")
     @Expose
-    val picSrc: String = ""
+    val picSrc: String? = ""
     @SerializedName("server_id")
     @Expose
-    val serverId: String = ""
+    val serverId: String? = ""
     @SerializedName("success")
     @Expose
-    val success: String = ""
+    val success: String? = ""
 }
