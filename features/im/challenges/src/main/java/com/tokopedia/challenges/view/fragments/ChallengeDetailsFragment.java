@@ -114,7 +114,6 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     Handler handler = new Handler();
     private View bottomButtons;
-    private boolean isWinnerList;
     private CloseableBottomSheetDialog tncCloseableDialog;
     private String tncHtml, challengeDescriptionHtml;
     private String buzzPointText;
@@ -142,7 +141,6 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             this.challengeResult = getArguments().getParcelable(Utils.QUERY_PARAM_SUBMISSION_RESULT);
         }
         this.isPastChallenge = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE);
-        isWinnerList = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, false);
         setHasOptionsMenu(true);
     }
 
