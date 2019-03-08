@@ -62,6 +62,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.data.util.getIntentUrl
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
@@ -445,7 +446,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     fun navigateToExpressCheckout() {
-        activity?.run {
+        activity?.let {
             try {
                 val productInfo = (productInfoViewModel.productInfoP1Resp.value as Success).data
                 val atcRequestParam = AtcRequestParam()
@@ -455,10 +456,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
                 atcRequestParam.setQuantity(qty)
 
-                val intent = (getApplicationContext() as ProductDetailRouter)
-                    .getExpressCheckoutIntent(this, atcRequestParam)
+                val checkoutUrlRouter = getString(R.string.template_applink_non_enclosed,
+                        getString(R.string.internal_scheme), getString(R.string.host_transaction),
+                        "checkoutvariant")
+
+                val intent = it.getIntentUrl(checkoutUrlRouter)
+                        .putExtra("EXTRA_ATC_REQUEST", atcRequestParam)
+
                 startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
-                overridePendingTransition(R.anim.pull_up, 0)
+                it.overridePendingTransition(R.anim.pull_up, 0)
             } catch (e: Exception) {
 
             }
@@ -984,10 +990,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            if (it.applicationContext is ProductDetailRouter) {
-                val intent = (it.applicationContext as ProductDetailRouter).goToEditProduct(it, true, id)
-                startActivityForResult(intent, REQUEST_CODE_EDIT_PRODUCT)
-            }
+            val fullUrl = it.getString(R.string.template_applink,
+                    it.getString(R.string.internal_scheme),
+                    it.getString(R.string.host_merchant),
+                    "product/$id")+"edit"
+
+            startActivityForResult(it.getIntentUrl(fullUrl), REQUEST_CODE_EDIT_PRODUCT)
         }
     }
 
@@ -1156,10 +1164,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productDetailTracking.eventReviewClicked()
         if (productInfo != null) {
             //TODO SENT MOENGAGE
-            activity?.let {
-                val router = it.applicationContext as? ProductDetailRouter ?: return
-                startActivity(router.getProductReputationIntent(it, productInfo!!.basic.id.toString(),
-                    productInfo!!.basic.name))
+            context?.let {
+                val fullUrl = getString(R.string.template_applink,
+                        getString(R.string.internal_scheme),
+                        getString(R.string.host_merchant),
+                        "product/${productInfo!!.basic.id}")+"review"
+                val intent = it.getIntentUrl(fullUrl).putExtra("x_prd_nm", productInfo!!.basic.name)
+                startActivity(intent)
             }
         }
     }

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
+
     <string name="host_merchant" translatable="false">merchant</string>
+    <string name="host_transaction" translatable="false">transaction</string>
+
     <string name="path_product_detail" translatable="false">/product/.*\\/</string>
+    <string name="path_product_edit" translatable="false">/product/.*\\/edit</string>
+    <string name="path_product_review" translatable="false">/product/.*\\/review</string>
+
+    <string name="path_checkout_variant" translatable="false">/checkoutvariant</string>
 </resources>
