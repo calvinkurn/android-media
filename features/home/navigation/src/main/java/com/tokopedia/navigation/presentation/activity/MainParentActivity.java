@@ -227,6 +227,7 @@ public class MainParentActivity extends BaseActivity implements
         bottomNavigation = findViewById(R.id.bottomnav);
         fragmentContainer = findViewById(R.id.container);
 
+        bottomNavigation.setItemIconTintList(null);
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
