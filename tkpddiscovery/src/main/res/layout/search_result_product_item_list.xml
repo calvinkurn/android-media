@@ -23,7 +23,7 @@
             app:cardUseCompatPadding="true"
             app:cardElevation="0dp">
 
-            <com.tokopedia.core.customwidget.SquareImageView
+            <com.tokopedia.topads.sdk.view.ImpressedImageView
                 android:id="@+id/product_image"
                 android:layout_width="@dimen/dp_100"
                 android:layout_height="@dimen/dp_100"
