@@ -154,7 +154,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    protected void onDoneClicked() {
+    private void onDoneClicked() {
         if (selectedImagePaths.size() > 0) {
             if (imagePickerBuilder.isContinueToEditAfterPick()) {
                 startEditorActivity(selectedImagePaths);
