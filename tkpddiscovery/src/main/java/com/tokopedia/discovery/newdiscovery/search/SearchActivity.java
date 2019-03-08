@@ -263,6 +263,8 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void handleIntentWithProductViewModel(ProductViewModel productViewModel) {
+        setSearchParameter(productViewModel.getSearchParameter());
+
         setLastQuerySearchView(productViewModel.getQuery());
         loadSection(productViewModel, forceSwipeToShop);
         setToolbarTitle(productViewModel.getQuery());

@@ -367,6 +367,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void performRequestProduct(String searchQuery, String categoryId) {
         updateSearchParameterBeforeSearch(searchQuery, categoryId);
 
+        searchQuery = getSearchParameter().getSearchQuery();
+
         onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
         getPresenter().requestProduct(searchParameter, isForceSearch(), isRequestOfficialStoreBanner());
