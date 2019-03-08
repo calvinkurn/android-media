@@ -66,7 +66,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
                 "",
                 true,
                 "",
-                viewModel.maxProduct,
+                viewModel.maxProduct - viewModel.productIdList.size,
                 ArrayList(viewModel.productIdList)
         )
         startActivityForResult(

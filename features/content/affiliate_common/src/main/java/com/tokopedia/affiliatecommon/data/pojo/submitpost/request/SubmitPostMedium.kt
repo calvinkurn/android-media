@@ -8,6 +8,10 @@ data class SubmitPostMedium(
         @Expose
         var mediaURL: String = "",
 
+        @SerializedName("order")
+        @Expose
+        val order: Int = 0,
+
 
         @SerializedName("tags")
         @Expose
