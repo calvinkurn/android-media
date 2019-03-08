@@ -50,7 +50,7 @@ public class EditTravelPassengerUseCase extends BaseTravelPassengerUseCase<Boole
 
                     if (!TextUtils.isEmpty(query)) {
                         GraphqlRequest request = new GraphqlRequest(query, ResponseTravelEditPassenger.class,
-                                variableGql);
+                                variableGql, false);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(request);
                         return graphqlUseCase.createObservable(null);

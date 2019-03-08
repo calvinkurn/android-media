@@ -36,6 +36,6 @@ public class GetAddressWithCornerUseCase {
 
     private GraphqlRequest getRequest() {
         String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.address_with_corner);
-        return new GraphqlRequest(query, GqlKeroWithAddressResponse.class);
+        return new GraphqlRequest(query, GqlKeroWithAddressResponse.class, false);
     }
 }
