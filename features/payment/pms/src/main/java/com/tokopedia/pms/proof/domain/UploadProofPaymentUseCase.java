@@ -57,7 +57,7 @@ public class UploadProofPaymentUseCase extends UseCase<UploadProof> {
                             variables.put(FILE_PATH, imageUploadDomainModel.getDataResultImageUpload().getResult().getPicSrc());
 
                             GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                                    R.raw.upload_proof), DataUploadProof.class, variables);
+                                    R.raw.upload_proof), DataUploadProof.class, variables, false);
                             uploadProofUseCase.clearRequest();
                             uploadProofUseCase.addRequest(graphqlRequest);
                             return uploadProofUseCase.createObservable(requestParams)

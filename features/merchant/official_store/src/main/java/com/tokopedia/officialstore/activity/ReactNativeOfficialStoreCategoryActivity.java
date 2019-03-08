@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
@@ -11,14 +13,23 @@ import com.tokopedia.officialstore.R;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreCategoryFragment;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 
 public class ReactNativeOfficialStoreCategoryActivity extends ReactFragmentActivity<ReactNativeOfficialStoreCategoryFragment> {
     private static final String MP_OFFICIAL_STORE_CATEGORY = "mp_official_store_category_activity";
+    private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
+    public static final String KEY_CATEGORY = "key_category";
 
     @DeepLink({ ApplinkConst.OFFICIAL_STORES_CATEGORY })
     public static Intent getOfficialStoreCategoryApplinkCallingIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(MP_OFFICIAL_STORE_CATEGORY);
-        return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(context, bundle);
+        RemoteConfig remoteConfig = new FirebaseRemtoeConfigImpl(context);
+        if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED)) {
+            return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(context, bundle);
+        } else {
+            return OldReactNativeOfficialStoreActivity.getCategoryIntent(context, bundle.getString(KEY_CATEGORY));
+        }
     }
 
     public static Intent createApplinkCallingIntent(Context context, Bundle extras) {
@@ -31,6 +42,15 @@ public class ReactNativeOfficialStoreCategoryActivity extends ReactFragmentActiv
     @Override
     protected ReactNativeOfficialStoreCategoryFragment getReactNativeFragment() {
         return ReactNativeOfficialStoreCategoryFragment.createInstance(getReactNativeProps());
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Toolbar toolbar = getToolbar();
+        if (toolbar != null) {
+            toolbar.setVisibility(View.GONE);
+        }
     }
 
     @Override

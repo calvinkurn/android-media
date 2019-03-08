@@ -26,7 +26,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -106,7 +105,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
-    public static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
+    private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String KEY_CATEGORY = "key_category";
 
     @Inject
@@ -153,18 +152,14 @@ public class MainParentActivity extends BaseActivity implements
         return intent;
     }
 
-    @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE, ApplinkConst.OFFICIAL_STORES_CATEGORY })
-    public static Intent getApplinkOfficialStoreIntent(Context context, Bundle extras) {
+    @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE })
+    public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false)) {
             Intent intent = start(context);
             intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
             return intent;
         } else {
-            if (extras.getString(KEY_CATEGORY) != null && !extras.getString(KEY_CATEGORY).isEmpty()){
-                return ((GlobalNavRouter) context.getApplicationContext()).getOldOfficialStoreCategory(context, extras.getString(KEY_CATEGORY));
-            }
-
             return ((GlobalNavRouter) context.getApplicationContext()).getOldOfficialStore(context);
         }
     }

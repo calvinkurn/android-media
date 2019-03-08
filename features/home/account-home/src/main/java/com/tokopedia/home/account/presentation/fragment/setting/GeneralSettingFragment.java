@@ -3,7 +3,6 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -46,6 +45,8 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION;
+import static com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEMPLATE;
 
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
@@ -129,6 +131,12 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         String settingDescTkpdPay = walletName + getString(R.string.subtitle_tkpd_pay_setting);
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay));
+        if (getActivity() != null && getActivity().getApplication() instanceof AccountHomeRouter &&
+                ((AccountHomeRouter) getActivity().getApplication()).getBooleanRemoteConfig(
+                        RemoteConfigKey.CHECKOUT_TEMPLATE_SETTING_TOGGLE, false)) {
+            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
+                    getString(R.string.title_tkpd_template_setting), getString(R.string.subtitle_template_setting)));
+        }
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)));
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -174,6 +182,12 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             case SettingConstant.SETTING_TKPD_PAY_ID:
                 accountAnalytics.eventClickSetting(PAYMENT_METHOD);
                 startActivity(TkpdPaySettingActivity.createIntent(getActivity()));
+                break;
+            case SettingConstant.SETTING_TEMPLATE_ID:
+                if (getActivity() != null) {
+                    String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, TkpdBaseURL.MOBILE_DOMAIN + PATH_CHECKOUT_TEMPLATE);
+                    RouteManager.route(getActivity(), applink);
+                }
                 break;
             case SettingConstant.SETTING_NOTIFICATION_ID:
                 accountAnalytics.eventClickSetting(NOTIFICATION);
