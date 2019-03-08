@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
@@ -31,6 +33,15 @@ public class ReactNativeOfficialStoreCategoryActivity extends ReactFragmentActiv
     @Override
     protected ReactNativeOfficialStoreCategoryFragment getReactNativeFragment() {
         return ReactNativeOfficialStoreCategoryFragment.createInstance(getReactNativeProps());
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Toolbar toolbar = getToolbar();
+        if (toolbar != null) {
+            toolbar.setVisibility(View.GONE);
+        }
     }
 
     @Override
