@@ -419,15 +419,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
                                activityType: String) {
-        //TODO milhamj
-//        startActivityForResult(
-//                RouteManager.getIntent(
-//                        context,
-//                        ApplinkConst.AFFILIATE_EDIT_POST.replace(POST_ID, activityId)
-//                ),
-//                EDIT_POST_CODE
-//        )
-//        profileAnalytics.eventClickTambahGambar(hasMultipleContent, activityId, activityType)
     }
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
