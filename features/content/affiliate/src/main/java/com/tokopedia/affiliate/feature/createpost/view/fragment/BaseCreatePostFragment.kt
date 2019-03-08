@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking
@@ -241,6 +242,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.urlImageList.removeAll { it == relatedProductItem.image }
 
         updateThumbnail()
+        updateAddTagText()
     }
 
     abstract fun fetchContentForm()
@@ -278,6 +280,18 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
         viewModel.productIdList.addAll(productIds)
         viewModel.adIdList.addAll(adIds)
+
+        updateAddTagText()
+    }
+
+    protected fun updateAddTagText() {
+        val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
+            viewModel.productIdList.size
+        relatedAddBtn.setTextColor(MethodChecker.getColor(
+                context!!,
+                if (numberOfProducts < viewModel.maxProduct) R.color.medium_green
+                else R.color.af_add_disabled)
+        )
     }
 
     private fun initDraft(arguments: Bundle) {

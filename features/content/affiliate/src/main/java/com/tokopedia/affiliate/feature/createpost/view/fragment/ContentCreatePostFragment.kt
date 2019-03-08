@@ -86,5 +86,6 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
             viewModel.productIdList.add(it.productId.toString())
         }
         fetchContentForm()
+        updateAddTagText()
     }
 }
