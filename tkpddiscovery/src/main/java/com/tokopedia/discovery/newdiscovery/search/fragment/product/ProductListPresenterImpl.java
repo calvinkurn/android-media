@@ -265,7 +265,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         return list;
     }
 
-    private List<BadgeItem> mapBadges(List<Badge> badges) {
+    private static List<BadgeItem> mapBadges(List<Badge> badges) {
         List<BadgeItem> items = new ArrayList<>();
         for (Badge b:badges) {
             items.add(new BadgeItem(b.getImageUrl(), b.getTitle(), b.isShow()));
