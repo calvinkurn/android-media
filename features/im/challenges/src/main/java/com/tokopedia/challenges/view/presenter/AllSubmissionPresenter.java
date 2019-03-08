@@ -49,6 +49,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
         getSubmissionChallengesUseCase.unsubscribe();
     }
 
+
     @Override
     public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
         checkIfToLoad(layoutManager);

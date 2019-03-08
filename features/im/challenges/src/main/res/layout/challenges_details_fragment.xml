@@ -275,27 +275,3 @@
             android:layout_gravity="center" />
     </FrameLayout>
 </RelativeLayout>
-
-
-    <!--
-
-        <View
-            android:id="@+id/bottom_margin_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_80"
-            android:layout_above="@+id/ll_continue"
-            android:visibility="visible" />
-    -->
-
-
-    <!-- <android.support.design.widget.FloatingActionButton
-         android:id="@+id/fab_share"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginEnd="@dimen/dp_16"
-         android:layout_marginRight="@dimen/dp_16"
-         app:backgroundTint="@color/white"
-         app:layout_anchor="@id/base_main_content"
-         app:layout_anchorGravity="top|end|right"
-         app:srcCompat="@drawable/ic_share_via_card"
-         tools:ignore="VectorDrawableCompat" />-->
