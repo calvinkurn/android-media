@@ -327,7 +327,10 @@ public class ProductListFragment extends SearchSectionFragment
         List<Object> dataLayerList = new ArrayList<>();
         for (Visitable object : list) {
             if (object instanceof ProductItem) {
-                dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
+                ProductItem item = (ProductItem) object;
+                if (item.isTopAds()) {
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId));
+                }
             }
         }
         SearchTracking.eventImpressionSearchResultProduct(getActivity(), dataLayerList, getQueryKey());
@@ -508,15 +511,16 @@ public class ProductListFragment extends SearchSectionFragment
     private void sendItemClickTrackingEvent(ProductItem item) {
         String userId = userSession.isLoggedIn() ?
                 userSession.getUserId() : "";
-
-        SearchTracking.trackEventClickSearchResultProduct(
-                getActivity(),
-                item.getProductAsObjectDataLayer(userId),
-                item.getPageNumber(),
-                productViewModel.getQuery(),
-                getSelectedFilter(),
-                getSelectedSort()
-        );
+        if (!item.isTopAds()) {
+            SearchTracking.trackEventClickSearchResultProduct(
+                    getActivity(),
+                    item.getProductAsObjectDataLayer(userId),
+                    item.getPageNumber(),
+                    productViewModel.getQuery(),
+                    getSelectedFilter(),
+                    getSelectedSort()
+            );
+        }
     }
 
     @Override
