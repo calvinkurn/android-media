@@ -48,11 +48,11 @@ class Banner : BannerView {
     }
 
     override fun getIndicator(): Int {
-        return R.drawable.indicator_default
+        return R.drawable.banner_indicator_default
     }
 
     override fun getIndicatorFocus(): Int {
-        return R.drawable.indicator_focus
+        return R.drawable.banner_indicator_focus
     }
 
     fun setBannerSeeAllTextColor(color: Int) {

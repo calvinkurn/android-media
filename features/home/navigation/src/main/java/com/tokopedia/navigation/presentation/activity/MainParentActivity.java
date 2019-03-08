@@ -328,11 +328,7 @@ public class MainParentActivity extends BaseActivity implements
             return false;
         }
 
-        if (position == OS_MENU) {
-            setHomeStatusBar();
-        } else {
-            setDefaultStatusBar();
-        }
+        hideStatusBar();
 
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
@@ -342,7 +338,7 @@ public class MainParentActivity extends BaseActivity implements
         return true;
     }
 
-    private void setHomeStatusBar() {
+    private void hideStatusBar() {
         //apply inset to allow recyclerview scrolling behind status bar
         fragmentContainer.setFitsSystemWindows(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -368,26 +364,6 @@ public class MainParentActivity extends BaseActivity implements
         if (Build.VERSION.SDK_INT >= 21) {
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
-    private void setDefaultStatusBar() {
-        fragmentContainer.setFitsSystemWindows(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            fragmentContainer.requestApplyInsets();
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                w.setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.setStatusBarColor(ContextCompat
-                    .getColor(this,R.color.green_600));
         }
     }
 
