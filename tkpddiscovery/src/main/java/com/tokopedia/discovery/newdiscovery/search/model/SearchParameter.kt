@@ -9,10 +9,14 @@ import java.util.*
 
 class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 
-    private val searchParameterHashMap = URLParser(deepLinkUri).paramKeyValueMap
+    private var searchParameterHashMap = URLParser(deepLinkUri).paramKeyValueMap
 
     constructor(parcel: Parcel) : this(parcel.readString() ?: "") {
         parcel.readMap(searchParameterHashMap, String::class.java.classLoader)
+    }
+
+    constructor(searchParameter: SearchParameter) : this(searchParameter.deepLinkUri) {
+        searchParameterHashMap = searchParameter.searchParameterHashMap
     }
 
     fun getSearchParameterMap() : Map<String, Any> {

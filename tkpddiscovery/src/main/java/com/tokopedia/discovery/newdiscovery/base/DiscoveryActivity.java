@@ -185,9 +185,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public boolean onQueryTextSubmit(SearchParameter searchParameter) {
-        setSearchParameter(searchParameter);
+        SearchParameter copySearchParameter = new SearchParameter(searchParameter);
 
-        String query = searchParameter.getSearchQuery();
+        String query = copySearchParameter.getSearchQuery();
 
         AutoCompleteTracking.eventClickSubmit(this, query);
 
@@ -195,7 +195,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             handleOfficialStoreSearchQuery(query);
             return true;
         } else {
-            handleNonOfficialStoreSearchQuery();
+            handleNonOfficialStoreSearchQuery(copySearchParameter);
             return false;
         }
     }
@@ -205,7 +205,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         sendSearchProductGTM(query);
     }
 
-    private void handleNonOfficialStoreSearchQuery() throws RuntimeException {
+    private void handleNonOfficialStoreSearchQuery(SearchParameter searchParameter) throws RuntimeException {
+        setSearchParameter(searchParameter);
+
         String query = searchParameter.getSearchQuery();
 
         switch (searchView.getSuggestionFragment().getCurrentTab()) {
@@ -347,13 +349,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     public void onSuggestionProductClick(SearchParameter searchParameter) {
-        setSearchParameter(searchParameter);
-
-        setForceSwipeToShop(false);
-        setForceSearch(false);
-        setRequestOfficialStoreBanner(true);
-
-        performRequestProduct();
+        SearchParameter copySearchParameter = new SearchParameter(searchParameter);
+        setSearchParameter(copySearchParameter);
+        onProductQuerySubmit();
     }
 
     protected void performRequestProduct() {

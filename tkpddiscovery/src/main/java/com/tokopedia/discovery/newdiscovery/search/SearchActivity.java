@@ -272,7 +272,8 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void handleIntentWithSearchQuery(SearchParameter searchParameter) {
-        onSuggestionProductClick(searchParameter);
+        setSearchParameter(searchParameter);
+        onProductQuerySubmit();
     }
 
     private void handleImageUri(Intent intent) {
