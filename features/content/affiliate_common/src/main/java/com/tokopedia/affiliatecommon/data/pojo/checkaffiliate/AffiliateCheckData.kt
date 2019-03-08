@@ -9,5 +9,5 @@ import com.google.gson.annotations.SerializedName
 data class AffiliateCheckData (
     @SerializedName("affiliateCheck")
     @Expose
-    var affiliateCheck: AffiliateCheckPojo? = null
-){}
+    var affiliateCheck: AffiliateCheckPojo = AffiliateCheckPojo()
+)
