@@ -189,7 +189,7 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
-        remoteConfig = new FirebaseRemoteConfigImpl(context);
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override
