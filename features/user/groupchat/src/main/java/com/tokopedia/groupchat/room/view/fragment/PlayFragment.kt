@@ -371,6 +371,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onImageAnnouncementClicked(image: ImageAnnouncementViewModel) {
+        if(image.redirectUrl.isBlank()) return
         analytics.eventClickThumbnail(channelInfoViewModel, image.contentImageUrl, image
                 .contentImageId, image.contentImageId)
         var applink = RouteManager.routeWithAttribution(context,  image.redirectUrl,
