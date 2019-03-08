@@ -83,6 +83,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -161,7 +162,8 @@ import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -185,13 +187,11 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.design.utils.DateLabelUtils;
-import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
@@ -1093,7 +1093,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getTrainOrderListIntent(Context context) {
-        return DigitalWebActivity.newInstance(context, TrainUrl.TRAIN_ORDER_LIST);
+        return getWebviewActivityWithIntent(context, TrainUrl.TRAIN_ORDER_LIST);
     }
 
     @Override
@@ -1282,26 +1282,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
-        if (getBooleanRemoteConfig(DigitalRouter.MULTICHECKOUT_CART_REMOTE_CONFIG, true)) {
-            return DigitalCartActivity.newInstance(this, passData);
-        } else {
-            return CartDigitalActivity.newInstance(this, passData);
-        }
+        return DigitalCartActivity.newInstance(this, passData);
     }
 
-    @Override
-    public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
-        return DigitalProductActivity.newInstance(this, passData);
-    }
 
     @Override
     public Intent instanceIntentDigitalCategoryList() {
         return DigitalCategoryListActivity.newInstance(this);
-    }
-
-    @Override
-    public Intent instanceIntentDigitalWeb(String url) {
-        return DigitalWebActivity.newInstance(this, url);
     }
 
     @Override
@@ -1370,27 +1357,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getLoyaltyActivitySelectedCoupon(Context context, String digitalString, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponActiveAndSelected(
-                context, digitalString, categoryId
-        );
-    }
-
-    @Override
-    public Intent getLoyaltyActivity(Context context, String platform, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponActive(
-                context, platform, categoryId
-        );
-    }
-
-    @Override
-    public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
-        return LoyaltyActivity.newInstanceCouponNotActive(
-                context, platform,
-                categoryId);
-    }
-
-    @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
         Bundle extras = new Bundle();
         extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,
@@ -1436,8 +1402,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
-        return CartDigitalActivity.newInstance(this, bundle);
+    public String getAfUniqueId() {
+        return TrackingUtils.getAfUniqueId(MainApplication.getAppContext());
+    }
+
+    @Override
+    public String getAdsId() {
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
+        return analHandler.getAdsId();
     }
 
     @Override
@@ -1600,10 +1572,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                           String alternateRedirectUrl) {
 
         return appLinkScheme == null || appLinkScheme.isEmpty() ?
-                DigitalWebActivity.newInstance(context, alternateRedirectUrl)
+                getWebviewActivityWithIntent(context, alternateRedirectUrl)
                 : isSupportedDelegateDeepLink(appLinkScheme)
                 ? getApplinkIntent(context, appLinkScheme).setData(Uri.parse(appLinkScheme))
-                : DigitalWebActivity.newInstance(context, appLinkScheme);
+                : getWebviewActivityWithIntent(context, appLinkScheme);
     }
 
     @Override
@@ -1760,8 +1732,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showForceLogoutDialog(Response response) {
-        ServerErrorHandler.showForceLogoutDialog();
+    public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
@@ -1997,9 +1968,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData> getDigitalTokoCashBalance() {
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
+                .processDigitalGetBalance();
+    }
+
+    @Override
     public Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader() {
         return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
                 .getWalletBalanceHomeHeader();
+    }
+
+    @Override
+    public void showForceLogoutDialog() {
+        ServerErrorHandler.showForceLogoutDialog();
     }
 
     @Override
@@ -2789,22 +2771,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
-        if (context instanceof Activity) {
-            goToApplinkActivity((Activity) context, applink, new Bundle());
-        } else {
-            Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-            intent.setData(Uri.parse(applink));
-            context.startActivity(intent);
+        if(context != null) {
+            if (context instanceof Activity) {
+                goToApplinkActivity((Activity) context, applink, new Bundle());
+            } else {
+                Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+                intent.setData(Uri.parse(applink));
+                context.startActivity(intent);
+            }
         }
     }
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-        ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.setData(Uri.parse(applink));
-        intent.putExtras(bundle);
-        deepLinkDelegate.dispatchFrom(activity, intent);
+        if(activity != null) {
+            ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
+            Intent intent = activity.getIntent();
+            intent.setData(Uri.parse(applink));
+            intent.putExtras(bundle);
+            deepLinkDelegate.dispatchFrom(activity, intent);
+        }
     }
 
     @Override
