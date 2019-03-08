@@ -27,7 +27,7 @@
             android:visibility="gone"
             android:weightSum="2"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <View
                 android:id="@+id/status_ticker_side_view"
@@ -341,14 +341,78 @@
             android:textStyle="normal" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/merchant_status_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/saldo_balance_layout"
+        android:layout_margin="@dimen/dp_16"
+        android:orientation="vertical">
 
-    <FrameLayout
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dp_8"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_17"
+                android:textStyle="bold"
+                tools:text="Layanan Finansial" />
+
+            <ImageView
+                android:id="@+id/merchant_detail_layout_expand"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"
+                android:padding="@dimen/dp_3"
+                android:src="@drawable/ic_arrow_up_grey"
+                android:visibility="visible"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/merchant_details_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/merchant_credit_line_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16"
+                android:visibility="visible" />
+
+
+            <FrameLayout
+                android:id="@+id/saldo_prioritas_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:padding="@dimen/dp_16"
+                android:visibility="visible" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!--<FrameLayout
         android:id="@+id/saldo_prioritas_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/saldo_balance_layout"
         android:layout_marginTop="@dimen/dp_8"
         android:padding="@dimen/dp_16"
-        android:visibility="visible" />
+        android:visibility="visible" />-->
 
 </RelativeLayout>

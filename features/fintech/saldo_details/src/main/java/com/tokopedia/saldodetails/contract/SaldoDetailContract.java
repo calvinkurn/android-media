@@ -7,7 +7,7 @@ import android.content.Intent;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
-import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 
 public interface SaldoDetailContract {
     interface View extends CustomerView {
@@ -49,7 +49,7 @@ public interface SaldoDetailContract {
 
         void hideMerchantCreditLineFragment();
 
-        void showMerchantCreditLineFragment(GqlMerchantCreditDetailsResponse response);
+        void showMerchantCreditLineFragment(GqlMerchantCreditResponse response);
 
         void showTickerMessage(String withdrawalTicker);
 

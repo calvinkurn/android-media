@@ -1,0 +1,19 @@
+query {
+    mcl_getmerchantstatus {
+        is_eligible
+        status
+        title
+        logo_url
+        show_new_logo
+        message
+        limit
+        loan_amount
+        ticker_message
+        bottom_message
+        anchorList {
+          label
+          url
+          color
+        }
+      }
+}

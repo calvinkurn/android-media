@@ -31,7 +31,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
-import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -50,7 +50,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
-
+    public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details";
     private final long animation_duration = 300;
 
     public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
@@ -93,11 +93,16 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private float buyerSaldoBalance;
     private float totalSaldoBalance;
     private LinearLayout saldoTypeLL;
+    private LinearLayout merchantDetailLL;
 
     private ImageView saldoDepositExpandIV;
+    private ImageView merchantDetailsExpandIV;
     private boolean expandLayout;
+    private boolean expandMerchantDetailLayout = true;
     private boolean isShowingSaldoPrioritasWidget;
     private boolean isShowingMerchantCreditLineFragment;
+    private View merchantCreditFrameLayout;
+    private LinearLayout merchantStatusLL;
 
     public SaldoDepositFragment() {
     }
@@ -209,6 +214,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         amountBeingReviewed = view.findViewById(R.id.amount_review);
         checkBalanceStatus = view.findViewById(R.id.check_balance);
         saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
+        merchantCreditFrameLayout = view.findViewById(R.id.merchant_credit_line_widget);
         tickerMessageRL = view.findViewById(R.id.ticker_message_layout);
         tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
         tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
@@ -218,7 +224,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         sellerSaldoBalanceRL = view.findViewById(R.id.saldo_seller_balance_rl);
         saldoBalanceSeparator = view.findViewById(R.id.saldo_balance_separator);
         saldoDepositExpandIV = view.findViewById(R.id.saldo_deposit_layout_expand);
+        merchantDetailsExpandIV = view.findViewById(R.id.merchant_detail_layout_expand);
         saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
+        merchantDetailLL = view.findViewById(R.id.merchant_details_ll);
+        merchantStatusLL = view.findViewById(R.id.merchant_status_ll);
         saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
 
         if (expandLayout) {
@@ -226,6 +235,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         } else {
             saldoDepositExpandIV.animate().rotation(180).setDuration(animation_duration);
             saldoTypeLL.setVisibility(View.GONE);
+        }
+
+        if (expandMerchantDetailLayout) {
+            merchantDetailLL.setVisibility(View.VISIBLE);
+        } else {
+            merchantDetailsExpandIV.animate().rotation(180).setDuration(animation_duration);
+            merchantDetailLL.setVisibility(View.GONE);
         }
 
         saldoHistoryFragment = (SaldoTransactionHistoryFragment) getChildFragmentManager().findFragmentById(R.id.saldo_history_layout);
@@ -244,6 +260,18 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                 saldoTypeLL.setVisibility(View.VISIBLE);
             }
 
+        });
+
+        merchantDetailsExpandIV.setOnClickListener(v -> {
+            if (expandMerchantDetailLayout) {
+                merchantDetailsExpandIV.animate().rotation(180).setDuration(animation_duration);
+                expandMerchantDetailLayout = false;
+                merchantDetailLL.setVisibility(View.GONE);
+            } else {
+                merchantDetailsExpandIV.animate().rotation(0).setDuration(animation_duration);
+                expandMerchantDetailLayout = true;
+                merchantDetailLL.setVisibility(View.VISIBLE);
+            }
         });
 
         drawButton.setOnClickListener(v -> {
@@ -324,7 +352,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
-        // TODO: 8/3/19 confirm with PO if we can remove this key for saldo prioritas
         if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
@@ -337,7 +364,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             hideSaldoPrioritasFragment();
         }
 
-        // TODO: 8/3/19 check for merchant credit line status
         if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
@@ -473,7 +499,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void hideMerchantCreditLineFragment() {
         isShowingMerchantCreditLineFragment = false;
-        // TODO: 8/3/19 hide MCL fragment
+        merchantCreditFrameLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -531,10 +557,19 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showMerchantCreditLineFragment(GqlMerchantCreditDetailsResponse response) {
-        isShowingMerchantCreditLineFragment = true;
+    public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
+        if (response != null && response.isEligible()) {
+            isShowingMerchantCreditLineFragment = true;
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
+                    .commit();
+        } else {
+            hideMerchantCreditLineFragment();
+        }
 
-        // TODO: 8/3/19 show merchantCredit fragment
     }
 
     @Override

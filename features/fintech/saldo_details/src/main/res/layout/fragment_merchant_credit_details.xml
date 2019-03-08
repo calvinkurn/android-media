@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sp_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_4"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_4">
+
+    <ViewFlipper
+        android:id="@+id/container_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:measureAllChildren="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8">
+
+            <TextView
+                android:id="@+id/sp_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Saldo Prioritas"
+                android:textColor="@color/black_70"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/sp_new_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_toEndOf="@+id/sp_title"
+                android:layout_toRightOf="@+id/sp_title"
+                android:background="@drawable/sp_bg_rounded_corners_red"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_2"
+                android:text="@string/sp_label_new"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_10" />
+
+            <TextView
+                android:id="@+id/sp_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/sp_title"
+                android:layout_marginTop="@dimen/dp_6"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3sp"
+                android:textColor="#8a000000"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/sp_kyc_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/sp_description"
+                android:layout_marginTop="@dimen/dp_15"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_9"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    android:id="@+id/kyc_linear_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:id="@+id/sp_status_info_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/info_icon" />
+
+                    <TextView
+                        android:id="@+id/sp_kyc_short_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/dp_9"
+                        android:layout_marginLeft="@dimen/dp_9"
+                        android:layout_toEndOf="@+id/sp_status_info_icon"
+                        android:layout_toRightOf="@+id/sp_status_info_icon"
+                        android:fontFamily="sans-serif-medium"
+                        android:lineSpacingExtra="3sp"
+                        android:text="Status: Menunggu Verifikasi Aplikasi"
+                        android:textColor="@color/black_70"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+                    <ImageView
+                        android:id="@+id/sp_right_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="end"
+                        android:foregroundGravity="right"
+                        android:src="@drawable/ic_arrow_right_grey" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/sp_kyc_long_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/kyc_linear_layout"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="4sp"
+                    android:text="Status: Menunggu Verifikasi Aplikasi"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/sp_11"
+                    android:textStyle="normal" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/sp_detail_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/sp_kyc_status"
+                android:layout_marginTop="@dimen/dp_10"
+                android:clipToPadding="false"
+                android:divider="@android:color/transparent"
+                android:longClickable="false"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_4"
+                android:scrollbars="vertical" />
+
+            <View
+                android:id="@+id/sp_list_separator"
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_below="@+id/sp_detail_list"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:background="@color/greyish_bg" />
+
+            <LinearLayout
+                android:id="@+id/sp_action_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/sp_list_separator"
+                android:clipToPadding="false"
+                android:divider="@android:color/transparent"
+                android:gravity="end|right"
+                android:longClickable="false"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_4"
+                android:scrollbars="vertical" />
+
+        </RelativeLayout>
+
+    </ViewFlipper>
+
+</android.support.v7.widget.CardView>

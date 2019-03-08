@@ -30,11 +30,9 @@ public class GetMerchantCreditDetailsSubscriber extends Subscriber<GraphqlRespon
         if (graphqlResponse != null &&
                 graphqlResponse.getData(GqlMerchantCreditDetailsResponse.class) != null) {
 
-            // TODO: 8/3/19 check response
-
             GqlMerchantCreditDetailsResponse response =
                     graphqlResponse.getData(GqlMerchantCreditDetailsResponse.class);
-            viewListener.showMerchantCreditLineFragment(response);
+            viewListener.showMerchantCreditLineFragment(response.getData());
 
         } else {
             viewListener.hideMerchantCreditLineFragment();

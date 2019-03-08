@@ -13,7 +13,7 @@ import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantCreditLineActionListener;
 import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
-import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.GqlWithdrawalTickerResponse;
 import com.tokopedia.saldodetails.subscriber.GetMerchantCreditDetailsSubscriber;
@@ -248,7 +248,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     @Override
-    public void showMerchantCreditLineFragment(GqlMerchantCreditDetailsResponse response) {
+    public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
         if (!isViewAttached()) {
             return;
         }

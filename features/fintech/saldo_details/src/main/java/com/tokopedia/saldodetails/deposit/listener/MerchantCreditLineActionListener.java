@@ -1,11 +1,11 @@
 package com.tokopedia.saldodetails.deposit.listener;
 
-import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 
 public interface MerchantCreditLineActionListener {
 
     void hideMerchantCreditLineFragment();
 
-    void showMerchantCreditLineFragment(GqlMerchantCreditDetailsResponse response);
+    void showMerchantCreditLineFragment(GqlMerchantCreditResponse response);
 
 }
