@@ -19,6 +19,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Ba
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.tkpdpdp.customview.RatingView;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
@@ -50,10 +52,12 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private TextView topLabel;
     private TextView bottomLabel;
     private TextView newLabel;
+    private String searchQuery;
     private RelativeLayout topadsIcon;
 
-    public GridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
+    public GridProductItemViewHolder(View itemView, ProductListener itemClickListener, String searchQuery) {
         super(itemView);
+        this.searchQuery = searchQuery;
         productImage = itemView.findViewById(R.id.product_image);
         title = (TextView) itemView.findViewById(R.id.title);
         price = (TextView) itemView.findViewById(R.id.price);
@@ -103,16 +107,22 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         }
 
         setImageProduct(productItem);
-        if(productItem.isTopAds()) {
+        if (productItem.isTopAds()) {
             topadsIcon.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             topadsIcon.setVisibility(View.GONE);
         }
         productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
-                if(productItem.isTopAds()) {
+                if (productItem.isTopAds()) {
                     new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
+                    Product product = new Product();
+                    product.setId(productItem.getProductID());
+                    product.setName(productItem.getProductName());
+                    product.setPriceFormat(productItem.getPrice());
+                    product.setCategory(new Category(productItem.getCategoryID()));
+                    TopAdsGtmTracker.eventSearchResultProductView(context, searchQuery, product, getAdapterPosition());
                 }
             }
         });
@@ -139,7 +149,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         container.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                itemClickListener.onLongClick(productItem,getAdapterPosition());
+                itemClickListener.onLongClick(productItem, getAdapterPosition());
                 return true;
             }
         });
@@ -149,24 +159,36 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             public void onClick(View v) {
                 itemClickListener.onItemClicked(productItem, getAdapterPosition());
                 new ImpresionTask().execute(productItem.getTopadsClickUrl());
+                Product product = new Product();
+                product.setId(productItem.getProductID());
+                product.setName(productItem.getProductName());
+                product.setPriceFormat(productItem.getPrice());
+                product.setCategory(new Category(productItem.getCategoryID()));
+                TopAdsGtmTracker.eventSearchResultProductClick(context, searchQuery, product, getAdapterPosition());
             }
         });
 
-        if (productItem.getRating()!=0) {
+        if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);
             rating.setImageResource(
-                    RatingView.getRatingDrawable(Math.round(productItem.getRating()))
-            );
+                    RatingView.getRatingDrawable((productItem.isTopAds())
+                            ? getStarCount(productItem.getRating())
+                            : Math.round(productItem.getRating())
+                    );
             reviewCount.setText("(" + productItem.getCountReview() + ")");
         } else {
             ratingReviewContainer.setVisibility(View.GONE);
         }
-        if(productItem.isNew()){
+        if (productItem.isNew()) {
             newLabel.setVisibility(View.VISIBLE);
         } else {
             newLabel.setVisibility(View.GONE);
         }
         renderBadges(productItem.getBadgesList());
+    }
+
+    private int getStarCount(int rating) {
+        return Math.round(rating / 20f);
     }
 
     private boolean isBadgesExist(ProductItem productItem) {
