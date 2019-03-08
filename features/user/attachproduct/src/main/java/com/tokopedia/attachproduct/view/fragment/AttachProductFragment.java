@@ -31,6 +31,7 @@ import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerW
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,6 +48,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     private static final String IS_SELLER = "isSeller";
     private static final String SOURCE = "source";
     private static final String MAX_CHECKED = "max_checked";
+    private static final String HIDDEN_PRODUCTS = "hidden_products";
     private Button sendButton;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -62,12 +64,13 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     private ArrayList<String> hiddenProducts = new ArrayList<>();
 
     public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView,
-                                                    boolean isSeller, String source,
-                                                    int maxChecked) {
+                                                    boolean isSeller, String source, int maxChecked,
+                                                    ArrayList<String> hiddenProducts) {
         Bundle args = new Bundle();
         args.putBoolean(IS_SELLER, isSeller);
         args.putString(SOURCE, source);
         args.putInt(MAX_CHECKED, maxChecked);
+        args.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts);
         AttachProductFragment fragment = new AttachProductFragment();
         fragment.setActivityContract(checkedUIView);
         fragment.setArguments(args);
@@ -100,10 +103,12 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
             isSeller = savedInstanceState.getBoolean(IS_SELLER, false);
             source = savedInstanceState.getString(SOURCE, "");
             maxChecked = savedInstanceState.getInt(MAX_CHECKED, MAX_CHECKED_DEFAULT);
+            hiddenProducts = savedInstanceState.getStringArrayList(HIDDEN_PRODUCTS);
         } else if (getArguments() != null) {
             isSeller = getArguments().getBoolean(IS_SELLER, false);
             source = getArguments().getString(SOURCE, "");
             maxChecked = getArguments().getInt(MAX_CHECKED, MAX_CHECKED_DEFAULT);
+            hiddenProducts = getArguments().getStringArrayList(HIDDEN_PRODUCTS);
         }
     }
 
@@ -113,6 +118,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         outState.putBoolean(IS_SELLER, isSeller);
         outState.putString(SOURCE, source);
         outState.putInt(MAX_CHECKED, maxChecked);
+        outState.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts);
     }
 
     @Nullable
@@ -295,7 +301,13 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     }
 
     private void removeHiddenProducts(List<AttachProductItemViewModel> products) {
-        for (AttachProductItemViewModel product : products) {
+        if (hiddenProducts == null) {
+            return;
+        }
+
+        Iterator<AttachProductItemViewModel> iterator = products.iterator();
+        while (iterator.hasNext()) {
+            AttachProductItemViewModel product = iterator.next();
             boolean shouldHide = false;
             for (String hiddenProduct : hiddenProducts) {
                 if (TextUtils.equals(String.valueOf(product.getProductId()), hiddenProduct)) {
@@ -305,7 +317,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
             }
 
             if (shouldHide) {
-                products.remove(product);
+                iterator.remove();
             }
         }
     }

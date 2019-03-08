@@ -28,6 +28,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     public static final String TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY = "TKPD_ATTACH_PRODUCT_IS_SELLER";
     public static final String TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED = "TKPD_ATTACH_PRODUCT_MAX_CHECKED";
     private static final String TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY = "TKPD_ATTACH_PRODUCT_SOURCE";
+    private static final String TOKOPEDIA_ATTACH_PRODUCT_HIDDEN = "TKPD_ATTACH_PRODUCT_HIDDEN";
 
     public static final String SOURCE_TOPCHAT = "topchat";
     public static final String SOURCE_TALK = "talk";
@@ -38,6 +39,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     private boolean isSeller;
     private String source;
     private int maxChecked = MAX_CHECKED_DEFAULT;
+    private ArrayList<String> hiddenProducts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +81,15 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
      * @return
      */
     public static Intent createInstance(Context context, String shopId, String shopName,
-                                        boolean isSeller, String source, int maxChecked) {
+                                        boolean isSeller, String source, int maxChecked,
+                                        ArrayList<String> hiddenProducts) {
         Intent intent = new Intent(context, AttachProductActivity.class);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, isSeller);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, source);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, maxChecked);
+        intent.putStringArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_HIDDEN, hiddenProducts);
         return intent;
     }
 
@@ -99,7 +103,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
      */
     public static Intent createInstance(Context context, String shopId, String shopName,
                                         boolean isSeller, String source) {
-        return createInstance(context, shopId, shopName, isSeller, source, MAX_CHECKED_DEFAULT);
+        return createInstance(context, shopId, shopName, isSeller, source, MAX_CHECKED_DEFAULT, null);
     }
 
     @Override
@@ -112,8 +116,9 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
                 isSeller = getIntent().getBooleanExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, false);
                 source = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY);
                 maxChecked = getIntent().getIntExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, MAX_CHECKED_DEFAULT);
+                hiddenProducts = getIntent().getStringArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_HIDDEN);
             }
-            fragment = AttachProductFragment.newInstance(this, isSeller, source, maxChecked);
+            fragment = AttachProductFragment.newInstance(this, isSeller, source, maxChecked, hiddenProducts);
             return fragment;
         }
     }

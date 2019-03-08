@@ -253,8 +253,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     abstract fun onRelatedAddProductClick()
 
-    protected open fun getAddRelatedProductText(): String = getString(R.string.af_add_product_tag)
-
     protected open fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
@@ -337,7 +335,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         addImageBtn.setOnClickListener {
             goToImagePicker()
         }
-        relatedAddBtn.text = getAddRelatedProductText()
         caption.afterTextChanged {
             viewModel.caption = it
             updateMaxCharacter()

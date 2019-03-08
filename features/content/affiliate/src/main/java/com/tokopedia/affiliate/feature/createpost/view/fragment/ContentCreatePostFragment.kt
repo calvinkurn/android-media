@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
@@ -57,8 +56,6 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
         }
     }
 
-    override fun getAddRelatedProductText(): String = getString(R.string.af_change_product_tag)
-
     override fun onRelatedAddProductClick() {
         goToAttachProduct(false)
     }
@@ -69,7 +66,8 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
                 "",
                 true,
                 "",
-                viewModel.maxProduct
+                viewModel.maxProduct,
+                ArrayList(viewModel.productIdList)
         )
         startActivityForResult(
                 intent,
@@ -81,7 +79,6 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
         val products = data?.getParcelableArrayListExtra<ResultProduct>(
                 AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
                 ?: arrayListOf()
-        viewModel.productIdList.clear()
         products.forEach {
             viewModel.productIdList.add(it.productId.toString())
         }
