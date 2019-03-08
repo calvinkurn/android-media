@@ -24,7 +24,7 @@ public class ReactNativeOfficialStoreCategoryActivity extends ReactFragmentActiv
     @DeepLink({ ApplinkConst.OFFICIAL_STORES_CATEGORY })
     public static Intent getOfficialStoreCategoryApplinkCallingIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(MP_OFFICIAL_STORE_CATEGORY);
-        RemoteConfig remoteConfig = new FirebaseRemtoeConfigImpl(context);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED)) {
             return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(context, bundle);
         } else {
