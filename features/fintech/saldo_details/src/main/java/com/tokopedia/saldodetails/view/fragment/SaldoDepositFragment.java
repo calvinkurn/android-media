@@ -31,6 +31,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -95,6 +96,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     private ImageView saldoDepositExpandIV;
     private boolean expandLayout;
+    private boolean isShowingSaldoPrioritasWidget;
+    private boolean isShowingMerchantCreditLineFragment;
 
     public SaldoDepositFragment() {
     }
@@ -321,6 +324,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
+        // TODO: 8/3/19 confirm with PO if we can remove this key for saldo prioritas
         if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
@@ -333,11 +337,19 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             hideSaldoPrioritasFragment();
         }
 
-    }
+        // TODO: 8/3/19 check for merchant credit line status
+        if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
-    @Override
-    public void showSaldoBalanceSeparator() {
-        saldoBalanceSeparator.setVisibility(View.VISIBLE);
+            if (((SaldoDetailsRouter) getActivity().getApplication())
+                    .isMerchantCreditLineEnabled()) {
+                saldoDetailsPresenter.getMerchantCreditLineDetails();
+            } else {
+                hideMerchantCreditLineFragment();
+            }
+        } else {
+            hideMerchantCreditLineFragment();
+        }
+
     }
 
     private void showBottomSheetInfoDialog(boolean isSellerClicked) {
@@ -389,11 +401,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public float getBuyerSaldoBalance() {
         return buyerSaldoBalance;
-    }
-
-    @Override
-    public float getTotalSaldoBalance() {
-        return totalSaldoBalance;
     }
 
     @Override
@@ -459,7 +466,14 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void hideSaldoPrioritasFragment() {
+        isShowingSaldoPrioritasWidget = false;
         saldoFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideMerchantCreditLineFragment() {
+        isShowingMerchantCreditLineFragment = false;
+        // TODO: 8/3/19 hide MCL fragment
     }
 
     @Override
@@ -504,7 +518,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
         if (sellerDetails != null &&
                 sellerDetails.isEligible()) {
-
+            isShowingSaldoPrioritasWidget = true;
             Bundle bundle = new Bundle();
             bundle.putParcelable(BUNDLE_PARAM_SELLER_DETAILS, sellerDetails);
             getChildFragmentManager()
@@ -514,6 +528,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         } else {
             hideSaldoPrioritasFragment();
         }
+    }
+
+    @Override
+    public void showMerchantCreditLineFragment(GqlMerchantCreditDetailsResponse response) {
+        isShowingMerchantCreditLineFragment = true;
+
+        // TODO: 8/3/19 show merchantCredit fragment
     }
 
     @Override

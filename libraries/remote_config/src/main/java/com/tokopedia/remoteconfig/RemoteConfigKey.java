@@ -80,4 +80,5 @@ public class RemoteConfigKey {
     public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
+    public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 }

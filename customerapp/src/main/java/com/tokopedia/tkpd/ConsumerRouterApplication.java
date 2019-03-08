@@ -2884,7 +2884,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true);
+    }
+
+    @Override
+    public boolean isMerchantCreditLineEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
                 true);
     }
 
