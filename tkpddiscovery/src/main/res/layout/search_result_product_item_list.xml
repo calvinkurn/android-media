@@ -198,7 +198,7 @@
                     android:textColor="@color/new_label_color"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_3"
                     android:text="@string/baru"
                     android:paddingLeft="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"

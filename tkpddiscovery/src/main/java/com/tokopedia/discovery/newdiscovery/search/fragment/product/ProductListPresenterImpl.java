@@ -261,6 +261,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     item.setRating(topAds.getProduct().getProductRating());
                     item.setCountReview(topAds.getProduct().getCountReviewFormat());
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
+                    item.setNew(topAds.getProduct().isProductNewLabel());
                     list.add(i, item);
                     j++;
                 }
