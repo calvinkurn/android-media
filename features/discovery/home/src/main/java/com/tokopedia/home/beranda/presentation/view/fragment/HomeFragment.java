@@ -35,8 +35,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -86,6 +86,7 @@ import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -120,9 +121,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     HomePresenter presenter;
 
-    @Inject
-    UserSessionInterface userSession;
-
+    private UserSessionInterface userSession;
     private View fragmentRootView;
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
@@ -160,9 +159,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isTraceStopped = false;
     private boolean isFeedLoaded = false;
 
-    @Inject
-    DigitalWidgetRepository digitalWidgetRepository;
-
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -176,6 +172,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         abTestingOfficialStore = new AbTestingOfficialStore(getContext());
+        userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
     }
 
@@ -572,7 +569,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this,
                 this
-        );
+                );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -987,6 +984,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSixGridItemClicked(String actionLink, String trackingAttribution) {
+        onActionLinkClicked(actionLink, trackingAttribution);
+    }
+
+    @Override
+    public void onThreeGridItemClicked(String actionLink, String trackingAttribution) {
         onActionLinkClicked(actionLink, trackingAttribution);
     }
 

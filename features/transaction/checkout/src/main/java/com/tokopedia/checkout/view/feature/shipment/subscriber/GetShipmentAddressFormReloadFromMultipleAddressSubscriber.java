@@ -77,6 +77,7 @@ public class GetShipmentAddressFormReloadFromMultipleAddressSubscriber extends S
         if (cartShipmentAddressFormData.isError()) {
             view.showToastError(cartShipmentAddressFormData.getErrorMessage());
         } else {
+            shipmentPresenter.setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
             if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {

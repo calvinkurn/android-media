@@ -43,7 +43,7 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
         )
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
-                val graphqlRequest = GraphqlRequest(rawQuery, TYPE_CREDIT_RESPONSE, params)
+                val graphqlRequest = GraphqlRequest(rawQuery, TYPE_CREDIT_RESPONSE, params, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopAdsCreditHistory.CreditsResponse>()
 

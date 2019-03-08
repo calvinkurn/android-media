@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.appsflyer.AFInAppEventType;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -71,6 +72,10 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
+import com.tokopedia.tkpdpdp.BuildConfig;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
@@ -161,6 +166,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
     private GetRateEstimationUseCase getRateEstimationUseCase;
+    private ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
 
     public ProductDetailPresenterImpl(
             GetWishlistCountUseCase getWishlistCountUseCase,
@@ -170,12 +176,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             CacheInteractor cacheInteractor,
             GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase,
             GetImageReviewUseCase getImageReviewUseCase,
-            GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase) {
+            GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase,
+            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase) {
         this.viewListener = viewListener;
         this.wishListActionListener = wishListActionListener;
         this.retrofitInteractor = retrofitInteractor;
         this.cacheInteractor = cacheInteractor;
         this.getWishlistCountUseCase = getWishlistCountUseCase;
+        this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         this.getProductAffiliateGqlUseCase = getProductAffiliateGqlUseCase;
         this.getImageReviewUseCase = getImageReviewUseCase;
@@ -278,6 +286,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
             @Override
             public void onNext(AddToCartResult addToCartResult) {
+                NullCheckerKt.isContainNull(addToCartResult, s -> {
+                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ProductDetailPresenterImpl.class.getSimpleName());
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
+                    throw exception;
+                });
+
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess()) {
                     addToCartResult.setSource(sourceAtc);
@@ -329,6 +345,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
             @Override
             public void onNext(AddToCartResult addToCartResult) {
+                NullCheckerKt.isContainNull(addToCartResult, s -> {
+                    ContainNullException exception = new ContainNullException("Found " + s + " on " + ProductDetailPresenterImpl.class.getSimpleName());
+                    if (!BuildConfig.DEBUG) {
+                        Crashlytics.logException(exception);
+                    }
+                    throw exception;
+                });
+
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess()) {
                     addToCartResult.setSource(sourceAtc);
@@ -591,23 +615,26 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void requestFaveShop(@NonNull Context context, @NonNull final String shopId, final Integer productId) {
         if (SessionHandler.isV4Login(context)) {
-            retrofitInteractor.favoriteShop(context,
-                    NetworkParam.paramFaveShop(shopId),
-                    new RetrofitInteractor.FaveListener() {
-                        @Override
-                        public void onSuccess(boolean status) {
-                            if (status) {
-                                viewListener.onShopFavoriteUpdated(1);
-                                viewListener.actionSuccessAddFavoriteShop(shopId);
-                                cacheInteractor.deleteProductDetail(productId);
-                            }
-                        }
+            toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId), new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
 
-                        @Override
-                        public void onError(String error) {
-                            viewListener.showFaveShopRetry();
-                        }
-                    });
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    viewListener.showFaveShopRetry();
+                }
+
+                @Override
+                public void onNext(Boolean isValid) {
+                    if (isValid) {
+                        viewListener.onShopFavoriteUpdated(1);
+                        viewListener.actionSuccessAddFavoriteShop(shopId);
+                        cacheInteractor.deleteProductDetail(productId);
+                    }
+                }
+            });
         } else {
             Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
             viewListener.navigateToActivityRequest(intent,
