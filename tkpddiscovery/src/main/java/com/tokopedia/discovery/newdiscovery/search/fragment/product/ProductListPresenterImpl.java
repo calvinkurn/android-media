@@ -99,10 +99,10 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
             getView().disableWishlistButton(productItem.getProductID());
             if (productItem.isWishlisted()) {
                 removeWishlist(productItem.getProductID(), getView().getUserId());
-            } else if(productItem.getProductWishlistUrl() != null){
+            } else if(productItem.isTopAds()){
                 com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
                 params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL,
-                        productItem.getProductWishlistUrl());
+                        productItem.getTopadsWishlistUrl());
                 productWishlistUrlUseCase.execute(params, getWishlistSubscriber(productItem));
             } else {
                 addWishlist(productItem.getProductID(), getView().getUserId());
