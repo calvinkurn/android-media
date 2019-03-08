@@ -255,6 +255,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     item.setPrice(topAds.getProduct().getPriceFormat());
                     item.setShopCity(topAds.getShop().getLocation());
                     item.setImageUrl(topAds.getProduct().getImage().getS_url());
+                    item.setImageUrl700(topAds.getProduct().getImage().getM_url());
                     item.setWishlisted(topAds.getProduct().isWishlist());
                     item.setRating(topAds.getProduct().getProductRating());
                     item.setCountReview(topAds.getProduct().getCountReviewFormat());

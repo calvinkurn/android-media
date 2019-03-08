@@ -111,7 +111,9 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
-                new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
+                if(productItem.isTopAds()) {
+                    new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
+                }
             }
         });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
