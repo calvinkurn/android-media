@@ -124,7 +124,13 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
     private fun updateResultIntent() {
         resultIntent.putExtra(CreatePostViewModel.TAG, viewModel)
-        activity?.setResult(Activity.RESULT_OK, resultIntent)
+        activity?.let {
+            it.setResult(Activity.RESULT_OK, resultIntent)
+
+            if (viewModel.completeImageList.isEmpty()) {
+                it.finish()
+            }
+        }
     }
 
     private fun updateMainImageText() {
