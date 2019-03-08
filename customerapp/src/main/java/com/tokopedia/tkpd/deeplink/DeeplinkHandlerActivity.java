@@ -74,10 +74,7 @@ import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
-import com.tokopedia.linker.LinkerManager;
-import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
-import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
@@ -140,8 +137,6 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
-
-import org.json.JSONObject;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
