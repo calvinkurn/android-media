@@ -40,7 +40,7 @@ public class GetTickerWithdrawalMessageUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_withdrawal_ticker),
                 GqlWithdrawalTickerResponse.class,
-                usableRequestMap);
+                usableRequestMap, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
 
