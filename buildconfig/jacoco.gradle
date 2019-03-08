@@ -1,75 +1,75 @@
-//apply plugin: 'jacoco'
-//
-//jacoco {
-//    toolVersion = rootProject.ext.jacocoVersion
-//}
-//
-//tasks.withType(Test) {
-//    jacoco.includeNoLocationClasses = true
-//}
-//
-//def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
-//def javaClasses = fileTree(dir: "$project.buildDir/intermediates/classes/debug", excludes: fileFilter)
-//def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
-//def javaSrc = "$project.projectDir/src/main/java"
-//def kotlinSrc = "$project.projectDir/src/main/kotlin"
-//
-//task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
-//
-//    reports {
-//        xml.enabled = true
-//        html.enabled = true
-//    }
-//
-//    sourceDirectories = files([javaSrc, kotlinSrc])
-//    classDirectories = files([javaClasses, kotlinClasses])
-//    executionData = fileTree(dir: project.buildDir, includes: [
-//            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-//    ])
-//}
-//
-//task customJacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
-//
-//    sourceDirectories = files([javaSrc, kotlinSrc])
-//    classDirectories = files([javaClasses, kotlinClasses])
-//    executionData = fileTree(dir: project.buildDir, includes: [
-//            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-//    ])
-//
-//
-//    violationRules {
-//        setFailOnViolation(true)
-//
-//        rule {
-//            element = 'PACKAGE'
-//
-//            limit {
-//                value = 'COVEREDRATIO'
-//                counter = 'BRANCH'
-//                minimum = 0.5
-//            }
-//        }
-//
-//        rule {
-//            element = 'PACKAGE'
-//
-//            limit {
-//                value = 'COVEREDRATIO'
-//                counter = 'INSTRUCTION'
-//                minimum = 0.8
-//            }
-//        }
-//
-//        rule {
-//            element = 'PACKAGE'
-//            includes = ['com.androidjacoco.sample.*.presenter']
-//            enabled = true
-//
-//            limit {
-//                counter = 'CLASS'
-//                value = 'MISSEDCOUNT'
-//                maximum = 0
-//            }
-//        }
-//    }
-//}
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = rootProject.ext.jacocoVersion
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+def javaClasses = fileTree(dir: "$project.buildDir/intermediates/classes/debug", excludes: fileFilter)
+def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+def javaSrc = "$project.projectDir/src/main/java"
+def kotlinSrc = "$project.projectDir/src/main/kotlin"
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    sourceDirectories = files([javaSrc, kotlinSrc])
+    classDirectories = files([javaClasses, kotlinClasses])
+    executionData = fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
+    ])
+}
+
+task customJacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
+
+    sourceDirectories = files([javaSrc, kotlinSrc])
+    classDirectories = files([javaClasses, kotlinClasses])
+    executionData = fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
+    ])
+
+
+    violationRules {
+        setFailOnViolation(true)
+
+        rule {
+            element = 'PACKAGE'
+
+            limit {
+                value = 'COVEREDRATIO'
+                counter = 'BRANCH'
+                minimum = 0.5
+            }
+        }
+
+        rule {
+            element = 'PACKAGE'
+
+            limit {
+                value = 'COVEREDRATIO'
+                counter = 'INSTRUCTION'
+                minimum = 0.8
+            }
+        }
+
+        rule {
+            element = 'PACKAGE'
+            includes = ['com.androidjacoco.sample.*.presenter']
+            enabled = true
+
+            limit {
+                counter = 'CLASS'
+                value = 'MISSEDCOUNT'
+                maximum = 0
+            }
+        }
+    }
+}
