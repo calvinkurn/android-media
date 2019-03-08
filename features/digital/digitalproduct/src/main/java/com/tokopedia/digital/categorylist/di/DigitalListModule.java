@@ -59,7 +59,7 @@ public class DigitalListModule {
                 .serializeNulls()
                 .create();
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.DIGITAL_API_DOMAIN + TkpdBaseURL.DigitalApi.VERSION)
+                .baseUrl(TkpdBaseURL.MOJITO_DOMAIN + TkpdBaseURL.DigitalApi.VERSION)
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
