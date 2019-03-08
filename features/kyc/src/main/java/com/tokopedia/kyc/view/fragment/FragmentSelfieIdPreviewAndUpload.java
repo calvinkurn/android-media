@@ -154,7 +154,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
 
     private void checkFromTncRetakeFlow(){
 
-        if(getArguments().getBoolean(Constants.Keys.FROM_RETAKE_FLOW)){
+        if(getArguments() != null && getArguments().getBoolean(Constants.Keys.FROM_RETAKE_FLOW)){
             selfieIdIntroView.setVisibility(View.GONE);
             selfieIdPreviewAndUpload.setVisibility(View.VISIBLE);
             imagePath = activityListener.getDataContatainer().getSelfieIdImage();
