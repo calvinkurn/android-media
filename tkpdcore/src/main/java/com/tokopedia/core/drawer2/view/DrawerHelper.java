@@ -136,7 +136,8 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 break;
 
             case TkpdState.DrawerPosition.CONTACT_US:
-                RouteManager.route(context, ApplinkConst.CONTACT_US_NATIVE);
+                intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
+                context.startActivity(intent);
                 AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), "Contact_Us");
                 break;
             case TkpdState.DrawerPosition.HELP:
