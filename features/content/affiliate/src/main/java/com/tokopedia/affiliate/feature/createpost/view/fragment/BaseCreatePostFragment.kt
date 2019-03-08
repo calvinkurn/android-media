@@ -325,21 +325,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         relatedAddBtn.setOnClickListener {
             onRelatedAddProductClick()
         }
-        thumbnail.setOnClickListener {
-            goToMediaPreview()
-        }
-        carouselIcon.setOnClickListener {
-            goToMediaPreview()
-        }
-        edit.setOnClickListener {
-            goToMediaPreview()
-        }
         caption.afterTextChanged {
             viewModel.caption = it
             updateMaxCharacter()
         }
         caption.setText(viewModel.caption)
         updateMaxCharacter()
+        updateThumbnail()
         updateButton()
     }
 
@@ -415,10 +407,24 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
             thumbnail.loadImageRounded(viewModel.completeImageList[viewModel.mainImageIndex], 25f)
-            carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
+            edit.show()
+            thumbnail.setOnClickListener {
+                goToMediaPreview()
+            }
+            carouselIcon.setOnClickListener {
+                goToMediaPreview()
+            }
+            edit.setOnClickListener {
+                goToMediaPreview()
+            }
         } else {
             thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            edit.hide()
+            thumbnail.setOnClickListener { }
+            carouselIcon.setOnClickListener { }
+            edit.setOnClickListener { }
         }
+        carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
     }
 
     private fun updateMaxCharacter() {
