@@ -114,12 +114,18 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
 
             @Override
             public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
                 getView().hideProgress();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
+                if (!isViewAttached()) {
+                    return;
+                }
                 getView().hideProgress();
                 if(chipGetInboxDetail.getMessageError() != null && chipGetInboxDetail.getMessageError().size() > 0) {
                     getView().showErrorMessage(chipGetInboxDetail.getMessageError().get(0));
@@ -128,5 +134,11 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
                 }
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        submitRatingUseCase.unsubscribe();
+        super.detachView();
     }
 }

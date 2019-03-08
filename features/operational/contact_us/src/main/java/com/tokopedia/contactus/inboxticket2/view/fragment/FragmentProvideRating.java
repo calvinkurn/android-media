@@ -48,7 +48,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     public static final String CLICKED_EMOJI = "clicked_emoji";
     public static final String PARAM_COMMENT_ID = "comment_id";
     public static final String PARAM_OPTIONS_CSAT = "options_csat";
-
+    List<String> selectedOption = new ArrayList<>();
     private CustomQuickOptionView mFilterReview;
 
     public static FragmentProvideRating newInstance(Bundle bundle) {
@@ -173,7 +173,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         ToasterError.make(getView(), o).show();
     }
 
-    List<String> selectedOption = new ArrayList<>();
+
     @Override
     public void setFilterList(List<BadCsatReasonListItem> filterList) {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
