@@ -18,6 +18,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.tkpdpdp.customview.RatingView;
+import com.tokopedia.topads.sdk.domain.model.ProductImage;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 import java.util.List;
 
@@ -30,7 +33,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_grid;
 
-    protected ImageView productImage;
+    protected ImpressedImageView productImage;
     private TextView title;
     private TextView price;
     private TextView location;
@@ -48,7 +51,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
 
     public GridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        productImage = itemView.findViewById(R.id.product_image);
         title = (TextView) itemView.findViewById(R.id.title);
         price = (TextView) itemView.findViewById(R.id.price);
         location = (TextView) itemView.findViewById(R.id.location);
@@ -95,7 +98,12 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         }
 
         setImageProduct(productItem);
-
+        productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
+            }
+        });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
 
@@ -128,6 +136,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             @Override
             public void onClick(View v) {
                 itemClickListener.onItemClicked(productItem, getAdapterPosition());
+                new ImpresionTask().execute(productItem.getTopadsClickUrl());
             }
         });
 

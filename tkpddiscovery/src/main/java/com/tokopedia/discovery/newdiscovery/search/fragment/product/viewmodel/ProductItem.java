@@ -9,6 +9,7 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
+import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  * Created by henrypriyono on 10/9/17.
  */
 
-public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory> {
+public class ProductItem extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
     private String productID;
     private String productName;
     private String imageUrl;
