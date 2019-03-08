@@ -4,6 +4,7 @@ import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.search.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.search.data.api.single.FlightSearchDataCloudSource
 import com.tokopedia.flight.search.data.api.single.response.*
+import com.tokopedia.flight.search.data.cache.FlightSearchDataCacheSource
 import com.tokopedia.flight.search.data.db.*
 import com.tokopedia.flight.search.data.repository.mapper.FlightSearchMapper
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel
@@ -11,6 +12,7 @@ import com.tokopedia.flight.search.presentation.model.FlightAirportViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchCombinedApiRequestModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import rx.Observable
+import rx.functions.Func2
 import javax.inject.Inject
 
 /**
@@ -21,7 +23,8 @@ open class FlightSearchRepository @Inject constructor(
         private val flightSearchDataCloudSource: FlightSearchDataCloudSource,
         private val flightSearchCombinedDataDbSource: FlightSearchCombinedDataDbSource,
         private val flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource,
-        private val flightSearchMapper: FlightSearchMapper) {
+        private val flightSearchMapper: FlightSearchMapper,
+        private val flightSearchDataCacheSource: FlightSearchDataCacheSource) {
 
     private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData, included: List<Included<AttributesInc>>, isReturnTrip: Boolean):
             Observable<JourneyAndRoutes> {
@@ -175,8 +178,13 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     fun getSearchFilter(@TravelSortOption sortOption: Int, filterModel: FlightFilterModel):
-            Observable<List<JourneyAndRoutes>> {
-        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, sortOption)
+            Observable<JourneyAndRoutesModel> {
+        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, sortOption).zipWith(
+                flightSearchDataCacheSource.cache, object : Func2<List<JourneyAndRoutes>, String, JourneyAndRoutesModel> {
+            override fun call(t1: List<JourneyAndRoutes>, t2: String): JourneyAndRoutesModel {
+                return JourneyAndRoutesModel(t1, t2)
+            }
+        })
     }
 
     fun getSearchJourneyById(journeyId: String): Observable<JourneyAndRoutes> {
