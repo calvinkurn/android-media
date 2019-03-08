@@ -246,8 +246,12 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     item.setTopadsClickUrl(topAds.getProductClickUrl());
                     item.setTopadsWishlistUrl(topAds.getProductWishlistUrl());
                     item.setProductName(topAds.getProduct().getName());
-                    item.setTopLabel(topAds.getProduct().getTopLabels().get(0));
-                    item.setBottomLabel(topAds.getProduct().getBottomLabels().get(0));
+                    if(!topAds.getProduct().getTopLabels().isEmpty()) {
+                        item.setTopLabel(topAds.getProduct().getTopLabels().get(0));
+                    }
+                    if(!topAds.getProduct().getBottomLabels().isEmpty()) {
+                        item.setBottomLabel(topAds.getProduct().getBottomLabels().get(0));
+                    }
                     item.setPrice(topAds.getProduct().getPriceFormat());
                     item.setShopCity(topAds.getShop().getLocation());
                     item.setImageUrl(topAds.getProduct().getImage().getS_url());
