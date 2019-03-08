@@ -6,6 +6,7 @@ import com.tkpd.library.utils.URLParser
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.HashMap
 
 class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 
@@ -16,7 +17,7 @@ class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
     }
 
     constructor(searchParameter: SearchParameter) : this(searchParameter.deepLinkUri) {
-        searchParameterHashMap = searchParameter.searchParameterHashMap
+        searchParameterHashMap = HashMap<String, String>(searchParameter.searchParameterHashMap)
     }
 
     fun getSearchParameterMap() : Map<String, Any> {
