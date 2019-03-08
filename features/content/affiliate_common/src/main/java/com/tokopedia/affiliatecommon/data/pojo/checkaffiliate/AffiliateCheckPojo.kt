@@ -16,5 +16,5 @@ data class AffiliateCheckPojo (
     var isIsAffiliate: Boolean = false,
 
     @SerializedName("status")
-    var status: String? = null
-){}
+    var status: String = ""
+)
