@@ -27,12 +27,12 @@
             tools:src="@color/red_100" />
 
         <RelativeLayout
-            android:id="@+id/relativeLayout"
+            android:id="@+id/topads_icon"
             android:layout_width="24dp"
             android:layout_height="22dp"
             android:layout_margin="5dp"
             android:background="@drawable/bg_preorder_label"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@id/info_topads"

@@ -50,6 +50,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private TextView topLabel;
     private TextView bottomLabel;
     private TextView newLabel;
+    private RelativeLayout topadsIcon;
 
     public GridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
@@ -67,6 +68,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         topLabel = itemView.findViewById(R.id.topLabel);
         bottomLabel = itemView.findViewById(R.id.bottomLabel);
         newLabel = itemView.findViewById(R.id.new_label);
+        topadsIcon = itemView.findViewById(R.id.topads_icon);
         context = itemView.getContext();
         this.itemClickListener = itemClickListener;
     }
@@ -101,12 +103,17 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         }
 
         setImageProduct(productItem);
-        productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
-            @Override
-            public void onViewHint() {
-                new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
-            }
-        });
+        if(productItem.isTopAds()) {
+            topadsIcon.setVisibility(View.VISIBLE);
+            productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
+                @Override
+                public void onViewHint() {
+                    new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
+                }
+            });
+        }else {
+            topadsIcon.setVisibility(View.GONE);
+        }
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
 

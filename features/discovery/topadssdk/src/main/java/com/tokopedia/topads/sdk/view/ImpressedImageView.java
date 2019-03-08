@@ -34,8 +34,6 @@ public class ImpressedImageView extends AppCompatImageView {
     private ImpressHolder holder;
     private ViewHintListener hintListener;
     private float radius = 0.0f;
-    private Path path;
-    private RectF rect;
     private int offset;
     private TypedArray styledAttributes;
     private ViewTreeObserver.OnScrollChangedListener scrollChangedListener;
@@ -67,21 +65,12 @@ public class ImpressedImageView extends AppCompatImageView {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        path = new Path();
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ImpressedImageView, 0, 0);
         try{
             radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_corner_radius, DEF_VALUE);
         } finally {
             styledAttributes.recycle();
         }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        rect = new RectF(0, 0, this.getWidth(), this.getHeight());
-        path.addRoundRect(rect, radius, radius, Path.Direction.CW);
-        canvas.clipPath(path);
-        super.onDraw(canvas);
     }
 
     @Override
