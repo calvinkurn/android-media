@@ -174,7 +174,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
                     RatingView.getRatingDrawable((productItem.isTopAds())
                             ? getStarCount(productItem.getRating())
                             : Math.round(productItem.getRating())
-                    );
+                    ));
             reviewCount.setText("(" + productItem.getCountReview() + ")");
         } else {
             ratingReviewContainer.setVisibility(View.GONE);
