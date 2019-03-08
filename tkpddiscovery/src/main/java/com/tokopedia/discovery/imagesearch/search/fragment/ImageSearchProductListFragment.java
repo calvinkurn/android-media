@@ -2,6 +2,7 @@ package com.tokopedia.discovery.imagesearch.search.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -563,16 +564,22 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private Intent getProductIntent(String productId){
+        String url = getString(R.string.template_applink,
+                getString(R.string.internal_scheme), getString(R.string.host_merchant),
+                "product/"+productId);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                .addCategory(Intent.CATEGORY_DEFAULT)
+                .addCategory(Intent.CATEGORY_BROWSABLE);
+
+        if (getContext() != null)
+            intent.setPackage(getContext().getPackageName());
+        return intent;
     }
 
 
@@ -589,16 +596,9 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
-        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(item.getProductID());
-        data.setName(item.getProductName());
-        data.setPrice(item.getPrice());
-        data.setImgUri(item.getImageUrl());
-        data.setTrackerListName(String.format(SearchTracking.imageClick, item.getPosition()));
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        // tracking?
+        //data.setTrackerListName(String.format(SearchTracking.imageClick, item.getPosition()));
+        Intent intent = getProductIntent(item.getProductID());
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         sendItemClickTrackingEvent(item);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);

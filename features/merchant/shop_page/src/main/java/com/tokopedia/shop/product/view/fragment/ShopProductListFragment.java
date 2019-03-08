@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.view.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -541,9 +542,24 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     CustomDimensionShopPageAttribution.create(shopInfo, shopProductViewModel.getId(), attribution),
                     shopProductViewModel, productPosition, shopId, shopInfo.getInfo().getShopName());
         }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
-                shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
-                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName));
+
+        //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
+
+        startActivity(getProductIntent(shopProductViewModel.getId()));
+    }
+
+    private Intent getProductIntent(String productId){
+        String url = getString(R.string.template_applink,
+                getString(R.string.internal_scheme), getString(R.string.host_merchant),
+                "product/"+productId);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                .addCategory(Intent.CATEGORY_DEFAULT)
+                .addCategory(Intent.CATEGORY_BROWSABLE);
+
+        if (getContext() != null)
+            intent.setPackage(getContext().getPackageName());
+        return intent;
     }
 
     @Override
