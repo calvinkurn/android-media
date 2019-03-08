@@ -49,7 +49,7 @@ public class GetSaldoBalanceUseCase {
         GraphqlRequest graphqlRequestForUsable = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_saldo_balance),
                 GqlSaldoBalanceResponse.class,
-                usableRequestMap, GET_SALDO_BALANCE);
+                usableRequestMap, GET_SALDO_BALANCE, false);
 
         graphqlRequestList.add(graphqlRequestForUsable);
 
@@ -58,7 +58,7 @@ public class GetSaldoBalanceUseCase {
         GraphqlRequest graphqlRequestForHold = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_saldo_balance),
                 GqlHoldSaldoBalanceResponse.class,
-                holdRequestMap, GET_SALDO_BALANCE);
+                holdRequestMap, GET_SALDO_BALANCE, false);
 
         graphqlRequestList.add(graphqlRequestForHold);
 
