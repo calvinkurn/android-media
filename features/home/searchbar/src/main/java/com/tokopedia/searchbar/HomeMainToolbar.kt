@@ -3,6 +3,7 @@ package com.tokopedia.searchbar
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.view.Gravity
@@ -28,7 +29,9 @@ class HomeMainToolbar : MainToolbar {
     override fun init(context: Context, attrs: AttributeSet?) {
         super.init(context, attrs)
         toolbar = findViewById(R.id.toolbar)
-        toolbar!!.background = ColorDrawable(resources.getColor(R.color.white))
+        toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+//        toolbar!!.background = ColorDrawable(resources.getColor(R.color.white))
+
         icon_search.setImageResource(R.drawable.ic_searchbar_search_grey)
         setBackgroundAlpha(0f)
         toolbarType = TOOLBAR_LIGHT_TYPE
