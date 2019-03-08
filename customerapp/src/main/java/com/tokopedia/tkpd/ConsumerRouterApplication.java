@@ -435,6 +435,7 @@ import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.transaction.common.TransactionRouter;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
@@ -2160,8 +2161,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @NonNull
     @Override
-    public Intent getCheckoutIntent(@NonNull Context context, boolean isTradeIn) {
-        return ShipmentActivity.createInstance(context, isTradeIn);
+    public Intent getCheckoutIntent(@NonNull Context context, ShipmentFormRequest shipmentFormRequest) {
+        return ShipmentActivity.createInstance(context, shipmentFormRequest);
     }
 
     @Override

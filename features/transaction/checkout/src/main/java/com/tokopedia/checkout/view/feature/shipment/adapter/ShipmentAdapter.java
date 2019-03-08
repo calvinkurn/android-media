@@ -691,14 +691,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 for (CartItemModel cartItemModel : cartItemModels) {
                     totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
                     totalItem += cartItemModel.getQuantity();
-                    tradeInPrice += (cartItemModel.getNewDevicePrice() - cartItemModel.getOldDevicePrice());
 
                     if (cartItemModel.isProtectionOptIn()) {
                         totalPurchaseProtectionItem += cartItemModel.getQuantity();
                         totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
                     }
 
-                    totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
+                    if (cartItemModel.isValidTradeIn()) {
+                        tradeInPrice += (cartItemModel.getNewDevicePrice() - cartItemModel.getOldDevicePrice());
+                    } else {
+                        totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
+                    }
                 }
 
                 if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
