@@ -475,7 +475,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : "";
     }
 
     private String generateUniqueId() {
