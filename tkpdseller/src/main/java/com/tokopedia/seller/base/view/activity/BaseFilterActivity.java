@@ -23,6 +23,7 @@ import java.util.List;
  * @author normansyahputa on 5/26/17.
  *         just move to new architecture.
  */
+@Deprecated
 public abstract class BaseFilterActivity extends BaseToolbarActivity implements TopAdsFilterListFragment.Callback, BaseFilterContentFragment.Callback {
     protected TopAdsFilterListFragment topAdsFilterListFragment;
     protected List<Fragment> filterContentFragmentList;

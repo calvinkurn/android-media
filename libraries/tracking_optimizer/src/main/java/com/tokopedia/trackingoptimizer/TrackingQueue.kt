@@ -1,6 +1,7 @@
 package com.tokopedia.trackingoptimizer
 
 import android.content.Context
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
@@ -43,13 +44,13 @@ import kotlin.coroutines.experimental.CoroutineContext
  * hit 2: consists of 5000bytes C + 1000 bytes D
  */
 
-class TrackingQueue(val context: Context) : CoroutineScope{
+class TrackingQueue(val context: Context) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = TrackingExecutors.executor + TrackingExecutors.handler
 
     val trackingRepository: ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
-            TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
+        TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
         TrackingRepository(context)
     }
 
@@ -59,7 +60,7 @@ class TrackingQueue(val context: Context) : CoroutineScope{
      * The other keys will be considered as custom dimensions
      */
     fun putEETracking(map: HashMap<String, Any>? = null) {
-        if (map!= null && !map.containsKey("ecommerce")) {
+        if (!(map?.containsKey(ECOMMERCE) == true)) {
             return
         }
         launch {
@@ -96,7 +97,11 @@ class TrackingQueue(val context: Context) : CoroutineScope{
      */
     fun sendAll() {
         //send all tracking in db to gtm
-        SendTrackQueueService.start(context)
+        try {
+            SendTrackQueueService.start(context)
+        } catch (e: Throwable) {
+            // prevent illegal state exception when service is launch when app in background (in O)
+        }
     }
 
 }

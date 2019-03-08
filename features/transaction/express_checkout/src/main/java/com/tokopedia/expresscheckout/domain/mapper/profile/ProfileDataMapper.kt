@@ -1,6 +1,6 @@
 package com.tokopedia.expresscheckout.domain.mapper.profile
 
-import com.tokopedia.expresscheckout.data.entity.response.profile.ProfileResponse
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileResponse
 import com.tokopedia.expresscheckout.domain.model.profile.ProfileResponseModel
 
 /**

@@ -3,12 +3,20 @@ package com.tokopedia.home.beranda.presentation.view.compoundview;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,11 +25,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.data.model.SectionContentItem;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
@@ -51,7 +62,6 @@ public class HeaderHomeView extends BaseCustomView {
     private TextView pointsOvo;
 
     private View tokoPointHolder;
-    private TextView tvTitleTokoPoint;
     private TextView tvBalanceTokoPoint;
     private TextView tvActionTokopoint;
     private ImageView ivLogoTokoPoint;
@@ -88,7 +98,7 @@ public class HeaderHomeView extends BaseCustomView {
             walletAnalytics = new WalletAnalytics(analyticTracker);
         }
 
-        if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
+        if (headerViewModel.getTokopointsDrawerHomeData() != null && headerViewModel.getTokopointsDrawerHomeData().isOffFlag()) {
             renderHeaderOnlyTokocash();
         } else {
             renderHeaderTokocashWithTokopoint();
@@ -117,7 +127,6 @@ public class HeaderHomeView extends BaseCustomView {
             pointsOvo = view.findViewById(R.id.tv_ovo_point);
 
             tokoPointHolder = view.findViewById(R.id.container_tokopoint);
-            tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
             tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
             tvActionTokopoint = view.findViewById(R.id.tv_btn_action_tokopoint);
             ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
@@ -131,19 +140,18 @@ public class HeaderHomeView extends BaseCustomView {
 
     @SuppressLint("SetTextI18n")
     private void renderTokoPointLayoutListener() {
-        if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.isTokoPointDataError()) {
+        if (headerViewModel.getTokopointsDrawerHomeData() == null && headerViewModel.isTokoPointDataError()) {
             tokoPointHolder.setOnClickListener(getOnClickRefreshTokoPoint());
-            tvBalanceTokoPoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            tvBalanceTokoPoint.setVisibility(VISIBLE);
-            tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_unable_to_load_label);
-            tvBalanceTokoPoint.setTextColor(getContext().getResources().getColor(R.color.black_70));
-            tvBalanceTokoPoint.setTypeface(null, Typeface.BOLD);
+            mTextCouponCount.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mTextCouponCount.setVisibility(VISIBLE);
+            mTextCouponCount.setText(R.string.home_header_tokopoint_unable_to_load_label);
+            mTextCouponCount.setTextColor(getContext().getResources().getColor(R.color.black_70));
             tvActionTokopoint.setText(R.string.home_header_tokopoint_refresh_label);
             tvActionTokopoint.setVisibility(VISIBLE);
-            tvTitleTokoPoint.setVisibility(GONE);
             tokopointProgressBarLayout.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
-        } else if (headerViewModel.getTokoPointDrawerData() == null && !headerViewModel.isTokoPointDataError()) {
+            ivLogoTokoPoint.setImageResource(R.drawable.ic_hachiko_egg);
+        } else if (headerViewModel.getTokopointsDrawerHomeData() == null && !headerViewModel.isTokoPointDataError()) {
             tokoPointHolder.setOnClickListener(null);
             tokopointProgressBarLayout.setVisibility(VISIBLE);
             tokopointActionContainer.setVisibility(GONE);
@@ -151,31 +159,80 @@ public class HeaderHomeView extends BaseCustomView {
             tokopointProgressBarLayout.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
             tvActionTokopoint.setVisibility(GONE);
-            tvTitleTokoPoint.setVisibility(VISIBLE);
             tvBalanceTokoPoint.setVisibility(VISIBLE);
-            //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
-            tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
-            tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+            mTextCouponCount.setVisibility(VISIBLE);
 
-            if (headerViewModel.getTokoPointDrawerData().getSumCoupon() > 0) {
-                mTextCouponCount.setVisibility(VISIBLE);
-                mTextCouponCount.setText(headerViewModel.getTokoPointDrawerData().getSumCouponStr());
+            ImageHandler.loadImageAndCache(ivLogoTokoPoint, headerViewModel.getTokopointsDrawerHomeData().getIconImageURL());
+            mTextCouponCount.setTypeface(mTextCouponCount.getTypeface(), Typeface.BOLD);
+            if (headerViewModel.getTokopointsDrawerHomeData().getSectionContent() != null
+                    && headerViewModel.getTokopointsDrawerHomeData().getSectionContent().size() > 0) {
+                setTokopointsHeaderData(headerViewModel.getTokopointsDrawerHomeData().getSectionContent().get(0), tvBalanceTokoPoint);
+                if (headerViewModel.getTokopointsDrawerHomeData().getSectionContent().size() >= 2) {
+                    setTokopointsHeaderData(headerViewModel.getTokopointsDrawerHomeData().getSectionContent().get(1), mTextCouponCount);
+                }
+            } else {
+                tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_no_tokopoints);
+                mTextCouponCount.setText(R.string.home_header_tokopoint_no_coupons);
+                tvBalanceTokoPoint.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+                mTextCouponCount.setTextColor(getContext().getResources().getColor(R.color.tkpd_main_green));
             }
 
             tokoPointHolder.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (headerViewModel.getTokoPointDrawerData() != null) {
+                    if (headerViewModel.getTokopointsDrawerHomeData() != null) {
                         HomePageTracking.eventUserProfileTokopoints(getContext());
                         listener.actionTokoPointClicked(
-                                headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
-                                TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
+                                headerViewModel.getTokopointsDrawerHomeData().getRedirectURL(),
+                                TextUtils.isEmpty(headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle())
                                         ? TITLE_HEADER_WEBSITE
-                                        : headerViewModel.getTokoPointDrawerData().getMainPageTitle()
+                                        : headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle()
                         );
                     }
                 }
             });
+        }
+
+    }
+
+    private void setTokopointsHeaderData(SectionContentItem sectionContentItem, TextView tokopointsTextView) {
+        if (sectionContentItem != null) {
+            if (sectionContentItem.getTagAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
+                if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getBackgroundColour()) && HexValidator.validate(sectionContentItem.getTagAttributes().getBackgroundColour())) {
+                    Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.bg_tokopoints_rounded);
+                    if (drawable instanceof GradientDrawable) {
+                        GradientDrawable shapeDrawable = (GradientDrawable) drawable;
+                        shapeDrawable.setColorFilter(Color.parseColor(sectionContentItem.getTagAttributes().getBackgroundColour()), PorterDuff.Mode.SRC_ATOP);
+                        tokopointsTextView.setBackground(shapeDrawable);
+                        int horizontalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_3);
+                        int verticalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
+                        tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_8));
+                        tokopointsTextView.setTypeface(null, Typeface.NORMAL);
+                        tokopointsTextView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+                    }
+                    tokopointsTextView.setTextColor(getResources().getColor(R.color.white));
+                } else {
+                    tokopointsTextView.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+                }
+                if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
+                    tokopointsTextView.setText(sectionContentItem.getTagAttributes().getText());
+                }
+            } else if (sectionContentItem.getTextAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTextAttributes().getText())) {
+                if (!TextUtils.isEmpty(sectionContentItem.getTextAttributes().getColour()) && HexValidator.validate(sectionContentItem.getTextAttributes().getColour())) {
+                    tokopointsTextView.setTextColor(Color.parseColor(sectionContentItem.getTextAttributes().getColour()));
+                } else {
+                    tokopointsTextView.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+                }
+                if (sectionContentItem.getTextAttributes().isIsBold()) {
+                    tokopointsTextView.setTypeface(null, Typeface.BOLD);
+                } else {
+                    tokopointsTextView.setTypeface(null, Typeface.NORMAL);
+                }
+                if (!TextUtils.isEmpty(sectionContentItem.getTextAttributes().getText())) {
+                    tokopointsTextView.setText(sectionContentItem.getTextAttributes().getText());
+                }
+
+            }
         }
 
     }
@@ -391,8 +448,11 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private void showAnimationBottomSheetActivation() {
-        Activity activity = (Activity) getContext();
-        activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+        if (!(getContext() instanceof Activity) && (getContext() instanceof ContextWrapper)) {
+            Context context = ((ContextWrapper) getContext()).getBaseContext();
+            Activity activity = (Activity) context;
+            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
+        }
     }
 
     @NonNull

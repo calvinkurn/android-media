@@ -21,6 +21,9 @@ public class Status implements Parcelable {
     private static final String KEY_ERROR_CODE = "error_code";
     private static final String KEY_MESSAGE = "message";
 
+    public Status() {
+    }
+
     public Status(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ERROR_CODE)) {
             setErrorCode(object.getInt(KEY_ERROR_CODE));

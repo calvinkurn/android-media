@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.pms.common.Constant;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -20,11 +22,8 @@ public class InvoiceDetailFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        String deviceId = "";
-        if(getActivity().getApplication() instanceof AbstractionRouter){
-            deviceId =  ((AbstractionRouter)getActivity().getApplication()).getSession().getDeviceId();
-        }
-        return URLGenerator.generateURLSessionLogin(encodeUrl(getArguments().getString(Constant.INVOICE_URL_EXTRA)), deviceId, getUserIdForHeader());
+        UserSessionInterface userSession = new UserSession(getActivity());
+        return URLGenerator.generateURLSessionLogin(encodeUrl(getArguments().getString(Constant.INVOICE_URL_EXTRA)), userSession.getDeviceId(), getUserIdForHeader());
     }
 
     private static String encodeUrl(String url) {
@@ -39,19 +38,15 @@ public class InvoiceDetailFragment extends BaseWebViewFragment {
     @Nullable
     @Override
     protected String getUserIdForHeader() {
-        if(getActivity().getApplication() instanceof AbstractionRouter){
-            return ((AbstractionRouter)getActivity().getApplication()).getSession().getUserId();
-        }
-        return "";
+        UserSessionInterface userSession = new UserSession(getActivity());
+        return userSession.getUserId();
     }
 
     @Nullable
     @Override
     protected String getAccessToken() {
-        if(getActivity().getApplication() instanceof AbstractionRouter){
-            return ((AbstractionRouter)getActivity().getApplication()).getSession().getAccessToken();
-        }
-        return "";
+        UserSessionInterface userSession = new UserSession(getActivity());
+        return userSession.getAccessToken();
     }
 
     public static Fragment createInstance(String invoiceUrl) {

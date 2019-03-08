@@ -8,9 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
@@ -67,6 +69,12 @@ public interface HomeContract {
         void startDeeplinkShopInfo(String url);
 
         void showPopupIntroOvo(String applinkActivation);
+
+        void onTabFeedLoadError(Throwable e);
+
+        void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList);
+
+        void onHomeDataLoadSuccess();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -81,8 +89,6 @@ public interface HomeContract {
         void showPopUpIntroWalletOvo(String applinkActivation);
 
         void updateHeaderTokoCashPendingData(CashBackData cashBackData);
-
-        void updateHeaderTokoPointData(TokopointHomeDrawerData tokoPointDrawerData);
 
         void getShopInfo(String url, String shopDomain);
 
@@ -105,5 +111,9 @@ public interface HomeContract {
         void hitBannerImpression(BannerSlidesModel slidesModel);
 
         void onBannerClicked(BannerSlidesModel slidesModel);
+
+        void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData);
+
+        void getFeedTabData();
     }
 }

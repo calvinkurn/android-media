@@ -65,6 +65,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
