@@ -11,7 +11,7 @@ public class ProductShowCase {
 
     @SerializedName("name")
     @Expose
-    private String name;
+    private String name = "";
     @SerializedName("id")
     @Expose
     private int id;
