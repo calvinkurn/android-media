@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -39,26 +40,24 @@ class CourierFragment: BaseListFragment<BlackBoxShipmentHolder, CourierTypeFacto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.resources?.configuration?.let { setUpByConfiguration(it) }
         arguments?.let {
             val shipments: List<ShopShipment> = it.getParcelableArrayList(ARGS_PRODUCT_LIST) ?: listOf()
             val bbInfos: List<BBInfo> = it.getParcelableArrayList(ARGS_BBINFO_LIST) ?: listOf()
-
+            val rv = getRecyclerView(view)
             if (bbInfos.isNotEmpty()){
                 activity?.setTitle(R.string.product_detail_courier)
                 super.renderList(bbInfos, false)
                 view.title_bbinfo.visible()
+                if (rv.itemDecorationCount > 0)
+                    rv.removeItemDecorationAt(rv.itemDecorationCount - 1)
             } else {
                 activity?.setTitle(R.string.courier_title)
                 super.renderList(shipments, false)
                 view.title_bbinfo.gone()
+                rv.addItemDecoration(DividerItemDecoration(activity))
             }
-
-
         }
     }
-
-    private fun setUpByConfiguration(configuration: Configuration) {}
 
     override fun getAdapterTypeFactory(): CourierTypeFactory = CourierTypeFactory()
 

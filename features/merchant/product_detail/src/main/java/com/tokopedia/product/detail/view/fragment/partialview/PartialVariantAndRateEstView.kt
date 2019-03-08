@@ -1,5 +1,9 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -56,10 +60,10 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             txt_rate_estimation_start.text = summarize.minPrice
             txt_rate_estimation_start.visible()
             icon_shop_location.visible()
-            txt_shop_location.text = shopLocation
+            txt_shop_location.text = context.getString(R.string.from, shopLocation).boldPartial("dari".length)
             txt_shop_location.visible()
             icon_courier_est.visible()
-            txt_courier_dest.text = summarize.destination
+            txt_courier_dest.text = context.getString(R.string.to, summarize.destination).boldPartial("ke".length)
             txt_courier_dest.visible()
 
             if (label_variant.isVisible) {
@@ -70,6 +74,12 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             visible()
             setOnClickListener { onRateEstimationClicked?.invoke() }
         }
+    }
+
+    private fun String.boldPartial(from: Int, to: Int = length): SpannableString {
+        val spanText = SpannableString(this)
+        spanText.setSpan(StyleSpan(Typeface.BOLD), from, to, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spanText
     }
 
     fun renderPriorityOrder(shopCommitment: ShopCommitment) {

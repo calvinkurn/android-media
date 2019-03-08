@@ -14,6 +14,7 @@ import android.view.ViewGroup
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.KG
 import com.tokopedia.product.detail.data.util.LABEL_GRAM
@@ -86,7 +87,6 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recycler_view.adapter = adapter
-        recycler_view.addItemDecoration(DividerItemDecoration(activity))
         recycler_view.isNestedScrollingEnabled = false
 
         shipping_weight.text = "${productWeight.numberFormatted()} ${if (productWeightUnit.toLowerCase() == KG)
@@ -139,7 +139,13 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
             shipping_receiver_phone.visibility = View.VISIBLE
             shipping_receiver_phone.text = address.phone
         }
-        shipping_receiver_address.text = "${address.address}, ${address.districtName}, ${address.provinceName}"
+        shipping_receiver_address.text = MethodChecker.fromHtml("${address.address}, ${address.districtName}, ${address.provinceName}")
+        if (ratesEstimationModel.isBlackbox){
+            if (recycler_view.itemDecorationCount > 0)
+                recycler_view.removeItemDecorationAt(recycler_view.itemDecorationCount - 1)
+        } else {
+            recycler_view.addItemDecoration(DividerItemDecoration(activity))
+        }
         adapter.isBlackbox = ratesEstimationModel.isBlackbox
         adapter.updateShippingServices(ratesEstimation.services)
         setViewState(VIEW_CONTENT)
