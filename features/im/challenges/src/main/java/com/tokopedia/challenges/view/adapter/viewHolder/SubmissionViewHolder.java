@@ -196,34 +196,3 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
     }
 
 }
-
- /*if (v.getId() == R.id.iv_share) {
-            ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), categoryItems.get(getIndex()), false);
-            if (categoryItems.get(getIndex()).getCollection() != null) {
-                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,
-                        ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
-                        categoryItems.get(getIndex()).getCollection().getTitle());
-            }
-        } else if (v.getId() == R.id.iv_like) {
-            mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
-            if (categoryItems.get(getIndex()).getMe() != null) {
-                setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
-                String action = categoryItems.get(getIndex()).getMe().isLiked() ?
-                        ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE :
-                        ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
-
-                if (categoryItems.get(getIndex()).getCollection() != null) {
-                    analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
-                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,
-                            action, categoryItems.get(getIndex()).getCollection().getTitle());
-                }
-            }
-
-        } else {
-            Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
-            detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, categoryItems.get(getIndex()));
-            detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
-
-            navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
-        }*/

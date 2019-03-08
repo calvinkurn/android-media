@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16"
-        android:text="Recent" />
+        android:text="Terbaru" />
 
     <TextView
         android:id="@+id/tv_topScore"
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16"
-        android:text="Top Score"
+        android:text="Score terbanyak"
         app:layout_constraintTop_toBottomOf="@+id/view_divider" />
 
     <View
