@@ -8,10 +8,10 @@ public class TopadsDeposit {
 
     @SerializedName("topads_amount")
     @Expose
-    private Integer topadsAmount;
+    private Integer topadsAmount = 0;
     @SerializedName("is_topads_user")
     @Expose
-    private Boolean isTopadsUser;
+    private Boolean isTopadsUser = false;
 
     public Integer getTopadsAmount() {
         return topadsAmount;

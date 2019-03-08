@@ -24,7 +24,7 @@ public class CartDetail {
     private List<String> messages = new ArrayList<>();
     @SerializedName("product")
     @Expose
-    private Product product;
+    private Product product = new Product();
 
     public int getCartId() {
         return cartId;

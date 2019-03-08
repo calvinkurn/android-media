@@ -41,7 +41,7 @@ public class GetRecentViewUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.recent_view_query),
                 GqlRecentViewResponse.class,
-                variables);
+                variables, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(graphqlResponseSubscriber);

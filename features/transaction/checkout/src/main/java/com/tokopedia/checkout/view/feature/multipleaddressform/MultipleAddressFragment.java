@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -34,6 +33,8 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Inject
     IMultipleAddressPresenter presenter;
-    @Inject
-    UserSession userSession;
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     @Inject
@@ -295,6 +294,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> param) {
+        UserSessionInterface userSession = new UserSession(getActivity());
         return param != null ? AuthUtil.generateParamsNetwork(
                 getActivity(), param, userSession.getUserId(), userSession.getDeviceId()
         ) : AuthUtil.generateParamsNetwork(

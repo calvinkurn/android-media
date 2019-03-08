@@ -30,26 +30,33 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String EXTRA_TITLEBAR = "EXTRA_TITLEBAR";
+    private static final String EXTRA_NEED_LOGIN = "EXTRA_NEED_LOGIN";
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
     private static final String KEY_APP_LINK_QUERY_URL = "url";
     private static final String KEY_APP_LINK_QUERY_TITLEBAR = "titlebar";
+    private static final String KEY_APP_LINK_QUERY_NEED_LOGIN = "need_login";
 
 
     private FragmentGeneralWebView fragmentGeneralWebView;
 
     private String url;
     private boolean showToolbar;
+    private boolean needLogin;
 
     public static Intent newInstance(Context context, String url) {
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
-                .putExtra(EXTRA_TITLEBAR, true);
+                .putExtra(EXTRA_TITLEBAR, true)
+                .putExtra(EXTRA_NEED_LOGIN, false);
+
     }
 
-    public static Intent newInstance(Context context, String url, boolean showToolbar) {
+    public static Intent newInstance(Context context, String url, boolean showToolbar,
+                                     boolean needLogin) {
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
-                .putExtra(EXTRA_TITLEBAR, showToolbar);
+                .putExtra(EXTRA_TITLEBAR, showToolbar)
+                .putExtra(EXTRA_NEED_LOGIN, needLogin);
     }
 
     @SuppressWarnings("unused")
@@ -58,7 +65,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         String webUrl = extras.getString(
                 KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
         );
-        boolean showToolbar = true;
+        boolean showToolbar;
+        boolean needLogin;
         try {
             showToolbar = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_TITLEBAR,
                     "true"));
@@ -66,10 +74,17 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
             showToolbar = true;
         }
 
+        try {
+            needLogin = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_NEED_LOGIN,
+                    "false"));
+        } catch (ParseException e) {
+            needLogin = false;
+        }
+
         if (TextUtils.isEmpty(webUrl)) {
             webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
         }
-        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar);
+        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin);
     }
 
     @SuppressWarnings("unused")
@@ -105,6 +120,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     protected void setupBundlePass(Bundle extras) {
         url = extras.getString(EXTRA_URL);
         showToolbar = extras.getBoolean(EXTRA_TITLEBAR, true);
+        needLogin = extras.getBoolean(EXTRA_NEED_LOGIN, false);
     }
 
     @Override
@@ -122,7 +138,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         Fragment fragment = getFragmentManager().findFragmentById(com.tokopedia.digital.R.id.container);
         if (fragment == null || !(fragment instanceof FragmentGeneralWebView)) {
             fragmentGeneralWebView = FragmentGeneralWebView.createInstance(getEncodedUrl(url),
-                    true, showToolbar);
+                    true, showToolbar, needLogin);
             getFragmentManager().beginTransaction().replace(com.tokopedia.digital.R.id.container,
                     fragmentGeneralWebView).commit();
         }

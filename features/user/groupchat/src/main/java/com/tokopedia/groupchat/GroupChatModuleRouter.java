@@ -33,4 +33,7 @@ public interface GroupChatModuleRouter {
                         String shareUrl, String userId, String sharing);
 
     void sendAnalyticsGroupChat(String url, String error);
+
+    boolean isSupportedDelegateDeepLink(String appLinks);
+
 }

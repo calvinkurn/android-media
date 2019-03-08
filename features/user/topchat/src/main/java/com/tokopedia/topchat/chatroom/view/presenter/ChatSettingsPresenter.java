@@ -51,7 +51,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
         variables.put(InboxChatConstant.BLOKCED, !state);
 
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(getView().getQueryString(R.raw.chatsettings), ChatSettingsResponse.class, variables);
+                GraphqlRequest(getView().getQueryString(R.raw.chatsettings), ChatSettingsResponse.class, variables, false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

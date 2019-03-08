@@ -205,6 +205,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
                 presenter.getShopTalk(shopId)
             }.showRetrySnackbar()
         }
+        stopTrace()
     }
 
     override fun onErrorActionTalk(errorMessage: String) {
