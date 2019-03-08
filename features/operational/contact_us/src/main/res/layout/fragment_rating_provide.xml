@@ -125,7 +125,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
         android:layout_margin="@dimen/dp_24"
-        android:background="@drawable/rounded_rectangle_greenbutton_solid"
+        android:background="@drawable/bg_button_state"
         android:gravity="center"
         android:text="Selesai"
         android:textColor="@color/white"

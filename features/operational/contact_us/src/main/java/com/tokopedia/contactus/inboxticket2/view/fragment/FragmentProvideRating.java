@@ -48,6 +48,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     public static final String CLICKED_EMOJI = "clicked_emoji";
     public static final String PARAM_COMMENT_ID = "comment_id";
     public static final String PARAM_OPTIONS_CSAT = "options_csat";
+    public static final String UPDATING = "Updating";
     List<String> selectedOption = new ArrayList<>();
     private CustomQuickOptionView mFilterReview;
 
@@ -179,8 +180,9 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
         mFilterReview.updateLayoutManager(gridLayoutManager);
         List<QuickFilterItem> filterItems = new ArrayList<>();
+        CustomViewQuickFilterItem finishFilter = null;
         for(BadCsatReasonListItem filter:filterList) {
-            CustomViewQuickFilterItem finishFilter = new CustomViewQuickFilterItem();
+            finishFilter = new CustomViewQuickFilterItem();
             finishFilter.setName(filter.getMessage());
             finishFilter.setType(filter.getId()+"");
             finishFilter.setColorBorder(R.color.tkpd_main_green);
@@ -234,13 +236,14 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         getActivity().finish();
     }
 
+
     @Override
     public void showProgress() {
         if (progress == null) {
             progress = new ProgressDialog(getContext());
         }
         if (!progress.isShowing()) {
-            progress.setMessage("Updating");
+            progress.setMessage(UPDATING);
             progress.setIndeterminate(true);
             progress.setCanceledOnTouchOutside(false);
             progress.show();
@@ -271,15 +274,11 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     }
 
     public void disableSubmitButton() {
-        MethodChecker.setBackground(mTxtFinished, MethodChecker.getDrawable(getContext(), R.drawable
-                .bg_button_disabled));
         mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), R.color.grey_500));
         mTxtFinished.setEnabled(false);
     }
 
     public void enableSubmitButton() {
-        MethodChecker.setBackground(mTxtFinished, MethodChecker.getDrawable(getContext(), R.drawable
-                .button_curvy_green));
         mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
         mTxtFinished.setEnabled(true);
     }

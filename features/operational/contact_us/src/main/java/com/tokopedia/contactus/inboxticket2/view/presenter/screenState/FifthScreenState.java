@@ -5,14 +5,42 @@ import com.tokopedia.contactus.R;
 public class FifthScreenState extends ScreenState {
 
     @Override
-    void init() {
-        firstEmoji = R.drawable.rating_active_5;
-        secondEmoji = R.drawable.rating_active_5;
-        thirdEmoji = R.drawable.rating_active_5;
-        fourthEmoji = R.drawable.rating_active_5;
-        fifthEmoji = R.drawable.rating_active_5;
-        message = "Sangat Memuaskan";
-        question = "Apa yang sebaiknya dipertahankan dari layanan kami?";
-        messageColor = "#00ac47";
+    public int getFirstEmoji() {
+        return getFifthEmoji();
+    }
+
+    @Override
+    public int getSecondEmoji() {
+        return getFifthEmoji();
+    }
+
+    @Override
+    public int getThirdEmoji() {
+        return getFifthEmoji();
+    }
+
+    @Override
+    public int getFourthEmoji() {
+        return getFifthEmoji();
+    }
+
+    @Override
+    public int getFifthEmoji() {
+        return  R.drawable.rating_active_5;
+    }
+
+    @Override
+    public String getMessageColor() {
+        return "#00ac47";
+    }
+
+    @Override
+    public String getMessage() {
+        return "Sangat Memuaskan";
+    }
+
+    @Override
+    public String getQuestion() {
+        return "Apa yang sebaiknya dipertahankan dari layanan kami?";
     }
 }

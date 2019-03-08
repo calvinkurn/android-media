@@ -27,7 +27,7 @@ import com.tokopedia.contactus.inboxticket2.domain.usecase.InboxOptionUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
-import com.tokopedia.contactus.inboxticket2.view.activity.ActivityProvideRating;
+import com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -91,6 +91,7 @@ public class InboxDetailPresenterImpl
     private CreatedBy userData;
     private ArrayList<String> reasonList;
     private InboxOptionUseCase inboxOptionUseCase;
+    boolean isIssueClosed = false;
 
     public InboxDetailPresenterImpl(GetTicketDetailUseCase useCase,
                                     PostMessageUseCase messageUseCase,
@@ -120,11 +121,11 @@ public class InboxDetailPresenterImpl
         return this;
     }
 
-    boolean isIssueClosed = false;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
      if (requestCode == REQUEST_SUBMIT_FEEDBACK && resultCode == RESULT_OK) {
-            mView.showMessage("Terima kasih atas masukannya");
+            mView.showMessage(mView.getActivity().getString(R.string.cu_terima_kasih_atas_masukannya));
             mView.showIssueClosed();
             isIssueClosed = true;
             getTicketDetails();
@@ -205,7 +206,6 @@ public class InboxDetailPresenterImpl
     private void getTicketDetails() {
         mView.showProgressBar();
         inboxOptionUseCase.createRequestParams(mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID));
-        // TO get and cache the usecase options
         inboxOptionUseCase.execute(new Subscriber<ChipGetInboxDetail>() {
             @Override
             public void onCompleted() {
@@ -765,7 +765,7 @@ public class InboxDetailPresenterImpl
 
     @Override
     public void onClickEmoji(int number) {
-        mView.startActivityForResult(ActivityProvideRating.getInstance(mView.getActivity(), number,mView.getCommentID(),mTicketDetail.getBadCsatReasonList()),REQUEST_SUBMIT_FEEDBACK);
+        mView.startActivityForResult(ProvideRatingActivity.getInstance(mView.getActivity(), number,mView.getCommentID(),mTicketDetail.getBadCsatReasonList()),REQUEST_SUBMIT_FEEDBACK);
     }
 
     private void addNewLocalComment() {

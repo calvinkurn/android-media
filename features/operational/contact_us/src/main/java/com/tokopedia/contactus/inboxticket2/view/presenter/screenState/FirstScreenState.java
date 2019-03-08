@@ -4,7 +4,7 @@ import com.tokopedia.contactus.R;
 
 public class FirstScreenState extends ScreenState {
     @Override
-    void init() {
-        firstEmoji = R.drawable.rating_active_1;
+    public int getFirstEmoji() {
+        return R.drawable.rating_active_1;
     }
 }

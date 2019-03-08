@@ -114,7 +114,7 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
 
             @Override
             public void onError(Throwable e) {
-                if (!isViewAttached()) {
+                if (isViewNotAttached()) {
                     return;
                 }
                 getView().hideProgress();
@@ -123,7 +123,7 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
 
             @Override
             public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
-                if (!isViewAttached()) {
+                if (isViewNotAttached()) {
                     return;
                 }
                 getView().hideProgress();

@@ -13,12 +13,12 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.FragmentProvideRating;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityProvideRating extends BaseSimpleActivity {
+public class ProvideRatingActivity extends BaseSimpleActivity {
     public static final String CLICKED_EMOJI = "clicked_emoji";
     public static final String PARAM_COMMENT_ID = "comment_id";
     public static final String PARAM_OPTIONS_CSAT = "options_csat";
     public static Intent getInstance(Context context, int clickEmoji, String commentId, List<BadCsatReasonListItem> badCsatReasonListItems) {
-        Intent i = new Intent(context,ActivityProvideRating.class);
+        Intent i = new Intent(context, ProvideRatingActivity.class);
         i.putExtra(CLICKED_EMOJI,clickEmoji);
         i.putExtra(PARAM_COMMENT_ID,commentId);
         i.putParcelableArrayListExtra(PARAM_OPTIONS_CSAT, (ArrayList<BadCsatReasonListItem>) badCsatReasonListItems);

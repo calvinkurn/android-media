@@ -44,7 +44,12 @@ public class InboxOptionUseCase extends UseCase<ChipGetInboxDetail> {
         return graphqlUseCase.createObservable(requestParams).map(new Func1<GraphqlResponse, ChipGetInboxDetail>() {
             @Override
             public ChipGetInboxDetail call(GraphqlResponse graphqlResponse) {
-                return ((ChipInboxDetails)(graphqlResponse.getData(ChipInboxDetails.class))).getChipGetInboxDetail();
+                ChipInboxDetails chipInboxDetails = ((ChipInboxDetails)(graphqlResponse.getData(ChipInboxDetails.class)));
+                if(chipInboxDetails != null) {
+                    return chipInboxDetails.getChipGetInboxDetail();
+                }else {
+                    return null;
+                }
             }
         });
     }

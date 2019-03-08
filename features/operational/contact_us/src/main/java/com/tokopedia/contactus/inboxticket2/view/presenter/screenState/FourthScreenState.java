@@ -4,15 +4,37 @@ import com.tokopedia.contactus.R;
 
 public class FourthScreenState extends ScreenState {
     @Override
-    void init() {
-        firstEmoji = R.drawable.rating_active_4;
-        secondEmoji = R.drawable.rating_active_4;
-        thirdEmoji = R.drawable.rating_active_4;
-        fourthEmoji = R.drawable.rating_active_4;
-        message = "Memuaskan";
-        question = "Apa yang bisa ditingkatkan dari layanan kami?";
-        messageColor = "#00ac47";
+    public int getFirstEmoji() {
+        return getFourthEmoji();
+    }
 
+    @Override
+    public int getSecondEmoji() {
+        return getFourthEmoji();
+    }
 
+    @Override
+    public int getThirdEmoji() {
+        return getFourthEmoji();
+    }
+
+    @Override
+    public int getFourthEmoji() {
+        return R.drawable.rating_active_4;
+    }
+
+    @Override
+    public String getMessageColor() {
+        return "#00ac47";
+    }
+
+    @Override
+    public String getMessage() {
+        return "Memuaskan";
+    }
+
+    @Override
+    public String getQuestion() {
+        return "Apa yang bisa ditingkatkan dari layanan kami?";
     }
 }
