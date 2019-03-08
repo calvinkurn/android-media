@@ -44,7 +44,6 @@ import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
@@ -61,6 +60,7 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -507,7 +507,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             shopPageTracking.clickMoreMenuChip(isOwner(),
                     CustomDimensionShopPage.create(shopInfo));
 
-            Intent shopEtalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), selectedEtalaseId);
+            Intent shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), selectedEtalaseId,
+                    true, false);
             startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE);
         }
     }
