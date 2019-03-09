@@ -298,10 +298,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         networkRouter.showMaintenancePage();
     }
 
-    protected void showForceLogoutDialog(Response response) {
-        networkRouter.showForceLogoutDialog(response);
-    }
-
     protected void showServerError(Response response) {
         networkRouter.showServerError(response);
     }
@@ -348,13 +344,17 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter);
             networkRouter.doRelogin(newAccessToken);
 
+            Request newestRequest;
             if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
-                Request newestRequest = recreateRequestWithNewAccessToken(chain);
-                return checkShowForceLogout(chain, newestRequest);
+                newestRequest = recreateRequestWithNewAccessToken(chain);
             } else {
-                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-                return checkShowForceLogout(chain, newestRequest);
+                newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
             }
+            if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
+                networkRouter.sendForceLogoutAnalytics(response);
+            }
+
+            return chain.proceed(newestRequest);
         } catch (IOException e) {
             e.printStackTrace();
             return response;
@@ -366,7 +366,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             accessTokenRefresh.refreshToken(context, userSession, networkRouter);
             Request newest = recreateRequestWithNewAccessToken(chain);
-            return checkShowForceLogout(chain, newest);
+            return chain.proceed(newest);
         } catch (IOException e) {
             e.printStackTrace();
             return response;
@@ -374,7 +374,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
@@ -402,18 +402,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();
-    }
-
-
-    private Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
-        Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)) {
-            networkRouter.showForceLogoutDialog(response);
-        }
-        return response;
     }
 }

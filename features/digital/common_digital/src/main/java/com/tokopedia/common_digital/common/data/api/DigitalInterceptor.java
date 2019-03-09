@@ -43,19 +43,19 @@ public class DigitalInterceptor extends com.tokopedia.abstraction.common.network
             } else if (digitalErrorResponse.getTypeOfError()
                     == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
                 if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        DigitalError.STATUS_UNDER_MAINTENANCE
+                        DigitalError.Companion.getSTATUS_UNDER_MAINTENANCE()
                 )) {
                     throw new ResponseErrorException(
                             digitalErrorResponse.getServerErrorMessageFormatted()
                     );
                 } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        DigitalError.STATUS_REQUEST_DENIED
+                        DigitalError.Companion.getSTATUS_REQUEST_DENIED()
                 )) {
                     throw new ResponseErrorException(
                             digitalErrorResponse.getServerErrorMessageFormatted()
                     );
                 } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        DigitalError.STATUS_FORBIDDEN
+                        DigitalError.Companion.getSTATUS_FORBIDDEN()
                 ) && MethodChecker.isTimezoneNotAutomatic(context)) {
                     throw new ResponseErrorException(
                             digitalErrorResponse.getServerErrorMessageFormatted()

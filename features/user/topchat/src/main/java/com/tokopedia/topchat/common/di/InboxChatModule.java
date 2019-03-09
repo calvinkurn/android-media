@@ -172,11 +172,11 @@ public class InboxChatModule {
         return new GetShopInfoUseCase(shopCommonRepository);
     }
 
-    @InboxChatScope
-    @Provides
-    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
-        return new ToggleFavouriteShopUseCase(shopCommonRepository);
-    }
+//    @InboxChatScope
+//    @Provides
+//    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
+//        return new ToggleFavouriteShopUseCase(shopCommonRepository);
+//    }
 
 //    @InboxChatScope
 //    @Provides

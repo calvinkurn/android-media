@@ -59,7 +59,7 @@ public class BannerAdsUseCase extends UseCase<TopAdsParams, BannerAdsContract.Vi
                 if (view == null) return;
 
                 view.hideLoading();
-                if (cpmModel.getError() == null && cpmModel.getStatus().getErrorCode() == 0) {
+                if (cpmModel.getStatus().getErrorCode() == 0) {
                     view.displayAds(cpmModel);
                 } else if (cpmModel.getError() != null) {
                     view.notifyAdsErrorLoaded(cpmModel.getError().getCode(),

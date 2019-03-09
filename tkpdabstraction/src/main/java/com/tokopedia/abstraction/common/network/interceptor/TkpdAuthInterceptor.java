@@ -304,11 +304,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     @Deprecated
-    protected void showForceLogoutDialog(Response response) {
-        abstractionRouter.showForceLogoutDialog(response);
-    }
-
-    @Deprecated
     protected void showServerError(Response response) {
         abstractionRouter.showServerError(response);
     }

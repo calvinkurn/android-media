@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -221,10 +222,17 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_9));
-        shape.setColor(android.graphics.Color.parseColor(conditionalInfo.color().background()));
-        shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), android.graphics.Color.parseColor(conditionalInfo.color().border()));
+        if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
+            shape.setColor(Color.parseColor(conditionalInfo.color().background()));
+        }
+        if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
+            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+        }
         conditionalInfoText.setBackground(shape);
         conditionalInfoText.setText(conditionalInfo.text());
+        if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
+            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
+        }
 
     }
 
@@ -238,7 +246,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
         }
         if (title.backgroundColor() != null && !title.backgroundColor().isEmpty()) {
-            Drawable drawable = getContext().getDrawable(R.drawable.background_deadline);
+            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.background_deadline);
             doubleTextView.setBottomTextBackground(drawable);
             doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10), getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10));
 

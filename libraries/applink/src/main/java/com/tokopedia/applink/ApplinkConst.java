@@ -33,7 +33,7 @@ public interface ApplinkConst {
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
-    String ADD_CREDIT_CARD= "tokopedia://payment/credit-card/add";
+    String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -68,6 +68,7 @@ public interface ApplinkConst {
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
+    String OFFICIAL_STORE = "tokopedia://official-store";
     String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
@@ -206,9 +207,10 @@ public interface ApplinkConst {
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
-
     String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
     String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+
+    String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
@@ -254,5 +256,10 @@ public interface ApplinkConst {
         String AVATAR = "avatar";
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
+    }
+
+    interface Play {
+        String PARAM_HAS_TITLEBAR = "titlebar";
+        String PARAM_URL = "url";
     }
 }

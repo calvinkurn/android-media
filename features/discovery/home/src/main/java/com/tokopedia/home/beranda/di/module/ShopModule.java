@@ -1,7 +1,11 @@
 package com.tokopedia.home.beranda.di.module;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.beranda.di.HomeScope;
 import com.tokopedia.home.beranda.di.ShopQualifier;
 import com.tokopedia.home.beranda.di.ShopWSQualifier;
@@ -110,7 +114,7 @@ public class ShopModule {
 
     @HomeScope
     @Provides
-    public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
-        return new ToggleFavouriteShopUseCase(shopCommonRepository);
+    public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 }

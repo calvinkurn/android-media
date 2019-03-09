@@ -44,7 +44,7 @@ public class ValidateUserDataUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_validate_user_data),
                 GqlValidateUserDataResponse.class,
-                variables, VALIDATE_USER_DATA);
+                variables, VALIDATE_USER_DATA, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(validateUserDataSubscriber);

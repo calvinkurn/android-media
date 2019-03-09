@@ -1,5 +1,9 @@
 package com.tokopedia.shop.common.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.ShopCommonModule;
@@ -41,7 +45,7 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
-        return new ToggleFavouriteShopUseCase(shopCommonRepository);
+    public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase( @ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 }

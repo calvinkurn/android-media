@@ -17,7 +17,7 @@ import rx.schedulers.Schedulers;
 public abstract class BaseGetShopProductAttributeUseCase<T> extends UseCase<T> {
 
     private final GetWishListUseCase getWishListUseCase;
-    private final UserSessionInterface userSession;
+    protected final UserSessionInterface userSession;
     protected final ShopProductMapper shopProductMapper;
     private final GetProductCampaignsUseCase getProductCampaignsUseCase;
 
@@ -31,8 +31,8 @@ public abstract class BaseGetShopProductAttributeUseCase<T> extends UseCase<T> {
     }
 
     protected Observable<List<ShopProductViewModel>> getShopProductViewModelList(
+            final boolean isLogin,
             final boolean isShopOwner, boolean officialStore, final List<ShopProductViewModel> shopProductViewModelList) {
-        List<String> defaultWishList = new ArrayList<>();
         List<ShopProductCampaign> defaultShopProductCampaignList = new ArrayList<>();
         Observable<List<String>> wishlistObservable;
         Observable<List<ShopProductCampaign>> campaignListObservable;
@@ -41,10 +41,10 @@ public abstract class BaseGetShopProductAttributeUseCase<T> extends UseCase<T> {
         for (ShopProductViewModel shopProductViewModel : shopProductViewModelList) {
             productIdList.add(shopProductViewModel.getId());
         }
-        if (shopProductViewModelList.size() > 0 && !isShopOwner) {
+        if (shopProductViewModelList.size() > 0 && isLogin && !isShopOwner) {
             wishlistObservable = getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList));
         } else {
-            wishlistObservable = Observable.just(defaultWishList);
+            wishlistObservable = Observable.just(new ArrayList<>());
         }
         if (shopProductViewModelList.size() > 0 && officialStore) {
             campaignListObservable = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));

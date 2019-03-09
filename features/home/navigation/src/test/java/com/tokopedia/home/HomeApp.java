@@ -235,7 +235,7 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void showForceLogoutDialog(Response response) {
+    public void sendForceLogoutAnalytics(Response response) {
 
     }
 

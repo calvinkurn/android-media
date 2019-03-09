@@ -3,6 +3,7 @@
 
     <color name="green_transparent">#e1f8e2</color>
     <color name="medium_green">#42b549</color>
+    <color name="new_green">#82ef95</color>
 
     <color name="pure_transparent">#00ffffff</color>
     <color name="grey_hint">#e0e0e0</color>
@@ -33,5 +34,21 @@
     <color name="shadow_color_5">#25CCCCCC</color>
 
     <color name="pink">#ffd3d6</color>
+
+
+    <color name="play_user">#b5bbc5</color>
+    <color name="play_admin">#82ef95</color>
+    <color name="play_transparent">#b331353b</color>
+    <color name="play_transparent_hint_reply">#aeffffff</color>
+    <color name="play_new_chat">#f531353b</color>
+    <color name="play_send">#4fd15a</color>
+
+    <color name="quiz_start">#82ef95</color>
+    <color name="quiz_end">#ffc400</color>
+
+    <color name="sprint_sale_start">#d6001c</color>
+    <color name="sprint_sale_end">#ae31353b</color>
+    <color name="charcoal_grey">#f531353b</color>
+
 
 </resources>
