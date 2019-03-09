@@ -277,13 +277,6 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     @Override
     public void renderChallengeDetail(Result challengeResult) {
-        if (this.challengeResult == null && challengeResult != null) {
-            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE_CHALLENEGE,
-                    ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
-                    challengeResult.getTitle());
-        }
-
         this.challengeResult = challengeResult;
         ImageHandler.loadImage(getActivity(), challengeImage, Utils.getImageUrl(challengeResult.getThumbnailUrl()),
                 R.color.grey_1100, R.color.grey_1100);
@@ -508,6 +501,12 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
     @Override
     public void setChallengeResult(Result challengeResult) {
+        if (this.challengeResult == null && challengeResult != null) {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE_CHALLENEGE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
+                    challengeResult.getTitle());
+        }
         this.challengeResult = challengeResult;
     }
 
