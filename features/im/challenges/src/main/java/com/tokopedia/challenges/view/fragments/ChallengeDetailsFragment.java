@@ -677,7 +677,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         } else if (viewId == R.id.iv_share) {
             if (null != challengeResult) {
                 ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
-                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SORT_BY,
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                         ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                         challengeResult.getTitle());

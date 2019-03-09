@@ -16,13 +16,11 @@ public class ChallengesGaAnalyticsTracker {
 
     public static final String EVENT_CATEGORY_CHALLENGES_PAST_CHALLENGES = "challenges_past challenges";
     public static final String EVENT_CATEGORY_CHALLENGES_MYSUBMISSIONS = "challenges_my submissions";
-    public static final String EVENT_CATEGORY_CHALLENGE_OTHER_SUBMISSION = "challenges_other submission";
     public static final String EVENT_CLICK_SORT_BY = "clickSortby";
     public static final String EVENT_SORT_RECENT = "Recent";
     public static final String EVENT_SORT_BUZZ_POINT = "highest buzz point";
     public static final String EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE_CHALLENEGE = "challenges_challenge detail page";
     public static final String EVENT_ACTION_COPY = "copy";
-    public static final String EVENT_CHALLENGE_MY_SUBMISSION = "challenges_mysubmissons";
     public static final String EVENT_CHALLENGE_OTHER_SUBMISSION = "challenges_other submission"
             ;
     public static final String EVENT_CATEGORY_CHALLENGES_SUBMIT_POST = "challenges_submit post";

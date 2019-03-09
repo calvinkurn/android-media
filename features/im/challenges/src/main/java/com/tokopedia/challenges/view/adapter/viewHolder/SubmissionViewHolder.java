@@ -153,7 +153,7 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
                 if (result.getCollection() != null) {
                     analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
-                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGE_OTHER_SUBMISSION,
+                            ChallengesGaAnalyticsTracker.EVENT_CHALLENGE_OTHER_SUBMISSION,
                             action, result.getCollection().getTitle());
                 }
             }
@@ -162,7 +162,7 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
             listener.onShareClick(result);
             if (result.getCollection() != null) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGE_OTHER_SUBMISSION,
+                        ChallengesGaAnalyticsTracker.EVENT_CHALLENGE_OTHER_SUBMISSION,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                         result.getCollection().getTitle());
             }

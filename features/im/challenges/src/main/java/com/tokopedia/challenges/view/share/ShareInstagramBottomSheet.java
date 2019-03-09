@@ -154,7 +154,10 @@ public class ShareInstagramBottomSheet extends BottomSheets {
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_SHARE,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_COPY, contents);
         } else if (submissionResult != null) {
-            if (submissionResult.getMe() != null)
+            if (submissionResult.getMe() != null && submissionResult.getUser() != null
+                    && submissionResult.getMe().getId() != null
+                    && submissionResult.getUser().getId() != null
+                    && submissionResult.getMe().getId().equalsIgnoreCase(submissionResult.getUser().getId()))
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                         ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_MYSUBMISSIONS,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_COPY, contents);
