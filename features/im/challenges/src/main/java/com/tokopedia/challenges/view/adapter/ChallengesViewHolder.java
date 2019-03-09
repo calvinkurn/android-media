@@ -81,7 +81,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult, false);
             if (isPastChallenge) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_PAST_CHALLENGES,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                         challengesResult.getTitle());
             } else {

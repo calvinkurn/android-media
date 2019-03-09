@@ -26,6 +26,7 @@ public class ChallengesGaAnalyticsTracker {
     public static final String EVENT_CHALLENGE_OTHER_SUBMISSION = "challenges_other submission"
             ;
     public static final String EVENT_CATEGORY_CHALLENGES_SUBMIT_POST = "challenges_submit post";
+    public static final String EVENT_CATEGORY_CHALLENGES_SHARE = "challenges_share challenge";
     public static String EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES = "challenges_active challenges";
     public static String EVENT_VIEW_CHALLENGES = "viewChallenges";
     public static String EVENT_CLICK_CHALLENGES = "clickChallenges";
