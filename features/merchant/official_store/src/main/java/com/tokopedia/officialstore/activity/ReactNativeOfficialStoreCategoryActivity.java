@@ -20,7 +20,7 @@ public class ReactNativeOfficialStoreCategoryActivity extends ReactFragmentActiv
     @DeepLink({ ApplinkConst.OFFICIAL_STORES_CATEGORY })
     public static Intent getOfficialStoreCategoryApplinkCallingIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(MP_OFFICIAL_STORE_CATEGORY);
-        return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(context, bundle);
+        return createApplinkCallingIntent(context, bundle);
     }
 
     public static Intent createApplinkCallingIntent(Context context, Bundle extras) {
