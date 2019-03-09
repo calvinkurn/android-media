@@ -8,6 +8,9 @@
         <activity
             android:name="com.tokopedia.officialstore.activity.ReactNativeOfficialStoreActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.officialstore.activity.ReactNativeOfficialStoreCategoryActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
