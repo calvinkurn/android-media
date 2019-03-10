@@ -53,4 +53,6 @@ public interface GlobalNavRouter {
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     void sendOpenHomeEvent();
+
+    Intent getOldOfficialStore(Context context);
 }

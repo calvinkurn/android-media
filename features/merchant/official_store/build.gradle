@@ -16,6 +16,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.navigationCommon)
 
     implementation rootProject.ext.miscDependencies.reactNative

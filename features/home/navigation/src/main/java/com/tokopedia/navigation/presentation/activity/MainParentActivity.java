@@ -70,6 +70,8 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +105,8 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
+    private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
+    private static final String KEY_CATEGORY = "key_category";
 
     @Inject
     UserSessionInterface userSession;
@@ -124,6 +128,7 @@ public class MainParentActivity extends BaseActivity implements
     private boolean doubleTapExit = false;
     private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
+    private RemoteConfig remoteConfig;
 
     private Handler handler = new Handler();
     private CoordinatorLayout fragmentContainer;
@@ -149,9 +154,14 @@ public class MainParentActivity extends BaseActivity implements
 
     @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE })
     public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
-        return intent;
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false)) {
+            Intent intent = start(context);
+            intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
+            return intent;
+        } else {
+            return ((GlobalNavRouter) context.getApplicationContext()).getOldOfficialStore(context);
+        }
     }
 
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
@@ -179,6 +189,7 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override
@@ -322,6 +333,11 @@ public class MainParentActivity extends BaseActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
+
+        if (position == OS_MENU && !remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false)) {
+            startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
+            return false;
+        }
 
         if ((position == CART_MENU || position == ACCOUNT_MENU ) && !presenter.isUserLogin()) {
             RouteManager.route(this, ApplinkConst.LOGIN);

@@ -13,14 +13,23 @@ import com.tokopedia.officialstore.R;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreCategoryFragment;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 
 public class ReactNativeOfficialStoreCategoryActivity extends ReactFragmentActivity<ReactNativeOfficialStoreCategoryFragment> {
     private static final String MP_OFFICIAL_STORE_CATEGORY = "mp_official_store_category_activity";
+    public static final String KEY_CATEGORY = "key_category";
+    public static final String ANDROID_CUSTOMER_NEW_OS_CATEGORY_ENABLED = "android_customer_new_os_category_enabled";
 
     @DeepLink({ ApplinkConst.OFFICIAL_STORES_CATEGORY })
     public static Intent getOfficialStoreCategoryApplinkCallingIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(MP_OFFICIAL_STORE_CATEGORY);
-        return createApplinkCallingIntent(context, bundle);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_CATEGORY_ENABLED)) {
+            return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(context, bundle);
+        } else {
+            return OldReactNativeOfficialStoreActivity.getCategoryIntent(context, bundle.getString(KEY_CATEGORY));
+        }
     }
 
     public static Intent createApplinkCallingIntent(Context context, Bundle extras) {
