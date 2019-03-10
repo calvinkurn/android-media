@@ -10,9 +10,8 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
  */
 public class OldReactNativeOfficialStoreFragment extends ReactNativeFragment {
     public static OldReactNativeOfficialStoreFragment instance(Bundle extras) {
-        Bundle bundle = new Bundle();
         OldReactNativeOfficialStoreFragment fragment = new OldReactNativeOfficialStoreFragment();
-        bundle.putAll(extras);
+        fragment.setArguments(extras);
         return fragment;
     }
 
