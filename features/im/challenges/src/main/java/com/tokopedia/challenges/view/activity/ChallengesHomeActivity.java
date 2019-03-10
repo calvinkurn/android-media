@@ -26,7 +26,7 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ChallengesGaAnalyticsTracker analytics;
-    private final static String SCREEN_SUBMISSION = "challenges/submission";
+    private final static String SCREEN_SUBMISSION = "challenges/submissions";
     private final static String SCREEN_CHALLENGES = "challenges";
 
 

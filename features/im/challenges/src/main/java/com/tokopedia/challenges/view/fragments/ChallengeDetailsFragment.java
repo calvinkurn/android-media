@@ -83,6 +83,9 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     @Inject
     ChallengesGaAnalyticsTracker analytics;
 
+
+    private final static String SCREEN_NAME = "challenges/challenge_detail";
+
     private String challengeId;
     private Boolean isPastChallenge;
     SortBy sortBy = SortBy.Recent;
@@ -245,6 +248,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         if (mainDetailsAdapter != null) {
             mainDetailsAdapter.onFragmentResume();
         }
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
     }
 
     @Override
