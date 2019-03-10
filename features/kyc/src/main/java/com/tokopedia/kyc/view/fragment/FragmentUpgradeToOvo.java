@@ -1,6 +1,5 @@
 package com.tokopedia.kyc.view.fragment;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,23 +12,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.cachemanager.CacheManager;
-import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
-import com.tokopedia.kyc.model.EligibilityBase;
-import com.tokopedia.kyc.view.KycUtil;
-import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.kyc.model.EligibilityBase;
+import com.tokopedia.kyc.view.KycUtil;
+import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 import com.tokopedia.kyc.view.interfaces.UpgradeToOvoContract;
+import com.tokopedia.kyc.view.presenter.EligibilityCheckPresenter;
 
-import rx.Subscriber;
+import javax.inject.Inject;
 
 public class FragmentUpgradeToOvo extends BaseDaggerFragment
-        implements UpgradeToOvoContract.View, View.OnClickListener{
+        implements UpgradeToOvoContract.View, View.OnClickListener, GenericOperationsView<EligibilityBase> {
 
     private ActivityListener activityListener;
     private LoaderUiListener loaderUiListener;
@@ -37,6 +34,9 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     private Button upgradeLater;
     public static String TAG = "start_upgrade";
     private Snackbar errorSnackbar;
+
+    @Inject
+    EligibilityCheckPresenter eligibilityCheckPresenter;
 
     @Override
     protected void initInjector() {
@@ -78,7 +78,9 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activityListener.setHeaderTitle(Constants.Values.OVO);
+        eligibilityCheckPresenter.attachView(this);
     }
+
 
     @Override
     protected void onAttachActivity(Context context) {
@@ -101,50 +103,47 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     }
 
     private void makeEligibilityRequest(){
-        loaderUiListener.showProgressDialog();
-        KycUtil.executeEligibilityCheck(getContext(), getEligibilityCheckSubscriber());
+        eligibilityCheckPresenter.makeEligibilityRequest();
     }
 
-    private Subscriber getEligibilityCheckSubscriber(){
-        return new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+    @Override
+    public void success(EligibilityBase data) {
+        FragmentIntroToOvoUpgradeSteps fragmentIntroToOvoUpgradeSteps =
+                FragmentIntroToOvoUpgradeSteps.newInstance();
+        activityListener.getDataContatainer().setKycReqId(data.getGoalKYCRequest().getKycRequestId());
+        activityListener.addReplaceFragment(fragmentIntroToOvoUpgradeSteps,
+                true, FragmentIntroToOvoUpgradeSteps.TAG);
+    }
 
+    @Override
+    public void failure(EligibilityBase data) {
+        if(activityListener.isRetryValid()) {
+            String errorMessage = data.
+                    getGoalKYCRequest().getErrors().get(0).get(Constants.Keys.MESSAGE);
+            if(TextUtils.isEmpty(errorMessage)){
+                errorMessage = Constants.ErrorMsg.SOMETHING_WENT_WRONG;
             }
+            errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), FragmentUpgradeToOvo.this::onClick, errorMessage);
+            errorSnackbar.show();
+        }
+        else {
+            getActivity().finish();
+        }
+    }
 
-            @Override
-            public void onError(Throwable e) {
-                loaderUiListener.hideProgressDialog();
-            }
+    @Override
+    public void showHideProgressBar(boolean showProgressBar) {
+        if(showProgressBar){
+            loaderUiListener.showProgressDialog();
+        }
+        else {
+            loaderUiListener.hideProgressDialog();
+        }
+    }
 
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                loaderUiListener.hideProgressDialog();
-                EligibilityBase eligibilityBase = graphqlResponse.getData(EligibilityBase.class);
-                if(eligibilityBase != null && eligibilityBase.getGoalKYCRequest().getKycRequestId() > 0){
-                    FragmentIntroToOvoUpgradeSteps fragmentIntroToOvoUpgradeSteps =
-                            FragmentIntroToOvoUpgradeSteps.newInstance();
-                    activityListener.getDataContatainer().setKycReqId(eligibilityBase.getGoalKYCRequest().getKycRequestId());
-                    activityListener.addReplaceFragment(fragmentIntroToOvoUpgradeSteps,
-                            true, FragmentIntroToOvoUpgradeSteps.TAG);
-                }else {
-                    if(eligibilityBase != null && eligibilityBase.getGoalKYCRequest() != null
-                            && eligibilityBase.getGoalKYCRequest().getErrors() != null) {
-                        if(activityListener.isRetryValid()) {
-                            String errorMessage = eligibilityBase.
-                                    getGoalKYCRequest().getErrors().get(0).get(Constants.Keys.MESSAGE);
-                            if(TextUtils.isEmpty(errorMessage)){
-                                errorMessage = Constants.ErrorMsg.SOMETHING_WENT_WRONG;
-                            }
-                            errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), FragmentUpgradeToOvo.this::onClick, errorMessage);
-                            errorSnackbar.show();
-                        }
-                        else {
-                            getActivity().finish();
-                        }
-                    }
-                }
-            }
-        };
+    @Override
+    public void onDestroy() {
+        eligibilityCheckPresenter.detachView();
+        super.onDestroy();
     }
 }

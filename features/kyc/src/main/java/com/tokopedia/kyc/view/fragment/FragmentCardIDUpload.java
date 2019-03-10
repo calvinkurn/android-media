@@ -20,28 +20,27 @@ import android.widget.RadioButton;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
-import com.tokopedia.kyc.domain.UploadDocumentUseCase;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.model.KYCDocumentUploadResponse;
 import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
+import com.tokopedia.kyc.view.presenter.DocumentUploadPresenter;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import rx.Subscriber;
+import javax.inject.Inject;
 
 
 public class FragmentCardIDUpload extends BaseDaggerFragment implements
-        View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+        View.OnClickListener, CompoundButton.OnCheckedChangeListener,
+        GenericOperationsView<KYCDocumentUploadResponse> {
 
     private ImageView idCardImageView;
     private RadioButton KTPWNISelection;
@@ -63,6 +62,8 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
 
     private ActivityListener activityListener;
     private LoaderUiListener loaderUiListener;
+    @Inject
+    DocumentUploadPresenter documentUploadPresenter;
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -121,6 +122,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        documentUploadPresenter.attachView(this);
     }
 
     @Override
@@ -333,46 +335,44 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
 
         kycReqId = activityListener.getDataContatainer().getKycReqId();
         loaderUiListener.showProgressDialog();
-        UploadDocumentUseCase uploadDocumentUseCase = new UploadDocumentUseCase(null,
-                getContext(), imagePath, docType, kycReqId);
-        uploadDocumentUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
+        documentUploadPresenter.makeDocumentUploadRequest(imagePath, docType, kycReqId);
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                showErrorSnackbar();
-                loaderUiListener.hideProgressDialog();
-            }
-            @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                loaderUiListener.hideProgressDialog();
-                KYCDocumentUploadResponse kycDocumentUploadResponse =
-                        (typeRestResponseMap.get(KYCDocumentUploadResponse.class)).getData();
-                if(kycDocumentUploadResponse != null &&
-                        kycDocumentUploadResponse.getKycImageUploadDataClass() != null &&
-                        kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId() > 0){
-                    activityListener.getDataContatainer().setDocumentNumber(edtxtNumber.getText().toString());
-                    activityListener.getDataContatainer().setMothersMaidenName(edtxtName.getText().toString());
-                    activityListener.getDataContatainer().setCardIdDocumentId(
-                            kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId());
-                    activityListener.getDataContatainer().setDocumentType(
-                            kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentType());
-                    if(getArguments().getBoolean(Constants.Keys.FROM_RETAKE_FLOW)){
-                        goToTandCPage();
-                    }
-                    else {
-                        goToSelfieIdIntroPage();
-
-                    }
-                }
-                else {
-                    showErrorSnackbar();
-                }
-            }
-        });
     }
 
+    @Override
+    public void success(KYCDocumentUploadResponse data) {
+        activityListener.getDataContatainer().setDocumentNumber(edtxtNumber.getText().toString());
+        activityListener.getDataContatainer().setMothersMaidenName(edtxtName.getText().toString());
+        activityListener.getDataContatainer().setCardIdDocumentId(
+                data.getKycImageUploadDataClass().getDocumentId());
+        activityListener.getDataContatainer().setDocumentType(
+                data.getKycImageUploadDataClass().getDocumentType());
+        if(getArguments().getBoolean(Constants.Keys.FROM_RETAKE_FLOW)){
+            goToTandCPage();
+        }
+        else {
+            goToSelfieIdIntroPage();
+        }
+    }
+
+    @Override
+    public void failure(KYCDocumentUploadResponse data) {
+        showErrorSnackbar();
+    }
+
+    @Override
+    public void showHideProgressBar(boolean showProgressBar) {
+        if(showProgressBar){
+            loaderUiListener.showProgressDialog();
+        }
+        else {
+            loaderUiListener.hideProgressDialog();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        documentUploadPresenter.detachView();
+        super.onDestroy();
+    }
 }

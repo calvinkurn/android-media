@@ -14,25 +14,24 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
-import com.tokopedia.kyc.domain.UploadDocumentUseCase;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.model.KYCDocumentUploadResponse;
 import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
+import com.tokopedia.kyc.view.presenter.DocumentUploadPresenter;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import rx.Subscriber;
+import javax.inject.Inject;
 
-public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment implements View.OnClickListener{
+public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment implements View.OnClickListener,
+        GenericOperationsView<KYCDocumentUploadResponse> {
     private ActivityListener activityListener;
     private LoaderUiListener loaderUiListener;
     private View selfieIdIntroView;
@@ -46,6 +45,8 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     private String imagePath;
     private boolean flipSelfieIdImg;
     private Snackbar errorSnackbar;
+    @Inject
+    DocumentUploadPresenter documentUploadPresenter;
 
 
     @Override
@@ -86,6 +87,7 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        documentUploadPresenter.attachView(this);
         checkFromTncRetakeFlow();
     }
 
@@ -181,36 +183,34 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     private void makeSelfieUploadRequest(){
         loaderUiListener.showProgressDialog();
         kycReqId = activityListener.getDataContatainer().getKycReqId();
-        UploadDocumentUseCase uploadDocumentUseCase = new UploadDocumentUseCase(null,
-                getContext(), imagePath, Constants.Values.SELFIE, kycReqId);
-        uploadDocumentUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
+        documentUploadPresenter.makeDocumentUploadRequest(imagePath, Constants.Values.SELFIE, kycReqId);
+    }
 
-            }
+    @Override
+    public void success(KYCDocumentUploadResponse data) {
+        activityListener.getDataContatainer().setSelfieIdDocumentId(
+                data.getKycImageUploadDataClass().getDocumentId());
+        goToTandCPage();
+    }
 
-            @Override
-            public void onError(Throwable e) {
-                showErrorSnackbar();
-                loaderUiListener.hideProgressDialog();
-            }
+    @Override
+    public void failure(KYCDocumentUploadResponse data) {
+        showErrorSnackbar();
+    }
 
-            @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                loaderUiListener.hideProgressDialog();
-                KYCDocumentUploadResponse kycDocumentUploadResponse =
-                        (typeRestResponseMap.get(KYCDocumentUploadResponse.class)).getData();
-                if(kycDocumentUploadResponse != null &&
-                        kycDocumentUploadResponse.getKycImageUploadDataClass() != null &&
-                        kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId() > 0){
-                    activityListener.getDataContatainer().setSelfieIdDocumentId(
-                            kycDocumentUploadResponse.getKycImageUploadDataClass().getDocumentId());
-                    goToTandCPage();
-                }
-                else {
-                    showErrorSnackbar();
-                }
-            }
-        });
+    @Override
+    public void showHideProgressBar(boolean showProgressBar) {
+        if(showProgressBar){
+            loaderUiListener.showProgressDialog();
+        }
+        else {
+            loaderUiListener.hideProgressDialog();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        documentUploadPresenter.detachView();
+        super.onDestroy();
     }
 }

@@ -30,15 +30,20 @@ import com.tokopedia.kyc.model.GqlDocModel;
 import com.tokopedia.kyc.view.KycUtil;
 import com.tokopedia.kyc.view.activity.UpgradeProcessCompleteActivity;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
+import com.tokopedia.kyc.view.presenter.TnCConfirmationPresenter;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
-public class FragmentTermsAndConditions extends BaseDaggerFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class FragmentTermsAndConditions extends BaseDaggerFragment implements View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener, GenericOperationsView<ConfirmSubmitResponse> {
     private ActivityListener activityListener;
     private LoaderUiListener loaderUiListener;
     private View cardIdContainer;
@@ -50,6 +55,8 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     private TextView tncTxtv;
     public static String TAG = "tnc_page";
     private AlertDialog alertDialog;
+    @Inject
+    TnCConfirmationPresenter tnCConfirmationPresenter;
 
     @Override
     public void onClick(View v) {
@@ -76,24 +83,7 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
 
     private void submitKycTnCConfirmForm(){
         loaderUiListener.showProgressDialog();
-        HashMap<String, Object> gqlDataHashMap = new HashMap<>();
-        gqlDataHashMap.put("kyc_request_id", activityListener.getDataContatainer().getKycReqId());
-        gqlDataHashMap.put("identity_document_type",
-                activityListener.getDataContatainer().getDocumentType());
-        gqlDataHashMap.put("identity_document_number",
-                activityListener.getDataContatainer().getDocumentNumber());
-        gqlDataHashMap.put("mother_maiden_name",
-                activityListener.getDataContatainer().getMothersMaidenName());
-        GqlDocModel ob1 = new GqlDocModel();
-        GqlDocModel ob2 = new GqlDocModel();
-        ArrayList<GqlDocModel> list = new ArrayList<>();
-        ob1.setKey(activityListener.getDataContatainer().getCardIdDocumentId());
-        ob2.setKey(activityListener.getDataContatainer().getSelfieIdDocumentId());
-        list.add(ob1);
-        list.add(ob2);
-        gqlDataHashMap.put("documents", list);
-
-        KycUtil.executeKycConfirmation(getContext(), getTnCAcceptGQLSubscriber(), gqlDataHashMap);
+        tnCConfirmationPresenter.submitKycTnCConfirmForm(activityListener.getDataContatainer());
     }
 
 
@@ -116,6 +106,7 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        tnCConfirmationPresenter.attachView(this);
     }
 
     @Override
@@ -173,30 +164,6 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
         getActivity().finish();
     }
 
-    private Subscriber getTnCAcceptGQLSubscriber() {
-        return new Subscriber<GraphqlResponse>() {
-
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                loaderUiListener.hideProgressDialog();
-                activityListener.addReplaceFragment(ErrorKycConfirmation.newInstance(), true, ErrorKycConfirmation.TAG);
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                loaderUiListener.hideProgressDialog();
-                ConfirmSubmitResponse kycDocumentUploadResponse = graphqlResponse.getData(ConfirmSubmitResponse.class);
-                if (kycDocumentUploadResponse != null && kycDocumentUploadResponse.getConfirmSubmitResponse().getKycRequestId() > 0) {
-                    gotoCustomerCareFollowupPage();
-                }
-            }
-        };
-    }
-
     private void retakeImage(int imageType) {
 
         ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
@@ -236,5 +203,31 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     private void showConfirmationDialog(){
         alertDialog = KycUtil.getKycConfirmSubmitAlertDialog(getActivity(), this::onClick).create();
         alertDialog.show();
+    }
+
+    @Override
+    public void success(ConfirmSubmitResponse data) {
+        gotoCustomerCareFollowupPage();
+    }
+
+    @Override
+    public void failure(ConfirmSubmitResponse data) {
+        activityListener.addReplaceFragment(ErrorKycConfirmation.newInstance(), true, ErrorKycConfirmation.TAG);
+    }
+
+    @Override
+    public void showHideProgressBar(boolean showProgressBar) {
+        if(showProgressBar){
+            loaderUiListener.showProgressDialog();
+        }
+        else {
+            loaderUiListener.hideProgressDialog();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        tnCConfirmationPresenter.detachView();
+        super.onDestroy();
     }
 }
