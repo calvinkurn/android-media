@@ -173,6 +173,8 @@ ext {
             developerOptions            : ":features:common:developer_options",
             nps                         : ":features:common:nps",
 
+            tradeIn                     : ":features:category:tradein",
+
             broadcastMessage              : ":features:communication:broadcast_message",
 //            broadcastMessage          : ":features:communication:broadcast_message_no_op", // toggle for no op
             broadcastMessageCommon        : ":features:communication:broadcast_message_common",

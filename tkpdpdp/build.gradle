@@ -53,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.expressCheckoutCommon)
 
     implementation project(rootProject.ext.libraries.abstraction)

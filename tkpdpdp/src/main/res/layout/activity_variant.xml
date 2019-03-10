@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <include android:id="@+id/topbar" layout="@layout/simple_top_bar_layout" />
+    <include
+        android:id="@+id/topbar"
+        layout="@layout/simple_top_bar_layout" />
 
     <View
         android:id="@+id/topbar_shadow"
-        android:layout_below="@id/topbar"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="2dp"
+        android:layout_below="@id/topbar" />
 
     <RelativeLayout
         android:id="@+id/all_kind_button_buy"
@@ -50,11 +52,11 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_8"
             android:visibility="visible">
 
@@ -128,8 +130,8 @@
                     android:layout_height="@dimen/dp_40"
                     android:layout_marginEnd="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dp_10"
-                    android:layout_toLeftOf="@id/new_button_save"
                     android:layout_toStartOf="@id/new_button_save"
+                    android:layout_toLeftOf="@id/new_button_save"
                     android:background="@drawable/white_button_rounded"
                     android:padding="@dimen/dp_4"
                     android:visibility="visible">
@@ -149,10 +151,10 @@
     </RelativeLayout>
 
     <ScrollView
-        android:layout_below="@id/topbar_shadow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/all_kind_button_buy">
+        android:layout_above="@id/all_kind_button_buy"
+        android:layout_below="@id/topbar_shadow">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -160,34 +162,36 @@
             android:layout_marginBottom="80dp"
             android:orientation="vertical">
 
-            <include layout="@layout/variant_title_item"/>
+            <include layout="@layout/variant_title_item" />
 
             <View
-                android:layout_below="@id/topbar"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
+                android:layout_below="@id/topbar"
                 android:background="@drawable/variant_shadow" />
 
             <TextView
                 android:id="@+id/text_variant_stock"
+                style="@style/TextView.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TextView.Small"
-                android:layout_marginTop="@dimen/margin_sm"
                 android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
                 android:visibility="gone" />
 
             <include
                 android:id="@+id/view_qty_product"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 layout="@layout/layout_variant_activity_section_quantity"
-                />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:paddingLeft="@dimen/padding_detail"
-                android:paddingRight="@dimen/padding_detail" android:paddingBottom="@dimen/padding_detail">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/padding_detail"
+                android:paddingRight="@dimen/padding_detail"
+                android:paddingBottom="@dimen/padding_detail">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -198,29 +202,29 @@
                         android:id="@+id/text_variant_option_level1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
+                        android:textColor="@color/checkbox_text"
                         android:textSize="@dimen/size_text_variant"
-                        android:textColor="@color/checkbox_text"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/selected_variant_level1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_5"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/size_text_variant"
                         android:textColor="@color/black_70"
-                        android:visibility="gone"/>
+                        android:textSize="@dimen/size_text_variant"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/sizechart_level1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_5"
-                        android:textSize="@dimen/size_text_variant"
-                        android:textColor="@color/medium_green"
                         android:text="Panduan Ukuran"
-                        android:visibility="gone"/>
+                        android:textColor="@color/medium_green"
+                        android:textSize="@dimen/size_text_variant"
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
@@ -229,22 +233,25 @@
                     android:id="@+id/rv_variant_option_level1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layoutDirection="ltr"
-                    android:layout_marginTop="@dimen/dp_15"/>
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:layoutDirection="ltr" />
 
                 <View
                     android:id="@+id/separator1"
-                    android:layout_marginTop="@dimen/dp_10"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:background="@color/grey_line" />
 
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:paddingLeft="@dimen/padding_detail"
-                android:paddingRight="@dimen/padding_detail" android:paddingBottom="@dimen/padding_detail">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/padding_detail"
+                android:paddingRight="@dimen/padding_detail"
+                android:paddingBottom="@dimen/padding_detail">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -255,30 +262,30 @@
                         android:id="@+id/text_variant_option_level2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/size_text_variant"
                         android:textColor="@color/checkbox_text"
-                        android:visibility="gone"/>
+                        android:textSize="@dimen/size_text_variant"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/selected_variant_level2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_5"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/size_text_variant"
                         android:textColor="@color/black_70"
-                        android:visibility="gone"/>
+                        android:textSize="@dimen/size_text_variant"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/sizechart_level2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_5"
-                        android:textSize="@dimen/size_text_variant"
-                        android:textColor="@color/medium_green"
                         android:text="Panduan Ukuran"
-                        android:visibility="gone"/>
+                        android:textColor="@color/medium_green"
+                        android:textSize="@dimen/size_text_variant"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -286,14 +293,15 @@
                     android:id="@+id/rv_variant_option_level2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_15"
                     android:layoutDirection="ltr"
-                    android:visibility="gone"
-                    android:layout_marginTop="@dimen/dp_15"/>
+                    android:visibility="gone" />
 
                 <View
-                    android:id="@+id/separator2" android:layout_marginTop="@dimen/dp_10"
+                    android:id="@+id/separator2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:background="@color/grey_line"
                     android:visibility="gone" />
 
@@ -301,10 +309,19 @@
 
             <include
                 android:id="@+id/view_remark_for_seller"
+                layout="@layout/layout_variant_activity_section_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <view.customview.TradeInTextView
+                android:id="@+id/tv_trade_in"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                layout="@layout/layout_variant_activity_section_notes"
-                />
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </ScrollView>

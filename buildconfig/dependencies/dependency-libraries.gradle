@@ -76,7 +76,9 @@ ext {
             track             : ":libraries:track",
             trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
-            iris              : ":libraries:iris",
+            laku6tradein      : ":libraries:laku6tradein",
+            graphView         :":libraries:graph_view",
+            iris              : ":libraries:iris"
 //            iris              : ":libraries:iris_no_op"
     ]
 }

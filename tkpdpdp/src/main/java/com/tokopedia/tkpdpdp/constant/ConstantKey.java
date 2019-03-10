@@ -15,5 +15,6 @@ public class ConstantKey {
 
     public static final int STATE_BUTTON_BUY = 1123;
     public static final int STATE_BUTTON_CART = 2234;
+    public static final int STATE_BUTTON_TRADEIN = 3345;
     public static final int STATE_VARIANT_DEFAULT = 0;
 }

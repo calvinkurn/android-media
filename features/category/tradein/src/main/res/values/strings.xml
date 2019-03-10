@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">tradein</string>
+    <string name="header_section_price">Kisaran harga jual HP Anda</string>
+    <string name="not_elligible_price_high">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
+    <string name="not_elligible">Mohon maaf, model HP Anda belum dapat digunakan untuk tukar tambah.</string>
+    <string name="model_not_found">Tidak dapat menemukan model HP</string>
+    <string name="go_to_product_details">Kembali Ke Detail Produk</string>
+    <string name="text_price_holder">Harga Hp kamu Rp %1$d</string>
+    <string name="trade_in_exchange">Beli HP baru dengan tukar HP kamu.</string>
+    <string name="text_check_functionality">Mulai Cek Fungsi</string>
+    <string name="noclick">Action-No-Click</string>
+    <string name="tukar_tambah_sekarang_juga">Tukar tambah sekarang juga!</string>
+    <string name="text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IME.
+        \n• Menyalakan WiFi
+        \n• Akses accelero meter</string>
+    <string name="tradein_tnc">1. Hanya berlaku untuk pengguna baru yang belum pernah berbelanja di Tokopedia.
+
+\n\n2. Pengguna baru yang melakukan transaksi di Toko tanpa Power Badge akan mendapatkan Cashback OVO Points 10% hingga Rp50,000.
+
+\n\n3. Mulai tanggal 21 Januari 2019 pukul 10.00 WIB, pengguna baru akan mendapatkan Ekstra Cashback OVO Points 10% hingga Rp50,000  khusus untuk pembelanjaan di Toko dengan Power Badge.
+
+\n\n4. Promo berlaku selama periode 1 – 31 Januari 2019 untuk pembelanjaan produk di Marketplace dan Official Store.
+
+\n\n5. Hanya berlaku di  aplikasi Android &amp; IOS  Tokopedia versi terbaru. Satu pengguna Tokopedia hanya bisa mengikuti promo ini sebanyak 1 (satu) kali transaksi selama periode promo.
+
+\n\n6. Untuk mendapatkan Cashback, pengguna harus melakukan aktivasi OVO. Jika tidak mengaktifkan dalam 7 hari setelah mengikuti promo, Cashback akan hangus.
+
+\n\n7. Cashback dihitung dari harga produk, tidak termasuk ongkir.
+
+\n\n8. Minimum transaksi Rp100.000.</string>
+    <string name="text_request_access">Meminta Izin Akses</string>
+    <string name="accept">Setuju</string>
+    <string name="depends_on_test">Harga final sesuai dengan hasil test.</string>
+</resources>
