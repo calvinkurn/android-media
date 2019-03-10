@@ -207,7 +207,8 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn, String cornerId);
+        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn,
+                                            String cornerId, String deviceId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
@@ -216,11 +217,12 @@ public interface ShipmentContract {
                                                           ShipmentCostModel shipmentCostModel,
                                                           ShipmentDonationModel shipmentDonationModel);
 
-        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn);
+        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
-        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, @Nullable String cornerId);
+        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn,
+                                                 @Nullable String cornerId, String deviceId);
 
-        void processCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn);
+        void processCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
         void processVerifyPayment(String transactionId);
 
@@ -301,7 +303,7 @@ public interface ShipmentContract {
 
         CodModel getCodData();
 
-        void proceedCodCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn);
+        void proceedCodCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
     }
 

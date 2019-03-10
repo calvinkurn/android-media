@@ -60,7 +60,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                               Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
 
-        GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
+        GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class, false);
 
         addRequest(request);
         createObservable(RequestParams.EMPTY)

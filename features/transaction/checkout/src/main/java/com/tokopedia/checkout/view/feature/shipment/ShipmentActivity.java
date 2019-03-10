@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 /**
@@ -25,7 +26,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final int RESULT_CODE_COUPON_STATE_CHANGED = 735;
 
     public static final String EXTRA_IS_ONE_CLICK_SHIPMENT = "EXTRA_IS_ONE_CLICK_SHIPMENT";
-    public static final String EXTRA_IS_TRADE_IN = "EXTRA_IS_TRADE_IN";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
@@ -48,10 +48,10 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     }
 
     // Used for One Click Shipment
-    public static Intent createInstance(Context context, boolean isTradeIn) {
+    public static Intent createInstance(Context context, ShipmentFormRequest shipmentFormRequest) {
         Intent intent = new Intent(context, ShipmentActivity.class);
         intent.putExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, true);
-        intent.putExtra(EXTRA_IS_TRADE_IN, isTradeIn);
+        intent.putExtras(shipmentFormRequest.getBundle());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return intent;
@@ -106,7 +106,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
                 getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false),
                 getIntent().getBooleanExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, false),
-                getIntent().getBooleanExtra(EXTRA_IS_TRADE_IN, false)
+                getIntent().getExtras()
         );
 
         return shipmentFragment;

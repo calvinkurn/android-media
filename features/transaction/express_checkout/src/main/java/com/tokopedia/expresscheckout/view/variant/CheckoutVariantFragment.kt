@@ -55,6 +55,7 @@ import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurat
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField
@@ -576,7 +577,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun navigateCheckoutToOcs() {
-        if (activity != null) startActivity(router.getCheckoutIntent(activity as Context, false))
+        if (activity != null) startActivity(router.getCheckoutIntent(activity as Context, ShipmentFormRequest.BundleBuilder().build()))
         activity?.finish()
     }
 
