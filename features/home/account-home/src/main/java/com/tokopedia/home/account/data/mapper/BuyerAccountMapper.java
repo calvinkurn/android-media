@@ -332,6 +332,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         if(accountModel.getProfile().getCompletion() != null) {
             buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         }
+        buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
 
         return buyerCardViewModel;
     }

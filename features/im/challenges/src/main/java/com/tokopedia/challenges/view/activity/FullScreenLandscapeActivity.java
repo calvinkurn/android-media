@@ -1,4 +1,5 @@
 package com.tokopedia.challenges.view.activity;
+
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +12,7 @@ import android.widget.VideoView;
 
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.customview.CustomMediaController;
-import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
 
 public class FullScreenLandscapeActivity extends ChallengesBaseActivity implements CustomMediaController.ICurrentPos {
 
@@ -49,10 +50,10 @@ public class FullScreenLandscapeActivity extends ChallengesBaseActivity implemen
     @Override
     public void onResume() {
         super.onResume();
-        if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
+        if (ChallengeDetailsFragment.VIDEO_POS != -1) {
             if (videoView != null) {
-                videoView.seekTo(ChallegeneSubmissionFragment.VIDEO_POS);
-                if (ChallegeneSubmissionFragment.isVideoPlaying)
+                videoView.seekTo(ChallengeDetailsFragment.VIDEO_POS);
+                if (ChallengeDetailsFragment.isVideoPlaying)
                     videoView.start();
             }
         }
@@ -61,8 +62,8 @@ public class FullScreenLandscapeActivity extends ChallengesBaseActivity implemen
     @Override
     public void onPause() {
         if (videoView != null) {
-            ChallegeneSubmissionFragment.VIDEO_POS = getPosition();
-            ChallegeneSubmissionFragment.isVideoPlaying = false;
+            ChallengeDetailsFragment.VIDEO_POS = getPosition();
+            ChallengeDetailsFragment.isVideoPlaying = false;
         }
         super.onPause();
     }
@@ -106,8 +107,8 @@ public class FullScreenLandscapeActivity extends ChallengesBaseActivity implemen
     @Override
     public void onBackPressed() {
         if (videoView != null) {
-            ChallegeneSubmissionFragment.VIDEO_POS = getPosition();
-            ChallegeneSubmissionFragment.isVideoPlaying = isVideoPlaying();
+            ChallengeDetailsFragment.VIDEO_POS = getPosition();
+            ChallengeDetailsFragment.isVideoPlaying = isVideoPlaying();
         }
         super.onBackPressed();
     }

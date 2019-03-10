@@ -35,7 +35,7 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
     public void getGetTokenTokopoints() {
         getTokenTokopointsUseCase.clearRequest();
         GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.token_tokopoint_query),
-                ResponseTokenTokopointEntity.class);
+                ResponseTokenTokopointEntity.class, false);
         getTokenTokopointsUseCase.addRequest(tokenTokopointsRequest);
         getTokenTokopointsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override

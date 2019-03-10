@@ -33,6 +33,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_SPRINT_LEGO = "sprint_lego";
         public static final String LAYOUT_ORGANIC = "organic";
         public static final String LAYOUT_6_IMAGE = "6_image";
+        public static final String LAYOUT_LEGO_3_IMAGE = "lego_3_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
         public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
         public static final String LAYOUT_TOPADS = "topads";
@@ -509,6 +510,29 @@ public class DynamicHomeChannel {
                     "event", "promoClick",
                     "eventCategory", "homepage",
                     "eventAction", "lego banner click",
+                    "eventLabel", grid.getName(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", grid.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", grid.getAttribution(),
+                                                    "creative_url", grid.getImageUrl(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    ),
+                    "attribution", getHomeAttribution(position, grid.getAttribution())
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickThreeLegoBannerHomePage(Grid grid, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "lego banner 3 image click",
                     "eventLabel", grid.getName(),
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(

@@ -106,7 +106,6 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         if (mRequests == null || mRequests.isEmpty()) {
             throw new RuntimeException("Please set valid request parameter before executing the use-case");
         }
-
         return graphqlRepository.getResponse(mRequests, mCacheStrategy);
     }
 }

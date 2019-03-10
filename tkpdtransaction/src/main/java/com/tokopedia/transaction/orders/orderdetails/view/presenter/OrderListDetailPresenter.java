@@ -92,7 +92,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(ORDER_ID, orderId);
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderdetail_marketplace), DetailsData.class, variables);
+                    R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
         } else {
             variables.put(ORDER_CATEGORY, orderCategory);
             variables.put(ORDER_ID, orderId);
@@ -105,7 +105,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(UPSTREAM, "");
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderdetails), DetailsData.class, variables);
+                    R.raw.orderdetails), DetailsData.class, variables, false);
         }
 
 
@@ -149,7 +149,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tapactions), ActionButtonList.class, variables);
+                R.raw.tapactions), ActionButtonList.class, variables, false);
 
         orderDetailsUseCase.clearRequest();
         orderDetailsUseCase.setRequest(graphqlRequest);
@@ -228,7 +228,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.buy_again), ResponseBuyAgain.class, variables);
+                R.raw.buy_again), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase = new GraphqlUseCase();
         buyAgainUseCase.clearRequest();

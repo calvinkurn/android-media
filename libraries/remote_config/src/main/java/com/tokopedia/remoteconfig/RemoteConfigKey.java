@@ -78,4 +78,6 @@ public class RemoteConfigKey {
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 
     public static final String APP_ENTRY_CHALLENGE_BARU = "app_entry_challenges_baru";
+
+    public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 }

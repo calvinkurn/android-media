@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
@@ -13,12 +14,16 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
-import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
-import com.tokopedia.challenges.view.fragments.TncBottomSheetFragment;
+import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
+import com.tokopedia.challenges.view.fragments.VideoViewFragment;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
 import com.tokopedia.challenges.view.utils.Utils;
 
-public class ChallengeDetailActivity extends ChallengesBaseActivity implements ChallengesFragmentCallbacks {
+/**
+ * @author lalit.singh
+ */
+public class ChallengeDetailsActivity extends ChallengesBaseActivity implements ChallengesFragmentCallbacks {
 
 
     public static final int REQUEST_CODE_SUBMISSIONDETAILACTIVITY = 10;
@@ -38,7 +43,7 @@ public class ChallengeDetailActivity extends ChallengesBaseActivity implements C
 
         extras.putString(Utils.QUERY_PARAM_CHALLENGE_ID, extras.getString(Utils.QUERY_PARAM_CHALLENGE_ID));
         extras.putString(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, extras.getString(Utils.QUERY_PARAM_IS_PAST_CHALLENGE));
-        destination = new Intent(context, ChallengeDetailActivity.class)
+        destination = new Intent(context, ChallengeDetailsActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
 
@@ -54,27 +59,29 @@ public class ChallengeDetailActivity extends ChallengesBaseActivity implements C
 
     @Override
     protected Fragment getNewFragment() {
-        return ChallegeneSubmissionFragment.createInstance(getIntent().getExtras());
+        return ChallengeDetailsFragment.createInstance(getIntent().getExtras());
     }
 
     @Override
     public void replaceFragment(String text, String toolBarText) {
+    }
+
+    public void openVideoPlayer(SubmissionResult submissionResult) {
+        Fragment fragemnt = VideoViewFragment.createInstance(submissionResult);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Bundle bundle = new Bundle();
-        bundle.putString(TncBottomSheetFragment.TOOLBAR_TITLE, toolBarText);
-        bundle.putString(TncBottomSheetFragment.TEXT, text);
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
-        transaction.add(R.id.parent_view, TncBottomSheetFragment.createInstance(bundle));
-        transaction.addToBackStack(null);
+        transaction.add(R.id.parent_view, fragemnt);
+        transaction.addToBackStack("VideoViewer");
         transaction.commit();
     }
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == LOGIN_REQUEST_CODE && resultCode == RESULT_OK) {
-            inflateFragment();
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("VideoViewer");
+        if (fragment != null) {
+            DialogFragment df = (DialogFragment) fragment;
+            df.dismiss();
+            return;
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onBackPressed();
     }
 }

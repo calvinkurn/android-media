@@ -17,11 +17,14 @@ public class Header implements Parcelable {
     @SerializedName(KEY_PROCESS_TIME)
     private double processTime;
     @SerializedName(KEY_META_DATA)
-    private MetaData metaData;
+    private MetaData metaData = new MetaData();
 
     private static final String KEY_META_DATA = "meta";
     private static final String KEY_TOTAL_DATA = "total_data";
     private static final String KEY_PROCESS_TIME = "process_time";
+
+    public Header() {
+    }
 
     public Header(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_META_DATA)) {
