@@ -3234,11 +3234,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getOldOfficialStoreCategory(Context context, String category) {
-        return OldReactNativeOfficialStoreActivity.getCategoryIntent(context, category);
-    }
-
-    @Override
     public void sendMoEngageOpenFeedEvent(boolean isEmptyFeed) {
         TrackingUtils.sendMoEngageOpenFeedEvent(getAppContext(), isEmptyFeed);
     }

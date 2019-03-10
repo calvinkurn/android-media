@@ -54,7 +54,5 @@ public interface GlobalNavRouter {
 
     void sendOpenHomeEvent();
 
-    Intent getOldOfficialStoreCategory(Context context, String category);
-
     Intent getOldOfficialStore(Context context);
 }
