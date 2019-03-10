@@ -27,9 +27,9 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
 
     private static final String BANNER_CLASS = "BannerView";
     private static final String IMAGE_URL = "imageUrl";
-    private static final String REDIRECT_URL = "redirectUrl";
+    private static final String APPLINK = "applink";
 
-    private List<String> redirectUrlList = new ArrayList<>();
+    private List<String> applinkList = new ArrayList<>();
     private List<String> imageList = new ArrayList<>();
 
     private Context context;
@@ -66,15 +66,15 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
 
     private void mapBannerData(ReadableArray readableArray) {
         imageList.clear();
-        redirectUrlList.clear();
+        applinkList.clear();
         if (readableArray != null && readableArray.size() > 0) {
             for (int i = 0; i < readableArray.size(); i++) {
                 ReadableMap map = readableArray.getMap(i);
                 String imageUrl = map.getString(IMAGE_URL);
-                String redirectUrl = map.getString(REDIRECT_URL);
+                String redirectUrl = map.getString(APPLINK);
 
                 imageList.add(imageUrl);
-                redirectUrlList.add(redirectUrl);
+                applinkList.add(redirectUrl);
             }
         }
     }
@@ -98,7 +98,7 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
 
     @Override
     public void onPromoClick(int position) {
-        String applink = redirectUrlList.get(position);
+        String applink = applinkList.get(position);
         if (applink.toLowerCase().contains("tokopedia://")) {
             RouteManager.route(context, applink);
         } else {
