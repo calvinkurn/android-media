@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/layoutUsePromoGlobal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_8"
+        tools:visibility="visible"
+        app:cardElevation="@dimen/dp_3">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ic_button_coupon"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:src="@drawable/ic_kupon_telur"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"/>
+
+            <TextView
+                android:id="@+id/title_button_coupon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pakai Promo Tokopedia"
+                android:textColor="@color/tkpd_main_green"
+                android:layout_toRightOf="@id/ic_button_coupon"
+                android:gravity="center"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:id="@+id/bg_button_coupon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:src="@drawable/bg_button_promo"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/title_action_coupon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="Lihat"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_8"
+        tools:visibility="visible"
+        app:cardElevation="@dimen/dp_3">
+
+        <FrameLayout
+            android:id="@+id/layoutTickerFrameGlobal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_checkout_ticker_view_green">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_checkout_ticker_view_white">
+
+                <ImageView
+                    android:id="@+id/bg_active_up"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/background_checkout_ticker_active_up"
+                    android:scaleType="centerCrop"
+                    android:layout_alignTop="@id/layout_content"
+                    android:layout_alignRight="@id/layout_content"
+                    android:layout_alignEnd="@id/layout_content"
+                    android:layout_alignBottom="@id/layout_content"/>
+
+                <ImageView
+                    android:id="@+id/bg_active_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/background_checkout_ticker_active_down"
+                    android:scaleType="centerCrop"
+                    android:layout_alignTop="@id/layout_content"
+                    android:layout_alignRight="@id/layout_content"
+                    android:layout_alignEnd="@id/layout_content"
+                    android:layout_alignBottom="@id/layout_content"/>
+
+                <ImageView
+                    android:id="@+id/imageCloseGlobal"
+                    android:layout_width="@dimen/dp_15"
+                    android:layout_height="@dimen/dp_15"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:src="@drawable/ic_close_promo_checkout" />
+
+                <LinearLayout
+                    android:id="@+id/layout_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_toStartOf="@+id/imageCloseGlobal"
+                    android:layout_toLeftOf="@+id/imageCloseGlobal"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/titleCouponGlobal"
+                        style="@style/TextView.Micro11.FontMedium.Bold"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textSize="@dimen/sp_13"
+                        android:layout_marginRight="@dimen/dp_60"
+                        android:layout_marginEnd="@dimen/dp_60"
+                        tools:text="Kupon Gratis Ongkir JT Rp 50000" />
+
+                    <TextView
+                        android:id="@+id/descCouponGlobal"
+                        style="@style/TextView.Micro11.FontMedium.BlackDisabled"
+                        android:maxLines="2"
+                        android:layout_marginTop="@dimen/dp_3"
+                        android:layout_marginBottom="@dimen/dp_10"
+                        android:layout_marginRight="@dimen/dp_60"
+                        android:layout_marginEnd="@dimen/dp_60"
+                        android:textSize="@dimen/sp_13"
+                        android:visibility="gone"
+                        tools:text="Pilih Kurir terlebih dahulu untuk memastikan benefit yang akan didapat" />
+                </LinearLayout>
+            </RelativeLayout>
+        </FrameLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

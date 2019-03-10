@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">promo_checkout_common</string>
+    <string name="promo_global_title">Pakai Promo Tokopedia</string>
+    <string name="promo_merchant_title">Ada Promo dari toko ini loh</string>
 </resources>

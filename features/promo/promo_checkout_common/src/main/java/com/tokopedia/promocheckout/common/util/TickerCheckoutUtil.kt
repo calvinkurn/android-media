@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckout.common.util
 
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 
 val RED_STATE = "red"
 val GREY = "grey"
@@ -14,5 +15,14 @@ fun String?.mapToStatePromoCheckout() : TickerCheckoutView.State{
         GREY -> return TickerCheckoutView.State.INACTIVE
         GREEN -> return TickerCheckoutView.State.ACTIVE
         else -> return TickerCheckoutView.State.EMPTY
+    }
+}
+
+fun String?.mapToStatePromoStackingCheckout() : TickerPromoStackingCheckoutView.State{
+    when(this){
+        RED_STATE -> return TickerPromoStackingCheckoutView.State.FAILED
+        GREY -> return TickerPromoStackingCheckoutView.State.INACTIVE
+        GREEN -> return TickerPromoStackingCheckoutView.State.ACTIVE
+        else -> return TickerPromoStackingCheckoutView.State.EMPTY
     }
 }

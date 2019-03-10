@@ -34,6 +34,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCash
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
@@ -53,8 +54,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import retrofit2.http.HEAD;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -163,7 +162,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
             ((ShipmentNotifierViewHolder) holder).bind((ShipmentNotifierModel) data);
         } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
-            ((CartVoucherPromoViewHolder) holder).bindData((PromoData) data, position);
+            ((CartVoucherPromoViewHolder) holder).bindData((PromoStackingData) data, position);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             ((CartPromoSuggestionViewHolder) holder).bindData((CartPromoSuggestion) data, position);
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {

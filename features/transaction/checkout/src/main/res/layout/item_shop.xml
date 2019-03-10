@@ -89,14 +89,21 @@
         </FrameLayout>
 
         <!--sementara imageview, nanti ganti dgn cardview-->
-        <ImageView
+        <!--<ImageView
             android:id="@+id/promo_merchant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/use_coupon"
             android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_5"/>
+            android:layout_marginTop="@dimen/dp_5"/>-->
         <!--end-->
+
+        <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+            android:id="@+id/voucher_merchant_holder_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_12"
+            android:visibility="visible"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cart_item"

@@ -4,6 +4,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 
@@ -28,6 +29,10 @@ public interface ICartListPresenter {
     void processToUpdateCartData(List<CartItemData> cartItemDataList);
 
     void processUpdateCartDataPromo(List<CartItemData> cartItemDataList, PromoData promoData, int goToDetail);
+
+    void processUpdateCartDataPromoStacking(List<CartItemData> cartItemDataList, PromoStackingData promoStackingData, int goToDetail);
+
+    // void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, PromoDataMerchant promoDataMerchant, int goToDetail);
 
     void processToUpdateAndReloadCartData();
 

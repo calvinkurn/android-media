@@ -62,6 +62,7 @@ import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.merchantvoucher.voucherList.bottomsheet.MerchantBottomSheetFragment;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
@@ -69,6 +70,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -1359,8 +1361,35 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
+        trackingPromoCheckoutUtil.checkoutClickUseTickerPromoOrCoupon();
+        startActivityForResult(
+                checkoutModuleRouter
+                        .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+                                true, "", isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()
+                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+        );
+    }
+
+    @Override
+    public void onCartPromoUseVoucherMerchantPromoClickedTest(int position) {
+        if (getFragmentManager() != null) {
+            MerchantBottomSheetFragment bottomSheet = MerchantBottomSheetFragment.newInstance("3385304");
+            bottomSheet.show(getFragmentManager(), null);
+        }
+    }
+
+    @Override
     public void onCartPromoCancelVoucherPromoClicked(PromoData cartPromo,
                                                      int position) {
+        shipmentPresenter.cancelAutoApplyCoupon();
+        if (isToogleYearEndPromoOn()) {
+            shipmentAdapter.cancelAllCourierPromo();
+        }
+    }
+
+    @Override
+    public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
         shipmentPresenter.cancelAutoApplyCoupon();
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
@@ -1373,9 +1402,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
+        trackingPromoCheckoutUtil.checkoutImpressionTicker(cartPromoGlobal.getDescription());
+    }
+
+    @Override
     public void onCartPromoTrackingCancelled(PromoData cartPromo, int position) {
         sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
 
+    }
+
+    @Override
+    public void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
+        sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
     }
 
     @Override
@@ -1435,6 +1474,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(data.getPromoCodeSafe(),
                     true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
+    }
+
+    @Override
+    public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
+
     }
 
     @Override

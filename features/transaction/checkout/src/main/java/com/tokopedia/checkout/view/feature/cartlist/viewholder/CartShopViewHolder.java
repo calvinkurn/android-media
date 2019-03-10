@@ -14,12 +14,12 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-
-import java.util.Map;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -44,18 +44,20 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
-    private ImageView promoMerchant;
+
 
     private CartAdapter.ActionListener cartAdapterListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
     private CartItemAdapter cartItemAdapter;
     private CompositeSubscription compositeSubscription;
     private RecyclerView.RecycledViewPool viewPool;
+    private final CartAdapterActionListener actionListener;
+    private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
 
     public CartShopViewHolder(View itemView, CartAdapter.ActionListener cartAdapterListener,
                               CartItemAdapter.ActionListener cartItemAdapterListener,
                               CompositeSubscription compositeSubscription,
-                              RecyclerView.RecycledViewPool viewPool) {
+                              RecyclerView.RecycledViewPool viewPool, CartAdapterActionListener actionListener) {
         super(itemView);
         this.cartAdapterListener = cartAdapterListener;
         this.cartItemAdapterListener = cartItemAdapterListener;
@@ -75,10 +77,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
-        promoMerchant = itemView.findViewById(R.id.promo_merchant);
+        tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
+        this.actionListener = actionListener;
     }
 
-    public void bindData(CartShopHolderData cartShopHolderData, Map<Integer, Boolean> checkedItemState) {
+    public void bindData(CartShopHolderData cartShopHolderData, final int position) {
         if (cartShopHolderData.getShopGroupData().isError() || cartShopHolderData.getShopGroupData().isWarning()) {
             llWarningAndError.setVisibility(View.VISIBLE);
         } else {
@@ -112,7 +115,34 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
 
-        promoMerchant.setOnClickListener(promoShopClickListener());
+        // promoMerchant.setOnClickListener(merchantPromoClickListener());
+
+        tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+            @Override
+            public void onClickUsePromo() {
+                // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
+                actionListener.onCartPromoUseVoucherMerchantPromoClickedTest(position);
+            }
+
+            @Override
+            public void onDisablePromoDiscount() {
+                // actionListener.onCartPromoCancelVoucherPromoMerchantClicked(promoDataMerchant, position);
+                // actionListener.onCartPromoMerchantTrackingCancelled(promoDataMerchant, position);
+            }
+
+            @Override
+            public void onClickDetailPromo() {
+                // actionListener.onClickDetailPromoMerchant(promoDataMerchant, position);
+            }
+        });
+        /*if(promoDataMerchant.getState() != TickerMerchantPromoCheckoutView.State.FAILED){
+            actionListener.onCartPromoMerchantTrackingImpression(promoDataMerchant, position);
+        }*/
+        // tickerMerchantPromoCheckoutView.setState(promoDataMerchant.getState());
+        // tickerMerchantPromoCheckoutView.setDesc(promoDataMerchant.getDescription());
+        // tickerMerchantPromoCheckoutView.setTitle(promoDataMerchant.getTitle());
+        tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
+        tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
     }
 
     private void renderErrorItemHeader(CartShopHolderData data) {
@@ -181,9 +211,4 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             }
         };
     }
-
-    private View.OnClickListener promoShopClickListener() {
-        return v -> cartAdapterListener.onMerchantPromoClicked();
-    }
-
 }

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="separator_color">#e0e0e0</color>
+    <color name="clash_title">#FA591C</color>
+    <color name="clash_potential_title">#393D42</color>
+    <color name="clash_potential_desc">#BCBDBF</color>
+    <color name="clash_warning_border">#FFE38F</color>
+    <color name="clash_warning_background">#FFFAE6</color>
+
+    <color name="green_bulb">#36c53f</color>
 </resources>

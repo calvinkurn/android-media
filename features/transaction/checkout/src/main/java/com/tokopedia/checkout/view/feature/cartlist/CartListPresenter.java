@@ -36,10 +36,9 @@ import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -70,11 +69,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -363,6 +359,33 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
+    @Override
+    public void processUpdateCartDataPromoStacking(List<CartItemData> cartItemDataList, PromoStackingData promoStackingData, int goToDetail) {
+        view.showProgressLoading();
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
+
+        compositeSubscription.add(
+                updateCartUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(getSubscriberUpdateCartPromoGlobal(promoStackingData, goToDetail))
+        );
+    }
+
     private Subscriber<UpdateCartData> getSubscriberUpdateCartPromo(PromoData promoData, int stateGoTo) {
         return new Subscriber<UpdateCartData>() {
             @Override
@@ -406,6 +429,55 @@ public class CartListPresenter implements ICartListPresenter {
                         view.goToCouponList();
                     } else {
                         view.goToDetail(promoData);
+                    }
+                }
+            }
+        };
+    }
+
+    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoGlobal(PromoStackingData promoStackingData, int stateGoTo) {
+        return new Subscriber<UpdateCartData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof UnknownHostException) {
+                    view.showToastMessageRed(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                    );
+                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                    view.showToastMessageRed(
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                    );
+                } else if (e instanceof CartResponseErrorException) {
+                    view.showToastMessageRed(e.getMessage());
+                } else if (e instanceof CartResponseDataNullException) {
+                    view.showToastMessageRed(e.getMessage());
+                } else if (e instanceof CartHttpErrorException) {
+                    view.showToastMessageRed(e.getMessage());
+                } else if (e instanceof ResponseCartApiErrorException) {
+                    view.showToastMessageRed(e.getMessage());
+                } else {
+                    view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+                processInitialGetCartData(cartListData == null);
+            }
+
+            @Override
+            public void onNext(UpdateCartData data) {
+                view.hideProgressLoading();
+                if (!data.isSuccess()) {
+                    view.showToastMessageRed(data.getMessage());
+                } else {
+                    if (stateGoTo == CartFragment.GO_TO_LIST) {
+                        view.goToCouponList();
+                    } else {
+                        view.goToDetailPromoStacking(promoStackingData);
                     }
                 }
             }

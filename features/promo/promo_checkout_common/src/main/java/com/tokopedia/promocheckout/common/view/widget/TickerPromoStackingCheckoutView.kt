@@ -9,13 +9,19 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
-import kotlinx.android.synthetic.main.layout_checkout_ticker.view.*
+import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
 
-class TickerCheckoutView @JvmOverloads constructor(
+
+class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         context: Context, val attrs: AttributeSet? = null, val defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     var state: State = State.EMPTY
+        set(value) {
+            field = value
+            initView()
+        }
+    var variant: Variant = Variant.GLOBAL
         set(value) {
             field = value
             initView()
@@ -52,16 +58,26 @@ class TickerCheckoutView @JvmOverloads constructor(
             State.FAILED -> setViewFailed()
             State.EMPTY -> setViewEmpty()
         }
-        descCoupon?.text = desc
-        titleCoupon?.text = title
-        imageClose?.setOnClickListener {
+
+        when(variant) {
+            Variant.GLOBAL -> setViewGlobal()
+            Variant.MERCHANT -> setViewMerchant()
+        }
+
+        titleCouponGlobal?.text = title
+        if (desc.isNotEmpty()) {
+            descCouponGlobal?.text = desc
+            descCouponGlobal.visibility = View.VISIBLE
+        }
+
+        imageCloseGlobal?.setOnClickListener {
             resetView()
             actionListener?.onDisablePromoDiscount()
         }
-        layoutUsePromo?.setOnClickListener {
+        layoutUsePromoGlobal?.setOnClickListener {
             actionListener?.onClickUsePromo()
         }
-        layoutTicker?.setOnClickListener {
+        layoutTickerFrameGlobal?.setOnClickListener {
             actionListener?.onClickDetailPromo()
         }
         invalidate()
@@ -73,46 +89,50 @@ class TickerCheckoutView @JvmOverloads constructor(
     }
 
     private fun setViewEmpty() {
-        layoutUsePromo?.visibility = View.VISIBLE
-        layoutTicker?.visibility = View.GONE
+        layoutUsePromoGlobal?.visibility = View.VISIBLE
+        layoutTickerFrameGlobal?.visibility = View.GONE
     }
 
     private fun setViewCouponShow(){
-        layoutUsePromo?.visibility = View.GONE
-        layoutTicker?.visibility = View.VISIBLE
+        layoutUsePromoGlobal?.visibility = View.GONE
+        layoutTickerFrameGlobal?.visibility = View.VISIBLE
     }
 
     private fun setViewFailed() {
         setViewCouponShow()
-        val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
-        drawableBackground.setColor(ContextCompat.getColor(context, R.color.bright_red))
-        imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_red)
-        imageCheck.setImageResource(R.drawable.ic_failed_promo_checkout)
-        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_red_promo_checkout)
-        imageClose.setImageResource(R.drawable.ic_close_red_promo_checkout)
-        titleCoupon.setTextColor(ContextCompat.getColor(context, R.color.background_error))
+        val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
+        drawableBackground.setColor(ContextCompat.getColor(context, R.color.red_error_coupon))
+
+        bg_active_up.setImageResource(R.drawable.background_checkout_ticker_error_up)
+        bg_active_down.setImageResource(R.drawable.background_checkout_ticker_error_down)
     }
 
     private fun setViewActive() {
         setViewCouponShow()
-        val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
-        drawableBackground.setColor(ContextCompat.getColor(context, R.color.green_200))
-        imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_green)
-        imageCheck.setImageResource(R.drawable.ic_check_black)
-        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_green_promo_checkout)
-        imageClose.setImageResource(R.drawable.ic_close_green_promo_checkout)
-        titleCoupon.setTextColor(ContextCompat.getColor(context,R.color.tkpd_main_green))
+        val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
+        drawableBackground.setColor(ContextCompat.getColor(context, R.color.green_active_coupon))
+
+        bg_active_up.setImageResource(R.drawable.background_checkout_ticker_active_up)
+        bg_active_down.setImageResource(R.drawable.background_checkout_ticker_active_down)
     }
 
     private fun setViewInactive() {
         setViewCouponShow()
-        val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
-        drawableBackground.setColor(ContextCompat.getColor(context, R.color.grey_300))
-        imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_grey)
-        imageCheck.setImageResource(R.drawable.ic_question_promo_checkout)
-        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_grey_promo_checkout)
-        imageClose.setImageResource(R.drawable.ic_close_grey_promo_checkout)
-        titleCoupon.setTextColor(ContextCompat.getColor(context,R.color.font_black_secondary_54))
+        val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
+        drawableBackground.setColor(ContextCompat.getColor(context, R.color.orange_halfactive_coupon))
+
+        bg_active_up.setImageResource(R.drawable.background_checkout_ticker_inactive_up)
+        bg_active_down.setImageResource(R.drawable.background_checkout_ticker_inactive_down)
+    }
+
+    private fun setViewGlobal() {
+        ic_button_coupon.setImageResource(R.drawable.ic_kupon_telur)
+        title_button_coupon.setText(R.string.promo_global_title)
+    }
+
+    private fun setViewMerchant() {
+        ic_button_coupon.setImageResource(R.drawable.ic_merchant_promo)
+        title_button_coupon.setText(R.string.promo_merchant_title)
     }
 
     override fun onFinishInflate() {
@@ -121,7 +141,32 @@ class TickerCheckoutView @JvmOverloads constructor(
     }
 
     private fun getLayout(): Int {
-        return R.layout.layout_checkout_ticker
+        return R.layout.layout_checkout_ticker_promostacking
+    }
+
+    enum class Variant(val variant: String) : Parcelable {
+
+        GLOBAL("global"),
+        MERCHANT("merchant");
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(variant)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<Variant> {
+            override fun createFromParcel(parcel: Parcel): Variant {
+                return Variant.values()[parcel.readInt()]
+            }
+
+            override fun newArray(size: Int): Array<Variant?> {
+                return arrayOfNulls(size)
+            }
+        }
+
     }
 
     enum class State(val id: Int) : Parcelable {
