@@ -42,7 +42,7 @@ public class OldReactNativeOfficialStoreActivity extends ReactFragmentActivity<O
 
     @Override
     protected OldReactNativeOfficialStoreFragment getReactNativeFragment() {
-        return OldReactNativeOfficialStoreFragment.instance(getIntent().getExtras());
+        return OldReactNativeOfficialStoreFragment.instance(getReactNativeProps());
     }
 
     @Override
