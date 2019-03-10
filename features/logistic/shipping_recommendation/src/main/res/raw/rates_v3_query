@@ -19,6 +19,7 @@
       is_blackbox:$is_blackbox
       address_id:"$address_id"
       preorder:$preorder
+      is_tradein:$is_tradein
   }) {
   ratesv3 {
     id

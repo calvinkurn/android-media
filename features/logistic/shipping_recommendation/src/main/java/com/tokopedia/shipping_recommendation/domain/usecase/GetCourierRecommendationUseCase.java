@@ -166,6 +166,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.IS_BLACKBOX, String.valueOf(shippingParam.getIsBlackbox() ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.ADDRESS_ID, String.valueOf(shippingParam.getAddressId()));
         queryStringBuilder = setParam(queryStringBuilder, Param.PREORDER, String.valueOf(shippingParam.getIsPreorder() ? 1 : 0));
+        queryStringBuilder = setParam(queryStringBuilder, Param.IS_TRADEIN, String.valueOf(shippingParam.isTradein() ? 1 : 0));
 
         return queryStringBuilder.toString();
     }
@@ -196,6 +197,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String IS_BLACKBOX = "$is_blackbox";
         static final String ADDRESS_ID = "$address_id";
         static final String PREORDER = "$preorder";
+        static final String IS_TRADEIN = "$is_tradein";
 
         static final String VALUE_ANDROID = "android";
         static final String VALUE_CLIENT = "client";

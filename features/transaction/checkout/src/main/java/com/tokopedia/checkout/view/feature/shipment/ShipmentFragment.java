@@ -1118,6 +1118,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (oldShipmentDetailData != null && oldShipmentDetailData.getSelectedCourier() != null) {
             shipmentDetailData.setSelectedCourier(oldShipmentDetailData.getSelectedCourier());
         }
+        shipmentDetailData.setTradein(isTradeIn());
 
         return shipmentDetailData;
     }
@@ -1797,15 +1798,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void reloadCourier(ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList) {
-        if (shipmentCartItemModel.getSelectedShipmentDetailData().getShopId() == null) {
-            shipmentCartItemModel.getSelectedShipmentDetailData().setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
+        if (shipmentCartItemModel != null && shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+            if (shipmentCartItemModel.getSelectedShipmentDetailData().getShopId() == null) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
+            }
+            shipmentCartItemModel.getSelectedShipmentDetailData().setTradein(isTradeIn());
+            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                shipmentPresenter.processGetCourierRecommendation(
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId(),
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId(),
+                        cartPosition,
+                        shipmentCartItemModel.getSelectedShipmentDetailData(),
+                        shipmentCartItemModel, shopShipmentList, false);
+            }
         }
-        shipmentPresenter.processGetCourierRecommendation(
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId(),
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId(),
-                cartPosition,
-                shipmentCartItemModel.getSelectedShipmentDetailData(),
-                shipmentCartItemModel, shopShipmentList, false);
     }
 
     @Override
@@ -1844,6 +1850,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                     ShipmentCartItemModel shipmentCartItemModel,
                                     List<ShopShipment> shopShipmentList,
                                     boolean useCourierRecommendation) {
+        shipmentDetailData.setTradein(isTradeIn());
         if (useCourierRecommendation) {
             shipmentPresenter.processGetCourierRecommendation(shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel, shopShipmentList, true);
         } else {
