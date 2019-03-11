@@ -239,7 +239,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (!remoteConfig.getBoolean(ENABLE_VARIANT))
                 useVariant = false
         }
-        retainInstance = true
         setHasOptionsMenu(true)
     }
 
@@ -697,6 +696,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupByConfiguration(configuration: Configuration?) {
+        appbar.visibility = View.VISIBLE
         configuration?.let {
             val screenWidth = resources.displayMetrics.widthPixels
             if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
