@@ -22,11 +22,13 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.model.KYCDocumentUploadResponse;
-import com.tokopedia.kyc.view.KycUtil;
+import com.tokopedia.kyc.util.AnalyticsUtil;
+import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
@@ -68,9 +70,21 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.confirmation_btn){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_CONF_STP2);
             makeCardIDUploadRequest();
         }
         else if(i == R.id.retake_photo){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_ULN_PIC_STP2);
             ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
                 @Override
                 public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {

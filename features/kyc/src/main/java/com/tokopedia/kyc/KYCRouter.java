@@ -14,4 +14,5 @@ public interface KYCRouter {
             ActionCreator<HashMap<String, Object>, Integer> actionCreator,
             ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType);
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
+    String getUserId();
 }

@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
 import com.tokopedia.kyc.model.ConfirmSubmitResponse;
 import com.tokopedia.kyc.model.GqlDocModel;
-import com.tokopedia.kyc.view.KycUtil;
+import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 
 import java.util.ArrayList;

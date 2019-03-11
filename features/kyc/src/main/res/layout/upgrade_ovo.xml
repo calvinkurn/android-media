@@ -54,7 +54,7 @@
                 <Button
                     android:id="@+id/upgrade_btn"
                     style="@style/Button.Submit.Green"
-                    android:text="@string/upgrade_ovo_btn" />
+                    android:text="@string/lnjktn" />
 
                 <Button
                     android:id="@+id/later_btn"

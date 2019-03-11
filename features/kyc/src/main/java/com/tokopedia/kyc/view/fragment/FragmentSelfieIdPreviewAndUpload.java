@@ -15,11 +15,13 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.model.KYCDocumentUploadResponse;
-import com.tokopedia.kyc.view.KycUtil;
+import com.tokopedia.kyc.util.AnalyticsUtil;
+import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
@@ -53,20 +55,44 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.selfieid_intro_proceed){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_OK_STP3);
             KycUtil.createKYCIdCameraFragment(getContext(),
                     activityListener, getSefieIdImageAction(),
                     Constants.Keys.KYC_SELFIEID_CAMERA, false);
         }
         else if(i == R.id.use_img){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_GNKN_STP3);
             makeSelfieUploadRequest();
         }
         else if(i == R.id.retake_image){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_OK_ULN_STP3);
             KycUtil.createKYCIdCameraFragment(getContext(),
                     activityListener,
                     getSefieIdImageAction(),
                     Constants.Keys.KYC_SELFIEID_CAMERA, false);
         }
         else if(i == R.id.btn_ok){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_OK_STP3);
             makeSelfieUploadRequest();
             if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
         }
@@ -135,6 +161,12 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
         ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
             @Override
             public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
+                AnalyticsUtil.sendEvent(getContext(),
+                        AnalyticsUtil.EventName.CLICK_OVO,
+                        AnalyticsUtil.EventCategory.OVO_KYC,
+                        "",
+                        ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                        AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP3);
                 ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
                 selfieIdIntroView.setVisibility(View.GONE);
                 selfieIdPreviewAndUpload.setVisibility(View.VISIBLE);

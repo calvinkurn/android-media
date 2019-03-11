@@ -1,4 +1,4 @@
-package com.tokopedia.kyc.view;
+package com.tokopedia.kyc.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;

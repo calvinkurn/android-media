@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.kyc.util.AnalyticsUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
 public class FragmentErrorKyc extends BaseDaggerFragment implements
@@ -26,6 +28,12 @@ public class FragmentErrorKyc extends BaseDaggerFragment implements
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.try_again){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_CBLG_STLGGL);
             getActivity().getSupportFragmentManager().popBackStack(FragmentUpgradeToOvo.TAG, 0);
         }
     }

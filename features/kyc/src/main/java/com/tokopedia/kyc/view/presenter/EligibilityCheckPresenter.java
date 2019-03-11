@@ -3,7 +3,7 @@ package com.tokopedia.kyc.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kyc.model.EligibilityBase;
-import com.tokopedia.kyc.view.KycUtil;
+import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 
 import javax.inject.Inject;

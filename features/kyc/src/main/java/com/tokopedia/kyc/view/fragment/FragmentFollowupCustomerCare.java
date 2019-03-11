@@ -12,9 +12,11 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
-import com.tokopedia.kyc.view.KycUtil;
+import com.tokopedia.kyc.util.AnalyticsUtil;
+import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
 public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
@@ -28,12 +30,30 @@ public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.call){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_PHN);
             KycUtil.makeCall(getContext());
         }
         else if(i == R.id.email){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_EML);
             KycUtil.sendEmail(getContext());
         }
         else if(i == R.id.back_to_app){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_KMBL_TKPD);
             getActivity().finish();
         }
     }

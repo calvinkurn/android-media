@@ -19,15 +19,14 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.model.ConfirmSubmitResponse;
-import com.tokopedia.kyc.model.GqlDocModel;
-import com.tokopedia.kyc.view.KycUtil;
+import com.tokopedia.kyc.util.AnalyticsUtil;
+import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.activity.UpgradeProcessCompleteActivity;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
@@ -39,8 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 public class FragmentTermsAndConditions extends BaseDaggerFragment implements View.OnClickListener,
         CompoundButton.OnCheckedChangeListener, GenericOperationsView<ConfirmSubmitResponse> {
@@ -62,10 +59,28 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.cardid_container) {
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_ULN_KTP);
             retakeImage(Constants.Keys.KYC_CARDID_CAMERA);
         } else if (i == R.id.selfieid_container) {
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_ULN_SLFE);
             retakeImage(Constants.Keys.KYC_SELFIEID_CAMERA);
         } else if (i == R.id.proceed_tnc) {
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_PRCS);
             showConfirmationDialog();
         }
         else if (i == R.id.txtv_tnc){
@@ -73,9 +88,21 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
                     Constants.URLs.OVO_TNC_PAGE);
         }
         else if(i == R.id.back_btn){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_BTLKN_STP4);
             alertDialog.dismiss();
         }
         else if(i == R.id.continue_btn){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_LNJTN_STP4);
             alertDialog.dismiss();
             submitKycTnCConfirmForm();
         }

@@ -61,4 +61,11 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
         actionCreator = (ActionCreator) getArguments().getSerializable(ACTION_CREATOR_ARG);
         actionDataProvider = (ActionDataProvider) getArguments().getSerializable(ACTION_KEYS_PROVIDER_ARG);
     }
+
+    @Override
+    public void onDestroy() {
+        hideLoading();
+        cameraView.stop();
+        super.onDestroy();
+    }
 }

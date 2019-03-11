@@ -73,5 +73,10 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         actionDataProvider = (ActionDataProvider) getArguments().getSerializable(ACTION_KEYS_PROVIDER_ARG);
     }
 
-
+    @Override
+    public void onDestroy() {
+        hideLoading();
+        cameraView.stop();
+        super.onDestroy();
+    }
 }

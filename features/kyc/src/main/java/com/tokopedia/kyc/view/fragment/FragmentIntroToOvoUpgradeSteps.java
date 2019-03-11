@@ -16,7 +16,8 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
-import com.tokopedia.kyc.view.KycUtil;
+import com.tokopedia.kyc.util.AnalyticsUtil;
+import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
@@ -78,9 +79,21 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.start_upgrade_process){
+            AnalyticsUtil.sendEvent(getContext(),
+                    AnalyticsUtil.EventName.CLICK_OVO,
+                    AnalyticsUtil.EventCategory.OVO_KYC,
+                    "",
+                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                    AnalyticsUtil.EventAction.CLK_MUL_STP1);
             ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
                 @Override
                 public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
+                    AnalyticsUtil.sendEvent(getContext(),
+                            AnalyticsUtil.EventName.CLICK_OVO,
+                            AnalyticsUtil.EventCategory.OVO_KYC,
+                            "",
+                            ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                            AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP2);
                     Bundle bundle = new Bundle();
                     ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
                     activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
