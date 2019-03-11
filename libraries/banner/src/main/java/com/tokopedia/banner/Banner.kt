@@ -1,7 +1,6 @@
 package com.tokopedia.banner
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.banner.BannerPagerAdapter
@@ -13,6 +12,12 @@ import com.tokopedia.design.banner.BannerView
  */
 
 class Banner : BannerView {
+
+    var typeIndicator: Int? = 0
+
+    companion object {
+        const val GREEN_INDICATOR = 1
+    }
 
     constructor(context: Context) : super(context) {}
 
@@ -51,11 +56,22 @@ class Banner : BannerView {
         return BannerAdapter(promoImageUrls, onPromoClickListener)
     }
 
+    fun setBannerIndicator(indicatorType: Int) {
+        typeIndicator = indicatorType
+
+    }
+
     override fun getIndicator(): Int {
+        if (typeIndicator == GREEN_INDICATOR) {
+            return R.drawable.banner_green_indicator_default
+        }
         return R.drawable.banner_indicator_default
     }
 
     override fun getIndicatorFocus(): Int {
+        if (typeIndicator == GREEN_INDICATOR) {
+            return R.drawable.banner_green_indicator_focus
+        }
         return R.drawable.banner_indicator_focus
     }
 
