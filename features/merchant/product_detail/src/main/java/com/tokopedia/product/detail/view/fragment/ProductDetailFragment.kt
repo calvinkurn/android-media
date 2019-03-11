@@ -686,7 +686,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (window == null) return@run
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                window.statusBarColor = ContextCompat.getColor(this, R.color.transparent_dark_40)
+                window.statusBarColor = Color.TRANSPARENT
             }
         }
     }
@@ -987,7 +987,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun showFabDetailAfterLoadData() {
-        if (!productInfoViewModel.isUserSessionActive() ||
+        // show wishlist (or edit product) button if
+        // 1. getProduct api is finished, but user is not logged in
+        // 2. getWishlist (P3) is success
+        // 3. user is allowed to manage product
+        if ((!productInfoViewModel.isUserSessionActive() &&
+                productInfoViewModel.productInfoP1Resp.value != null) ||
             productInfoViewModel.productInfoP3resp.value != null ||
             (shopInfo != null && shopInfo?.isAllowManage == 1)) {
             fab_detail.show()
