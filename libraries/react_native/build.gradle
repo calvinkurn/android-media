@@ -40,11 +40,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.banner)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.networkDependencies.glide
 
     implementation project(rootProject.ext.libraries.config) 
 }

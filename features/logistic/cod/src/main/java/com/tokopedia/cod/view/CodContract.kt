@@ -12,6 +12,7 @@ interface CodContract {
         fun hideLoading()
         fun onPayClicked(view: android.view.View)
         fun navigateToThankYouPage(applink: String)
+        fun sendEventEECod()
     }
 
     interface Presenter {

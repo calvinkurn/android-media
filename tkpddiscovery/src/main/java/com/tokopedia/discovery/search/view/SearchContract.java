@@ -19,7 +19,7 @@ public interface SearchContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void search(String query);
+        void search(String query, boolean isOfficial);
 
         void deleteRecentSearchItem(String keyword);
 

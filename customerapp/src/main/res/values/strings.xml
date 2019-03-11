@@ -37,8 +37,6 @@
     <string name="toko_cash_pending_close_button">Tutup</string>
     <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
 
-    <string name="react_native_banner_official_title">Official Store</string>
-    <string name="official_store_term_conditions_title"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="deeplink_receiver_applink_update_button_title">Update</string>
     <string name="deeplink_receiver_applink_update_button_cancel_title">Batal</string>
 

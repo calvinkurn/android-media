@@ -99,6 +99,8 @@ import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
+import com.tokopedia.officialstore.activity.OldReactNativeOfficialStoreActivity;
+import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
@@ -3064,6 +3066,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Fragment getOfficialStoreFragment(Bundle bundle) {
+        return ReactNativeOfficialStoreFragment.createInstance();
+    }
+
+    @Override
     public Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc) {
         return EmptyCartFragment.newInstance(autoApplyMessage, EmptyCartFragment.class.getSimpleName(), state, titleDesc);
     }
@@ -3081,11 +3088,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getManageAddressIntent(Context context) {
         return new Intent(context, ManagePeopleAddressActivity.class);
-    }
-
-    @Override
-    public Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, com.tokopedia.logisticdata.data.entity.address.Token token, boolean isEdit, boolean isEmptyAddressFirst) {
-        return AddAddressActivity.createInstanceFromCartCheckout(activity, data, token, isEdit, isEmptyAddressFirst);
     }
 
     @Override
@@ -3213,6 +3215,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendOpenHomeEvent() {
         TrackingUtils.sendMoEngageOpenHomeEvent(getAppContext());
+    }
+
+    @Override
+    public Intent getOldOfficialStore(Context context) {
+        return OldReactNativeOfficialStoreActivity.getIntent(context);
     }
 
     @Override
