@@ -3097,11 +3097,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, com.tokopedia.logisticdata.data.entity.address.Token token, boolean isEdit, boolean isEmptyAddressFirst) {
-        return AddAddressActivity.createInstanceFromCartCheckout(activity, data, token, isEdit, isEmptyAddressFirst);
-    }
-
-    @Override
     public void goToShopEditor(Context context) {
         UnifyTracking.eventManageShopInfo(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
