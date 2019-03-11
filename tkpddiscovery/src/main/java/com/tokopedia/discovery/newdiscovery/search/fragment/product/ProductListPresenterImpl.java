@@ -22,6 +22,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.ProductWishlistUrlUse
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -29,7 +30,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.To
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -40,7 +42,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
 
@@ -98,10 +99,10 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
             getView().disableWishlistButton(productItem.getProductID());
             if (productItem.isWishlisted()) {
                 removeWishlist(productItem.getProductID(), getView().getUserId());
-            } else if(productItem.getProductWishlistUrl() != null){
+            } else if(productItem.isTopAds()){
                 com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
                 params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL,
-                        productItem.getProductWishlistUrl());
+                        productItem.getTopadsWishlistUrl());
                 productWishlistUrlUseCase.execute(params, getWishlistSubscriber(productItem));
             } else {
                 addWishlist(productItem.getProductID(), getView().getUserId());
@@ -204,10 +205,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     } else {
                         List<Visitable> list = new ArrayList<Visitable>();
                         getView().removeLoading();
-                        if(!productViewModel.getAdsModel().getData().isEmpty()) {
-                            list.add(new TopAdsViewModel(productViewModel.getAdsModel(), productViewModel.getQuery()));
-                        }
-                        list.addAll(productViewModel.getProductList());
+                        list.addAll(enrich(productViewModel));
                         getView().setProductList(list);
                         getView().addLoading();
                     }
@@ -232,6 +230,54 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
             }
         };
         GqlSearchHelper.requestProductLoadMore(context, requestParams, graphqlUseCase, subscriber);
+    }
+
+    public static List<Visitable> enrich(ProductViewModel productViewModel) {
+        List<Visitable> list = new ArrayList();
+        list.addAll(productViewModel.getProductList());
+        int j = 0;
+        for (int i = 0; i < productViewModel.getTotalItem(); i++) {
+            try {
+                if (productViewModel.getAdsModel().getTemplates().get(i).isIsAd()) {
+                    Data topAds = productViewModel.getAdsModel().getData().get(j);
+                    ProductItem item = new ProductItem();
+                    item.setProductID(topAds.getProduct().getId());
+                    item.setTopAds(true);
+                    item.setTopadsImpressionUrl(topAds.getProduct().getImage().getS_url());
+                    item.setTopadsClickUrl(topAds.getProductClickUrl());
+                    item.setTopadsWishlistUrl(topAds.getProductWishlistUrl());
+                    item.setProductName(topAds.getProduct().getName());
+                    if(!topAds.getProduct().getTopLabels().isEmpty()) {
+                        item.setTopLabel(topAds.getProduct().getTopLabels().get(0));
+                    }
+                    if(!topAds.getProduct().getBottomLabels().isEmpty()) {
+                        item.setBottomLabel(topAds.getProduct().getBottomLabels().get(0));
+                    }
+                    item.setPrice(topAds.getProduct().getPriceFormat());
+                    item.setShopCity(topAds.getShop().getLocation());
+                    item.setImageUrl(topAds.getProduct().getImage().getS_ecs());
+                    item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
+                    item.setWishlisted(topAds.getProduct().isWishlist());
+                    item.setRating(topAds.getProduct().getProductRating());
+                    item.setCountReview(topAds.getProduct().getCountReviewFormat());
+                    item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
+                    item.setNew(topAds.getProduct().isProductNewLabel());
+                    list.add(i, item);
+                    j++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    private static List<BadgeItem> mapBadges(List<Badge> badges) {
+        List<BadgeItem> items = new ArrayList<>();
+        for (Badge b:badges) {
+            items.add(new BadgeItem(b.getImageUrl(), b.getTitle(), b.isShow()));
+        }
+        return items;
     }
 
     @Override
@@ -293,10 +339,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             headerViewModel.setCpmModel(productViewModel.getCpmModel());
                         }
                         list.add(headerViewModel);
-                        if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
-                            list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel(), productViewModel.getQuery()));
-                        }
-                        list.addAll(productViewModel.getProductList());
+                        list.addAll(enrich(productViewModel));
                         if (productViewModel.getRelatedSearchModel() != null) {
                             list.add(productViewModel.getRelatedSearchModel());
                         }

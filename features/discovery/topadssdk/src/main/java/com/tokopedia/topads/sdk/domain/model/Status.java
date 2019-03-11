@@ -16,7 +16,7 @@ public class Status implements Parcelable {
     @SerializedName(KEY_ERROR_CODE)
     private int errorCode;
     @SerializedName(KEY_MESSAGE)
-    private String message;
+    private String message = "";
 
     private static final String KEY_ERROR_CODE = "error_code";
     private static final String KEY_MESSAGE = "message";
