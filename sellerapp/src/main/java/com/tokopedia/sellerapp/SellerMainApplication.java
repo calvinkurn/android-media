@@ -290,4 +290,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
         return null;
     }
+
+    @Override
+    public Intent getInboxTicketCallingIntent(Context context) {
+        return null;
+    }
 }
