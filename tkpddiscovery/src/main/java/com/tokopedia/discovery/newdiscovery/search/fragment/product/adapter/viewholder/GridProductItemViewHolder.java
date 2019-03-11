@@ -158,13 +158,6 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             @Override
             public void onClick(View v) {
                 itemClickListener.onItemClicked(productItem, getAdapterPosition());
-                new ImpresionTask().execute(productItem.getTopadsClickUrl());
-                Product product = new Product();
-                product.setId(productItem.getProductID());
-                product.setName(productItem.getProductName());
-                product.setPriceFormat(productItem.getPrice());
-                product.setCategory(new Category(productItem.getCategoryID()));
-                TopAdsGtmTracker.eventSearchResultProductClick(context, searchQuery, product, getAdapterPosition());
             }
         });
 

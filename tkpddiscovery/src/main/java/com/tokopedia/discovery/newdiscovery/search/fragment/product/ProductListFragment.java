@@ -498,7 +498,7 @@ public class ProductListFragment extends SearchSectionFragment
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
-        sendItemClickTrackingEvent(item);
+        sendItemClickTrackingEvent(item, adapterPosition);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
     }
 
@@ -508,10 +508,18 @@ public class ProductListFragment extends SearchSectionFragment
 
     }
 
-    private void sendItemClickTrackingEvent(ProductItem item) {
+    private void sendItemClickTrackingEvent(ProductItem item, int pos) {
         String userId = userSession.isLoggedIn() ?
                 userSession.getUserId() : "";
-        if (!item.isTopAds()) {
+        if (item.isTopAds()) {
+            new ImpresionTask().execute(productItem.getTopadsClickUrl());
+            Product product = new Product();
+            product.setId(productItem.getProductID());
+            product.setName(productItem.getProductName());
+            product.setPriceFormat(productItem.getPrice());
+            product.setCategory(new Category(productItem.getCategoryID()));
+            TopAdsGtmTracker.eventSearchResultProductClick(context, searchQuery, product, pos);
+        } else {
             SearchTracking.trackEventClickSearchResultProduct(
                     getActivity(),
                     item.getProductAsObjectDataLayer(userId),
