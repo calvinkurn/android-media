@@ -32,7 +32,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showNormalToaster
+import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
@@ -461,7 +461,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                             // TODO finish
                             onFinish(addToCartResult.message)
                         } else {
-                            activity?.findViewById<View>(android.R.id.content)?.showNormalToaster(
+                            activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
                                 addToCartResult.message
                                     ?: getString(R.string.default_request_error_unknown_short))
                         }
