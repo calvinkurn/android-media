@@ -5,6 +5,7 @@ import android.util.SparseArray
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -102,6 +103,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
+
             productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, forceRefresh)
 
             try {
@@ -222,17 +224,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String, forceRefresh: Boolean): ProductInfoP3 = withContext(Dispatchers.IO) {
         val productInfoP3 = ProductInfoP3()
-        val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id.toString())
-        val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
-            ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
-        val estimationParams = mapOf(PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg, PARAM_RATE_EST_SHOP_DOMAIN to shopDomain)
-        val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
-            RatesEstimationModel.Response::class.java, estimationParams)
+        val requests = mutableListOf<GraphqlRequest>()
 
         val imageReviewParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id, PARAM_PAGE to 1, PARAM_TOTAL to DEFAULT_NUM_IMAGE_REVIEW)
         val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
-            ImageReviewGqlResponse::class.java, imageReviewParams)
+                ImageReviewGqlResponse::class.java, imageReviewParams)
 
         fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {
             val images = SparseArray<ImageReviewGqlResponse.Image>()
@@ -245,39 +242,64 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 val image = images[it.imageID]
                 val review = reviews[it.reviewID]
                 ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
-                    review.reviewer?.fullName, image.uriThumbnail,
-                    image.uriLarge, review.rating)
+                        review.reviewer?.fullName, image.uriThumbnail,
+                        image.uriLarge, review.rating)
             } ?: listOf()
 
         }
 
+        requests.add(imageReviewRequest)
+
         val helpfulReviewParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id)
         val helpfulReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW], Review.Response::class.java,
-            helpfulReviewParams)
+                helpfulReviewParams)
+
+        requests.add(helpfulReviewRequest)
 
         val latestTalkParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id)
         val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
-            TalkList.Response::class.java, latestTalkParams)
+                TalkList.Response::class.java, latestTalkParams)
 
-        val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
-            productInfo.basic.shopID, productInfo.basic.id))
-        val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
-            ProductOther.Response::class.java, otherProductParams)
+        requests.add(latestTalkRequest)
+
+        if (GlobalConfig.isCustomerApp() && isUserSessionActive()){
+            val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id.toString())
+            val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
+                    ProductInfo.WishlistStatus::class.java, isWishlistedParams)
+
+            requests.add(isWishlistedRequest)
+
+            val estimationParams = mapOf(PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg, PARAM_RATE_EST_SHOP_DOMAIN to shopDomain)
+            val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
+                    RatesEstimationModel.Response::class.java, estimationParams)
+
+            requests.add(estimationRequest)
+
+            val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
+                    productInfo.basic.shopID, productInfo.basic.id))
+            val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
+                    ProductOther.Response::class.java, otherProductParams)
+
+            requests.add(otherProductRequest)
+        }
 
         val topadsParams = mapOf(KEY_PARAM to generateTopAdsParams(productInfo))
         val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
-            TopAdsDisplayResponse::class.java, topadsParams)
+                TopAdsDisplayResponse::class.java, topadsParams)
+
+        requests.add(topAdsRequest)
 
         val affilateParams = mapOf(ParamAffiliate.PRODUCT_ID_PARAM to listOf(productInfo.basic.id),
             ParamAffiliate.SHOP_ID_PARAM to productInfo.basic.shopID,
             ParamAffiliate.INCLUDE_UI_PARAM to true)
+
         val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
             TopAdsPdpAffiliateResponse::class.java, affilateParams)
 
+        requests.add(affiliateRequest)
+
         try {
-            val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, estimationRequest,
-                imageReviewRequest, helpfulReviewRequest, latestTalkRequest, topAdsRequest, otherProductRequest,
-                affiliateRequest))
+            val response = graphqlRepository.getReseponse(requests)
 
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)
