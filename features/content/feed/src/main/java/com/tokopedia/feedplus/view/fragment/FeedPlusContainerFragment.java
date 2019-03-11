@@ -129,7 +129,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private FeedPlusFragment getFeedPlusFragment() {
         if (feedPlusFragment == null) {
-            feedPlusFragment = FeedPlusFragment.newInstance();
+            feedPlusFragment = FeedPlusFragment.newInstance(getArguments());
         }
         return feedPlusFragment;
     }
