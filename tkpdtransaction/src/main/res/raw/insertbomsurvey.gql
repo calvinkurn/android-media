@@ -1,0 +1,15 @@
+mutation insert_survey_bom($params: InsertBOMSurveyParams!) {
+  insert_survey_bom(params: $params) {
+    header {
+      process_time
+      messages
+      reason
+      error_code
+    }
+    data {
+      status_insert
+      success
+    }
+    status
+  }
+}

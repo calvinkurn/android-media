@@ -10,23 +10,24 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
+import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail;
+import com.tokopedia.contactus.inboxticket2.data.model.Tickets;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.domain.CreatedBy;
 import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse;
 import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
-import com.tokopedia.contactus.inboxticket2.domain.TicketDetailResponse;
-import com.tokopedia.contactus.inboxticket2.domain.Tickets;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCase;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.InboxOptionUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
+import com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -63,6 +64,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK;
+
 
 public class InboxDetailPresenterImpl
         implements InboxDetailContract.InboxDetailPresenter, CustomEditText.Listener {
@@ -86,22 +90,25 @@ public class InboxDetailPresenterImpl
     private Utils utils;
     private CreatedBy userData;
     private ArrayList<String> reasonList;
+    private InboxOptionUseCase inboxOptionUseCase;
+    boolean isIssueClosed = false;
 
     public InboxDetailPresenterImpl(GetTicketDetailUseCase useCase,
                                     PostMessageUseCase messageUseCase,
                                     PostMessageUseCase2 messageUseCase2,
-                                    PostRatingUseCase ratingUseCase) {
+                                    PostRatingUseCase ratingUseCase, InboxOptionUseCase inboxOptionUseCase) {
         mUsecase = useCase;
         postMessageUseCase = messageUseCase;
         postMessageUseCase2 = messageUseCase2;
         postRatingUseCase = ratingUseCase;
+        this.inboxOptionUseCase = inboxOptionUseCase;
     }
 
     @Override
     public void attachView(InboxBaseContract.InboxBaseView view) {
         mView = (InboxDetailContract.InboxDetailView) view;
         reasonList = new ArrayList<>(Arrays.asList(mView.getActivity().getResources().getStringArray(R.array.bad_reason_array)));
-        getTicketDetails(mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID));
+        getTicketDetails();
     }
 
     @Override
@@ -114,9 +121,15 @@ public class InboxDetailPresenterImpl
         return this;
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+     if (requestCode == REQUEST_SUBMIT_FEEDBACK && resultCode == RESULT_OK) {
+            mView.showMessage(mView.getActivity().getString(R.string.cu_terima_kasih_atas_masukannya));
+            mView.showIssueClosed();
+            isIssueClosed = true;
+            getTicketDetails();
+        }
     }
 
     @Override
@@ -190,10 +203,10 @@ public class InboxDetailPresenterImpl
         }
     }
 
-    private void getTicketDetails(String id) {
+    private void getTicketDetails() {
         mView.showProgressBar();
-        mUsecase.setTicketId(id);
-        mUsecase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        inboxOptionUseCase.createRequestParams(mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID));
+        inboxOptionUseCase.execute(new Subscriber<ChipGetInboxDetail>() {
             @Override
             public void onCompleted() {
 
@@ -201,21 +214,16 @@ public class InboxDetailPresenterImpl
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+
             }
 
             @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<TicketDetailResponse>>() {
-                }.getType();
-                RestResponse res1 = typeRestResponseMap.get(token);
-                DataResponse ticketListResponse = res1.getData();
-                TicketDetailResponse ticketDetailResponse = (TicketDetailResponse) ticketListResponse.getData();
-                if (ticketDetailResponse != null && ticketDetailResponse.getTickets() != null) {
-                    mTicketDetail = ticketDetailResponse.getTickets();
+            public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
+                if (chipGetInboxDetail != null && chipGetInboxDetail.getData()  != null && chipGetInboxDetail.getData().getTickets() != null) {
+                    mTicketDetail = chipGetInboxDetail.getData().getTickets();
                     CommentsItem topItem = new CommentsItem();
                     topItem.setAttachment(mTicketDetail.getAttachment());
-                    topItem.setMessagePlaintext(mTicketDetail.getMessage());
+                    topItem.setMessage(mTicketDetail.getMessage());
                     topItem.setCreatedBy(mTicketDetail.getCreatedBy());
                     topItem.setCreateTime(mTicketDetail.getCreateTime());
                     List<CommentsItem> commentsItems = mTicketDetail.getComments();
@@ -245,6 +253,10 @@ public class InboxDetailPresenterImpl
                             }
                         }
                         item.setShortTime(createTime.substring(0, i));
+                    }
+                    if(isIssueClosed) {
+                        mTicketDetail.setShowRating(false);
+                        isIssueClosed = false;
                     }
                     mView.renderMessageList(mTicketDetail);
                     mView.hideProgressBar();
@@ -749,6 +761,11 @@ public class InboxDetailPresenterImpl
                 imagesURL.add(item.getThumbnail());
         }
         mView.showImagePreview(position, imagesURL);
+    }
+
+    @Override
+    public void onClickEmoji(int number) {
+        mView.startActivityForResult(ProvideRatingActivity.getInstance(mView.getActivity(), number,mView.getCommentID(),mTicketDetail.getBadCsatReasonList()),REQUEST_SUBMIT_FEEDBACK);
     }
 
     private void addNewLocalComment() {

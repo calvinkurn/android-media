@@ -30,6 +30,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.attachproduct)
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
@@ -44,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.cacheManager)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -63,8 +66,6 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-
-
 }
 
 apply from: '../../../publish_local.gradle'
