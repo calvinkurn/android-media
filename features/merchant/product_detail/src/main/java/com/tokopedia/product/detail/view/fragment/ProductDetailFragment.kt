@@ -686,7 +686,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (window == null) return@run
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                window.statusBarColor = Color.TRANSPARENT
+                window.statusBarColor = ContextCompat.getColor(this, R.color.transparent_dark_40)
             }
         }
     }
