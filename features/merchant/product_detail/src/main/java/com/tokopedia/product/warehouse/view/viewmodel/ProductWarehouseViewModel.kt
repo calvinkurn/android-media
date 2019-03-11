@@ -52,7 +52,7 @@ class ProductWarehouseViewModel @Inject constructor(private val restRepository: 
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    val dataResponse = (result?.getData() as DataResponse<ProductActionSubmit>).data
+                    val dataResponse = (result.getData() as DataResponse<ProductActionSubmit>).data
                     if (dataResponse.getIsSuccess()) {
                         onSuccessMoveToWarehouse()
                     } else {
@@ -89,7 +89,7 @@ class ProductWarehouseViewModel @Inject constructor(private val restRepository: 
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    val dataResponse = (result?.getData() as DataResponse<ProductActionSubmit>).data
+                    val dataResponse = (result.getData() as DataResponse<ProductActionSubmit>).data
                     if (dataResponse.getIsSuccess()) {
                         onSuccessMoveToEtalase()
                     } else {

@@ -272,7 +272,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val estimationParams = mapOf(PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg, PARAM_RATE_EST_SHOP_DOMAIN to shopDomain)
             val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
-                    RatesEstimationModel.Response::class.java, estimationParams)
+                    RatesEstimationModel.Response::class.java, estimationParams, false)
 
             requests.add(estimationRequest)
 
@@ -282,6 +282,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     ProductOther.Response::class.java, otherProductParams)
 
             requests.add(otherProductRequest)
+
+            val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE], GetCheckoutTypeResponse::class.java)
+            requests.add(getCheckoutTypeRequest)
         }
 
         val topadsParams = mapOf(KEY_PARAM to generateTopAdsParams(productInfo))
@@ -299,31 +302,24 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         requests.add(affiliateRequest)
 
-        //val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE], GetCheckoutTypeResponse::class.java)
-
         try {
             val response = graphqlRepository.getReseponse(requests)
 
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
-                val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)
-                    .data.data
-
-                productInfoP3.rateEstSummarizeText = ratesEstModel.texts
+                val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
+                productInfoP3.rateEstSummarizeText = ratesEstModel?.texts
             }
 
             if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
-                productInfoP3.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
-                    .isWishlisted == true
+                productInfoP3.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java).isWishlisted == true
             else
                 productInfoP3.isWishlisted = true
 
             if (response.getError(ImageReviewGqlResponse::class.java)?.isNotEmpty() != true)
-                productInfoP3.imageReviews = response.getData<ImageReviewGqlResponse>(ImageReviewGqlResponse::class.java)
-                    .toImageReviewItemList()
+                productInfoP3.imageReviews = response.getData<ImageReviewGqlResponse>(ImageReviewGqlResponse::class.java)?.toImageReviewItemList() ?: listOf()
 
             if (response.getError(Review.Response::class.java)?.isNotEmpty() != true)
-                productInfoP3.helpfulReviews = response.getData<Review.Response>(Review.Response::class.java)
-                    .productMostHelpfulReviewQuery.list
+                productInfoP3.helpfulReviews = response.getData<Review.Response>(Review.Response::class.java)?.productMostHelpfulReviewQuery?.list ?: listOf()
 
             if (response.getError(TalkList.Response::class.java)?.isNotEmpty() != true) {
                 productInfoP3.latestTalk = response.getData<TalkList.Response>(TalkList.Response::class.java)
@@ -346,11 +342,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     .topAdsPDPAffiliate?.data?.affiliate?.firstOrNull()
             }
 
-            /*if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
+            if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
                 productInfoP3.isExpressCheckoutType = response
                     .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
                     .getCartType.isExpress
-            }*/
+            }
 
         } catch (t: Throwable) {
             t.printStackTrace()

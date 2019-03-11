@@ -27,12 +27,12 @@ data class RatesEstimationModel(
     data class Data(
             @SerializedName("data")
             @Expose
-            val data: RatesEstimationModel = RatesEstimationModel()
+            val data: RatesEstimationModel? = RatesEstimationModel()
     )
 
     data class Response (
             @SerializedName("ratesEstimateV3")
             @Expose
-            val data: Data = Data()
+            val data: Data? = Data()
     )
 }

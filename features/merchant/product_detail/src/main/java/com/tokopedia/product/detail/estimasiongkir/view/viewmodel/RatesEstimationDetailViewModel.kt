@@ -36,7 +36,7 @@ class RatesEstimationDetailViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(Dispatchers.IO){
                 val resp = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
-                        .getSuccessData<RatesEstimationModel.Response>().data.data
+                    .getSuccessData<RatesEstimationModel.Response>().data?.data ?: throw NullPointerException()
 
                 val filteredService = resp.rates.services.asSequence()
                         .filter { it.status in visibleItemStatus }
