@@ -858,11 +858,21 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
      * For Dynamic Feature Support
      */
     private void goToPDP(String productId) {
-        Intent intent = new Intent();
-        intent.setClassName(getContext().getPackageName(),
-                "com.tokopedia.product.detail.view.activity.ProductDetailActivity");
-        intent.putExtra("product_id", productId);
-        startActivity(intent);
+        startActivity(getProductIntent(productId));
+    }
+
+    private Intent getProductIntent(String productId){
+        String url = getString(R.string.template_applink,
+                getString(R.string.internal_scheme), getString(R.string.host_merchant),
+                "product/"+productId);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                .addCategory(Intent.CATEGORY_DEFAULT)
+                .addCategory(Intent.CATEGORY_BROWSABLE);
+
+        if (getContext() != null)
+            intent.setPackage(getContext().getPackageName());
+        return intent;
     }
 
     @Override

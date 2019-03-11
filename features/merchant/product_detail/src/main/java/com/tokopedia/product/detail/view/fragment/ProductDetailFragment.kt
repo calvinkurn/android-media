@@ -62,6 +62,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.data.util.getIntentUrl
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
@@ -187,6 +188,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         private const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
+
+        private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
         fun newInstance(productId: String? = null,
                         shopDomain: String? = null,
@@ -442,7 +446,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     fun navigateToExpressCheckout() {
-        activity?.run {
+        activity?.let {
             try {
                 val productInfo = (productInfoViewModel.productInfoP1Resp.value as Success).data
                 val atcRequestParam = AtcRequestParam()
@@ -452,10 +456,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
                 atcRequestParam.setQuantity(qty)
 
-                val intent = (getApplicationContext() as ProductDetailRouter)
-                    .getExpressCheckoutIntent(this, atcRequestParam)
+                val checkoutUrlRouter = getString(R.string.template_applink_non_enclosed,
+                        getString(R.string.internal_scheme), getString(R.string.host_transaction),
+                        "checkoutvariant")
+
+                val intent = it.getIntentUrl(checkoutUrlRouter)
+                        .putExtra("EXTRA_ATC_REQUEST", atcRequestParam)
+
                 startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
-                overridePendingTransition(R.anim.pull_up, 0)
+                it.overridePendingTransition(R.anim.pull_up, 0)
             } catch (e: Exception) {
 
             }
@@ -847,7 +856,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         mostHelpfulReviewView.renderData(productInfoP3.helpfulReviews, productInfo?.stats?.countReview
             ?: 0)
         latestTalkView.renderData(productInfoP3.latestTalk, productInfo?.stats?.countTalk ?: 0,
-            productInfo?.basic?.shopID ?: 0)
+            productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
         productInfoP3.displayAds?.let { topads_carousel.setData(it) }
         otherProductView.renderData(productInfoP3.productOthers)
 
@@ -985,10 +994,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            if (it.applicationContext is ProductDetailRouter) {
-                val intent = (it.applicationContext as ProductDetailRouter).goToEditProduct(it, true, id)
-                startActivityForResult(intent, REQUEST_CODE_EDIT_PRODUCT)
-            }
+            val fullUrl = it.getString(R.string.template_applink,
+                    it.getString(R.string.internal_scheme),
+                    it.getString(R.string.host_merchant),
+                    "product/$id")+"edit"
+
+            startActivityForResult(it.getIntentUrl(fullUrl), REQUEST_CODE_EDIT_PRODUCT)
         }
     }
 
@@ -1114,6 +1125,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
         updateWishlist(false)
         //TODO clear cache
         //TODO action success remove wishlist. in old version, will broadcast
+        sendIntentResusltWishlistChange(productId ?: "", false)
+
+    }
+
+    private fun sendIntentResusltWishlistChange(productId: String, isInWishlist: Boolean){
+        val resultIntent = Intent()
+                .putExtra(WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1))
+        resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
+        resultIntent.putExtra("product_id", productId)
+        activity!!.setResult(Activity.RESULT_CANCELED, resultIntent)
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {
@@ -1126,6 +1147,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         updateWishlist(true)
         //TODO clear cache
         //TODO action success add wishlist. in old version, will broadcast
+        sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
     private fun onDiscussionClicked() {
@@ -1146,10 +1168,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productDetailTracking.eventReviewClicked()
         if (productInfo != null) {
             //TODO SENT MOENGAGE
-            activity?.let {
-                val router = it.applicationContext as? ProductDetailRouter ?: return
-                startActivity(router.getProductReputationIntent(it, productInfo!!.basic.id.toString(),
-                    productInfo!!.basic.name))
+            context?.let {
+                val fullUrl = getString(R.string.template_applink,
+                        getString(R.string.internal_scheme),
+                        getString(R.string.host_merchant),
+                        "product/${productInfo!!.basic.id}")+"review"
+                val intent = it.getIntentUrl(fullUrl).putExtra("x_prd_nm", productInfo!!.basic.name)
+                startActivity(intent)
             }
         }
     }

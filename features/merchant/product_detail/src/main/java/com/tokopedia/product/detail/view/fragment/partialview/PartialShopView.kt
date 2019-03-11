@@ -6,12 +6,14 @@ import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.relativeWeekDay
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import kotlinx.android.synthetic.main.partial_product_shop_info.view.*
+import java.util.*
 
 class PartialShopView private constructor(private val view: View, private val clickListener: View.OnClickListener) :
         View.OnClickListener by clickListener {
@@ -28,7 +30,11 @@ class PartialShopView private constructor(private val view: View, private val cl
 
             var templateLocOnline = "${shop.location} "
             if (shop.shopLastActive.isNotBlank()){
-                templateLocOnline += context.getString(R.string.template_shop_last_login, shop.shopLastActive)
+                try {
+                    val cal = Calendar.getInstance()
+                    cal.timeInMillis = shop.shopLastActive.toLong() * 1000
+                    templateLocOnline += context.getString(R.string.template_shop_last_login, cal.time.relativeWeekDay)
+                } catch (t: Throwable){}
             }
             shop_location_online.text = templateLocOnline
             if (shop.isAllowManage == TRUE_VALUE) btn_favorite.visible() else btn_favorite.gone()

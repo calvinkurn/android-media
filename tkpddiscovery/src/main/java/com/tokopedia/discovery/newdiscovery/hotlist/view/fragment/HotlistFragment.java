@@ -34,7 +34,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.RefreshHandler;
@@ -537,15 +536,7 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         startActivity(intent);
         TopAdsGtmTracker.eventHotlistProductClick(getContext(), getQueryModel().getQueryKey(),
                 product, position);
@@ -853,12 +844,23 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     private void gotoProductDetail(ProductItem productItem, int adapterPosition) {
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, productItem);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(productItem.id);
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private Intent getProductIntent(String productId){
+        String url = getString(R.string.template_applink,
+                getString(R.string.internal_scheme), getString(R.string.host_merchant),
+                "product/"+productId);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                .addCategory(Intent.CATEGORY_DEFAULT)
+                .addCategory(Intent.CATEGORY_BROWSABLE);
+
+        if (getContext() != null)
+            intent.setPackage(getContext().getPackageName());
+        return intent;
     }
 
     @Override

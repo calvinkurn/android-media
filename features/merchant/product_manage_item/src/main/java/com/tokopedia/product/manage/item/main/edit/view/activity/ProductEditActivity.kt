@@ -13,7 +13,12 @@ import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
 
 class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent> {
     override fun getNewFragment(): Fragment {
-        val productId = intent.getStringExtra(EDIT_PRODUCT_ID)
+        val uri = intent.data
+        val productId = if (uri != null){
+            val pathSegments = uri.pathSegments
+            pathSegments[pathSegments.size - 2]
+        } else
+            intent.getStringExtra(EDIT_PRODUCT_ID)
         return ProductEditFragment.createInstance(productId)
     }
 

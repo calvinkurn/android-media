@@ -39,10 +39,10 @@ class RatesEstimationDetailViewModel @Inject constructor(
                         .getSuccessData<RatesEstimationModel.Response>().data.data
 
                 val filteredService = resp.rates.services.asSequence()
-                        .filter { it.error.id in visibleItemStatus }
+                        .filter { it.status in visibleItemStatus }
                         .map { service ->  service.copy(
                                 products = service.products.asSequence()
-                                        .filter { it.error.id in visibleItemStatus }.toList())}
+                                        .filter { it.status in visibleItemStatus }.toList())}
                         .filter { it.products.isNotEmpty() }.toList()
                 resp.copy(rates = resp.rates.copy(services = filteredService))
             }
@@ -56,6 +56,6 @@ class RatesEstimationDetailViewModel @Inject constructor(
     companion object {
         private const val PARAM_PRODUCT_WEIGHT = "weight"
         private const val PARAM_SHOP_DOMAIN = "domain"
-        private val visibleItemStatus = arrayOf("200", "501")
+        private val visibleItemStatus = intArrayOf(200, 501)
     }
 }

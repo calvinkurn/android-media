@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -11,6 +12,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 
 import com.tokopedia.tkpd.tkpdreputation.R;
+
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 1/15/18.
@@ -29,7 +32,15 @@ public class ReviewProductActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     protected Fragment getNewFragment() {
-        String productId = getIntent().getExtras().getString(ReviewProductFragment.EXTRA_PRODUCT_ID);
+        String productId;
+        Uri uri = getIntent().getData();
+        if (uri != null){
+            List<String> segments = uri.getPathSegments();
+            productId = segments.get(segments.size() - 2);
+        } else {
+            productId = getIntent().getExtras().getString(ReviewProductFragment.EXTRA_PRODUCT_ID);
+        }
+
         return ReviewProductFragment.getInstance(productId);
     }
 
