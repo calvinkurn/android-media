@@ -27,7 +27,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConstInternal
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriBuilder
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
@@ -456,15 +458,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
                 atcRequestParam.setQuantity(qty)
 
-                val checkoutUrlRouter = getString(R.string.template_applink_non_enclosed,
-                        getString(R.string.internal_scheme), getString(R.string.host_transaction),
-                        "checkoutvariant")
-
-                val intent = it.getIntentUrl(checkoutUrlRouter)
-                        .putExtra("EXTRA_ATC_REQUEST", atcRequestParam)
-
-                startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
-                it.overridePendingTransition(R.anim.pull_up, 0)
+                val expressCheckoutUriString = ApplinkConstInternal.EXPRESS_CHECKOUT
+                val intent = RouteManager.getIntentInternal(it, expressCheckoutUriString)
+                intent?.run {
+                    putExtra("EXTRA_ATC_REQUEST", atcRequestParam)
+                    startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
+                    it.overridePendingTransition(R.anim.pull_up, 0)
+                }
             } catch (e: Exception) {
 
             }
@@ -534,7 +534,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoShopDetail() {
         activity?.let {
             val shopId = productInfo?.basic?.shopID?.toString() ?: return
-            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.SHOP.replace("{shop_id}", shopId)),
+            startActivityForResult(RouteManager.getIntent(it,
+                UriBuilder.buildUri(ApplinkConst.SHOP, shopId)),
                 REQUEST_CODE_SHOP_INFO)
         }
     }
@@ -885,9 +886,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productDetailTracking.eventClickAffiliate(productInfoViewModel.userId, productInfo!!.basic.shopID,
                 pdpAffiliate.productId.toString(), isRegularPdp)
             if (productInfoViewModel.isUserSessionActive()) {
-                RouteManager.route(it, ApplinkConst.AFFILIATE_CREATE_POST
-                    .replace("{product_id}", pdpAffiliate.productId.toString())
-                    .replace("{ad_id}", pdpAffiliate.adId.toString()))
+                RouteManager.route(it,
+                    UriBuilder.buildUri(ApplinkConst.AFFILIATE_CREATE_POST,
+                        pdpAffiliate.productId.toString(),
+                        pdpAffiliate.adId.toString()))
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
@@ -994,12 +996,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val fullUrl = it.getString(R.string.template_applink,
-                    it.getString(R.string.internal_scheme),
-                    it.getString(R.string.host_merchant),
-                    "product/$id")+"edit"
-
-            startActivityForResult(it.getIntentUrl(fullUrl), REQUEST_CODE_EDIT_PRODUCT)
+            val fullUrl = UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_EDIT, id)
+            val intent = RouteManager.getIntentInternal(it, fullUrl)
+            intent?.run {
+                startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
+            }
         }
     }
 
@@ -1133,9 +1134,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     }
 
-    private fun sendIntentResusltWishlistChange(productId: String, isInWishlist: Boolean){
+    private fun sendIntentResusltWishlistChange(productId: String, isInWishlist: Boolean) {
         val resultIntent = Intent()
-                .putExtra(WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1))
+            .putExtra(WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1))
         resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
         resultIntent.putExtra("product_id", productId)
         activity!!.setResult(Activity.RESULT_CANCELED, resultIntent)
@@ -1160,7 +1161,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                ApplinkConst.PRODUCT_TALK.replace("{product_id}", productInfo?.basic?.id.toString()))
+                UriBuilder.buildUri(ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString()))
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
         if (productInfo != null) {
@@ -1173,12 +1174,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (productInfo != null) {
             //TODO SENT MOENGAGE
             context?.let {
-                val fullUrl = getString(R.string.template_applink,
-                        getString(R.string.internal_scheme),
-                        getString(R.string.host_merchant),
-                        "product/${productInfo!!.basic.id}")+"review"
-                val intent = it.getIntentUrl(fullUrl).putExtra("x_prd_nm", productInfo!!.basic.name)
-                startActivity(intent)
+                val fullUrl = UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
+                val intent = RouteManager.getIntentInternal(it, fullUrl)
+                intent?.run {
+                    intent.putExtra("x_prd_nm", productInfo!!.basic.name)
+                    startActivity(intent)
+                }
             }
         }
     }
@@ -1189,11 +1190,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
-                    ApplinkConst.TOPCHAT_ASKSELLER.replace("{toShopId}", shop.shopCore.shopID)
-                        .replace("{customMessage}", product.basic.url)
-                        .replace("{source}", "product")
-                        .replace("{opponent_name}", shop.shopCore.name)
-                        .replace("{avatar}", shop.shopAssets.avatar))
+                    UriBuilder.buildUri(ApplinkConst.TOPCHAT_ASKSELLER,
+                        shop.shopCore.shopID, product.basic.url,
+                        "product", shop.shopCore.name, shop.shopAssets.avatar))
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),

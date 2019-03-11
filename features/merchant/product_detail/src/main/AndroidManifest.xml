@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_merchant"
+                    android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_product_detail"/>
             </intent-filter>
         </activity>
