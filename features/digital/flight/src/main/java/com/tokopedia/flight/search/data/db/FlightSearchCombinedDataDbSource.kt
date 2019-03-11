@@ -20,6 +20,9 @@ open class FlightSearchCombinedDataDbSource @Inject constructor(private val flig
         }
     }
 
+    fun getComboData(onwardJourneyId: String, returnJourneyId: String): Observable<List<FlightComboTable>> =
+            Observable.just(flightComboDao.findCombosByOnwardAndReturnJourneyId(onwardJourneyId, returnJourneyId))
+
     open fun insert(item: List<FlightComboTable>) {
         flightComboDao.insert(item)
     }
