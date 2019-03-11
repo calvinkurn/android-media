@@ -32,6 +32,9 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriBuilder;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -463,17 +466,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
      * For Dynamic Feature Support
      */
     private void goToPDP(String productId) {
-        String fullUrl = getString(R.string.template_applink,
-                getString(R.string.internal_scheme), getString(R.string.host_marketplace),
-                "product/"+productId);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl))
-                .addCategory(Intent.CATEGORY_DEFAULT)
-                .addCategory(Intent.CATEGORY_BROWSABLE);
         if (getContext() != null){
-            intent.setPackage(getContext().getPackageName());
+            Intent intent = RouteManager.getIntentInternal(getContext(),
+                    UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+            startActivity(intent);
         }
-        startActivity(intent);
     }
 
     @Override

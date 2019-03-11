@@ -32,6 +32,9 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriBuilder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -863,17 +866,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     private Intent getProductIntent(String productId){
-        String url = getString(R.string.template_applink,
-                getString(R.string.internal_scheme), getString(R.string.host_marketplace),
-                "product/"+productId);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                .addCategory(Intent.CATEGORY_DEFAULT)
-                .addCategory(Intent.CATEGORY_BROWSABLE);
-
-        if (getContext() != null)
-            intent.setPackage(getContext().getPackageName());
-        return intent;
+        if (getContext() != null) {
+            return RouteManager.getIntentInternal(getContext(),
+                    UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     @Override

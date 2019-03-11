@@ -22,6 +22,9 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriBuilder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -850,17 +853,12 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     private Intent getProductIntent(String productId){
-        String url = getString(R.string.template_applink,
-                getString(R.string.internal_scheme), getString(R.string.host_marketplace),
-                "product/"+productId);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                .addCategory(Intent.CATEGORY_DEFAULT)
-                .addCategory(Intent.CATEGORY_BROWSABLE);
-
-        if (getContext() != null)
-            intent.setPackage(getContext().getPackageName());
-        return intent;
+        if (getContext() != null) {
+            return RouteManager.getIntentInternal(getContext(),
+                    UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     @Override

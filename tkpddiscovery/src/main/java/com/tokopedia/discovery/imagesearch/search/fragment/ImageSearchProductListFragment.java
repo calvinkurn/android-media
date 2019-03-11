@@ -11,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriBuilder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -569,17 +572,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private Intent getProductIntent(String productId){
-        String url = getString(R.string.template_applink,
-                getString(R.string.internal_scheme), getString(R.string.host_marketplace),
-                "product/"+productId);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                .addCategory(Intent.CATEGORY_DEFAULT)
-                .addCategory(Intent.CATEGORY_BROWSABLE);
-
-        if (getContext() != null)
-            intent.setPackage(getContext().getPackageName());
-        return intent;
+        if (getContext() != null) {
+            return RouteManager.getIntentInternal(getContext(),
+                    UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
 

@@ -416,7 +416,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         //TODO tracking
         addToCart(true, onFinish = {
             onFinishAddToCart(it)
-            // TODO if bigpromo, route to cart, else to checkout
             activity?.run {
                 val intent = router.getCheckoutIntent(this)
                 startActivity(intent)
