@@ -138,6 +138,7 @@ public class MainParentActivity extends BaseActivity implements
     public static Intent getApplinkFeedIntent(Context context, Bundle bundle) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
+        intent.putExtras(bundle);
         return intent;
     }
 

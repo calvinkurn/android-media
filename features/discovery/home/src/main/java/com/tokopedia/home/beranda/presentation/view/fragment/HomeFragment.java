@@ -988,6 +988,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onThreeGridItemClicked(String actionLink, String trackingAttribution) {
+        onActionLinkClicked(actionLink, trackingAttribution);
+    }
+
+    @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
         if (getUserVisibleHint()) {
             presenter.hitBannerImpression(bannerSlidesModel);

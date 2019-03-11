@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
+import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract;
 
 import javax.inject.Named;
 
@@ -18,6 +19,9 @@ public interface InboxComponent {
 
     @Named("InboxDetailPresenter")
     InboxDetailContract.InboxDetailPresenter getInboxDetailPresenter();
+
+
+    ProvideRatingContract.ProvideRatingPresenter getProvideRatingPresenter();
 
     Context getContext();
 }

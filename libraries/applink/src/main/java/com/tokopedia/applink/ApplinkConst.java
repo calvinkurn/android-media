@@ -68,6 +68,7 @@ public interface ApplinkConst {
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
+    String OFFICIAL_STORE = "tokopedia://official-store";
     String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
@@ -100,6 +101,7 @@ public interface ApplinkConst {
     String PROFILE = "tokopedia://people/{user_id}";
     String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
     String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
+    String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
     String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
 
@@ -130,12 +132,6 @@ public interface ApplinkConst {
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";
-
-    String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
-    String CONTENT_DETAIL = "tokopedia://content/{post_id}";
-    String INTEREST_PICK = "tokopedia://interestpick";
-    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
-    String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
 
     String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
@@ -185,8 +181,16 @@ public interface ApplinkConst {
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
 
+    String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
+    String CONTENT_DETAIL = "tokopedia://content/{post_id}";
+    String CONTENT_CREATE_POST = "tokopedia://content/create_post/";
+    String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}/";
+    String INTEREST_PICK = "tokopedia://interestpick";
+    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
+    String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
+
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
-    String AFFILIATE_EDIT_POST = "tokopedia://affiliate/edit/{post_id}";
+    String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
     String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
