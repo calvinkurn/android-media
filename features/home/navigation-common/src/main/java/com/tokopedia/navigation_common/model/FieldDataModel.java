@@ -10,11 +10,11 @@ public class FieldDataModel {
 
     @SerializedName("url")
     @Expose
-    private String url;
+    private String url = "";
 
     @SerializedName("preApp")
     @Expose
-    private PreAppModel preApp;
+    private PreAppModel preApp = new PreAppModel();
 
     public String getUrl() {
         return url;

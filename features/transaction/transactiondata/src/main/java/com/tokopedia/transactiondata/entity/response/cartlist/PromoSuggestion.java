@@ -11,19 +11,19 @@ public class PromoSuggestion {
 
     @SerializedName("cta")
     @Expose
-    private String cta;
+    private String cta = "";
     @SerializedName("cta_color")
     @Expose
-    private String ctaColor;
+    private String ctaColor = "";
     @SerializedName("is_visible")
     @Expose
     private int isVisible;
     @SerializedName("promo_code")
     @Expose
-    private String promoCode;
+    private String promoCode = "";
     @SerializedName("text")
     @Expose
-    private String text;
+    private String text = "";
 
     public String getCta() {
         return cta;

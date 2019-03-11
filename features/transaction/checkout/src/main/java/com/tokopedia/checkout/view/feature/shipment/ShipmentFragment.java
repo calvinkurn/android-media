@@ -75,6 +75,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
@@ -85,14 +86,16 @@ import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourie
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+import com.tokopedia.transactionanalytics.CornerAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -100,6 +103,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.transactiondata.constant.Constant.EXTRA_CHECKOUT_REQUEST;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -165,11 +170,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CodAnalytics mTrackerCod;
     @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
+    @Inject
+    CornerAnalytics mTrackerCorner;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     CartPromoSuggestion savedCartPromoSuggestion;
     List<ShipmentCartItemModel> savedShipmentCartItemModelList;
     ShipmentCostModel savedShipmentCostModel;
+    EgoldAttributeModel savedEgoldAttributeModel;
     RecipientAddressModel savedRecipientAddressModel;
     PromoData savedPromoData;
     ShipmentDonationModel savedShipmentDonationModel;
@@ -219,6 +227,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 savedCartPromoSuggestion = saveInstanceCacheManager.get(CartPromoSuggestion.class.getSimpleName(), CartPromoSuggestion.class);
                 savedRecipientAddressModel = saveInstanceCacheManager.get(RecipientAddressModel.class.getSimpleName(), RecipientAddressModel.class);
                 savedShipmentCostModel = saveInstanceCacheManager.get(ShipmentCostModel.class.getSimpleName(), ShipmentCostModel.class);
+                savedEgoldAttributeModel = saveInstanceCacheManager.get(EgoldAttributeModel.class.getSimpleName(), EgoldAttributeModel.class);
                 savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
                 savedPromoData = saveInstanceCacheManager.get(PromoData.class.getSimpleName(), PromoData.class);
             }
@@ -302,6 +311,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setRecipientAddressModel(savedRecipientAddressModel);
             shipmentPresenter.setShipmentCostModel(savedShipmentCostModel);
             shipmentPresenter.setShipmentDonationModel(savedShipmentDonationModel);
+            shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
             shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
             shipmentAdapter.addPromoVoucherData(savedPromoData);
@@ -351,6 +361,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
                                       ShipmentCostModel shipmentCostModel,
+                                      EgoldAttributeModel egoldAttributeModel,
                                       boolean isInitialRender) {
         shipmentAdapter.clearData();
         rvShipment.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -363,6 +374,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     tempCod.getMessageLink()
             ));
             mTrackerCod.eventViewBayarDiTempat();
+            mTrackerCod.eventImpressionEligibleCod();
             tvSelectCodPayment.setVisibility(View.VISIBLE);
             tvSelectCodPayment.setOnClickListener(this::proceedCod);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -402,6 +414,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.setCartIds(cartIdsStringBuilder.toString());
 
         shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
+            shipmentAdapter.updateEgold(false);
+            shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
+        }
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
         shipmentAdapter.updateShipmentSellerCashbackVisibility();
         if (isInitialRender) {
@@ -514,10 +530,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
         ShipmentDonationModel shipmentDonationModel = shipmentPresenter.getShipmentDonationModel();
         ShipmentCostModel shipmentCostModel = shipmentPresenter.getShipmentCostModel();
-
+        EgoldAttributeModel egoldAttributeModel = shipmentPresenter.getEgoldAttributeModel();
         initRecyclerViewData(
                 promoData, cartPromoSuggestion, recipientAddressModel,
-                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel, isInitialRender
+                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel, egoldAttributeModel, isInitialRender
         );
     }
 
@@ -555,6 +571,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 oldShipmentCartItemModelList,
                 shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getShipmentCostModel(),
+                shipmentPresenter.getEgoldAttributeModel(),
                 false
         );
     }
@@ -567,10 +584,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
         ShipmentDonationModel shipmentDonationModel = shipmentPresenter.getShipmentDonationModel();
         ShipmentCostModel shipmentCostModel = shipmentPresenter.getShipmentCostModel();
-
+        EgoldAttributeModel egoldAttributeModel = shipmentPresenter.getEgoldAttributeModel();
         initRecyclerViewData(
                 promoData, cartPromoSuggestion, recipientAddressModel,
-                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel, false
+                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel, egoldAttributeModel, false
         );
     }
 
@@ -621,6 +638,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartError(String message) {
+        if (message.contains("Pre Order") && message.contains("Corner"))
+            mTrackerCorner.sendViewCornerPoError();
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 
@@ -685,8 +704,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void navigateToCodConfirmationPage(Data data) {
+    public void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest) {
         Intent intent = checkoutModuleRouter.getCodPageIntent(getContext(), data);
+        intent.putExtra(EXTRA_CHECKOUT_REQUEST, checkoutRequest);
         startActivity(intent);
     }
 
@@ -876,6 +896,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
         if (shipmentAdapter.hasAppliedPromoCode()) {
             shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), selectedAddress.getCornerId());
+        }
+        if (!TextUtils.isEmpty(selectedAddress.getCornerId()) && shipmentPresenter.getCodData() != null) {
+            shipmentAdapter.removeNotifierData();
+            tvSelectCodPayment.setVisibility(View.GONE);
         }
         shipmentPresenter.setRecipientAddressModel(selectedAddress);
         shipmentAdapter.updateSelectedAddress(selectedAddress);
@@ -1539,6 +1563,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onEgoldChecked(boolean checked) {
+        shipmentAdapter.updateEgold(checked);
+    }
+
+    @Override
     public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
         shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
     }
@@ -1577,22 +1606,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         if (flagNeedToSetPinpoint) {
             // If instant courier and has not set pinpoint
-            if (getActivity() != null) {
-                Tooltip tooltip = new Tooltip(getActivity());
-                tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
-                tooltip.setDesc(getActivity().getString(R.string.label_hardcoded_shipping_duration_info));
-                tooltip.setTextButton(getActivity().getString(R.string.label_no_courier_bottomsheet_button));
-                tooltip.setIcon(R.drawable.ic_dropshipper);
-                tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tooltip.dismiss();
-                        shipmentAdapter.setLastServiceId(selectedServiceId);
-                        setPinpoint(cartItemPosition);
-                    }
-                });
-                tooltip.show();
-            }
+            shipmentAdapter.setLastServiceId(selectedServiceId);
+            setPinpoint(cartItemPosition);
         } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
@@ -1640,6 +1655,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onNoCourierAvailable(String message) {
+        if (message.contains(getString(R.string.corner_error_stub)))
+            mTrackerCorner.sendViewCornerError();
         if (getActivity() != null) {
             Tooltip tooltip = new Tooltip(getActivity());
             tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));

@@ -14,10 +14,12 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.adapter.decorater.SpacingItemDecoration;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
@@ -109,10 +111,23 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
                         );
                         clickListener.onItemSearchClicked(
                                 item.getKeyword(),
-                                item.getCategoryId()
+                                item.getCategoryId(),
+                                getAutoCompleteItemIsOfficial(item)
                         );
                     }
                 });
+            }
+
+            private boolean getAutoCompleteItemIsOfficial(BaseItemAutoCompleteSearch autoCompleteSearch) {
+                boolean isOfficial = false;
+
+                HashMap<String, String> applinkParameterHashMap = autoCompleteSearch.getApplinkParameterHashmap();
+
+                if(applinkParameterHashMap.containsKey(SearchApiConst.OFFICIAL)) {
+                    isOfficial = Boolean.parseBoolean(applinkParameterHashMap.get(SearchApiConst.OFFICIAL));
+                }
+
+                return isOfficial;
             }
         }
     }

@@ -79,6 +79,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var userId: Int = 0
     private var afterPost: Boolean = false
     private var afterEdit: Boolean = false
+    private var successPost: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var isOwner: Boolean = false
@@ -97,7 +98,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     lateinit var profileAnalytics: ProfileAnalytics
 
     companion object {
-        private const val POST_ID = "{post_id}"
         private const val PARAM_TAB_NAME = "{tab_name}"
         private const val PARAM_CATEGORY_ID = "{category_id}"
         private const val TAB_INSPIRASI = "inspirasi"
@@ -261,17 +261,25 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         trackKolPostImpression(visitables)
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
-        if (afterPost) {
-            when {
-                isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
-                onlyOnePost -> showShowCaseDialog(shareProfile)
-                else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
-            }
-            afterPost = false
+        when {
+            afterPost -> {
+                showAfterPostToast()
+                afterPost = false
 
-        } else if (afterEdit) {
-            showAfterEditToaster()
-            afterEdit = false
+            }
+            afterEdit -> {
+                showAfterEditToaster()
+                afterEdit = false
+
+            }
+            successPost -> {
+                when {
+                    isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
+                    onlyOnePost -> showShowCaseDialog(shareProfile)
+                    else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
+                }
+                successPost = false
+            }
         }
     }
 
@@ -413,14 +421,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
                                activityType: String) {
-        startActivityForResult(
-                RouteManager.getIntent(
-                        context,
-                        ApplinkConst.AFFILIATE_EDIT_POST.replace(POST_ID, activityId)
-                ),
-                EDIT_POST_CODE
-        )
-        profileAnalytics.eventClickTambahGambar(hasMultipleContent, activityId, activityType)
     }
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
@@ -496,14 +496,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             bindCurationQuota(it)
         }
 
-
         val snackbar = ToasterNormal.make(view,
                 getString(R.string.profile_post_deleted),
                 BaseToaster.LENGTH_LONG
         )
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
 
-        if (adapter.data.last() is ProfileHeaderViewModel) {
+        if (adapter.data.isEmpty()) {
             onSwipeRefresh()
         }
     }
@@ -547,6 +546,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
                     ProfileActivity.TRUE
             )
+            successPost = TextUtils.equals(
+                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_SUCCESS_POST, ""),
+                    ProfileActivity.TRUE
+            )
         }
 
         if (context!!.applicationContext is ProfileModuleRouter) {
@@ -587,9 +590,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                    toolbar_menu.visibility = View.VISIBLE
+                    toolbar.visibility = View.VISIBLE
                 } else {
-                    toolbar_menu.visibility = View.GONE
+                    toolbar.visibility = View.GONE
                 }
 
             }
@@ -777,6 +780,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         } else {
             val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
             addCuration.text = addCurationText
+        }
+    }
+
+    private fun showAfterPostToast() {
+        context?.let {
+            Toast.makeText(it, R.string.profile_after_post, Toast.LENGTH_LONG).show()
         }
     }
 

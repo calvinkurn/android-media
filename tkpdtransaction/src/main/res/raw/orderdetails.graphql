@@ -97,12 +97,17 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
     }
     actionButtons {
       label
-      key
-      value
+      buttonType
+      uri
+      mappingUri
       weight
+      key
+      method
+      uriWeb
+      value
+      name
       control
       header
-      uri
       color {
         textColor
         border

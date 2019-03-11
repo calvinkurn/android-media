@@ -26,7 +26,7 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ChallengesGaAnalyticsTracker analytics;
-    private final static String SCREEN_SUBMISSION = "challenges/submission";
+    private final static String SCREEN_SUBMISSION = "challenges/submissions";
     private final static String SCREEN_CHALLENGES = "challenges";
 
 
@@ -62,7 +62,7 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
 
         setContentView(R.layout.activity_home);
         analytics = new ChallengesGaAnalyticsTracker(this);
-        analytics.sendScreenEvent(ChallengesHomeActivity.this,SCREEN_CHALLENGES);
+        analytics.sendScreenEvent(ChallengesHomeActivity.this, SCREEN_CHALLENGES);
         tabLayout = findViewById(R.id.tab_challenges);
         viewPager = findViewById(R.id.pager);
         ChallengesHomeAdapter adapter = new ChallengesHomeAdapter(getSupportFragmentManager());
@@ -79,14 +79,14 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
             @Override
             public void onPageSelected(int position) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_HOME_PAGE,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         String.valueOf(adapter.getPageTitle(position)));
                 if (position == 1) {
-                    analytics.sendScreenEvent(ChallengesHomeActivity.this,SCREEN_SUBMISSION);
+                    analytics.sendScreenEvent(ChallengesHomeActivity.this, SCREEN_SUBMISSION);
                     ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(ChallengesHomeActivity.this, "My Submissions");
-                    }else {
-                    analytics.sendScreenEvent(ChallengesHomeActivity.this,SCREEN_CHALLENGES);
+                } else {
+                    analytics.sendScreenEvent(ChallengesHomeActivity.this, SCREEN_CHALLENGES);
                 }
             }
 

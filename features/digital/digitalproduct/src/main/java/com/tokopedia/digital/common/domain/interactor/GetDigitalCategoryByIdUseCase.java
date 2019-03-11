@@ -1,17 +1,15 @@
 package com.tokopedia.digital.common.domain.interactor;
 
-import android.content.Context;
-
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSession;
+
+import java.util.Map;
 
 import rx.Observable;
 
@@ -29,12 +27,12 @@ public class GetDigitalCategoryByIdUseCase extends UseCase<ProductDigitalData> {
     private final String PARAM_NEED_FAVORITE_LIST = "need_favorite_list";
     private final String DEFAULT_EMPTY_FIELD = "";
 
-    private Context context;
     private IDigitalCategoryRepository digitalCategoryRepository;
+    private UserSession userSession;
 
-    public GetDigitalCategoryByIdUseCase(Context context, IDigitalCategoryRepository digitalCategoryRepository) {
-        this.context = context;
+    public GetDigitalCategoryByIdUseCase(IDigitalCategoryRepository digitalCategoryRepository, UserSession userSession) {
         this.digitalCategoryRepository = digitalCategoryRepository;
+        this.userSession = userSession;
     }
 
     @Override
@@ -47,7 +45,7 @@ public class GetDigitalCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 
         if (needFavoriteList) {
             //fetch category detail and favorit both if user is logged in
-            if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+            if (userSession.isLoggedIn()) {
                 return digitalCategoryRepository.getCategoryWithFavorit(categoryId, operatorId, clientNumber, productId);
             }
 
@@ -103,9 +101,9 @@ public class GetDigitalCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         return requestParams;
     }
 
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams) {
-        return AuthUtil.generateParamsNetwork(context, originParams);
+    public Map<String, String> getGeneratedAuthParamNetwork(
+            Map<String, String> originParams) {
+        return AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), originParams);
     }
 
 }
