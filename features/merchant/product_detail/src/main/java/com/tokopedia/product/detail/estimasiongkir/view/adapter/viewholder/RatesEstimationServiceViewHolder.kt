@@ -28,7 +28,9 @@ class RatesEstimationBBViewHolder(view: View): BaseRatesEstimationViewHolder(vie
     fun bind(shippingServiceModel: ServiceModel){
         if (shippingServiceModel.texts.notes.isNotBlank()){
             itemView.subtitle.visible()
-            itemView.subtitle.text = String.format("(%s)", shippingServiceModel.texts.notes)
+            itemView.subtitle.text = String.format("(%s)",
+                    if (shippingServiceModel.status == 200) shippingServiceModel.texts.notes
+                    else shippingServiceModel.error.message)
         } else
             itemView.subtitle.gone()
 
