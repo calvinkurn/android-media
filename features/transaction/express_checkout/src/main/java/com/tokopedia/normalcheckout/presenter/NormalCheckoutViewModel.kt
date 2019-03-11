@@ -3,12 +3,13 @@ package com.tokopedia.normalcheckout.presenter
 import android.arch.lifecycle.MutableLiveData
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.di.RawQueryKeyConstant
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
@@ -17,7 +18,6 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHO
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -70,4 +70,13 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
     fun isUserSessionActive(): Boolean = userSessionInterface.userId.isNotEmpty()
 
 
+}
+
+inline fun <reified T> GraphqlResponse.getSuccessData(): T {
+    val error = getError(T::class.java)
+    if (error == null || error.isEmpty()){
+        return getData(T::class.java)
+    } else {
+        throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+    }
 }
