@@ -85,7 +85,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/img_product"
                     app:layout_constraintTop_toBottomOf="@+id/tv_price"
-                    app:srcCompat="@drawable/ic_official_store_pdp"
+                    android:src="@drawable/ic_badge_shop_official"
                     tools:ignore="ContentDescription" />
 
                 <com.tokopedia.design.component.TextViewCompat

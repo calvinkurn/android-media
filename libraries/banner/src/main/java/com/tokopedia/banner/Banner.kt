@@ -41,6 +41,10 @@ class Banner : BannerView {
                             context.resources.getDimensionPixelSize(R.dimen.dp_0))
             )
         }
+        bannerSeeAll.setOnClickListener {
+            if (onPromoAllClickListener != null)
+                onPromoAllClickListener.onPromoAllClick()
+        }
     }
 
     override fun getBannerPagerAdapter(): BannerPagerAdapter {
