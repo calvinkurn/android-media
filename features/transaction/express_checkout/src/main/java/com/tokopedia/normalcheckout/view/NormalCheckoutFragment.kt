@@ -436,9 +436,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?) -> Unit),
                           onRetryWhenError: (() -> Unit)) {
+        val selectedVariant = selectedVariantId
         showLoadingDialog()
         router.addToCartProduct(AddToCartRequest.Builder()
-            .productId(productId?.toInt() ?: 0)
+            .productId(if (selectedVariant != null && selectedVariant.toInt() > 0) {
+                selectedVariant.toInt()
+            } else {
+                productId?.toInt() ?: 0
+            })
             .notes(notes)
             .quantity(quantity)
             .shopId(shopId?.toInt() ?: 0)
