@@ -111,6 +111,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -293,7 +294,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
         this.shipmentCostModel = shipmentCostModel;
-        updateEgoldBuyValue();
+
+        if (getEgoldAttributeModel() != null && getEgoldAttributeModel().isEligible()) {
+            updateEgoldBuyValue();
+        }
     }
 
     @Override
@@ -774,7 +778,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (!BuildConfig.DEBUG) {
                         Crashlytics.logException(exception);
                     }
-                    throw exception;
+                    return Unit.INSTANCE;
                 });
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
@@ -948,25 +952,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         TokopediaCornerData cornerData = null;
-        if (getRecipientAddressModel().isCornerAddress()) {
+        if (getRecipientAddressModel() != null && getRecipientAddressModel().isCornerAddress()) {
             cornerData = new TokopediaCornerData(
                     getRecipientAddressModel().getUserCornerId(),
                     Integer.parseInt(getRecipientAddressModel().getCornerId())
             );
         }
         EgoldData egoldData = new EgoldData();
-        if (egoldAttributeModel != null) {
+
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             egoldData.setEgold(egoldAttributeModel.isChecked());
             egoldData.setEgoldAmount(egoldAttributeModel.getBuyEgoldValue());
         }
 
-        return new CheckoutRequest.Builder()
+        CheckoutRequest.Builder builder = new CheckoutRequest.Builder()
                 .promoCode(promoCode)
                 .isDonation(isDonation)
                 .egoldData(egoldData)
-                .data(dataCheckoutRequestList)
-                .cornerData(cornerData)
-                .build();
+                .data(dataCheckoutRequestList);
+
+        if (cornerData != null) {
+            builder.cornerData(cornerData);
+        }
+
+        return builder.build();
     }
 
     @Override
@@ -1250,7 +1259,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         if (!BuildConfig.DEBUG) {
                                             Crashlytics.logException(exception);
                                         }
-                                        throw exception;
+                                        return Unit.INSTANCE;
                                     });
 
                                     resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
@@ -1331,7 +1340,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (!BuildConfig.DEBUG) {
                                         Crashlytics.logException(exception);
                                     }
-                                    throw exception;
+                                    return Unit.INSTANCE;
                                 });
 
                                 getView().hideLoading();
