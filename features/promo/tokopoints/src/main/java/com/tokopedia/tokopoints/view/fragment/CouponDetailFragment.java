@@ -73,7 +73,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     @Inject
     public CouponDetailPresenter mPresenter;
     private View llBottomBtn;
-    private String mRealCode;
 
 
     public static Fragment newInstance(Bundle extras) {
@@ -393,7 +392,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             return;
         }
 
-        this.mRealCode = realCode;
         TextView btnAction2 = getView().findViewById(R.id.button_action_2);
         ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
 
@@ -500,9 +498,8 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
         imgLabel.setVisibility(View.VISIBLE);
         imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
-        this.mRealCode = data.getRealCode();
         btnAction2.setOnClickListener(v -> {
-            if (TextUtils.isEmpty(mRealCode)) {
+            if (btnAction2.getText().toString().equalsIgnoreCase(getString(R.string.tp_label_use))) {
                 mPresenter.showRedeemCouponDialog(data.getCta(), mCouponRealCode, data.getTitle());
 
                 AnalyticsTrackerUtil.sendEvent(getContext(),
