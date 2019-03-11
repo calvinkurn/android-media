@@ -3,8 +3,10 @@
     <string name="payment_summary">Payment Summary</string>
     <string name="ovo_points_amnt">-OVO Points %s</string>
     <string name="ovo_cash_amnt">-%s</string>
-    <string name="blank_input_error">Minimal pembayaran Rp 1.000</string>
     <string name="balance_exceed_error">Saldo Anda tidak mencukupi</string>
     <string name="min_input_hint">Minimal pembayaran Rp1.000</string>
+    <string name="error_message">Terjadi kendala teknis. Coba lagi.</string>
+    <string name="max_input_hint">Maksimal pembayaran Rp10.000.000</string>
+    <string name="copied_to_clipboard">Copied to Clipboard</string>
 
 </resources>

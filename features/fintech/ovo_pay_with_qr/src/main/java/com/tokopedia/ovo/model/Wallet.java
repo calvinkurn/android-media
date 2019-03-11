@@ -3,6 +3,8 @@ package com.tokopedia.ovo.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Wallet {
     @SerializedName("balance")
     @Expose
@@ -22,6 +24,13 @@ public class Wallet {
     @SerializedName("raw_point_balance")
     @Expose
     private Integer raw_point_balance;
+    @SerializedName("errors")
+    @Expose
+    private List<WalletErrors> errors;
+
+    public List<WalletErrors> getErrors() {
+        return errors;
+    }
 
     public String getBalance() {
         return balance;

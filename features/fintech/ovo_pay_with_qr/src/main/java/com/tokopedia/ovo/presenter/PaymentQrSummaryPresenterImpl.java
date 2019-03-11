@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.ovo.R;
-import com.tokopedia.ovo.model.ImeiConfirmResponse;
+import com.tokopedia.ovo.model.ConfirmData;
 import com.tokopedia.ovo.model.WalletData;
 
 import java.util.HashMap;
@@ -51,8 +51,12 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 WalletData walletData = graphqlResponse.getData(WalletData.class);
-                if (walletData != null)
-                    getView().setWalletBalance(walletData.getWallet());
+                if (walletData != null && walletData.getWallet() != null) {
+                    if (walletData.getWallet().getErrors().size() == 0)
+                        getView().setWalletBalance(walletData.getWallet());
+                    else
+                        getView().showError(walletData.getWallet().getErrors().get(0).getMessage());
+                }
             }
         });
     }
@@ -69,7 +73,7 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
         variables.put(USE_POINT, showUsePointToggle);
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(mContext.getResources(), R.raw.confirm_imei),
-                ImeiConfirmResponse.class,
+                ConfirmData.class,
                 variables);
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -85,9 +89,15 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                ImeiConfirmResponse response = graphqlResponse.getData(ImeiConfirmResponse.class);
-                if (response != null && !TextUtils.isEmpty(response.getPinUrl())) {
-                    getView().goToUrl(response);
+                ConfirmData response = graphqlResponse.getData(ConfirmData.class);
+                if (response != null
+                        && response.getImeiConfirmResponse() != null) {
+                    if (response.getImeiConfirmResponse().getErrors().size() > 0
+                            && !TextUtils.isEmpty(response.getImeiConfirmResponse().getErrors().get(0).getMessage())) {
+                        getView().showError(response.getImeiConfirmResponse().getErrors().get(0).getMessage());
+                    } else {
+                        getView().goToUrl(response.getImeiConfirmResponse());
+                    }
                 }
             }
         });

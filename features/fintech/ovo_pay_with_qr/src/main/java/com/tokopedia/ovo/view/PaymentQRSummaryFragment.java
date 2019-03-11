@@ -1,8 +1,11 @@
 package com.tokopedia.ovo.view;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -10,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -32,6 +36,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
     private static final String QR_RESPONSE = "QR_RESPONSE";
+    private static final int SUCCESS = 0;
+    private static final int FAIL = 1;
     String id;
     String imeiNumber;
     BarcodeResponseData responseData;
@@ -49,11 +55,13 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
     LinearLayout ovoDetailLayout;
     Switch switchButton;
     PaymentQrSummaryPresenterImpl presenter;
+    int transferId;
+    int transactionId;
 
-    public static Fragment createInstance(String qrData,String imei) {
+    public static Fragment createInstance(String qrData, String imei) {
         Bundle bundle = new Bundle();
         bundle.putString(QR_DATA, qrData);
-        bundle.putString(IMEI,imei);
+        bundle.putString(IMEI, imei);
         Fragment fragment = new PaymentQRSummaryFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -153,14 +161,24 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
         inputAmount.setClickable(isEnabled);
     }
 
+    private void hideKeyboard(View v, Activity activity) {
+        InputMethodManager keyboard = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
     @Override
     public void setWalletBalance(Wallet walletData) {
         ovoPoints.setText(String.format(getString(R.string.ovo_points_amnt), walletData.getPointBalance()));
         ovoCash.setText(String.format(getString(R.string.ovo_cash_amnt), walletData.getCashBalance()));
         bayarBtn.setOnClickListener(view1 -> {
+            hideKeyboard(getView(), getActivity());
             if (TextUtils.isEmpty(inputAmount.getText()) ||
-                    (inputAmount.getText() != null && Float.parseFloat(inputAmount.getText().toString()) < 10000f)) {
-                inputError.setText(getString(R.string.blank_input_error));
+                    (inputAmount.getText() != null && Float.parseFloat(inputAmount.getText().toString()) < 1000f)) {
+                inputError.setText(getString(R.string.min_input_hint));
+                inputError.setTextColor(getResources().getColor(R.color.error_color));
+            } else if (TextUtils.isEmpty(inputAmount.getText()) ||
+                    (inputAmount.getText() != null && Float.parseFloat(inputAmount.getText().toString()) > 10000000f)) {
+                inputError.setText(getString(R.string.max_input_hint));
                 inputError.setTextColor(getResources().getColor(R.color.error_color));
             } else if (inputAmount.getText() != null &&
                     Integer.parseInt(inputAmount.getText().toString()) > walletData.getRawBalance()) {
@@ -170,6 +188,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
                 bayarLayout.setAlpha(0.19f);
                 progressBar.setVisibility(View.VISIBLE);
                 bayarBtn.setClickable(false);
+                transferId = responseData.getGoalQRInquiry().getTransferId();
                 presenter.confirmQrPayment(imeiNumber,
                         responseData.getGoalQRInquiry().getTransferId(),
                         Float.parseFloat(inputAmount.getText().toString()),
@@ -181,16 +200,29 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
 
     @Override
     public void goToUrl(ImeiConfirmResponse response) {
-        bayarLayout.setAlpha(1f);
-        progressBar.setVisibility(View.GONE);
-        if (response.getStatus() != null) {
+        if (!TextUtils.isEmpty(response.getStatus())) {
+            setProgressButton();
             if (response.getStatus().equalsIgnoreCase("pending")) {
                 startActivity(OvoWebViewActivity.createInstance(getActivity(), response.getPinUrl()));
             } else if (response.getStatus().equalsIgnoreCase("success")) {
-                startActivity(QrOvoPayTxDetailActivity.createInstance(getActivity()));
+                startActivity(QrOvoPayTxDetailActivity.createInstance(getActivity(), transferId, response.getTransactionId(), SUCCESS));
             } else {
-                //startActivity()
+                startActivity(QrOvoPayTxDetailActivity.createInstance(getActivity(), transferId,response.getTransactionId(), FAIL));
+
             }
         }
+    }
+
+    @Override
+    public void showError(String message) {
+        setProgressButton();
+        Snackbar.make(getView(), getString(R.string.error_message), Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void setProgressButton() {
+        bayarLayout.setAlpha(1f);
+        progressBar.setVisibility(View.GONE);
+        bayarBtn.setClickable(true);
+
     }
 }

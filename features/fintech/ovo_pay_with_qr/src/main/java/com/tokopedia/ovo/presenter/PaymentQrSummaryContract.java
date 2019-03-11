@@ -14,5 +14,7 @@ public class PaymentQrSummaryContract {
         void setWalletBalance(Wallet wallet);
 
         void goToUrl(ImeiConfirmResponse response);
+
+        void showError(String message);
     }
 }

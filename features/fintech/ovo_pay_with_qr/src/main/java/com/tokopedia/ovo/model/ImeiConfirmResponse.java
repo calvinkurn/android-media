@@ -3,6 +3,8 @@ package com.tokopedia.ovo.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ImeiConfirmResponse {
     @SerializedName("transaction_id")
     @Expose
@@ -13,7 +15,9 @@ public class ImeiConfirmResponse {
     @SerializedName("pin_url")
     @Expose
     private String pinUrl;
-
+    @SerializedName("errors")
+    @Expose
+    private List<Errors> errors;
     public int getTransactionId() {
         return transactionId;
     }
@@ -24,5 +28,8 @@ public class ImeiConfirmResponse {
 
     public String getPinUrl() {
         return pinUrl;
+    }
+    public List<Errors> getErrors(){
+        return errors;
     }
 }
