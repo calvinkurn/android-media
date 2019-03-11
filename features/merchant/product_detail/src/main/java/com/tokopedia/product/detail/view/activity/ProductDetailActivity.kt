@@ -20,6 +20,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var isFromAffiliate = false
     private var shopDomain: String? = null
     private var productKey: String? = null
+    private var productId: String = ""
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -68,8 +69,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
-            .newInstance(intent.extras?.getString(PARAM_PRODUCT_ID),
-                    shopDomain, productKey, isFromDeeplink, isFromAffiliate)
+            .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -78,13 +78,19 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
-        if (intent.data != null) {
-            val segmentUri: List<String> = intent.data.pathSegments
-            if (segmentUri.size > 1) {
-                shopDomain = segmentUri[0]
-                productKey = segmentUri[1]
+        val uri = intent.data
+        if (uri != null) {
+            if (uri.scheme == getString(R.string.internal_scheme) && uri.path.startsWith("product")){
+                productId = uri.lastPathSegment ?: ""
+            } else {
+                val segmentUri: List<String> = uri.pathSegments
+                if (segmentUri.size > 1) {
+                    shopDomain = segmentUri[0]
+                    productKey = segmentUri[1]
+                }
             }
         } else {
+            productId = intent.getStringExtra(PARAM_PRODUCT_ID)
             shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
             productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
         }

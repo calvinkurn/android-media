@@ -18,9 +18,6 @@ import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
-import com.tokopedia.shop.etalase.data.repository.ShopEtalaseRepositoryImpl;
-import com.tokopedia.shop.etalase.data.source.cloud.ShopEtalaseCloudDataSource;
-import com.tokopedia.shop.etalase.domain.repository.ShopEtalaseRepository;
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi;
@@ -241,18 +238,6 @@ public class ShopProductModule {
     @Provides
     public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase() {
         return new DeleteShopProductAceUseCase();
-    }
-
-    @ShopProductScope
-    @Provides
-    public ShopEtalaseCloudDataSource provideShopEtalaseCloudDataSource(ShopWSApi shopWSApi) {
-        return new ShopEtalaseCloudDataSource(shopWSApi);
-    }
-
-    @ShopProductScope
-    @Provides
-    public ShopEtalaseRepository provideShopEtalaseRepository(ShopEtalaseCloudDataSource shopEtalaseDataSource) {
-        return new ShopEtalaseRepositoryImpl(shopEtalaseDataSource);
     }
 
     @ShopProductScope

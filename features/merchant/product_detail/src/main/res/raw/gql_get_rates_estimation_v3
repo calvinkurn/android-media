@@ -18,6 +18,10 @@ query RateEstimate($weight: Float!, $domain: String!) {
           shop {
               district_name
           }
+          texts {
+              text_min_price
+              text_destination
+          }
           rates {
               id
               rates_id

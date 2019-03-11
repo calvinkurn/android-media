@@ -34,10 +34,20 @@ class RatesEstimationDetailViewModel @Inject constructor(
         val request = GraphqlRequest(rawQuery, RatesEstimationModel.Response::class.java, params)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
         launchCatchError(block = {
-            val gqlResponse = withContext(Dispatchers.IO){ graphqlRepository.getReseponse(listOf(request), cacheStrategy)}
-            val result = gqlResponse.getSuccessData<RatesEstimationModel.Response>()
+            val result = withContext(Dispatchers.IO){
+                val resp = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+                        .getSuccessData<RatesEstimationModel.Response>().data.data
 
-            rateEstResp.value = Success(result.data.data)
+                val filteredService = resp.rates.services.asSequence()
+                        .filter { it.error.id in visibleItemStatus }
+                        .map { service ->  service.copy(
+                                products = service.products.asSequence()
+                                        .filter { it.error.id in visibleItemStatus }.toList())}
+                        .filter { it.products.isNotEmpty() }.toList()
+                resp.copy(rates = resp.rates.copy(services = filteredService))
+            }
+
+            rateEstResp.value = Success(result)
         }){
             rateEstResp.value = Fail(it)
         }
@@ -46,5 +56,6 @@ class RatesEstimationDetailViewModel @Inject constructor(
     companion object {
         private const val PARAM_PRODUCT_WEIGHT = "weight"
         private const val PARAM_SHOP_DOMAIN = "domain"
+        private val visibleItemStatus = arrayOf("200", "501")
     }
 }

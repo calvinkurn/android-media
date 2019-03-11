@@ -3,13 +3,13 @@ package com.tokopedia.product.detail.data.model
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.product.detail.common.data.model.ProductOther
-import com.tokopedia.product.detail.data.model.holder.RatesEstSummarize
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.talk.Talk
+import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 
 data class ProductInfoP3(
-        var rateEstimation: RatesEstSummarize? = null,
+        var rateEstSummarizeText: SummaryText? = null,
         var isWishlisted: Boolean = false,
         var imageReviews: List<ImageReviewItem> = listOf(),
         var helpfulReviews: List<Review> = listOf(),
