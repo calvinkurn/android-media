@@ -464,7 +464,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
      */
     private void goToPDP(String productId) {
         String fullUrl = getString(R.string.template_applink,
-                getString(R.string.internal_scheme), getString(R.string.host_merchant),
+                getString(R.string.internal_scheme), getString(R.string.host_marketplace),
                 "product/"+productId);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl))

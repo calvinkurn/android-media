@@ -570,7 +570,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private Intent getProductIntent(String productId){
         String url = getString(R.string.template_applink,
-                getString(R.string.internal_scheme), getString(R.string.host_merchant),
+                getString(R.string.internal_scheme), getString(R.string.host_marketplace),
                 "product/"+productId);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url))
