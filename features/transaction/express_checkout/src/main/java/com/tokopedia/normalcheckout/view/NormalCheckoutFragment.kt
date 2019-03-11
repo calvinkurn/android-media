@@ -413,14 +413,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun doBuyOrPreorder() {
-        //TODO check login
-
         //TODO tracking
-        //TODO do buy or preorder
-        // skipToCart (in this case is true)
-        //TODO oneClickShipment = !isBigPromo && skipToCart
-        val oneClickShipment = true
-        addToCart(oneClickShipment, onFinish = {
+        addToCart(true, onFinish = {
             onFinishAddToCart(it)
             // TODO if bigpromo, route to cart, else to checkout
             activity?.run {
@@ -449,8 +443,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             .quantity(quantity)
             .shopId(shopId?.toInt() ?: 0)
             .build(), oneClickShipment)
-            .subscribeOn(Schedulers.newThread())
-            .unsubscribeOn(Schedulers.newThread())
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Subscriber<AddToCartResult>() {
                 override fun onNext(addToCartResult: AddToCartResult?) {
