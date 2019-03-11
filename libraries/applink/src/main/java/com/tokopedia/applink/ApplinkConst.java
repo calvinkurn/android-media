@@ -59,6 +59,7 @@ public interface ApplinkConst {
     String DISCOVERY_CATEGORY = "tokopedia://category";
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";
+    String DISCOVERY_SEARCH_AUTOCOMPLETE = "tokopedia://search-autocomplete";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
@@ -212,6 +213,7 @@ public interface ApplinkConst {
 
     String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
     String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+    String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
 
