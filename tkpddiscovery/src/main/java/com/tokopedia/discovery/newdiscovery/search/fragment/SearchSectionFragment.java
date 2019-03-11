@@ -604,4 +604,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
         return mapValue.replace(removedValue, "").replace(",,", ",");
     }
+
+    protected void copySearchParameter(@Nullable SearchParameter searchParameterToCopy) {
+        if (searchParameterToCopy != null) {
+            this.searchParameter = new SearchParameter(searchParameterToCopy);
+        }
+    }
 }

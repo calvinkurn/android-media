@@ -171,7 +171,8 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     private void loadDataFromBundle(@Nullable Bundle bundle) {
         if (bundle != null) {
-            searchParameter = bundle.getParcelable(EXTRA_SEARCH_PARAMETER);
+            copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
+
             setShareUrl(bundle.getString(EXTRA_SHARE_URL));
         }
     }

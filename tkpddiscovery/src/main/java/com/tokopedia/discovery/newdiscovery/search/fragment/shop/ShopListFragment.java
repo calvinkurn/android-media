@@ -99,7 +99,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     private void loadDataFromBundle(Bundle bundle) {
         if (bundle != null) {
-            searchParameter = bundle.getParcelable(EXTRA_SEARCH_PARAMETER);
+            copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
         }
     }
 

@@ -130,7 +130,7 @@ public class ProductListFragment extends SearchSectionFragment
                 renderDynamicFilter(productViewModel.getDynamicFilterModel());
             }
 
-            searchParameter = getArguments().getParcelable(EXTRA_SEARCH_PARAMETER);
+            copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
         }
     }
 
