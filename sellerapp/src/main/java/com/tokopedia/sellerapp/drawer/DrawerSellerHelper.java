@@ -113,7 +113,6 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getProductMenu());
 
-        data.add(getPaymentAndTopupMenu());
         data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu());
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
@@ -213,23 +212,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
         return inboxMenu;
-    }
-
-    private DrawerItem getPaymentAndTopupMenu() {
-        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.digital_product),
-                R.drawable.payment_and_topup,
-                TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND,
-                drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, false),
-                0);
-
-        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.payment_and_topup),
-                TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP,
-                true));
-        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.digital_transaction_list),
-                TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL,
-                true));
-
-        return sellerMenu;
     }
 
     private DrawerItem getProductMenu() {
@@ -374,18 +356,6 @@ public class DrawerSellerHelper extends DrawerHelper
                     if (context.getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
                     }
-                    break;
-                case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
-                    UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
-                    break;
-                case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    intent = ((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA);
-
-                    context.startActivity(intent);
-                    UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
                     UnifyTracking.eventDrawerClick(context, AppEventTracking.EventLabel.DRAFT_PRODUCT);
