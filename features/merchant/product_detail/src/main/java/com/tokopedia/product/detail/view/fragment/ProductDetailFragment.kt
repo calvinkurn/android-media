@@ -987,7 +987,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun showFabDetailAfterLoadData() {
-        if (productInfoViewModel.productInfoP3resp.value != null ||
+        if (!productInfoViewModel.isUserSessionActive() ||
+            productInfoViewModel.productInfoP3resp.value != null ||
             (shopInfo != null && shopInfo?.isAllowManage == 1)) {
             fab_detail.show()
         }
