@@ -1047,7 +1047,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
             return
         }
-        val selectedVariantListString = data?.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
+        val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
             ?: ""
         partialVariantAndRateEstView.renderData(data, selectedVariantListString, this::onVariantClicked)
     }
