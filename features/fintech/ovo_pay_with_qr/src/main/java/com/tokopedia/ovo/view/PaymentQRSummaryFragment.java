@@ -25,6 +25,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.ovo.model.ImeiConfirmResponse;
@@ -136,6 +138,13 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     inputError.setTextColor(getResources().getColor(R.color.grey_error));
                     inputError.setText(getString(R.string.min_input_hint));
+                    if (inputAmount.getText().toString().contains("Rp")) {
+                        String text = inputAmount.getText().toString();
+                        text = text.replace("Rp","");
+                        String convertedText = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                Float.parseFloat(text), false);
+                        inputAmount.setText(convertedText.replace("Rp",""));
+                    }
                 }
 
                 @Override
@@ -173,11 +182,13 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
         bayarBtn.setOnClickListener(view1 -> {
             hideKeyboard(getView(), getActivity());
             if (TextUtils.isEmpty(inputAmount.getText()) ||
-                    (inputAmount.getText() != null && Float.parseFloat(inputAmount.getText().toString()) < 1000f)) {
+                    (inputAmount.getText() != null && CurrencyFormatHelper.convertRupiahToInt(
+                            inputAmount.getText().toString()) < 1000f)) {
                 inputError.setText(getString(R.string.min_input_hint));
                 inputError.setTextColor(getResources().getColor(R.color.error_color));
             } else if (TextUtils.isEmpty(inputAmount.getText()) ||
-                    (inputAmount.getText() != null && Float.parseFloat(inputAmount.getText().toString()) > 10000000f)) {
+                    (inputAmount.getText() != null && CurrencyFormatHelper.convertRupiahToInt(
+                            inputAmount.getText().toString()) > 10000000f)) {
                 inputError.setText(getString(R.string.max_input_hint));
                 inputError.setTextColor(getResources().getColor(R.color.error_color));
             } else if (inputAmount.getText() != null &&
@@ -207,7 +218,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
             } else if (response.getStatus().equalsIgnoreCase("success")) {
                 startActivity(QrOvoPayTxDetailActivity.createInstance(getActivity(), transferId, response.getTransactionId(), SUCCESS));
             } else {
-                startActivity(QrOvoPayTxDetailActivity.createInstance(getActivity(), transferId,response.getTransactionId(), FAIL));
+                startActivity(QrOvoPayTxDetailActivity.createInstance(getActivity(), transferId, response.getTransactionId(), FAIL));
 
             }
         }

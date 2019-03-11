@@ -62,7 +62,7 @@
                 android:layout_height="@dimen/dp_110"
                 android:layout_margin="@dimen/dp_16"
                 app:cardCornerRadius="@dimen/dp_4"
-                app:cardElevation="@dimen/dp_8"
+                app:cardElevation="@dimen/dp_6"
                 app:layout_constraintBottom_toBottomOf="@+id/header_section"
                 app:layout_constraintTop_toBottomOf="@+id/header_section">
 
@@ -91,6 +91,8 @@
                             android:layout_gravity="center"
                             android:gravity="center_horizontal"
                             android:text="Rp"
+                            android:layout_marginRight="@dimen/dp_4"
+                            android:layout_marginEnd="@dimen/dp_4"
                             android:textColor="#444444"
                             android:textSize="24sp" />
 
@@ -103,7 +105,9 @@
                             android:inputType="number"
                             android:minWidth="@dimen/dp_30"
                             android:textColor="#444444"
-                            android:textSize="24sp" />
+                            android:textSize="24sp"
+                            android:paddingRight="@dimen/dp_16"
+                            android:paddingEnd="@dimen/dp_16"/>
                     </LinearLayout>
 
 
