@@ -52,7 +52,8 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
             public void onNext(GraphqlResponse graphqlResponse) {
                 WalletData walletData = graphqlResponse.getData(WalletData.class);
                 if (walletData != null && walletData.getWallet() != null) {
-                    if (walletData.getWallet().getErrors().size() == 0)
+                    if (walletData.getWallet().getErrors() == null
+                            || walletData.getWallet().getErrors().size() == 0)
                         getView().setWalletBalance(walletData.getWallet());
                     else
                         getView().showError(walletData.getWallet().getErrors().get(0).getMessage());
