@@ -4,20 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="?actionBarSize"
-    tools:layout_height="@dimen/dp_100"
+    android:layout_height="wrap_content"
     app:contentInsetStart="0dp"
     app:contentInsetEnd="0dp"
     app:contentInsetStartWithNavigation="0dp">
 
     <android.support.constraint.ConstraintLayout
+        android:layout_marginTop="@dimen/dp_40"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="?actionBarSize"
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_4"
         tools:layout_height="@dimen/dp_100">
 
         <ImageButton

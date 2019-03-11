@@ -1,6 +1,7 @@
 package com.tokopedia.searchbar
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.v4.content.ContextCompat
@@ -46,6 +47,14 @@ class HomeMainToolbar : MainToolbar {
                 RouteManager.route(context, ApplinkConst.LOGIN)
             }
         }
+    }
+
+    fun hideShadow() {
+        toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+    }
+
+    fun showShadow() {
+        toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
     }
 
     override fun inflateResource(context: Context) {
@@ -97,7 +106,7 @@ class HomeMainToolbar : MainToolbar {
     }
 
     companion object {
-        private val TOOLBAR_LIGHT_TYPE = 0
-        private val TOOLBAR_DARK_TYPE = 1
+        val TOOLBAR_LIGHT_TYPE = 0
+        val TOOLBAR_DARK_TYPE = 1
     }
 }

@@ -527,6 +527,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     refreshLayout.setCanChildScrollUp(true);
                 }
 
+                if (isAppBarFullyCollapsed(offset) &&
+                        homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
+                    homeMainToolbar.hideShadow();
+                }
+
+                if (!isAppBarFullyCollapsed(offset) &&
+                        homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
+                    homeMainToolbar.showShadow();
+                }
+
                 hideEggFragmentOnScrolling();
 
                 if (isAppBarFullyCollapsed(offset)) {
