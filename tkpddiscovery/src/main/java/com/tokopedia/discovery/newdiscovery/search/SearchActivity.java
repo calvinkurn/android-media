@@ -417,7 +417,7 @@ public class SearchActivity extends DiscoveryActivity
                                       ProductViewModel productViewModel) {
 
         productListFragment = getProductFragment(productViewModel);
-        catalogFragment = getCatalogFragment(getSearchParameter().getSearchQuery());
+        catalogFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
@@ -463,8 +463,8 @@ public class SearchActivity extends DiscoveryActivity
         });
     }
 
-    private CatalogFragment getCatalogFragment(String query) {
-        return CatalogFragment.createInstanceByQuery(query);
+    private CatalogFragment getCatalogFragment() {
+        return CatalogFragment.newInstance(getSearchParameter());
     }
 
     private ProductListFragment getProductFragment(ProductViewModel productViewModel) {

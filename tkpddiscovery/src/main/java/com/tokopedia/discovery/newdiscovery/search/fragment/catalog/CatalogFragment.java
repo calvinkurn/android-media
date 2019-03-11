@@ -27,6 +27,7 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -34,10 +35,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.CatalogAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogAdapterTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -81,8 +83,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
 
     private PerformanceMonitoring performanceMonitoring;
-    private String departmentId;
-    private String query;
     private Config topAdsConfig;
     private String shareUrl;
 
@@ -92,40 +92,51 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Inject
     UserSessionInterface userSession;
 
+    public static CatalogFragment newInstance(SearchParameter searchParameter) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+
+        return createFragmentWithArguments(bundle);
+    }
+
     public static CatalogFragment createInstanceByQuery(String query) {
-        CatalogFragment fragment = new CatalogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_QUERY, query);
-        fragment.setArguments(bundle);
-        return fragment;
+
+        return createFragmentWithArguments(bundle);
     }
 
     public static CatalogFragment createInstanceByCategoryID(String departmentId) {
-        CatalogFragment fragment = new CatalogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTMENT_ID, departmentId);
+
+        return createFragmentWithArguments(bundle);
+    }
+
+    private static CatalogFragment createFragmentWithArguments(Bundle bundle) {
+        CatalogFragment fragment = new CatalogFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     public String getDepartmentId() {
-        return departmentId;
+        return getSearchParameter().get(SearchApiConst.SC);
     }
 
     @Override
     public void setDepartmentId(String departmentId) {
-        this.departmentId = departmentId;
+        getSearchParameter().set(SearchApiConst.SC, departmentId);
     }
 
     @Override
     public String getQueryKey() {
-        return query;
+        return getSearchParameter().getSearchQuery();
     }
 
     @Override
     public void setQueryKey(String queryKey) {
-        this.query = queryKey;
+        getSearchParameter().setSearchQuery(queryKey);
     }
 
     public String getShareUrl() {
@@ -154,10 +165,14 @@ public class CatalogFragment extends SearchSectionFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        if (getArguments() != null) {
-            setQueryKey(getArguments().getString(EXTRA_QUERY, ""));
-            setDepartmentId(getArguments().getString(EXTRA_DEPARTMENT_ID, ""));
-            setShareUrl(getArguments().getString(EXTRA_SHARE_URL));
+
+        loadDataFromBundle(getArguments());
+    }
+
+    private void loadDataFromBundle(@Nullable Bundle bundle) {
+        if (bundle != null) {
+            searchParameter = bundle.getParcelable(EXTRA_SEARCH_PARAMETER);
+            setShareUrl(bundle.getString(EXTRA_SHARE_URL));
         }
     }
 
@@ -181,8 +196,11 @@ public class CatalogFragment extends SearchSectionFragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         catalogAdapter.onSaveInstanceState(outState);
-        outState.putString(EXTRA_QUERY, getQueryKey());
-        outState.putString(EXTRA_DEPARTMENT_ID, getDepartmentId());
+        saveDataToBundle(outState);
+    }
+
+    private void saveDataToBundle(Bundle outState) {
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
         outState.putString(EXTRA_SHARE_URL, getShareUrl());
     }
 
@@ -238,7 +256,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void setOnCatalogClicked(String catalogID, String catalogName) {
-        SearchTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
+        SearchTracking.eventSearchResultCatalogClick(getActivity(), getQueryKey(), catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }
@@ -341,7 +359,12 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
+        requestCatalogList();
+    }
+
+    private void requestCatalogList() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_CATALOG_TRACE);
+
         if (getDepartmentId() != null && !getDepartmentId().isEmpty()) {
             presenter.requestCatalogList(getDepartmentId());
         } else {
@@ -353,9 +376,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         catalogAdapter.onRestoreInstanceState(savedInstanceState);
-        setQueryKey(savedInstanceState.getString(EXTRA_QUERY));
-        setDepartmentId(savedInstanceState.getString(EXTRA_DEPARTMENT_ID));
-        setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
+        loadDataFromBundle(savedInstanceState);
     }
 
     @Override
@@ -384,8 +405,8 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
-            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
+            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
         }
     }
 
@@ -408,7 +429,7 @@ public class CatalogFragment extends SearchSectionFragment implements
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
-                            onFirstTimeLaunch();
+                            requestCatalogList();
                         }
                     });
         } else {
@@ -572,5 +593,10 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public SearchParameter getSearchParameter() {
+        return this.searchParameter;
     }
 }
