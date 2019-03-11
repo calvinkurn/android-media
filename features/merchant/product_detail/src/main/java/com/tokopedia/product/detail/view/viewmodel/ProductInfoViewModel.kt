@@ -28,7 +28,6 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVaria
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
-import com.tokopedia.product.detail.data.model.holder.RatesEstSummarize
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
@@ -433,8 +432,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         private const val PARAM_PAGE = "page"
         private const val PARAM_USER_ID = "user_id"
-        private const val PARAM_USER_ID_CAMEL = "userID"
-        private const val PARAM_INCLUDE_CAMPAIGN = "includeCampaign"
         private const val PARAM_TOTAL = "total"
 
         private const val DEFAULT_NUM_VOUCHER = 3
