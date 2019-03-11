@@ -178,7 +178,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onDestroyView() {
         saveStateToArguments();
-        presenter.onDestroy();
         presenter.detachView();
         super.onDestroyView();
     }

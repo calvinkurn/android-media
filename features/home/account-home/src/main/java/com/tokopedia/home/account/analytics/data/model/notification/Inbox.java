@@ -11,22 +11,22 @@ public class Inbox {
 
     @SerializedName("inbox_reputation")
     @Expose
-    private int inboxReputation;
+    private int inboxReputation = 0;
     @SerializedName("inbox_friend")
     @Expose
-    private int inboxFriend;
+    private int inboxFriend = 0;
     @SerializedName("inbox_ticket")
     @Expose
-    private int inboxTicket;
+    private int inboxTicket = 0;
     @SerializedName("inbox_review")
     @Expose
-    private int inboxReview;
+    private int inboxReview = 0;
     @SerializedName("inbox_message")
     @Expose
-    private int inboxMessage;
+    private int inboxMessage = 0;
     @SerializedName("inbox_talk")
     @Expose
-    private int inboxTalk;
+    private int inboxTalk = 0;
 
     public int getInboxFriend() {
         return inboxFriend;

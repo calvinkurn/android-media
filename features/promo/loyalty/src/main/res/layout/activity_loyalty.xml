@@ -34,7 +34,7 @@
         app:tabTextAppearance="@style/Tabs.Main"
         app:tabMode="scrollable"/>
 
-    <com.tokopedia.design.component.ticker.TouchViewPager
+    <com.tokopedia.design.component.ticker.TouchViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

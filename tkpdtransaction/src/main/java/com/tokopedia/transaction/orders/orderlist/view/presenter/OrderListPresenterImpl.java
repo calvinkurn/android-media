@@ -42,7 +42,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page, int orderId) {
-        if (getView().getAppContext() == null)
+        if (getView() == null || getView().getAppContext() == null)
             return;
         getView().showProcessGetData();
         GraphqlRequest graphqlRequest;
@@ -80,11 +80,13 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("error =" + e.toString());
-                getView().removeProgressBarView();
-                getView().unregisterScrollListener();
-                getView().showErrorNetwork(
-                        ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                if (getView() != null && getView().getAppContext()!=null) {
+                    CommonUtils.dumper("error =" + e.toString());
+                    getView().removeProgressBarView();
+                    getView().unregisterScrollListener();
+                    getView().showErrorNetwork(
+                            ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                }
             }
 
             @Override
@@ -112,25 +114,31 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
 
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
-        List<QuickFilterItem> quickFilterItems = new ArrayList<>();
-        boolean isAnyItemSelected = false;
-        for (FilterStatus entry : filterItems) {
-            CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
-            finishFilter.setName(entry.getFilterName());
-            finishFilter.setType(entry.getFilterLabel());
-            finishFilter.setColorBorder(R.color.tkpd_main_green);
-            if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
-                isAnyItemSelected = true;
-                finishFilter.setSelected(true);
-            } else {
-                finishFilter.setSelected(false);
+        if (isViewAttached()) {
+            List<QuickFilterItem> quickFilterItems = new ArrayList<>();
+            boolean isAnyItemSelected = false;
+            for (FilterStatus entry : filterItems) {
+                CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
+                finishFilter.setName(entry.getFilterName());
+                finishFilter.setType(entry.getFilterLabel());
+                finishFilter.setColorBorder(R.color.tkpd_main_green);
+                if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
+                    isAnyItemSelected = true;
+                    finishFilter.setSelected(true);
+                } else {
+                    finishFilter.setSelected(false);
+                }
+                quickFilterItems.add(finishFilter);
             }
-            quickFilterItems.add(finishFilter);
+            getView().renderOrderStatus(quickFilterItems);
         }
-        getView().renderOrderStatus(quickFilterItems);
     }
 
-    public void onDestroy() {
-        getOrderListUseCase.unsubscribe();
+    @Override
+    public void detachView() {
+        if (getOrderListUseCase != null) {
+            getOrderListUseCase.unsubscribe();
+        }
+        super.detachView();
     }
 }

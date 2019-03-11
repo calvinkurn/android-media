@@ -3,6 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartmultipleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class SetShippingAddressData implements Parcelable {
     private boolean success;
-    private List<String> messages;
+    private List<String> messages = new ArrayList<>();
 
     private SetShippingAddressData(Builder builder) {
         success = builder.success;
