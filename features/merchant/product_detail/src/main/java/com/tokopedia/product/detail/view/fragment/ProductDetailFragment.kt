@@ -853,14 +853,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 shopInfo?.location ?: "", ::gotoRateEstimation)
         }
         shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }
-        imageReviewViewView.renderData(productInfoP3.imageReviews)
-        mostHelpfulReviewView.renderData(productInfoP3.helpfulReviews, productInfo?.stats?.countReview
-            ?: 0)
-        latestTalkView.renderData(productInfoP3.latestTalk, productInfo?.stats?.countTalk ?: 0,
-            productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
-        productInfoP3.displayAds?.let { topads_carousel.setData(it) }
-        otherProductView.renderData(productInfoP3.productOthers)
 
+        productInfoP3.displayAds?.let { topads_carousel.setData(it) }
         productInfoP3.pdpAffiliate?.let { renderAffiliate(it) }
 
         actionButtonView.renderData(productInfoP3.isExpressCheckoutType)
@@ -961,6 +955,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
         partialVariantAndRateEstView.renderPriorityOrder(productInfoP2.shopCommitment)
+        imageReviewViewView.renderData(productInfoP2.imageReviews)
+        mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews, productInfo?.stats?.countReview
+                ?: 0)
+        latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
+                productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
+
+        otherProductView.renderData(productInfoP2.productOthers)
     }
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {

@@ -11,11 +11,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 data class ProductInfoP3(
         var rateEstSummarizeText: SummaryText? = null,
         var isWishlisted: Boolean = false,
-        var imageReviews: List<ImageReviewItem> = listOf(),
-        var helpfulReviews: List<Review> = listOf(),
-        var latestTalk: Talk = Talk(),
         var displayAds: TopAdsModel? = null,
-        var productOthers: List<ProductOther> = listOf(),
         var pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate? = null,
         var isExpressCheckoutType: Boolean = false
 )
