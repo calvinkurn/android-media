@@ -28,7 +28,10 @@ class PartialButtonActionView private constructor(private val view: View,
         }
 
     var hasComponentLoading = false
-
+    var isExpressCheckout = false
+    var isWarehouseProduct: Boolean = false
+    var hasShopAuthority: Boolean = false
+    var preOrder: PreOrder? = PreOrder()
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
@@ -44,6 +47,18 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
+        this.isWarehouseProduct = isWarehouseProduct
+        this.hasShopAuthority = hasShopAuthority
+        this.preOrder = preOrder
+        renderButton()
+    }
+
+    fun renderData(isExpressCheckout:Boolean) {
+        this.isExpressCheckout = isExpressCheckout
+        renderButton()
+    }
+
+    fun renderButton(){
         if (isWarehouseProduct) {
             showNoStockButton()
         } else if (hasShopAuthority) {
@@ -51,7 +66,6 @@ class PartialButtonActionView private constructor(private val view: View,
         } else if (GlobalConfig.isCustomerApp()) {
             showNewCheckoutButton(preOrder)
         }
-
     }
 
     private fun showNewCheckoutButton(preOrder: PreOrder?) {
@@ -60,9 +74,16 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_promote_topads.visibility = View.GONE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
-            tv_buy_now.text = context.getString(if (preOrder?.isPreOrderActive() == true) {
-                R.string.action_preorder
-            } else R.string.buy)
+            tv_buy_now.text = context.getString(
+                if (preOrder?.isPreOrderActive() == true) {
+                    R.string.action_preorder
+                } else {
+                    if (isExpressCheckout) {
+                        R.string.buy_now
+                    } else {
+                        R.string.buy
+                    }
+                })
             btn_buy_now.visibility = View.VISIBLE
             btn_add_to_cart.visibility = View.VISIBLE
 
@@ -105,22 +126,22 @@ class PartialButtonActionView private constructor(private val view: View,
         }
     }
 
-    fun showLoadingBuy(){
+    fun showLoadingBuy() {
         hasComponentLoading = true
         view.pb_buy_now.visible()
     }
 
-    fun hideLoadingBuy(){
+    fun hideLoadingBuy() {
         hasComponentLoading = false
         view.pb_buy_now.hide()
     }
 
-    fun showLoadingCart(){
+    fun showLoadingCart() {
         hasComponentLoading = true
         view.pb_add_to_cart.visible()
     }
 
-    fun hideLoadingCart(){
+    fun hideLoadingCart() {
         hasComponentLoading = false
         view.pb_add_to_cart.hide()
     }

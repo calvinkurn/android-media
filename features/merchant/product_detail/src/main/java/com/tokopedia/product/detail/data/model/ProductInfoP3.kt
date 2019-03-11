@@ -16,5 +16,6 @@ data class ProductInfoP3(
         var latestTalk: Talk = Talk(),
         var displayAds: TopAdsModel? = null,
         var productOthers: List<ProductOther> = listOf(),
-        var pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate? = null
+        var pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate? = null,
+        var isExpressCheckoutType: Boolean = false
 )

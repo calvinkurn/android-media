@@ -130,7 +130,14 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_INSTALLMENT)
     fun provideGetInstallment(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment)
+        GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_CHECKOUTTYPE)
+    fun provideCheckoutType(@ApplicationContext context: Context): String =
+        GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_checkout_type)
 
     @ProductDetailScope
     @Provides

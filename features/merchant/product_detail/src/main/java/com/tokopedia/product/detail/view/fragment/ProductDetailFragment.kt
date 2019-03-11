@@ -377,11 +377,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         actionButtonView.buyNowClick = {
-            // TODO buy now / buy / preorder
+            // buy now / buy / preorder
             if (productInfoViewModel.isUserSessionActive()) {
                 //TODO tracking
-                //TODO go to normal checkout or express checkout activity
-                var isExpressCheckout = false // TODO will check checkoutType = express
+                val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
+                    ?: false
                 if (isExpressCheckout) {
                     goToAtcExpress()
                 } else {
@@ -513,11 +513,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private val onViewClickListener = View.OnClickListener {
-        when(it.id){
+        when (it.id) {
             R.id.btn_favorite -> onShopFavoriteClick()
             R.id.send_msg_shop, R.id.btn_topchat -> onShopChatClicked()
             R.id.shop_ava, R.id.shop_name -> gotoShopDetail()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -525,7 +526,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             val shopId = productInfo?.basic?.shopID?.toString() ?: return
             startActivityForResult(RouteManager.getIntent(it, ApplinkConst.SHOP.replace("{shop_id}", shopId)),
-                    REQUEST_CODE_SHOP_INFO)
+                REQUEST_CODE_SHOP_INFO)
         }
     }
 
@@ -535,10 +536,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 productShopView.toggleClickableFavoriteBtn(false)
                 productInfoViewModel.toggleFavorite(shop.shopCore.shopID,
-                        this::onSuccessFavoriteShop, this::onFailFavoriteShop)
+                    this::onSuccessFavoriteShop, this::onFailFavoriteShop)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
+                    REQUEST_CODE_LOGIN)
             }
         }
     }
@@ -839,7 +840,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
         productInfoP3.rateEstimation?.let {
             partialVariantAndRateEstView.renderRateEstimation(it,
-                    shopInfo?.location ?: "", ::gotoRateEstimation)
+                shopInfo?.location ?: "", ::gotoRateEstimation)
         }
         shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }
         imageReviewViewView.renderData(productInfoP3.imageReviews)
@@ -851,6 +852,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         otherProductView.renderData(productInfoP3.productOthers)
 
         productInfoP3.pdpAffiliate?.let { renderAffiliate(it) }
+
+        actionButtonView.renderData(productInfoP3.isExpressCheckoutType)
     }
 
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
@@ -908,7 +911,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString()
-                        ?: "", shopInfo.shipments, shopInfo.bbInfo)
+                    ?: "", shopInfo.shipments, shopInfo.bbInfo)
             }
             if (productInfoP2.vouchers.isNotEmpty()) {
                 merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
@@ -924,17 +927,18 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 label_desc_installment.setOnClickListener {
                     activity?.let {
                         val price = (
-                                if (productInfo?.campaign?.isActive == true && (productInfo?.campaign?.id?.toIntOrNull() ?: 0) > 0)
-                                    productInfo?.campaign?.discountedPrice
-                                else
-                                    productInfo?.basic?.price
-                                ) ?: 0f
+                            if (productInfo?.campaign?.isActive == true && (productInfo?.campaign?.id?.toIntOrNull()
+                                    ?: 0) > 0)
+                                productInfo?.campaign?.discountedPrice
+                            else
+                                productInfo?.basic?.price
+                            ) ?: 0f
                         startActivity(ProductInstallmentActivity.createIntent(it,
-                                shopInfo.goldOS.isOfficial == 1,
-                                price))
+                            shopInfo.goldOS.isOfficial == 1,
+                            price))
                     }
                 }
-                if (label_min_wholesale.isVisible){
+                if (label_min_wholesale.isVisible) {
                     wholesale_divider.visible()
                 } else {
                     wholesale_divider.gone()
@@ -1036,28 +1040,29 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun onSuccessWarehouseProduct() {
         hideProgressDialog()
         showToastSuccess(getString(R.string.success_warehousing_product))
-        //TODO refresh reload product page force from network
-        loadProductData()
+        loadProductData(true)
     }
 
-    private fun onSuccessFavoriteShop(isSuccess: Boolean){
+    private fun onSuccessFavoriteShop(isSuccess: Boolean) {
         val favorite = shopInfo?.favoriteData ?: return
-        if (isSuccess){
+        if (isSuccess) {
             //TODO TRACKING FOLLOW / UNFOLLOW
             val newFavorite =
-                    if (favorite.alreadyFavorited == 1)
-                        ShopInfo.FavoriteData(0, favorite.totalFavorite - 1)
-                    else
-                        ShopInfo.FavoriteData(1, favorite.totalFavorite + 1)
+                if (favorite.alreadyFavorited == 1)
+                    ShopInfo.FavoriteData(0, favorite.totalFavorite - 1)
+                else
+                    ShopInfo.FavoriteData(1, favorite.totalFavorite + 1)
             shopInfo = shopInfo?.copy(favoriteData = newFavorite)
             productShopView.updateFavorite(favorite.alreadyFavorited != 1)
             productShopView.toggleClickableFavoriteBtn(true)
         }
     }
 
-    private fun onFailFavoriteShop(t: Throwable){
-        context?.let { ToasterError.make(view, ErrorHandler.getErrorMessage(it, t))
-                .setAction(R.string.retry_label){ onShopFavoriteClick() }}
+    private fun onFailFavoriteShop(t: Throwable) {
+        context?.let {
+            ToasterError.make(view, ErrorHandler.getErrorMessage(it, t))
+                .setAction(R.string.retry_label) { onShopFavoriteClick() }
+        }
         productShopView.toggleClickableFavoriteBtn(true)
     }
 
@@ -1091,8 +1096,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun onSuccessMoveToEtalase() {
         hideProgressDialog()
         showToastSuccess(getString(R.string.success_move_etalase))
-        //TODO refresh reload product page force from network
-        loadProductData()
+        loadProductData(true)
     }
 
     private fun onErrorMoveToEtalase(throwable: Throwable) {
@@ -1130,7 +1134,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                    ApplinkConst.PRODUCT_TALK.replace("{product_id}", productInfo?.basic?.id.toString()))
+                ApplinkConst.PRODUCT_TALK.replace("{product_id}", productInfo?.basic?.id.toString()))
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
         if (productInfo != null) {
@@ -1150,21 +1154,21 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onShopChatClicked(){
+    private fun onShopChatClicked() {
         val shop = shopInfo ?: return
         val product = productInfo ?: return
         activity?.let {
-            if (productInfoViewModel.isUserSessionActive()){
+            if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
-                        ApplinkConst.TOPCHAT_ASKSELLER.replace("{toShopId}", shop.shopCore.shopID)
-                                .replace("{customMessage}", product.basic.url)
-                                .replace("{source}", "product")
-                                .replace("{opponent_name}", shop.shopCore.name)
-                                .replace("{avatar}", shop.shopAssets.avatar))
+                    ApplinkConst.TOPCHAT_ASKSELLER.replace("{toShopId}", shop.shopCore.shopID)
+                        .replace("{customMessage}", product.basic.url)
+                        .replace("{source}", "product")
+                        .replace("{opponent_name}", shop.shopCore.name)
+                        .replace("{avatar}", shop.shopAssets.avatar))
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
+                    REQUEST_CODE_LOGIN)
             }
         }
         productDetailTracking.eventSendMessage()

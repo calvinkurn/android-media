@@ -26,6 +26,7 @@ import com.tokopedia.product.detail.common.data.model.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.data.model.holder.RatesEstSummarize
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.review.Review
@@ -275,10 +276,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
             TopAdsPdpAffiliateResponse::class.java, affilateParams)
 
+        //val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE], GetCheckoutTypeResponse::class.java)
+
         try {
             val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, estimationRequest,
                 imageReviewRequest, helpfulReviewRequest, latestTalkRequest, topAdsRequest, otherProductRequest,
-                affiliateRequest))
+                affiliateRequest/*, getCheckoutTypeRequest*/))
 
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)
@@ -323,6 +326,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
                     .topAdsPDPAffiliate?.data?.affiliate?.firstOrNull()
             }
+
+            /*if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
+                productInfoP3.isExpressCheckoutType = response
+                    .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
+                    .getCartType.isExpress
+            }*/
 
         } catch (t: Throwable) {
             t.printStackTrace()
