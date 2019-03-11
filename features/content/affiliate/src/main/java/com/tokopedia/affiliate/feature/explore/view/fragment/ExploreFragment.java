@@ -125,6 +125,7 @@ public class ExploreFragment
     private CardView btnFilterMore;
     private BottomActionView sortButton;
     private FloatingActionButton btnBackToTop;
+    private BadgeView badgeView;
 
     private boolean isCanDoAction;
     private boolean isTraceStopped;
@@ -245,12 +246,23 @@ public class ExploreFragment
         if (userSession.isLoggedIn()) {
             ImageHandler.loadImageCircle2(getActivity(), ivProfile, userSession.getProfilePicture(), R.drawable.loading_page);
         }
+
+        if (getActivity() == null) {
+            return;
+        }
+
         //init red dot
         if (AffiliateHelper.isFirstTimeOpenProfileFromExplore(getActivity())) {
-            BadgeView badgeView = new BadgeView(getActivity());
+            if (badgeView == null) {
+                badgeView = new BadgeView(getActivity());
+            }
             badgeView.bindTarget(layoutProfile);
             badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
             badgeView.setBadgeNumber(-1);
+        } else {
+            if (badgeView != null) {
+                badgeView.hide(true);
+            }
         }
         if (!ShowCasePreference.hasShown(getActivity(), TAG_SHOWCASE)) {
             showShowCase();
