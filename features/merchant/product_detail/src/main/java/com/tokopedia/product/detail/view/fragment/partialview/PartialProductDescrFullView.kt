@@ -133,7 +133,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
             UriBuilder.buildUri(ApplinkConst.SHOP_ETALASE, shopID.toString(), etalaseId)
         } else {
             UriBuilder.buildUri(ApplinkConst.SHOP, shopID.toString())
-        }
+        })
         view.context.startActivity(intent)
     }
 
