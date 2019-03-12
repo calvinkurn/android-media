@@ -18,6 +18,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.tkpdpdp.customview.RatingView;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 import java.util.List;
 
@@ -41,12 +46,12 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private ImageView rating;
     private TextView reviewCount;
     private LinearLayout ratingReviewContainer;
-    private ProductListener itemClickListener;
+    private ProductListener productListener;
     protected Context context;
     private TextView topLabel;
     private TextView bottomLabel;
 
-    public GridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
+    public GridProductItemViewHolder(View itemView, ProductListener productListener, String searchQuery) {
         super(itemView);
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
         title = (TextView) itemView.findViewById(R.id.title);
@@ -62,7 +67,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         topLabel = itemView.findViewById(R.id.topLabel);
         bottomLabel = itemView.findViewById(R.id.bottomLabel);
         context = itemView.getContext();
-        this.itemClickListener = itemClickListener;
+        this.productListener = productListener;
     }
 
     @Override
@@ -95,7 +100,17 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         }
 
         setImageProduct(productItem);
-
+        if (productItem.isTopAds()) {
+            topadsIcon.setVisibility(View.VISIBLE);
+        } else {
+            topadsIcon.setVisibility(View.GONE);
+        }
+        productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                productListener.onProductImpressed(productItem, getAdapterPosition());
+            }
+        });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
 
@@ -111,7 +126,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             @Override
             public void onClick(View v) {
                 if (productItem.isWishlistButtonEnabled()) {
-                    itemClickListener.onWishlistButtonClicked(productItem);
+                    productListener.onWishlistButtonClicked(productItem);
                 }
             }
         });
@@ -119,7 +134,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         container.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                itemClickListener.onLongClick(productItem,getAdapterPosition());
+                productListener.onLongClick(productItem, getAdapterPosition());
                 return true;
             }
         });
@@ -127,7 +142,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onItemClicked(productItem, getAdapterPosition());
+                productListener.onItemClicked(productItem, getAdapterPosition());
             }
         });
 

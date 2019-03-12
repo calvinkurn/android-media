@@ -45,7 +45,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.Netwo
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -59,6 +58,10 @@ import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -104,6 +107,7 @@ public class ProductListFragment extends SearchSectionFragment
     private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
     private PerformanceMonitoring performanceMonitoring;
+    private TrackingQueue trackingQueue;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -121,6 +125,7 @@ public class ProductListFragment extends SearchSectionFragment
         loadDataFromArguments();
         userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
+        trackingQueue = new TrackingQueue(getContext());
     }
 
     private void loadDataFromArguments() {
@@ -466,6 +471,26 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey());
+        trackingQueue.sendAll();
+    }
+
+    @Override
+    public void onProductImpressed(ProductItem item, int adapterPosition) {
+        if (item.isTopAds()) {
+            new ImpresionTask().execute(item.getTopadsImpressionUrl());
+            Product product = new Product();
+            product.setId(item.getProductID());
+            product.setName(item.getProductName());
+            product.setPriceFormat(item.getPrice());
+            product.setCategory(new Category(item.getCategoryID()));
+            TopAdsGtmTracker.getInstance().addDataLayerImpressions(product, adapterPosition);
+        }
+    }
+
+    @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
         com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(item.getProductID());
@@ -733,6 +758,7 @@ public class ProductListFragment extends SearchSectionFragment
                 = generateLoadMoreParameter(0, productViewModel.getQuery());
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
         presenter.loadData(searchParameter, isForceSearch(), getAdditionalParams());
+        TopAdsGtmTracker.getInstance().clearDataLayerList();
     }
 
     private HashMap<String, String> getAdditionalParams() {
