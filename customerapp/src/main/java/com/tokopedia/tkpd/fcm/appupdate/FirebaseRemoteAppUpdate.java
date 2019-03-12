@@ -2,8 +2,6 @@ package com.tokopedia.tkpd.fcm.appupdate;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
@@ -33,6 +32,7 @@ import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 import com.tokopedia.flight_dbflow.FlightAirportDB;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -78,7 +78,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
     private FlightSelectPassengerValidator passengerValidator;
@@ -96,7 +96,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
-                                    UserSession userSession,
+                                    UserSessionInterface userSession,
                                     FlightAnalytics flightAnalytics,
                                     FlightSelectPassengerValidator passengerValidator,
                                     FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase,

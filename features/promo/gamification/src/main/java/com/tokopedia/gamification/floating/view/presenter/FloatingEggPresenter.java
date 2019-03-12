@@ -1,12 +1,12 @@
 package com.tokopedia.gamification.floating.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
@@ -22,11 +22,11 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
         implements FloatingEggContract.Presenter {
 
     private GraphqlUseCase getTokenTokopointsUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public FloatingEggPresenter(GraphqlUseCase getTokenTokopointsUseCase,
-                                UserSession userSession) {
+                                UserSessionInterface userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.userSession = userSession;
     }

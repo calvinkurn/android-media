@@ -78,6 +78,7 @@ ext {
             trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
-//            iris              : ":libraries:iris_no_op"
+//            iris              : ":libraries:iris_no_op",
+            banner            : ":libraries:banner"
     ]
 }

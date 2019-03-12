@@ -115,7 +115,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             info.setText(element.getInfo());
         }
 
-        addImageBtn.setVisibility(element.isEditable() ? View.VISIBLE : View.GONE);
+        addImageBtn.setVisibility(View.GONE);
 
         if (TextUtils.isEmpty(element.getReview())) {
             bottomSpace.setVisibility(View.VISIBLE);

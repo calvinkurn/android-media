@@ -1,7 +1,6 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
@@ -12,6 +11,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttach
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Iterator;
 import java.util.List;
@@ -29,12 +29,12 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
 
     private FlightCancellationRequestUseCase flightCancellationRequestUseCase;
     private FlightCancellationEstimateRefundUseCase flightCancellationEstimateRefundUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public FlightCancellationReviewPresenter(FlightCancellationRequestUseCase flightCancellationRequestUseCase,
                                              FlightCancellationEstimateRefundUseCase flightCancellationEstimateRefundUseCase,
-                                             UserSession userSession) {
+                                             UserSessionInterface userSession) {
         this.flightCancellationRequestUseCase = flightCancellationRequestUseCase;
         this.flightCancellationEstimateRefundUseCase = flightCancellationEstimateRefundUseCase;
         this.userSession = userSession;

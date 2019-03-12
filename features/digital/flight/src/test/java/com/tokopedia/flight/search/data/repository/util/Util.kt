@@ -59,7 +59,7 @@ private fun createFlightSearchData(journeyId: String): FlightSearchData {
     val attributes = Attributes("CGKDPS", "", "CGK", "16:00",
             123, "DPS", "18:00", 234, routes, 0,
             1, 0, "2j", 12345, "Rp 550.000",
-            500000, "Rp 550.000", fare)
+            500000, "Rp 550.000", true, fare)
 
     return FlightSearchData("journey", journeyId, attributes)
 }

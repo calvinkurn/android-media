@@ -20,6 +20,8 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
+    Fragment getOfficialStoreFragment(Bundle bundle);
+
     Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc);
 
     Intent getInboxTalkCallingIntent(Context context);
@@ -51,4 +53,6 @@ public interface GlobalNavRouter {
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     void sendOpenHomeEvent();
+
+    Intent getOldOfficialStore(Context context);
 }

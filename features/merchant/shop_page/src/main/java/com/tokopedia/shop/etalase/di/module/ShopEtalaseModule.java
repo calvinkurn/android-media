@@ -1,10 +1,11 @@
 package com.tokopedia.shop.etalase.di.module;
 
-import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
-import com.tokopedia.shop.etalase.data.repository.ShopEtalaseRepositoryImpl;
-import com.tokopedia.shop.etalase.data.source.cloud.ShopEtalaseCloudDataSource;
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.shop.etalase.di.scope.ShopEtalaseScope;
-import com.tokopedia.shop.etalase.domain.repository.ShopEtalaseRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,14 +16,8 @@ public class ShopEtalaseModule {
 
     @ShopEtalaseScope
     @Provides
-    public ShopEtalaseCloudDataSource provideShopEtalaseCloudDataSource(ShopWSApi shopWSApi) {
-        return new ShopEtalaseCloudDataSource(shopWSApi);
-    }
-
-    @ShopEtalaseScope
-    @Provides
-    public ShopEtalaseRepository provideShopEtalaseRepository(ShopEtalaseCloudDataSource shopEtalaseDataSource) {
-        return new ShopEtalaseRepositoryImpl(shopEtalaseDataSource);
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }
 

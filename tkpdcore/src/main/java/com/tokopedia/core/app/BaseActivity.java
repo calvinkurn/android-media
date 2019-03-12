@@ -109,13 +109,13 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onResume() {
         super.onResume();
-        cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
-        if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
-            Intent intent = new Intent(this, ForceUpdate.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(new Intent(this, ForceUpdate.class));
-            finish();
-        }
+//        cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
+//        if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
+//            Intent intent = new Intent(this, ForceUpdate.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(new Intent(this, ForceUpdate.class));
+//            finish();
+//        }
 
         initGTM();
         sendScreenAnalytics();

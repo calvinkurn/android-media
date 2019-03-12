@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.view.MotionEvent;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 
 import java.io.IOException;
@@ -28,8 +27,6 @@ public interface AbstractionRouter {
     void gcmUpdate() throws IOException;
 
     void refreshToken() throws IOException;
-
-    UserSession getSession();
 
     void init();
 

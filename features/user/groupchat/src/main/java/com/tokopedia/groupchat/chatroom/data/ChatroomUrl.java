@@ -8,7 +8,7 @@ import com.tokopedia.network.constant.TkpdBaseURL;
 
 public class ChatroomUrl {
 
-    static final String GET_CHANNEL_INFO = "/gcn/api/v2/channel/{channel_uuid}";
+    static final String GET_CHANNEL_INFO = "/gcn/api/v3/channel/{channel_uuid}";
     static final String GET_DYNAMIC_BUTTONS = "/gcn/api/v3/channel/{channel_uuid}/buttons";
     static final String GET_STICKY_COMPONENTS = "/gcn/api/v3/channel/{channel_uuid}/sticky_components";
 
