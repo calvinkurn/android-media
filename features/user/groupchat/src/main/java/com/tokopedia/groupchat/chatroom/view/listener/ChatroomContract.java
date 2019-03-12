@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
@@ -16,26 +17,17 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewMo
 
 public interface ChatroomContract {
 
-    interface View extends CustomerView {
-
-        Context getContext();
-
-        void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage);
-
-        void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel);
-
-        void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
-
-        void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
-
+    interface QuickReply extends CustomerView {
         void addQuickReply(String text);
+    }
 
+    interface ChatItem extends CustomerView {
         interface ImageAnnouncementViewHolderListener {
-            void onImageAnnouncementClicked(String url);
+            void onImageAnnouncementClicked(ImageAnnouncementViewModel image);
         }
 
         interface VoteAnnouncementViewHolderListener {
-            void onVoteComponentClicked(String type, String name);
+            void onVoteComponentClicked(String type, String name, String voteUrl);
         }
 
         interface SprintSaleViewHolderListener {
@@ -51,6 +43,20 @@ public interface ChatroomContract {
         interface GroupChatPointsViewHolderListener{
             void onPointsClicked(String url);
         }
+    }
+
+    interface View extends CustomerView {
+
+        Context getContext();
+
+        void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage);
+
+        void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel);
+
+        void setSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel);
+
+        void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

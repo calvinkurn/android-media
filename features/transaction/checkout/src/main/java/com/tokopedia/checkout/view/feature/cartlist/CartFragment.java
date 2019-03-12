@@ -380,7 +380,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void setViewListener() {
-        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
+        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
         llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
         cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
     }
@@ -405,7 +405,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @NonNull
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
         return view -> {
-            if (message == null) {
+            if (message == null || message.equals("")) {
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);
@@ -652,7 +652,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartDataEnableToCheckout() {
         if (isAdded() && btnToShipment != null) {
-            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
+            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
         }
     }
 
@@ -1051,7 +1051,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void renderToAddressChoice() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true;
         boolean isAutoApplyPromoCodeApplied = dPresenter.getCartListData() != null &&
-                dPresenter.getCartListData().getAutoApplyData() != null &&
                 dPresenter.getCartListData().getAutoApplyData().isSuccess();
         Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoData(),
                 cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(),

@@ -1,6 +1,5 @@
 package com.tokopedia.digital.newcart.data;
 
-import com.tokopedia.digital.newcart.data.entity.DealProductsResponse;
 import com.tokopedia.digital.newcart.domain.DigitalDealsRepository;
 import com.tokopedia.digital.newcart.domain.model.DealCategoryViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductsViewModel;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 public class DigitalDealsRepositoryImpl implements DigitalDealsRepository {
     private DigitalDealsDataSourceFactory dataSourceFactory;
