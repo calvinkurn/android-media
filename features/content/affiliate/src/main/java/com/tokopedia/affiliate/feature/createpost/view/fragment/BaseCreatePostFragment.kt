@@ -142,6 +142,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     viewModel = resultViewModel
                     updateRelatedProduct()
                     updateThumbnail()
+
+                    if (viewModel.completeImageList.isEmpty()) {
+                        fetchContentForm()
+                    }
                 }
             }
             REQUEST_LOGIN -> fetchContentForm()
