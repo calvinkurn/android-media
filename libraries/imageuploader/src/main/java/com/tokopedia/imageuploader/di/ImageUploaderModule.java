@@ -75,15 +75,10 @@ public class ImageUploaderModule {
 
     @Provides
     @ImageUploaderQualifier
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
-    }
-
-    @Provides
-    @ImageUploaderQualifier
-    public FingerprintInterceptor provideFingerprintInterceptor(@ImageUploaderQualifier NetworkRouter networkRouter,
-                                                                @ImageUploaderQualifier UserSessionInterface userSessionInterface) {
-        return new FingerprintInterceptor(networkRouter, userSessionInterface);
+    public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context,
+                                                                @ImageUploaderQualifier NetworkRouter networkRouter) {
+        return new FingerprintInterceptor(networkRouter, ((UserSessionInterface)
+                new com.tokopedia.user.session.UserSession(context)));
     }
 
     @ImageUploaderQualifier
