@@ -33,8 +33,11 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
         productCardView.setTitle(element.getProductName());
         productCardView.setPrice(element.getPrice());
         productCardView.setTopAdsVisible(element.isTopAds());
+        productCardView.setWishlistButtonVisible(false);
+        productCardView.setSlashedPrice(element.getSlashedPrice());
+        productCardView.setDiscount(element.getDiscountPercentage());
         if(element.isTopAds()) {
-            productCardView.imageView.setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
+            productCardView.getImageView().setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
                 @Override
                 public void onViewHint() {
                     new ImpresionTask().execute(element.getTrackerImageUrl());
