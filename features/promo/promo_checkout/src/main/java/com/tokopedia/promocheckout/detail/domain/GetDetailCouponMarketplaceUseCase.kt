@@ -25,7 +25,7 @@ class GetDetailCouponMarketplaceUseCase(val resources: Resources, val getDetailU
         val variables = HashMap<String, Any>()
         variables[INPUT_CODE] = requestParams?.getString(INPUT_CODE, "") ?: ""
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_detail_marketplace), DataPromoCheckoutDetail::class.java, variables)
+                R.raw.promo_checkout_detail_marketplace), DataPromoCheckoutDetail::class.java, variables, false)
         getDetailUseCase.clearRequest()
         getDetailUseCase.addRequest(graphqlRequest)
         return Observable.zip(getDetailUseCase.createObservable(requestParams), checkPromoCodeUseCase.createObservable(

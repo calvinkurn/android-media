@@ -3,10 +3,12 @@ package com.tokopedia.checkout.view.feature.cartlist;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -29,12 +31,13 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -66,6 +69,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -692,6 +696,7 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
                 handleErrorinitCartList(e);
+                view.stopTrace();
             }
 
             @Override
@@ -699,9 +704,11 @@ public class CartListPresenter implements ICartListPresenter {
                 CartListPresenter.this.cartListData = cartListData;
                 view.renderLoadGetCartDataFinish();
                 if (cartListData.getShopGroupDataList().isEmpty()) {
+                    view.stopTrace();
                     view.renderEmptyCartData(cartListData);
                 } else {
                     view.renderInitialGetCartListDataSuccess(cartListData);
+                    view.stopTrace();
                 }
             }
         };
@@ -875,11 +882,16 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     private boolean isCheckoutProductEligibleForCashOnDelivery(List<CartItemData> cartItemDataList) {
+        double totalAmount = 0;
+        double maximalTotalAmountEligible = 1000000;
         for (CartItemData cartItemData : cartItemDataList) {
+            double itemPriceAmount = cartItemData.getOriginData().getPricePlan()
+                    * cartItemData.getUpdatedData().getQuantity();
+            totalAmount = totalAmount + itemPriceAmount;
             if (!cartItemData.getOriginData().isCod())
                 return false;
         }
-        return true;
+        return totalAmount <= maximalTotalAmountEligible;
     }
 
     private int getChecklistCondition() {
@@ -1039,6 +1051,14 @@ public class CartListPresenter implements ICartListPresenter {
                         boolean resultSuccess = false;
                         try {
                             JSONObject jsonObject = new JSONObject(stringResponse);
+                            NullCheckerKt.isContainNull(jsonObject, s -> {
+                                ContainNullException exception = new ContainNullException("Found " + s + " on " + CartListPresenter.class.getSimpleName());
+                                if (!BuildConfig.DEBUG) {
+                                    Crashlytics.logException(exception);
+                                }
+                                return Unit.INSTANCE;
+                            });
+
                             resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
                                     .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
                         } catch (JSONException e) {

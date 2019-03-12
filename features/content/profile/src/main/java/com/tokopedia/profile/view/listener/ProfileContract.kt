@@ -11,7 +11,7 @@ import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
  */
 interface ProfileContract {
     interface View : BaseListViewListener<Visitable<*>>, ProfileEmptyContract.View {
-        fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel)
+        fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel, isFromLogin: Boolean)
 
         fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String)
 
@@ -32,7 +32,7 @@ interface ProfileContract {
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
 
-        fun getProfileFirstPage(userId: Int)
+        fun getProfileFirstPage(userId: Int, isFromLogin: Boolean)
 
         fun getProfilePost(userId: Int)
 

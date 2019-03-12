@@ -39,7 +39,9 @@ public class OrderListContract {
 
         String getSelectedFilter();
 
-        void renderOrderStatus(List<QuickFilterItem> filterItems);
+        void renderOrderStatus(List<QuickFilterItem> filterItems, int selctedIndex);
+
+        void showSurveyButton(boolean isEligible);
 
         String getString(int resId);
 
@@ -48,6 +50,10 @@ public class OrderListContract {
         String getStartDate();
 
         String getEndDate();
+
+        void showSuccessMessage(String message);
+
+        void showFailureMessage(String message);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

@@ -148,7 +148,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         android:textColor="@color/green_nob"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_id_num"
         app:layout_goneMarginTop="@dimen/dp_12" />
@@ -184,7 +184,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
 
     <include
         android:id="@+id/view_help_rate"
-        layout="@layout/layout_yes_no"
+        layout="@layout/layout_rating"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"

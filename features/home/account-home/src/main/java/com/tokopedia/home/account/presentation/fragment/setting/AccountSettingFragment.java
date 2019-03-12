@@ -15,7 +15,6 @@ import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -30,6 +29,8 @@ import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.di.component.AccountSettingComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -43,7 +44,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
 
     private View personalDataMenu;
@@ -66,7 +67,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
+        userSession = new UserSession(getActivity());
         accountAnalytics = new AccountAnalytics(getActivity());
     }
 
@@ -174,7 +175,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                     accountAnalytics.eventClickAccountSetting(PASSWORD);
-                    if (userSession.isHasPassword()) {
+                    if (userSession.hasPassword()) {
                         intent = RouteManager.getIntent(getActivity(), ApplinkConst
                                 .CHANGE_PASSWORD);
                         getActivity().startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
