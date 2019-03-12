@@ -37,7 +37,6 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_toEndOf="@+id/mcl_logo"
                 android:layout_toRightOf="@+id/mcl_logo"
-                android:fontFamily="sans-serif"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
@@ -49,29 +48,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:fontFamily="sans-serif"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
-                tools:text="Modal Toko" />
-
-            <!-- <TextView
-                 android:id="@+id/sp_new_title"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginStart="@dimen/dp_5"
-                 android:layout_marginLeft="@dimen/dp_5"
-                 android:layout_toEndOf="@+id/sp_title"
-                 android:layout_toRightOf="@+id/sp_title"
-                 android:background="@drawable/sp_bg_rounded_corners_red"
-                 android:paddingLeft="@dimen/dp_10"
-                 android:paddingTop="@dimen/dp_2"
-                 android:paddingRight="@dimen/dp_10"
-                 android:paddingBottom="@dimen/dp_2"
-                 android:text="@string/sp_label_new"
-                 android:textAllCaps="true"
-                 android:textColor="@color/white"
-                 android:textSize="@dimen/sp_10" />-->
+                tools:text="Pelajari" />
 
             <TextView
                 android:id="@+id/mcl_description"
@@ -86,97 +66,55 @@
                 tools:text="ncsdn njvksnv svksvkjv "
                 tools:visibility="visible" />
 
-            <RelativeLayout
-                android:id="@+id/sp_kyc_status"
+            <LinearLayout
+                android:id="@+id/mcl_info_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
                 android:layout_below="@+id/mcl_description"
-                android:layout_marginTop="@dimen/dp_15"
-                android:orientation="horizontal"
-                android:padding="@dimen/dp_9"
+                android:layout_marginTop="@dimen/dp_10"
+                android:divider="@android:color/transparent"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_4"
+                android:scrollbars="vertical"
+                android:visibility="gone"/>
+
+            <RelativeLayout
+
+                android:id="@+id/mcl_box_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mcl_info_list"
+                android:layout_marginTop="@dimen/dp_12"
                 android:visibility="visible">
 
-                <RelativeLayout
-                    android:id="@+id/kyc_linear_layout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/sp_kyc_short_desc"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-
-                    <ImageView
-                        android:id="@+id/sp_status_info_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/info_icon" />
-
-                    <TextView
-                        android:id="@+id/sp_kyc_short_desc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/dp_9"
-                        android:layout_marginLeft="@dimen/dp_9"
-                        android:layout_toEndOf="@+id/sp_status_info_icon"
-                        android:layout_toRightOf="@+id/sp_status_info_icon"
-                        android:fontFamily="sans-serif-medium"
-                        android:lineSpacingExtra="3sp"
-                        android:text="Status: Menunggu Verifikasi Aplikasi"
-                        android:textColor="@color/black_70"
-                        android:textSize="12sp"
-                        android:textStyle="normal" />
-
-                    <ImageView
-                        android:id="@+id/sp_right_arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="end"
-                        android:foregroundGravity="right"
-                        android:src="@drawable/ic_arrow_right_grey" />
-
-                </RelativeLayout>
+                    android:fontFamily="sans-serif-medium"
+                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/sp_12"
+                    tools:text="Status: Menunggu Verifikasi Aplikasi" />
 
                 <TextView
                     android:id="@+id/sp_kyc_long_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/kyc_linear_layout"
-                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_below="@+id/sp_kyc_short_desc"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="4sp"
-                    android:text="Status: Menunggu Verifikasi Aplikasi"
+                    android:lineSpacingExtra="@dimen/sp_4"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/sp_11"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    tools:text="Status: Menunggu Verifikasi Aplikasi" />
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/sp_detail_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/sp_kyc_status"
-                android:layout_marginTop="@dimen/dp_10"
-                android:clipToPadding="false"
-                android:divider="@android:color/transparent"
-                android:longClickable="false"
-                android:orientation="vertical"
-                android:padding="@dimen/dp_4"
-                android:scrollbars="vertical" />
 
-            <View
-                android:id="@+id/sp_list_separator"
-                android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_below="@+id/sp_detail_list"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginBottom="@dimen/dp_4"
-                android:background="@color/greyish_bg" />
-
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/sp_action_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -187,7 +125,7 @@
                 android:longClickable="false"
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_4"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical" />-->
 
         </RelativeLayout>
 

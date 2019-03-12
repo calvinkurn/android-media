@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.saldodetails.R;
@@ -19,6 +21,11 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
     private Context context;
     private GqlMerchantCreditResponse merchantCreditDetails;
+
+    private ImageView mclLogoIV;
+    private TextView mclTitleTV;
+    private TextView mclActionItemTV;
+    private TextView mclDescTV;
 
     @Nullable
     @Override
@@ -32,7 +39,9 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     }
 
     private void initViews(View view) {
-
+        mclLogoIV = view.findViewById(R.id.mcl_logo);
+        mclTitleTV = view.findViewById(R.id.mcl_title);
+        mclActionItemTV = view.findViewById(R.id.mcl_action_item);
     }
 
     @Override
