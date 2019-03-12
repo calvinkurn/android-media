@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UriBuilder {
+public class UriUtil {
     /**
      * Build pattern uri to uri String
      *
@@ -38,13 +38,17 @@ public class UriBuilder {
      *
      * @param uriPatternString example: "tokopedia-android-internal://marketplace/shop/{id}/etalase/{id}/"
      * @param uri              example: "tokopedia-android-internal://marketplace/shop/123/etalase/345"
+     * @param checkScheme      if true, will check pattern and uri scheme. If not same, will return.
      * @return listOf (123, 345)
      */
-    public static List<String> destructureUri(@NonNull String uriPatternString, @NonNull Uri uri) {
+    public static List<String> destructureUri(@NonNull String uriPatternString, @NonNull Uri uri, boolean checkScheme) {
         List<String> result = new ArrayList<>();
         try {
             Uri uriPattern = Uri.parse(uriPatternString);
             if (uriPattern == null) {
+                return result;
+            }
+            if (checkScheme && uriPattern.getScheme() != null && !uriPattern.getScheme().equals(uri.getScheme())) {
                 return result;
             }
             int i = 0;

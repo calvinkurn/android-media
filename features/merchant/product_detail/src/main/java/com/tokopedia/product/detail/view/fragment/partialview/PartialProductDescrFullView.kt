@@ -11,11 +11,11 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConstInternal
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriBuilder
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.Category
 import com.tokopedia.product.detail.common.data.model.ProductInfo
@@ -125,14 +125,19 @@ class PartialProductDescrFullView private constructor(private val view: View,
     }
 
     private fun openCategory(category: Category.Detail) {
-        // GO TO CATEGORY
+        if (GlobalConfig.isCustomerApp()) {
+            val intent = RouteManager.getIntentInternal(view.context,
+                UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL,
+                category.id))
+            view.context.startActivity(intent)
+        }
     }
 
     private fun gotoEtalase(etalaseId: String, shopID: Int) {
         val intent = RouteManager.getIntent(view.context,if (etalaseId.isNotBlank()){
-            UriBuilder.buildUri(ApplinkConst.SHOP_ETALASE, shopID.toString(), etalaseId)
+            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopID.toString(), etalaseId)
         } else {
-            UriBuilder.buildUri(ApplinkConst.SHOP, shopID.toString())
+            UriUtil.buildUri(ApplinkConst.SHOP, shopID.toString())
         })
         view.context.startActivity(intent)
     }

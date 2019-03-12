@@ -15,7 +15,6 @@ public class ApplinkConstInternal {
 
     // ProductDetailActivity
     public static final String PRODUCT_DETAIL           = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{id}/";
-    public static final String PRODUCT_DETAIL_DOMAIN    = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{shop_domain}/{product_key}/";
 
     // ProductEditActivity
     public static final String PRODUCT_EDIT     = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{id}/edit";

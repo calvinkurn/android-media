@@ -12,7 +12,6 @@
         Otherwise, do not put "/"
     -->
     <string name="path_product_detail" translatable="false">/product/.*\\/</string>
-    <string name="path_product_detail_domain" translatable="false">/product/.*\\/.*\\/</string>
     <string name="path_product_edit" translatable="false">/product/.*\\/edit</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_category_detail" translatable="false">/category/.*\\/</string>

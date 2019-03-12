@@ -29,7 +29,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConstInternal
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriBuilder
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
@@ -64,7 +64,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.product.detail.data.util.getIntentUrl
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
@@ -534,7 +533,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             val shopId = productInfo?.basic?.shopID?.toString() ?: return
             startActivityForResult(RouteManager.getIntent(it,
-                UriBuilder.buildUri(ApplinkConst.SHOP, shopId)),
+                UriUtil.buildUri(ApplinkConst.SHOP, shopId)),
                 REQUEST_CODE_SHOP_INFO)
         }
     }
@@ -881,7 +880,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 pdpAffiliate.productId.toString(), isRegularPdp)
             if (productInfoViewModel.isUserSessionActive()) {
                 RouteManager.route(it,
-                    UriBuilder.buildUri(ApplinkConst.AFFILIATE_CREATE_POST,
+                    UriUtil.buildUri(ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
                         pdpAffiliate.adId.toString()))
             } else {
@@ -1003,7 +1002,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val fullUrl = UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_EDIT, id)
+            val fullUrl = UriUtil.buildUri(ApplinkConstInternal.PRODUCT_EDIT, id)
             val intent = RouteManager.getIntentInternal(it, fullUrl)
             intent?.run {
                 startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
@@ -1168,7 +1167,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                UriBuilder.buildUri(ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString()))
+                UriUtil.buildUri(ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString()))
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
         if (productInfo != null) {
@@ -1181,7 +1180,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (productInfo != null) {
             //TODO SENT MOENGAGE
             context?.let {
-                val fullUrl = UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
+                val fullUrl = UriUtil.buildUri(ApplinkConstInternal.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
                 val intent = RouteManager.getIntentInternal(it, fullUrl)
                 intent?.run {
                     intent.putExtra("x_prd_nm", productInfo!!.basic.name)
@@ -1197,7 +1196,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
-                    UriBuilder.buildUri(ApplinkConst.TOPCHAT_ASKSELLER,
+                    UriUtil.buildUri(ApplinkConst.TOPCHAT_ASKSELLER,
                         shop.shopCore.shopID, product.basic.url,
                         "product", shop.shopCore.name, shop.shopAssets.avatar))
                 startActivity(intent)
