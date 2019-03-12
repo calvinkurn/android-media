@@ -236,7 +236,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
 
     @NonNull
     private Boolean checkIfAttachmentMandatory() {
-        return getView().getReason().getRequiredDocs().size() > 0;
+        return getView().getReason().getRequiredDocs().size() > 0 && getView().getAttachments() != null
+                && getView().getAttachments().size() > 0;
     }
 
     @Override
