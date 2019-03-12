@@ -102,6 +102,7 @@ public class TopAdsGtmTracker {
                         )
                 ));
         trackingQueue.putEETracking((HashMap<String, Object>) map);
+        clearDataLayerList();
     }
 
     private Object getSearchResultProductViewImpressions(Product product, int position) {
