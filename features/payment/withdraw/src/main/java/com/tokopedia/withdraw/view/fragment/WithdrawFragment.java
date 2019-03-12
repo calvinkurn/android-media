@@ -249,6 +249,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 } else if (buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.refund_saldo_less_min));
                 } else {
+                    totalWithdrawal.setText("");
                     currentState = BUYER_STATE;
                     sellerWithdrawal = false;
                     enableBuyerSaldoView();
@@ -264,6 +265,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 } else if (sellerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_less_min));
                 } else {
+                    totalWithdrawal.setText("");
                     currentState = SELLER_STATE;
                     sellerWithdrawal = true;
                     enableSellerSaldoView();
