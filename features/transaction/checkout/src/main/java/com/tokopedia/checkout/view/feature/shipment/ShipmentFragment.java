@@ -1416,12 +1416,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter != null && shipmentAdapter.getPromoData() != null) {
                 voucherCode = shipmentAdapter.getPromoData().getPromoCodeSafe();
             }
-            RecipientAddressModel addressModel = shipmentPresenter.getRecipientAddressModel();
-            String cornerId = (addressModel != null) ? addressModel.getCornerId() : null;
             switch (requestCode) {
                 case REQUEST_CODE_NORMAL_CHECKOUT:
-                    shipmentPresenter.processCheckShipmentPrepareCheckout(voucherCode, isOneClickShipment(), cornerId);
                     shipmentPresenter.processSaveShipmentState();
+                    shipmentPresenter.processCheckout(voucherCode, isOneClickShipment());
                     break;
                 case REQUEST_CODE_COD:
                     shipmentPresenter.proceedCodCheckout(voucherCode, isOneClickShipment());

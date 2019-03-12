@@ -531,9 +531,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    @Deprecated
     @Override
     public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId) {
-        boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
+        boolean isNeedToRemoveErrorProduct = removeErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
             processCheckout(voucherCode, isOneClickShipment);
         } else {
@@ -584,6 +585,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckout(String voucherCode, boolean isOneClickShipment) {
+        removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 !TextUtils.isEmpty(voucherCode) ?
                         voucherCode : "",
@@ -607,7 +609,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private boolean isNeedToremoveErrorShopProduct() {
+    private boolean removeErrorShopProduct() {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = new ArrayList<>();
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             List<CartItemModel> cartItemModels = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
