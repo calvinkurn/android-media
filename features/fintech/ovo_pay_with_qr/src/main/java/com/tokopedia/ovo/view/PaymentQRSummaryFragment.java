@@ -140,7 +140,12 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-
+                    if (!TextUtils.isEmpty(editable)) {
+                        inputAmount.removeTextChangedListener(this);
+                        inputAmount.setText(Utils.convertToCurrencyStringWithoutRp(Utils.convertToCurrencyLongFromString(editable.toString())));
+                        inputAmount.addTextChangedListener(this);
+                        inputAmount.setSelection(inputAmount.getText().length());
+                    }
                 }
             });
             if (responseData.getGoalQRInquiry().getShowUsePointToggle()) {
@@ -172,18 +177,16 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
         ovoCash.setText(String.format(getString(R.string.ovo_cash_amnt), walletData.getCashBalance()));
         bayarBtn.setOnClickListener(view1 -> {
             hideKeyboard(getView(), getActivity());
-            if (TextUtils.isEmpty(inputAmount.getText()) ||
-                    (inputAmount.getText() != null && Float.parseFloat(
-                            inputAmount.getText().toString()) < 1000f)) {
+            if (TextUtils.isEmpty(inputAmount.getText()) || (inputAmount.getText() != null
+                    && Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) < 1000)) {
                 inputError.setText(getString(R.string.min_input_hint));
                 inputError.setTextColor(getResources().getColor(R.color.error_color));
-            } else if (TextUtils.isEmpty(inputAmount.getText()) ||
-                    (inputAmount.getText() != null && Float.parseFloat(
-                            inputAmount.getText().toString()) > 10000000f)) {
+            } else if (inputAmount.getText() != null && Utils.convertToCurrencyLongFromString(
+                    inputAmount.getText().toString()) > 10000000) {
                 inputError.setText(getString(R.string.max_input_hint));
                 inputError.setTextColor(getResources().getColor(R.color.error_color));
-            } else if (inputAmount.getText() != null &&
-                    Integer.parseInt(inputAmount.getText().toString()) > walletData.getRawBalance()) {
+            } else if (inputAmount.getText() != null && Utils.convertToCurrencyLongFromString(
+                    inputAmount.getText().toString()) > walletData.getRawBalance()) {
                 inputError.setText(getString(R.string.balance_exceed_error));
                 inputError.setTextColor(getResources().getColor(R.color.error_color));
             } else {
@@ -193,7 +196,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
                 transferId = responseData.getGoalQRInquiry().getTransferId();
                 presenter.confirmQrPayment(imeiNumber,
                         responseData.getGoalQRInquiry().getTransferId(),
-                        Float.parseFloat(inputAmount.getText().toString()),
+                        Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()),
                         responseData.getGoalQRInquiry().getFee(),
                         responseData.getGoalQRInquiry().getShowUsePointToggle());
             }
