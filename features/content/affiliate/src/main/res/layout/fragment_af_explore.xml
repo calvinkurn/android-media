@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
@@ -13,7 +13,8 @@
         android:background="@color/white"
         android:elevation="@dimen/dp_4"
         android:visibility="visible"
-        app:elevation="@dimen/dp_4">
+        app:elevation="@dimen/dp_4"
+        tools:targetApi="lollipop">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -34,6 +35,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:src="@drawable/ic_action_back"
                         android:tint="@color/black_70" />
@@ -51,22 +53,24 @@
                         android:layout_width="@dimen/dp_24"
                         android:layout_height="@dimen/dp_24"
                         android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
-                        android:src="@drawable/ic_bantuan" />
+                        android:src="@drawable/ic_system_action_information_grayscale_24" />
 
                     <FrameLayout
                         android:id="@+id/action_profile"
                         android:layout_width="@dimen/dp_30"
                         android:layout_height="@dimen/dp_30"
                         android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16">
 
                         <ImageView
                             android:id="@+id/iv_profile"
                             android:layout_width="@dimen/dp_24"
                             android:layout_height="@dimen/dp_24"
-                            android:src="@drawable/ic_profile_default"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_profile_default" />
 
                     </FrameLayout>
                 </LinearLayout>
@@ -79,47 +83,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="@dimen/dp_8"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/layout_filter"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginRight="-6dp"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="-6dp"
+            android:layout_marginRight="-6dp"
             android:layout_marginBottom="@dimen/dp_8"
+            android:orientation="horizontal"
+            android:visibility="gone"
             tools:visibility="visible">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_filter"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/item_explore_filter"/>
+                android:layout_weight="1"
+                tools:listitem="@layout/item_explore_filter" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/btn_filter_more"
                 android:layout_width="@dimen/dp_48"
                 android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
                 android:paddingLeft="@dimen/dp_2"
-                android:paddingRight="@dimen/dp_2"
                 android:paddingTop="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_2"
                 android:paddingBottom="@dimen/dp_8"
-                app:cardUseCompatPadding="true"
                 app:cardCornerRadius="@dimen/dp_6"
-                android:layout_gravity="end|center_vertical">
+                app:cardUseCompatPadding="true">
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:layout_height="@dimen/dp_24"
                     android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_gravity="center"
                     android:layout_margin="@dimen/dp_4"
-                    android:src="@drawable/ic_see_list"
-                    android:layout_gravity="center"/>
+                    android:src="@drawable/ic_see_list" />
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
@@ -148,9 +153,9 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/layout_auto_complete"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/layout_auto_complete"
         android:background="@color/white"
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -159,16 +164,16 @@
             android:id="@+id/rv_search_auto_complete"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false" />
     </FrameLayout>
 
     <FrameLayout
-        android:visibility="gone"
         android:id="@+id/layout_empty"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"/>
+        android:background="@color/white"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.tokopedia.design.button.BottomActionView
         android:id="@+id/bav"
@@ -178,20 +183,21 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:visibility="gone"
         app:bav_2_display="true"
-        app:bav_label_2="@string/text_button_sort"
-        app:bav_icon_2="@drawable/ic_sort_aff"/>
-    
+        app:bav_icon_2="@drawable/ic_sort_aff"
+        app:bav_label_2="@string/text_button_sort" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_back_to_top"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_20"
         android:src="@drawable/ic_arrow_up"
-        android:visibility="gone"
         android:tint="@color/grey_600"
+        android:visibility="gone"
         app:backgroundTint="@color/white"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </android.support.design.widget.CoordinatorLayout>
