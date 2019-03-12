@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -24,9 +23,9 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
     private ExploreContract.View mainView;
 
     private ImageView ivImage;
-    private RelativeLayout btnByme;
+    private ImageView btnByme;
     private TextView tvTitle, tvCommission;
-    private RelativeLayout layout;
+    private View layout;
 
     public ExploreViewHolder(View itemView, ExploreContract.View mainView) {
         super(itemView);
@@ -47,10 +46,9 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
     private void initView(ExploreViewModel element) {
         ImageHandler.clearImage(ivImage);
         ImageHandler.loadImageRounded2(mainView.getContext(), ivImage, element.getImageUrl());
+
         tvTitle.setText(MethodChecker.fromHtml(element.getTitle()));
-        tvCommission.setText(
-                mainView.getContext().getResources().getString(R.string.text_item_commission)
-                        + " "+ MethodChecker.fromHtml(element.getCommissionString()));
+        tvCommission.setText(MethodChecker.fromHtml(element.getCommissionString()));
     }
 
     private void initViewListener(ExploreViewModel element) {

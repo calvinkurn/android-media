@@ -3,8 +3,8 @@ package com.tokopedia.affiliate.feature.explore.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author by yfsx on 28/12/18.
  */
-public class FilterViewModel implements Parcelable {
+public class FilterViewModel implements Visitable<ExploreTypeFactory>, Parcelable {
 
     private String name;
     private String image;
@@ -26,7 +26,9 @@ public class FilterViewModel implements Parcelable {
         this.isSelected = isSelected;
     }
 
-    public FilterViewModel() {
+    @Override
+    public int type(ExploreTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
     public String getName() {
@@ -82,7 +84,8 @@ public class FilterViewModel implements Parcelable {
         this.isSelected = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<FilterViewModel> CREATOR = new Parcelable.Creator<FilterViewModel>() {
+    public static final Parcelable.Creator<FilterViewModel> CREATOR =
+            new Parcelable.Creator<FilterViewModel>() {
         @Override
         public FilterViewModel createFromParcel(Parcel source) {
             return new FilterViewModel(source);

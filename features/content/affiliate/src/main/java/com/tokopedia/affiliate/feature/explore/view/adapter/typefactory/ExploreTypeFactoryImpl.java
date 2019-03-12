@@ -7,10 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreEmptySearchViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreViewHolder;
+import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.FilterViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -39,6 +41,11 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
     }
 
     @Override
+    public int type(FilterViewModel filterViewModel) {
+        return FilterViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder abstractViewHolder;
         if (type == ExploreViewHolder.LAYOUT) {
@@ -47,8 +54,11 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
             abstractViewHolder = new EmptyViewHolder(view);
         } else if (type == ExploreEmptySearchViewHolder.LAYOUT) {
             abstractViewHolder = new ExploreEmptySearchViewHolder(view, mainView);
-        } else
+        } else if (type == FilterViewHolder.LAYOUT) {
+            abstractViewHolder = new FilterViewHolder(view);
+        } else {
             abstractViewHolder = super.createViewHolder(view, type);
+        }
         return abstractViewHolder;
     }
 }

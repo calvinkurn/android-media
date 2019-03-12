@@ -99,7 +99,8 @@
                 android:id="@+id/rv_filter"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_explore_filter"/>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/btn_filter_more"

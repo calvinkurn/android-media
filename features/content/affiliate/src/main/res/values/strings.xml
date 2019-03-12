@@ -37,6 +37,7 @@
     <string name="text_button_sort">Urutkan</string>
     <string name="title_showcase">Cek dan Bagikan Hasil Kurasimu</string>
     <string name="desc_showcase">Semua kurasi akan disimpan di profilmu</string>
+    <string name="af_get_commission">Raih Komisi</string>
 
     <!--ONBOARDING-->
     <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
