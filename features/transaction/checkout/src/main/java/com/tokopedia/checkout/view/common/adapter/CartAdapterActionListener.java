@@ -16,27 +16,27 @@ public interface CartAdapterActionListener {
 
     void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position);
 
-    void onCartPromoUseVoucherPromoClicked(PromoData cartPromo, int position);
+    // void onCartPromoUseVoucherPromoClicked(PromoData cartPromo, int position);
 
     void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position);
 
     // void onCartPromoUseVoucherMerchantPromoClicked(PromoDataMerchant cartPromoMerchant, int position);
 
-    void onCartPromoUseVoucherMerchantPromoClickedTest(int position);
+    void onCartPromoUseVoucherMerchantPromoClickedTest();
 
-    void onCartPromoCancelVoucherPromoClicked(PromoData cartPromo, int position);
+    // void onCartPromoCancelVoucherPromoClicked(PromoData cartPromo, int position);
 
     void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position);
 
     // void onCartPromoCancelVoucherPromoMerchantClicked(PromoDataMerchant cartPromoMerchant, int position);
 
-    void onCartPromoTrackingImpression(PromoData cartPromo, int position);
+    // void onCartPromoTrackingImpression(PromoData cartPromo, int position);
 
     void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position);
 
     // void onCartPromoMerchantTrackingImpression(PromoDataMerchant cartPromoMerchant, int position);
 
-    void onCartPromoTrackingCancelled(PromoData cartPromo, int position);
+    // void onCartPromoTrackingCancelled(PromoData cartPromo, int position);
 
     void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position);
 
@@ -52,7 +52,7 @@ public interface CartAdapterActionListener {
 
     void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode);
 
-    void onClickDetailPromo(PromoData data, int position);
+    // void onClickDetailPromo(PromoData data, int position);
 
     void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position);
 

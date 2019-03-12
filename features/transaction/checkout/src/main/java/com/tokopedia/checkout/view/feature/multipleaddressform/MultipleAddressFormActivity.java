@@ -13,6 +13,7 @@ import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -44,7 +45,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     private String cartIds;
     private MultipleAddressFragment fragment;
 
-    public static Intent createInstance(Context context,
+    /*public static Intent createInstance(Context context,
                                         PromoData promoData,
                                         CartPromoSuggestion cartPromoSuggestion,
                                         RecipientAddressModel recipientAddressData,
@@ -55,6 +56,26 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     ) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
         intent.putExtra(EXTRA_PROMO_DATA, promoData);
+        intent.putExtra(EXTRA_PROMO_SUGGESTION_DATA, cartPromoSuggestion);
+        intent.putExtra(EXTRA_RECIPIENT_ADDRESS_DATA, recipientAddressData);
+        intent.putExtra(EXTRA_SHIPMENT_CART_TEM_LIST_DATA, new ArrayList<>(shipmentCartItemModels));
+        intent.putExtra(EXTRA_SHIPMENT_COST_SATA, shipmentCostModel);
+        intent.putExtra(EXTRA_SHIPMENT_DONATION_DATA, shipmentDonationModel);
+        intent.putExtra(EXTRA_SHIPMENT_CART_IDS, cartIds);
+        return intent;
+    }*/
+
+    public static Intent createInstance(Context context,
+                                        PromoStackingData promoStackingData,
+                                        CartPromoSuggestion cartPromoSuggestion,
+                                        RecipientAddressModel recipientAddressData,
+                                        List<ShipmentCartItemModel> shipmentCartItemModels,
+                                        ShipmentCostModel shipmentCostModel,
+                                        ShipmentDonationModel shipmentDonationModel,
+                                        String cartIds
+    ) {
+        Intent intent = new Intent(context, MultipleAddressFormActivity.class);
+        intent.putExtra(EXTRA_PROMO_DATA, promoStackingData);
         intent.putExtra(EXTRA_PROMO_SUGGESTION_DATA, cartPromoSuggestion);
         intent.putExtra(EXTRA_RECIPIENT_ADDRESS_DATA, recipientAddressData);
         intent.putExtra(EXTRA_SHIPMENT_CART_TEM_LIST_DATA, new ArrayList<>(shipmentCartItemModels));

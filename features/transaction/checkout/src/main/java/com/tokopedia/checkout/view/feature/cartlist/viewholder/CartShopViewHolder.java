@@ -121,7 +121,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClickUsePromo() {
                 // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
-                actionListener.onCartPromoUseVoucherMerchantPromoClickedTest(position);
+                actionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
             }
 
             @Override

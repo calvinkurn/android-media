@@ -4,10 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16">
+    android:layout_marginTop="@dimen/dp_14">
 
-    <TextView
+    <!--<TextView
         android:id="@+id/tv_text_sent_by"
         style="@style/TextSmallMediumBlack38"
         android:layout_width="wrap_content"
@@ -17,20 +16,19 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_5"
-        android:text="@string/label_seller" />
+        android:text="@string/label_seller" />-->
 
     <TextView
         android:id="@+id/tv_shop_name"
-        style="@style/TextSmallMediumBlack70"
+        style="@style/TextMidMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_10"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_toEndOf="@id/tv_text_sent_by"
-        android:layout_toRightOf="@id/tv_text_sent_by"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:lineSpacingExtra="5sp"
+        android:textStyle="bold"
         tools:text="Adidas" />
 
     <ImageView

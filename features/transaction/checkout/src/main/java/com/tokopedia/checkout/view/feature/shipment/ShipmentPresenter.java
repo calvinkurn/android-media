@@ -50,6 +50,7 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
@@ -352,7 +353,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setShipmentDonationModel(null);
         }
 
-        getView().setPromoData(cartShipmentAddressFormData);
+        // getView().setPromoData(cartShipmentAddressFormData);
+        getView().setPromoStackingData(cartShipmentAddressFormData);
 
         if (cartShipmentAddressFormData.getCartPromoSuggestion() != null) {
             setCartPromoSuggestion(cartShipmentAddressFormData.getCartPromoSuggestion());
@@ -379,7 +381,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processReloadCheckoutPageFromMultipleAddress(PromoData oldPromoData,
+    public void processReloadCheckoutPageFromMultipleAddress(PromoStackingData oldPromoData,
                                                              CartPromoSuggestion oldCartPromoSuggestion,
                                                              RecipientAddressModel oldRecipientAddressModel,
                                                              ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels,

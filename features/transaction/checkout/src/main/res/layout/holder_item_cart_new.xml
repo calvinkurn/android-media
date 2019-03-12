@@ -41,20 +41,32 @@
                     android:paddingRight="@dimen/dp_8"
                     android:theme="@style/TransactionCheckbox" />
 
-                <ImageView
-                    android:id="@+id/iv_image_product"
+                <android.support.v7.widget.CardView
+                    android:id="@+id/iv_product_card"
                     android:layout_width="@dimen/dp_52"
                     android:layout_height="@dimen/dp_52"
-                    android:layout_marginTop="@dimen/dp_4"
                     android:layout_toRightOf="@+id/cb_select_item"
-                    tools:ignore="ContentDescription"
-                    tools:src="@drawable/empty_photo" />
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="@dimen/dp_0"
+                    android:layout_margin="5dp">
+
+                    <ImageView
+                        android:id="@+id/iv_image_product"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_52"
+                        tools:ignore="ContentDescription"
+                        tools:src="@drawable/empty_photo" />
+
+                </android.support.v7.widget.CardView>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/iv_image_product"
-                    android:layout_toRightOf="@id/iv_image_product"
+                    android:layout_toEndOf="@id/iv_product_card"
+                    android:layout_toRightOf="@id/iv_product_card"
                     android:paddingLeft="@dimen/dp_8">
 
                     <LinearLayout
@@ -72,6 +84,7 @@
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:textColor="@color/black"
+                            android:textStyle="bold"
                             tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
 
                         <ImageView
@@ -102,6 +115,7 @@
                         android:layout_below="@+id/product_properties"
                         android:layout_marginTop="@dimen/dp_4"
                         android:textColor="@color/orange_red"
+                        android:textStyle="bold"
                         tools:text="Rp 200.000" />
 
                     <LinearLayout

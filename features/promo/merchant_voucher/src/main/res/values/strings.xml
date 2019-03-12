@@ -42,6 +42,7 @@
     <string name="clash_bottomsheet_previous_potential_promo_origin2">Dari toko Bandung</string>
     <string name="clash_bottomsheet_previous_potential_promo_desc2">Cashback Tokped Hingga Rp 75.000</string>
     <string name="clash_bottomsheet_info_warning">Voucher yang baru dipilih tidak dapat digunakan bersamaan dengan voucher sebelumnya.</string>
+    <string name="clash_bottomsheet_submit">Submit</string>
 
     <string name="totalbenefit_bottomsheet_title">Total Nilai Promo</string>
     <string name="totalbenefit_bottomsheet_title1">Total Potongan Ongkos Kirim</string>

@@ -41,6 +41,7 @@ import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -85,14 +86,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private ShipmentAdapterActionListener mActionListener;
 
-    private CardView cvInvoiceItem;
+    // private CardView cvInvoiceItem;
     private LinearLayout layoutError;
     private TextView tvErrorTitle;
     private TextView tvErrorDescription;
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
-    private TextView tvTextSentBy;
+    // private TextView tvTextSentBy;
     private TextView tvShopName;
     private LinearLayout llShippingWarningContainer;
     private ImageView ivProductImage;
@@ -209,6 +210,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
 
+    // promostacking
+    private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
+
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
@@ -222,14 +226,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void bindViewIds(View itemView) {
-        cvInvoiceItem = itemView.findViewById(R.id.cv_invoice_item);
+        // cvInvoiceItem = itemView.findViewById(R.id.cv_invoice_item);
         layoutError = itemView.findViewById(R.id.layout_error);
         tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
         tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
-        tvTextSentBy = itemView.findViewById(R.id.tv_text_sent_by);
+        // tvTextSentBy = itemView.findViewById(R.id.tv_text_sent_by);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
@@ -340,6 +344,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShipmentBlackboxInfoTicker = itemView.findViewById(R.id.ll_shipment_blackbox_info_ticker);
         imgYellowBulb = itemView.findViewById(R.id.img_bulb);
         tvShipmentBlackboxTickerInfo = itemView.findViewById(R.id.tv_shipment_blackbox_ticker_info);
+
+        // promostacking
+        tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -480,13 +487,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void setMargin(int topMargin) {
+    /*private void setMargin(int topMargin) {
         ViewGroup.MarginLayoutParams layoutParams =
                 (ViewGroup.MarginLayoutParams) cvInvoiceItem.getLayoutParams();
         int sideMargin = (int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16);
         layoutParams.setMargins(sideMargin, topMargin, sideMargin, 0);
         cvInvoiceItem.requestLayout();
-    }
+    }*/
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
@@ -516,6 +523,33 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         tvShopName.setText(shipmentCartItemModel.getShopName());
+
+        tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+            @Override
+            public void onClickUsePromo() {
+                // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
+                mActionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
+            }
+
+            @Override
+            public void onDisablePromoDiscount() {
+                // actionListener.onCartPromoCancelVoucherPromoMerchantClicked(promoDataMerchant, position);
+                // actionListener.onCartPromoMerchantTrackingCancelled(promoDataMerchant, position);
+            }
+
+            @Override
+            public void onClickDetailPromo() {
+                // actionListener.onClickDetailPromoMerchant(promoDataMerchant, position);
+            }
+        });
+        /*if(promoDataMerchant.getState() != TickerMerchantPromoCheckoutView.State.FAILED){
+            actionListener.onCartPromoMerchantTrackingImpression(promoDataMerchant, position);
+        }*/
+        // tickerMerchantPromoCheckoutView.setState(promoDataMerchant.getState());
+        // tickerMerchantPromoCheckoutView.setDesc(promoDataMerchant.getDescription());
+        // tickerMerchantPromoCheckoutView.setTitle(promoDataMerchant.getTitle());
+        tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
+        tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
     }
 
     private void renderFirstCartItem(CartItemModel cartItemModel) {

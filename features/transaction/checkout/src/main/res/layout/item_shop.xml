@@ -38,7 +38,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:foreground="?selectableItemBackground"
-                android:paddingBottom="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_9"
                 android:paddingRight="@dimen/dp_9"
                 android:paddingTop="@dimen/dp_16">
@@ -52,7 +51,7 @@
                     android:paddingRight="@dimen/dp_8"
                     android:theme="@style/TransactionCheckbox" />
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/tv_label_shop_name"
                     style="@style/TextSmallMediumBlack38"
                     android:layout_width="wrap_content"
@@ -61,26 +60,26 @@
                     android:layout_toRightOf="@+id/cb_select_shop"
                     android:lineSpacingExtra="@dimen/sp_5"
                     android:text="@string/label_seller"
-                    tools:ignore="RtlSymmetry" />
+                    tools:ignore="RtlSymmetry" />-->
 
                 <TextView
                     android:id="@+id/tv_shop_name"
-                    style="@style/TextSmallMediumBlack70"
+                    style="@style/TextMidMediumBlack70"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
-                    android:layout_toRightOf="@+id/tv_label_shop_name"
+                    android:gravity="center_vertical"
+                    android:layout_toRightOf="@+id/cb_select_shop"
                     android:lineSpacingExtra="@dimen/sp_5"
                     tools:ignore="RelativeOverlap"
+                    android:textStyle="bold"
                     tools:text="Loaa Store df" />
 
                 <ImageView
                     android:id="@+id/img_shop_badge"
                     android:layout_width="@dimen/dp_18"
                     android:layout_height="@dimen/dp_18"
-                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dp_4"
                     android:layout_toRightOf="@+id/tv_shop_name"
                     tools:src="@drawable/ic_badge_official" />
 
@@ -98,12 +97,16 @@
             android:layout_marginTop="@dimen/dp_5"/>-->
         <!--end-->
 
-        <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+        <!--<com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
             android:id="@+id/voucher_merchant_holder_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_12"
-            android:visibility="visible"/>
+            android:visibility="visible"/>-->
+
+        <include
+            layout="@layout/item_promo_merchant"
+            tools:visibility="visible" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cart_item"

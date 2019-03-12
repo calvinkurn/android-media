@@ -47,6 +47,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void resetTotalPrice();
 
+    void showBottomSheetTotalBenefit();
+
     void onInsuranceChecked(int position);
 
     void onNeedUpdateViewItem(int position);

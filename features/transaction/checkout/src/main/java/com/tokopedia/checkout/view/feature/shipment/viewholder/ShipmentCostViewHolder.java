@@ -21,6 +21,7 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -45,6 +46,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvPromoOrCouponLabel;
     private TextView mTvDonationLabel;
     private TextView mTvDonationPrice;
+    private RelativeLayout mRlTotalPromo;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -67,11 +69,12 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvPromoOrCouponLabel = itemView.findViewById(R.id.tv_promo_or_coupon_label);
         mTvDonationLabel = itemView.findViewById(R.id.tv_donation_label);
         mTvDonationPrice = itemView.findViewById(R.id.tv_donation_price);
+        mRlTotalPromo = itemView.findViewById(R.id.rl_total_promo);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
 
-    public void bindViewHolder(ShipmentCostModel shipmentCost, PromoData promo) {
+    /*public void bindViewHolder(ShipmentCostModel shipmentCost, PromoData promo) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
@@ -86,6 +89,24 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
                 getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice())));
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
+    }*/
+
+    public void bindViewHolder(ShipmentCostModel shipmentCost, PromoStackingData promoStackingData) {
+        mRlShipmentCostLayout.setVisibility(View.VISIBLE);
+
+        mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
+        mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
+                CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false));
+        mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
+        mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
+        mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
+        mTvPurchaseProtectionLabel.setText(getTotalPurchaseProtectionItemLabel(mTvPurchaseProtectionLabel.getContext(), shipmentCost.getTotalPurchaseProtectionItem()));
+        mTvPurchaseProtectionFee.setText(getPriceFormat(mTvPurchaseProtectionLabel, mTvPurchaseProtectionFee, shipmentCost.getPurchaseProtectionFee()));
+        mTvPromoDiscount.setText(String.format(mTvPromoDiscount.getContext().getString(R.string.promo_format),
+                getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice())));
+        mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
+        mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
+        mRlTotalPromo.setOnClickListener(v -> shipmentAdapterActionListener.showBottomSheetTotalBenefit());
     }
 
     private String getTotalItemLabel(Context context, int totalItem) {

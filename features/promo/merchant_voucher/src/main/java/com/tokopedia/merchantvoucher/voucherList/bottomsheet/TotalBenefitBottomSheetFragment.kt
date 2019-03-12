@@ -41,5 +41,10 @@ open class TotalBenefitBottomSheetFragment : BottomSheetDialogFragment() {
 
         val textViewTitle = view.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
         textViewTitle.text = mTitle
+
+        val layoutTitle = view.findViewById<View>(com.tokopedia.design.R.id.layout_title)
+        layoutTitle.setOnClickListener {
+            dismiss()
+        }
     }
 }

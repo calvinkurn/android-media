@@ -572,11 +572,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         renderEmptyCartData(null);
     }
 
-    @Override
+    /*@Override
     public void onCartPromoUseVoucherPromoClicked(PromoData promoData, int position) {
         trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
         dPresenter.processUpdateCartDataPromo(getSelectedCartDataList(), promoData, GO_TO_LIST);
-    }
+    }*/
 
     @Override
     public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
@@ -585,7 +585,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartPromoUseVoucherMerchantPromoClickedTest(int position) {
+    public void onCartPromoUseVoucherMerchantPromoClickedTest() {
         if (getFragmentManager() != null) {
             MerchantBottomSheetFragment bottomSheet = MerchantBottomSheetFragment.newInstance("1767940");
             bottomSheet.show(getFragmentManager(), null);
@@ -600,10 +600,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
     }
 
-    @Override
+    /*@Override
     public void onCartPromoCancelVoucherPromoClicked(PromoData promoData, int position) {
         dPresenter.processCancelAutoApply();
-    }
+    }*/
 
     @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
@@ -611,20 +611,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         dPresenter.processCancelAutoApply();
     }
 
-    @Override
+    /*@Override
     public void onCartPromoTrackingImpression(PromoData promoData, int position) {
         trackingPromoCheckoutUtil.cartImpressionTicker(promoData.getPromoCodeSafe());
-    }
+    }*/
 
     @Override
     public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
         trackingPromoCheckoutUtil.cartImpressionTicker(cartPromoGlobal.getPromoCodeSafe());
     }
 
-    @Override
+    /*@Override
     public void onCartPromoTrackingCancelled(PromoData promoData, int position) {
         sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
-    }
+    }*/
 
     @Override
     public void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
@@ -686,11 +686,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     }
 
-    @Override
+    /*@Override
     public void onClickDetailPromo(PromoData data, int position) {
         trackingPromoCheckoutUtil.cartClickTicker(data.getPromoCodeSafe());
         dPresenter.processUpdateCartDataPromo(getSelectedCartDataList(), data, GO_TO_DETAIL);
-    }
+    }*/
 
     @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {

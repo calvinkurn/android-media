@@ -14,6 +14,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConver
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -117,7 +118,9 @@ public interface ShipmentContract {
 
         void navigateToCodConfirmationPage(Data data);
 
-        void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
+        // void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
+
+        void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void showToastFailedTickerPromo(String text);
 
@@ -207,7 +210,15 @@ public interface ShipmentContract {
 
         void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
 
-        void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
+        /*void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
+                                                          CartPromoSuggestion cartPromoSuggestion,
+                                                          RecipientAddressModel recipientAddressModel,
+                                                          ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
+                                                          ShipmentCostModel shipmentCostModel,
+                                                          ShipmentDonationModel shipmentDonationModel,
+                                                          boolean isOneClickShipment);*/
+
+        void processReloadCheckoutPageFromMultipleAddress(PromoStackingData promoStackingData,
                                                           CartPromoSuggestion cartPromoSuggestion,
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
