@@ -1,10 +1,13 @@
 package com.tokopedia.sellerapp.fcm.appupdate;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
@@ -13,12 +16,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
  */
 
 public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
-    private static final String SELLERAPP_IS_NEED_UPDATE = "sellerapp_is_need_update";
-    private static final String SELLERAPP_LATEST_VERSION_CODE = "sellerapp_latest_version_code";
-    private static final String SELLERAPP_IS_FORCE_UPDATE = "sellerapp_is_force_update";
-    private static final String SELLERAPP_UPDATE_TITLE = "sellerapp_update_title";
-    private static final String SELLERAPP_UPDATE_MESSAGE = "sellerapp_update_message";
-    private static final String SELLERAPP_UPDATE_LINK = "sellerapp_update_link";
+    private static final String ANDROID_SELLER_APP_UPDATE = "android_seller_app_update";
 
     private RemoteConfig remoteConfig;
 
@@ -28,26 +26,33 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
 
     @Override
     public void checkApplicationUpdate(final OnUpdateListener listener) {
-        if(remoteConfig != null) {
-            boolean isNeedUpdate = remoteConfig.getBoolean(SELLERAPP_IS_NEED_UPDATE);
-            if (!isNeedUpdate) {
-                listener.onNotNeedUpdate();
-                return;
-            }
-            long latestVersionCode = remoteConfig.getLong(SELLERAPP_LATEST_VERSION_CODE);
-            if (GlobalConfig.VERSION_CODE < latestVersionCode) {
-                DetailUpdate detailUpdate = new DetailUpdate();
-                detailUpdate.setNeedUpdate(true);
-                detailUpdate.setLatestVersionCode(latestVersionCode);
-                detailUpdate.setForceUpdate(remoteConfig.getBoolean(SELLERAPP_IS_FORCE_UPDATE));
-                detailUpdate.setUpdateTitle(remoteConfig.getString(SELLERAPP_UPDATE_TITLE));
-                detailUpdate.setUpdateMessage(remoteConfig.getString(SELLERAPP_UPDATE_MESSAGE));
-                detailUpdate.setUpdateLink(remoteConfig.getString(SELLERAPP_UPDATE_LINK));
-                listener.onNeedUpdate(detailUpdate);
-            } else {
-                listener.onNotNeedUpdate();
+        if (remoteConfig != null) {
+            String dataAppUpdate = remoteConfig.getString(ANDROID_SELLER_APP_UPDATE);
+            if (!TextUtils.isEmpty(dataAppUpdate)) {
+                Gson gson = new Gson();
+                DataUpdateApp dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp.class);
+                if(dataUpdateApp != null) {
+                    DetailUpdate detailUpdate = generateDetailUpdate(dataUpdateApp);
+                    if (dataUpdateApp.isIsForceEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionForceUpdate()) {
+                        detailUpdate.setForceUpdate(true);
+                        listener.onNeedUpdate(detailUpdate);
+                    } else if (dataUpdateApp.isIsOptionalEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionOptionalUpdate()) {
+                        detailUpdate.setForceUpdate(false);
+                        listener.onNeedUpdate(detailUpdate);
+                    } else {
+                        listener.onNotNeedUpdate();
+                    }
+                }
             }
         }
     }
 
+    private DetailUpdate generateDetailUpdate(DataUpdateApp dataUpdateApp) {
+        DetailUpdate detailUpdate = new DetailUpdate();
+        detailUpdate.setNeedUpdate(true);
+        detailUpdate.setUpdateTitle(dataUpdateApp.getTitle());
+        detailUpdate.setUpdateMessage(dataUpdateApp.getMessage());
+        detailUpdate.setUpdateLink(dataUpdateApp.getLink());
+        return detailUpdate;
+    }
 }
