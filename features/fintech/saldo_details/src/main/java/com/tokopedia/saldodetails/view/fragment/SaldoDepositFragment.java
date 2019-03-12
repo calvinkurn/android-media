@@ -323,7 +323,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
             saldoDetailsPresenter.onDrawClicked(intent);
         }
-
     }
 
     private void showSaldoWarningDialog() {

@@ -3,17 +3,33 @@ query {
         is_eligible
         status
         title
-        logo_url
-        show_new_logo
-        message
-        limit
-        loan_amount
-        ticker_message
-        bottom_message
-        anchorList {
-          label
-          url
-          color
+        main_redirect_url
+        image_url
+        body_description
+        anchor_list {
+          title
+          text_color
+          show_dialog
+          dialog {
+            dialog_title
+            dialog_body
+            dialog_button_text
+            dialog_button_link
+          }
+          link
+        }
+        info_list {
+            label
+            value
+        }
+        show_box
+        box_info {
+            box_title
+            box_desc
+            box_bg_color
+            link_text
+            link_url
+            link_text_color
         }
       }
 }
