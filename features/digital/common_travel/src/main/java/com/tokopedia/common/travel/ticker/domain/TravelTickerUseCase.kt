@@ -36,7 +36,7 @@ constructor(@param:ApplicationContext private val context: Context, private val 
                         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_travel_ticker)
 
                         if (query.isNotEmpty()) {
-                            val request = GraphqlRequest(query, TravelTickerEntity::class.java, params, TRAVEL_TICKER_OPERATION_NAME)
+                            val request = GraphqlRequest(query, TravelTickerEntity::class.java, params, TRAVEL_TICKER_OPERATION_NAME, false)
                             graphqlUseCase.clearRequest()
                             graphqlUseCase.addRequest(request)
                             return graphqlUseCase.createObservable(null)

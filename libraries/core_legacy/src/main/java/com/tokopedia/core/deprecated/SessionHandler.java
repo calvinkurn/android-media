@@ -4,14 +4,13 @@ import android.content.Context;
 import android.provider.Settings;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.core.var.TkpdCache;
 
 /**
  * most of the codes is no-op that need to defined at the application.
  */
-public abstract class SessionHandler implements UserSession {
+public abstract class SessionHandler {
     protected Context context;
 
     public SessionHandler(Context context) {
@@ -61,41 +60,31 @@ public abstract class SessionHandler implements UserSession {
 
     public abstract String getAccessToken();
 
-    @Override
     public abstract String getFreshToken();
 
-    @Override
     public abstract String getUserId();
 
-    @Override
     public abstract String getDeviceId();
 
-    @Override
     public boolean isLoggedIn() {
         return isV4Login();
     }
 
-    @Override
     public String getShopId() {
         return getShopID();
     }
 
-    @Override
     public boolean hasShop() {
         return isUserHasShop();
     }
 
-    @Override
     public String getName() {
         return getLoginName();
     }
 
-    @Override
     public abstract String getProfilePicture();
 
-    @Override
     public abstract boolean isMsisdnVerified();
 
-    @Override
     public abstract boolean isHasPassword() ;
 }

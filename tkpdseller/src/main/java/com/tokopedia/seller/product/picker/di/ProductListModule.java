@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.picker.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
@@ -27,6 +26,7 @@ import com.tokopedia.seller.product.picker.view.mapper.GetProductListPickerMappe
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenterImpl;
 import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -83,12 +83,6 @@ public class ProductListModule {
         }
     }
 
-    @ProductListScope
-    @Provides
-    public UserSession provideUserSessionAbstract(AbstractionRouter abstractionRouter) {
-        return abstractionRouter.getSession();
-    }
-
     @Provides
     public CacheApiInterceptor provideCacheApiInterceptor() {
         return new CacheApiInterceptor();
@@ -106,9 +100,8 @@ public class ProductListModule {
 
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                                      AbstractionRouter abstractionRouter,
-                                                      UserSession userSession) {
-        return new GMAuthInterceptor(context, abstractionRouter, userSession);
+                                                      AbstractionRouter abstractionRouter) {
+        return new GMAuthInterceptor(context, abstractionRouter);
     }
 
     @ProductListGMFeaturedQualifier
@@ -165,7 +158,7 @@ public class ProductListModule {
 
     @ProductListScope
     @Provides
-    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

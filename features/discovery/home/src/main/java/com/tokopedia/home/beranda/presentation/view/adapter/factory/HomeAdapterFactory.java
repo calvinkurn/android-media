@@ -23,6 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SprintSaleCarouselViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SixGridChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.ThreeGridChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsDynamicChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsViewHolder;
@@ -133,6 +134,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             return DynamicChannelHeroViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_6_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SixGridChannelViewHolder.LAYOUT;
+        } else if (DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return ThreeGridChannelViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SprintSaleCarouselViewHolder.LAYOUT;
         } else {
@@ -171,6 +174,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new SprintSaleCarouselViewHolder(view, listener, countDownListener);
         else if (type == SixGridChannelViewHolder.LAYOUT)
             viewHolder = new SixGridChannelViewHolder(view, listener, countDownListener);
+        else if (type == ThreeGridChannelViewHolder.LAYOUT)
+            viewHolder = new ThreeGridChannelViewHolder(view, listener, countDownListener);
         else if (type == EmptyBlankViewHolder.LAYOUT)
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)

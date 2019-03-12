@@ -16,7 +16,7 @@ import rx.Observable
 class GetGmSubscribeMembershipUsecase(private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<GetMembershipData>() {
     override fun createObservable(requestParams: RequestParams): Observable<GetMembershipData> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_gm_subscribe_get_membership)
-        val graphqlRequest = GraphqlRequest(query, ResponseGetSubscription::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(query, ResponseGetSubscription::class.java, requestParams.parameters, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).flatMap { graphqlResponse ->

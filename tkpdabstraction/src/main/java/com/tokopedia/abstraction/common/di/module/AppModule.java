@@ -3,7 +3,6 @@ package com.tokopedia.abstraction.common.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -34,16 +33,6 @@ public class AppModule {
 
     @ApplicationScope
     @Provides
-    public UserSession provideUserSession(AbstractionRouter abstractionRouter){
-        return realProvideUserSession(abstractionRouter);
-    }
-
-    protected UserSession realProvideUserSession(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getSession();
-    }
-
-    @ApplicationScope
-    @Provides
     public AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
         if(context instanceof AbstractionRouter){
             return ((AbstractionRouter)context);
@@ -57,5 +46,4 @@ public class AppModule {
     public CacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter){
         return abstractionRouter.getGlobalCacheManager();
     }
-
 }

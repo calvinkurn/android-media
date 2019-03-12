@@ -54,6 +54,12 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".feature.createpost.view.activity.MediaPreviewActivity"
+            android:label="@string/af_title_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".feature.createpost.view.activity.CreatePostImagePickerActivity"
             android:label="@string/title_af_image_picker"
             android:screenOrientation="portrait"
@@ -65,12 +71,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".feature.createpost.view.activity.CreatePostExampleActivity"
-            android:label="@string/title_af_create_post_example"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+        <service
+            android:name=".feature.createpost.view.service.SubmitPostService"
+            android:enabled="true" />
         <activity android:name=".feature.tracking.view.activity.AffiliateTrackingActivity" >
             <intent-filter android:order="1">
                 <action android:name="android.intent.action.VIEW" />

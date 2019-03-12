@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -45,10 +46,12 @@ public class BannerView extends BaseCustomView {
     private OnPromoAllClickListener onPromoAllClickListener;
     private OnPromoDragListener onPromoDragListener;
 
-    protected ArrayList<ImageView> indicatorItems;
-    protected ArrayList<Boolean> impressionStatusList;
-    protected List<String> promoImageUrls;
+    protected ArrayList<ImageView> indicatorItems = new ArrayList<>();
+    protected ArrayList<Boolean> impressionStatusList = new ArrayList<>();
+    protected List<String> promoImageUrls = new ArrayList<>();
     protected int currentPosition;
+
+    protected BannerPagerAdapter bannerPagerAdapter;
 
     public BannerView(@NonNull Context context) {
         super(context);
@@ -140,7 +143,7 @@ public class BannerView extends BaseCustomView {
     }
 
     protected void init() {
-        View view = inflate(getContext(), R.layout.widget_banner, this);;
+        View view = inflate(getContext(), R.layout.widget_banner, this);
         bannerRecyclerView = view.findViewById(R.id.viewpager_banner_category);
         bannerIndicator = view.findViewById(R.id.indicator_banner_container);
         bannerSeeAll = view.findViewById(R.id.promo_link);
@@ -233,18 +236,6 @@ public class BannerView extends BaseCustomView {
         }
     }
 
-    protected int getIndicatorFocus() {
-        return R.drawable.indicator_focus;
-    }
-
-    protected int getIndicator() {
-        return R.drawable.indicator;
-    }
-
-    protected BannerPagerAdapter getBannerAdapter() {
-        return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
-    }
-
     public void setPagerAdapter(BannerPagerAdapter bannerPagerAdapter) {
         bannerRecyclerView.setAdapter(bannerPagerAdapter);
     }
@@ -260,7 +251,7 @@ public class BannerView extends BaseCustomView {
     }
 
     private boolean isCurrentPositionHasImpression(int currentPosition) {
-        if (currentPosition >= 0 && currentPosition <= impressionStatusList.size()) {
+        if (currentPosition >= 0 && currentPosition < impressionStatusList.size()) {
             return impressionStatusList.get(currentPosition);
         } else {
             return true;
@@ -341,6 +332,18 @@ public class BannerView extends BaseCustomView {
 
     public boolean isInitialized() {
         return (bannerHandler != null && runnableScrollBanner != null && !promoImageUrls.isEmpty());
+    }
+
+    protected int getIndicatorFocus() {
+        return R.drawable.indicator_focus;
+    }
+
+    protected int getIndicator() {
+        return R.drawable.indicator;
+    }
+
+    protected BannerPagerAdapter getBannerPagerAdapter() {
+        return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
     }
 }
 

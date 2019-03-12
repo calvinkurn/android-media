@@ -23,6 +23,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.SlidingImageBannerAdapter;
@@ -55,6 +56,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     private String videoUrl;
     private String videoLand;
     private List<VideoPushBannerModel> bannerModeList;
+    private static final String SCREEN_NAME="video_push";
 
     @DeepLink(ApplinkConst.PLAY_NOTIFICATION_VIDEO)
     public static Intent getNotifVodeoApplinkCallingIntent(Context context, Bundle bundle) {
@@ -94,6 +96,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
         extractValues(getIntent().getExtras());
         HomeGATracking.eventYoutubeVideoImpression(this);
+        ScreenTracking.sendScreen(this,SCREEN_NAME);
     }
 
     @Override
