@@ -353,6 +353,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
             false
         }
+        caption.hint = getString(if (isTypeAffiliate())
+            R.string.af_caption_hint_affiliate else
+            R.string.af_caption_hint
+        )
         caption.setText(viewModel.caption)
         updateMaxCharacter()
         updateThumbnail()

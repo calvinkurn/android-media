@@ -67,6 +67,7 @@
     <string name="af_set_main_image">Tampilkan Pertama</string>
     <string name="af_main_image">Tampil Pertama</string>
     <string name="af_caption_hint">Tulis caption, yuk!\nContoh: “Promo! Cek produk terbaru kami…”</string>
+    <string name="af_caption_hint_affiliate">Kenapa sih kamu suka barang ini?</string>
     <string name="af_related_product">Barang pada Post</string>
     <string name="af_add_product_tag">+ Tambah</string>
     <string name="af_error_create_post">Gagal mengunggah post</string>
