@@ -1,5 +1,7 @@
 package com.tokopedia.applink;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * This class is used to store deeplink started with scheme "tokopedia-android-internal".
  * Since it is for android internal only, if the applink is shared between iOS or site,
@@ -26,4 +28,5 @@ public class ApplinkConstInternal {
     // ImageReviewGalleryActivity
     public static final String IMAGE_REVIEW_GALLERY = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{id}/review/gallery";
 
+    public static final String OPEN_SHOP = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/buka-toko";
 }

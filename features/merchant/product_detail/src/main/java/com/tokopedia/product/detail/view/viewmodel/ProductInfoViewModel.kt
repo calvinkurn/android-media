@@ -68,6 +68,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val userId: String
         get() = userSessionInterface.userId
 
+    val isUserHasShop: Boolean
+        get() = userSessionInterface.hasShop()
+
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
@@ -230,7 +233,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             if (gqlResponse.getError(InstallmentResponse::class.java)?.isNotEmpty() != true) {
                 val resp = gqlResponse.getData<InstallmentResponse>(InstallmentResponse::class.java).result
-                productInfoP2.minInstallment = resp.bank.flatMap { it.installmentList }.minBy { it.monthlyPrice }
+                productInfoP2.minInstallment = resp.installmentMinimum
             }
 
             if (gqlResponse.getError(ImageReviewGqlResponse::class.java)?.isNotEmpty() != true)

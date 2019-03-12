@@ -291,7 +291,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
-    @Override
+    //@Override
     public Intent getInboxTicketCallingIntent(Context context) {
         return null;
     }

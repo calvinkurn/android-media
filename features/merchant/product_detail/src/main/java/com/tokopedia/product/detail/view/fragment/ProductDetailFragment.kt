@@ -401,6 +401,24 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
+        if (productInfoViewModel.isUserSessionActive() && productInfoViewModel.isUserHasShop) {
+            open_shop.gone()
+        } else {
+            open_shop.visible()
+            open_shop.setOnClickListener {
+                activity?.let {
+                    if (productInfoViewModel.isUserSessionActive()) {
+                        val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.OPEN_SHOP) ?: return@let
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    } else {
+                        startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN)
+                    }
+                }
+            }
+        }
+
         loadProductData()
     }
 

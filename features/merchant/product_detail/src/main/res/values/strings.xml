@@ -105,4 +105,5 @@
     <string name="template_rates_estimate_start_price">Ongkos Kirim mulai dari %1$s</string>
     <string name="from">dari %1$s</string>
     <string name="to">ke %1$s</string>
+    <string name="open_shop">Buka Toko GRATIS</string>
 </resources>

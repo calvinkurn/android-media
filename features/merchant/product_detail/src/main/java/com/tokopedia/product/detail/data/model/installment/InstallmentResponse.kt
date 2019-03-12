@@ -18,6 +18,10 @@ data class InstallmentResponse(
             @Expose
             val message: String = "",
 
+            @SerializedName("installmentMinimum")
+            @Expose
+            val installmentMinimum: InstallmentBank.Installment = InstallmentBank.Installment(),
+
             @SerializedName("bank")
             @Expose
             val bank: List<InstallmentBank> = listOf()
