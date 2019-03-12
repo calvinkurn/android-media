@@ -82,18 +82,12 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         if (uri != null) {
-            val ids = UriUtil.destructureUri(ApplinkConstInternal.PRODUCT_DETAIL, uri)
-            if (ids.isEmpty()) {
-                //tokopedia.com uri
-                val segmentUri: List<String> = uri.pathSegments
-                if (segmentUri.size > 1) {
-                    shopDomain = segmentUri[segmentUri.size-2]
-                    productKey = segmentUri[segmentUri.size-1]
-                } else {
-                    productId = uri.lastPathSegment
-                }
-            } else {
-                productId = ids[0]
+            val segmentUri: List<String> = uri.pathSegments
+            if (segmentUri.size > 1) {
+                shopDomain = segmentUri[segmentUri.size-2]
+                productKey = segmentUri[segmentUri.size-1]
+            } else { // applink tokopedia or tokopedia internal
+                productId = uri.lastPathSegment
             }
         } else {
             productId = intent.getStringExtra(PARAM_PRODUCT_ID)
