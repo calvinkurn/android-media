@@ -190,7 +190,6 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override
@@ -335,7 +334,7 @@ public class MainParentActivity extends BaseActivity implements
         int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
 
-        if (position == OS_MENU && !remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false)) {
+        if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
             startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
             return false;
         }
@@ -841,5 +840,13 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean isNewOfficialStoreEnabled() {
+        if(remoteConfig == null) {
+            remoteConfig = new FirebaseRemoteConfigImpl(this);
+        }
+
+        return remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false);
     }
 }
