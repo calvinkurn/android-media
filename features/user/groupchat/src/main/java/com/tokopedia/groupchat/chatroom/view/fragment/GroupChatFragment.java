@@ -24,7 +24,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -61,7 +60,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewMo
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.ChannelCloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
@@ -121,7 +120,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private Handler sprintSaleHandler;
     private Runnable sprintSaleRunnable;
-    private CloseableBottomSheetDialog pinnedMessageDialog;
+    private ChannelCloseableBottomSheetDialog pinnedMessageDialog;
 
     int newMessageCounter;
 
@@ -461,9 +460,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
-        pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(getActivity(), () -> {
+        pinnedMessageDialog = ChannelCloseableBottomSheetDialog.createInstance(getActivity(), () -> {
             ((GroupChatContract.View) getActivity()).showOverlayDialogOnScreen();
-        }, new CloseableBottomSheetDialog.BackHardwareClickedListener() {
+        }, new ChannelCloseableBottomSheetDialog.BackHardwareClickedListener() {
             @Override
             public void onBackHardwareClicked() {
 
