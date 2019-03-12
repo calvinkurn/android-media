@@ -1,8 +1,10 @@
 package com.tokopedia.flight.airport.view.presenter
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportPopularCityUseCase
+import com.tokopedia.flight.airport.domain.interactor.FlightAirportSuggestionUseCase
 import com.tokopedia.flight.common.subscriber.AutoCompleteInputListener
 import com.tokopedia.flight.common.subscriber.AutoCompleteKeywordListener
 import com.tokopedia.flight.common.subscriber.AutoCompleteKeywordSubscriber
@@ -19,36 +21,31 @@ import javax.inject.Inject
  * Created by zulfikarrahman on 10/24/17.
  */
 
-class FlightAirportPickerPresenterImpl @Inject
-constructor(private val flightAirportPopularCityUseCase: FlightAirportPopularCityUseCase)
-    : BaseDaggerPresenter<FlightAirportPickerView>(), FlightAirportPickerPresenter, AutoCompleteKeywordListener {
+class FlightAirportPickerPresenterImpl
+@Inject constructor(val flightAirportPopularCityUseCase: FlightAirportPopularCityUseCase,
+                    val flightAirportSuggestionUseCase: FlightAirportSuggestionUseCase)
+    : BaseDaggerPresenter<FlightAirportPickerContract.View>(),
+        FlightAirportPickerContract.Presenter,
+        AutoCompleteKeywordListener {
 
     private val compositeSubscription: CompositeSubscription
     private var inputListener: AutoCompleteInputListener? = null
 
     init {
         this.compositeSubscription = CompositeSubscription()
-        Observable.create(Observable.OnSubscribe<String> { subscriber -> inputListener = AutoCompleteInputListener { query -> subscriber.onNext(query.toString()) } }).debounce(250, TimeUnit.MILLISECONDS)
+        Observable.create(
+                Observable.OnSubscribe<String> { subscriber ->
+                    inputListener = AutoCompleteInputListener { query -> subscriber.onNext(query.toString()) }
+                })
+                .debounce(300, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(AutoCompleteKeywordSubscriber(this))
     }
 
-    override fun getAirportList(text: String, isFirstTime: Boolean) {
+    override fun getPopularCityAirport() {
         view.showGetAirportListLoading()
-        if (inputListener != null) {
-            inputListener!!.onQuerySubmit(text)
-        }
-    }
-
-    override fun detachView() {
-        super.detachView()
-        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe()
-    }
-
-
-    override fun onTextReceive(keyword: String) {
         if (isViewAttached) {
             view.showLoading()
             compositeSubscription.add(flightAirportPopularCityUseCase.createObservable(RequestParams.EMPTY)
@@ -76,7 +73,52 @@ constructor(private val flightAirportPopularCityUseCase: FlightAirportPopularCit
         }
     }
 
+    override fun getSuggestionAirport(text: String) {
+        view.showGetAirportListLoading()
+        if (TextUtils.isEmpty(text)) {
+            getPopularCityAirport()
+        } else {
+            if (inputListener != null) {
+                inputListener!!.onQuerySubmit(text)
+            }
+        }
+    }
+
+    override fun onTextReceive(keyword: String) {
+        if (isViewAttached) {
+            view.showLoading()
+            compositeSubscription.add(flightAirportSuggestionUseCase.createObservable(
+                    flightAirportSuggestionUseCase.createRequestParam(keyword))
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Subscriber<List<Visitable<*>>>() {
+                        override fun onCompleted() {
+
+                        }
+
+                        override fun onError(e: Throwable) {
+                            if (isViewAttached) {
+                                view.hideGetAirportListLoading()
+                                view.showGetListError(e)
+                            }
+                        }
+
+                        override fun onNext(visitables: List<Visitable<*>>) {
+                            view.hideGetAirportListLoading()
+                            view.renderList(visitables)
+                        }
+                    })
+            )
+        }
+    }
+
     override fun onError(e: Throwable) {
         e.printStackTrace()
+    }
+
+    override fun detachView() {
+        super.detachView()
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe()
     }
 }

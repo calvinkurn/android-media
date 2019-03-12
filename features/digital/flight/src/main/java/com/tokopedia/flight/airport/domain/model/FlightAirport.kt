@@ -10,4 +10,5 @@ class FlightAirport(
         val airportCode: String,
         val cityCode: String,
         val cityName: String,
-        val airportName: String)
+        val airportName: String,
+        val airports: List<String>? = null)

@@ -8,9 +8,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.data.source.cloud.model.ResponseFlightPopularCity
 import com.tokopedia.flight.airport.domain.FlightAirportMapper
-import com.tokopedia.flight.airport.domain.model.FlightAirport
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
-import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -40,32 +37,7 @@ class FlightAirportPopularCityUseCase @Inject constructor(@ApplicationContext va
                     return@Func1 Observable.error(Exception("Query variable are empty"))
                 })
                 .map(Func1<GraphqlResponse, ResponseFlightPopularCity> { it.getData(ResponseFlightPopularCity::class.java) })
-                .map { flightAirportMapper.groupingCountry(it.flightPopularCities) }
-                .map { mapCountryAirport ->
-                    val visitables: ArrayList<Visitable<*>> = ArrayList()
-
-                    mapCountryAirport.map {
-                        val flightAirportList: List<FlightAirport> = it.value
-
-                        val countryAirportViewModel = FlightCountryAirportViewModel(
-                                flightAirportList.get(0).countryId,
-                                flightAirportList.get(0).countryName,
-                                mutableListOf())
-                        visitables.add(countryAirportViewModel)
-
-                        flightAirportList.map {
-                            val airportViewModel = FlightAirportViewModel()
-                            airportViewModel.airportName = it.airportName
-                            airportViewModel.countryName = it.countryName
-                            airportViewModel.airportCode = it.airportCode
-                            airportViewModel.cityCode = it.cityCode
-                            airportViewModel.cityId = it.cityId
-                            airportViewModel.cityName = it.cityName
-                            return@map visitables.add(airportViewModel)
-                        }
-
-                    }
-                    return@map visitables
-                }
+                .map { flightAirportMapper.groupingPopularCity(it.flightPopularCities) }
+                .map { flightAirportMapper.transformToVisitable(it) }
     }
 }
