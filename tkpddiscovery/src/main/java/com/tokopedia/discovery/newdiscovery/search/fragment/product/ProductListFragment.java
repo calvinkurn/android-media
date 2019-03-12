@@ -602,7 +602,7 @@ public class ProductListFragment extends SearchSectionFragment
             return;
         }
 
-        getSearchParameter().getSearchParameterMap().putAll(selectedFilter);
+        getSearchParameter().getSearchParameterHashMap().putAll(selectedFilter);
     }
 
     @Override
@@ -824,35 +824,6 @@ public class ProductListFragment extends SearchSectionFragment
             }
         }
         return optionList;
-    }
-
-    @Override
-    protected void openBottomSheetFilter() {
-        addPreFilteredCategoryAndIsOfficial();
-        super.openBottomSheetFilter();
-    }
-
-    @Override
-    protected void openFilterPage() {
-        addPreFilteredCategoryAndIsOfficial();
-        super.openFilterPage();
-    }
-
-    private void addPreFilteredCategoryAndIsOfficial() {
-        String preFilteredSc = getSearchParameter().get(SearchApiConst.SC);
-        boolean isOfficial = getSearchParameter().getBoolean(SearchApiConst.OFFICIAL);
-        if (TextUtils.isEmpty(preFilteredSc) && !isOfficial) {
-            return;
-        }
-        if (getFlagFilterHelper() == null) {
-            setFlagFilterHelper(new FilterFlagSelectedModel());
-            getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
-            getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
-            FilterHelper.populateWithSelectedCategory(getFilters(), getFlagFilterHelper(), preFilteredSc);
-            if (isOfficial) {
-                FilterHelper.addPreFilteredIsOfficial(getFilters(), getFlagFilterHelper());
-            }
-        }
     }
 
     @Override

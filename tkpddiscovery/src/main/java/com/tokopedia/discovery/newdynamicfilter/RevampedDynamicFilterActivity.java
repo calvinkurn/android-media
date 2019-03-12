@@ -21,6 +21,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
@@ -75,14 +76,22 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     View mainLayout;
     View loadingView;
 
+    @Deprecated
     HashMap<String, Boolean> savedCheckedState = new HashMap<>();
+    @Deprecated
     HashMap<String, String> savedTextInput = new HashMap<>();
 
     private int selectedExpandableItemPosition;
+    @Deprecated
     private String selectedCategoryId;
+    @Deprecated
     private String selectedCategoryName;
+    @Deprecated
     private String selectedCategoryRootId;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    private HashMap<String, String> searchParameter = new HashMap<>();
+    private HashMap<String, Boolean> flagFilterHelper = new HashMap<>();
 
     @Deprecated
     public static void moveTo(AppCompatActivity activity,
@@ -623,5 +632,46 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     protected void onDestroy() {
         super.onDestroy();
         compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    public void setFlagFilterHelper(Option option, boolean value, boolean isAppliedImmediately) {
+        saveOrRemoveFlagFilterHelper(option.getUniqueId(), value);
+    }
+
+    public void saveOrRemoveFlagFilterHelper(String key, boolean value) {
+        if(value) flagFilterHelper.put(key, true);
+        else flagFilterHelper.remove(key);
+    }
+
+    @Override
+    public void setFilterValue(Option option, boolean value, boolean isAppliedImmediately) {
+        if (value) searchParameter.put(option.getKey(), String.valueOf(true));
+        else searchParameter.remove(option.getKey());
+    }
+
+    @Override
+    public void setFilterValue(Option option, String value, boolean isAppliedImmediately) {
+        if(!TextUtils.isEmpty(value)) searchParameter.put(option.getKey(), value);
+        else searchParameter.remove(option.getKey());
+    }
+
+    @Override
+    public String getFilterValue(String key) {
+        if(searchParameter.containsKey(key)) {
+            return searchParameter.get(key);
+        }
+
+        return "";
+    }
+
+    @Override
+    public boolean getFlagFilterHelperValue(String key) {
+        if(flagFilterHelper.containsKey(key)) {
+            Boolean returnValue = flagFilterHelper.get(key);
+            if(returnValue != null) return returnValue;
+        }
+
+        return false;
     }
 }

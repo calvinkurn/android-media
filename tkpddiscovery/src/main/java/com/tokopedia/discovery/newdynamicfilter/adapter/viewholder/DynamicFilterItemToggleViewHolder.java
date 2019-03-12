@@ -23,8 +23,8 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
 
     public DynamicFilterItemToggleViewHolder(View itemView, DynamicFilterView dynamicFilterView) {
         super(itemView);
-        title = (TextView) itemView.findViewById(R.id.title);
-        toggle = (SwitchCompat) itemView.findViewById(R.id.toggle);
+        title = itemView.findViewById(R.id.title);
+        toggle = itemView.findViewById(R.id.toggle);
         this.dynamicFilterView = dynamicFilterView;
     }
 
@@ -33,23 +33,18 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
         final Option option = filter.getOptions().get(0);
         title.setText(option.getName());
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle.setChecked(!toggle.isChecked());
-            }
-        });
+        itemView.setOnClickListener(v -> toggle.setChecked(!toggle.isChecked()));
 
+        bindSwitchForOption(option);
+    }
+
+    private void bindSwitchForOption(Option option) {
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener
-                = new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        dynamicFilterView.saveCheckedState(option, isChecked);
-                    }
-                };
+                = (buttonView, isChecked) -> dynamicFilterView.setFilterValue(option, isChecked, true);
 
-        bindSwitch(toggle,
-                dynamicFilterView.loadLastCheckedState(option),
-                onCheckedChangeListener);
+        String filterValueString = dynamicFilterView.getFilterValue(option.getKey());
+        boolean filterValueBoolean = Boolean.parseBoolean(filterValueString);
+
+        bindSwitch(toggle, filterValueBoolean, onCheckedChangeListener);
     }
 }

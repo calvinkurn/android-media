@@ -8,16 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.RatingHelper;
 import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.widgets.FilterView;
 import com.tokopedia.design.color.ColorSampleView;
-import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class BottomSheetExpandableItemSelectedListAdapter extends
@@ -68,72 +66,81 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
                           BottomSheetExpandableItemSelectedListAdapter adapter,
                           String filterTitle) {
             super(itemView);
-            itemText = itemView.findViewById(R.id.filter_item_text);
-            ratingIcon = itemView.findViewById(R.id.rating_icon);
-            colorIcon = itemView.findViewById(R.id.color_icon);
-            itemContainer = itemView.findViewById(R.id.filter_item_container);
+
+            initViewHolderViews(itemView);
+
             this.filterView = filterView;
             this.adapter = adapter;
             this.filterTitle = filterTitle;
         }
 
+        private void initViewHolderViews(View itemView) {
+            itemText = itemView.findViewById(R.id.filter_item_text);
+            ratingIcon = itemView.findViewById(R.id.rating_icon);
+            colorIcon = itemView.findViewById(R.id.color_icon);
+            itemContainer = itemView.findViewById(R.id.filter_item_container);
+        }
+
         public void bind(final Option option, final int position) {
+            bindRatingOption(option);
+
+            bindColorOption(option);
+
+            itemText.setText(option.getName());
+
+            if (option.isCategoryOption()) {
+                bindCategoryOption(option);
+            } else {
+                bindGeneralOption(option, position);
+            }
+        }
+
+        private void bindRatingOption(Option option) {
             if (Option.KEY_RATING.equals(option.getKey())) {
                 ratingIcon.setVisibility(View.VISIBLE);
             } else {
                 ratingIcon.setVisibility(View.GONE);
             }
+        }
 
+        private void bindColorOption(Option option) {
             if (!TextUtils.isEmpty(option.getHexColor())) {
                 colorIcon.setVisibility(View.VISIBLE);
                 colorIcon.setColor(Color.parseColor(option.getHexColor()));
             } else {
                 colorIcon.setVisibility(View.GONE);
             }
-
-            itemText.setText(option.getName());
-
-            if (option.isCategoryOption()) {
-                bindCategoryOption(option, position);
-            } else {
-                bindGeneralOption(option, position);
-            }
         }
 
-        private void bindCategoryOption(final Option option, final int position) {
-            if (filterView.isSelectedCategory(option)) {
-                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
-            } else {
-                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
-            }
-            itemContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (filterView.isSelectedCategory(option)) {
-                        filterView.removeSelectedOption(option, filterTitle);
-                    } else {
-                        filterView.selectCategory(option, filterTitle);
-                    }
-                    adapter.notifyDataSetChanged();
-                }
+        private void bindCategoryOption(final Option option) {
+            final boolean isOptionSelected = filterView.getFilterValue(option.getKey()).equals(option.getValue());
+            setItemContainerBackgroundResource(isOptionSelected);
+
+            itemContainer.setOnClickListener(view -> {
+                boolean newCheckedState = !isOptionSelected;
+                String categoryValue = newCheckedState ? option.getValue() : "";
+                filterView.setFilterValue(option, categoryValue, true);
+                adapter.notifyDataSetChanged();
             });
         }
 
         private void bindGeneralOption(final Option option, final int position) {
-            if (Boolean.parseBoolean(option.getInputState())) {
+            final boolean isOptionSelected = filterView.getFlagFilterHelperValue(option.getUniqueId());
+            setItemContainerBackgroundResource(isOptionSelected);
+
+            itemContainer.setOnClickListener(view -> {
+                boolean newCheckedState = !isOptionSelected;
+                filterView.setFlagFilterHelper(option, newCheckedState, true);
+                adapter.notifyItemChanged(position);
+            });
+        }
+
+        private void setItemContainerBackgroundResource(boolean isSelected) {
+            if (isSelected) {
                 itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
             } else {
                 itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
             }
-            itemContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean newCheckedState = !Boolean.parseBoolean(option.getInputState());
-                    filterView.saveCheckedState(option, newCheckedState, filterTitle);
-                    option.setInputState(Boolean.toString(newCheckedState));
-                    adapter.notifyItemChanged(position);
-                }
-            });
         }
     }
 }

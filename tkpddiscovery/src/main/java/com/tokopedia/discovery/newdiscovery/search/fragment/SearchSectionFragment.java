@@ -48,6 +48,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.core.home.helper.ProductFeedHelper.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.core.home.helper.ProductFeedHelper.PORTRAIT_COLUMN_MAIN;
@@ -402,7 +403,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void openBottomSheetFilter() {
-        bottomSheetListener.loadFilterItems(getFilters(), getFlagFilterHelper());
+        bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
     }
 
@@ -609,5 +610,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (searchParameterToCopy != null) {
             this.searchParameter = new SearchParameter(searchParameterToCopy);
         }
+    }
+
+    public void applyFilterToSearchParameter(HashMap<String, String> searchParameterWithFilter) {
+        this.searchParameter.getSearchParameterHashMap().putAll(searchParameterWithFilter);
     }
 }

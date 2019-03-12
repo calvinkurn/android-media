@@ -592,9 +592,8 @@ public class SearchActivity extends DiscoveryActivity
     private void initBottomSheetListener() {
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
-            public void onApplyFilter(HashMap<String, String> selectedFilter,
-                                      FilterFlagSelectedModel filterFlagSelectedModel) {
-                applyFilter(selectedFilter, filterFlagSelectedModel);
+            public void onApplyFilter(HashMap<String, String> searchParameterWithFilter) {
+                applyFilter(searchParameterWithFilter);
             }
 
             @Override
@@ -663,14 +662,11 @@ public class SearchActivity extends DiscoveryActivity
         super.onDestroy();
     }
 
-    private void applyFilter(HashMap<String, String> selectedFilter,
-                             FilterFlagSelectedModel filterFlagSelectedModel) {
-
+    private void applyFilter(HashMap<String, String> searchParameterWithFilter) {
         SearchSectionFragment selectedFragment
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
 
-        selectedFragment.setSelectedFilter(selectedFilter);
-        selectedFragment.setFlagFilterHelper(filterFlagSelectedModel);
+        selectedFragment.applyFilterToSearchParameter(searchParameterWithFilter);
         selectedFragment.clearDataFilterSort();
         selectedFragment.reloadData();
     }
@@ -689,8 +685,8 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void loadFilterItems(ArrayList<Filter> filters, FilterFlagSelectedModel filterFlagSelectedModel) {
-        bottomSheetFilterView.loadFilterItems(filters, filterFlagSelectedModel);
+    public void loadFilterItems(ArrayList<Filter> filters, HashMap<String, String> searchParameter) {
+        bottomSheetFilterView.loadFilterItems(filters, searchParameter);
     }
 
     @Override

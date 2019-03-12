@@ -399,11 +399,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         openFilterPage();
     }
 
-    protected void openBottomSheetFilter() {
-        bottomSheetListener.loadFilterItems(getFilters(), getFlagFilterHelper());
-        bottomSheetListener.launchFilterBottomSheet();
-    }
-
     protected void openFilterPage() {
         Intent intent = RevampedDynamicFilterActivity.createInstance(
                 getActivity(), getScreenName(), getFlagFilterHelper()

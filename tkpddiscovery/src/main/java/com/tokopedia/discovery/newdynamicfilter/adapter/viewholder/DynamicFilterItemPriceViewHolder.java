@@ -28,10 +28,10 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView dynamicFilterView) {
         super(itemView);
         this.dynamicFilterView = dynamicFilterView;
-        wholesaleTitle = (TextView) itemView.findViewById(R.id.wholesale_title);
-        wholesaleToggle = (SwitchCompat) itemView.findViewById(R.id.wholesale_toggle);
+        wholesaleTitle = itemView.findViewById(R.id.wholesale_title);
+        wholesaleToggle = itemView.findViewById(R.id.wholesale_toggle);
         wholesaleContainer = itemView.findViewById(R.id.wholesale_container);
-        priceRangeInputView = (PriceRangeInputView) itemView.findViewById(R.id.price_range_input_view);
+        priceRangeInputView = itemView.findViewById(R.id.price_range_input_view);
     }
 
     @Override
@@ -47,6 +47,8 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         int lastMaxValue = 0;
 
         for (Option option : filter.getOptions()) {
+            String optionValue = dynamicFilterView.getFilterValue(option.getKey());
+
             if (Option.KEY_PRICE_MIN_MAX_RANGE.equals(option.getKey())) {
                 minBound = TextUtils.isEmpty(option.getValMin()) ? 0 : Integer.parseInt(option.getValMin());
                 maxBound = TextUtils.isEmpty(option.getValMax()) ? 0 : Integer.parseInt(option.getValMax());
@@ -54,12 +56,12 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
             if (Option.KEY_PRICE_MIN.equals(option.getKey())) {
                 minLabel = option.getName();
-                lastMinValue = TextUtils.isEmpty(option.getValue()) ? 0 : Integer.parseInt(option.getValue());
+                lastMinValue = TextUtils.isEmpty(optionValue) ? 0 : Integer.parseInt(optionValue);
             }
 
             if (Option.KEY_PRICE_MAX.equals(option.getKey())) {
                 maxLabel = option.getName();
-                lastMaxValue = TextUtils.isEmpty(option.getValue()) ? 0 : Integer.parseInt(option.getValue());
+                lastMaxValue = TextUtils.isEmpty(optionValue) ? 0 : Integer.parseInt(optionValue);
             }
 
             if (Option.KEY_PRICE_WHOLESALE.equals(option.getKey())) {
@@ -81,7 +83,16 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             defaultMaxValue = lastMaxValue;
         }
 
-        priceRangeInputView.setGestureListener(new RangeInputView.GestureListener() {
+        priceRangeInputView.setGestureListener(getPriceRangeInputViewGestureListener());
+
+        priceRangeInputView.setOnValueChangedListener(getPriceRangeInputViewOnValueChangeListener());
+
+        priceRangeInputView.setData(minLabel, maxLabel, minBound, maxBound,
+                defaultMinValue, defaultMaxValue);
+    }
+
+    private RangeInputView.GestureListener getPriceRangeInputViewGestureListener() {
+        return new RangeInputView.GestureListener() {
             @Override
             public void onButtonRelease(int minValue, int maxValue) {
                 dynamicFilterView.onPriceSliderRelease(minValue, maxValue);
@@ -96,52 +107,45 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             public void onValueEditedFromTextInput(int minValue, int maxValue) {
                 dynamicFilterView.onPriceEditedFromTextInput(minValue, maxValue);
             }
-        });
+        };
+    }
 
-        priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
-            @Override
-            public void onValueChanged(int minValue, int maxValue, int minBound, int maxBound) {
-                if (minValue == minBound) {
-                    dynamicFilterView.removeSavedTextInput(Option.KEY_PRICE_MIN);
-                } else {
-                    dynamicFilterView.saveTextInput(Option.KEY_PRICE_MIN, String.valueOf(minValue));
-                }
+    private RangeInputView.OnValueChangedListener getPriceRangeInputViewOnValueChangeListener() {
+        return (minValue, maxValue, minBound1, maxBound1) -> {
+            String minValueString = minValue == minBound1 ? "" : String.valueOf(minValue);
+            dynamicFilterView.setFilterValue(getPriceMinOption(), minValueString, false);
 
-                if (maxValue == maxBound) {
-                    dynamicFilterView.removeSavedTextInput(Option.KEY_PRICE_MAX);
-                } else {
-                    dynamicFilterView.saveTextInput(Option.KEY_PRICE_MAX, String.valueOf(maxValue));
-                }
+            String maxValueString = maxValue == maxBound1 ? "" : String.valueOf(maxValue);
+            dynamicFilterView.setFilterValue(getPriceMaxOption(), maxValueString, false);
 
-                dynamicFilterView.updateLastRangeValue(minValue, maxValue);
-            }
-        });
+            dynamicFilterView.updateLastRangeValue(minValue, maxValue);
+        };
+    }
 
-        priceRangeInputView.setData(minLabel, maxLabel, minBound, maxBound,
-                defaultMinValue, defaultMaxValue);
+    private Option getPriceMinOption() {
+        Option option = new Option();
+        option.setKey(Option.KEY_PRICE_MIN);
+        return option;
+    }
+
+    private Option getPriceMaxOption() {
+        Option option = new Option();
+        option.setKey(Option.KEY_PRICE_MAX);
+        return option;
     }
 
     private void bindWholesaleOptionItem(final Option option) {
         wholesaleContainer.setVisibility(View.VISIBLE);
         wholesaleTitle.setText(option.getName());
 
-        wholesaleTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wholesaleToggle.setChecked(!wholesaleToggle.isChecked());
-            }
-        });
+        wholesaleTitle.setOnClickListener(v -> wholesaleToggle.setChecked(!wholesaleToggle.isChecked()));
 
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener
-                = new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        dynamicFilterView.saveCheckedState(option, isChecked);
-                    }
-                };
+                = (buttonView, isChecked) -> dynamicFilterView.setFilterValue(option, isChecked, true);
 
-        bindSwitch(wholesaleToggle,
-                dynamicFilterView.loadLastCheckedState(option),
-                onCheckedChangeListener);
+        String filterValueString = dynamicFilterView.getFilterValue(option.getKey());
+        boolean filterValueBoolean = Boolean.parseBoolean(filterValueString);
+
+        bindSwitch(wholesaleToggle, filterValueBoolean, onCheckedChangeListener);
     }
 }

@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.discovery.model.Category;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
@@ -22,6 +23,7 @@ import com.tokopedia.core.discovery.model.Search;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterCategoryActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterLocationActivity;
@@ -61,6 +63,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     public static final String FILTER_SELECTED_CATEGORY_ROOT_ID_PREF = "filter_selected_category_root_id";
     public static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
     public static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
+    public static final String FILTER_FLAG_HELPER = "filter_flag_helper";
+    public static final String FILTER_SEARCH_PARAMETER = "filter_search_parameter";
 
     private RecyclerView filterMainRecyclerView;
     private DynamicFilterAdapter filterMainAdapter;
@@ -73,18 +77,26 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private View rootView;
 
     private Callback callback;
+    @Deprecated
     private HashMap<String, Boolean> savedCheckedState = new HashMap<>();
+    @Deprecated
     private HashMap<String, String> savedTextInput = new HashMap<>();
     private HashMap<String, Boolean> shownInMainState = new HashMap<>();
 
     private int selectedExpandableItemPosition;
+    @Deprecated
     private String selectedCategoryId;
+    @Deprecated
     private String selectedCategoryName;
+    @Deprecated
     private String selectedCategoryRootId;
     private boolean isAutoTextChange = false;
 
     private int pressedSliderMinValueState = -1;
     private int pressedSliderMaxValueState = -1;
+
+    private HashMap<String, String> searchParameter = new HashMap<>();
+    private HashMap<String, Boolean> flagFilterHelper = new HashMap<>();
 
     public BottomSheetFilterView(@NonNull Context context) {
         super(context);
@@ -107,11 +119,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     private void init() {
         rootView = inflate(getContext(), R.layout.filter_bottom_sheet, this);
-        filterMainRecyclerView = (RecyclerView) rootView.findViewById(R.id.dynamic_filter_recycler_view);
+        filterMainRecyclerView = rootView.findViewById(R.id.dynamic_filter_recycler_view);
         buttonClose = rootView.findViewById(R.id.top_bar_close_button);
-        buttonReset = (TextView) rootView.findViewById(R.id.top_bar_button_reset);
+        buttonReset = rootView.findViewById(R.id.top_bar_button_reset);
         bottomSheetLayout = this;
-        buttonFinish = (TextView) rootView.findViewById(R.id.button_finish);
+        buttonFinish = rootView.findViewById(R.id.button_finish);
         loadingView = rootView.findViewById(R.id.filterProgressBar);
         initKeyboardVisibilityListener();
     }
@@ -128,12 +140,9 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @SuppressWarnings("unchecked")
     private void recoverLastFilterState(Bundle savedInstanceState) {
-        savedCheckedState = (HashMap<String, Boolean>) savedInstanceState.getSerializable(FILTER_CHECKED_STATE_PREF);
-        savedTextInput = (HashMap<String, String>) savedInstanceState.getSerializable(FILTER_TEXT_PREF);
         shownInMainState = (HashMap<String, Boolean>) savedInstanceState.getSerializable(FILTER_SHOWN_IN_MAIN_PREF);
-        selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
-        selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
-        selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
+        flagFilterHelper = (HashMap<String, Boolean>) savedInstanceState.getSerializable(FILTER_FLAG_HELPER);
+        searchParameter = (HashMap<String, String>) savedInstanceState.getSerializable(FILTER_SEARCH_PARAMETER);
     }
 
     public void setFilterResultCount(String formattedResultCount) {
@@ -153,17 +162,25 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     public void onExpandableItemClicked(Filter filter) {
         selectedExpandableItemPosition = filterMainAdapter.getItemPosition(filter);
         if (filter.isCategoryFilter()) {
-            callback.launchFilterCategoryPage(filter, selectedCategoryRootId, selectedCategoryId);
+            launchFilterCategoryPage(filter);
         } else {
             enrichWithInputState(filter);
             callback.launchFilterDetailPage(filter);
         }
     }
 
+    private void launchFilterCategoryPage(Filter filter) {
+        String categoryId = getFilterValue(SearchApiConst.SC);
+        Category selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
+        String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
+
+        callback.launchFilterCategoryPage(filter, selectedCategoryRootId, categoryId);
+    }
+
     private void enrichWithInputState(Filter filter) {
         for (Option option : filter.getOptions()) {
             option.setInputState(
-                    OptionHelper.loadOptionInputState(option, savedCheckedState, savedTextInput)
+                    String.valueOf(getFlagFilterHelperValue(option.getUniqueId()))
             );
         }
     }
@@ -212,13 +229,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public List<Option> getSelectedOptions(Filter filter) {
-        enrichWithInputState(filter);
-
         List<Option> selectedOptions = new ArrayList<>();
         List<Option> popularOptionList = getPopularOptionList(filter);
 
         if (filter.isCategoryFilter() && isCategorySelected() && !isSelectedCategoryInList(popularOptionList)) {
-            selectedOptions.add(getSelectedCategoryAsOption());
+            selectedOptions.add(getSelectedCategoryAsOption(filter));
         } else {
             selectedOptions.addAll(getCustomSelectedOptionList(filter));
         }
@@ -245,7 +260,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 !TextUtils.isEmpty(selectedCategoryName);
     }
 
-    private Option getSelectedCategoryAsOption() {
+    private Option getSelectedCategoryAsOption(Filter filter) {
+        String selectedCategoryId = getFilterValue(SearchApiConst.SC);
+        Category category = FilterHelper.getSelectedCategoryDetails(filter, selectedCategoryId);
+        String selectedCategoryName = category != null ? category.getCategoryName() : "";
+
         return OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
     }
 
@@ -392,8 +411,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
-    public void loadFilterItems(List<Filter> filterList, FilterFlagSelectedModel filterFlagSelectedModel) {
-        updateFilterInputData(filterFlagSelectedModel);
+    public void loadFilterItems(List<Filter> filterList, HashMap<String, String> searchParameter) {
+        this.searchParameter = new HashMap<>(searchParameter);
         loadFilterData(filterList);
     }
 
@@ -555,25 +574,12 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
             }
         });
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeView();
-            }
-        });
-        buttonFinish.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeView();
-            }
-        });
-        buttonReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isFilterActive()) {
-                    resetAllFilter();
-                    applyFilter();
-                }
+        buttonClose.setOnClickListener(v -> closeView());
+        buttonFinish.setOnClickListener(view -> closeView());
+        buttonReset.setOnClickListener(v -> {
+            if (isFilterActive()) {
+                resetAllFilter();
+                applyFilter();
             }
         });
     }
@@ -618,36 +624,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         applyFilter();
     }
 
-    private HashMap<String, String> generateSelectedFilterMap() {
-        HashMap<String, String> selectedFilterMap = new HashMap<>();
-
-        if (!TextUtils.isEmpty(selectedCategoryId)) {
-            selectedFilterMap.put(KEY_CATEGORY, selectedCategoryId);
-        }
-
-        selectedFilterMap.putAll(savedTextInput);
-
-        for (Map.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
-            if (Boolean.TRUE.equals(entry.getValue())) {
-                appendToMap(selectedFilterMap, entry.getKey());
-            }
-        }
-
-        return selectedFilterMap;
-    }
-
-    private void appendToMap(HashMap<String, String> selectedFilterMap, String uniqueId) {
-        String checkBoxKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        String checkBoxValue = OptionHelper.parseValueFromUniqueId(uniqueId);
-        String mapValue = selectedFilterMap.get(checkBoxKey);
-        if (TextUtils.isEmpty(mapValue)) {
-            mapValue = checkBoxValue;
-        } else {
-            mapValue += "," + checkBoxValue;
-        }
-        selectedFilterMap.put(checkBoxKey, mapValue);
-    }
-
     public boolean isBottomSheetShown() {
         return bottomSheetBehavior != null
                 && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN;
@@ -665,18 +641,33 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private void applyFilter() {
         loadingView.setVisibility(View.VISIBLE);
         buttonFinish.setText("");
-        HashMap<String, String> selectedFilter = generateSelectedFilterMap();
-        callback.onApplyFilter(selectedFilter, getFilterFlagSelected());
+        applyFlagFilterOnSearchParameter();
+        callback.onApplyFilter(searchParameter);
     }
 
-    private FilterFlagSelectedModel getFilterFlagSelected() {
-        FilterFlagSelectedModel model = new FilterFlagSelectedModel();
-        model.setSavedCheckedState(savedCheckedState);
-        model.setSavedTextInput(savedTextInput);
-        model.setCategoryId(selectedCategoryId);
-        model.setSelectedCategoryRootId(selectedCategoryRootId);
-        model.setSelectedCategoryName(selectedCategoryName);
-        return model;
+    private void applyFlagFilterOnSearchParameter() {
+        for (Map.Entry<String, Boolean> entry : flagFilterHelper.entrySet()) {
+            if (Boolean.TRUE.equals(entry.getValue())) {
+                appendToMap(entry.getKey());
+            }
+        }
+    }
+
+    private void appendToMap(String uniqueId) {
+        String key = OptionHelper.parseKeyFromUniqueId(uniqueId);
+        String value = OptionHelper.parseValueFromUniqueId(uniqueId);
+        String appendedMapValue = appendMapValue(key, value);
+
+        searchParameter.put(key, appendedMapValue);
+    }
+
+    private String appendMapValue(String key, String previousValue) {
+        String value = searchParameter.get(key);
+
+        if (TextUtils.isEmpty(value)) value = previousValue;
+        else value += "," + previousValue;
+
+        return value;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -704,7 +695,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         List<Option> optionList
                 = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT);
         for (Option option : optionList) {
-            OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+            OptionHelper.saveOptionInputState(option, flagFilterHelper);
             OptionHelper.saveOptionShownInMainState(option, shownInMainState);
         }
     }
@@ -731,7 +722,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                     @Override
                     public void onNext(List<Option> optionList) {
                         for (Option option : optionList) {
-                            OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+                            OptionHelper.saveOptionInputState(option, flagFilterHelper);
                             OptionHelper.saveOptionShownInMainState(option, shownInMainState);
                         }
                         filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
@@ -741,12 +732,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     private void handleResultFromCategoryPage(Intent data) {
-        selectedCategoryId
-                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
-        selectedCategoryRootId
-                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
-        selectedCategoryName
-                = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
+        String selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
+        searchParameter.put(SearchApiConst.SC, selectedCategoryId);
     }
 
     private void initKeyboardVisibilityListener() {
@@ -770,17 +757,76 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(FILTER_CHECKED_STATE_PREF, savedCheckedState);
-        outState.putSerializable(FILTER_TEXT_PREF, savedTextInput);
         outState.putSerializable(FILTER_SHOWN_IN_MAIN_PREF, shownInMainState);
-        outState.putString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
-        outState.putString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF, selectedCategoryRootId);
-        outState.putString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
+        outState.putSerializable(FILTER_FLAG_HELPER, flagFilterHelper);
+        outState.putSerializable(FILTER_SEARCH_PARAMETER, searchParameter);
+    }
+
+    @Override
+    public void setFlagFilterHelper(Option option, boolean value, boolean isAppliedImmediately) {
+        saveOrRemoveFlagFilterHelper(option.getUniqueId(), value);
+
+        updateViewAfterFilter(isAppliedImmediately);
+    }
+
+    public void saveOrRemoveFlagFilterHelper(String key, boolean value) {
+        if(value) flagFilterHelper.put(key, true);
+        else flagFilterHelper.remove(key);
+    }
+
+    @Override
+    public void setFilterValue(Option option, boolean value, boolean isAppliedImmediately) {
+        SearchTracking.eventSearchResultFilterJourney(getContext(), "", option.getName(), false, value);
+
+        saveOrRemoveBooleanFromSearchParameter(option.getKey(), value);
+
+        updateViewAfterFilter(isAppliedImmediately);
+    }
+
+    private void saveOrRemoveBooleanFromSearchParameter(String key, Boolean value) {
+        if (value) searchParameter.put(key, value.toString());
+        else searchParameter.remove(key);
+    }
+
+    @Override
+    public void setFilterValue(Option option, String value, boolean isAppliedImmediately) {
+        SearchTracking.eventSearchResultFilterJourney(getContext(), option.getKey(), value, false, !TextUtils.isEmpty(value));
+
+        saveOrRemoveStringFromSearchParameter(option.getKey(), value);
+
+        updateViewAfterFilter(isAppliedImmediately);
+    }
+
+    private void saveOrRemoveStringFromSearchParameter(String key, String value) {
+        if(!TextUtils.isEmpty(value)) searchParameter.put(key, value);
+        else searchParameter.remove(key);
+    }
+
+    private void updateViewAfterFilter(boolean isAppliedImmediately) {
+        updateResetButtonVisibility();
+
+        if(isAppliedImmediately) applyFilter();
+    }
+
+    @Override
+    public String getFilterValue(String key) {
+        if(searchParameter.containsKey(key)) return searchParameter.get(key);
+
+        return "";
+    }
+
+    @Override
+    public boolean getFlagFilterHelperValue(String key) {
+        if(flagFilterHelper.containsKey(key)) {
+            Boolean returnValue = flagFilterHelper.get(key);
+            if(returnValue != null) return returnValue;
+        }
+
+        return false;
     }
 
     public interface Callback {
-        void onApplyFilter(HashMap<String, String> selectedFilter,
-                           FilterFlagSelectedModel filterFlagSelectedModel);
+        void onApplyFilter(HashMap<String, String> searchParameter);
         void onShow();
         void onHide();
         boolean isSearchShown();

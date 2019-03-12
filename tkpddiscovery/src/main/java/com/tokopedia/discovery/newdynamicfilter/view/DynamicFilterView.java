@@ -12,10 +12,14 @@ import java.util.List;
 public interface DynamicFilterView {
     void onExpandableItemClicked(Filter filter);
 
+    @Deprecated
     Boolean loadLastCheckedState(Option option);
+    @Deprecated
     void saveCheckedState(Option option, Boolean isChecked);
 
+    @Deprecated
     void removeSavedTextInput(String key);
+    @Deprecated
     void saveTextInput(String key, String textInput);
 
     List<Option> getSelectedOptions(Filter filter);
@@ -26,4 +30,11 @@ public interface DynamicFilterView {
     void onPriceSliderPressed(int minValue, int maxValue);
 
     void onPriceEditedFromTextInput(int minValue, int maxValue);
+
+    void setFilterValue(Option option, boolean value, boolean isAppliedImmediately);
+    void setFilterValue(Option option, String value, boolean isAppliedImmediately);
+    String getFilterValue(String key);
+
+    void setFlagFilterHelper(Option option, boolean value, boolean isAppliedImmediately);
+    boolean getFlagFilterHelperValue(String key);
 }

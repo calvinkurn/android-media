@@ -10,9 +10,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.BottomSheetExpandableItemSelectedListAdapter;
-import com.tokopedia.discovery.newdynamicfilter.adapter.ExpandableItemSelectedListAdapter;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder {
 
@@ -26,10 +24,10 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
     public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView) {
         super(itemView);
         this.filterView = filterView;
-        titleContainer = (LinearLayout) itemView.findViewById(R.id.title_container);
+        titleContainer = itemView.findViewById(R.id.title_container);
         seeAllButton = itemView.findViewById(R.id.see_all_button);
-        title = (TextView) itemView.findViewById(R.id.expandable_item_title);
-        recyclerView = (RecyclerView) itemView.findViewById(R.id.expandable_item_selected_list);
+        title = itemView.findViewById(R.id.expandable_item_title);
+        recyclerView = itemView.findViewById(R.id.expandable_item_selected_list);
     }
 
     @Override
@@ -40,13 +38,9 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
         recyclerView.setAdapter(adapter);
 
         title.setText(filter.getTitle());
+
         if (hasCustomOptions(filter)) {
-            titleContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    filterView.onExpandableItemClicked(filter);
-                }
-            });
+            titleContainer.setOnClickListener(view -> filterView.onExpandableItemClicked(filter));
             seeAllButton.setVisibility(View.VISIBLE);
         } else {
             titleContainer.setOnClickListener(null);

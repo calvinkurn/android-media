@@ -9,7 +9,6 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.tome.FavoriteCheckResult;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.data.repository.ShopRepository;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -53,7 +52,7 @@ public class GetShopUseCase extends UseCase<ShopViewModel> {
      */
     public static RequestParams createInitializeSearchParam(SearchParameter searchParameter) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(searchParameter.getSearchParameterMap());
+        requestParams.putAll(searchParameter.getSearchParameterHashMap());
 
         putRequestParamsOtherParameters(requestParams);
 

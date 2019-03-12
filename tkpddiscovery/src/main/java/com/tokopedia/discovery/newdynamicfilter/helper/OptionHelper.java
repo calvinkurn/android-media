@@ -41,6 +41,10 @@ public class OptionHelper {
         }
     }
 
+    public static void saveOptionInputState(Option option, HashMap<String, Boolean> flagFilterHelper) {
+        saveCheckboxOptionInputState(option, flagFilterHelper);
+    }
+
     private static void saveCheckboxOptionInputState(Option option,
                                                      HashMap<String, Boolean> checkedState) {
 

@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -104,7 +103,7 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
 
     private RequestParams generateParamInitBrowseCatalog() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameter().getSearchParameterMap());
+        requestParams.putAll(getView().getSearchParameter().getSearchParameterHashMap());
         requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
 
         setRequestParamsDefaultValues(requestParams);
@@ -115,7 +114,7 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
 
     private RequestParams generateParamLoadMoreBrowseCatalog() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameter().getSearchParameterMap());
+        requestParams.putAll(getView().getSearchParameter().getSearchParameterHashMap());
         requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
 
         setRequestParamsDefaultValues(requestParams);
@@ -126,7 +125,7 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
 
     private RequestParams generateParamInitBrowseCatalog(String departmentId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameter().getSearchParameterMap());
+        requestParams.putAll(getView().getSearchParameter().getSearchParameterHashMap());
         requestParams.putString(SearchApiConst.SC, departmentId);
 
         setRequestParamsDefaultValues(requestParams);
@@ -137,7 +136,7 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
 
     private RequestParams generateParamLoadMoreBrowseCatalog(String departmentId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameter().getSearchParameterMap());
+        requestParams.putAll(getView().getSearchParameter().getSearchParameterHashMap());
         requestParams.putString(SearchApiConst.SC, departmentId);
 
         setRequestParamsDefaultValues(requestParams);

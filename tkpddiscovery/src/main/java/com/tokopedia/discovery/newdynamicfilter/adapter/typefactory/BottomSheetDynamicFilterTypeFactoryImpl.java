@@ -25,8 +25,7 @@ public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTyp
     public int type(Filter filter) {
         if (filter.isSeparator()) {
             return R.layout.dynamic_filter_item_separator;
-        }
-        else if (filter.isPriceFilter()) {
+        } else if (filter.isPriceFilter()) {
             return R.layout.dynamic_filter_item_price;
         } else if (filter.isExpandableFilter()) {
             return R.layout.dynamic_filter_expandable_item;
