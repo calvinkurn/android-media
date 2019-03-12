@@ -181,7 +181,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
                     && Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) < 1000)) {
                 inputError.setText(getString(R.string.min_input_hint));
                 inputError.setTextColor(getResources().getColor(R.color.error_color));
-            } else if (inputAmount.getText() != null && Utils.convertToCurrencyLongFromString(
+            } else if (!TextUtils.isEmpty(inputAmount.getText()) && Utils.convertToCurrencyLongFromString(
                     inputAmount.getText().toString()) > 10000000) {
                 inputError.setText(getString(R.string.max_input_hint));
                 inputError.setTextColor(getResources().getColor(R.color.error_color));
