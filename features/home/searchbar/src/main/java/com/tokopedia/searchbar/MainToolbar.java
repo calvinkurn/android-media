@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -21,16 +22,18 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class MainToolbar extends Toolbar {
 
-    private final static String TAG_INBOX = "inbox";
+    protected final static String TAG_INBOX = "inbox";
 
-    private ImageButton btnNotification;
-    private ImageButton btnWishlist;
-    private BadgeView badgeView;
+    protected ImageView btnNotification;
+    protected ImageView btnWishlist;
+    protected ImageView btnInbox;
+    private BadgeView badgeViewInbox;
+    private BadgeView badgeViewNotification;
 
-    private SearchBarAnalytics searchBarAnalytics;
-    private UserSessionInterface userSession;
+    protected SearchBarAnalytics searchBarAnalytics;
+    protected UserSessionInterface userSession;
 
-    private String screenName = "";
+    protected String screenName = "";
 
     public MainToolbar(Context context) {
         super(context);
@@ -49,45 +52,35 @@ public class MainToolbar extends Toolbar {
 
     public void setNotificationNumber(int badgeNumber) {
         if (btnNotification != null) {
-            if (badgeView == null)
-                badgeView = new BadgeView(getContext());
+            if (badgeViewNotification == null)
+                badgeViewNotification = new BadgeView(getContext());
 
-            badgeView.bindTarget(btnNotification);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(badgeNumber);
+            badgeViewNotification.bindTarget(btnNotification);
+            badgeViewNotification.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewNotification.setBadgeNumber(badgeNumber);
         }
     }
 
     public void setInboxNumber(int badgeNumber) {
-        if (btnWishlist != null && btnWishlist.getTag() != null
-                && btnWishlist.getTag().toString().equalsIgnoreCase(TAG_INBOX)) {
-            if (badgeView == null)
-                badgeView = new BadgeView(getContext());
+        if (btnInbox != null) {
+            if (badgeViewInbox == null)
+                badgeViewInbox = new BadgeView(getContext());
 
-            badgeView.bindTarget(btnWishlist);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(badgeNumber);
+            badgeViewInbox.bindTarget(btnInbox);
+            badgeViewInbox.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewInbox.setBadgeNumber(badgeNumber);
         }
     }
 
-    public void showInboxIconForAbTest(boolean shouldShowInbox) {
-        if (shouldShowInbox) {
-            btnWishlist.setTag(TAG_INBOX);
-            btnWishlist.setImageResource(R.drawable.ic_inbox_searcbar);
-        } else {
-            btnWishlist.setTag("");
-            btnWishlist.setImageResource(R.drawable.ic_wishlist_searchbar);
-        }
-    }
-
-    private void init(Context context, @Nullable AttributeSet attrs) {
+    protected void init(Context context, @Nullable AttributeSet attrs) {
 
         userSession = new UserSession(context);
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
-        inflate(context, R.layout.main_toolbar, this);
+        inflateResource(context);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
+        btnInbox = findViewById(R.id.btn_inbox);
         btnWishlist = findViewById(R.id.btn_wishlist);
         EditText editTextSearch = findViewById(R.id.et_search);
 
@@ -114,16 +107,19 @@ public class MainToolbar extends Toolbar {
 
         btnWishlist.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
-                if (btnWishlist.getTag() != null && btnWishlist.getTag().toString()
-                        .equalsIgnoreCase(TAG_INBOX)) {
-                    searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
-                    getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                            .gotoInboxMainPage(getContext()));
-                } else {
-                    searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
-                    getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                            .gotoWishlistPage(getContext()));
-                }
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoWishlistPage(getContext()));
+            } else {
+                RouteManager.route(context, ApplinkConst.LOGIN);
+            }
+        });
+
+        btnInbox.setOnClickListener(v -> {
+            if (userSession.isLoggedIn()) {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoInboxMainPage(getContext()));
             } else {
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
@@ -145,11 +141,15 @@ public class MainToolbar extends Toolbar {
         });
     }
 
-    public ImageButton getBtnNotification() {
+    public void inflateResource(Context context) {
+        inflate(context, R.layout.main_toolbar, this);
+    }
+
+    public ImageView getBtnNotification() {
         return btnNotification;
     }
 
-    public ImageButton getBtnWishlist() {
+    public ImageView getBtnWishlist() {
         return btnWishlist;
     }
 }

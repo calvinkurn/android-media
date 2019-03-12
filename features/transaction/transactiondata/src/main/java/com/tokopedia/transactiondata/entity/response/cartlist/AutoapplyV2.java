@@ -8,16 +8,16 @@ public class AutoapplyV2 {
 
     @SerializedName("message")
     @Expose
-    private Message message;
+    private Message message = new Message();
     @SerializedName("code")
     @Expose
-    private String code;
+    private String code = "";
     @SerializedName("promo_code_id")
     @Expose
-    private String promoCodeId;
+    private String promoCodeId = "";
     @SerializedName("title_description")
     @Expose
-    private String titleDescription;
+    private String titleDescription = "";
     @SerializedName("is_coupon")
     @Expose
     private int isCoupon;

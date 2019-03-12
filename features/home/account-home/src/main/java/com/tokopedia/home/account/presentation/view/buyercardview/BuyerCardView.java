@@ -24,6 +24,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     private ImageView imageProfileProgress;
     private ImageView imageProfileCompleted;
+    private ImageView icByme;
     private TextView textUsername;
     private TextView textProfileCompletion;
     private TextView textTokopointAmount;
@@ -52,6 +53,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_buyer_card, this);
+        icByme = view.findViewById(R.id.ic_affiliate_byme);
         imageProfileProgress = view.findViewById(R.id.image_profile_progress);
         imageProfileCompleted = view.findViewById(R.id.image_profile_completed);
         textUsername = view.findViewById(R.id.text_username);
@@ -129,6 +131,11 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     public void setProfileStatusIncomplete(int progress) {
         textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
         textProfileCompletion.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+    }
+
+    @Override
+    public void showBymeIcon() {
+        icByme.setVisibility(VISIBLE);
     }
 
     public void setOnClickProfile(View.OnClickListener listener) {

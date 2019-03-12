@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
+import com.tokopedia.common.travel.ticker.TravelTickerUtils
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
@@ -108,6 +110,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.initialize(true)
 
         searchFlightData()
+        flightSearchPresenter.fetchTickerData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -152,14 +155,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                             onSelectedFromDetail(selectedId)
                         }
                     }
-                }
-                REQUEST_CODE_CHANGE_DATE -> {
-/*                    flightSearchPresenter.attachView(this)
-                    val dateString: Date = data?.getSerializableExtra(TravelCalendarA.DATE_SELECTED) as Date
-                    val calendarSelected: Calendar = Calendar.getInstance()
-                    calendarSelected.time = dateString
-                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE))*/
                 }
             }
         }
@@ -235,6 +230,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     open fun getLayout(): Int = R.layout.fragment_search_flight
 
     override fun onDestroyView() {
+        flightSearchPresenter.unsubscribeAll()
         super.onDestroyView()
         this.clearFindViewByIdCache()
     }
@@ -282,6 +278,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (list.isNotEmpty()) {
             showFilterAndSortView()
         }
+    }
+
+    override fun renderTickerView(travelTickerViewModel: TravelTickerViewModel) {
+        TravelTickerUtils.buildTravelTicker(context, travelTickerViewModel, flight_ticker_view)
     }
 
     override fun addToolbarElevation() {
@@ -508,7 +508,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (inFilterMode) {
             emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter
             emptyResultViewModel.buttonTitleRes = R.string.reset_filter
-            emptyResultViewModel.callback = object: EmptyResultViewHolder.Callback {
+            emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
 
                 }
@@ -520,7 +520,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         } else {
             emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available
             emptyResultViewModel.buttonTitleRes = R.string.change_date
-            emptyResultViewModel.callback = object: EmptyResultViewHolder.Callback {
+            emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
 
                 }
@@ -754,7 +754,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     .setSelectedDate(date)
                     .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
                     .build()
-            travelCalendarBottomSheet.setListener(object: TravelCalendarBottomSheet.ActionListener {
+            travelCalendarBottomSheet.setListener(object : TravelCalendarBottomSheet.ActionListener {
                 override fun onClickDate(dateSelected: Date) {
                     val calendar = FlightDateUtil.getCurrentCalendar()
                     calendar.time = dateSelected
@@ -780,7 +780,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private val EMPTY_MARGIN = 0
         private val REQUEST_CODE_SEARCH_FILTER = 1
         private val REQUEST_CODE_SEE_DETAIL_FLIGHT = 2
-        private val REQUEST_CODE_CHANGE_DATE = 3
         private val SAVED_FILTER_MODEL = "svd_filter_model"
         private val SAVED_SORT_OPTION = "svd_sort_option"
         private val SAVED_AIRPORT_COMBINE = "svd_airport_combine"

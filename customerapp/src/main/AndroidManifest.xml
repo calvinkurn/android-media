@@ -170,6 +170,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
+            android:theme="@style/TokopediaTransparentStatus"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
@@ -223,9 +224,6 @@
             android:name=".applink.AppLinkWebsiteActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".home.ReactNativeOfficialStoreActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".home.ReactNativeDiscoveryActivity"
@@ -286,10 +284,6 @@
             android:label="@string/flight_title_activity_phone_verification"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".home.ReactNativeBrandListOsActivity"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"

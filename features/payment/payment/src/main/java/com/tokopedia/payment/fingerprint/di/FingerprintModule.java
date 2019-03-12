@@ -2,7 +2,6 @@ package com.tokopedia.payment.fingerprint.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
@@ -18,6 +17,8 @@ import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.presenter.TopPayPresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,7 +45,7 @@ public class FingerprintModule {
                                            SavePublicKeyUseCase savePublicKeyUseCase,
                                            PaymentFingerprintUseCase paymentFingerprintUseCase,
                                            GetPostDataOtpUseCase getPostDataOtpUseCase,
-                                           UserSession userSession) {
+                                           UserSessionInterface userSession) {
         return new TopPayPresenter(saveFingerPrintUseCase, savePublicKeyUseCase,
                 paymentFingerprintUseCase, getPostDataOtpUseCase, userSession);
     }
@@ -108,5 +109,11 @@ public class FingerprintModule {
             builder.addInterceptor(httpLoggingInterceptor);
         }
         return builder.build();
+    }
+
+    @FingerprintScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

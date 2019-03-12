@@ -16,6 +16,8 @@ import com.tokopedia.loginphone.common.network.TokoCashErrorResponse;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -72,4 +74,9 @@ public class LoginRegisterPhoneModule {
         return retrofit.create(LoginRegisterPhoneApi.class);
     }
 
+    @LoginRegisterPhoneScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }

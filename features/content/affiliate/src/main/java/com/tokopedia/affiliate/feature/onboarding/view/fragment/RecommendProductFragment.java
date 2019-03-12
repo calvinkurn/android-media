@@ -106,7 +106,7 @@ public class RecommendProductFragment extends BaseDaggerFragment
         recommendBtn.setOnClickListener(v -> {
             affiliateAnalytics.onDirectRecommRekomendasikanButtonClicked();
             if (getActivity() != null) {
-                Intent intent = CreatePostActivity.getInstance(
+                Intent intent = CreatePostActivity.Companion.getInstanceAffiliate(
                         getActivity(),
                         productId,
                         viewModel.getAdId()

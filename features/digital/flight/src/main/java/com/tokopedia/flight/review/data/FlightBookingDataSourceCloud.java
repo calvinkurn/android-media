@@ -3,13 +3,13 @@ package com.tokopedia.flight.review.data;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.FlightGsonPlainQualifier;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -24,11 +24,11 @@ import rx.functions.Func1;
 public class FlightBookingDataSourceCloud {
 
     private final FlightApi flightApi;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private Gson gson;
 
     @Inject
-    public FlightBookingDataSourceCloud(FlightApi flightApi, UserSession userSession, @FlightGsonPlainQualifier Gson gson) {
+    public FlightBookingDataSourceCloud(FlightApi flightApi, UserSessionInterface userSession, @FlightGsonPlainQualifier Gson gson) {
         this.flightApi = flightApi;
         this.userSession = userSession;
         this.gson = gson;

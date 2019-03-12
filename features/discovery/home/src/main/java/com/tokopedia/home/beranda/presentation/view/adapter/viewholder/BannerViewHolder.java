@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.home.beranda.presentation.view.customview.BannerViewDynamicBackground;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,12 @@ import java.util.List;
  */
 
 public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implements BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
-        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener{
+        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;
     public static final String ATTRIBUTION = "attribution";
-    private BannerView bannerView;
+    private BannerViewDynamicBackground bannerView;
     private final HomeCategoryListener listener;
     private final Context context;
     private List<BannerSlidesModel> slidesList;
