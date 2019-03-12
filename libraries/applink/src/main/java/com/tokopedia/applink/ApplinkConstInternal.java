@@ -14,7 +14,9 @@ public class ApplinkConstInternal {
     public static final String HOST_MARKETPLACE = "marketplace";
 
     // ProductDetailActivity
-    public static final String PRODUCT_DETAIL   = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{id}/";
+    public static final String PRODUCT_DETAIL           = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{id}/";
+    public static final String PRODUCT_DETAIL_DOMAIN    = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{shop_domain}/{product_key}/";
+
     // ProductEditActivity
     public static final String PRODUCT_EDIT     = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{id}/edit";
     // ReviewProductActivity, "x_prd_nm" = productName
@@ -23,4 +25,6 @@ public class ApplinkConstInternal {
     // CheckoutVariantActivity, "EXTRA_ATC_REQUEST" = AtcRequestParam
     public static final String EXPRESS_CHECKOUT = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "checkoutvariant";
 
+    // IntermediaryActivity
+    public static final String DISCOVERY_CATEGORY_DETAIL = INTERNAL_SCHEME+ "://"+HOST_MARKETPLACE+"/{DEPARTMENT_ID}";
 }

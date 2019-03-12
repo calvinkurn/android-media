@@ -33,6 +33,9 @@ import com.tokopedia.discovery.util.MoEngageEventTracking;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+/**
+ * deeplink = "tokopedia-internal_scheme://marketplace/category/{DEPARTMENT_ID}"
+ */
 public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener, YoutubeViewHolder.YouTubeThumbnailLoadInProcess {
 
     private FragmentManager fragmentManager;

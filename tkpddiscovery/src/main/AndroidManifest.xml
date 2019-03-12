@@ -63,7 +63,18 @@
             android:name=".intermediary.view.IntermediaryActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_category"
+                    android:pathPattern="@string/path_category_detail"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".intermediary.view.adapter.YoutubeIntermediaryActivity"
             android:screenOrientation="landscape" />

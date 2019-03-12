@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="tokopedia_scheme" translatable="false">tokopedia</string>
+
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
     <string name="host_marketplace" translatable="false">marketplace</string>
+    <string name="host_category" translatable="false">category</string>
 
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
     -->
     <string name="path_product_detail" translatable="false">/product/.*\\/</string>
+    <string name="path_product_detail_domain" translatable="false">/product/.*\\/.*\\/</string>
     <string name="path_product_edit" translatable="false">/product/.*\\/edit</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
+    <string name="path_category_detail" translatable="false">/category/.*\\/</string>
 
     <string name="path_checkout_variant" translatable="false">/checkoutvariant</string>
+
+
 </resources>

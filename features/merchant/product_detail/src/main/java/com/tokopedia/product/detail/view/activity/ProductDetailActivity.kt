@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConstInternal
+import com.tokopedia.applink.UriBuilder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
@@ -80,16 +82,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         if (uri != null) {
-            if (uri.scheme == getString(R.string.internal_scheme) && uri.path?.startsWith("/product") == true){
-                productId = uri.lastPathSegment
+            var ids = UriBuilder.destructureUri(ApplinkConstInternal.PRODUCT_DETAIL, uri)
+            if (ids.isEmpty()) {
+                ids = UriBuilder.destructureUri(ApplinkConstInternal.PRODUCT_DETAIL_DOMAIN, uri)
+                shopDomain = ids[0]
+                productKey = ids[1]
             } else {
-                val segmentUri: List<String> = uri.pathSegments
-                if (segmentUri.size > 1) {
-                    shopDomain = segmentUri[0]
-                    productKey = segmentUri[1]
-                } else {
-                    productId = intent.getStringExtra(PARAM_PRODUCT_ID)
-                }
+                productId = ids[0]
             }
         } else {
             productId = intent.getStringExtra(PARAM_PRODUCT_ID)
