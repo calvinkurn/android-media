@@ -8,9 +8,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.view.adapter.ImageReviewAdapter
 import kotlinx.android.synthetic.main.partial_product_image_review.view.*
 
-class PartialImageReviewView private constructor(private val view: View) {
+class PartialImageReviewView private constructor(private val view: View,
+                                                 private val onImageClick: ((ImageReviewItem, Boolean) -> Unit)? = null) {
     companion object {
-        fun build(_view: View) = PartialImageReviewView(_view)
+        fun build(_view: View, _onImageClick: ((ImageReviewItem, Boolean) -> Unit)?) =
+                PartialImageReviewView(_view, _onImageClick)
     }
 
     init {
@@ -20,7 +22,7 @@ class PartialImageReviewView private constructor(private val view: View) {
     }
 
     fun renderData(imageReviews: List<ImageReviewItem>){
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList())
+        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), onImageClick)
         with(view) {
             if (imageReviews.isNotEmpty())
                 visible()

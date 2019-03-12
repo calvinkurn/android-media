@@ -11,7 +11,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import kotlinx.android.synthetic.main.item_image_review.view.*
 
-class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf()):
+class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
+                         private val onImageClickListener: ((ImageReviewItem, Boolean) -> Unit)? = null):
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -46,6 +47,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                     overlay_see_all.gone()
                     txt_see_all.gone()
                 }
+                setOnClickListener { onImageClickListener?.invoke(item, type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER)  }
             }
         }
     }

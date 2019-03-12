@@ -11,6 +11,7 @@
     <string name="path_product_detail" translatable="false">/product/.*\\/</string>
     <string name="path_product_edit" translatable="false">/product/.*\\/edit</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
+    <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
 
     <string name="path_checkout_variant" translatable="false">/checkoutvariant</string>
 </resources>

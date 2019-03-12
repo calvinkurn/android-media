@@ -21,6 +21,9 @@ public class ApplinkConstInternal {
     public static final String PRODUCT_REVIEW   = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{id}/review";
 
     // CheckoutVariantActivity, "EXTRA_ATC_REQUEST" = AtcRequestParam
-    public static final String EXPRESS_CHECKOUT = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "checkoutvariant";
+    public static final String EXPRESS_CHECKOUT = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/checkoutvariant";
+
+    // ImageReviewGalleryActivity
+    public static final String IMAGE_REVIEW_GALLERY = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "/product/{id}/review/gallery";
 
 }

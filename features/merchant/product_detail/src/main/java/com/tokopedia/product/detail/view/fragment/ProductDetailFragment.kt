@@ -36,6 +36,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
+import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
@@ -506,7 +507,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             attributeInfoView = PartialAttributeInfoView.build(base_attribute)
 
         if (!::imageReviewViewView.isInitialized)
-            imageReviewViewView = PartialImageReviewView.build(base_image_review)
+            imageReviewViewView = PartialImageReviewView.build(base_image_review, this::onImageReviewClick)
 
         if (!::mostHelpfulReviewView.isInitialized) {
             mostHelpfulReviewView = PartialMostHelpfulReviewView.build(base_view_most_helpful_review)
@@ -518,6 +519,18 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::otherProductView.isInitialized)
             otherProductView = PartialOtherProductView.build(base_other_product)
+    }
+
+    private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false){
+        val productId = productInfo?.basic?.id ?: return
+        if (isSeeAll){
+            productDetailTracking.eventClickReviewOnSeeAllImage(productId)
+            context?.let {
+                startActivity(RouteManager.getIntentInternal(it,
+                    UriBuilder.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString()))) }
+        } else {
+            productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
+        }
     }
 
     private val onViewClickListener = View.OnClickListener {

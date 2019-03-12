@@ -45,6 +45,11 @@ object ProductTrackingConstant {
         const val EVENT_LABEL = "review"
     }
 
+    object ImageReview {
+        const val ACTION_SEE_ITEM = "click - review gallery on foto dari pembeli"
+        const val ACTION_SEE_ALL = "click - lihat semua review gallery"
+    }
+
     object MerchantVoucher {
         const val EVENT = "promoClick"
         const val ACTION = "promo banner"
