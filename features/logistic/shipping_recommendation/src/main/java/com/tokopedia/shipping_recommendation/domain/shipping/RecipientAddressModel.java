@@ -42,11 +42,11 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private String cornerId;
     private String userCornerId;
 
-    private boolean isTradeIn;
-
     // Temporary fix for address adapter bug, will refactor later
     private boolean isHeader;
     private boolean isFooter;
+
+    private boolean isTradeIn;
 
     public RecipientAddressModel() {
     }
