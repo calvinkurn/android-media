@@ -52,6 +52,7 @@ ext {
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
             imageuploader     : ":libraries:imageuploader",
+            inappupdate       : ":libraries:inappupdate",
             kotlinExtensions  : ":libraries:kotlin_extensions",
             linker            : ":libraries:linker",
             locationmanager   : ":libraries:locationmanager",
@@ -78,7 +79,8 @@ ext {
             graphView         :":libraries:graph_view",
             laku6tradein      : ":libraries:laku6tradein",
             graphView         :":libraries:graph_view",
-            iris              : ":libraries:iris"
-//            iris              : ":libraries:iris_no_op"
+            iris              : ":libraries:iris",
+//            iris              : ":libraries:iris_no_op",
+            banner            : ":libraries:banner"
     ]
 }

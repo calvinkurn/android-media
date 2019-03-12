@@ -1,7 +1,7 @@
 package com.tokopedia.expresscheckout.domain.mapper.profile
 
-import com.tokopedia.expresscheckout.data.entity.response.profile.*
 import com.tokopedia.expresscheckout.domain.model.profile.*
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.*
 import javax.inject.Inject
 
 /**

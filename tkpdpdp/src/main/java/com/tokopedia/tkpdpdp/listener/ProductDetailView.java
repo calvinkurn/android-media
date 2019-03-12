@@ -28,6 +28,7 @@ import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -384,4 +385,8 @@ public interface ProductDetailView extends ViewListener {
     void onMostHelpfulImageClicked(List<ReviewImageAttachment> data, int position);
 
     void checkTradeIn(TradeInParams tradeInParams);
+
+    void navigateToOneClickShipment();
+
+    void navigateToExpressCheckout();
 }

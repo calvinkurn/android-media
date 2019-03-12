@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointsDrawer;
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 
@@ -27,6 +29,7 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     };
     private HomeHeaderWalletAction homeHeaderWalletActionData;
     private TokopointHomeDrawerData tokoPointDrawerData;
+    private TokopointsDrawer tokopointsDrawerHomeData;
     private CashBackData cashBackData;
     private boolean pendingTokocashChecked;
     private boolean isWalletError;
@@ -37,7 +40,8 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
 
     protected HeaderViewModel(Parcel in) {
         homeHeaderWalletActionData = in.readParcelable(HomeHeaderWalletAction.class.getClassLoader());
-        tokoPointDrawerData = in.readParcelable(TokopointHomeDrawerData.class.getClassLoader());
+        tokoPointDrawerData = in.readParcelable(TokopointsDrawer.class.getClassLoader());
+        tokopointsDrawerHomeData = in.readParcelable(TokopointsDrawerHomeData.class.getClassLoader());
         cashBackData = in.readParcelable(CashBackData.class.getClassLoader());
         pendingTokocashChecked = in.readByte() != 0;
         isWalletError = in.readByte() != 0;
@@ -106,6 +110,14 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         return isTokoPointError;
     }
 
+    public TokopointsDrawer getTokopointsDrawerHomeData() {
+        return tokopointsDrawerHomeData;
+    }
+
+    public void setTokopointsDrawerHomeData(TokopointsDrawer tokopointsDrawerHomeData) {
+        this.tokopointsDrawerHomeData = tokopointsDrawerHomeData;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -115,6 +127,7 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(homeHeaderWalletActionData, i);
         parcel.writeParcelable(tokoPointDrawerData, i);
+        parcel.writeParcelable(tokopointsDrawerHomeData, i);
         parcel.writeParcelable(cashBackData, i);
         parcel.writeByte((byte) (pendingTokocashChecked ? 1 : 0));
         parcel.writeByte((byte) (isWalletError ? 1 : 0));

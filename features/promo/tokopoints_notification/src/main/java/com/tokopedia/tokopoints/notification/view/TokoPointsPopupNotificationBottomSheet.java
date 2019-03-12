@@ -14,10 +14,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.notification.model.PopupNotification;
+import com.tokopedia.tokopoints.notification.utils.AnalyticsTrackerUtil;
 
 public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
 
     PopupNotification mData;
+    private String couponTitle;
 
     @Override
     public int getLayoutResourceId() {
@@ -35,13 +37,13 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
         Button action = view.findViewById(R.id.button_action);
 
         action.setText(mData.getButtonText());
-
         if (mData.getCatalog() == null || TextUtils.isEmpty(mData.getCatalog().getTitle())) {
-            title.setText(mData.getTitle());
+            couponTitle=mData.getTitle();
             title.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
-            title.setText(mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle());
+            couponTitle=mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle();
         }
+        title.setText(couponTitle);
 
         if (!TextUtils.isEmpty(mData.getText())) {
             desc.setVisibility(View.VISIBLE);
@@ -80,6 +82,11 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
         action.setOnClickListener(view1 -> {
             RouteManager.route(action.getContext(), mData.getAppLink());
             dismiss();
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_TERIMA_HADIAH,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN_KUPON,
+                    couponTitle);
         });
         updateHeight();
     }
@@ -96,5 +103,10 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
     @Override
     protected void onCloseButtonClick() {
         super.onCloseButtonClick();
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.POPUP_TERIMA_HADIAH,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_CLOSE_BUTTON,
+                couponTitle);
     }
 }

@@ -181,21 +181,27 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
         menuGrid.setTitleTrack(PEMBELI);
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_transaction));
-        menuGrid.setApplinkUrl(ApplinkConst.PURCHASE_HISTORY);
+        menuGrid.setApplinkUrl(ApplinkConst.MARKETPLACE_ORDER);
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+            menuGrid.setItems(getMarketPlaceOrderMenu(
+                    accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
+                    accountModel
+            ));
+        }else {
 
-        menuGrid.setItems(getBuyerOrderMenu(
-            accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
-            accountModel
-        ));
-        items.add(menuGrid);
+            menuGrid.setItems(getBuyerOrderMenu(
+                    accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
+                    accountModel
+            ));
+        }
 
-
-        items.add(getBuyerResolutionMenu(accountModel));
 
         menuGrid = new MenuGridViewModel();
-        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction));
+        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction_1));
         menuGrid.setItems(getDigitalOrderMenu());
         items.add(menuGrid);
+
+        items.add(getBuyerResolutionMenu(accountModel));
 
         menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_favorites));
@@ -324,6 +330,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         if(accountModel.getProfile().getCompletion() != null) {
             buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         }
+        buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
 
         return buyerCardViewModel;
     }
@@ -371,6 +378,48 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         return menuGridItems;
     }
 
+    private List<MenuGridItemViewModel> getMarketPlaceOrderMenu(Boolean isNotNull, AccountModel accountModel) {
+        List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
+        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_waiting_for_confirmation,
+                context.getString(R.string.label_menu_waiting_confirmation),
+                ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getConfirmed() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction));
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_order_processed,
+                context.getString(R.string.label_menu_order_processed),
+                ApplinkConst.MARKETPLACE_ORDER_PROCESSED,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getProcessed() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_shipped,
+                context.getString(R.string.label_menu_shipping),
+                ApplinkConst.MARKETPLACE_SENT,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getShipped() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_delivered,
+                context.getString(R.string.label_menu_delivered),
+                ApplinkConst.MARKETPLACE_DELIVERED,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getArriveAtDestination() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+        return menuGridItems;
+    }
     private ParcelableViewModel getBuyerResolutionMenu(AccountModel accountModel) {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_buyer_complain));
@@ -387,7 +436,31 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
     private List<MenuGridItemViewModel> getDigitalOrderMenu() {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
-        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
+        MenuGridItemViewModel gridItem =  null;
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_belanja,
+                    context.getString(R.string.title_menu_market_place),
+                    ApplinkConst.MARKETPLACE_ORDER,
+                    0,
+                    PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            );
+        }else {
+
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_belanja,
+                    context.getString(R.string.title_menu_market_place),
+                    ApplinkConst.PURCHASE_HISTORY,
+                    0,
+                    PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            );
+        }
+
+
+        menuGridItems.add(gridItem);
+        gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_top_up_bill,
                 context.getString(R.string.title_menu_top_up_bill),
                 ApplinkConst.DIGITAL_ORDER,
@@ -400,16 +473,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),
                 ApplinkConst.FLIGHT_ORDER,
-                0,
-                PEMBELI,
-                context.getString(R.string.title_menu_transaction)
-        );
-        menuGridItems.add(gridItem);
-
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_train,
-                context.getString(R.string.title_menu_train),
-                AccountConstants.Navigation.TRAIN_ORDER_LIST,
                 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)

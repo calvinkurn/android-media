@@ -2,7 +2,6 @@ package com.tokopedia.broadcast.message.domain.interactor
 
 import android.content.Context
 import android.text.TextUtils
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -17,6 +16,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import rx.Observable
@@ -24,7 +25,7 @@ import java.lang.RuntimeException
 import javax.inject.Inject
 
 class SaveChatBlastSellerUseCase @Inject constructor(
-        private val userSession: UserSession,
+        private val userSession: UserSessionInterface,
         @ApplicationContext val context: Context,
         private val graphqlUseCase: GraphqlUseCase,
         private val uploadImageUseCase: UploadImageUseCase<ImageAttachment.Data>
@@ -44,7 +45,7 @@ class SaveChatBlastSellerUseCase @Inject constructor(
 
     private fun createGqlSubmitBlastSeller(imageUrl: String?, requestParams: RequestParams?): Observable<BlastMessageResponse>{
         val mutation = GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_add_broadcast)
-        val graphqlRequest = GraphqlRequest(mutation, BlastMessageResponse.Result::class.java, createSubmitVariable(imageUrl, requestParams))
+        val graphqlRequest = GraphqlRequest(mutation, BlastMessageResponse.Result::class.java, createSubmitVariable(imageUrl, requestParams), false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).flatMap { graphqlResponse ->

@@ -40,14 +40,17 @@ fun isContainNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }): Boole
     //serializeNulls is needed so null value won't be omitted in the JSON
     //setPrettyPrinting is needed because it's easier to find a variable in a formatted JSON
     //In a formatted JSON, a variable is always in a newline
-    val gson = GsonBuilder().serializeNulls().setPrettyPrinting().create()
+    val gson = GsonBuilder()
+            .registerTypeAdapterFactory(DefaultValueAdapterFactory())
+            .serializeNulls()
+            .setPrettyPrinting().create()
     val objectAsJson = gson.toJson(`object`).toLowerCase()
     val firstNullOccurrence = Regex(NULL_PATTERN).find(objectAsJson)
 
     return if (firstNullOccurrence == null) {
         false
     } else {
-        whenNull(firstNullOccurrence.value)
+        whenNull("${firstNullOccurrence.value.trim()} in class ${`object`::class.java.name}")
         true
     }
 }

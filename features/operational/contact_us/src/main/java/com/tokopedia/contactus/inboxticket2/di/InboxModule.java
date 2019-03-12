@@ -6,13 +6,17 @@ import android.preference.PreferenceManager;
 
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.InboxOptionUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.SubmitRatingUseCase;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
+import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract;
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl;
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterImpl;
+import com.tokopedia.contactus.inboxticket2.view.presenter.ProvideRatingFragmentPresenter;
 
 import javax.inject.Named;
 
@@ -51,7 +55,13 @@ public class InboxModule {
     InboxDetailContract.InboxDetailPresenter provideInboxListPresenter(GetTicketDetailUseCase useCase,
                                                                        PostMessageUseCase messageUseCase,
                                                                        PostMessageUseCase2 messageUseCase2,
-                                                                       PostRatingUseCase ratingUseCase) {
-        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2, ratingUseCase);
+                                                                       PostRatingUseCase ratingUseCase,InboxOptionUseCase inboxOptionUseCase) {
+        return new InboxDetailPresenterImpl(useCase, messageUseCase, messageUseCase2, ratingUseCase,inboxOptionUseCase);
+    }
+
+    @InboxScope
+    @Provides
+    ProvideRatingContract.ProvideRatingPresenter provideRatingPresenter(SubmitRatingUseCase submitRatingUseCase) {
+        return new ProvideRatingFragmentPresenter(submitRatingUseCase);
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.digital.widget.data.entity.product;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.digital.widget.data.entity.product.DataEntity;
 
 /**
  * Created by nabillasabbaha on 9/19/17.

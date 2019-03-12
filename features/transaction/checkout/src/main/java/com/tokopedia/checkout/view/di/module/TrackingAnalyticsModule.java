@@ -8,6 +8,7 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.transactionanalytics.CornerAnalytics;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 
 import dagger.Module;
@@ -57,6 +58,11 @@ public class TrackingAnalyticsModule {
     @Provides
     CodAnalytics provideCodAnalytics(AbstractionRouter abstractionRouter) {
         return new CodAnalytics(abstractionRouter.getAnalyticTracker());
+    }
+
+    @Provides
+    CornerAnalytics provideCornerAnalytics(AbstractionRouter abstractionRouter) {
+        return new CornerAnalytics(abstractionRouter.getAnalyticTracker());
     }
 
 }

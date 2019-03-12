@@ -7,8 +7,12 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -39,6 +43,10 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     protected String title() {
         return getString(R.string.app_name);
+    }
+
+    protected String resetButtonTitle() {
+        return "";
     }
 
     protected BottomSheetsState state() {
@@ -102,6 +110,13 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         TextView textViewTitle = parentView.findViewById(R.id.tv_title);
         textViewTitle.setText(title());
 
+        TextView resetButton = parentView.findViewById(R.id.tv_reset);
+        if (!TextUtils.isEmpty(resetButtonTitle())) {
+            resetButton.setText(resetButtonTitle());
+            resetButton.setVisibility(View.VISIBLE);
+        }
+        resetButton.setOnClickListener(view -> onResetButtonClicked());
+
         View layoutTitle = parentView.findViewById(R.id.layout_title);
         layoutTitle.setOnClickListener(v -> onCloseButtonClick());
 
@@ -119,6 +134,10 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             BottomSheets.this.dismiss();
         }
+    }
+
+    protected void onResetButtonClicked() {
+
     }
 
     public void setDismissListener(BottomSheetDismissListener dismissListener) {
