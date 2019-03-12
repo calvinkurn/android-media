@@ -2,7 +2,6 @@ package com.tokopedia.home.account.analytics.domain;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.CacheType;
@@ -14,6 +13,7 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,12 +34,12 @@ public class GetUserAttributesUseCase extends UseCase<UserAttributeData> {
 
     private GraphqlUseCase graphqlUseCase;
     private Context context;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public GetUserAttributesUseCase(GraphqlUseCase graphqlUseCase,
                                     @ApplicationContext Context context,
-                                    UserSession userSession) {
+                                    UserSessionInterface userSession) {
         this.graphqlUseCase = graphqlUseCase;
         this.context = context;
         this.userSession = userSession;

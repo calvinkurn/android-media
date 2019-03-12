@@ -34,7 +34,6 @@ import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
 import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -95,6 +94,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter;
+import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
@@ -454,6 +454,7 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
@@ -604,7 +605,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
-    private UserSession userSession;
     private AnalyticTracker analyticTracker;
 
     private Iris mIris;
@@ -1819,14 +1819,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public UserSession getSession() {
-        if (userSession == null) {
-            userSession = new UserSessionImpl(this);
-        }
-        return userSession;
-    }
-
-    @Override
     public CacheManager getGlobalCacheManager() {
         if (cacheManager == null) {
             cacheManager = new GlobalCacheManager();
@@ -2421,7 +2413,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
-        if (getSession().isLoggedIn()) {
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
             UnifyTracking.eventShopSendChat(context);
             Intent intent = getAskSellerIntent(this, shopId, shopName, "",TkpdInboxRouter.SHOP);
             context.startActivity(intent);
@@ -2452,7 +2445,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
-        return GroupChatActivity.getCallingIntent(context, channelUrl);
+        return PlayActivity.getCallingIntent(context, channelUrl);
     }
 
     @Override
@@ -2743,6 +2736,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToCreateTopadsPromo(Context context, String productId, String shopId, String source) {
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(CustomerAppConstants.TOP_SELLER_APPLICATION_PACKAGE);
+        UserSessionInterface userSession = new UserSession(this);
         if (topadsIntent != null) {
             goToApplinkActivity(context, TopAdsAppLinkUtil.createAppLink(userSession.getUserId(),
                     productId, shopId, source));
@@ -2956,6 +2950,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToShopReview(Context context, String shopId, String shopDomain) {
         ReputationTracking tracking = new ReputationTracking(this);
+        UserSessionInterface userSession = new UserSession(this);
         tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, userSession.getShopId().equals(shopId));
         context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
     }
@@ -3485,7 +3480,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getUserId() {
-        return getSession().getUserId();
+        UserSessionInterface userSession = new UserSession(this);
+        return userSession.getUserId();
     }
 
     public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
@@ -3522,7 +3518,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingUtils.eventPushUserID(getAppContext(), getTkpdCoreRouter().legacySessionHandler().getGTMLoginID());
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
-        UserSessionInterface userSession = new com.tokopedia.user.session.UserSession(this);
+        UserSessionInterface userSession = new UserSession(this);
 
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
@@ -3539,7 +3535,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData));
         }
         mIris.setUserId(userId);
-        mIris.setDeviceId(getSession().getDeviceId());
+        mIris.setDeviceId(userSession.getDeviceId());
     }
 
     @Override

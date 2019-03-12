@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 
 import java.util.Map;
@@ -21,8 +20,8 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
     private static final String PARAM_DATE = "Date";
     private static final String PARAM_BEARER = "Bearer";
 
-    public TopAdsAuthInterceptor(Context context, AbstractionRouter abstractionRouter, UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+    public TopAdsAuthInterceptor(Context context, AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
     }
 
     @Override
