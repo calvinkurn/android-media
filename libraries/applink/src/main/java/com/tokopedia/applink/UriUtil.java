@@ -70,6 +70,10 @@ public class UriUtil {
         return result;
     }
 
+    public static List<String> destructureUri(@NonNull String uriPatternString, @NonNull Uri uri) {
+        return destructureUri(uriPatternString, uri, true);
+    }
+
     /**
      * Build pattern uri to uri String
      *

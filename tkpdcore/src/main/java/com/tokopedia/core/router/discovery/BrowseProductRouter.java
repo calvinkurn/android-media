@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.util.RouterUtils;
 
@@ -45,8 +48,6 @@ public class BrowseProductRouter {
 
     private static final String BROWSE_PRODUCT_ACTIVITY
             = "com.tokopedia.discovery.activity.BrowseProductActivity";
-    private static final String INTERMEDIARY_ACTIVITY
-            = "com.tokopedia.discovery.intermediary.view.IntermediaryActivity";
     private static final String CATEGORY_NAVIGATION_ACTIVITY
             = "com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity";
     public static final int VALUES_PRODUCT_FRAGMENT_ID = 812_192;
@@ -79,7 +80,8 @@ public class BrowseProductRouter {
     }
 
     public static Intent getIntermediaryIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, INTERMEDIARY_ACTIVITY);
+        Intent intent = RouteManager.getIntentInternal(context,
+                UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, VALUES_DEFAULT_DEPARTMENT_ID));
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, VALUES_DEFAULT_DEPARTMENT_ID);
         bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, VALUES_DEFAULT_DEPARTMENT_NAME);
@@ -90,7 +92,8 @@ public class BrowseProductRouter {
     }
 
     public static Intent getIntermediaryIntent(Context context, String departmentId) {
-        Intent intent = RouterUtils.getActivityIntent(context, INTERMEDIARY_ACTIVITY);
+        Intent intent = RouteManager.getIntentInternal(context,
+                UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, departmentId));
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
         bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, VALUES_DEFAULT_DEPARTMENT_NAME);

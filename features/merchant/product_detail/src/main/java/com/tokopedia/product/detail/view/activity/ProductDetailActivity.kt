@@ -82,7 +82,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         if (uri != null) {
-            val ids = UriUtil.destructureUri(ApplinkConstInternal.PRODUCT_DETAIL, uri, true)
+            val ids = UriUtil.destructureUri(ApplinkConstInternal.PRODUCT_DETAIL, uri)
             if (ids.isEmpty()) {
                 //tokopedia.com uri
                 val segmentUri: List<String> = uri.pathSegments
