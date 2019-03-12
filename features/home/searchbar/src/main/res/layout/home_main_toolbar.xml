@@ -20,19 +20,6 @@
         android:paddingBottom="@dimen/dp_4"
         tools:layout_height="@dimen/dp_100">
 
-        <ImageButton
-            android:id="@+id/btn_qrcode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
-            android:background="@null"
-            android:src="@drawable/ic_qr_scan_searchbar"
-            android:visibility="gone" />
-
         <View
             android:id="@+id/layout_search"
             android:layout_width="0dp"
