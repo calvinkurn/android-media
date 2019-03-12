@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:gravity="left|start"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:text="@string/saldo_intro_title_refund"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/description_1"
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="left|start"
+                android:lineSpacingExtra="@dimen/sp_5"
+                android:text="@string/saldo_intro_description_refund" />
+
+            <TextView
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/sumber_dana_refund"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:drawableStart="@drawable/ic_refund"
+                android:drawableLeft="@drawable/ic_refund"
+                android:drawablePadding="@dimen/dp_8"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="@dimen/sp_5"
+                android:text="@string/dana_refund" />
+
+            <TextView
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:drawableStart="@drawable/ic_refund_disbursement"
+                android:drawableLeft="@drawable/ic_refund_disbursement"
+                android:drawablePadding="@dimen/dp_8"
+                android:gravity="left|start"
+                android:lineSpacingExtra="@dimen/sp_5"
+                android:text="@string/disbursement_fund" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_24"
+                android:background="@color/gray_background" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:gravity="left|start"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:text="@string/saldo_intro_title_seller"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="left|start"
+                android:lineSpacingExtra="@dimen/sp_5"
+                android:text="@string/saldo_intro_description_seller" />
+
+            <TextView
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/sumber_dana_seller"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:drawableStart="@drawable/ic_sales_report"
+                android:drawableLeft="@drawable/ic_sales_report"
+                android:drawablePadding="@dimen/dp_8"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="@dimen/sp_5"
+                android:text="@string/hasil_penjualan" />
+
+            <TextView
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_14"
+                android:drawableStart="@drawable/ic_balance_disbursement"
+                android:drawableLeft="@drawable/ic_balance_disbursement"
+                android:drawablePadding="@dimen/dp_8"
+                android:gravity="left|start"
+                android:lineSpacingExtra="@dimen/sp_5"
+                android:text="@string/disbursement_priority_balance" />
+
+
+            <TextView
+                android:id="@+id/si_view_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24"
+                android:textColor="@color/black_36"
+                android:textSize="@dimen/sp_14" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/si_goto_balance_page"
+        style="@style/Button.Submit.Green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/saldo_intro_goto_balance_page" />
+
+</LinearLayout>
