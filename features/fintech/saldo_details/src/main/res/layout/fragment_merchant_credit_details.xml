@@ -40,6 +40,7 @@
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
+                android:text="@string/modal_toko"
                 tools:text="Modal Toko" />
 
             <TextView
@@ -77,19 +78,19 @@
                 android:orientation="vertical"
                 android:padding="@dimen/dp_4"
                 android:scrollbars="vertical"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <RelativeLayout
-
                 android:id="@+id/mcl_box_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mcl_info_list"
                 android:layout_marginTop="@dimen/dp_12"
+                android:padding="@dimen/dp_4"
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/sp_kyc_short_desc"
+                    android:id="@+id/mcl_box_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
@@ -99,10 +100,10 @@
                     tools:text="Status: Menunggu Verifikasi Aplikasi" />
 
                 <TextView
-                    android:id="@+id/sp_kyc_long_desc"
+                    android:id="@+id/mcl_box_Desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/sp_kyc_short_desc"
+                    android:layout_below="@+id/mcl_box_title"
                     android:layout_marginTop="@dimen/dp_4"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="@dimen/sp_4"
