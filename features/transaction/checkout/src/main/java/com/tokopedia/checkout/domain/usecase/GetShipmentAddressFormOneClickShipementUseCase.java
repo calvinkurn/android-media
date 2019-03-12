@@ -19,7 +19,7 @@ import rx.functions.Func1;
 
 public class GetShipmentAddressFormOneClickShipementUseCase extends UseCase<CartShipmentAddressFormData> {
 
-    public static final String PARAM_IS_TRADEIN = "is_tradein";
+    public static final String PARAM_IS_TRADEIN = "is_trade_in";
     public static final String PARAM_DEVICE_ID = "dev_id";
 
     private final ICartRepository cartRepository;

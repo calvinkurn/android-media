@@ -34,7 +34,7 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
     private static final String PARAM_FINGERPRINT_SUPPORT = "fingerprint_support";
     public static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
     public static final String PARAM_IS_EXPRESS = "is_express";
-    public static final String PARAM_IS_TRADEIN = "is_tradein";
+    public static final String PARAM_IS_TRADEIN = "is_trade_in";
     public static final String PARAM_DEVICE_ID = "dev_id";
 
     private final ICartRepository cartRepository;

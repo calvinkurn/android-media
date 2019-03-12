@@ -197,7 +197,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String IS_BLACKBOX = "$is_blackbox";
         static final String ADDRESS_ID = "$address_id";
         static final String PREORDER = "$preorder";
-        static final String IS_TRADEIN = "$is_tradein";
+        static final String IS_TRADEIN = "$is_trade_in";
 
         static final String VALUE_ANDROID = "android";
         static final String VALUE_CLIENT = "client";
