@@ -108,7 +108,7 @@ class SubmitPostService : IntentService(TAG) {
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                val message = if (errorMessage != context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
+                val message = if (errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
                     errorMessage
                 else
                     context.getString(R.string.af_error_create_post)
