@@ -57,11 +57,15 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -513,13 +517,13 @@ public class ProductListFragment extends SearchSectionFragment
         String userId = userSession.isLoggedIn() ?
                 userSession.getUserId() : "";
         if (item.isTopAds()) {
-            new ImpresionTask().execute(productItem.getTopadsClickUrl());
+            new ImpresionTask().execute(item.getTopadsClickUrl());
             Product product = new Product();
-            product.setId(productItem.getProductID());
-            product.setName(productItem.getProductName());
-            product.setPriceFormat(productItem.getPrice());
-            product.setCategory(new Category(productItem.getCategoryID()));
-            TopAdsGtmTracker.eventSearchResultProductClick(context, searchQuery, product, pos);
+            product.setId(item.getProductID());
+            product.setName(item.getProductName());
+            product.setPriceFormat(item.getPrice());
+            product.setCategory(new Category(item.getCategoryID()));
+            TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos);
         } else {
             SearchTracking.trackEventClickSearchResultProduct(
                     getActivity(),
