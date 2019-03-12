@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+wapply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
@@ -7,6 +7,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
