@@ -1,56 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- START xml_defaults -->
 <defaultsMap>
     <entry>
-        <key>mainapp_is_need_update</key>
-        <value>false</value>
-    </entry>
-    <entry>
-        <key>mainapp_latest_version_code</key>
-        <value>0</value>
-    </entry>
-    <entry>
-        <key>mainapp_is_force_update</key>
-        <value>false</value>
-    </entry>
-    <entry>
-        <key>mainapp_update_message</key>
-        <value>Update aplikasi sekarang dan nikmati performa yang lebih stabil.</value>
-    </entry>
-    <entry>
-        <key>mainapp_update_title</key>
-        <value>Update Aplikasi</value>
-    </entry>
-    <entry>
-        <key>mainapp_update_link</key>
-        <value>https://play.google.com/store/apps/details?id=com.tokopedia.tkpd</value>
-    </entry>
-    <entry>
-        <key>sellerapp_is_need_update</key>
-        <value>false</value>
-    </entry>
-    <entry>
-        <key>sellerapp_latest_version_code</key>
-        <value>0</value>
-    </entry>
-    <entry>
-        <key>sellerapp_is_force_update</key>
-        <value>false</value>
-    </entry>
-    <entry>
-        <key>sellerapp_update_message</key>
-        <value>Update Top Seller versi terbaru untuk mendapatkan pengalaman berjualan yang lebih
-            baik.
-        </value>
-    </entry>
-    <entry>
-        <key>sellerapp_update_title</key>
-        <value>Tersedia Versi Top Seller Terbaru</value>
-    </entry>
-    <entry>
-        <key>sellerapp_update_link</key>
-        <value>https://play.google.com/store/apps/details?id=com.tokopedia.sellerapp</value>
-    </entry>
-    <entry>
         <key>toko_cash_top_up</key>
         <value>false</value>
     </entry>
