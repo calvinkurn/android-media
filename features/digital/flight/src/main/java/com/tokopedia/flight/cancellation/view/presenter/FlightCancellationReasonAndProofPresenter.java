@@ -263,7 +263,6 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                                 ), new Func2<FlightCancellationAttachmentViewModel, ImageUploadDomainModel<AttachmentImageModel>, FlightCancellationAttachmentViewModel>() {
                                     @Override
                                     public FlightCancellationAttachmentViewModel call(FlightCancellationAttachmentViewModel attachmentViewModel, ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
-                                        getView().setUploadingPosition(getView().getUploadingPosition() + 1);
                                         String url = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
                                         if (url.contains(DEFAULT_RESOLUTION)) {
                                             url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
