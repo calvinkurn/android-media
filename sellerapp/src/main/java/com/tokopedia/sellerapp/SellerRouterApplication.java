@@ -34,6 +34,9 @@ import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -74,6 +77,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
+import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -231,6 +235,7 @@ import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
@@ -274,8 +279,10 @@ public abstract class SellerRouterApplication extends MainApplication
         UnifiedOrderListRouter,
         CoreNetworkRouter,
         ChatbotRouter,
+        SaldoDetailsRouter,
         TrackingOptimizerRouter ,
-        FlashSaleRouter{
+        FlashSaleRouter,
+        LinkerRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -362,6 +369,11 @@ public abstract class SellerRouterApplication extends MainApplication
             gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
         }
         return gmComponent;
+    }
+
+    @Override
+    public Intent getInboxTicketCallingIntent(Context context) {
+        return new Intent(context, InboxListActivity.class);
     }
 
     @Override
@@ -816,7 +828,7 @@ public abstract class SellerRouterApplication extends MainApplication
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
     }
 
 
@@ -824,7 +836,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
 
         return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, customMessage, source, avatar);
+                customMessage, source, avatar);
 
     }
 
@@ -1970,29 +1982,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refereshFcmTokenToCMNotif(String token) {
-
-    }
-
-    @Override
-    public void onLoginSuccess() {
-
-    }
-
-    @Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }
-
-    @Override
     public Intent getSaldoDepositIntent(Context context) {
         return null;
-    }
-
-    @Override
-    public void refereshFcmTokenToCMNotif(String token) {
-
     }
 
     @Override
@@ -2005,11 +1996,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return false;
     }
 
-    @Override
-    public String getContactUsBaseURL() {
-        return TkpdBaseURL.ContactUs.URL_HELP;
-    }
-
     public void onLoginSuccess() {
     }
 
@@ -2018,7 +2004,32 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCheckoutIntent(Activity activity) {
+    public Iris getIris() {
+        return null;
+    }
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+
+    }
+
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+
+    }
+
+    @Override
+    public void refreshFCMTokenFromForegroundToCM() {
+
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam) {
         return null;
     }
 }

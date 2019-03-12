@@ -3,13 +3,13 @@ package com.tokopedia.shop.etalase.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
 import com.tokopedia.shop.etalase.view.listener.ShopEtalaseView;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -24,10 +24,10 @@ import rx.Subscriber;
 public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
 
     private final GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public ShopEtalasePresenter(GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase, UserSession userSession) {
+    public ShopEtalasePresenter(GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase, UserSessionInterface userSession) {
         this.getShopEtalaseByShopUseCase = getShopEtalaseByShopUseCase;
         this.userSession = userSession;
     }

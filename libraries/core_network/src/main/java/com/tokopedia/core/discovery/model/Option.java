@@ -20,6 +20,7 @@ public class Option implements Parcelable {
     public static final String KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax";
     public static final String KEY_PRICE_WHOLESALE = "wholesale";
     public static final String KEY_CATEGORY = "sc";
+    public static final String KEY_OFFICIAL = "official";
     public static final String KEY_RATING = "rt";
 
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
@@ -79,6 +80,10 @@ public class Option implements Parcelable {
 
     public boolean isCategoryOption() {
         return Option.KEY_CATEGORY.equals(getKey());
+    }
+
+    public boolean isOfficialOption() {
+        return Option.KEY_OFFICIAL.equals(getKey());
     }
 
     /**

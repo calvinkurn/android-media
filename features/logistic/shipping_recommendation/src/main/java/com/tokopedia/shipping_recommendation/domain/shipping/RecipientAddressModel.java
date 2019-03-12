@@ -42,6 +42,10 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private String cornerId;
     private String userCornerId;
 
+    // Temporary fix for address adapter bug, will refactor later
+    private boolean isHeader;
+    private boolean isFooter;
+
     private boolean isTradeIn;
 
     public RecipientAddressModel() {
@@ -239,6 +243,22 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.userCornerId = userCornerId;
     }
 
+    public boolean isHeader() {
+        return isHeader;
+    }
+
+    public void setHeader(boolean header) {
+        isHeader = header;
+    }
+
+    public boolean isFooter() {
+        return isFooter;
+    }
+
+    public void setFooter(boolean footer) {
+        isFooter = footer;
+    }
+
     public boolean isTradeIn() {
         return isTradeIn;
     }
@@ -248,8 +268,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     }
 
     /*
-    // Constructor for corner Address mapping, please don't use it otherwise
-     */
+        // Constructor for corner Address mapping, please don't use it otherwise
+         */
     public RecipientAddressModel(String id, String cornerId, String addressName, String cityName, String street,
                                  String recipientName, String destinationDistrictName, String recipientPhoneNumber,
                                  String provinceName, String cityId, String districtId,

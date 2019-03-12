@@ -1,11 +1,11 @@
 package com.tokopedia.shop.note.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 import com.tokopedia.shop.note.domain.interactor.GetShopNoteListUseCase;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
 import com.tokopedia.shop.note.view.mapper.ShopNoteViewModelMapper;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -21,10 +21,10 @@ public class ShopNoteListPresenter extends BaseDaggerPresenter<ShopNoteListView>
 
     private final GetShopNoteListUseCase getShopNoteListUseCase;
     private final ShopNoteViewModelMapper shopNoteViewModelMapper;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public ShopNoteListPresenter(GetShopNoteListUseCase getShopNoteListUseCase, ShopNoteViewModelMapper shopNoteViewModelMapper, UserSession userSession) {
+    public ShopNoteListPresenter(GetShopNoteListUseCase getShopNoteListUseCase, ShopNoteViewModelMapper shopNoteViewModelMapper, UserSessionInterface userSession) {
         this.getShopNoteListUseCase = getShopNoteListUseCase;
         this.shopNoteViewModelMapper = shopNoteViewModelMapper;
         this.userSession = userSession;

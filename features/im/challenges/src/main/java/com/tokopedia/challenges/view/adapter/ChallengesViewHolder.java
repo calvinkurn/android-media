@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
-import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
+import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.RemainingDaysFormatter;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -60,18 +60,18 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrl(challengesResult.getThumbnailUrl()), R.color.grey_1100);
 
         itemView.setOnClickListener(view1 -> {
-            Intent intent = new Intent(context, ChallengeDetailActivity.class);
+            Intent intent = new Intent(context, ChallengeDetailsActivity.class);
             intent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, challengesResult);
             intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
             context.startActivity(intent);
             if (isPastChallenge) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_PAST_CHALLENGES,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         challengesResult.getTitle());
             } else {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         challengesResult.getTitle());
             }
@@ -81,12 +81,12 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult, false);
             if (isPastChallenge) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_PAST_CHALLENGES,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                         challengesResult.getTitle());
             } else {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_ACTIVE_CHALLENEGES,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                         challengesResult.getTitle());
             }
