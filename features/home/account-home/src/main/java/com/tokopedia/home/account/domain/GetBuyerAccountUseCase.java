@@ -130,8 +130,8 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     }
 
     private void saveIsAffiliateStatus(AccountModel accountModel) {
-        if (accountModel.getAffiliateModel() != null) {
-            userSession.setIsAffiliateStatus(accountModel.getAffiliateModel().isAffiliate());
+        if (accountModel != null) {
+            userSession.setIsAffiliateStatus(accountModel.isAffiliate());
         }
     }
 }
