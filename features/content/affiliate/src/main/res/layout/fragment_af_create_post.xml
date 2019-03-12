@@ -37,10 +37,10 @@
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginEnd="@dimen/dp_2"
                 android:layout_marginRight="@dimen/dp_2"
-                android:src="@drawable/ic_system_status_carousel_normal_32"
                 android:visibility="gone"
                 app:layout_constraintRight_toRightOf="@+id/thumbnail"
                 app:layout_constraintTop_toTopOf="@+id/thumbnail"
+                app:srcCompat="@drawable/ic_system_status_carousel_normal_32"
                 tools:visibility="visible" />
 
             <TextView
@@ -131,7 +131,7 @@
                         android:layout_marginEnd="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
                         android:contentDescription="@string/af_add_image"
-                        android:src="@drawable/ic_system_action_camera_grayscale_24" />
+                        app:srcCompat="@drawable/ic_system_action_camera_grayscale_24" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -173,7 +173,7 @@
                         android:layout_marginEnd="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
                         android:contentDescription="@string/af_add_video"
-                        android:src="@drawable/ic_system_action_video_grayscale_24" />
+                        app:srcCompat="@drawable/ic_system_action_video_grayscale_24" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -266,8 +266,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_16"
             android:elevation="0dp"
-            android:text="@string/af_done"
             android:enabled="true"
+            android:text="@string/af_done"
             android:textAllCaps="false"
             app:buttonCompatSize="medium"
             app:buttonCompatType="primary"
