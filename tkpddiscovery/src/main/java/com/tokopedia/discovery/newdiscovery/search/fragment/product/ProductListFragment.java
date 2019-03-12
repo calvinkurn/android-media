@@ -514,8 +514,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void sendItemClickTrackingEvent(ProductItem item, int pos) {
-        String userId = userSession.isLoggedIn() ?
-                userSession.getUserId() : "";
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
         if (item.isTopAds()) {
             new ImpresionTask().execute(item.getTopadsClickUrl());
             Product product = new Product();
