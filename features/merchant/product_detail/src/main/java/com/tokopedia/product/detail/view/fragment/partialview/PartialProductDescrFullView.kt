@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriBuilder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.ProductDetailRouter
@@ -128,15 +129,11 @@ class PartialProductDescrFullView private constructor(private val view: View,
     }
 
     private fun gotoEtalase(etalaseId: String, shopID: Int) {
-        val appContext = view.context.applicationContext
-        if (appContext !is ProductDetailRouter)
-            return
-
         val intent = RouteManager.getIntent(view.context,if (etalaseId.isNotBlank()){
-             ApplinkConst.SHOP_ETALASE.replace("{etalase_id}", etalaseId)
+            UriBuilder.buildUri(ApplinkConst.SHOP_ETALASE, shopID.toString(), etalaseId)
         } else {
-            ApplinkConst.SHOP
-        }.replace("{shop_id}", shopID.toString()))
+            UriBuilder.buildUri(ApplinkConst.SHOP, shopID.toString())
+        }
         view.context.startActivity(intent)
     }
 
