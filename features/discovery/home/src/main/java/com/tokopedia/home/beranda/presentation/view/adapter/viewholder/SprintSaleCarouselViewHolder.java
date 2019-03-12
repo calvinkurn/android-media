@@ -113,7 +113,6 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     public void bind(DynamicChannelViewModel element) {
         try {
             this.channels = element.getChannel();
-            listener.onServerTimeReceived(channels.getHeader().getServerTimeUnix());
             title.setText(channels.getHeader().getName());
             if (channels.getHeader().getBackColor() != null) {
                 Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
@@ -123,7 +122,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             HomeTrackingUtils.homeSprintSaleImpression(context,
                     channels.getGrids(),channels.getType());
             Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
-            countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+            countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
                 seeMoreContainer.setVisibility(View.VISIBLE);
             } else {

@@ -66,7 +66,6 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
-import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
@@ -150,8 +149,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private TrackingQueue trackingQueue;
 
     private MainToolbar mainToolbar;
-
-    private long serverTimeOffset = 0;
 
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
@@ -816,8 +813,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
-        this.serverTimeOffset = 0;
-
         if (items.get(0) instanceof HeaderViewModel) {
             HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
             updateHeaderItem(dataHeader);
@@ -827,8 +822,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateListOnResume(List<Visitable> visitables) {
-        this.serverTimeOffset = 0;
-
         adapter.updateItems(visitables);
     }
 
@@ -1212,19 +1205,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private String getUserShopId() {
         return userSession.getShopId();
-    }
-
-    @Override
-    public void onServerTimeReceived(long serverTimeUnix) {
-        if (serverTimeOffset == 0) {
-            long serverTimemillis = serverTimeUnix * ONE_SECOND;
-            this.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverTimemillis);
-        }
-    }
-
-    @Override
-    public long getServerTimeOffset() {
-        return this.serverTimeOffset;
     }
 
     public void onHiddenChanged(boolean hidden) {

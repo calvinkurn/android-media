@@ -78,7 +78,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     public void bind(final DynamicChannelViewModel element) {
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
-            listener.onServerTimeReceived(element.getChannel().getHeader().getServerTimeUnix());
             itemAdapter.setChannel(channel);
             homeChannelTitle.setText(channel.getHeader().getName());
 
@@ -91,7 +90,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
             if (isSprintSale(channel) || isSprintSaleLego(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
             } else {
                 countDownView.setVisibility(View.GONE);

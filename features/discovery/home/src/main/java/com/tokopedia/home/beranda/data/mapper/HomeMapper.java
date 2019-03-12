@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSect
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
@@ -199,6 +200,11 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private Visitable mappingDynamicChannel(DynamicHomeChannel.Channels channel) {
         DynamicChannelViewModel viewModel = new DynamicChannelViewModel();
         viewModel.setChannel(channel);
+        viewModel.setServerTimeOffset(
+                ServerTimeOffsetUtil.getServerTimeOffset(
+                        channel.getHeader().getServerTimeUnix()
+                )
+        );
         return viewModel;
     }
 }
