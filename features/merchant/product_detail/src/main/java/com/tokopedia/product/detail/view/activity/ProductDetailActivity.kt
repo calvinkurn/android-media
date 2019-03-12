@@ -87,8 +87,10 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
                 //tokopedia.com uri
                 val segmentUri: List<String> = uri.pathSegments
                 if (segmentUri.size > 1) {
-                    shopDomain = segmentUri[0]
-                    productKey = segmentUri[1]
+                    shopDomain = segmentUri[segmentUri.size-2]
+                    productKey = segmentUri[segmentUri.size-1]
+                } else {
+                    productId = uri.lastPathSegment
                 }
             } else {
                 productId = ids[0]
