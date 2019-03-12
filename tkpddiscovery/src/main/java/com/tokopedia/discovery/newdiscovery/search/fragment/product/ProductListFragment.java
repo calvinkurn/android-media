@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriBuilder;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.BannerWebView;
@@ -479,7 +479,7 @@ public class ProductListFragment extends SearchSectionFragment
     private Intent getProductIntent(String productId){
         if (getContext() != null) {
             return RouteManager.getIntentInternal(getContext(),
-                    UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+                    UriUtil.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
         } else {
             return null;
         }

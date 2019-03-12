@@ -19,7 +19,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.applink.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriBuilder;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -573,7 +573,7 @@ public class ProductFragment extends BrowseSectionFragment
     private Intent getProductIntent(String productId){
         if (getContext() != null) {
             return RouteManager.getIntentInternal(getContext(),
-                    UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+                    UriUtil.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
         } else {
             return null;
         }
