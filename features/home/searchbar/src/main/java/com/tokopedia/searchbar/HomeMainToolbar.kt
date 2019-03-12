@@ -12,14 +12,13 @@ import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.badge.BadgeView
+import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 
 class HomeMainToolbar : MainToolbar {
 
     var toolbarType: Int = 0
         private set
-
-    private var toolbar: Toolbar? = null
 
     constructor(context: Context) : super(context) {}
 
@@ -29,9 +28,7 @@ class HomeMainToolbar : MainToolbar {
 
     override fun init(context: Context, attrs: AttributeSet?) {
         super.init(context, attrs)
-        toolbar = findViewById(R.id.toolbar)
-        toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-//        toolbar!!.background = ColorDrawable(resources.getColor(R.color.white))
+        showShadow()
 
         icon_search.setImageResource(R.drawable.ic_searchbar_search_grey)
         setBackgroundAlpha(0f)
@@ -54,7 +51,13 @@ class HomeMainToolbar : MainToolbar {
     }
 
     fun showShadow() {
+        val pL = toolbar.paddingLeft
+        val pT = ViewHelper.getStatusBarHeight(context)
+        val pR = toolbar.paddingRight
+        val pB = toolbar.paddingBottom
+
         toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+        toolbar!!.setPadding(pL, pT, pR, pB)
     }
 
     override fun inflateResource(context: Context) {
