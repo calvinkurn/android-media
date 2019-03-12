@@ -469,6 +469,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
+                if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
+                    ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
+                }
+
                 if (presenter != null) {
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
@@ -1241,9 +1245,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onHomeDataLoadSuccess() {
-        if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
-            ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
-        }
         if (!isFeedLoaded) {
             presenter.getFeedTabData();
             adapter.showLoading();
@@ -1261,10 +1262,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         .withCustomTarget(new int[]{
                 homeMainToolbar.getBtnNotification().getLeft(),
                 homeMainToolbar.getBtnNotification().getTop()
-                + getResources().getDimensionPixelSize(R.dimen.dp_25),
+                + ViewHelper.getStatusBarHeight(getActivity()),
                 homeMainToolbar.getBtnNotification().getRight(),
                 homeMainToolbar.getBtnNotification().getBottom()
-                + getResources().getDimensionPixelSize(R.dimen.dp_25)
+                + ViewHelper.getStatusBarHeight(getActivity())
         }));
         list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
                 getString(R.string.sc_wishlist_title),
