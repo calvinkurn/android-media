@@ -544,7 +544,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
             context?.let {
                 startActivity(RouteManager.getIntentInternal(it,
-                    UriBuilder.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString()))) }
+                    UriUtil.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString()))) }
         } else {
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
         }
