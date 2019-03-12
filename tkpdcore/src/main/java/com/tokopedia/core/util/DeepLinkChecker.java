@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -311,21 +314,18 @@ public class DeepLinkChecker {
         String searchQuery = uriData.getQueryParameter("q");
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
-        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
         bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
             intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent.putExtras(bundle);
         } else {
-            intent = BrowseProductRouter.getIntermediaryIntent(context, departmentId);
+            intent = RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL,departmentId));
         }
-
-        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 
@@ -352,12 +352,9 @@ public class DeepLinkChecker {
     }
 
     public static void openCategory(String url, Context context) {
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, getLinkSegment(url).get(1));
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);
-        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
-        intent.putExtras(bundle);
+        String departmentId = getLinkSegment(url).get(1);
+        Intent intent = RouteManager.getIntentInternal(context,
+                UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, departmentId));
         context.startActivity(intent);
     }
 
