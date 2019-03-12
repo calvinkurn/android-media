@@ -257,12 +257,4 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             }
         });
     }
-
-    @Override
-    public void detachView() {
-        if (getOrderListUseCase != null) {
-            getOrderListUseCase.unsubscribe();
-        }
-        super.detachView();
-    }
 }
