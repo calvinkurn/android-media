@@ -73,6 +73,8 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     @Inject
     public CouponDetailPresenter mPresenter;
     private View llBottomBtn;
+    private String mRealCode;
+
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CouponDetailFragment();
@@ -126,6 +128,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -165,7 +168,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AnalyticsTrackerUtil.ScreenKeys.COUPON_DETAIL_SCREEN_NAME;
     }
 
     @Override
@@ -260,6 +263,12 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
+
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
+                title);
     }
 
     @Override
@@ -384,24 +393,29 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             return;
         }
 
-        TextView btnAction2 = getView().findViewById(R.id.button_action_2);
-        ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
+        try {
+            this.mRealCode = realCode;
+            TextView btnAction2 = getView().findViewById(R.id.btn_continue);
+            ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
 
-        if (realCode != null && !realCode.isEmpty()) {
-            btnAction2.setText(R.string.tp_label_use);
-            btnAction2.setEnabled(true);
-            progressBar.setVisibility(View.GONE);
-            btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
-            mSubscriptionCouponTimer.unsubscribe();
-            return;
-        }
+            if (realCode != null && !realCode.isEmpty()) {
+                btnAction2.setText(R.string.tp_label_use);
+                btnAction2.setEnabled(true);
+                progressBar.setVisibility(View.GONE);
+                btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
+                mSubscriptionCouponTimer.unsubscribe();
+                return;
+            }
 
-        if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
-            btnAction2.setText(R.string.tp_label_refresh_repeat);
-            btnAction2.setEnabled(true);
-            progressBar.setVisibility(View.GONE);
-            btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
-            mSubscriptionCouponTimer.unsubscribe();
+            if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
+                btnAction2.setText(R.string.tp_label_refresh_repeat);
+                btnAction2.setEnabled(true);
+                progressBar.setVisibility(View.GONE);
+                btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
+                mSubscriptionCouponTimer.unsubscribe();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -411,13 +425,17 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             return;
         }
 
-        TextView btnAction2 = getView().findViewById(R.id.button_action_2);
-        ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
-        btnAction2.setText(R.string.tp_label_refresh_repeat);
-        btnAction2.setEnabled(true);
-        progressBar.setVisibility(View.GONE);
-        btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
-        mSubscriptionCouponTimer.unsubscribe();
+        try {
+            TextView btnAction2 = getView().findViewById(R.id.btn_continue);
+            ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
+            btnAction2.setText(R.string.tp_label_refresh_repeat);
+            btnAction2.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
+            btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
+            mSubscriptionCouponTimer.unsubscribe();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void decorateDialog(AlertDialog dialog) {
@@ -435,7 +453,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     }
 
     private void setCouponToUi(CouponValueEntity data) {
-        if (getView() == null || data.isEmpty()) {
+        if (getView() == null || data == null || data.isEmpty()) {
             return;
         }
 
@@ -490,8 +508,9 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
         imgLabel.setVisibility(View.VISIBLE);
         imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
+        this.mRealCode = data.getRealCode();
         btnAction2.setOnClickListener(v -> {
-            if (btnAction2.getText().toString().equalsIgnoreCase(getString(R.string.tp_label_use))) {
+            if (!TextUtils.isEmpty(mRealCode)) {
                 mPresenter.showRedeemCouponDialog(data.getCta(), mCouponRealCode, data.getTitle());
 
                 AnalyticsTrackerUtil.sendEvent(getContext(),
