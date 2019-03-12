@@ -79,7 +79,6 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Uri uri = getIntent().getData();
         if (uri != null) {
             List<String> paths = UriUtil.destructureUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, uri);
@@ -98,6 +97,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
                     && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length() > 0)
                 categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
         }
+        super.onCreate(savedInstanceState);
         if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
             moveTaskToBack(true);
         }
