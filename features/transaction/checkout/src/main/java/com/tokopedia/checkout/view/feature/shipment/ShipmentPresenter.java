@@ -689,7 +689,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void checkPromoShipment(String promoCode, boolean isOneClickShipment) {
-        if (promoCode == null || promoCode.length() == 0) return;
+
         TokopediaCornerData cornerData = null;
         RecipientAddressModel recipientAddressModel = getRecipientAddressModel();
         if (recipientAddressModel != null && recipientAddressModel.isCornerAddress()) {
