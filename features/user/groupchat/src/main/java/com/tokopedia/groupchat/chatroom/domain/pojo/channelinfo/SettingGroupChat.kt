@@ -13,7 +13,7 @@ class SettingGroupChat : Parcelable {
 
     @SerializedName("ping_interval")
     @Expose
-    var pingInterval: Int = 0
+    var pingInterval: Long = 0
         private set
     @SerializedName("max_chars")
     @Expose
@@ -36,12 +36,12 @@ class SettingGroupChat : Parcelable {
     }
 
     constructor(`in`: Parcel) {
-        pingInterval = `in`.readInt()
+        pingInterval = `in`.readLong()
         maxChar = `in`.readInt()
         maxRetries = `in`.readInt()
         delay = `in`.readInt()
 
-        if (pingInterval == 0) {
+        if (pingInterval == 0L) {
             pingInterval = DEFAULT_PING
         }
         if (maxRetries == 0) {
@@ -62,7 +62,7 @@ class SettingGroupChat : Parcelable {
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeInt(pingInterval)
+        dest.writeLong(pingInterval)
         dest.writeInt(maxChar)
         dest.writeInt(maxRetries)
         dest.writeInt(delay)
@@ -70,7 +70,7 @@ class SettingGroupChat : Parcelable {
 
     companion object {
 
-        const val DEFAULT_PING = 10000
+        const val DEFAULT_PING = 10000L
         const val DEFAULT_MAX_RETRIES = 3
         const val DEFAULT_MAX_CHAR = 200
         const val DEFAULT_DELAY = 5000

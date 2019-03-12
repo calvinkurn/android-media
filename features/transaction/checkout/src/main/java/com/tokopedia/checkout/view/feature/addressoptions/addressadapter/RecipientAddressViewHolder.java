@@ -54,6 +54,8 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mTvRecipientName.setText(address.getRecipientName());
         mTvRecipientAddress.setText(getFullAddress(address));
         mTvRecipientPhone.setText(address.getRecipientPhoneNumber());
+        mHeaderText.setVisibility(address.isHeader() ? View.VISIBLE : View.GONE);
+        mButtonAddAddress.setVisibility(address.isFooter() ? View.VISIBLE : View.GONE);
 
         mRbCheckAddress.setChecked(address.isSelected());
         mTvChangeAddress.setVisibility(View.VISIBLE);
@@ -64,28 +66,11 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mButtonAddAddress.setOnClickListener(view -> mListener.onAddAddressButtonClicked());
     }
 
-    public void setState(VIEW_TYPE type) {
-        switch (type) {
-            case HEADER_ON:
-                mHeaderText.setVisibility(View.VISIBLE);
-                break;
-            case BUTTON_ON:
-                mButtonAddAddress.setVisibility(View.VISIBLE);
-                break;
-            default:
-        }
-    }
-
     private String getFullAddress(RecipientAddressModel recipientAddress) {
         return recipientAddress.getStreet() + ", "
                 + recipientAddress.getDestinationDistrictName() + ", "
                 + recipientAddress.getCityName() + ", "
                 + recipientAddress.getProvinceName();
-    }
-
-    public enum VIEW_TYPE {
-        HEADER_ON,
-        BUTTON_ON
     }
 
 }

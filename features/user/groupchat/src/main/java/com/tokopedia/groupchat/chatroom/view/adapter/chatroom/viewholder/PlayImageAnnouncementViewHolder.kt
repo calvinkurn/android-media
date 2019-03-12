@@ -1,6 +1,5 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
-import android.graphics.PorterDuff
 import android.support.annotation.LayoutRes
 import android.support.v4.content.ContextCompat
 import android.text.Spannable
@@ -14,9 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel
 
 /**
  * @author : Steven 18/02/19
@@ -43,7 +40,7 @@ class PlayImageAnnouncementViewHolder(itemView: View, var listener: ChatroomCont
         message.append(userName)
         message.append(" ")
         message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, R.color.white)))
-        ImageHandler.LoadImage(content, element.contentImageUrl)
+        ImageHandler.loadImageWithoutPlaceholder(content, element.contentImageUrl)
         content.setOnClickListener { listener.onImageAnnouncementClicked(element) }
     }
 
