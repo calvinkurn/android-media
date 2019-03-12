@@ -413,21 +413,22 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     public void loadFilterItems(List<Filter> filterList, HashMap<String, String> searchParameter) {
         this.searchParameter = new HashMap<>(searchParameter);
+        createFlagFilterHelperFromSearchParameter(filterList);
+        shownInMainState.clear();
+        updateResetButtonVisibility();
         loadFilterData(filterList);
     }
 
-    private void updateFilterInputData(FilterFlagSelectedModel model) {
-        shownInMainState.clear();
+    private void createFlagFilterHelperFromSearchParameter(List<Filter> filterList) {
+        flagFilterHelper = new HashMap<>();
 
-        if (model == null) {
-            return;
+        for(Filter filter : filterList) {
+            for(Option option : filter.getOptions()) {
+                if(searchParameter.containsKey(option.getKey())) {
+                    flagFilterHelper.put(option.getUniqueId(), true);
+                }
+            }
         }
-        savedCheckedState = model.getSavedCheckedState();
-        savedTextInput = model.getSavedTextInput();
-        selectedCategoryId = model.getCategoryId();
-        selectedCategoryName = model.getSelectedCategoryName();
-        selectedCategoryRootId = model.getSelectedCategoryRootId();
-        updateResetButtonVisibility();
     }
 
     private void loadFilterData(List<Filter> filterList) {
