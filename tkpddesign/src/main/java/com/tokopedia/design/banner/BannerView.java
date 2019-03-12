@@ -236,6 +236,10 @@ public class BannerView extends BaseCustomView {
         }
     }
 
+    protected BannerPagerAdapter getBannerAdapter() {
+        return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
+    }
+
     public void setPagerAdapter(BannerPagerAdapter bannerPagerAdapter) {
         bannerRecyclerView.setAdapter(bannerPagerAdapter);
     }
