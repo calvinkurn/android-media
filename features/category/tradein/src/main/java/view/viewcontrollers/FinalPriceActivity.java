@@ -1,5 +1,6 @@
 package view.viewcontrollers;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
@@ -7,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.tradein.R;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import viewmodel.FinalPriceViewModel;
 
 public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel> implements Observer<DeviceDataResponse> {
     public static final int FINAL_PRICE_REQUEST_CODE = 22456;
+    private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
     private FinalPriceViewModel viewModel;
     /**
      * price_valid_until
@@ -180,6 +182,12 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
                 mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
                 mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_green);
                 mTvButtonPayOrKtp.setText(R.string.do_ktp);
+                mTvButtonPayOrKtp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goToFormActivity();
+                    }
+                });
             }
         }
         setVisibilityGroup(View.VISIBLE);
@@ -189,5 +197,28 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         for (View v : viewArrayList) {
             v.setVisibility(visibility);
         }
+    }
+
+    private void goToFormActivity() {
+        Intent intent = UserIdentificationFormActivity.getIntent(this);
+        intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 4);
+        startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FLAG_ACTIVITY_KYC_FORM) {
+            if (resultCode == Activity.RESULT_OK) {
+                goToCheckout();
+            }
+        }
+    }
+
+    private void goToCheckout() {
+        //                ShipmentFormRequest shipmentFormRequest = new ShipmentFormRequest.BundleBuilder()
+//                        .deviceId("devID")
+//                        .build();
+//                Intent checkoutIntent = router.getCheckoutIntent(getActivity(), shipmentFormRequest);
     }
 }

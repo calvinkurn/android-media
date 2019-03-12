@@ -31,27 +31,24 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation 'com.github.kenglxn.QRGen:android:2.5.0'
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.omsApi)
-    implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.userIdentification)
 
     implementation rootProject.ext.miscDependencies.dagger
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation 'com.github.kenglxn.QRGen:android:2.5.0'
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

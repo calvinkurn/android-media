@@ -47,9 +47,12 @@ public class RegisterIdentificationUseCase {
         return graphqlUseCase.createObservable(params);
     }
 
-    public static RequestParams getRequestParam() {
+    public static RequestParams getRequestParam(int projectid) {
         RequestParams param = RequestParams.create();
-        param.putInt(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
+        if (projectid != -1)
+            param.putInt(PROJECT_ID, projectid);
+        else
+            param.putInt(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
         return param;
     }
 

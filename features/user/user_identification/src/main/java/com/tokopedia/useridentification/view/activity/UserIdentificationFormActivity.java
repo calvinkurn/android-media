@@ -25,9 +25,11 @@ import java.util.List;
  */
 
 public class UserIdentificationFormActivity extends BaseStepperActivity {
+    public static final String PARAM_PROJECTID_TRADEIN = "TRADEIN_PROJECT";
 
     private List<Fragment> fragmentList;
     private SnackbarRetry snackbar;
+    private int tradeinProject;
 
     public interface Listener {
         void trackOnBackPressed();
@@ -47,6 +49,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         } else {
             stepperModel = createNewStepperModel();
         }
+        tradeinProject = getIntent().getIntExtra(PARAM_PROJECTID_TRADEIN,-1);
         super.onCreate(savedInstanceState);
     }
 
@@ -67,7 +70,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
             fragmentList = new ArrayList<>();
             fragmentList.add(UserIdentificationFormKtpFragment.createInstance());
             fragmentList.add(UserIdentificationFormFaceFragment.createInstance());
-            fragmentList.add(UserIdentificationFormFinalFragment.createInstance());
+            fragmentList.add(UserIdentificationFormFinalFragment.createInstance(tradeinProject));
             return fragmentList;
         } else {
             return fragmentList;

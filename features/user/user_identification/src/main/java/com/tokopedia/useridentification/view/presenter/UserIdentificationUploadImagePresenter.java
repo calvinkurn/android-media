@@ -72,7 +72,7 @@ public class UserIdentificationUploadImagePresenter extends
     }
 
     @Override
-    public void uploadImage(UserIdentificationStepperModel model) {
+    public void uploadImage(UserIdentificationStepperModel model,int projectId) {
         List<ImageUploadModel> attachments = parseToModel(model);
         compositeSubscription.add(Observable.from(attachments)
                 .flatMap(new Func1<ImageUploadModel, Observable<ImageUploadModel>>() {
@@ -145,7 +145,7 @@ public class UserIdentificationUploadImagePresenter extends
                     @Override
                     public Observable<Boolean> call(Boolean aBoolean) {
                         return registerIdentificationUseCase.createObservable(
-                                RegisterIdentificationUseCase.getRequestParam()
+                                RegisterIdentificationUseCase.getRequestParam(projectId)
                         ).flatMap(new Func1<GraphqlResponse, Observable<Boolean>>() {
                             @Override
                             public Observable<Boolean> call(GraphqlResponse graphqlResponse) {
