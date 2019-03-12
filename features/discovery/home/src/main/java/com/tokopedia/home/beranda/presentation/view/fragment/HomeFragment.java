@@ -17,7 +17,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,13 +64,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerViewDecorator;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.DummyModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.constant.BerandaUrl;
@@ -90,6 +87,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ViewHelper;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
@@ -438,9 +436,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
-            ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
-        }
         notifyToolbarForAbTesting();
         presenter.onResume();
         if(activityStateListener!=null){
@@ -474,6 +469,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
+                if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
+                    ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
+                }
+
                 if (presenter != null) {
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
@@ -498,33 +497,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     return;
                 }
 
+                //searchbar transparent behaviour
                 float offsetAlpha = (appBarLayout.getY() / 100) * -1;
-                Log.d("Fikry appBarLayout.getY()", appBarLayout.getY()+"");
 
-                Log.d("Fikry offset", offset+"");
-
-                Log.d("Fikry offsetAlpha", offsetAlpha+"");
-                float offsetAlphaFeedShadow = ((float) appBarLayout.getTotalScrollRange() / 100) -
-                        offsetAlpha;
-
+                //2.5 is maximum
                 offsetAlpha-=2.5;
                 if (offsetAlpha < 0) {
                     offsetAlpha = 0;
                 }
+
                 if (offsetAlpha >= 2.55) {
                     offsetAlpha = 2.55f;
                     homeMainToolbar.switchToDarkToolbar();
                 } else {
                     homeMainToolbar.switchToLightToolbar();
                     initStatusBarDark();
-                }
-
-                homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
-
-                if (isAppBarFullyExpanded(offset)) {
-                    refreshLayout.setCanChildScrollUp(false);
-                } else {
-                    refreshLayout.setCanChildScrollUp(true);
                 }
 
                 if (isAppBarFullyCollapsed(offset) &&
@@ -535,6 +522,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (!isAppBarFullyCollapsed(offset) &&
                         homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
                     homeMainToolbar.showShadow();
+                }
+
+                homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
+
+                if (isAppBarFullyExpanded(offset)) {
+                    refreshLayout.setCanChildScrollUp(false);
+                } else {
+                    refreshLayout.setCanChildScrollUp(true);
                 }
 
                 hideEggFragmentOnScrolling();
@@ -1263,10 +1258,26 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         ArrayList<ShowCaseObject> list = new ArrayList<>();
         list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
                 getString(R.string.sc_notif_title),
-                getString(R.string.sc_notif_desc)));
+                getString(R.string.sc_notif_desc))
+        .withCustomTarget(new int[]{
+                homeMainToolbar.getBtnNotification().getLeft(),
+                homeMainToolbar.getBtnNotification().getTop()
+                + ViewHelper.getStatusBarHeight(getActivity()),
+                homeMainToolbar.getBtnNotification().getRight(),
+                homeMainToolbar.getBtnNotification().getBottom()
+                + ViewHelper.getStatusBarHeight(getActivity())
+        }));
         list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
                 getString(R.string.sc_wishlist_title),
-                getString(R.string.sc_wishlist_desc)));
+                getString(R.string.sc_wishlist_desc))
+                .withCustomTarget(new int[]{
+                homeMainToolbar.getBtnWishlist().getLeft(),
+                homeMainToolbar.getBtnWishlist().getTop()
+                        + ViewHelper.getStatusBarHeight(getActivity()),
+                homeMainToolbar.getBtnWishlist().getRight(),
+                homeMainToolbar.getBtnWishlist().getBottom()
+                        + ViewHelper.getStatusBarHeight(getActivity())
+        }));
         return list;
     }
 

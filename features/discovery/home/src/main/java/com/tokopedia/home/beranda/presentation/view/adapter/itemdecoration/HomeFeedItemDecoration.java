@@ -9,9 +9,11 @@ import android.view.View;
 public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
 
     private int spacing;
+    private int tabHeight;
 
-    public HomeFeedItemDecoration(int spacing) {
+    public HomeFeedItemDecoration(int spacing, int tabHeight) {
         this.spacing = spacing;
+        this.tabHeight = tabHeight;
     }
 
     @Override
@@ -24,7 +26,7 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
 
         int totalSpanCount = getTotalSpanCount(parent);
 
-        outRect.top = isTopProductItem(position, totalSpanCount) ? 0 : spacing / 2;
+        outRect.top = isTopProductItem(position, totalSpanCount) ? tabHeight : spacing / 2;
         outRect.left = isFirstInRow(position, totalSpanCount) ? spacing * 2 : spacing / 2;
         outRect.right = isLastInRow(position, totalSpanCount) ? spacing * 2 : spacing / 2;
         outRect.bottom = spacing / 2;

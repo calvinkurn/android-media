@@ -275,7 +275,9 @@ public class BannerView extends BaseCustomView {
     }
 
     public void startAutoScrollBanner() {
-        if (bannerHandler != null && runnableScrollBanner != null) {
+        if (bannerHandler != null
+                && runnableScrollBanner != null
+                && !autoScrollOnProgress) {
             setAutoScrollOnProgress(true);
             bannerHandler.postDelayed(runnableScrollBanner, SLIDE_DELAY);
         }

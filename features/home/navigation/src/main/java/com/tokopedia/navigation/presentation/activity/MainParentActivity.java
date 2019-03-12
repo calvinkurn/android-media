@@ -641,8 +641,12 @@ public class MainParentActivity extends BaseActivity implements
         showcases.add(new ShowCaseObject(
                 bottomNavigation,
                 getString(R.string.title_showcase),
-                getString(R.string.desc_showcase),
-                ShowCaseContentPosition.UNDEFINED));
+                getString(R.string.desc_showcase))
+                .withCustomTarget(new int[]{
+                        bottomNavigation.getLeft(),
+                        bottomNavigation.getTop(),
+                        bottomNavigation.getRight(),
+                        bottomNavigation.getBottom()} ));
         showcases.addAll(showCaseObjects);
 
         showCaseDialog.show(this, showCaseTag, showcases);

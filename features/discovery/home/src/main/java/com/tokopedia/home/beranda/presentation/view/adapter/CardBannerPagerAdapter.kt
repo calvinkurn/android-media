@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,8 @@ import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.home.R
 import kotlinx.android.synthetic.main.layout_slider_banner_design_card.view.*
+import android.graphics.Point
+import android.view.WindowManager
 
 class CardBannerPagerAdapter(bannerImageUrls : List<String>,
                              onPromoClickListener : BannerView.OnPromoClickListener ) :
@@ -20,8 +24,21 @@ class CardBannerPagerAdapter(bannerImageUrls : List<String>,
         val itemView = inflater.inflate(R.layout.layout_slider_banner_design_card, parent, false)
 
         val layoutParams = itemView.getLayoutParams()
-        layoutParams.width = (parent.width * 0.9).toInt()
-        itemView.setLayoutParams(layoutParams)
+
+        if (parent.width != 0 ) {
+            layoutParams.width = (parent.width * 0.9).toInt()
+        } else {
+            val mWinMgr = itemView.context
+                    .getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val display = mWinMgr.defaultDisplay
+            val size = Point()
+            display.getSize(size)
+            val width = size.x
+
+            layoutParams.width = (width * 0.9).toInt()
+        }
+
+        itemView.layoutParams = layoutParams
         itemView.banner_card.visibility = View.VISIBLE
 
         return BannerViewHolder(itemView)
