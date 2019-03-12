@@ -52,16 +52,16 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             HomeData homeData = response.body().getData();
 
-            if (homeData.getTicker() != null
-                    && homeData.getTicker().getTickers() != null
-                    && !homeData.getTicker().getTickers().isEmpty()) {
-                list.add(mappingTicker(homeData.getTicker().getTickers()));
-            }
-
             if (homeData.getSlides() != null
                     && homeData.getSlides().getSlides() != null
                     && !homeData.getSlides().getSlides().isEmpty()) {
                 list.add(mappingBanner(homeData.getSlides().getSlides()));
+            }
+
+            if (homeData.getTicker() != null
+                    && homeData.getTicker().getTickers() != null
+                    && !homeData.getTicker().getTickers().isEmpty()) {
+                list.add(mappingTicker(homeData.getTicker().getTickers()));
             }
 
             if (homeData.getDynamicHomeIcon() != null
@@ -100,6 +100,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE)) {
+                                channel.setPromoName(String.format("/ - p%s - lego banner 3 image - %s", String.valueOf(position), channel.getHeader().getName()));
+                                channel.setHomeAttribution(String.format("%s - legoBanner3Image - $1 - $2", String.valueOf(position)));
                                 legoAndCuratedAndSprintSaleBannerList.addAll(
                                         channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
                                 );

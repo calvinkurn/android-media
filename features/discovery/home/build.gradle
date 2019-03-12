@@ -71,6 +71,7 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.features.productCard)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -112,6 +113,9 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.debugToolsDependencies.stetho
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
 

@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerVie
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DummyViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelHeroViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelSprintViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
@@ -23,6 +24,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SprintSaleCarouselViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SixGridChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.ThreeGridChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsDynamicChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsViewHolder;
@@ -38,6 +40,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewMo
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.DummyModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
@@ -118,6 +121,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         return RetryViewHolder.LAYOUT;
     }
 
+    public int type(DummyModel dummyModel) {
+        return DummyViewHolder.Companion.getLAYOUT();
+    }
+
     @Override
     public int type(TopAdsViewModel topAdsViewModel) {
         return TopAdsViewHolder.LAYOUT;
@@ -134,6 +141,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             return DynamicChannelHeroViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_6_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SixGridChannelViewHolder.LAYOUT;
+        } else if (DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return ThreeGridChannelViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SprintSaleCarouselViewHolder.LAYOUT;
         } else {
@@ -174,10 +183,15 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new SprintSaleCarouselViewHolder(view, listener, countDownListener);
         else if (type == SixGridChannelViewHolder.LAYOUT)
             viewHolder = new SixGridChannelViewHolder(view, listener, countDownListener);
+        else if (type == ThreeGridChannelViewHolder.LAYOUT)
+            viewHolder = new ThreeGridChannelViewHolder(view, listener, countDownListener);
         else if (type == EmptyBlankViewHolder.LAYOUT)
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)
             viewHolder = new InspirationHeaderViewHolder(view);
+        else if (type == DummyViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new DummyViewHolder(view,listener);
+        }
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

@@ -46,8 +46,8 @@
 
         <ImageView
             android:id="@+id/pinned"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
             android:textColor="@color/black_26"

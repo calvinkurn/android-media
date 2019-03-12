@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_swipe_refresh_layout"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:paddingTop="@dimen/dp_24">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/root"
@@ -14,6 +16,8 @@
         android:background="@color/grey_default_background">
 
         <android.support.design.widget.AppBarLayout
+            app:elevation="@dimen/dp_0"
+            android:elevation="@dimen/dp_0"
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,56 +29,37 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <FrameLayout
-                    android:id="@+id/home_content_container"
+                <android.support.v7.widget.RecyclerView
+                    android:fitsSystemWindows="true"
+                    android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="?actionBarSize">
+                    android:descendantFocusability="beforeDescendants"
+                    android:tag="home_list"/>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:descendantFocusability="beforeDescendants"
-                        android:tag="home_list"/>
-
-                </FrameLayout>
-
-                <com.tokopedia.searchbar.MainToolbar
+                <com.tokopedia.searchbar.HomeMainToolbar
                     android:id="@+id/toolbar"
+                    android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:layout_height="wrap_content"
                     android:gravity="top"
                     app:contentInsetStart="0dp"
                     app:contentInsetLeft="0dp"
                     app:layout_collapseMode="pin"
-                    app:layout_anchor="@id/home_content_container"
+                    app:layout_anchor="@id/list"
                     app:screenName="/"/>
 
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:background="@color/white"
             android:orientation="vertical">
-
-            <com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout
-                android:id="@+id/tab_layout_home_feeds"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tab_home_feed_max_height"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
-                app:tabPaddingStart="0dp"
-                app:tabPaddingEnd="0dp"
-                app:tabMode="scrollable"
-                app:tabBackground="@android:color/transparent"
-                android:background="@color/white"
-                android:visibility="gone"
-                app:tabIndicatorHeight="0dp"/>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager_home_feeds"
@@ -82,7 +67,22 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"/>
 
-        </LinearLayout>
+            <com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout
+                android:id="@+id/tab_layout_home_feeds"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tab_home_feed_max_height"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
+                app:tabPaddingStart="0dp"
+                app:tabPaddingEnd="0dp"
+                app:tabMode="scrollable"
+                app:tabPaddingBottom="@dimen/dp_8"
+                android:background="@drawable/searchbar_bg_shadow_bottom"
+                android:visibility="gone"
+                app:tabIndicatorHeight="0dp"
+                />
+
+        </FrameLayout>
 
         <com.tokopedia.home.beranda.presentation.view.SectionContainer
             android:id="@+id/tab_container"

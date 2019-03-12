@@ -38,6 +38,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     public static final String ARG_TAB_INDEX = "ARG_TAB_INDEX";
     public static final String ARG_RECOM_ID = "ARG_RECOM_ID";
     public static final String ARG_TAB_NAME = "ARG_TAB_NAME";
+    public static final String ARG_TAB_HEIGHT = "ARG_TAB_HEIGHT";
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
     private static final int DEFAULT_SPAN_COUNT = 2;
@@ -105,8 +106,13 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     private void addRecyclerViewItemDecoration() {
         getRecyclerView(getView()).addItemDecoration(
-                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8))
+                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8),
+                        calculateTabHeight())
         );
+    }
+
+    private int calculateTabHeight() {
+        return ((getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height)));
     }
 
     @Override

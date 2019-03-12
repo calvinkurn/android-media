@@ -1,7 +1,6 @@
 package com.tokopedia.common_digital.common.di
 
 import android.content.Context
-
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.AbstractionRouter
@@ -28,9 +27,6 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.user.session.UserSession
-
-import java.util.concurrent.TimeUnit
-
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -38,6 +34,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Rizky on 13/08/18.
@@ -63,8 +60,8 @@ class DigitalCommonModule {
     @Provides
     @DigitalCommonScope
      fun provideDigitalInterceptor(@ApplicationContext context: Context,
-                                           networkRouter: AbstractionRouter, userSession: com.tokopedia.abstraction.common.data.model.session.UserSession): DigitalInterceptor {
-        return DigitalInterceptor(context, networkRouter, userSession)
+                                           networkRouter: AbstractionRouter): DigitalInterceptor {
+        return DigitalInterceptor(context, networkRouter)
     }
 
     @Provides

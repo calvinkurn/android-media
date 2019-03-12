@@ -73,7 +73,7 @@ public class GroupChatAnalytics {
     private static final String EVENT_NAME_PROMO_VIEW = "promoView";
     private static final String EVENT_NAME_CLICK_BACK = "clickBack";
     private static final String EVENT_NAME_INTERNAL_PROMOTION = "InternalPromotion";
-
+    private static final String EVENT_NAME_PRODUCT_CLICK = "productClick";
 
     public static final String COMPONENT_FLASH_SALE = "flashsale";
     public static final String COMPONENT_BANNER = "banner"; //Sponsor Banner
@@ -146,6 +146,16 @@ public class GroupChatAnalytics {
         );
     }
 
+    //#8
+    public void eventClickVoteComponent(@NotNull ChannelInfoViewModel channelInfoViewModel, String voteName) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                "click on component - vote",
+                String.format("%s - %s", channelInfoViewModel.getChannelId(),voteName)
+
+        );
+    }
+
     //#9
     public void eventViewBanner(ChannelInfoViewModel viewModel,
                                 String adsId, String adsName, String adsImageUrl) {
@@ -177,11 +187,11 @@ public class GroupChatAnalytics {
     }
 
     //#9
-    public void eventClickVoteComponent(String componentType, String componentName) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+    public void eventViewVote(@NotNull ChannelInfoViewModel channelInfoViewModel, String voteName) {
+        analyticTracker.sendEventTracking(EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
-                EVENT_ACTION_CLICK_COMPONENT + componentType,
-                componentType + " " + componentName
+                "view on component - vote",
+                String.format("%s - %s", channelInfoViewModel.getChannelId(),voteName)
         );
     }
 
@@ -251,10 +261,10 @@ public class GroupChatAnalytics {
     //#10
     public void eventClickBanner(ChannelInfoViewModel viewModel,
                                  String adsId, String adsName, String adsImageUrl) {
-        analyticTracker.sendEventTracking(EVENT_NAME_PROMO_VIEW,
+        analyticTracker.sendEventTracking(EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
-                String.format("%s - %s", viewModel.getChannelId(), adsId
+                String.format("%s - %s", viewModel.getChannelId(), adsName
                 )
         );
 
@@ -269,10 +279,10 @@ public class GroupChatAnalytics {
         ));
 
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
-                EVENT_NAME, EVENT_NAME_PROMO_VIEW,
+                EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
-                EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsId),
+                EVENT_LABEL, String.format("%s - %s", viewModel.getChannelId(), adsName),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle()
@@ -499,7 +509,7 @@ public class GroupChatAnalytics {
                 EVENT_NAME, EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view on sticky product",
-                EVENT_LABEL, viewModel.getChannelId() + " - " + item.getComponentId(),
+                EVENT_LABEL, viewModel.getChannelId(),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
@@ -520,10 +530,10 @@ public class GroupChatAnalytics {
         ));
 
         analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
-                EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_NAME, EVENT_NAME_PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on sticky product",
-                EVENT_LABEL, viewModel.getChannelId() + " - " + item.getComponentId(),
+                EVENT_LABEL, viewModel.getChannelId(),
                 ECOMMERCE, getEEDataLayer(list, EE_PROMO_CLICK),
                 ATTRIBUTION, generateTrackerAttribution(GroupChatAnalytics
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
@@ -563,7 +573,7 @@ public class GroupChatAnalytics {
             list.add(new EEPromotion(button.getButtonId(),
                     EEPromotion.NAME_GROUPCHAT + "-dynamicbuttons",
                     GroupChatAnalytics.DEFAULT_EE_POSITION,
-                    button.getLinkUrl(),
+                    button.getContentLinkUrl(),
                     button.getImageUrl(),
                     generateTrackerAttribution(GroupChatAnalytics
                             .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
@@ -591,7 +601,7 @@ public class GroupChatAnalytics {
             list.add(new EEPromotion(button.getButtonId(),
                     EEPromotion.NAME_GROUPCHAT + "-dynamicbuttons",
                     GroupChatAnalytics.DEFAULT_EE_POSITION,
-                    button.getLinkUrl(),
+                    button.getContentLinkUrl(),
                     button.getImageUrl(),
                     generateTrackerAttribution(GroupChatAnalytics
                             .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
@@ -794,6 +804,15 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
                 channelLabel
+        );
+    }
+
+    @Deprecated
+    public void eventClickVoteComponent(String componentType, String componentName) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_COMPONENT + "vote",
+                componentType + " " + componentName
         );
     }
 

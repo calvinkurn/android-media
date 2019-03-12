@@ -52,8 +52,6 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
             RecipientAddressViewHolder addressHolder = (RecipientAddressViewHolder) holder;
             RecipientAddressModel address = mAddressModelList.get(addressPosition);
             addressHolder.bind(address, mActionListener, position);
-            if (position == getItemCount() - 1) addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.BUTTON_ON);
-            if (position == getExtraCount()) addressHolder.setState(RecipientAddressViewHolder.VIEW_TYPE.HEADER_ON);
         }
     }
 
@@ -71,11 +69,13 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
     public void setAddressList(List<RecipientAddressModel> addressModelList) {
         mAddressModelList.clear();
         mAddressModelList.addAll(addressModelList);
+        updateHeaderAndFooterPosition();
         notifyDataSetChanged();
     }
 
     public void updateAddressList(List<RecipientAddressModel> addressModelList) {
         mAddressModelList.addAll(addressModelList);
+        updateHeaderAndFooterPosition();
         notifyDataSetChanged();
     }
 
@@ -110,6 +110,13 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private int getExtraCount() {
         return mSampaiModel != null ? 1 : 0;
+    }
+
+    private void updateHeaderAndFooterPosition() {
+        for (int i = 0; i < mAddressModelList.size(); i++) {
+            mAddressModelList.get(i).setHeader(i == 0);
+            mAddressModelList.get(i).setFooter(i == mAddressModelList.size() - 1);
+        }
     }
 
     public interface ActionListener {

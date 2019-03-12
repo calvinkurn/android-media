@@ -4,7 +4,6 @@ import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
-import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartContract;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
@@ -12,6 +11,7 @@ import com.tokopedia.kotlin.util.NullCheckerKt;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import kotlin.Unit;
 import rx.Subscriber;
 
 /**
@@ -50,7 +50,7 @@ public class CancelAutoApplySubscriber extends Subscriber<String> {
                     if (!BuildConfig.DEBUG) {
                         Crashlytics.logException(exception);
                     }
-                    throw exception;
+                    return Unit.INSTANCE;
                 });
 
                 resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
