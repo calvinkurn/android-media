@@ -33,7 +33,7 @@ public interface ProductDetailPresenter {
 
     void processToProductInfo(@NonNull Context context, @NonNull Bundle bundle);
 
-    void processToBrowseProduct(@NonNull Context context, @NonNull String categoryId);
+    void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle);
 
     void processToCreateShop(@NonNull Context context);
 

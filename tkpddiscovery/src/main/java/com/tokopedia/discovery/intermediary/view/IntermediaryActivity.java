@@ -81,15 +81,17 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Uri uri = getIntent().getData();
-        if (uri!= null) {
+        if (uri != null) {
             List<String> paths = UriUtil.destructureUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, uri);
             if (!paths.isEmpty()) {
                 departmentId = paths.get(0);
             }
         }
         Bundle extras = getIntent().getExtras();
-        if (departmentId.isEmpty() && extras!= null ) {
-            departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
+        if (extras != null) {
+            if (departmentId.isEmpty()) {
+                departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
+            }
             trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
             fromNavigation = extras.getBoolean(BrowseProductRouter.FROM_NAVIGATION, false);
             if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME) != null
