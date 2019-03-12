@@ -102,17 +102,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
 
     private void getData() {
-        String saldoQuery = "";
-        /*remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT,
-                false)) {
-            saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                    .new_query_saldo_balance);
-        } else {
-            saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                    .old_query_saldo_balance);
-        }*/
-        saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+        String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
                 .new_query_saldo_balance);
         presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
                 GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit), saldoQuery);

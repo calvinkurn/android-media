@@ -25,9 +25,6 @@ public class AccountModel {
     @SerializedName("isAuthenticated")
     @Expose
     private Integer isAuthenticated;
-    /*@SerializedName("affiliateCheck")
-    @Expose
-    private AffiliateModel affiliateModel = new AffiliateModel();*/
     @SerializedName("wallet")
     @Expose
     private WalletModel wallet = new WalletModel();
