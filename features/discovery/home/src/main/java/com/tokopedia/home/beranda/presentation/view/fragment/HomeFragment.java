@@ -1195,13 +1195,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     };
 
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        if (homeMainToolbar != null) {
-            homeMainToolbar.setNotificationNumber(number);
-        }
-    }
-
     public void startShopInfo(String shopId) {
         if (getActivity() != null
                 && getActivity().getApplication() != null
