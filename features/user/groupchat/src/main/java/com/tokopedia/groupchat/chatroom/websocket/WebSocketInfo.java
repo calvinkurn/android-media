@@ -306,7 +306,8 @@ public class WebSocketInfo {
                     VoteInfoViewModel.getStringVoteInfo(activePollPojo.getPollTypeId()),
                     activePollPojo.getWinnerUrl().trim(),
                     activePollPojo.getStartTime(),
-                    activePollPojo.getEndTime()
+                    activePollPojo.getEndTime(),
+                    activePollPojo.getVoteUrl()
             );
         } else {
             return null;
