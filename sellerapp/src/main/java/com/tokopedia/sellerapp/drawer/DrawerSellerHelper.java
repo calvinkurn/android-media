@@ -68,6 +68,7 @@ public class DrawerSellerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerSellerHeaderDataBinder.DrawerHeaderListener {
 
+    private static final String DIGITAL_PATH_MITRA = "mitra";
     private TextView shopName;
     private TextView shopLabel;
     private ImageView shopIcon;
@@ -112,8 +113,7 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getProductMenu());
 
-        data.add(getPaymentAndTopupMenu());
-        data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu(false));
+        data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu());
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
@@ -212,23 +212,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
         return inboxMenu;
-    }
-
-    private DrawerItem getPaymentAndTopupMenu() {
-        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.digital_product),
-                R.drawable.payment_and_topup,
-                TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND,
-                drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, false),
-                0);
-
-        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.payment_and_topup),
-                TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP,
-                true));
-        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.digital_transaction_list),
-                TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL,
-                true));
-
-        return sellerMenu;
     }
 
     private DrawerItem getProductMenu() {
@@ -373,21 +356,6 @@ public class DrawerSellerHelper extends DrawerHelper
                     if (context.getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
                     }
-                    break;
-                case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    context.startActivity(((DigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalCategoryList());
-                    UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
-                    break;
-                case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    if (remoteConfig.getBoolean(RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
-                        intent = SellerOrderListActivity.getInstance(context);
-                    else
-                        intent = ((DigitalModuleRouter) context.getApplication())
-                                .getWebviewActivityWithIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                        + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
-                    context.startActivity(intent);
-                    UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
                     UnifyTracking.eventDrawerClick(context, AppEventTracking.EventLabel.DRAFT_PRODUCT);
