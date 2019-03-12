@@ -20,11 +20,10 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -82,6 +81,8 @@ public class SearchActivity extends DiscoveryActivity
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
     private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
+    private static final String EXTRA_OFFICIAL = "EXTRA_OFFICIAL";
+    private static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
@@ -117,16 +118,31 @@ public class SearchActivity extends DiscoveryActivity
         return searchComponent;
     }
 
-    @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        String departmentId = bundle.getString(BrowseApi.SC);
+        String departmentId = bundle.getString(SearchApiConst.SC);
+        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
         Intent intent = new Intent(context, SearchActivity.class);
 
         if (!TextUtils.isEmpty(departmentId)) {
             intent.putExtra(DEPARTMENT_ID, departmentId);
         }
 
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
+        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
+
+        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(SearchApiConst.Q, bundle.getString(SearchApiConst.KEYWORD, "")));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+    public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
+        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
+        Intent intent = new Intent(context, SearchActivity.class);
+
+        intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
+        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
+
         intent.putExtras(bundle);
         return intent;
     }
@@ -172,18 +188,18 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void handleIntent(Intent intent) {
-        setPresenter(searchPresenter);
-        searchPresenter.attachView(this);
-        searchPresenter.setDiscoveryView(this);
+        initPresenter();
         initResources();
+
         ProductViewModel productViewModel =
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
+        boolean isOfficial = getIntent().getBooleanExtra(EXTRA_OFFICIAL, false);
 
-        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
-            moveTaskToBack(true);
-        }
+        handleIntentActivityPaused();
+
+        handleIntentAutoComplete(isOfficial);
 
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
@@ -192,12 +208,12 @@ public class SearchActivity extends DiscoveryActivity
             bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         } else if (!TextUtils.isEmpty(searchQuery)) {
             if (!TextUtils.isEmpty(categoryId)) {
-                onSuggestionProductClick(searchQuery, categoryId);
+                onSuggestionProductClick(searchQuery, categoryId, isOfficial);
             } else {
-                onSuggestionProductClick(searchQuery);
+                onSuggestionProductClick(searchQuery, isOfficial);
             }
         } else {
-            searchView.showSearch(true, false);
+            searchView.showSearch(true, false, isOfficial);
         }
 
         if (intent != null &&
@@ -211,6 +227,18 @@ public class SearchActivity extends DiscoveryActivity
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
+    }
+
+    private void handleIntentActivityPaused() {
+        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
+    }
+
+    private void handleIntentAutoComplete(boolean isOfficial) {
+        if(getIntent().getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false)) {
+            searchView.showSearch(true, false, isOfficial);
+        }
     }
 
     private void handleImageUri(Intent intent) {
@@ -301,6 +329,12 @@ public class SearchActivity extends DiscoveryActivity
                         .appComponent(getApplicationComponent())
                         .build();
         searchComponent.inject(this);
+    }
+
+    private void initPresenter() {
+        setPresenter(searchPresenter);
+        searchPresenter.attachView(this);
+        searchPresenter.setDiscoveryView(this);
     }
 
     private void initResources() {

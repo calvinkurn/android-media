@@ -74,7 +74,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     public CouponDetailPresenter mPresenter;
     private View llBottomBtn;
 
-
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CouponDetailFragment();
         fragment.setArguments(extras);
@@ -127,7 +126,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     @Override
     public void onResume() {
         super.onResume();
-        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -167,7 +165,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Override
     protected String getScreenName() {
-        return AnalyticsTrackerUtil.ScreenKeys.COUPON_DETAIL_SCREEN_NAME;
+        return null;
     }
 
     @Override
@@ -262,12 +260,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
-
-        AnalyticsTrackerUtil.sendEvent(getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
-                title);
     }
 
     @Override
@@ -443,7 +435,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     }
 
     private void setCouponToUi(CouponValueEntity data) {
-        if (getView() == null || data == null || data.isEmpty()) {
+        if (getView() == null || data.isEmpty()) {
             return;
         }
 

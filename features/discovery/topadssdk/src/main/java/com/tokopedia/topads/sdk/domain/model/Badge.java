@@ -29,6 +29,12 @@ public class Badge implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
+    public Badge(String title, String imageUrl, Boolean show) {
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.show = show;
+    }
+
     public Badge(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_TITLE)) {
             setTitle(object.getString(KEY_TITLE));
