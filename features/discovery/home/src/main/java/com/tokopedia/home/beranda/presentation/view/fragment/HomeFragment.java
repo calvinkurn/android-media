@@ -116,7 +116,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
 
-    public static final long ONE_SECOND = 1000l;
     @Inject
     HomePresenter presenter;
 

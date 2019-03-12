@@ -200,8 +200,9 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private Visitable mappingDynamicChannel(DynamicHomeChannel.Channels channel) {
         DynamicChannelViewModel viewModel = new DynamicChannelViewModel();
         viewModel.setChannel(channel);
+
         viewModel.setServerTimeOffset(
-                ServerTimeOffsetUtil.getServerTimeOffset(
+                ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
                         channel.getHeader().getServerTimeUnix()
                 )
         );
