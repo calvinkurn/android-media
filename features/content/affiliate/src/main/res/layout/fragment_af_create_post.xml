@@ -71,6 +71,7 @@
                 android:maxLength="2000"
                 android:textColor="@color/black_54"
                 android:textCursorDrawable="@color/black"
+                android:scrollbars="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/thumbnail"
                 app:layout_constraintTop_toTopOf="@+id/thumbnail"
