@@ -83,6 +83,7 @@
     <string name="af_leave_title">Keluar</string>
     <string name="af_warning_empty_product">Tambah barang yang mau kamu post dulu ya.</string>
     <string name="af_warning_empty_photo">Tambah foto dulu, dong.</string>
+    <string name="af_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>
