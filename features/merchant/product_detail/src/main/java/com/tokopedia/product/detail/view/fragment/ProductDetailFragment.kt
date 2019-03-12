@@ -36,6 +36,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
+import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -529,6 +530,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (!::mostHelpfulReviewView.isInitialized) {
             mostHelpfulReviewView = PartialMostHelpfulReviewView.build(base_view_most_helpful_review)
             mostHelpfulReviewView.onReviewClicked = this::onReviewClicked
+            mostHelpfulReviewView.onImageReviewClicked = this::onImagehelpfulReviewClick
         }
 
         if (!::latestTalkView.isInitialized)
@@ -542,12 +544,17 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val productId = productInfo?.basic?.id ?: return
         if (isSeeAll){
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
-            context?.let {
-                startActivity(RouteManager.getIntentInternal(it,
-                    UriUtil.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString()))) }
         } else {
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
         }
+        context?.let {
+            startActivity(RouteManager.getIntentInternal(it,
+                    UriUtil.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString()))) }
+    }
+
+    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?){
+        productDetailTracking.eventClickReviewOnMostHelpfulReview(productInfo?.basic?.id, reviewId)
+        context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(images), pos) }
     }
 
     private val onViewClickListener = View.OnClickListener {

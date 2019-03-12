@@ -22,7 +22,7 @@ class PartialImageReviewView private constructor(private val view: View,
     }
 
     fun renderData(imageReviews: List<ImageReviewItem>){
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), onImageClick)
+        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), true, onImageClick)
         with(view) {
             if (imageReviews.isNotEmpty())
                 visible()

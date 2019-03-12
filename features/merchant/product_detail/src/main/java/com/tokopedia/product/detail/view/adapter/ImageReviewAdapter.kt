@@ -12,7 +12,9 @@ import com.tokopedia.product.detail.R
 import kotlinx.android.synthetic.main.item_image_review.view.*
 
 class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
-                         private val onImageClickListener: ((ImageReviewItem, Boolean) -> Unit)? = null):
+                         private val showSeeAll: Boolean = true,
+                         private val onImageClickListener: ((ImageReviewItem, Boolean) -> Unit)? = null,
+                         private val onImageHelpfulReviewClick: ((List<String>, Int, String?) -> Unit)? = null):
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -26,7 +28,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == imageReviews.size - 1) VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER else VIEW_TYPE_IMAGE
+        return if (showSeeAll && position == imageReviews.size - 1) VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER else VIEW_TYPE_IMAGE
     }
 
     fun replaceImages(list: List<ImageReviewItem>){
@@ -47,7 +49,11 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                     overlay_see_all.gone()
                     txt_see_all.gone()
                 }
-                setOnClickListener { onImageClickListener?.invoke(item, type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER)  }
+                setOnClickListener {
+                    onImageClickListener?.invoke(item, type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER)
+                    onImageHelpfulReviewClick?.invoke(imageReviews.mapNotNull { it.imageUrlLarge }, adapterPosition,
+                            item.reviewId)
+                }
             }
         }
     }

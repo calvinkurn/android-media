@@ -48,6 +48,7 @@ object ProductTrackingConstant {
     object ImageReview {
         const val ACTION_SEE_ITEM = "click - review gallery on foto dari pembeli"
         const val ACTION_SEE_ALL = "click - lihat semua review gallery"
+        const val ACTION_MOST_HELPFULL = "click - review gallery on most helpful review"
     }
 
     object MerchantVoucher {

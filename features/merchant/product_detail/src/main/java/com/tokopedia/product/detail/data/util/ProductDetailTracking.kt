@@ -187,6 +187,13 @@ class ProductDetailTracking(private val analyticTracker: AnalyticTracker?){
                 "product_id: $productId - review_id : $reviewId")
     }
 
+    fun eventClickReviewOnMostHelpfulReview(productId: Int?, reviewId: String?) {
+        analyticTracker?.sendEventTracking(ProductTrackingConstant.PDP.EVENT,
+                ProductTrackingConstant.Category.PDP.toLowerCase(),
+                ProductTrackingConstant.ImageReview.ACTION_MOST_HELPFULL,
+                "product_id: $productId - review_id : $reviewId")
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"

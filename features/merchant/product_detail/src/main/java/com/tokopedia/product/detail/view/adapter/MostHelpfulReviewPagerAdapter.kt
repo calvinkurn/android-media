@@ -17,7 +17,9 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.review.Review
 import kotlinx.android.synthetic.main.item_product_most_helpful_review.view.*
 
-class MostHelpfulReviewPagerAdapter(private val reviews: List<Review>, var onReviewClicked: (() -> Unit)?): PagerAdapter() {
+class MostHelpfulReviewPagerAdapter(private val reviews: List<Review>, var onReviewClicked: (() -> Unit)?,
+                                    private val onImageReviewClick: ((List<String>, Int, String?) -> Unit)? = null)
+    : PagerAdapter() {
 
     companion object {
         private const val MAX_IMAGE = 3
@@ -40,23 +42,27 @@ class MostHelpfulReviewPagerAdapter(private val reviews: List<Review>, var onRev
             ImageHandler.loadImageRounded2(container.context, image_reviewer, review.user.image)
             txt_reviewer_name.text = MethodChecker.fromHtml(review.user.fullName)
             text_review_date.text = review.reviewCreateTime
-            text_review.text = MethodChecker.fromHtml(review.message)
+
             iv_rating_review.setImageDrawable(ContextCompat.getDrawable(container.context,
                     getRatingDrawable(review.productRating)))
 
             setOnClickListener { onReviewClicked?.invoke() }
-            if (review.imageAttachments.isEmpty())
+            if (review.imageAttachments.isEmpty()) {
+                text_review.maxLines = 4
                 rv_review_attachment.gone()
-            else {
+            } else {
                 rv_review_attachment.layoutManager = GridLayoutManager(container.context,
                         if (review.imageAttachments.size > MAX_IMAGE) MAX_IMAGE else review.imageAttachments.size)
                 rv_review_attachment.adapter = ImageReviewAdapter(
                         review.imageAttachments
                                 .map { ImageReviewItem(review.reviewId.toString(), review.reviewCreateTime,
                                         review.user.fullName, it.imageThumbnailUrl, it.imageUrl, review.productRating)
-                                }.toMutableList())
+                                }.toMutableList(), false, null, onImageReviewClick)
                 rv_review_attachment.visible()
+                text_review.maxLines = 2
             }
+
+            text_review.text = MethodChecker.fromHtml(review.message)
         }
         container.addView(view)
         return view

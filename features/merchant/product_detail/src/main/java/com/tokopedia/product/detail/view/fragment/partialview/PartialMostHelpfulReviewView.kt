@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.partial_most_helpful_review_view.view.*
 
 class PartialMostHelpfulReviewView private constructor(private val view: View) {
     var onReviewClicked: (()-> Unit)? = null
+    var onImageReviewClicked: ((List<String>, Int, String?) -> Unit)? = null
     companion object {
         fun build(_view: View) = PartialMostHelpfulReviewView(_view)
     }
@@ -20,7 +21,7 @@ class PartialMostHelpfulReviewView private constructor(private val view: View) {
             if (reviews.isEmpty()){
                 gone()
             } else {
-                review_viewpager.adapter = MostHelpfulReviewPagerAdapter(reviews, onReviewClicked)
+                review_viewpager.adapter = MostHelpfulReviewPagerAdapter(reviews, onReviewClicked, onImageReviewClicked)
                 review_page_indicator.setViewPager(review_viewpager)
                 review_page_indicator.notifyDataSetChanged()
                 base_view_most_helpful_review.visible()
