@@ -39,29 +39,31 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
     fun getProductInfo(productParams: ProductParams, resources: Resources) {
 
         launchCatchError(block = {
+            val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
+                PARAM_SHOP_DOMAIN to productParams.shopDomain,
+                PARAM_PRODUCT_KEY to productParams.productName)
+            val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
+            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
             val productInfoData = withContext(Dispatchers.IO) {
-                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
-                    PARAM_SHOP_DOMAIN to productParams.shopDomain,
-                    PARAM_PRODUCT_KEY to productParams.productName)
-                val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO], ProductInfo.Response::class.java, paramsInfo)
-
-                val paramsVariant = mapOf(PARAM_PRODUCT_ID to productParams.productId)
-                val graphqlVariantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT], ProductDetailVariantResponse::class.java, paramsVariant)
-
-                val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-                graphqlRepository.getReseponse(listOf(graphqlInfoRequest, graphqlVariantRequest), cacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             productInfoData.getSuccessData<ProductInfo.Response>().data?.let {
                 val productInfo = ProductInfoAndVariant()
                 productInfo.productInfo = it
-                productInfoData.getSuccessData<ProductDetailVariantResponse>().let { productVariant ->
-                    productInfo.productVariant = productVariant.data
+                if (it.variant.isVariant) {
+                    val productVariantData = withContext(Dispatchers.IO) {
+                        val paramsVariant = mapOf(PARAM_PRODUCT_ID to productParams.productId)
+                        val graphqlVariantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT], ProductDetailVariantResponse::class.java, paramsVariant)
+                        graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy)
+                    }
+                    productVariantData.getSuccessData<ProductDetailVariantResponse>().let { productVariant ->
+                        productInfo.productVariant = productVariant.data
+                    }
                 }
                 productInfoResp.value = Success(productInfo)
             }
         }) {
             productInfoResp.value = Fail(it)
-
         }
     }
 

@@ -50,12 +50,7 @@ object ModelMapper {
                 name = if (selectedVariant == null) {
                     originalProductInfo.basic.name
                 } else {
-                    val optionStringList = selectedVariant.getOptionStringList(variantRef)
-                    if (optionStringList.isEmpty()) {
-                        selectedVariant.name
-                    } else {
-                        selectedVariant.name + optionStringList.joinToString(separator = ", ", prefix = " - ")
-                    }
+                    selectedVariant.name
                 },
                 minOrder = selectedVariant?.stock?.minimumOrder ?: 0,
                 maxOrder = selectedVariant?.stock?.maximumOrder ?: 0,
@@ -68,11 +63,13 @@ object ModelMapper {
                 isEligibleCod = selectedVariant?.isCod ?: false
             ),
             pictures = if (selectedVariant?.hasPicture == true) {
-                mutableListOf(
-                    Picture(urlOriginal =
-                    selectedVariant.picture?.original ?: "",
-                        urlThumbnail = selectedVariant.picture?.thumbnail ?: "",
-                        url300 = selectedVariant.picture?.thumbnail ?: ""))
+                val list = mutableListOf<Picture>()
+                val variantPicture = Picture(urlOriginal =
+                selectedVariant.picture?.original ?: "",
+                    urlThumbnail = selectedVariant.picture?.thumbnail ?: "",
+                    url300 = selectedVariant.picture?.thumbnail ?: "")
+                list.add(variantPicture)
+                list
             } else {
                 originalProductInfo.pictures
             },

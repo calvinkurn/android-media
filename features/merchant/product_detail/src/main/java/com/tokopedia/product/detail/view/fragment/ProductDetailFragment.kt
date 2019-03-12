@@ -413,7 +413,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     userInputQuantity,
                     userInputVariant,
                     action,
-                    null), REQUEST_CODE_NORMAL_CHECKOUT);
+                    null), REQUEST_CODE_NORMAL_CHECKOUT)
             }
         }
     }

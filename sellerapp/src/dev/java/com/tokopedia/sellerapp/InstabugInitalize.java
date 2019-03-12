@@ -40,7 +40,9 @@ public class InstabugInitalize {
         //setting user attributes
         Instabug.setUserAttribute("USER_TYPE", "instabug user");
 
-        Instabug.setAutoScreenRecordingEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Instabug.setAutoScreenRecordingEnabled(true);
+        }
     }
 
     public static void dispatchTouchEvent(Activity context, MotionEvent ev) {

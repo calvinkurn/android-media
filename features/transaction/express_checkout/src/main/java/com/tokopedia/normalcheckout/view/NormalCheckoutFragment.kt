@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
@@ -99,6 +100,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
         const val RESULT_PRODUCT_DATA = "product_data"
         const val RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message"
+
+        const val REQUEST_CODE_LOGIN = 561
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
@@ -347,6 +350,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         super.onViewCreated(view, savedInstanceState)
         button_buy_partial.setOnClickListener {
             if (hasError()) {
+                return@setOnClickListener
+            }
+            if (!viewModel.isUserSessionActive()) {
+                //TODO LOGIN
+                context?.run {
+                    startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+                }
                 return@setOnClickListener
             }
             if (action == ATC_ONLY) {

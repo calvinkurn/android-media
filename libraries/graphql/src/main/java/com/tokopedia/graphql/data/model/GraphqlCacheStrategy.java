@@ -10,7 +10,7 @@ public class GraphqlCacheStrategy {
     private CacheType type;
 
     // optional
-    private long expiryTime = GraphqlConstant.ExpiryTimes.HOUR.val();
+    private long expiryTime;
 
     // optional
     private boolean isSessionIncluded;
