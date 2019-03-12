@@ -45,6 +45,12 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
         return new Banner(reactContext);
     }
 
+
+    @ReactProp(name = "setBannerIndicator") // 0 White, 1 Green
+    public void setBannerIndicator(Banner banner, int indicatorType) {
+        banner.setBannerIndicator(indicatorType);
+    }
+
     @ReactProp(name = "bannerData")
     public void setBannerData(Banner banner, @Nullable ReadableArray readableArray) {
         mapBannerData(readableArray);

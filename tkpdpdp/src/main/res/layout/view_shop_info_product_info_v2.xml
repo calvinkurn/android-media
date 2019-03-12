@@ -73,7 +73,7 @@
                         android:id="@id/iv_official"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
-                        app:srcCompat="@drawable/ic_official_store_pdp"
+                        android:src="@drawable/ic_badge_shop_official"
                         android:visibility="gone"
                         tools:visibility="visible"
                         tools:ignore="ContentDescription" />
