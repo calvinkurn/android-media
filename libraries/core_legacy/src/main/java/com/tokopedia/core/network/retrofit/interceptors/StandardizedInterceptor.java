@@ -81,6 +81,7 @@ public class StandardizedInterceptor extends TkpdBaseInterceptor {
     private Request.Builder getBearerHeaderBuilder(Request request, String oAuth) {
         return request.newBuilder()
                 .header("Authorization", oAuth)
+                .header("Accounts-Authorization", oAuth)
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))

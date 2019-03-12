@@ -82,6 +82,9 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
         mapHeader.put("Tkpd-UserId", userSession.getUserId());
         mapHeader.put("X-Device", "android");
         mapHeader.put("Tkpd-SessionId", userSession.getDeviceId());
+        mapHeader.put("Accounts-Authorization", String.format("%s %s", "Bearer",
+                userSession.getAccessToken()));
+
 
         return mapHeader;
     }
