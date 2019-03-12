@@ -40,7 +40,7 @@ class ChipView : BaseCustomView {
 
     fun setIconDrawable(@DrawableRes iconRes: Int) {
         icon.shouldShowWithAction(iconRes != NO_ICON) {
-            icon.loadDrawable(iconRes)
+            icon.loadImageDrawable(iconRes)
         }
     }
 

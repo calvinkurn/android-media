@@ -470,7 +470,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 goToMediaPreview()
             }
         } else {
-            thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            thumbnail.loadImageDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
             edit.hide()
             thumbnail.setOnClickListener { }
             carouselIcon.setOnClickListener { }
