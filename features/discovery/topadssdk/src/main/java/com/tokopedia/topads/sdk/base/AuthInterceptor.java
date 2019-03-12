@@ -23,8 +23,7 @@ public class AuthInterceptor extends TkpdAuthInterceptor {
 
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        Map<String, String> headerMap = super.getHeaderMap(path, strParam, method, authKey,
-                contentTypeHeader);
+        Map<String, String> headerMap = super.getHeaderMap(path, strParam, method, authKey, contentTypeHeader);
         String accessToken = userSession.getAccessToken();
         headerMap.put(PARAM_X_DATE, headerMap.get(PARAM_DATE));
         headerMap.put(PARAM_X_AUTHORIZATION, headerMap.get(PARAM_AUTHORIZATION));
