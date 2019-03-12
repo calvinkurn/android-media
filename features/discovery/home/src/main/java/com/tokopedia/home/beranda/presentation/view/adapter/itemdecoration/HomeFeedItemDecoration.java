@@ -26,7 +26,7 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
 
         int totalSpanCount = getTotalSpanCount(parent);
 
-        outRect.top = isTopProductItem(position, totalSpanCount) ? tabHeight : spacing / 2;
+        outRect.top = isTopProductItem(position, totalSpanCount) ? spacing : spacing / 2;
         outRect.left = isFirstInRow(position, totalSpanCount) ? spacing * 2 : spacing / 2;
         outRect.right = isLastInRow(position, totalSpanCount) ? spacing * 2 : spacing / 2;
         outRect.bottom = spacing / 2;

@@ -62,12 +62,10 @@
                 android:id="@+id/tab_layout_home_feeds"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tab_home_feed_max_height"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8"
                 app:tabPaddingStart="0dp"
                 app:tabPaddingEnd="0dp"
                 app:tabMode="scrollable"
-                app:tabPaddingBottom="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:visibility="gone"
                 app:tabIndicatorHeight="0dp"
                 />
@@ -82,8 +80,8 @@
                 <View
                     android:layout_gravity="top"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_4"
-                    android:background="@drawable/searchbar_bg_shadow_bottom"/>
+                    android:layout_height="@dimen/dp_10"
+                    android:background="@drawable/feed_bg_shadow_bottom"/>
             </FrameLayout>
 
         </LinearLayout>
