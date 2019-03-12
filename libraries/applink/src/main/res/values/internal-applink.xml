@@ -5,7 +5,6 @@
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
     <string name="host_marketplace" translatable="false">marketplace</string>
-    <string name="host_category" translatable="false">category</string>
 
     <!--
         If the link is Ended with {id}, must end with "/"

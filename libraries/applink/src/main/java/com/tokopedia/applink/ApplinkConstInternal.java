@@ -25,5 +25,5 @@ public class ApplinkConstInternal {
     public static final String EXPRESS_CHECKOUT = INTERNAL_SCHEME + "://" + HOST_MARKETPLACE + "checkoutvariant";
 
     // IntermediaryActivity
-    public static final String DISCOVERY_CATEGORY_DETAIL = INTERNAL_SCHEME+ "://"+HOST_MARKETPLACE+"/{DEPARTMENT_ID}";
+    public static final String DISCOVERY_CATEGORY_DETAIL = INTERNAL_SCHEME+ "://"+HOST_MARKETPLACE+"/category/{DEPARTMENT_ID}";
 }
