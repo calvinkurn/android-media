@@ -11,11 +11,11 @@ public class TradeInInfo {
 
     @SerializedName("is_valid_trade_in")
     @Expose
-    public boolean isValidTradeIn = true;
+    public boolean isValidTradeIn;
 
     @SerializedName("new_device_price")
     @Expose
-    public int newDevicePrice = 799;
+    public int newDevicePrice;
 
     @SerializedName("new_device_price_fmt")
     @Expose
@@ -23,7 +23,7 @@ public class TradeInInfo {
 
     @SerializedName("old_device_price")
     @Expose
-    public int oldDevicePrice = 100;
+    public int oldDevicePrice;
 
     @SerializedName("old_device_price_fmt")
     @Expose
