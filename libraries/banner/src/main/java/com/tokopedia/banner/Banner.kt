@@ -13,6 +13,7 @@ import com.tokopedia.design.banner.BannerView
 
 class Banner : BannerView {
 
+    @Indicator.Type
     var typeIndicator: Int? = 0
 
     companion object {
@@ -56,9 +57,8 @@ class Banner : BannerView {
         return BannerAdapter(promoImageUrls, onPromoClickListener)
     }
 
-    fun setBannerIndicator(indicatorType: Int) {
+    fun setBannerIndicator(@Indicator.Type indicatorType: Int) {
         typeIndicator = indicatorType
-
     }
 
     override fun getIndicator(): Int {
