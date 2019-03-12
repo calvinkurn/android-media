@@ -26,6 +26,7 @@ public class MainToolbar extends Toolbar {
 
     protected ImageView btnNotification;
     protected ImageView btnWishlist;
+    protected ImageView btnInbox;
     private BadgeView badgeViewInbox;
     private BadgeView badgeViewNotification;
 
