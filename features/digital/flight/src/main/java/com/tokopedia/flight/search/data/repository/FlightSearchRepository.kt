@@ -235,7 +235,7 @@ open class FlightSearchRepository @Inject constructor(
     fun getComboKey(onwardJourneyId: String, returnJourneyId: String) :  Observable<String> =
             flightSearchCombinedDataDbSource.getComboData(onwardJourneyId, returnJourneyId)
                     .map {
-                        if (it.size > 0) {
+                        if (it.isNotEmpty()) {
                             it[0].comboId
                         } else {
                             ""
