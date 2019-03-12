@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.helper;
 import android.text.TextUtils;
 
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
 
 /**
  * Created by henrypriyono on 09/02/18.
@@ -11,7 +11,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSect
 
 public class DynamicLinkHelper {
 
-    public static String getActionLink(LayoutSections item) {
+    public static String getActionLink(HomeIconItem item) {
         return getAvailableLink(item.getApplink(), item.getUrl());
     }
 

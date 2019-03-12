@@ -57,4 +57,8 @@ public interface HomeCategoryListener {
     void onPromoDragEnd();
 
     void setActivityStateListener(ActivityStateListener activityStateListener);
+
+    void onDynamicIconScrollStart();
+
+    void onDynamicIconScrollEnd();
 }

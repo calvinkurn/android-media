@@ -201,7 +201,7 @@ public class BannerView extends BaseCustomView {
                     if (onPromoDragListener != null) {
                         onPromoDragListener.onPromoDragStart();
                     }
-                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE && !isAutoScrollOnProgress()) {
                     if (onPromoDragListener != null) {
                         onPromoDragListener.onPromoDragEnd();
                     }
@@ -270,9 +270,7 @@ public class BannerView extends BaseCustomView {
     }
 
     public void startAutoScrollBanner() {
-        if (bannerHandler != null
-                && runnableScrollBanner != null
-                && !autoScrollOnProgress) {
+        if (bannerHandler != null && runnableScrollBanner != null && !isAutoScrollOnProgress()) {
             setAutoScrollOnProgress(true);
             bannerHandler.postDelayed(runnableScrollBanner, SLIDE_DELAY);
         }

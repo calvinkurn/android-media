@@ -3,17 +3,13 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewmodel;
 /**
  * @author by errysuprayogi on 11/28/17.
  */
-public class LayoutSections {
-    public static final int ICON_USE_CASE = 1;
-    public static final int ICON_DYNAMIC_CASE = 2;
+public class HomeIconItem {
     String title;
     String icon;
     String applink;
     String url;
-    int typeCase;
 
-    public LayoutSections(int typeCase, String title, String icon, String applink, String url) {
-        this.typeCase = typeCase;
+    public HomeIconItem(String title, String icon, String applink, String url) {
         this.title = title;
         this.icon = icon;
         this.applink = applink;
@@ -50,10 +46,6 @@ public class LayoutSections {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public int getTypeCase() {
-        return typeCase;
     }
 
 }
