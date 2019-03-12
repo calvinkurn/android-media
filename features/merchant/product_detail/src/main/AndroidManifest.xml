@@ -21,6 +21,7 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_product_detail"/>
+
             </intent-filter>
         </activity>
 

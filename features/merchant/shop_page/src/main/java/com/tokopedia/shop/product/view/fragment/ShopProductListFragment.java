@@ -32,7 +32,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriBuilder;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -555,7 +555,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     private Intent getProductIntent(String productId) {
         if (getContext() != null) {
             return RouteManager.getIntentInternal(getContext(),
-                    UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+                    UriUtil.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
         } else {
             return null;
         }

@@ -34,7 +34,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriBuilder;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -468,7 +468,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void goToPDP(String productId) {
         if (getContext() != null){
             Intent intent = RouteManager.getIntentInternal(getContext(),
-                    UriBuilder.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+                    UriUtil.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
             startActivity(intent);
         }
     }

@@ -39,7 +39,7 @@ public class RouteManager {
     }
 
     /**
-     * use getIntentInternal instead
+     * use getIntentInternal instead (only if the applink already defined in manifest)
      */
     @Deprecated
     public static void route(Context context, String applink) {
@@ -47,7 +47,7 @@ public class RouteManager {
     }
 
     /**
-     * use getIntentInternal instead
+     * use getIntentInternal instead (only if the applink already defined in manifest)
      */
     @Deprecated
     public static Intent getIntent(Context context, String applink) {
@@ -55,7 +55,7 @@ public class RouteManager {
     }
 
     /**
-     * use isSupportApplinkInternal instead
+     * use isSupportApplinkInternal instead (only if the applink already defined in manifest)
      */
     @Deprecated
     public static boolean isSupportApplink(Context context, String applink) {

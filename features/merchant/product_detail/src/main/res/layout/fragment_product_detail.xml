@@ -70,6 +70,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:paddingBottom="?attr/actionBarSize"
+                android:clipToPadding="false"
                 android:descendantFocusability="blocksDescendants">
 
                 <include layout="@layout/partial_product_detail_header"/>

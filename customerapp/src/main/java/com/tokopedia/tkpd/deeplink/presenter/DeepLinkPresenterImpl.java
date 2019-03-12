@@ -15,7 +15,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -102,7 +104,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Inject
     GetShopInfoUseCase getShopInfoUseCase;
 
-    @Inject @Named("productUseCase")
+    @Inject
+    @Named("productUseCase")
     GraphqlUseCase<ProductInfo.Response> getProductUseCase;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity, MapUrlUseCase mapUrlUseCase) {
@@ -487,10 +490,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         } else {
             openWebView(uriData, false,
                     uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
-                    (PARAM_TITLEBAR).equalsIgnoreCase("true"),
+                            (PARAM_TITLEBAR).equalsIgnoreCase("true"),
                     uriData.getQueryParameter(PARAM_NEED_LOGIN) != null && uriData.getQueryParameter
                             (PARAM_NEED_LOGIN).equalsIgnoreCase("true")
-                    );
+            );
         }
     }
 
@@ -555,7 +558,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         });
     }
 
-    private void openProduct(final List<String> linkSegment, final Uri uriData){
+    private void openProduct(final List<String> linkSegment, final Uri uriData) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, linkSegment.get(1));
         parameters.put(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, linkSegment.get(0));
@@ -563,10 +566,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.showLoading();
         getProductUseCase.execute(response -> {
             viewListener.finishLoading();
-            if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0){
+            if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0) {
                 String productApplink = ApplinkConst.PRODUCT_INFO.replace("{product_id}",
-                        response.getData().getBasic().getId()+"");
-                if (RouteManager.isSupportApplink(context, productApplink)){
+                        response.getData().getBasic().getId() + "");
+                if (RouteManager.isSupportApplink(context, productApplink)) {
                     RouteManager.route(context, productApplink);
                 } else {
                     prepareOpenWebView(uriData);
@@ -645,7 +648,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             );
         } else {
             context.startActivity(
-                    BrowseProductRouter.getIntermediaryIntent(context, urlParser.getDepIDfromURI(context))
+                    RouteManager.getIntentInternal(context,
+                            UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL,
+                                    urlParser.getDepIDfromURI(context)))
             );
         }
         context.finish();
@@ -657,12 +662,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String searchQuery = uriData.getQueryParameter("q");
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
-        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
         bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {

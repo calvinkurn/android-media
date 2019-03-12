@@ -11,7 +11,11 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.applink.ApplinkConstInternal
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.core.`var`.TkpdCache.Key.STATE_ORIENTATION_CHANGED
 import com.tokopedia.core.`var`.TkpdCache.PRODUCT_DETAIL
 import com.tokopedia.core.analytics.UnifyTracking
@@ -20,7 +24,6 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData
 import com.tokopedia.core.router.discovery.BrowseProductRouter
 import com.tokopedia.core.router.productdetail.PdpRouter
 import com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID
-import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.core.util.MethodChecker
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder
 import kotlinx.android.synthetic.main.activity_detail_info.*
@@ -192,14 +195,8 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
 
         override fun onClick(v: View) {
             if (!GlobalConfig.isSellerApp()) {
-                val bundle = Bundle()
-                bundle.putString(BrowseProductRouter.DEPARTMENT_ID, categoryId)
-                bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID)
-                bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY)
-                bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY)
-
-                val intent = BrowseProductRouter.getIntermediaryIntent(context)
-                intent.putExtras(bundle)
+                val intent = RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, categoryId))
                 startActivity(intent)
             }
         }

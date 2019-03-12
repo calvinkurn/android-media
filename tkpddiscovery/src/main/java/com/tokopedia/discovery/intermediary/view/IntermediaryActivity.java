@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -32,7 +34,11 @@ import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 
+/**
+ * deeplink = "tokopedia-internal_scheme://marketplace/category/{DEPARTMENT_ID}"
+ */
 public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener, YoutubeViewHolder.YouTubeThumbnailLoadInProcess {
 
     private FragmentManager fragmentManager;
@@ -73,6 +79,24 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, uri);
+            if (!paths.isEmpty()) {
+                departmentId = paths.get(0);
+            }
+        }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (departmentId.isEmpty()) {
+                departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
+            }
+            trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
+            fromNavigation = extras.getBoolean(BrowseProductRouter.FROM_NAVIGATION, false);
+            if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME) != null
+                    && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length() > 0)
+                categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
+        }
         super.onCreate(savedInstanceState);
         if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
             moveTaskToBack(true);
@@ -157,12 +181,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
-        trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
-        fromNavigation = extras.getBoolean(BrowseProductRouter.FROM_NAVIGATION, false);
-        if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME) != null
-                && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length() > 0)
-            categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
+        // already handled in oncreate
     }
 
     @Override

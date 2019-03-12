@@ -11,6 +11,9 @@ import android.view.TextureView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.model.share.ShareData;
@@ -71,8 +74,8 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
             for (int i = 2; i < uriSegments.size(); i++) {
                 iden = iden + "_" + uriSegments.get(i);
             }
-            Intent moveIntent = BrowseProductRouter.getIntermediaryIntent(context,iden);
-
+            Intent moveIntent = RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL,iden));
             viewListener.navigateToActivity(moveIntent);
         }
     }
