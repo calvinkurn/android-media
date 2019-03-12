@@ -4,18 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16">
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/tv_trade_in_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:background="@drawable/bg_trade_in"
+        android:fontFamily="sans-serif"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_4"
+        android:text="Tukar Tambah"
+        android:textColor="@color/text_trade_in_label"
+        android:textSize="@dimen/sp_10"
+        android:textStyle="normal"
+        tools:ignore="SmallSp" />
 
     <TextView
         android:id="@+id/tv_text_sent_by"
         style="@style/TextSmallMediumBlack38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/tv_trade_in_label"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_5"
         android:text="@string/label_seller" />
 
@@ -24,10 +43,10 @@
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/tv_trade_in_label"
+        android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_10"
-        android:layout_marginStart="@dimen/dp_4"
         android:layout_toEndOf="@id/tv_text_sent_by"
         android:layout_toRightOf="@id/tv_text_sent_by"
         android:lineSpacingExtra="5sp"
@@ -37,7 +56,7 @@
         android:id="@+id/img_shop_badge"
         android:layout_width="@dimen/dp_18"
         android:layout_height="@dimen/dp_18"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/tv_trade_in_label"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_toRightOf="@+id/tv_shop_name"
         tools:src="@drawable/ic_badge_official" />

@@ -14,6 +14,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public interface PdpRouter {
 
     Intent getCartIntent(Activity activity);
 
-    Intent getCheckoutIntent(Context context);
+    Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest);
 
     Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam);
 

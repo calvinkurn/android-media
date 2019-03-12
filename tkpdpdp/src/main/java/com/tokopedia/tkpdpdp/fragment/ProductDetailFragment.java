@@ -56,7 +56,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener;
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
@@ -78,6 +77,7 @@ import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -2568,7 +2568,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 startActivity(intent);
             } else {
                 Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                        .getCheckoutIntent(getActivity());
+                        .getCheckoutIntent(getActivity(), new ShipmentFormRequest.BundleBuilder().build());
                 startActivity(intent);
             }
         }

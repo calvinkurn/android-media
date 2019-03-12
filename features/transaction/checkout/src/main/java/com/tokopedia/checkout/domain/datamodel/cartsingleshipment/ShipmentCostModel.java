@@ -24,6 +24,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double donation;
     private String promoMessage;
     private double emasPrice;
+    private double tradeInPrice;
 
     public int getTotalItem() {
         return totalItem;
@@ -129,6 +130,14 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.emasPrice = emasPrice;
     }
 
+    public double getTradeInPrice() {
+        return tradeInPrice;
+    }
+
+    public void setTradeInPrice(double tradeInPrice) {
+        this.tradeInPrice = tradeInPrice;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -147,6 +156,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeDouble(this.additionalFee);
         dest.writeDouble(this.donation);
         dest.writeDouble(this.emasPrice);
+        dest.writeDouble(this.tradeInPrice);
     }
 
     public ShipmentCostModel() {
@@ -164,6 +174,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.additionalFee = in.readDouble();
         this.donation = in.readDouble();
         this.emasPrice = in.readDouble();
+        this.tradeInPrice = in.readDouble();
     }
 
     public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {
