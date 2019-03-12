@@ -169,14 +169,13 @@ class ReportDialogFragment : DialogFragment() {
     }
 
     private fun onSuccessGetReportType(reportTypeList: List<ReportType>) {
-        activity?.run {
+        context?.run {
             this@ReportDialogFragment.reportTypeList = reportTypeList
             reportSpinner.adapter = ReportTypeAdapter(this,
                 android.R.layout.simple_list_item_1,
                 reportTypeList.mapNotNull { it.reportTitle })
             btnReport.isEnabled = true
         }
-
     }
 
     @SuppressLint("Range")
