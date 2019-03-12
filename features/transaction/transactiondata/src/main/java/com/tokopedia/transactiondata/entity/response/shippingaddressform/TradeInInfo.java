@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class TradeInInfo {
 
-    @SerializedName("is_valid_tradein")
+    @SerializedName("is_valid_trade_in")
     @Expose
     public boolean isValidTradeIn = true;
 
