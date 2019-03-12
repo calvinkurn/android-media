@@ -83,7 +83,7 @@ public class FlightDashboardValidator {
 
     public boolean validateAirportsShouldDifferentCity(FlightDashboardViewModel currentDashboardViewModel) {
         return currentDashboardViewModel.getArrivalAirport() != null && currentDashboardViewModel.getDepartureAirport() != null
-                && !currentDashboardViewModel.getArrivalAirport().getCityId()
-                .equalsIgnoreCase(currentDashboardViewModel.getDepartureAirport().getCityId());
+                && !currentDashboardViewModel.getArrivalAirport().getCityName()
+                .equalsIgnoreCase(currentDashboardViewModel.getDepartureAirport().getCityName());
     }
 }

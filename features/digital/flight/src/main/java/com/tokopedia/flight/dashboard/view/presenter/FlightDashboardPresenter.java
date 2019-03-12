@@ -155,6 +155,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         FlightDashboardPassDataViewModel flightDashboardPassDataViewModel = getView().getDashboardPassData();
         flightDashboardPassDataViewModel.setDepartureAirportId(flightDashboardCache.getDepartureAirport());
         flightDashboardPassDataViewModel.setArrivalAirportId(flightDashboardCache.getArrivalAirport());
+        flightDashboardPassDataViewModel.setDepartureCityCode(flightDashboardCache.getDepartureCityCode());
+        flightDashboardPassDataViewModel.setArrivalCityCode(flightDashboardCache.getArrivalCityCode());
+        flightDashboardPassDataViewModel.setDepartureCityName(flightDashboardCache.getDepartureCityName());
+        flightDashboardPassDataViewModel.setArrivalCityName(flightDashboardCache.getArrivalCityName());
         flightDashboardPassDataViewModel.setDepartureDate(flightDashboardCache.getDepartureDate());
         flightDashboardPassDataViewModel.setReturnDate(flightDashboardCache.getReturnDate());
         flightDashboardPassDataViewModel.setAdultPassengerCount(flightDashboardCache.getPassengerAdult());
@@ -220,9 +224,18 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         viewModel.setDepartureAirport(flightAirportDB);
         viewModel.setDepartureAirportFmt(destinationFmt);
         getView().setDashBoardViewModel(viewModel);
+
         String airportTemp = flightDashboardCache.getArrivalAirport();
         flightDashboardCache.putArrivalAirport(flightDashboardCache.getDepartureAirport());
         flightDashboardCache.putDepartureAirport(airportTemp);
+
+        airportTemp = flightDashboardCache.getArrivalCityCode();
+        flightDashboardCache.putArrivalCityCode(flightDashboardCache.getDepartureCityCode());
+        flightDashboardCache.putDepartureCityCode(airportTemp);
+
+        airportTemp = flightDashboardCache.getArrivalCityName();
+        flightDashboardCache.putArrivalCityName(flightDashboardCache.getDepartureCityName());
+        flightDashboardCache.putDepartureCityName(airportTemp);
         renderUi();
     }
 
@@ -381,6 +394,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else {
             flightDashboardCache.putDepartureAirport(departureAirport.getAirportCode());
         }
+        flightDashboardCache.putDepartureCityCode(departureAirport.getCityCode());
+        flightDashboardCache.putDepartureCityName(departureAirport.getCityName());
         renderUi();
     }
 
@@ -410,6 +425,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else {
             flightDashboardCache.putArrivalAirport(arrivalAirport.getAirportCode());
         }
+        flightDashboardCache.putArrivalCityCode(arrivalAirport.getCityCode());
+        flightDashboardCache.putArrivalCityName(arrivalAirport.getCityName());
         renderUi();
     }
 
@@ -568,27 +585,23 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                         return wrapper;
                     }
                 });
-//        if (flightDashboardPassDataViewModel.getDepartureAirportId() != null && flightDashboardPassDataViewModel.getDepartureAirportId().length() > 0
-//                && flightDashboardPassDataViewModel.getArrivalAirportId() != null && flightDashboardPassDataViewModel.getArrivalAirportId().length() > 0) {
-//            cacheObservable = cacheObservable.zipWith(getFlightAirportWithParamUseCase
-//                    .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getDepartureAirportId())
-//                    ), new Func2<FlightDashboardAirportAndClassWrapper, FlightAirportDB, FlightDashboardAirportAndClassWrapper>() {
-//                @Override
-//                public FlightDashboardAirportAndClassWrapper call(FlightDashboardAirportAndClassWrapper flightDashboardAirportsWrapper, FlightAirportDB airportDB) {
-//                    flightDashboardAirportsWrapper.setDepartureAirport(flightAirportViewModelMapper.transform(airportDB));
-//                    return flightDashboardAirportsWrapper;
-//                }
-//            }).zipWith(getFlightAirportWithParamUseCase
-//                    .createObservable(getFlightAirportWithParamUseCase
-//                            .createRequestParams(flightDashboardPassDataViewModel.getArrivalAirportId())
-//                    ), new Func2<FlightDashboardAirportAndClassWrapper, FlightAirportDB, FlightDashboardAirportAndClassWrapper>() {
-//                @Override
-//                public FlightDashboardAirportAndClassWrapper call(FlightDashboardAirportAndClassWrapper flightDashboardAirportsWrapper, FlightAirportDB airportDB) {
-//                    flightDashboardAirportsWrapper.setArrivalAirport(flightAirportViewModelMapper.transform(airportDB));
-//                    return flightDashboardAirportsWrapper;
-//                }
-//            });
-//        }
+        if (flightDashboardPassDataViewModel.getDepartureAirportId() != null && flightDashboardPassDataViewModel.getDepartureAirportId().length() > 0
+                && flightDashboardPassDataViewModel.getArrivalAirportId() != null && flightDashboardPassDataViewModel.getArrivalAirportId().length() > 0) {
+            cacheObservable = cacheObservable.map(airportAndClassWrapper -> {
+                FlightAirportViewModel departure = new FlightAirportViewModel();
+                departure.setAirportCode(flightDashboardPassDataViewModel.getDepartureAirportId());
+                departure.setCityCode(flightDashboardPassDataViewModel.getDepartureCityCode());
+                departure.setCityName(flightDashboardPassDataViewModel.getDepartureCityName());
+                airportAndClassWrapper.setDepartureAirport(departure);
+
+                FlightAirportViewModel arrival = new FlightAirportViewModel();
+                arrival.setAirportCode(flightDashboardPassDataViewModel.getArrivalAirportId());
+                arrival.setCityCode(flightDashboardPassDataViewModel.getArrivalCityCode());
+                arrival.setCityName(flightDashboardPassDataViewModel.getArrivalCityName());
+                airportAndClassWrapper.setArrivalAirport(arrival);
+                return airportAndClassWrapper;
+            });
+        }
 
 
         compositeSubscription.add(
