@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConstInternal
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
@@ -83,7 +82,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         val uri = intent.data
         if (uri != null) {
             val segmentUri: List<String> = uri.pathSegments
-            if (segmentUri.size > 1) {
+            if (segmentUri.size > 1 && uri.scheme != ApplinkConstInternal.INTERNAL_SCHEME) {
                 shopDomain = segmentUri[segmentUri.size-2]
                 productKey = segmentUri[segmentUri.size-1]
             } else { // applink tokopedia or tokopedia internal
