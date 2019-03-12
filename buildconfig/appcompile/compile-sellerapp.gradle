@@ -93,6 +93,7 @@ include "features:transaction:express_checkout"
 include "features:transaction:express_checkout_common"
 include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
+include "features:transaction:express_checkout_common"
 
 include "features:user:attachproduct"
 include "features:user:bankdb"
