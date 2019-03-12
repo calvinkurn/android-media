@@ -109,13 +109,8 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         ((StaggeredGridLayoutManager) getRecyclerView(getView()).getLayoutManager())
                 .setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         getRecyclerView(getView()).addItemDecoration(
-                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8),
-                        calculateTabHeight())
+                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8))
         );
-    }
-
-    private int calculateTabHeight() {
-        return ((getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height)));
     }
 
     @Override

@@ -24,12 +24,15 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
                                @NonNull RecyclerView.State state) {
 
         int position = parent.getChildAdapterPosition(view);
+        int spanIndex = ((StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
+
+        if (isTopProductItem(position)) {
+            outRect.top = spacing;
+        }
 
         if (!isProductItem(parent, position)) {
             return;
         }
-
-        int spanIndex = ((StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
 
         if(spanIndex == 1){
             outRect.left = spacing / 2;
@@ -47,5 +50,9 @@ public class HomeFeedItemDecoration extends RecyclerView.ItemDecoration {
             return false;
         }
         return adapter.getItemViewType(viewPosition) == HomeFeedViewHolder.LAYOUT;
+    }
+
+    private boolean isTopProductItem(int viewPosition) {
+        return viewPosition<=1;
     }
 }
