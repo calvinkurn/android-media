@@ -14,7 +14,7 @@ class FilterViewHolder(itemView: View) : AbstractViewHolder<FilterViewModel>(ite
     companion object {
         @JvmField
         @LayoutRes
-        val LAYOUT = R.layout.item_af_explore_filter
+        val LAYOUT = R.layout.widget_af_chip
     }
 
     override fun bind(element: FilterViewModel?) {
