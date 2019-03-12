@@ -35,7 +35,7 @@ public class BannerView extends BaseCustomView {
 
     protected RecyclerView bannerRecyclerView;
     protected ViewGroup bannerIndicator;
-    protected View bannerSeeAll;
+    protected TextView bannerSeeAll;
     private Handler bannerHandler;
     private Runnable runnableScrollBanner;
     private boolean autoScrollOnProgress;

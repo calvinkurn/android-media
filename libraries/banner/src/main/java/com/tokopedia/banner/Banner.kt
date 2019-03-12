@@ -1,7 +1,6 @@
 package com.tokopedia.banner
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.banner.BannerPagerAdapter
