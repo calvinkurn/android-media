@@ -1,7 +1,6 @@
 package com.tokopedia.shop.favourite.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -11,8 +10,8 @@ import com.tokopedia.shop.favourite.domain.interactor.GetShopFavouriteUserUseCas
 import com.tokopedia.shop.favourite.domain.model.ShopFavouriteRequestModel;
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.mapper.ShopFavouriteViewModelMapper;
-import com.tokopedia.shop.page.domain.interactor.DeleteFavoriteListCacheUseCase;
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -30,12 +29,12 @@ public class ShopFavouriteListPresenter extends BaseDaggerPresenter<ShopFavourit
     private final ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase;
     private final ShopFavouriteViewModelMapper shopFavouriteViewModelMapper;
     private final GetShopInfoUseCase getShopInfoUseCase;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
     public ShopFavouriteListPresenter(GetShopFavouriteUserUseCase getShopFavouriteUserUseCase,
                                       ShopFavouriteViewModelMapper shopFavouriteViewModelMapper,
-                                      GetShopInfoUseCase getShopInfoUseCase, UserSession userSession,
+                                      GetShopInfoUseCase getShopInfoUseCase, UserSessionInterface userSession,
                                       ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase) {
         this.getShopFavouriteUserUseCase = getShopFavouriteUserUseCase;
         this.toggleFavouriteShopAndDeleteCacheUseCase = toggleFavouriteShopAndDeleteCacheUseCase;

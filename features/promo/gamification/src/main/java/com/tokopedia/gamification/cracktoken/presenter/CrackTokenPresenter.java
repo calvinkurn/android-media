@@ -8,7 +8,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationConstants;
@@ -22,6 +21,7 @@ import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity;
 import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
 import com.tokopedia.gamification.data.entity.ResultStatusEntity;
 import com.tokopedia.gamification.data.entity.TokenAssetEntity;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.gamification.data.entity.TokenBackgroundAssetEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenUserEntity;
@@ -47,13 +47,14 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         implements CrackTokenContract.Presenter {
     private GraphqlUseCase getTokenTokopointsUseCase;
     private GraphqlUseCase getCrackResultEggUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private GraphqlUseCase getRewardsUseCase;
 
     @Inject
     public CrackTokenPresenter(GraphqlUseCase getTokenTokopointsUseCase,
                                GraphqlUseCase getCrackResultEggUseCase,
-                               UserSession userSession, GraphqlUseCase getRewardsUseCase) {
+                               UserSessionInterface userSession,
+                               GraphqlUseCase getRewardsUseCase) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
         this.userSession = userSession;

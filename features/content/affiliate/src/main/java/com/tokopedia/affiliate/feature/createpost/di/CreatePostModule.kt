@@ -40,7 +40,7 @@ class CreatePostModule(private val context: Context) {
             @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
             @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
             @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier userSession: com.tokopedia.abstraction.common.data.model.session.UserSession,
+            @ImageUploaderQualifier userSession: UserSessionInterface,
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<UploadImageResponse> {
         return UploadImageUseCase(
                 uploadImageRepository,
