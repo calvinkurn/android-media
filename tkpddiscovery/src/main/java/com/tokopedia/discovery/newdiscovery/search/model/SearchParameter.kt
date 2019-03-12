@@ -26,6 +26,10 @@ class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
         return searchParameterHashMap
     }
 
+    fun getSearchParameterMap() : Map<String, Any> {
+        return searchParameterHashMap as Map<String, Any>
+    }
+
     fun contains(key: String) : Boolean {
         return searchParameterHashMap.contains(key)
     }

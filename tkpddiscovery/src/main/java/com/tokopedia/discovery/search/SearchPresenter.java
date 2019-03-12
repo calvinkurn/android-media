@@ -46,7 +46,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
         this.querySearch = searchParameter.getSearchQuery();
         autoCompleteUseCase.execute(
                 AutoCompleteUseCase.getParams(
-                        searchParameter.getSearchParameterHashMap(),
+                        searchParameter.getSearchParameterMap(),
                         GCMHandler.getRegistrationId(context),
                         userSession.getUserId()
                 ),
