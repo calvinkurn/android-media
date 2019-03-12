@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_af_popular_profile_child.view.*
  * @author by milhamj on 12/03/19.
  */
 class PopularProfileAdapter: RecyclerView.Adapter<PopularProfileAdapter.ViewHolder>() {
-    val list: MutableList<PopularProfileChildViewModel> = arrayListOf()
+    var list: MutableList<PopularProfileChildViewModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(View.inflate(parent.context, R.layout.item_af_popular_profile_child,null))

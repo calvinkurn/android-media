@@ -8,6 +8,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewMo
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -21,6 +22,8 @@ public interface ExploreTypeFactory extends AdapterTypeFactory {
     int type(ExploreEmptySearchViewModel exploreEmptySearchViewModel);
 
     int type(FilterViewModel filterViewModel);
+
+    int type(PopularProfileViewModel popularProfileViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }
