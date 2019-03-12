@@ -76,6 +76,12 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
+import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.UserData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -116,11 +122,6 @@ import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
-import com.tokopedia.linker.LinkerConstants;
-import com.tokopedia.linker.LinkerManager;
-import com.tokopedia.linker.LinkerUtils;
-import com.tokopedia.linker.model.LinkerData;
-import com.tokopedia.linker.model.UserData;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
@@ -228,13 +229,10 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
@@ -279,7 +277,8 @@ public abstract class SellerRouterApplication extends MainApplication
         ChatbotRouter,
         SaldoDetailsRouter,
         TrackingOptimizerRouter ,
-        FlashSaleRouter {
+        FlashSaleRouter,
+        LinkerRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
