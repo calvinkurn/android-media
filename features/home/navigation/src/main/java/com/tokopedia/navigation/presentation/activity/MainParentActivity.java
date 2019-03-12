@@ -49,6 +49,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
+import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -170,7 +171,7 @@ public class MainParentActivity extends BaseActivity implements
     public static Intent getApplinkRecommendationEvent(Context context) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, RECOMENDATION_LIST);
-        intent.putExtra(SCROLL_RECOMMEND_LIST,true);
+        intent.putExtra(SCROLL_RECOMMEND_LIST, true);
         return intent;
     }
 
@@ -227,7 +228,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public boolean isFirstTimeUser(){
+    public boolean isFirstTimeUser() {
         return userSession.isFirstTimeUser();
     }
 
@@ -252,7 +253,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         handleAppLinkBottomNavigation(savedInstanceState);
-        checkAppUpdate();
+        checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
 
         initNewFeedClickReceiver();
@@ -444,6 +445,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        // if user is downloading the update (in app update feature),
+        // check if the download is finished or is in progress
+        checkForInAppUpdateInProgressOrCompleted();
         presenter.onResume();
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
@@ -454,8 +458,27 @@ public class MainParentActivity extends BaseActivity implements
 
         registerNewFeedClickedReceiver();
 
-        if(!((BaseMainApplication)getApplication()).checkAppSignature()){
+        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * While refreshing the app update info, we also check whether we have updates in progress to
+     * complete.
+     *
+     * <p>This is important, so the app doesn't forget about downloaded updates even if it gets killed
+     * during the download or misses some notifications.
+     */
+    private void checkForInAppUpdateInProgressOrCompleted() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this);
         }
     }
 
@@ -474,7 +497,7 @@ public class MainParentActivity extends BaseActivity implements
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
             cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
@@ -612,7 +635,21 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    private void checkAppUpdate() {
+    private void checkAppUpdateAndInApp() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // if download finished or flexible update is in progress, we do not need to show the update dialog
+            AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
+                if (!isOnProgress) {
+                    checkAppUpdateRemoteConfig();
+                }
+                return null;
+            });
+        } else {
+            checkAppUpdateRemoteConfig();
+        }
+    }
+
+    private void checkAppUpdateRemoteConfig(){
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
