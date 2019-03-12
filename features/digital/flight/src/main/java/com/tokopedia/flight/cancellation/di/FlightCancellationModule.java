@@ -2,7 +2,6 @@ package com.tokopedia.flight.cancellation.di;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.flight.airline.domain.FlightAirlineUseCase;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -24,13 +23,8 @@ import dagger.Provides;
 public class FlightCancellationModule {
 
     @Provides
-    FlightCancellationEstimateRefundUseCase provideFlightCancellationEstimateRefundUseCase(FlightRepository flightRepository){
+    FlightCancellationEstimateRefundUseCase provideFlightCancellationEstimateRefundUseCase(FlightRepository flightRepository) {
         return new FlightCancellationEstimateRefundUseCase(flightRepository);
-    }
-
-    @Provides
-    FlightAirlineUseCase provideFlightAirlineUseCase(FlightRepository flightRepository){
-        return new FlightAirlineUseCase(flightRepository);
     }
 
     @Provides

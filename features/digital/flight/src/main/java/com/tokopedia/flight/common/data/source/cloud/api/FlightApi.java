@@ -3,7 +3,6 @@ package com.tokopedia.flight.common.data.source.cloud.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
@@ -65,10 +64,6 @@ public interface FlightApi {
     @GET(FlightUrl.FLIGHT_AIRPORT_PATH)
     Observable<Response<DataResponse<List<FlightAirportCountry>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
 
-    @Headers({"Accept-Encoding: gzip"})
-    @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
-    Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirlineList();
-
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CART_PATH)
     Observable<Response<String>> addCart(@Body DataRequest<FlightCartRequest> request,
@@ -95,9 +90,6 @@ public interface FlightApi {
 
     @GET
     Observable<Response<DataResponse<List<BannerDetail>>>> getBanners(@Url String url, @QueryMap Map<String, String> params);
-
-    @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
-    Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirline(@Query("id") String airlineId);
 
     @GET(FlightUrl.FLIGHT_EMAIL)
     Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);
