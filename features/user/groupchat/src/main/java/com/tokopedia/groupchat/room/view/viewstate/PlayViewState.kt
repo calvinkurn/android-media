@@ -54,4 +54,5 @@ interface PlayViewState {
     fun errorViewShown(): Boolean
     fun autoAddSprintSale()
     fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
+    fun onShowOverlayFromVoteComponent(voteUrl: String)
 }

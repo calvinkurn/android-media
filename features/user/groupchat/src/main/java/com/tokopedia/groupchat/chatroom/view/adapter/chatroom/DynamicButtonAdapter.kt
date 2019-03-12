@@ -37,7 +37,11 @@ class DynamicButtonAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var element = list[position]
         ImageHandler.loadImage(activity, holder.icon, element.imageUrl, R.drawable.ic_play_dynamic_icon)
-        holder.icon.setOnClickListener { listener.onDynamicIconClicked(element) }
+        holder.icon.setOnClickListener {
+            listener.onDynamicIconClicked(element)
+            element.hasNotification = false
+            notifyItemChanged(position)
+        }
 
         if (element.hasNotification) {
             holder.notification.visibility = View.VISIBLE

@@ -439,8 +439,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     @Override

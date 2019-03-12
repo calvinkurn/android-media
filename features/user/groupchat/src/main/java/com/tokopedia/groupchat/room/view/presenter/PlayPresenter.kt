@@ -143,6 +143,8 @@ class PlayPresenter @Inject constructor(
             mSubscription = CompositeSubscription()
         }
 
+        view.setSnackBarConnectingWebSocket()
+
         val subscriber = object : WebSocketSubscriber() {
             override fun onOpen(webSocket: WebSocket) {
                 if (GlobalConfig.isAllowDebuggingTools()) {
@@ -221,7 +223,10 @@ class PlayPresenter @Inject constructor(
         }
         val rxWebSocket = RxWebSocket[
                 webSocketUrlWithToken,
-                accessToken
+                accessToken,
+                settings.delay,
+                settings.pingInterval,
+                settings.maxRetries
         ]
         val subscription = rxWebSocket?.subscribe(subscriber)
 

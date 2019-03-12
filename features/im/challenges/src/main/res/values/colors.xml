@@ -10,6 +10,7 @@
     <!--<color name="pending_yellow_bg">#ffe38f</color>-->
     <color name="pending_yellow_textcolor">#ca8600</color>
     <color name="completed_gray_bg">#f1f1f1</color>
+    <color name="grey_divider">#e0e0e0</color>
     <color name="completed_gray_textcolor">#61000000</color>
     <color name="declined_red_bg">#ffccae</color>
     <color name="declined_red_textcolor">#d43000</color>

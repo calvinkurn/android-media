@@ -34,13 +34,16 @@ public class VoteInfoViewModel implements Parcelable{
     private List<Visitable> listOption;
     private long startTime, endTime;
     private String participant;
+    private String voteUrl;
+
 
     public VoteInfoViewModel() {
     }
 
     public VoteInfoViewModel(String pollId, String title, String question, List<Visitable> listOption, String participant,
                              String voteGiftType, String voteOptionType, String voteStatus, int statusId, boolean voted,
-                             int voteInfoStringResId, String voteInfoUrl, long startTime, long endTime) {
+                             int voteInfoStringResId, String voteInfoUrl, long startTime,
+                             long endTime, String voteUrl) {
         this.pollId = pollId;
         this.title = title;
         this.question = question;
@@ -55,6 +58,7 @@ public class VoteInfoViewModel implements Parcelable{
         this.voteInfoUrl = voteInfoUrl;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.voteUrl = voteUrl;
     }
 
     protected VoteInfoViewModel(Parcel in) {
@@ -71,6 +75,8 @@ public class VoteInfoViewModel implements Parcelable{
         startTime = in.readLong();
         endTime = in.readLong();
         participant = in.readString();
+        voteUrl = in.readString();
+
     }
 
     @Override
@@ -88,6 +94,8 @@ public class VoteInfoViewModel implements Parcelable{
         dest.writeLong(startTime);
         dest.writeLong(endTime);
         dest.writeString(participant);
+        dest.writeString(voteUrl);
+
     }
 
     @Override
@@ -195,6 +203,14 @@ public class VoteInfoViewModel implements Parcelable{
 
     public String getQuestion() {
         return question;
+    }
+
+    public String getVoteUrl() {
+        return voteUrl;
+    }
+
+    public void setVoteUrl(String voteUrl) {
+        this.voteUrl = voteUrl;
     }
 }
 
