@@ -1,16 +1,16 @@
 package com.tokopedia.imageuploader.utils;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 public class ImageUploaderUtils {
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private String deviceTime;
 
-    public ImageUploaderUtils(UserSession userSession) {
+    public ImageUploaderUtils(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
 

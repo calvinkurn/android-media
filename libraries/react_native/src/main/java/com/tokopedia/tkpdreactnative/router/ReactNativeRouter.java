@@ -1,5 +1,8 @@
 package com.tokopedia.tkpdreactnative.router;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.tokopedia.usecase.UseCase;
 
 import rx.Subscriber;
@@ -13,4 +16,6 @@ public interface ReactNativeRouter {
     UseCase<String> setCreditCardSingleAuthentication();
 
     boolean getEnableFingerprintPayment();
+
+    Intent getBrandsWebViewIntent(Context context, String url);
 }

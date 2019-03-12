@@ -122,7 +122,7 @@ data class Channel(
         @SerializedName("video_id")
         @Expose
         val videoId: String = "",
-        @SerializedName("videoLive")
+        @SerializedName("video_live")
         @Expose
         val videoLive: Boolean = false,
         @SerializedName("settings")

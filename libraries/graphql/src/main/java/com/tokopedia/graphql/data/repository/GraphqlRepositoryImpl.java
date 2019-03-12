@@ -105,7 +105,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
     }
 
     private void checkForNull(Object object, String query, boolean shouldThrow) {
-        NullCheckerKt.isContainNull(object, errorMessage -> {
+        /*NullCheckerKt.isContainNull(object, errorMessage -> {
             String subQuery = (query.length() >= 16) ? query.substring(0, 16) : query;
             String message = String.format("Found %s in %s | shouldThrowException: %s | query: %s",
                     errorMessage,
@@ -121,6 +121,6 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 throw exception;
             }
             return Unit.INSTANCE;
-        });
+        });*/
     }
 }

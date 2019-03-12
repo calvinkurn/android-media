@@ -30,8 +30,8 @@ import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
 import com.tokopedia.home.account.presentation.listener.BaseAccountView;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ import javax.inject.Inject;
  * @author okasurya on 7/16/18.
  */
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements
-        AccountHome.View, NotificationListener, FragmentListener {
+        AccountHome.View, AllNotificationListener, FragmentListener {
 
     @Inject
     AccountHome.Presenter presenter;
@@ -165,20 +165,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
-        onNotifyBadgeNotification(counterNumber);
-    }
 
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        this.counterNumber = number;
-        if (menuNotification == null || getActivity() == null)
-            return;
-        if (badgeView == null)
-            badgeView = new BadgeView(getActivity());
-
-        badgeView.bindTarget(menuNotification);
-        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-        badgeView.setBadgeNumber(number);
+        onNotificationChanged(counterNumber, 0);
     }
 
     @Override
@@ -228,5 +216,19 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             if (appBarLayout != null)
                 appBarLayout.setExpanded(true);
         }
+    }
+
+    @Override
+    public void onNotificationChanged(int notificationCount, int inboxCount) {
+        if (menuNotification == null && getActivity() == null)
+            return;
+        if (badgeView == null)
+            badgeView = new BadgeView(getActivity());
+
+        badgeView.bindTarget(menuNotification);
+        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
+        badgeView.setBadgeNumber(notificationCount);
+
+        this.counterNumber = notificationCount;
     }
 }

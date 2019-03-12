@@ -1,9 +1,6 @@
 query {
   status
   isAuthenticated
-  affiliateCheck {
-      isAffiliate
-  }
   profile {
     name
     full_name

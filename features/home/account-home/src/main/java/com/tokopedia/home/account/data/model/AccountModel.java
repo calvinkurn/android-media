@@ -2,7 +2,6 @@ package com.tokopedia.home.account.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.navigation_common.model.AffiliateModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation_common.model.PendingCashbackModel;
@@ -26,9 +25,6 @@ public class AccountModel {
     @SerializedName("isAuthenticated")
     @Expose
     private Integer isAuthenticated;
-    @SerializedName("affiliateCheck")
-    @Expose
-    private AffiliateModel affiliateModel = new AffiliateModel();
     @SerializedName("wallet")
     @Expose
     private WalletModel wallet = new WalletModel();
@@ -64,6 +60,9 @@ public class AccountModel {
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
     private SaldoModel saldoModel = new SaldoModel();
+
+    @SerializedName("isAffiliate")
+    private boolean isAffiliate = false;
 
     private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();
 
@@ -156,14 +155,6 @@ public class AccountModel {
         this.vccUserBalance = vccUserBalance;
     }
 
-    public AffiliateModel getAffiliateModel() {
-        return affiliateModel;
-    }
-
-    public void setAffiliateModel(AffiliateModel affiliateModel) {
-        this.affiliateModel = affiliateModel;
-    }
-
     public PendingCashbackModel getPendingCashbackModel() {
         return pendingCashbackModel;
     }
@@ -174,6 +165,14 @@ public class AccountModel {
 
     public KycStatusPojo getKycStatusPojo() {
         return kycStatusPojo;
+    }
+
+    public boolean isAffiliate() {
+        return isAffiliate;
+    }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
     }
 
     public SaldoModel getSaldoModel() {
