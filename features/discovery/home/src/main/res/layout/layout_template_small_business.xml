@@ -49,25 +49,11 @@
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8">
 
-                <TextView
-                    android:id="@+id/tagLine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_20"
+                <include layout="@layout/layout_template_footer_business"
+                    android:id="@+id/footer"
                     android:layout_alignParentBottom="true"
-                    android:paddingLeft="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_8"
-                    android:paddingStart="@dimen/dp_8"
-                    android:paddingEnd="@dimen/dp_8"
-                    android:gravity="center"
-                    android:textSize="@dimen/sp_10"
-                    android:textStyle="bold"
-                    android:lineSpacingExtra="@dimen/sp_6"
-                    android:visibility="gone"
-                    tools:text="Terlambat Bayar"
-                    tools:textColor="@color/label_pink"
-                    tools:visibility="visible"
-                    tools:background="@drawable/bg_rounded_pink_label"
-                    />
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
 
                 <TextView
                     android:id="@+id/title"
@@ -89,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/title"
-                    android:layout_above="@id/tagLine"
+                    android:layout_above="@id/footer"
                     android:layout_marginTop="@dimen/dp_2"
                     android:maxLines="1"
                     android:ellipsize="end"

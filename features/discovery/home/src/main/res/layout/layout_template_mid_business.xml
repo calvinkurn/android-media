@@ -37,80 +37,55 @@
                 tools:text="EVENTS"
                 />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:orientation="vertical">
+                android:layout_marginRight="@dimen/dp_8">
+
+                <include layout="@layout/layout_template_footer_business"
+                    android:id="@+id/footer"
+                    android:layout_alignParentBottom="true"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_4"
+                    android:layout_alignParentTop="true"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textSize="@dimen/sp_12"
                     android:textColor="@color/charcoal_grey_88"
                     android:textStyle="bold"
-                    tools:text="Pelatihan Hukumonline"
+                    android:visibility="gone"
+                    tools:text="BRONET 4G OWS"
+                    tools:visibility="visible"
                     />
 
                 <TextView
                     android:id="@+id/subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/title"
+                    android:layout_above="@id/footer"
+                    android:layout_marginTop="@dimen/dp_2"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textSize="@dimen/sp_10"
                     android:textColor="#f531353b"
                     android:lineSpacingExtra="@dimen/sp_6"
-                    tools:text="22 Feb 2019 - 24 Feb 2019"
+                    android:visibility="gone"
+                    tools:text="081234567890"
+                    tools:visibility="visible"
                     />
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/priceLayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_20"
-                android:orientation="horizontal"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8">
-
-                <TextView
-                    android:id="@+id/pricePrefix"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_4"
-                    android:layout_marginEnd="@dimen/dp_4"
-                    android:gravity="center"
-                    android:textSize="@dimen/sp_10"
-                    android:textColor="#ae31353b"
-                    android:lineSpacingExtra="@dimen/sp_6"
-                    tools:text="mulai dari"
-                    />
-
-                <TextView
-                    android:id="@+id/price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="@dimen/sp_12"
-                    android:textColor="#ae31353b"
-                    android:textStyle="bold"
-                    android:lineSpacingExtra="@dimen/sp_6"
-                    tools:text="Rp3.425.000"
-                    />
-
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
