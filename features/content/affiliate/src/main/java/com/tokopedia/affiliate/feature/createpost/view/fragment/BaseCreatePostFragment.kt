@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.TaskStackBuilder
 import android.view.LayoutInflater
@@ -415,12 +414,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             val cacheManager = PersistentCacheManager(it, true)
             cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
 
-            val intent = SubmitPostService.createIntent(it, cacheManager.id!!)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                it.startForegroundService(intent)
-            } else {
-                it.startService(intent)
-            }
+            SubmitPostService.startService(it, cacheManager.id!!)
 
             hideLoading()
 
