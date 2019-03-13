@@ -49,6 +49,7 @@
     <color name="sprint_sale_start">#d6001c</color>
     <color name="sprint_sale_end">#ae31353b</color>
     <color name="charcoal_grey">#f531353b</color>
+    <color name="pinned_chat_message">#ae31353b</color>
 
 
 </resources>

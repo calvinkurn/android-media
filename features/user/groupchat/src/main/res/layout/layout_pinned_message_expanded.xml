@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/dp_12"
     android:paddingEnd="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
@@ -12,52 +12,80 @@
     android:paddingStart="@dimen/dp_16"
     android:paddingTop="@dimen/dp_12">
 
-    <ImageView
-        android:id="@+id/pinned_message_avatar"
-        android:layout_width="@dimen/groupchat_avatar_size"
-        android:layout_height="@dimen/groupchat_avatar_size"
-        android:layout_below="@id/header_time"
-        android:layout_marginTop="@dimen/space_mini"
-        tools:src="@color/background_notification" />
 
-    <include
-        android:id="@+id/chat_header"
-        layout="@layout/chat_header_pinned"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/pinned_message_avatar"
-        android:layout_toRightOf="@+id/pinned_message_avatar"
-        android:layout_marginLeft="@dimen/space_small"
-        android:layout_marginStart="@dimen/space_small"
-        android:visibility="visible" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pin Chat"
+            android:textColor="@color/charcoal_grey"
+            android:textSize="@dimen/sp_18" />
+
+        <ImageView
+            android:id="@+id/ic_pinned_chat"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_gravity="center"
+            android:scaleX="-1"
+            app:srcCompat="@drawable/ic_pin" />
+
+        <android.widget.Space
+            android:layout_width="@dimen/dp_4"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="oleh Admin"
+            android:textColor="@color/charcoal_grey"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+
+    <android.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_14" />
 
     <TextView
         android:id="@+id/message"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/chat_header"
-        android:layout_alignStart="@+id/chat_header"
-        android:layout_below="@+id/chat_header"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
-        android:textColor="@color/font_black_primary_70"
+        android:textColor="@color/pinned_chat_message"
         android:textColorLink="@color/font_black_primary_70"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp_14"
         android:textStyle="normal"
         android:visibility="visible"
         tools:text="Wuuu baik om! Go Brazil go!" />
 
-    <ImageView
-        android:id="@+id/thumbnail"
+    <android.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/message"
-        android:layout_alignStart="@id/message"
-        android:layout_below="@id/message"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="@dimen/dp_8"
-        android:src="@color/colorRed" />
+        android:layout_height="@dimen/dp_16" />
 
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:foreground="@drawable/bg_sponsor_border"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="0dp"
+        app:contentPadding="@dimen/space_atomic">
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@color/colorRed" />
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
