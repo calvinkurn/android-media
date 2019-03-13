@@ -25,6 +25,9 @@ public interface FlightComboDao {
     @Query("SELECT * FROM FlightComboTable WHERE FlightComboTable.returnJourneyId = :returnJourneyId")
     List<FlightComboTable> findCombosByReturnJourneyId(String returnJourneyId);
 
+    @Query("SELECT * FROM FlightComboTable WHERE FlightComboTable.returnJourneyId = :returnJourneyId AND FlightComboTable.onwardJourneyId = :onwardJourneyId")
+    List<FlightComboTable> findCombosByOnwardAndReturnJourneyId(String onwardJourneyId, String returnJourneyId);
+
     @Query("SELECT * FROM FlightComboTable")
     List<FlightComboTable> findAllCombos();
 
