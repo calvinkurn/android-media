@@ -1,12 +1,15 @@
 package com.tokopedia.navigation.presentation.fragment;
 
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -14,7 +17,10 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Inbox;
+import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
+import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener;
+import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -32,7 +38,7 @@ import javax.inject.Inject;
  * Created by meta on 19/06/18.
  */
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
-        InboxView {
+        InboxView, InboxAdapterListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -48,6 +54,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
     private View emptyLayout;
+    private GridLayoutManager layoutManager;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -63,30 +70,57 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.intiInjector();
         presenter.setView(this);
 
-        List<Inbox> dataInbox = getData();
-
-        adapter = new InboxAdapter(getActivity());
+        List<Visitable> dataInbox = getData();
+        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this);
+        adapter = new InboxAdapter(typeFactory, dataInbox);
 
         emptyLayout = view.findViewById(R.id.empty_layout);
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        layoutManager = new GridLayoutManager(getContext(), 1);
+        recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
-        adapter.addAll(dataInbox);
+        adapter.addElement(getRecomData());
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
 
-        adapter.setOnItemClickListener((view1, position) -> {
-            Inbox inbox = adapter.getItem(position);
-            if (inbox == null)
-                return;
+            }
+        });
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if(adapter.getList().get(position) instanceof Inbox){
+                    return 1;
+                } else {
+                    return 2;
+                }
+            }
+        });
+    }
 
+    @Override
+    public void onItemClickListener(Visitable item, int position) {
+        if(item instanceof Inbox){
+            Inbox inbox = (Inbox) item;
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
-        });
+        }
+    }
+
+    private List<Recomendation> getRecomData() {
+        List<Recomendation> list = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            Recomendation recomendation = new Recomendation();
+            recomendation.setImageUrl("https://2.bp.blogspot.com/-xyl_aPU1fxs/V2p0V-pZMuI/AAAAAAAAA_k/OA-376G2WAwin2Cg3N8Ve2eGfftzl_LHACLcB/s1600/tmp_22120-android_marshmallow_6.0-408175270.gif");
+            list.add(recomendation);
+        }
+        return list;
     }
 
     private void intiInjector() {
@@ -97,8 +131,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 .inject(this);
     }
 
-    private List<Inbox> getData() {
-        List<Inbox> inboxList = new ArrayList<>();
+    private List<Visitable> getData() {
+        List<Visitable> inboxList = new ArrayList<>();
         inboxList.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
         inboxList.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
         inboxList.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
