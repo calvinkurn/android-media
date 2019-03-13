@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdynamicfilter.view;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import java.util.Map;
  * Created by henrypriyono on 8/16/17.
  */
 
-public interface DynamicFilterView {
+public interface DynamicFilterView extends Serializable {
 
     @Deprecated
     Boolean loadLastCheckedState(Option option);
