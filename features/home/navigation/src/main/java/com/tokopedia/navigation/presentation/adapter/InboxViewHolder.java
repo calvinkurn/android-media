@@ -16,7 +16,7 @@ import com.tokopedia.navigation.domain.model.Inbox;
 class InboxViewHolder extends AbstractViewHolder<Inbox> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_notification;
+    public static final int LAYOUT = R.layout.item_single_notification;
     private LabelView labelView;
     private LinearLayout container;
     private Context context;
