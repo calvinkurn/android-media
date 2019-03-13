@@ -124,6 +124,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
+    private var trackerAttribution: String? = ""
+    private var trackerListName: String? = ""
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
 
@@ -193,6 +195,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
         private const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
         private const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
+        private const val ARG_TRACKER_ATTRIBUTION = "ARG_TRACKER_ATTRIBUTION"
+        private const val ARG_TRACKER_LIST_NAME = "ARG_TRACKER_LIST_NAME"
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
 
@@ -203,12 +207,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         shopDomain: String? = null,
                         productKey: String? = null,
                         isFromDeeplink: Boolean = false,
-                        isAffiliate: Boolean = false) =
+                        isAffiliate: Boolean = false,
+                        trackerAttribution: String? = null,
+                        trackerListName: String? = null) =
             ProductDetailFragment().also {
                 it.arguments = Bundle().apply {
                     productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
                     productKey?.let { pkey -> putString(ARG_PRODUCT_KEY, pkey) }
                     shopDomain?.let { domain -> putString(ARG_SHOP_DOMAIN, domain) }
+                    trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
+                    trackerListName?.let { listName -> putString(ARG_TRACKER_LIST_NAME, listName) }
                     putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                     putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
                 }
@@ -233,6 +241,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productId = it.getString(ARG_PRODUCT_ID)
             productKey = it.getString(ARG_PRODUCT_KEY)
             shopDomain = it.getString(ARG_SHOP_DOMAIN)
+            trackerAttribution = it.getString(ARG_TRACKER_ATTRIBUTION)
+            trackerListName = it.getString(ARG_TRACKER_LIST_NAME)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
         }
@@ -954,6 +964,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
+        productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, productInfoP2.shopInfo, trackerAttribution)
         productInfoP2.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo

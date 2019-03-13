@@ -23,6 +23,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -443,16 +446,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProductDetail(String productId, String productAvatar, String productName) {
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .setProductImage(productAvatar)
-                            .setProductName(productName)
-                            .build()
-            );
-        }
+        Intent intent = RouteManager.getIntentInternal(getContext(),
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        getActivity().startActivity(intent);
     }
 
     @Override

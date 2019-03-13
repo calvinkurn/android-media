@@ -583,17 +583,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         });
     }
 
-    private void openDetailProduct(List<String> linkSegment, Uri uriData) {
-        CommonUtils.dumper("wvlogin opened product");
-        Intent productInfoIntent = ProductInfoActivity.createInstance(context, ProductPass.Builder.aProductPass()
-                .setProductKey(linkSegment.get(1))
-                .setShopDomain(linkSegment.get(0))
-                .setProductUri(uriData.toString())
-                .build());
-        productInfoIntent.setData(uriData);
-        viewListener.goToPage(productInfoIntent);
-    }
-
     private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
         viewListener.inflateFragment(DetailProductRouter
                 .getCatalogDetailFragment(context, linkSegment.get(1)), TAG_FRAGMENT_CATALOG_DETAIL);

@@ -16,6 +16,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -255,10 +258,9 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     @Override
     public void onGoToDetailProduct(String productId, int adapterPosition) {
         onGoToDetailProductTracking(productId, adapterPosition);
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(productId)
-                .build();
-        ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productPass);
+        Intent intent = RouteManager.getIntentInternal(getContext(),
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId);
+        getActivity().startActivity(intent);
     }
 
     protected void onGoToDetailProductTracking(String productId, int adapterPosition) {

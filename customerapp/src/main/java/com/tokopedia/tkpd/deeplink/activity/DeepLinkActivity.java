@@ -18,6 +18,9 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -54,6 +57,8 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
@@ -236,7 +241,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
         if (getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getApplication()).goToProductDetail(this, productPass);
+            Intent intent = RouteManager.getIntentInternal(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productPass.getProductId()));
+            startActivity(intent);
         }
     }
 

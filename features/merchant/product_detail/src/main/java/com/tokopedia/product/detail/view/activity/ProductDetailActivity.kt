@@ -22,6 +22,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
+    private var trackerAttribution: String? = null
+    private var trackerListName: String? = null
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -29,6 +31,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val PARAM_PRODUCT_KEY = "product_key"
         private const val PARAM_IS_FROM_DEEPLINK = "is_from_deeplink"
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
+        private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
+        private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -72,7 +76,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
-        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate)
+        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, trackerAttribution, trackerListName)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
         .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -98,6 +102,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             productId = intent.getStringExtra(PARAM_PRODUCT_ID)
             shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
             productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
+            trackerAttribution = intent.getStringExtra(PARAM_TRACKER_ATTRIBUTION)
+            trackerListName = intent.getStringExtra(PARAM_TRACKER_LIST_NAME)
         }
         if (uri != null && uri.host == AFFILIATE_HOST) {
             isFromAffiliate = true
