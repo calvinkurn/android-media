@@ -2,23 +2,43 @@ package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.design.component.FloatingButton;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
+import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
+import com.tokopedia.transaction.orders.orderlist.common.SurveyBottomSheet;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
@@ -35,14 +55,23 @@ import javax.inject.Inject;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
-        RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, OrderListAdapter.OnMenuItemListener {
+        RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, SearchInputView.ResetListener, OrderListAdapter.OnMenuItemListener, View.OnClickListener {
 
     private static final String ORDER_CATEGORY = "orderCategory";
+    private static final String ORDER_TAB_LIST = "TAB_LIST";
+    private static final int MINIMUM_CHARATERS_HIT_API = 3;
+    private static final int FILTER_DATE_REQUEST = 1;
+    private static final int ANIMATION_DURATION = 500;
+    private static final int SUBMIT_SURVEY_REQUEST = 2;
+    public static final String OPEN_SURVEY_PAGE = "2";
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
-    LinearLayout emptyLayout;
+    LinearLayout emptyLayoutOrderList, emptyLayoutMarketPlace;
     OrderListAdapter orderListAdapter;
+    LinearLayout filterDate;
+    RelativeLayout mainContent;
+    TextView tryAgain;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
     private int page_num = 1;
@@ -50,7 +79,21 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private int visibleThreshold = 2;
     private int lastVisibleItem;
     private Bundle savedState;
+    private String startDate = "";
+    private String endDate = "";
     private int orderId = 1;
+    @Inject
+    OrderListAnalytics orderListAnalytics;
+
+    private String selectedFilter = "0";
+
+    private CustomViewRounderCornerFilterView quickSingleFilterView;
+
+    private SearchInputView simpleSearchView;
+
+    private ImageView surveyBtn;
+
+    private String searchedString = "";
 
     @Inject
     OrderListPresenterImpl presenter;
@@ -59,6 +102,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private ArrayList<Order> mOrderDataList;
     private String mOrderCategory;
+    private OrderLabelList orderLabelList;
+    private boolean isSurveyBtnVisible = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +118,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(getFragmentLayout(), container, false);
+        return inflater.inflate(R.layout.fragment_transaction_list_order_module, container, false);
     }
 
     protected int getFragmentLayout() {
@@ -95,6 +140,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         setHasOptionsMenu(getOptionsMenuEnable());
         initialListener(activity);
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -145,7 +191,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onDestroyView() {
         saveStateToArguments();
-        presenter.onDestroy();
         presenter.detachView();
         super.onDestroyView();
     }
@@ -190,12 +235,57 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
+        orderLabelList = arguments.getParcelable(ORDER_TAB_LIST);
+        if (arguments.getString(OrderListContants.ORDER_FILTER_ID) != null) {
+            selectedFilter = arguments.getString(OrderListContants.ORDER_FILTER_ID);
+        }
     }
 
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        emptyLayout = view.findViewById(R.id.empty_view);
+        emptyLayoutOrderList = view.findViewById(R.id.empty_state_order_list);
+        emptyLayoutMarketPlace = view.findViewById(R.id.empty_state_marketplace);
+        quickSingleFilterView = view.findViewById(R.id.quick_filter);
+        simpleSearchView = view.findViewById(R.id.simpleSearchView);
+        simpleSearchView.setSearchHint(getContext().getResources().getString(R.string.search_hint_text));
+        filterDate = view.findViewById(R.id.filterDate);
+        surveyBtn = view.findViewById(R.id.survey_bom);
+        surveyBtn.setOnClickListener(this);
+        mainContent = view.findViewById(R.id.mainContent);
+        tryAgain = emptyLayoutMarketPlace.findViewById(R.id.tryAgain);
+        tryAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RouteManager.route(getContext(), ApplinkConst.HOME);
+            }
+        });
+        if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
+            presenter.buildAndRenderFilterList(orderLabelList.getFilterStatusList());
+        }
+
+        filterDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
+            }
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == FILTER_DATE_REQUEST) {
+                startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
+                endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
+                refreshHandler.startRefresh();
+                orderListAnalytics.sendDateFilterClickEvent();
+            } else if (requestCode == SUBMIT_SURVEY_REQUEST) {
+                presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
+            }
+        }
     }
 
     protected void setViewListener() {
@@ -203,6 +293,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
         refreshHandler.setPullEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(orderListAdapter);
+        quickSingleFilterView.setListener(this);
+        simpleSearchView.setListener(this);
+        simpleSearchView.setResetListener(this);
     }
 
     private void addRecyclerListener() {
@@ -214,6 +307,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+            if (dy > 0 || dy < 0 && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA)))
+                setVisibilitySurveyBtn(false);
             if (!isLoading && hasRecyclerListener) {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 if (linearLayoutManager != null) {
@@ -225,15 +320,29 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 }
             }
         }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA))) {
+                setVisibilitySurveyBtn(true);
+            }
+            super.onScrollStateChanged(recyclerView, newState);
+        }
     };
 
     @Override
     public void onRefresh(View view) {
         page_num = 1;
         isLoading = true;
+        emptyLayoutOrderList.setVisibility(View.GONE);
+        emptyLayoutMarketPlace.setVisibility(View.GONE);
         if (orderListAdapter.getItemCount() != 0) {
             mOrderDataList.clear();
-
+            orderListAdapter.clearItemList();
+        }
+        if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+            quickSingleFilterView.setVisibility(View.VISIBLE);
+            simpleSearchView.setVisibility(View.VISIBLE);
         }
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
@@ -246,6 +355,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             isLoading = true;
             presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num, orderId);
         }
+        orderListAnalytics.sendLoadMoreEvent("load-" + page_num);
     }
 
     @Override
@@ -278,8 +388,14 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void renderEmptyList(int typeRequest) {
         if (typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
-            swipeToRefresh.setVisibility(View.GONE);
-            emptyLayout.setVisibility(View.VISIBLE);
+            swipeToRefresh.setVisibility(View.VISIBLE);
+            if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+                emptyLayoutMarketPlace.setVisibility(View.VISIBLE);
+            } else {
+                emptyLayoutOrderList.setVisibility(View.VISIBLE);
+            }
+            filterDate.setVisibility(View.GONE);
+            surveyBtn.setVisibility(View.GONE);
         }
     }
 
@@ -321,14 +437,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void showProcessGetData(String orderCategory) {
-        switch (orderCategory) {
-            case OrderCategory.DIGITAL:
-                if (!refreshHandler.isRefreshing()) {
-                    refreshHandler.setRefreshing(true);
-                    refreshHandler.setPullEnabled(false);
-                }
-                break;
+    public void showProcessGetData() {
+        if (!refreshHandler.isRefreshing()) {
+            refreshHandler.setRefreshing(true);
+            refreshHandler.setPullEnabled(false);
         }
     }
 
@@ -355,7 +467,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
 
         swipeToRefresh.setVisibility(View.VISIBLE);
-        emptyLayout.setVisibility(View.GONE);
+        emptyLayoutOrderList.setVisibility(View.GONE);
+        emptyLayoutMarketPlace.setVisibility(View.GONE);
+        if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+            filterDate.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -388,6 +504,97 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void selectFilter(String typeFilter) {
+        selectedFilter = typeFilter;
+        refreshHandler.startRefresh();
+        orderListAnalytics.sendQuickFilterClickEvent(typeFilter);
+    }
+
+
+    @Override
+    public void renderOrderStatus(List<QuickFilterItem> filterItems, int selctedIndex) {
+        quickSingleFilterView.setDefaultItem(null);
+        quickSingleFilterView.renderFilter(filterItems, selctedIndex);
+    }
+
+    @Override
+    public void showSurveyButton(boolean isEligible) {
+        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA))) {
+            surveyBtn.setVisibility(View.VISIBLE);
+        } else {
+            surveyBtn.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public String getSearchedString() {
+        return searchedString;
+    }
+
+    @Override
+    public String getStartDate() {
+        return startDate;
+    }
+
+    @Override
+    public String getEndDate() {
+        return endDate;
+    }
+
+    @Override
+    public void showSuccessMessage(String message) {
+        ToasterNormal.showClose(getActivity(), message);
+    }
+
+    @Override
+    public void showFailureMessage(String message) {
+        ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public String getSelectedFilter() {
+        return String.valueOf(selectedFilter);
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+            searchedString = text;
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+        if (text.length() >= MINIMUM_CHARATERS_HIT_API || text.length() == 0) {
+            searchedString = text;
+            orderListAnalytics.sendSearchFilterClickEvent();
+            filterDate.setVisibility(View.GONE);
+            refreshHandler.startRefresh();
+        }
+    }
+
+    @Override
+    public void onSearchReset() {
+        searchedString = "";
+        refreshHandler.startRefresh();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.survey_bom) {
+            startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), OPEN_SURVEY_PAGE), SUBMIT_SURVEY_REQUEST);
+        }
+    }
+
+    private void setVisibilitySurveyBtn(boolean isVisible) {
+        if (isVisible && !isSurveyBtnVisible) {
+           surveyBtn.animate().translationY(0).setDuration(ANIMATION_DURATION).start();
+            isSurveyBtnVisible=true;
+        } else if(!isVisible && isSurveyBtnVisible){
+            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
+            isSurveyBtnVisible=false;
+        }
     }
 }
 

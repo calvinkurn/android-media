@@ -19,22 +19,28 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
+import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
+import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
@@ -43,13 +49,11 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
-import javax.inject.Inject;
-
-import com.tokopedia.transaction.orders.common.view.DoubleTextView;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by baghira on 09/05/18.
@@ -81,6 +85,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     TextView helpLabel;
     TextView primaryActionBtn;
     TextView secondaryActionBtn;
+    FrameLayout progressBarLayout;
     private boolean isSingleButton;
 
 
@@ -124,6 +129,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         helpLabel = view.findViewById(R.id.help_label);
         primaryActionBtn = view.findViewById(R.id.langannan);
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -150,11 +156,18 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_9));
-        shape.setColor(android.graphics.Color.parseColor(conditionalInfo.color().background()));
-        shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), android.graphics.Color.parseColor(conditionalInfo.color().border()));
+        if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
+            shape.setColor(Color.parseColor(conditionalInfo.color().background()));
+        }
+        if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
+            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+        }
         conditionalInfoText.setBackground(shape);
         conditionalInfoText.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
         conditionalInfoText.setText(conditionalInfo.text());
+        if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
+            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
+        }
 
     }
 
@@ -174,7 +187,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         }
         lihat.setOnClickListener(view -> {
             try {
-                startActivity(((UnifiedOrderListRouter)getActivity()
+                startActivity(((UnifiedOrderListRouter) getActivity()
                         .getApplication()).getWebviewActivityWithIntent(getContext(),
                         URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
             } catch (UnsupportedEncodingException e) {
@@ -237,6 +250,63 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void showDropshipperInfo(DropShipper dropShipper) {
+
+    }
+
+    @Override
+    public void showDriverInfo(DriverDetails driverDetails) {
+
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBarLayout.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setActionButtons(List<ActionButton> actionButtons) {
+
+    }
+
+    @Override
+    public void setShopInfo(ShopInfo shopInfo) {
+
+    }
+
+    @Override
+    public void showReplacementView(List<String> reasons) {
+
+    }
+
+    @Override
+    public void finishOrderDetail() {
+
+    }
+
+    @Override
+    public void showSucessMessage(String message) {
+        Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorMessage (String message) {
+
+    }
+
+    @Override
+    public void clearDynamicViews() {
+
+    }
+
+    @Override
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
@@ -257,7 +327,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             @Override
             public void onClick(View view) {
                 try {
-                    startActivity(((UnifiedOrderListRouter)getActivity()
+                    startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
                             URLEncoder.encode(contactUs.helpUrl(), ORDER_LIST_URL_ENCODING)));
                 } catch (UnsupportedEncodingException e) {
@@ -281,7 +351,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setTopActionButton(ActionButton actionButton) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16),getResources().getDimensionPixelSize(R.dimen.dp_0),getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_24));
         primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
@@ -330,10 +400,13 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             String newUri = uri;
             if (uri != null && uri.startsWith("tokopedia")) {
                 Uri url = Uri.parse(newUri);
-                newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                newUri = newUri.replace("idem_potency_key=", "");
+
+                if (newUri.contains("idem_potency_key")) {
+                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                    newUri = newUri.replace("idem_potency_key=", "");
+                }
                 RouteManager.route(getActivity(), newUri);
-            } else if (uri != null && !uri.equals("")){
+            } else if (uri != null && !uri.equals("")) {
                 try {
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
@@ -366,8 +439,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     @Override

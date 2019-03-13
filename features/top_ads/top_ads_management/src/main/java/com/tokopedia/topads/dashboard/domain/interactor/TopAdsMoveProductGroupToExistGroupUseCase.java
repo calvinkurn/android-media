@@ -1,11 +1,9 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
+import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -21,10 +19,8 @@ public class TopAdsMoveProductGroupToExistGroupUseCase extends UseCase<Boolean> 
 
     private final TopAdsProductAdsRepository topAdsProductAdsRepository;
 
-    public TopAdsMoveProductGroupToExistGroupUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     TopAdsProductAdsRepository topAdsProductAdsRepository) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsMoveProductGroupToExistGroupUseCase(TopAdsProductAdsRepository topAdsProductAdsRepository) {
+        super();
         this.topAdsProductAdsRepository = topAdsProductAdsRepository;
     }
 

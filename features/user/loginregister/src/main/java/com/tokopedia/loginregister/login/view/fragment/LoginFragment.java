@@ -857,6 +857,11 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     @Override
+    public void trackErrorLoginEmail() {
+        analytics.trackClickOnLoginButtonError();
+    }
+
+    @Override
     public void onErrorLoginSosmed(String loginMethodName, String errorMessage) {
         onErrorLogin(errorMessage);
     }
@@ -865,7 +870,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public void onSuccessLoginSosmed(String loginMethod) {
         dismissLoadingLogin();
 
-        analytics.eventSuccessLoginSosmed(loginMethod);
+        analytics.trackEventSuccessLoginSosmed(loginMethod);
         if (getActivity() != null) {
             ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
                     (userSession.getUserId(),

@@ -17,6 +17,8 @@ import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi
 import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -95,5 +97,11 @@ public class ProductModule {
     @Provides
     public ErrorResponseInterceptor provideResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
+    }
+
+    @ProductScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

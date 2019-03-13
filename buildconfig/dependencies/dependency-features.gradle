@@ -209,6 +209,7 @@ ext {
             //recentview                    : ":features:discovery:recentview_no_op",
             topAdsSdk                     : ":features:discovery:topadssdk",
             wishlistCommon                : ":features:discovery:wishlist_common",
+            productCard                   : ":features:discovery:productcard",
 
             homecredit                    : ":features:fintech:home_credit",
             instantLoan                   : ":features:fintech:instant_loan",
@@ -267,6 +268,7 @@ ext {
 //            shopPage                    : ":features:merchant:shop_page_no_op",
             shopSettings                : ":features:merchant:shop_settings",
 //            shopSettings                : ":features:merchant:shop_settings_no_op", // toggle for no op
+            officialStore                  : ":features:merchant:official_store",
 
             contactUs                     : ":features:operational:contact_us",
 //            contactUs                     : ":features:operational:contact_us_no_op",

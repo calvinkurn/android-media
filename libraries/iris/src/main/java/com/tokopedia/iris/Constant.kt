@@ -4,7 +4,6 @@ package com.tokopedia.iris
  * @author okasurya on 10/18/18.
  */
 
-
 //const val STAGING = "https://merlin-staging.tokopedia.com/"
 //const val LIVE = "https://merlin.tokopedia.com/"
 

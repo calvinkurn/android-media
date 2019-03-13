@@ -30,7 +30,8 @@ ext {
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
-
+    
+    playServiceFirebaseConfig = '16.1.3'
     playServiceBaseVersion = '16.0.1'
     playServiceFirebaseIidVersion = '17.0.4'
 
@@ -70,9 +71,9 @@ ext {
     ]
 
     dbDependencies = [
-            dbFlow         : "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}",
-            dbFlowCore     : "com.github.Raizlabs.DBFlow:dbflow-core:${dbFlowVersion}",
-            dbFlowProcessor: "com.github.Raizlabs.DBFlow:dbflow-processor:${dbFlowVersion}",
+            dbFlow         : "com.github.agrosner.DBFlow:dbflow:${dbFlowVersion}",
+            dbFlowCore     : "com.github.agrosner.DBFlow:dbflow-core:${dbFlowVersion}",
+            dbFlowProcessor: "com.github.agrosner.DBFlow:dbflow-processor:${dbFlowVersion}",
             dbRoomRuntime  : "android.arch.persistence.room:runtime:${roomVersion}",
             dbRoomCompiler : "android.arch.persistence.room:compiler:${roomVersion}",
             dbRoomTesting  : "android.arch.persistence.room:testing:${roomVersion}"

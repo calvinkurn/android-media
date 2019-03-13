@@ -16,6 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
+@Deprecated
 public class TopAdsFilterListFragment extends BasePresenterFragment implements TopAdsFilterAdapter.Callback {
 
     public static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";

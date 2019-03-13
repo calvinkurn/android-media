@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class TokopointsSumCoupon {
     @SerializedName("sumCoupon")
     @Expose
-    private int sumCoupon;
+    private int sumCoupon = 0;
     @SerializedName("sumCouponStr")
     @Expose
-    private String sumCouponStr;
+    private String sumCouponStr = "";
 
     public int getSumCoupon() {
         return sumCoupon;

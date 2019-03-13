@@ -38,6 +38,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
+        String CLICK_REGISTER = "clickRegister";
+        String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
     }
@@ -51,6 +53,7 @@ public interface ConstantTransactionAnalytics {
         String ORDER_TRACKING = "order tracking";
         String PRODUCT_DETAIL_PAGE = "product detail page";
         String PURCHASE_PROTECTION = "fin - mp checkout";
+        String CORNER_ADDRES = "tokopedia corner address";
         String EXPRESS_CHECKOUT = "express checkout";
     }
 
@@ -216,11 +219,21 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click";
         String IMPRESSION_PELAJARI = "pp - pelajari impression";
 
+        //TOKOPEDIA CORNER
+        String CHOOSE_LOCATION_CORNER = "click pilih lokasi tokopedia corner";
+        String CLICK_CORNER_ADDRESS = "click alamat tokopedia corner";
+        String VIEW_CORNER_ERROR = "view tokopedia corner not available";
+        String VIEW_CORNER_PO_ERROR = "view error pre order tokopedia corner";
+
         //EXPRESS CHECKOUT
         String VIEW_EXPRESS_CHECKOUT = "view express checkout";
         String CLICK_LANJUTKAN_TANPA_TEMPLATE = "click lanjutkan tanpa template";
         String CLICK_X = "click x";
         String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
+
+        String CLICK_PLUS_FROM_MULTIPLE = "click + from multiple";
+        String CLICK_BUTTON_SIMPAN = "click button simpan";
+        String CLICK_BUTTON_SIMPAN_FROM_EDIT = "click button simpan from edit";
     }
 
     interface EventLabel {
@@ -240,7 +253,7 @@ public interface ConstantTransactionAnalytics {
         String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
 
         String CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD = "success - default - cod";
-        String CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD = "success - check al - cod";
+        String CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD = "success - check all - cod";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD = "success - partial shop - cod";
         String CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD = "success - partial product - cod";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD = "success - partial shop and product - cod";

@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
@@ -87,6 +86,8 @@ import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -132,9 +133,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     ShopProductLimitedListPresenter shopProductLimitedListPresenter;
 
     ShopPageTrackingBuyer shopPageTracking;
-    @Inject
-    UserSession userSession;
 
+    private UserSessionInterface userSession;
     MerchantVoucherListPresenter merchantVoucherListPresenter;
 
     private ProgressDialog progressDialog;
@@ -178,6 +178,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        userSession = new UserSession(getActivity());
         if (savedInstanceState == null) {
             selectedEtalaseId = null;
             selectedEtalaseName = "";

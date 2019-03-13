@@ -103,6 +103,9 @@ buildscript {
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
+        flatDir {
+            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
+        }
     }
     dependencies {
         classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
@@ -117,8 +120,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 311801101;
-        defaultVersionName = "3.18";
+        defaultVersionCode = 322001101;
+        defaultVersionName = "3.22";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -363,6 +366,7 @@ dependencies {
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
@@ -393,6 +397,7 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
+    implementation project(rootProject.ext.features.officialStore)
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
@@ -420,6 +425,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
