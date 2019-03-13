@@ -2,6 +2,8 @@ package com.tokopedia.saldodetails.view.fragment;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -132,6 +134,10 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     }
 
     private void populateBoxData() {
+
+        Drawable drawable = mclBoxLayout.getBackground();
+        drawable.setColorFilter(Color.parseColor(merchantCreditDetails.getBoxInfo().getBoxBgColor()), PorterDuff.Mode.CLEAR);
+        mclBoxLayout.setBackground(drawable);
 
         if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getBoxTitle())) {
             mclboxTitleTV.setVisibility(View.VISIBLE);
