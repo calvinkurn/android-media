@@ -39,6 +39,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.logisticcommon.LogisticCommonConstant
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
