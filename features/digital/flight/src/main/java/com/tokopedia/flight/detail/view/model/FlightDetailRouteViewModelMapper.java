@@ -78,8 +78,7 @@ public class FlightDetailRouteViewModelMapper {
         if (routes != null) {
             for (Route route : routes) {
                 flightDetailRouteViewModel = transform(route);
-                if (flightDetailRouteViewModel != null && flightDetailRouteViewModels != null
-                && flightDetailRouteViewModels.size() <= totalTransit + 1) {
+                if (flightDetailRouteViewModel != null && flightDetailRouteViewModels.size() <= totalTransit) {
                     flightDetailRouteViewModels.add(flightDetailRouteViewModel);
                 }
             }
