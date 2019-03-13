@@ -30,11 +30,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val PARAM_IS_FROM_DEEPLINK = "is_from_deeplink"
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
 
+        private const val AFFILIATE_HOST = "affiliate"
+
         @JvmStatic
         fun createIntent(context: Context, productUrl: String) =
-                Intent(context, ProductDetailActivity::class.java).apply {
-                    data = Uri.parse(productUrl)
-                }
+            Intent(context, ProductDetailActivity::class.java).apply {
+                data = Uri.parse(productUrl)
+            }
 
         @JvmStatic
         fun createIntent(context: Context, shopDomain: String, productKey: String) = Intent(context, ProductDetailActivity::class.java).apply {
@@ -65,15 +67,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             extras.putBoolean(IS_FROM_EXPLORE_AFFILIATE, true)
             return Intent(context, ProductDetailActivity::class.java)
-                    .putExtras(extras)
+                .putExtras(extras)
         }
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
-            .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate)
+        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+        .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
@@ -81,11 +83,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         if (uri != null) {
-            val segmentUri: List<String> = uri.pathSegments
-            if (segmentUri.size > 1 && uri.scheme != ApplinkConstInternal.INTERNAL_SCHEME) {
-                shopDomain = segmentUri[segmentUri.size-2]
-                productKey = segmentUri[segmentUri.size-1]
-            } else { // applink tokopedia or tokopedia internal
+            if (uri.scheme != ApplinkConstInternal.INTERNAL_SCHEME &&
+                uri.pathSegments.size >= 2 &&
+                uri.host != AFFILIATE_HOST){
+                val segmentUri: List<String> = uri.pathSegments
+                if (segmentUri.size > 1) {
+                    shopDomain = segmentUri[0]
+                    productKey = segmentUri[1]
+                }
+            } else { // affiliate, tokopedia-internal
                 productId = uri.lastPathSegment
             }
         } else {
@@ -93,7 +99,11 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
             productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
         }
-        isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
+        if (uri != null && uri.host == AFFILIATE_HOST) {
+            isFromAffiliate = true
+        } else {
+            isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
+        }
 
         super.onCreate(savedInstanceState)
     }
