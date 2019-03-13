@@ -63,8 +63,8 @@ ext {
     artifactIdCheckout = 'checkout'
 
     gradlePlugin = [
-        crashlytics = "io.fabric.tools:gradle:$rootProject.ext.crashlyticsGradleVersion",
-        googleServices = "com.google.gms:google-services:${googleServiceGradleVersion}"
+        crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
+        googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"
     ]
 
     networkDependencies = [
