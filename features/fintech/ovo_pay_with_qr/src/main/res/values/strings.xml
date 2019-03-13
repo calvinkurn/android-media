@@ -7,7 +7,7 @@
     <string name="error_message">Terjadi kendala teknis. Coba lagi.</string>
     <string name="max_input_hint">Maksimal pembayaran Rp10.000.000</string>
     <string name="copied_to_clipboard">Copied to Clipboard</string>
-    <string name="cash_point">Sisa Saldo Rp%s &amp; OVO Points %s</string>
+    <string name="cash_point">Sisa Saldo %s &amp; OVO Points %s</string>
     <string name="ovo_cash_title">OVO CASH TERPAKAI</string>
     <string name="ovo_point_title">OVO POINTS TERPAKAI</string>
     <string name="use_ovo_points">Gunakan OVO Points</string>
