@@ -13,6 +13,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import rx.Observable
 import rx.functions.Func1
+import rx.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -38,6 +39,7 @@ class UploadMultipleImageUseCase @Inject constructor(
                 uploadImageUseCase.createObservable(createUploadParams(medium.mediaURL))
                         .map(mapToUrl(medium))
                         .map(updateNotification())
+                        .subscribeOn(Schedulers.io())
             } else {
                 Observable.just<SubmitPostMedium>(medium).map(updateNotification())
             }
