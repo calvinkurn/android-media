@@ -85,9 +85,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onStart() {
         super.onStart()
-        if (isTypeAffiliate()) {
-            affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
-        }
+        affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -226,9 +224,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show()
             it.finish()
-            if (isTypeAffiliate()) {
-                affiliateAnalytics.onJatahRekomendasiHabisPdp()
-            }
+            affiliateAnalytics.onJatahRekomendasiHabisPdp()
         }
     }
 
@@ -364,9 +360,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun goToImagePicker() {
-        if (isTypeAffiliate()) {
-            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
-        }
+        affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -408,9 +402,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun saveDraftAndSubmit() {
-        if (isTypeAffiliate()) {
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
-        }
+        affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
 
         if (isFormInvalid()) {
             return
