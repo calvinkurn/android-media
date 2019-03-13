@@ -15,8 +15,8 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath "io.fabric.tools:gradle:$crashlyticsGradleVersion"
-        classpath "com.google.gms:google-services:$googleServiceGradleVersion"
+        classpath "io.fabric.tools:gradle:$rootProject.ext.crashlyticsGradleVersion"
+        classpath "com.google.gms:google-services:$rootProject.ext.googleServiceGradleVersion"
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
