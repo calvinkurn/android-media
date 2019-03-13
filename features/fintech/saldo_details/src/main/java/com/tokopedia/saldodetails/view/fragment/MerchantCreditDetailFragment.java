@@ -89,15 +89,16 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
         if (merchantCreditDetails != null) {
 
             if (!TextUtils.isEmpty(merchantCreditDetails.getLogoURL())) {
-                // TODO: 12/3/19 pass the placeholder
                 mclLogoIV.setVisibility(View.VISIBLE);
-                ImageHandler.loadImage(context, mclLogoIV, merchantCreditDetails.getLogoURL(), null);
+                ImageHandler.loadImage(context, mclLogoIV, merchantCreditDetails.getLogoURL(), R.drawable.ic_modal_toko);
             } else {
-                mclLogoIV.setVisibility(View.GONE);
+                mclLogoIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_modal_toko));
             }
 
             if (!TextUtils.isEmpty(merchantCreditDetails.getTitle())) {
                 mclTitleTV.setText(Html.fromHtml(merchantCreditDetails.getTitle()));
+            } else {
+                mclTitleTV.setText(getString(R.string.modal_toko));
             }
 
             if (merchantCreditDetails.getAnchorList() != null &&
@@ -199,33 +200,23 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     }
 
     private void populateAnchorListData() {
-
         GqlAnchorListResponse gqlAnchorListResponse = merchantCreditDetails.getAnchorList().get(0);
-
         if (gqlAnchorListResponse != null) {
-
             mclActionItemTV.setText(gqlAnchorListResponse.getLabel());
-
             try {
                 mclActionItemTV.setTextColor(Color.parseColor(gqlAnchorListResponse.getColor()));
             } catch (Exception e) {
                 mclActionItemTV.setTextColor(getResources().getColor(R.color.tkpd_main_green));
             }
-
             mclActionItemTV.setOnClickListener(v -> {
                 saldoDetailsAnalytics.eventAnchorLabelClick(mclActionItemTV.getText().toString());
-
                 if (gqlAnchorListResponse.isShowDialog()) {
-
                     // TODO: 12/3/19 open bottom sheet
-
                 } else {
                     RouteManager.route(context, String.format("%s?url=%s",
                             ApplinkConst.WEBVIEW, gqlAnchorListResponse.getLink()));
                 }
-
             });
-
         }
         mclActionItemTV.setVisibility(View.VISIBLE);
     }

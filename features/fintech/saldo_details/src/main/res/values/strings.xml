@@ -75,5 +75,6 @@
     <string name="saldo_empty_list_heading">Belum Ada Transaksi</string>
     <string name="saldo_empty_list_desc">Ubah tab untuk melihat transaksi yang lain</string>
     <string name="modal_toko">Modal Toko</string>
+    <string name="financial_services">Layanan Finansial</string>
 
 </resources>
