@@ -78,7 +78,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     public void setFailThankYouData(GoalQRThanks data) {
         failDescription.setText(data.getMessage());
         callSection.setOnClickListener(view -> {
-
+            startActivity(OvoWebViewActivity.createInstance(getActivity(), "https://www.tokopedia.com/help"));
         });
         backToMain.setOnClickListener(view -> {
             listener.setResult(Activity.RESULT_OK);
