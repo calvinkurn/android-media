@@ -326,7 +326,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
             successPost -> {
                 when {
-                    isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
+                    isAutomaticOpenShareUser() -> shareLink(element.profileHeaderViewModel.link)
                     onlyOnePost -> showShowCaseDialog(shareProfile)
                     else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
                 }
