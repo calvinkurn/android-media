@@ -4,4 +4,7 @@
     <color name="green_text">#73bd00</color>
     <color name="error_color">#cc003d</color>
     <color name="grey_error">#80000000</color>
+    <color name="amount_color_black">#2d263b</color>
+    <color name="aqua_color">#06b3ba</color>
+    <color name="cash_point_color">#444444</color>
 </resources>

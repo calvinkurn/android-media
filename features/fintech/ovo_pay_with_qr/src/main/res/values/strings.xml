@@ -1,12 +1,30 @@
 <resources>
     <string name="app_name">Ovo</string>
     <string name="payment_summary">Payment Summary</string>
-    <string name="ovo_points_amnt">-OVO Points %s</string>
-    <string name="ovo_cash_amnt">-%s</string>
+    <string name="ovo_cash_point_amnt">%s</string>
     <string name="balance_exceed_error">Saldo Anda tidak mencukupi</string>
     <string name="min_input_hint">Minimal pembayaran Rp1.000</string>
     <string name="error_message">Terjadi kendala teknis. Coba lagi.</string>
     <string name="max_input_hint">Maksimal pembayaran Rp10.000.000</string>
     <string name="copied_to_clipboard">Copied to Clipboard</string>
+    <string name="cash_point">Sisa Saldo Rp%s &amp; OVO Points %s</string>
+    <string name="ovo_cash_title">OVO CASH TERPAKAI</string>
+    <string name="ovo_point_title">OVO POINTS TERPAKAI</string>
+    <string name="use_ovo_points">Gunakan OVO Points</string>
+    <string name="ovo_cash_text">OVO Cash</string>
+    <string name="payment_method">Metode Pembayaran</string>
+    <string name="rp_string">Rp</string>
+    <string name="input_amount">Nominal Pembelian</string>
+    <string name="default_shop_description">Marketplace</string>
+    <string name="default_shop_name">Tokopedia</string>
+    <string name="buy_string">BAYAR</string>
+    <string name="go_back">BATALKAN</string>
+    <string name="go_to_tokopedia">KEMBALI KE TOKOPEDIA</string>
+    <string name="fake_number">305679638</string>
+    <string name="transaction_id_text">Kode Transaksi</string>
+    <string name="merchant">Merchant</string>
+    <string name="fake_date">12 Des 2018, 11.20</string>
+    <string name="success_transaction">Transaksi Berhasil</string>
+    <string name="fail_transaction">Transaksi Gagal</string>
 
 </resources>

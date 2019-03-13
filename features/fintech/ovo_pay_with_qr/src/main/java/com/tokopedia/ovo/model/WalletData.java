@@ -8,7 +8,7 @@ public class WalletData {
     @Expose
     private Wallet wallet;
 
-    public Wallet getWallet(){
+    public Wallet getWallet() {
         return wallet;
     }
 }

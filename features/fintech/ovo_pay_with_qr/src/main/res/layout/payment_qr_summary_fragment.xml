@@ -42,17 +42,17 @@
                         android:id="@+id/shop_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tokopedia"
-                        android:textColor="#ffffff"
-                        android:textSize="16sp" />
+                        android:text="@string/default_shop_name"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_16" />
 
                     <TextView
                         android:id="@+id/merchant_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Marketplace"
-                        android:textColor="#ffffff"
-                        android:textSize="12sp" />
+                        android:text="@string/default_shop_description"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -77,7 +77,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nominal Pembelian" />
+                        android:text="@string/input_amount" />
 
 
                     <LinearLayout
@@ -90,11 +90,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center_horizontal"
-                            android:text="Rp"
+                            android:text="@string/rp_string"
                             android:layout_marginRight="@dimen/dp_4"
                             android:layout_marginEnd="@dimen/dp_4"
-                            android:textColor="#444444"
-                            android:textSize="24sp" />
+                            android:textColor="@color/cash_point_color"
+                            android:textSize="@dimen/sp_24" />
 
                         <EditText
                             android:id="@+id/input_amount"
@@ -104,7 +104,7 @@
                             android:cursorVisible="true"
                             android:inputType="number"
                             android:minWidth="@dimen/dp_30"
-                            android:textColor="#444444"
+                            android:textColor="@color/cash_point_color"
                             android:textSize="24sp"
                             android:paddingRight="@dimen/dp_16"
                             android:paddingEnd="@dimen/dp_16"/>
@@ -138,18 +138,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:text="Metode Pembayaran"
+                    android:text="@string/payment_method"
                     android:textColor="#6b767e"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/sp_12" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     android:lineSpacingExtra="8sp"
-                    android:text="OVO Cash"
+                    android:text="@string/ovo_cash_text"
                     android:textColor="#2d263b"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp_16" />
 
                 <View
                     android:layout_width="match_parent"
@@ -159,11 +159,12 @@
                     android:background="@color/grey_200" />
 
                 <TextView
+                    android:id="@+id/ovo_cash_point"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sisa Saldo Rp320.000 &amp; OVO Points 320.000"
-                    android:textColor="#444444"
-                    android:textSize="12sp" />
+                    android:text="@string/cash_point"
+                    android:textColor="@color/cash_point_color"
+                    android:textSize="@dimen/sp_12" />
 
                 <LinearLayout
                     android:id="@+id/switch_layout"
@@ -173,12 +174,12 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Gunakan OVO Points"
-                        android:textColor="#6b767e"
-                        android:textSize="16sp" />
+                        android:text="@string/use_ovo_points"
+                        android:textColor="@color/pin_normal"
+                        android:textSize="@dimen/sp_16" />
 
                     <Switch
                         android:id="@+id/switch_ovo"
@@ -203,16 +204,16 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/dp_0"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="OVO POINTS TERPAKAI" />
+                            android:text="@string/ovo_point_title" />
 
                         <TextView
                             android:id="@+id/ovo_points"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/ovo_points_amnt"
+                            android:text="@string/ovo_cash_point_amnt"
                             android:textColor="@color/header_bg"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -224,16 +225,16 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/dp_0"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="OVO CASH TERPAKAI" />
+                            android:text="@string/ovo_cash_title" />
 
                         <TextView
                             android:id="@+id/ovo_cash"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/ovo_cash_amnt"
+                            android:text="@string/ovo_cash_point_amnt"
                             android:textColor="@color/green_text"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -263,7 +264,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:padding="@dimen/dp_10"
-                        android:text="BAYAR"
+                        android:text="@string/buy_string"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_16" />
                 </LinearLayout>
@@ -282,9 +283,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:gravity="center_horizontal"
-                android:text="BATALKAN"
-                android:textColor="#06b3ba"
-                android:textSize="14sp"
+                android:text="@string/go_back"
+                android:textColor="@color/aqua_color"
+                android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@+id/pay_btn" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

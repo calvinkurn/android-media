@@ -1,5 +1,6 @@
 package com.tokopedia.ovo.view;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     private TextView backToMain;
     private TextView tryAgain;
     QrOvoPayTxDetailPresenter presenter;
+    TransactionResultListener listener;
 
     public static Fragment createInstance(int transferId, int transactionId) {
         Fragment fragment = new QrPayTxFailFragment();
@@ -35,6 +37,12 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     @Override
     protected void initInjector() {
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        listener = (TransactionResultListener) activity;
     }
 
     @Override
@@ -63,7 +71,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
 
     @Override
     public void setSuccessThankYouData(GoalQRThanks data) {
-        ((QrOvoPayTxDetailActivity) getActivity()).goToSuccessFragment();
+        listener.goToSuccessFragment();
     }
 
     @Override
@@ -72,7 +80,10 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
         callSection.setOnClickListener(view -> {
 
         });
-        backToMain.setOnClickListener(view -> getActivity().finish());
+        backToMain.setOnClickListener(view -> {
+            listener.setResult(Activity.RESULT_OK);
+            listener.finish();
+        });
         tryAgain.setOnClickListener(view -> presenter.requestForThankYouPage(getActivity(), getArguments().getInt("transfer_id")));
     }
 }

@@ -11,7 +11,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.ovo.R;
 
-public class QrOvoPayTxDetailActivity extends BaseSimpleActivity {
+public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements TransactionResultListener {
     private static final int SUCCESS = 0;
     private static final int FAIL = 1;
 
@@ -34,14 +34,17 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent().getIntExtra("code", -1) == SUCCESS)
+        if (getIntent().getIntExtra("code", -1) == SUCCESS) {
+            updateTitle(getString(R.string.success_transaction));
             return QrTxSuccessDetailFragment.createInstance(
                     getIntent().getIntExtra("transfer_id", -1),
                     getIntent().getIntExtra("transaction_id", -1));
-        else
+        } else {
+            updateTitle(getString(R.string.fail_transaction));
             return QrPayTxFailFragment.createInstance(
                     getIntent().getIntExtra("transfer_id", -1),
                     getIntent().getIntExtra("transaction_id", -1));
+        }
     }
 
     public void goToFailFragment() {

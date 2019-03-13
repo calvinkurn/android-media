@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Errors {
 
-@SerializedName("title")
-@Expose
-private String title;
-@SerializedName("message")
-@Expose
-private String message;
+    @SerializedName("title")
+    @Expose
+    private String title;
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     public Errors(String title, String message) {
         this.title = title;
@@ -18,19 +18,19 @@ private String message;
     }
 
     public String getTitle() {
-return title;
-}
+        return title;
+    }
 
-public void setTitle(String title) {
-this.title = title;
-}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-public String getMessage() {
-return message;
-}
+    public String getMessage() {
+        return message;
+    }
 
-public void setMessage(String message) {
-this.message = message;
-}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
 }

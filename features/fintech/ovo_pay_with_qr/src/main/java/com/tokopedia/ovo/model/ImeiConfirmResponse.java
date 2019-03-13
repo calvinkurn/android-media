@@ -18,6 +18,7 @@ public class ImeiConfirmResponse {
     @SerializedName("errors")
     @Expose
     private List<Errors> errors;
+
     public int getTransactionId() {
         return transactionId;
     }
@@ -29,7 +30,8 @@ public class ImeiConfirmResponse {
     public String getPinUrl() {
         return pinUrl;
     }
-    public List<Errors> getErrors(){
+
+    public List<Errors> getErrors() {
         return errors;
     }
 }

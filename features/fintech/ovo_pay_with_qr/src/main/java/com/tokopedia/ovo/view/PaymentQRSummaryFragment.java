@@ -2,6 +2,7 @@ package com.tokopedia.ovo.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -38,6 +40,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
     private static final String QR_RESPONSE = "QR_RESPONSE";
     private static final int SUCCESS = 0;
     private static final int FAIL = 1;
+    private static final int REQUEST_CODE = 0;
     String id;
     String imeiNumber;
     BarcodeResponseData responseData;
@@ -57,6 +60,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
     PaymentQrSummaryPresenterImpl presenter;
     int transferId;
     int transactionId;
+    private TextView pointCash;
+    private Wallet wallet;
 
     public static Fragment createInstance(String qrData, String imei) {
         Bundle bundle = new Bundle();
@@ -109,6 +114,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
         switchLayout = view.findViewById(R.id.switch_layout);
         bayarLayout = view.findViewById(R.id.btn_text_layout);
         ovoDetailLayout = view.findViewById(R.id.ovo_detail_layout);
+        pointCash = view.findViewById(R.id.ovo_cash_point);
         ovoPoints = view.findViewById(R.id.ovo_points);
         ovoCash = view.findViewById(R.id.ovo_cash);
         switchButton = view.findViewById(R.id.switch_ovo);
@@ -118,14 +124,21 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
         if (responseData.getGoalQRInquiry() != null) {
             shopName.setText(responseData.getGoalQRInquiry().getMerchant().getName());
             shopDetail.setText(responseData.getGoalQRInquiry().getMerchant().getDescription());
-
             if (responseData.getGoalQRInquiry().getAmount() != 0) {
                 enableInputField(false);
                 inputAmount.setText(String.valueOf(responseData.getGoalQRInquiry().getAmount()));
             } else {
                 enableInputField(true);
             }
-
+            inputAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        getActivity().getWindow().setSoftInputMode(
+                                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    }
+                }
+            });
             inputAmount.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -142,9 +155,22 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
                 public void afterTextChanged(Editable editable) {
                     if (!TextUtils.isEmpty(editable)) {
                         inputAmount.removeTextChangedListener(this);
-                        inputAmount.setText(Utils.convertToCurrencyStringWithoutRp(Utils.convertToCurrencyLongFromString(editable.toString())));
+                        long amountInLong = Utils.convertToCurrencyLongFromString(editable.toString());
+                        String formattedString = Utils.convertToCurrencyStringWithoutRp(amountInLong);
+                        inputAmount.setText(formattedString);
                         inputAmount.addTextChangedListener(this);
                         inputAmount.setSelection(inputAmount.getText().length());
+
+                        if (amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
+                            ovoPoints.setText(String.format(getString(R.string.ovo_cash_point_amnt),
+                                    wallet.getPointBalance()));
+                            long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
+                            ovoCash.setText(String.format(getString(R.string.ovo_cash_point_amnt),
+                                    String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
+                        } else {
+                            ovoCash.setText(String.format(getString(R.string.ovo_cash_point_amnt), String.valueOf(0)));
+                            ovoPoints.setText(formattedString);
+                        }
                     }
                 }
             });
@@ -166,6 +192,12 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
         inputAmount.setClickable(isEnabled);
     }
 
+    @Override
+    public void onDestroyView() {
+        hideKeyboard(getView(), getActivity());
+        super.onDestroyView();
+    }
+
     private void hideKeyboard(View v, Activity activity) {
         InputMethodManager keyboard = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboard.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -173,8 +205,9 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
 
     @Override
     public void setWalletBalance(Wallet walletData) {
-        ovoPoints.setText(String.format(getString(R.string.ovo_points_amnt), walletData.getPointBalance()));
-        ovoCash.setText(String.format(getString(R.string.ovo_cash_amnt), walletData.getCashBalance()));
+        wallet = walletData;
+        pointCash.setText(String.format(getString(R.string.cash_point), walletData.getCashBalance(),
+                walletData.getPointBalance()));
         bayarBtn.setOnClickListener(view1 -> {
             hideKeyboard(getView(), getActivity());
             if (TextUtils.isEmpty(inputAmount.getText()) || (inputAmount.getText() != null
@@ -210,10 +243,11 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
             if (response.getStatus().equalsIgnoreCase("pending")) {
                 startActivity(OvoWebViewActivity.createInstance(getActivity(), response.getPinUrl()));
             } else if (response.getStatus().equalsIgnoreCase("success")) {
-                startActivity(QrOvoPayTxDetailActivity.createInstance(getActivity(), transferId, response.getTransactionId(), SUCCESS));
+                startActivityForResult(QrOvoPayTxDetailActivity.createInstance(
+                        getActivity(), transferId, response.getTransactionId(), SUCCESS), REQUEST_CODE);
             } else {
-                startActivity(QrOvoPayTxDetailActivity.createInstance(getActivity(), transferId, response.getTransactionId(), FAIL));
-
+                startActivityForResult(QrOvoPayTxDetailActivity.createInstance(
+                        getActivity(), transferId, response.getTransactionId(), FAIL), REQUEST_CODE);
             }
         }
     }
@@ -222,12 +256,20 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
     public void showError(String message) {
         setProgressButton();
         Snackbar.make(getView(), getString(R.string.error_message), Snackbar.LENGTH_SHORT).show();
+        enableInputField(false);
     }
 
     public void setProgressButton() {
         bayarLayout.setAlpha(1f);
         progressBar.setVisibility(View.GONE);
         bayarBtn.setClickable(true);
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            getActivity().finish();
+        }
     }
 }
