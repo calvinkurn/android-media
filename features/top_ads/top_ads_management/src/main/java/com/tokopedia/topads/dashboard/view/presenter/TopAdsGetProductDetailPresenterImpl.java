@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.model.ProductListDomain;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsGetProductDetailView;

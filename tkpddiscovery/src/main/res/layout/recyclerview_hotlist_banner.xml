@@ -23,11 +23,6 @@
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false" />
 
-    <com.tokopedia.topads.sdk.widget.TopAdsBannerView
-        android:id="@+id/topAdsBannerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <TextView
         android:id="@+id/product_counter"
         android:layout_width="match_parent"
@@ -36,5 +31,10 @@
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         tools:text="200+ Produk" />
+
+    <com.tokopedia.topads.sdk.widget.TopAdsBannerView
+        android:id="@+id/topAdsBannerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

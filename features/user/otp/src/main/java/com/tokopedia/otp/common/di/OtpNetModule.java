@@ -14,7 +14,6 @@ import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
 import com.tokopedia.otp.common.network.WSErrorResponse;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -52,7 +51,7 @@ public class OtpNetModule {
     @OtpScope
     @Provides
     public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context,
-                                                                UserSession userSession) {
+                                                                UserSessionInterface userSession) {
         return new FingerprintInterceptor((NetworkRouter) context, userSession);
     }
 

@@ -1,76 +1,57 @@
 package com.tokopedia.core.analytics;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.gcm.utils.RouterUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScreenTrackingBuilder {
-    private static final String AF_UNAVAILABLE_VALUE = "none";
-
-    private Authenticated authEvent;
     private String screenName;
+    private Map<String, String> customDimension = new HashMap<>();
 
-    public static ScreenTrackingBuilder newInstance(Context context,
-                                                    ScreenTracking.IOpenScreenAnalytics openScreenAnalytics,
-                                                    String afUniqueId) {
-        return new ScreenTrackingBuilder(context, openScreenAnalytics, afUniqueId);
+    public static ScreenTrackingBuilder newInstance(ScreenTracking.IOpenScreenAnalytics openScreenAnalytics) {
+        return new ScreenTrackingBuilder(openScreenAnalytics);
     }
 
-    public static ScreenTrackingBuilder newInstance(Context context,
-                                                    String screenName,
-                                                    String afUniqueId) {
-        return new ScreenTrackingBuilder(context, screenName, afUniqueId);
+    public static ScreenTrackingBuilder newInstance(String screenName) {
+        return new ScreenTrackingBuilder(screenName);
     }
 
-    private ScreenTrackingBuilder(Context context,
-                                  ScreenTracking.IOpenScreenAnalytics openScreenAnalytics,
-                                  String afUniqueId) {
-        if (openScreenAnalytics!= null) {
+    private ScreenTrackingBuilder(ScreenTracking.IOpenScreenAnalytics openScreenAnalytics) {
+        if (openScreenAnalytics != null) {
             screenName = openScreenAnalytics.getScreenName();
         }
-        initAuthEvent(context, afUniqueId);
     }
 
-    private ScreenTrackingBuilder(Context context,
-                                  String screenName,
-                                  String afUniqueId) {
+    private ScreenTrackingBuilder(String screenName) {
         this.screenName = screenName;
-        initAuthEvent(context, afUniqueId);
-    }
-
-    private void initAuthEvent(Context context, String afUniqueId){
-        authEvent = new Authenticated();
-        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
-
-        authEvent.setUserFullName(sessionHandler.getLoginName());
-        authEvent.setUserID(sessionHandler.getGTMLoginID());
-        authEvent.setShopID(sessionHandler.getShopID());
-        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
-        authEvent.setAfUniqueId(afUniqueId != null ? afUniqueId : AF_UNAVAILABLE_VALUE);
     }
 
     public ScreenTrackingBuilder setNetworkSpeed(String networkSpeed) {
-        authEvent.setNetworkSpeed(networkSpeed);
+        customDimension.put(Authenticated.KEY_NETWORK_SPEED, networkSpeed);
         return this;
     }
 
     public ScreenTrackingBuilder setKeyCompetitorIntelligence(String data) {
-        if (!TextUtils.isEmpty(data))
-            authEvent.setKeyCompetitorIntelligence(data);
+        if (!TextUtils.isEmpty(data)) {
+            customDimension.put(Authenticated.KEY_COMPETITOR_INTELLIGENCE, data);
+        }
+        return this;
+    }
+
+    public ScreenTrackingBuilder setDeepLinkUrl(String deepLinkUrlStr) {
+        if (!TextUtils.isEmpty(deepLinkUrlStr))
+            customDimension.put(Authenticated.KEY_DEEPLINK_URL, deepLinkUrlStr);
         return this;
     }
 
     public void execute(Context context) {
         if (!TextUtils.isEmpty(screenName)) {
-            ScreenTracking.eventAuthScreen(context, authEvent, screenName);
+            ScreenTracking.eventAuthScreen(context, customDimension, screenName);
         }
     }
 
-    public void sendAuth(Context context) {
-        ScreenTracking.eventAuth(context, authEvent);
-    }
 }

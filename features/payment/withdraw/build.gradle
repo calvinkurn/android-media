@@ -34,7 +34,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
-
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -50,7 +50,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -64,8 +63,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
     }
 }
 

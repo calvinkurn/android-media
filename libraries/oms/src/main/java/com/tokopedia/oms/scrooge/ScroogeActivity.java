@@ -3,11 +3,13 @@ package com.tokopedia.oms.scrooge;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -21,7 +23,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.oms.R;
+
+import java.io.ByteArrayOutputStream;
 
 public class ScroogeActivity extends AppCompatActivity implements FilePickerInterface {
     //callbacks URL's
@@ -198,7 +203,11 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         });
 
         webview.setWebChromeClient(webChromeWebviewClient);
-        webview.getSettings().setJavaScriptEnabled(true);
+        if (webview.getSettings() != null) {
+            String userAgent = String.format("%s [%s/%s]", webview.getSettings().getUserAgentString(), getString(R.string.app_android), GlobalConfig.VERSION_NAME);
+            webview.getSettings().setUserAgentString(userAgent);
+            webview.getSettings().setJavaScriptEnabled(true);
+        }
     }
 
     @Override
@@ -208,6 +217,8 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
+            String base64 = encodeToBase64(imagePath);
+
             if (imagePath != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
@@ -217,10 +228,18 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                         .append("'")
                         .append(", ")
                         .append("'")
-                        .append(ImageHandler.encodeToBase64(imagePath))
+                        .append(base64)
                         .append("')");
                 mWebView.loadUrl(jsCallbackBuilder.toString());
             }
         }
+    }
+
+    public static String encodeToBase64(String imagePath) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 }

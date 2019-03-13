@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;

@@ -131,7 +131,15 @@ public class ShopListFragment extends SearchSectionFragment
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(getGridLayoutManager());
-        recyclerView.addItemDecoration(new ShopListItemDecoration());
+        recyclerView.addItemDecoration(
+                new ShopListItemDecoration(
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
+                        -(getContext().getResources().getDimensionPixelSize(R.dimen.dp_1)),
+                        0
+                )
+        );
+
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
 

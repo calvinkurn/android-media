@@ -3,11 +3,12 @@ package com.tokopedia.checkout.view.di.component;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.AddToCartOneClickShipmentUseCase;
+import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
+import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
@@ -18,6 +19,7 @@ import com.tokopedia.checkout.view.di.module.DataMapperModule;
 import com.tokopedia.checkout.view.di.module.DataModule;
 import com.tokopedia.checkout.view.di.module.DataUtilModule;
 import com.tokopedia.checkout.view.di.module.ShipmentUseCaseModule;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -35,6 +37,8 @@ public class CartComponentInjector {
     @Inject
     AddToCartOneClickShipmentUseCase addToCartUseCaseOneClickShipment;
     @Inject
+    CheckoutUseCase checkoutUseCase;
+    @Inject
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     @Inject
     CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase;
@@ -43,7 +47,9 @@ public class CartComponentInjector {
     @Inject
     GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase;
     @Inject
-    UserSession userSession;
+    EditAddressUseCase editAddressUseCase;
+    @Inject
+    UserSessionInterface userSession;
 
     private CartComponent cartApiServiceComponent;
 
@@ -88,6 +94,10 @@ public class CartComponentInjector {
         return addToCartUseCaseOneClickShipment;
     }
 
+    public CheckoutUseCase getCheckoutUseCase() {
+        return checkoutUseCase;
+    }
+
     public UpdateCartUseCase getUpdateCartUseCase() {
         return updateCartUseCase;
     }
@@ -108,7 +118,11 @@ public class CartComponentInjector {
         return getMarketPlaceCartCounterUseCase;
     }
 
-    public UserSession getUserSession() {
+    public UserSessionInterface getUserSession() {
         return userSession;
+    }
+
+    public EditAddressUseCase getEditAddressUseCase() {
+        return editAddressUseCase;
     }
 }

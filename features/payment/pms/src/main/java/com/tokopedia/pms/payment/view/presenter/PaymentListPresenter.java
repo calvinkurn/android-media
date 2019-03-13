@@ -45,7 +45,7 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
         Map<String, Object> variables = new HashMap<>();
         variables.put(Constant.CURSOR, cursor);
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.payment_list_query), DataPaymentList.class, variables);
+                R.raw.payment_list_query), DataPaymentList.class, variables, false);
         getPaymentListUseCase.clearRequest();
         getPaymentListUseCase.setRequest(graphqlRequest);
         getPaymentListUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
@@ -87,7 +87,7 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
         variables.put(Constant.MERCHANT_CODE, merchantCode);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.get_cancel_detail), DataCancelDetail.class, variables);
+                R.raw.get_cancel_detail), DataCancelDetail.class, variables, false);
         getCancelDetailUseCase.setRequest(graphqlRequest);
         getCancelDetailUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -121,7 +121,7 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
         variables.put(Constant.MERCHANT_CODE, merchantCode);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.cancel_payment), DataCancelPayment.class, variables);
+                R.raw.cancel_payment), DataCancelPayment.class, variables, false);
         cancelPaymentUseCase.setRequest(graphqlRequest);
         cancelPaymentUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override

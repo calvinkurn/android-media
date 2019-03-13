@@ -3,10 +3,11 @@ package com.tokopedia.abstraction.common.network.interceptor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,23 +63,21 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     private Context context;
     private AbstractionRouter abstractionRouter;
-    protected UserSession userSession;
+    protected UserSessionInterface userSession;
     protected String authKey;
 
     public TkpdAuthInterceptor(@ApplicationContext Context context,
-                               AbstractionRouter abstractionRouter,
-                               UserSession userSession) {
-        this(context, abstractionRouter, userSession, AuthUtil.KEY.KEY_WSV4);
+                               AbstractionRouter abstractionRouter) {
+        this(context, abstractionRouter, AuthUtil.KEY.KEY_WSV4);
     }
 
     @Inject
     public TkpdAuthInterceptor(@ApplicationContext Context context,
                                AbstractionRouter abstractionRouter,
-                               UserSession userSession,
                                String authKey) {
         this.context = context;
         this.abstractionRouter = abstractionRouter;
-        this.userSession = userSession;
+        this.userSession = new UserSession(context);
         this.authKey = authKey;
     }
 
@@ -302,11 +301,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     @Deprecated
     protected void showMaintenancePage() {
         abstractionRouter.showMaintenancePage();
-    }
-
-    @Deprecated
-    protected void showForceLogoutDialog(Response response) {
-        abstractionRouter.showForceLogoutDialog(response);
     }
 
     @Deprecated

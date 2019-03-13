@@ -125,6 +125,9 @@ public class ProductItem implements Parcelable {
     @SerializedName("brand")
     @Expose
     private Brand brand;
+    @SerializedName("desktop_url")
+    @Expose
+    private String desktopUrl;
     @SerializedName("catalog")
     @Expose
     private Catalog catalog;
@@ -178,6 +181,8 @@ public class ProductItem implements Parcelable {
         catalog = in.readParcelable(Catalog.class.getClassLoader());
         isLiked = in.readByte() != 0;
         this.isTrack = in.readByte() != 0;
+        desktopUrl = in.readString();
+
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
@@ -191,6 +196,14 @@ public class ProductItem implements Parcelable {
             return new ProductItem[size];
         }
     };
+
+    public String getDesktopUrl() {
+        return desktopUrl;
+    }
+
+    public void setDesktopUrl(String desktopUrl) {
+        this.desktopUrl = desktopUrl;
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -506,6 +519,8 @@ public class ProductItem implements Parcelable {
         dest.writeParcelable(catalog, flags);
         dest.writeByte((byte) (isLiked ? 1 : 0));
         dest.writeByte(this.isTrack ? (byte) 1 : (byte) 0);
+        dest.writeString(desktopUrl);
+
     }
 
     public int describeContents() {

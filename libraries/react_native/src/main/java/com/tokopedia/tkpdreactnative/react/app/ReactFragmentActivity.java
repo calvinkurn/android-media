@@ -1,18 +1,19 @@
 package com.tokopedia.tkpdreactnative.react.app;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpdreactnative.R;
@@ -25,17 +26,20 @@ import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
  * Created by okasurya on 1/9/18.
  */
 
-public abstract class ReactFragmentActivity<T extends ReactNativeFragment> extends BasePresenterActivity implements ReactNativeView {
+public abstract class ReactFragmentActivity<T extends ReactNativeFragment> extends BaseActivity implements ReactNativeView {
 
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
     public static final String ANDROID_INTENT_EXTRA_REFERRER = "android.intent.extra.REFERRER";
     public static final String DEEP_LINK_URI = "deep_link_uri";
 
     private ProgressBar loaderBootingReact;
+    private Toolbar toolbar;
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_react_native;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_react_native);
+        initView();
     }
 
     @Override
@@ -50,46 +54,15 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         return super.onKeyUp(keyCode, event);
     }
 
-    @Override
     protected void initView() {
-        actionSetToolbarTitle(getToolbarTitle());
-        loaderBootingReact = (ProgressBar) findViewById(R.id.rn_progressbar);
+        setupToolbar();
+        loaderBootingReact = findViewById(R.id.rn_progressbar);
         T fragment = getReactNativeFragment();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -106,11 +79,34 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         }
     }
 
+    private void setupToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(this.getTitle());
+        }
+        actionSetToolbarTitle(getToolbarTitle());
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
     @Override
     public void actionSetToolbarTitle(String title) {
-        if(!TextUtils.isEmpty(title)) {
-            toolbar.setTitle(title);
+        if(!TextUtils.isEmpty(title) && getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -123,16 +119,12 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         loaderBootingReact.setVisibility(View.GONE);
     }
 
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
     protected Bundle getReactNativeProps() {
         Bundle bundle = getIntent().getExtras();
         Bundle newBundle = new Bundle();
 
         // clear bundle from deeplinks default value
+        assert bundle != null;
         for (String key : bundle.keySet()) {
             if (!key.equalsIgnoreCase(IS_DEEP_LINK_FLAG) &&
                     !key.equalsIgnoreCase(ANDROID_INTENT_EXTRA_REFERRER) &&

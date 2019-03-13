@@ -14,9 +14,8 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
-import com.tokopedia.navigation_common.AbTestingOfficialStore;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.searchbar.MainToolbar;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import java.util.List;
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FragmentListener, NotificationListener {
+        implements FragmentListener, AllNotificationListener {
 
     private MainToolbar mainToolbar;
     private TabLayout tabLayout;
@@ -35,9 +34,8 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
-    private AbTestingOfficialStore abTestingOfficialStore;
 
-    private int badgeNumber;
+    private int badgeNumberNotification, badgeNumberInbox;
 
     public static FeedPlusContainerFragment newInstance(Bundle bundle) {
         FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
@@ -59,7 +57,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initVar();
         initView();
     }
 
@@ -74,7 +71,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
-        notifyToolbarForAbTesting();
     }
 
     @Override
@@ -85,25 +81,13 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
             contentExploreFragment.scrollToTop();
         }
     }
-
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        this.badgeNumber = number;
-        if (mainToolbar != null || getActivity() != null) {
-            mainToolbar.setNotificationNumber(number);
-        }
-    }
-
-    private void initVar() {
-        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
-    }
     
     private void initView() {
         setAdapter();
         if (hasCategoryIdParam()) {
             goToExplore();
         }
-        onNotifyBadgeNotification(badgeNumber); // notify badge after toolbar created
+        onNotificationChanged(badgeNumberNotification, badgeNumberInbox); // notify badge after toolbar created
     }
 
     private void setAdapter() {
@@ -127,7 +111,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private FeedPlusFragment getFeedPlusFragment() {
         if (feedPlusFragment == null) {
-            feedPlusFragment = FeedPlusFragment.newInstance();
+            feedPlusFragment = FeedPlusFragment.newInstance(getArguments());
         }
         return feedPlusFragment;
     }
@@ -164,9 +148,13 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
                 && tabLayout.getTabCount() - 1 >= 0;
     }
 
-    public void notifyToolbarForAbTesting() {
-        if (mainToolbar != null) {
-            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
+    @Override
+    public void onNotificationChanged(int notificationCount, int inboxCount) {
+        if (mainToolbar != null && getActivity() != null) {
+            mainToolbar.setNotificationNumber(notificationCount);
+            mainToolbar.setInboxNumber(inboxCount);
         }
+        this.badgeNumberNotification = notificationCount;
+        this.badgeNumberInbox = inboxCount;
     }
 }

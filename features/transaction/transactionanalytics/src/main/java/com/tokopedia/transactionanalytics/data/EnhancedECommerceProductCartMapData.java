@@ -11,6 +11,10 @@ import java.util.Map;
 public class EnhancedECommerceProductCartMapData {
     private Map<String, Object> Product = new HashMap<>();
 
+    public static final String SHOP_TYPE_REGULER = "reguler";
+    public static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
+    public static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
+
     private static final String KEY_NAME = "name";
     private static final String KEY_ID = "id";
     private static final String KEY_PRICE = "price";
@@ -49,8 +53,9 @@ public class EnhancedECommerceProductCartMapData {
         Product.put(KEY_PRICE, !TextUtils.isEmpty(price) ? price : DEFAULT_VALUE_NONE_OTHER);
     }
 
-    public void setQty(String qty) {
-        Product.put(KEY_QTY, !TextUtils.isEmpty(qty) ? qty : DEFAULT_VALUE_NONE_OTHER);
+    public void setQty(int qty) {
+        String qtyString = String.valueOf(qty);
+        Product.put(KEY_QTY, !TextUtils.isEmpty(qtyString) ? qtyString : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setCategory(String category) {

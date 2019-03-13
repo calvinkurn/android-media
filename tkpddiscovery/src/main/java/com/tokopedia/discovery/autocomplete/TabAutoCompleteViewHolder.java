@@ -13,6 +13,7 @@ import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
@@ -114,6 +115,10 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
                     productFragment.addBulkSearchResult(list);
                     continue;
                 case SearchData.AUTOCOMPLETE_HOTLIST:
+                    list = prepareHotlistSearch(searchData, element.getSearchTerm());
+                    list = insertTitle(list, searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
                     continue;
                 case SearchData.AUTOCOMPLETE_IN_CATEGORY:
                     list = prepareInCategorySearch(searchData, element.getSearchTerm());
@@ -187,6 +192,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setApplink(item.getApplink());
             model.setRecom(item.getRecom());
             model.setCategoryId(item.getSc());
+            model.setIsOfficial(item.isOfficial());
             list.add(model);
         }
         return list;
@@ -202,6 +208,25 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setUrl(item.getUrl());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
+            list.add(model);
+        }
+        return list;
+    }
+
+    private List<Visitable> prepareHotlistSearch(SearchData searchData, String searchTerm) {
+        List<Visitable> list = new ArrayList<>();
+        for (SearchItem item : searchData.getItems()) {
+            HotlistSearch model = new HotlistSearch();
+            model.setEventId(searchData.getId());
+            model.setEventName(searchData.getName());
+            model.setApplink(item.getApplink());
+            model.setUrl(item.getUrl());
+            model.setKeyword(item.getKeyword());
+            model.setSearchTerm(searchTerm);
+            model.setImageUrl(item.getImageURI());
+            model.setSearchTerm(searchTerm);
+            model.setCategoryId(item.getSc());
             list.add(model);
         }
         return list;
@@ -222,6 +247,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setKeyword(item.getKeyword());
             model.setCategoryId(item.getSc());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             childList.add(model);
         }
         categorySearch.setList(childList);
@@ -241,6 +267,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setImageUrl(item.getImageURI());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             list.add(model);
         }
         return list;

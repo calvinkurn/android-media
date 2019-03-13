@@ -27,6 +27,9 @@ public class ShipmentDetailData implements Parcelable {
     private boolean courierPromoApplied;
     private String shopId;
     private List<ShippingCourierViewModel> shippingCourierViewModels;
+    private boolean isBlackbox;
+    private int addressId;
+    private boolean preorder;
 
     public ShipmentDetailData() {
     }
@@ -50,6 +53,9 @@ public class ShipmentDetailData implements Parcelable {
         courierPromoApplied = in.readByte() != 0;
         shopId = in.readString();
         shippingCourierViewModels = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
+        isBlackbox = in.readByte() != 0;
+        addressId = in.readInt();
+        preorder = in.readByte() != 0;
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -192,6 +198,30 @@ public class ShipmentDetailData implements Parcelable {
         this.courierPromoApplied = courierPromoApplied;
     }
 
+    public boolean getIsBlackbox() {
+        return isBlackbox;
+    }
+
+    public void setIsBlackbox(boolean blackbox) {
+        isBlackbox = blackbox;
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
+    }
+
+    public boolean getPreorder() {
+        return preorder;
+    }
+
+    public void setPreorder(boolean preorder) {
+        this.preorder = preorder;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -214,6 +244,9 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeByte((byte) (dropshipperPhoneValid ? 1 : 0));
         dest.writeByte((byte) (courierPromoApplied ? 1 : 0));
         dest.writeString(shopId);
+        dest.writeByte((byte) (isBlackbox ? 1 : 0));
+        dest.writeInt(addressId);
+        dest.writeByte((byte) (preorder ? 1 : 0));
         dest.writeTypedList(shippingCourierViewModels);
     }
 }

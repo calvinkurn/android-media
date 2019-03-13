@@ -24,6 +24,9 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="true"
@@ -34,6 +37,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="name, label">
+        <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true"/>
         <meta-data
             android:name="android.support.VERSION"
             android:value="26.1.0"
@@ -74,7 +80,9 @@
         <meta-data
             android:name="HANSEL_APP_KEY"
             android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
-
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
         <activity
             android:name=".ConsumerSplashScreen"
             android:label="@string/app_name"
@@ -217,9 +225,6 @@
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".home.ReactNativeOfficialStoreActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -280,14 +285,17 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".home.ReactNativeBrandListOsActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
             android:label="@string/title_activity_people_deposit"
             android:theme="@style/Theme.White"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.saldodetails.activity.SaldoIntroActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_header_saldo_intro"
+            android:theme="@style/Theme.White.PopupTransparent" />
 
         <activity
             android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"

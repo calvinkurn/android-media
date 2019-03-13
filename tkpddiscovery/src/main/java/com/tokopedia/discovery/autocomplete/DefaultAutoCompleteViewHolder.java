@@ -38,6 +38,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
         adapter = new SearchAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new OnScrollListenerAutocomplete(view.getContext(), view));
     }
 
     @Override
@@ -86,6 +87,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
             model.setUrl(item.getUrl());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             childList.add(model);
         }
         recentSearch.setList(childList);
@@ -106,6 +108,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
             model.setUrl(item.getUrl());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             childList.add(model);
         }
         popularSearch.setList(childList);
@@ -129,6 +132,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
             model.setImageUrl(item.getImageURI());
             model.setProductId(item.getProductId());
             model.setProductPrice(item.getPrice());
+            model.setIsOfficial(item.isOfficial());
             childList.add(model);
         }
         recentViewSearch.setList(childList);

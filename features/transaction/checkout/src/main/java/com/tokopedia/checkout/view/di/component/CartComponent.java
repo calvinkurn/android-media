@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.di.component;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.data.repository.AddressRepository;
@@ -26,6 +25,8 @@ import com.tokopedia.logisticdata.data.repository.RatesRepository;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
 
@@ -69,8 +70,6 @@ public interface CartComponent {
     IShipmentMapper shipmentMapper();
 
     ITopPayMapper topPayMapper();
-
-    UserSession userSession();
 
     AbstractionRouter abstractionRouter();
 

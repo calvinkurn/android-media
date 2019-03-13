@@ -14,10 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteAdapter;
@@ -49,6 +49,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
     private static final String SEARCH_INIT_KEY = "SEARCH_INIT_KEY";
+    private static final String SEARCH_IS_OFFICIAL = "SEARCH_IS_OFFICIAL";
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -58,6 +59,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     private HostAutoCompleteAdapter adapter;
     private String mSearch = "";
+    private boolean mIsOfficial = false;
     private String networkErrorMessage;
     private boolean onTabShop;
 
@@ -176,7 +178,8 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState!=null) {
             mSearch = savedInstanceState.getString(SEARCH_INIT_KEY);
-            presenter.search(mSearch);
+            mIsOfficial = savedInstanceState.getBoolean(SEARCH_IS_OFFICIAL);
+            presenter.search(mSearch, mIsOfficial);
         }
     }
 
@@ -184,11 +187,13 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SEARCH_INIT_KEY, mSearch);
+        outState.putBoolean(SEARCH_IS_OFFICIAL, mIsOfficial);
     }
 
-    public void search(String query){
+    public void search(String query, boolean isOfficial){
         this.mSearch = query;
-        presenter.search(mSearch);
+        this.mIsOfficial = isOfficial;
+        presenter.search(mSearch, mIsOfficial);
     }
 
     public void deleteAllRecentSearch(){
@@ -234,12 +239,12 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     @Override
-    public void onItemSearchClicked(String keyword, String categoryId) {
+    public void onItemSearchClicked(String keyword, String categoryId, boolean isOfficial) {
         dropKeyBoard();
         if (!TextUtils.isEmpty(categoryId)) {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId);
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId, isOfficial);
         } else {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword);
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, isOfficial);
         }
     }
 

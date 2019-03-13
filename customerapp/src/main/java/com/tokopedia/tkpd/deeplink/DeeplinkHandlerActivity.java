@@ -20,6 +20,7 @@ import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
@@ -30,7 +31,6 @@ import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -38,8 +38,8 @@ import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
@@ -76,6 +76,9 @@ import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModuleLoader;
+import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
+import com.tokopedia.linker.model.LinkerDeeplinkResult;
+import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
@@ -84,6 +87,8 @@ import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
+import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
+import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
 import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModule;
 import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
@@ -110,6 +115,8 @@ import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
 import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
+import com.tokopedia.shop.open.applink.ShopOpenApplinkModule;
+import com.tokopedia.shop.open.applink.ShopOpenApplinkModuleLoader;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
@@ -135,18 +142,13 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 
-import org.json.JSONObject;
-
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
-
-
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         ProductAddDeeplinkModule.class,
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         ReferralDeeplinkModule.class,
+        ShopOpenApplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
@@ -196,10 +198,11 @@ import io.branch.referral.BranchError;
         UserIdentificationApplinkModule.class,
         SaldoDetailsAppLinkModule.class,
         ChatbotApplinkModule.class,
-        HomeCreditAppLinkModule.class
+        HomeCreditAppLinkModule.class,
+        OfficialStoreApplinkModule.class
 })
 
-public class DeeplinkHandlerActivity extends AppCompatActivity {
+public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static ApplinkDelegate applinkDelegate;
 
@@ -211,6 +214,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new ReferralDeeplinkModuleLoader(),
+                    new ShopOpenApplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
@@ -260,7 +264,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new UserIdentificationApplinkModuleLoader(),
                     new SaldoDetailsAppLinkModuleLoader(),
                     new ChatbotApplinkModuleLoader(),
-                    new HomeCreditAppLinkModuleLoader()
+                    new HomeCreditAppLinkModuleLoader(),
+                    new OfficialStoreApplinkModuleLoader()
             );
         }
 
@@ -270,7 +275,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initBranchSession();
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
 
         if (GlobalConfig.isCustomerApp()) {
@@ -384,18 +388,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         return destination;
     }
 
-    private void initBranchSession() {
-        Branch branch = Branch.getInstance();
-        if (branch != null) {
-            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID(this));
-            branch.initSession(new Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject referringParams, BranchError error) {
-                    if (error == null) {
-                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, DeeplinkHandlerActivity.this);
-                    }
-                }
-            }, this.getIntent().getData(), this);
-        }
+    @Override
+    public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(this, TkpdCache.CACHE_PROMO_CODE);
+        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
+                linkerDefferedDeeplinkData.getPromoCode() : "");
+    }
+
+    @Override
+    public void onError(LinkerError linkerError) {
+
     }
 }

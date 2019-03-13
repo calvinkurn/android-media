@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.list.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -20,6 +19,8 @@ import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.product.manage.list.data.repository.ActionProductManageRepositoryImpl;
 import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
 import com.tokopedia.product.manage.list.data.source.ProductActionApi;
@@ -36,14 +37,14 @@ import com.tokopedia.seller.product.picker.data.repository.GetProductListSelling
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
-import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -66,7 +67,7 @@ public class ProductManageModule {
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
                                                                 MultipleDeleteProductUseCase multipleDeleteProductUseCase,
-                                                                UserSession userSession,
+                                                                UserSessionInterface userSession,
                                                                 TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                                                 TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                                                 GetFeatureProductListUseCase getFeatureProductListUseCase,
@@ -153,15 +154,14 @@ public class ProductManageModule {
     @ProductManageScope
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                                      AbstractionRouter abstractionRouter,
-                                                      UserSession userSession) {
-        return new GMAuthInterceptor(context, abstractionRouter, userSession);
+                                                      AbstractionRouter abstractionRouter) {
+        return new GMAuthInterceptor(context, abstractionRouter);
     }
 
     @ProductManageScope
     @Provides
-    UserSession provideUserSession(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getSession();
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @Provides
@@ -228,5 +228,4 @@ public class ProductManageModule {
     public GraphqlUseCase provideGraphqlUseCase(){
         return new GraphqlUseCase();
     }
-
 }

@@ -254,6 +254,7 @@
             <enum name="secondary" value="2" />
             <enum name="transaction" value="3" />
             <enum name="disable" value="4" />
+            <enum name="white_transparent" value="5" />
         </attr>
         <attr name="buttonCompatSize" format="enum">
             <enum name="big" value="4" />

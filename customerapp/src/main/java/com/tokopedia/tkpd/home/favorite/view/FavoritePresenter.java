@@ -9,6 +9,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.AddFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
@@ -42,7 +43,7 @@ public class FavoritePresenter
 
     private final GetInitialDataPageUsecase getInitialDataPageUsecase;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
-    private final AddFavoriteShopUseCase addFavoriteShopUseCase;
+    private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private final GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
     private final GetFavoriteShopUsecase getFavoriteShopUsecase;
     private DataFavoriteMapper favoriteMapper;
@@ -51,14 +52,14 @@ public class FavoritePresenter
     @Inject
     FavoritePresenter(GetInitialDataPageUsecase getInitialDataPageUsecase,
                       GetTopAdsShopUseCase getTopAdsShopUseCase,
-                      AddFavoriteShopUseCase addFavoriteShopUseCase,
+                      ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
                       GetAllDataFavoriteUseCase getAllDataFavoriteUseCase,
                       GetFavoriteShopUsecase getFavoriteShopUsecase,
                       DataFavoriteMapper favoriteMapper) {
 
         this.getInitialDataPageUsecase = getInitialDataPageUsecase;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
-        this.addFavoriteShopUseCase = addFavoriteShopUseCase;
+        this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
         this.getAllDataFavoriteUseCase = getAllDataFavoriteUseCase;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
         this.favoriteMapper = favoriteMapper;
@@ -78,7 +79,7 @@ public class FavoritePresenter
         getTopAdsShopUseCase.unsubscribe();
         getAllDataFavoriteUseCase.unsubscribe();
         getFavoriteShopUsecase.unsubscribe();
-        addFavoriteShopUseCase.unsubscribe();
+        toggleFavouriteShopUseCase.unsubscribe();
     }
 
     @Override
@@ -89,11 +90,7 @@ public class FavoritePresenter
 
     @Override
     public void addFavoriteShop(View view, TopAdsShopItem shopItem) {
-        RequestParams params = RequestParams.create();
-        params.putString(AddFavoriteShopUseCase.KEY_AD, shopItem.getAdKey());
-        params.putString(AddFavoriteShopUseCase.KEY_SHOP_ID, shopItem.getShopId());
-        params.putString(AddFavoriteShopUseCase.KEY_SRC, AddFavoriteShopUseCase.DEFAULT_VALUE_SRC);
-        addFavoriteShopUseCase.execute(params, new AddFavoriteShopSubscriber(view, shopItem));
+        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopItem.getShopId()), new AddFavoriteShopSubscriber(view, shopItem));
     }
 
     @Override
@@ -308,7 +305,7 @@ public class FavoritePresenter
 
     }
 
-    private class AddFavoriteShopSubscriber extends Subscriber<FavShop> {
+    private class AddFavoriteShopSubscriber extends Subscriber<Boolean> {
 
         private final View view;
         private TopAdsShopItem shopItem;
@@ -334,9 +331,9 @@ public class FavoritePresenter
         }
 
         @Override
-        public void onNext(FavShop favShop) {
+        public void onNext(Boolean isValid) {
             view.clearAnimation();
-            if (favShop.isValid()) {
+            if (isValid) {
                 FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
                 favoriteShopViewModel.setShopId(shopItem.getShopId());
                 favoriteShopViewModel.setShopName(shopItem.getShopName());
