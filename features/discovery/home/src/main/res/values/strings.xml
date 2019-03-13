@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">tkpdhome</string>
     <string name="explore">Browse</string>
     <string name="beli">Beli</string>
     <string name="bayar">Bayar</string>
@@ -39,6 +38,7 @@
     <string name="home_header_tokopoint_new_label">Baru</string>
     <string name="cek_recomendasi">Cek Rekomendasi</string>
     <string name="hampir_habis">Hampir Habis</string>
+    <string name="home_header_fintech_scan">Scan</string>
 
     <string name="sc_notif_title">Notifikasi tersimpan rapi</string>
     <string name="sc_notif_desc">Tak ada yang terlewat, semua notifikasi ada di sini. </string>

@@ -51,6 +51,8 @@ public class HeaderHomeView extends BaseCustomView {
 
     private View view;
 
+    private View scanHolder;
+
     private View tokoCashHolder;
     private TextView tvTitleTokocash;
     private TextView tvBalanceTokocash;
@@ -116,6 +118,7 @@ public class HeaderHomeView extends BaseCustomView {
     private void renderHeaderTokocashWithTokopoint() {
         if (view == null) {
             view = inflate(getContext(), R.layout.layout_header_home_with_tokopoint, this);
+            scanHolder = view.findViewById(R.id.container_action_scan);
             tokoCashHolder = view.findViewById(R.id.container_tokocash);
             tvActionTokocash = view.findViewById(R.id.tv_btn_action_tokocash);
             tvTitleTokocash = view.findViewById(R.id.tv_title_tokocash);
@@ -134,8 +137,7 @@ public class HeaderHomeView extends BaseCustomView {
             tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
             mTextCouponCount = view.findViewById(R.id.text_coupon_count);
         }
-        renderTokocashLayoutListener();
-        renderTokoPointLayoutListener();
+        viewListener();
     }
 
     @SuppressLint("SetTextI18n")
@@ -234,9 +236,7 @@ public class HeaderHomeView extends BaseCustomView {
 
             }
         }
-
     }
-
 
     private void renderVisibilityTitleOnlyTokoCash(boolean isVisibleButtonAction) {
         if (!headerViewModel.getHomeHeaderWalletActionData().isLinked()) {
@@ -264,6 +264,15 @@ public class HeaderHomeView extends BaseCustomView {
                 tvActionTokocash.setTypeface(null, Typeface.BOLD);
             }
         }
+    }
+
+    private void viewListener() {
+        scanHolder.setOnClickListener(v ->
+                getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
+                .gotoQrScannerPage(false)));
+
+        renderTokocashLayoutListener();
+        renderTokoPointLayoutListener();
     }
 
     private void renderTokocashLayoutListener() {
