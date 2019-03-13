@@ -16,7 +16,6 @@ public class GqlSpAnchorListResponse implements Parcelable {
     @SerializedName("color")
     private String color;
 
-
     protected GqlSpAnchorListResponse(Parcel in) {
         this.label = in.readString();
         this.url = in.readString();
