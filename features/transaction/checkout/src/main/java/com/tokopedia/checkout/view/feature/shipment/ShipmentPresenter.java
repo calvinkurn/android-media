@@ -770,7 +770,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
-                getView().showToastError(getView().getActivityContext().getString(R.string.error_message_checkout_failed));
+                getView().showToastError(e.getMessage());
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment);
             }
 
