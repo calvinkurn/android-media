@@ -1,16 +1,15 @@
 package com.tokopedia.affiliate.feature.createpost.view.service
 
-import android.app.IntentService
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.support.v4.app.JobIntentService
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.*
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
-import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
@@ -26,7 +25,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 26/02/19.
  */
-class SubmitPostService : IntentService(TAG) {
+class SubmitPostService : JobIntentService() {
 
     @Inject
     lateinit var submitPostUseCase: SubmitPostUseCase
@@ -37,12 +36,13 @@ class SubmitPostService : IntentService(TAG) {
     private var notificationManager: SubmitPostNotificationManager? = null
 
     companion object {
-        private val TAG = SubmitPostService::class.java.simpleName
+        private const val JOB_ID = 13131313
 
-        fun createIntent(context: Context, draftId: String): Intent {
-            return Intent(context, SubmitPostService::class.java).apply {
+        fun startService(context: Context, draftId: String) {
+            val work = Intent(context, SubmitPostService::class.java).apply {
                 putExtra(DRAFT_ID, draftId)
             }
+            enqueueWork(context, SubmitPostService::class.java, JOB_ID, work)
         }
     }
 
@@ -51,7 +51,7 @@ class SubmitPostService : IntentService(TAG) {
         initInjector()
     }
 
-    override fun onHandleIntent(intent: Intent) {
+    override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
         val cacheManager = PersistentCacheManager(baseContext, id)
         val viewModel: CreatePostViewModel = cacheManager.get(
