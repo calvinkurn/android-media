@@ -50,7 +50,7 @@ ext {
     playServiceFirebasePerfMon = '16.2.3'
     playServiceAds = '17.1.2'
     playServiceFirebaseCore = '16.0.6'
-    playServiceTagManager = '11.0.4'
+    playServiceTagManager = '16.0.6'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
@@ -112,7 +112,7 @@ ext {
             phone            : "com.google.android.gms:play-services-auth-api-phone:${playServiceAuthApiPhone}",
             mapsUtils        : "com.google.maps.android:android-maps-utils:${playServiceMapsUtil}",
             ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
-            tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}"
+            tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}"
     ]
 
     firebase = [

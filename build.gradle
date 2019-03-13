@@ -164,6 +164,7 @@ subprojects {
                 substitute module('com.google.firebase:firebase-config') with module("com.google.firebase:firebase-config:${playServiceFirebaseConfig}")
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
+                substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:16.0.5")
             }
         }
     }
