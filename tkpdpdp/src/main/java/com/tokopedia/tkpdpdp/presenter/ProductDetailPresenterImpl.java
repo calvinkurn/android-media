@@ -28,7 +28,7 @@ import com.tokopedia.abstraction.common.network.exception.ResponseDataNullExcept
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
-import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppEventTracking;

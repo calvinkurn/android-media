@@ -13,7 +13,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -23,12 +22,10 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -396,7 +393,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBuyButtonAvailable(TextView buyButtonUnavailable) {
-        buyButtonUnavailable.setBackgroundResource(R.drawable.btn_buy);
+        buyButtonUnavailable.setBackgroundResource(R.drawable.rect_orange);
         buyButtonUnavailable.setTextColor(getColor(context, R.color.white));
         buyButtonUnavailable.setText(R.string.title_buy);
     }

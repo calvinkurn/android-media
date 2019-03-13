@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
@@ -36,11 +36,9 @@ import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.home.presenter.HotListImpl;
 import com.tokopedia.core.home.presenter.HotListView;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.tkpd.home.adapter.HotListAdapter;
 
@@ -48,8 +46,6 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import com.tokopedia.tkpd.R;

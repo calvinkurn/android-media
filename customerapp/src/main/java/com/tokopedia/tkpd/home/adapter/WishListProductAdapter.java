@@ -40,7 +40,6 @@ import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.List;
 
@@ -423,7 +422,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBuyButtonAvailable(TextView buyButtonUnavailable) {
-        buyButtonUnavailable.setBackgroundResource(R.drawable.btn_buy);
+        buyButtonUnavailable.setBackgroundResource(R.drawable.rect_orange);
         buyButtonUnavailable.setTextColor(getColor(context, R.color.white));
         buyButtonUnavailable.setText(R.string.title_buy);
     }

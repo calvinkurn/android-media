@@ -1,4 +1,4 @@
-package com.tokopedia.applink;
+package com.tokopedia.applink.internal;
 
 /**
  * This class is used to store deeplink started with scheme "tokopedia-android-internal".
@@ -9,6 +9,7 @@ package com.tokopedia.applink;
  * (see ProductDetailActivity manifest for example)
  */
 public class ApplinkConstInternal {
+
     public static final String INTERNAL_SCHEME = "tokopedia-android-internal";
 
     public static final String HOST_MARKETPLACE = "marketplace";

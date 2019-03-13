@@ -11,7 +11,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.gone
