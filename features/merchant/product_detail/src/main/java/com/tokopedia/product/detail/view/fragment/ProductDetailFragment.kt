@@ -149,6 +149,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var menu: Menu? = null
     private var useVariant = true
 
+    private var userCod: Boolean = false
+    private var shopCod: Boolean = false
     private var shouldShowCod = false
 
     var loadingProgressDialog: ProgressDialog? = null
@@ -655,14 +657,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
         initStatusBarLight()
         initToolbarLight()
         fab_detail.hide()
-        label_cod.visibility = if (shouldShowCod) View.INVISIBLE else View.GONE
+        label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
     private fun expandedAppBar() {
         initStatusBarDark()
         initToolbarTransparent()
         showFabDetailAfterLoadData()
-        label_cod.visibility = if (shouldShowCod) View.INVISIBLE else View.GONE
+        label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
     private fun initToolbarLight() {
@@ -885,6 +887,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
+        userCod = productInfoP3.userCod
+        if (shouldShowCod && shopCod && userCod) label_cod.visible() else label_cod.gone()
+        headerView.renderCod(shouldShowCod && shopCod && userCod)
         productInfoP3.rateEstSummarizeText?.let {
             partialVariantAndRateEstView.renderRateEstimation(it,
                 shopInfo?.location ?: "", ::gotoRateEstimation)
@@ -988,6 +993,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 base_view_wholesale.visible()
             }
         }
+        shopCod = productInfoP2.shopCod
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
@@ -1058,7 +1064,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productId = data.basic.id.toString()
         productInfo = data
         shouldShowCod = data.shouldShowCod
-        if (shouldShowCod) label_cod.visible() else label_cod.gone()
         headerView.renderData(data)
         view_picture.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)

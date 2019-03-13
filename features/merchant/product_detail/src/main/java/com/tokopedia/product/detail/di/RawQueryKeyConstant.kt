@@ -20,4 +20,6 @@ object RawQueryKeyConstant {
     const val QUERY_INSTALLMENT = "installment"
     const val QUERY_CHECKOUTTYPE = "checkout_type"
     const val MUTATION_FAVORITE_SHOP = "favorite_shop"
+    const val QUERY_SHOP_COD_STATUS = "shop_cod_status"
+    const val QUERY_USER_COD_STATUS = "user_cod_status"
 }

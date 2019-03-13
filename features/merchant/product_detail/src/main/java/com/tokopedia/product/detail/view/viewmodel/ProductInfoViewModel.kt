@@ -31,6 +31,7 @@ import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeRespo
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
+import com.tokopedia.product.detail.data.model.shop.ShopCodStatus
 import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
@@ -84,10 +85,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             val productInfoP1 = ProductInfoP1()
+            var needRequestCod = false
 
             data.getSuccessData<ProductInfo.Response>().data?.let {
                 productInfoP1.productInfo = it
                 productInfoP1Resp.value = Success(productInfoP1)
+                needRequestCod = it.shouldShowCod
             }
 
             //if fail, will not interrupt the product info
@@ -102,6 +105,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 }
             }
 
+
+
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
                 productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price, forceRefresh)
             productInfoP2resp.value = productInfoP2
@@ -109,7 +114,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             ?: return@launchCatchError
 
             if (isUserSessionActive() )
-                productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, forceRefresh)
+                productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, forceRefresh,
+                        needRequestCod)
 
             try {
                 val result = variantJob.await()
@@ -192,13 +198,19 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 ProductOther.Response::class.java, otherProductParams)
 
 
+
+        val shopCodParam = mapOf("shopID" to shopId.toString())
+        val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
+                ShopCodStatus.Response::class.java, shopCodParam)
+
+        val requests = mutableListOf(shopRequest, ratingRequest, wishlistCountRequest, voucherRequest,
+                shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
+                helpfulReviewRequest, latestTalkRequest, otherProductRequest, shopCodRequest)
+
+
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         try {
-            val gqlResponse = graphqlRepository.getReseponse(listOf(shopRequest, ratingRequest,
-                wishlistCountRequest, voucherRequest, shopBadgeRequest, shopCommitmentRequest,
-                installmentRequest, imageReviewRequest, helpfulReviewRequest, latestTalkRequest,
-                    otherProductRequest),
-                cacheStrategy)
+            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
 
             if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
                 val result = (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result
@@ -254,6 +266,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                         .getData<ProductOther.Response>(ProductOther.Response::class.java).result.products
             }
 
+            if (gqlResponse.getError(ShopCodStatus.Response::class.java)?.isNotEmpty() != true){
+                productInfoP2.shopCod = gqlResponse.getData<ShopCodStatus.Response>(ShopCodStatus.Response::class.java)
+                        .result.shopCodStatus.isCod
+            }
+
             productInfoP2
         } catch (t: Throwable) {
             // for testing
@@ -280,7 +297,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
 
-    private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String, forceRefresh: Boolean): ProductInfoP3 = withContext(Dispatchers.IO) {
+    private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String,
+                                         forceRefresh: Boolean, needRequestCod: Boolean)
+            : ProductInfoP3 = withContext(Dispatchers.IO) {
         val productInfoP3 = ProductInfoP3()
 
         val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productInfo.basic.id.toString())
@@ -310,6 +329,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
                     TopAdsDisplayResponse::class.java, topadsParams)
             requests.add(topAdsRequest)
+        }
+
+        if (needRequestCod){
+            val userCodParams = mapOf("isPDP" to true)
+            val userCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_USER_COD_STATUS],
+                    UserCodStatus.Response::class.java, userCodParams)
+            requests.add(userCodRequest)
         }
 
         try {
@@ -344,6 +370,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productInfoP3.isExpressCheckoutType = response
                     .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
                     .getCartType.isExpress
+            }
+
+            if (needRequestCod && response.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true){
+                productInfoP3.userCod = response.getData<UserCodStatus.Response>(UserCodStatus.Response::class.java)
+                        .result.userCodStatus.isCod
             }
 
         } catch (t: Throwable) {

@@ -88,13 +88,16 @@ class PartialHeaderView private constructor(private val view: View,
                 text_original_price.visibility = View.GONE
                 text_discount.visibility = View.GONE
                 discount_timer_holder.visibility = View.GONE
-                if (data.basic.isEligibleCod) layout_cod_content.visible() else layout_cod_content.gone()
                 text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
                 sale_text_stock_available.gone()
                 text_stock_available.visible()
             }
             divider.visible()
         }
+    }
+
+    fun renderCod(showCod: Boolean){
+        if (showCod) view.layout_cod_content.visible() else view.layout_cod_content.gone()
     }
 
     private fun showCountDownTimer(campaign: Campaign) {

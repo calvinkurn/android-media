@@ -145,4 +145,18 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.MUTATION_FAVORITE_SHOP)
     fun providePostFavorite(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_favorite_shop)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_SHOP_COD_STATUS)
+    fun provideShopCodStatus(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_cod)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_USER_COD_STATUS)
+    fun provideUserCodStatus(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_user_cod)
 }
