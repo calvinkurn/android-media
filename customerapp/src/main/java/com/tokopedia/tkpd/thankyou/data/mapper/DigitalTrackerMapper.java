@@ -131,7 +131,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
                 if(TextUtils.isEmpty(category)){
                     category = product.getName();
                 }
-                localProduct.put(LinkerConstants.CATEGORY, String.valueOf(category));
+                localProduct.put(LinkerConstants.CATEGORY, category);
                 branchIOPayment.setProduct(localProduct);
             }
         }
