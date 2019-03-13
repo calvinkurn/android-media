@@ -50,7 +50,7 @@ ext {
     playServiceFirebasePerfMon = '16.2.3'
     playServiceAds = '17.1.2'
     playServiceFirebaseCore = '16.0.6'
-    playServiceTagManager = '16.0.6'
+    playServiceTagManager = '11.0.4'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
