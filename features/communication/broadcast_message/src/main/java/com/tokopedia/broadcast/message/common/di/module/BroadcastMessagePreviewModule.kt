@@ -23,7 +23,7 @@ class BroadcastMessagePreviewModule{
             @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
             @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
             @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier UserSessionInterface: UserSession,
+            @ImageUploaderQualifier userSession: UserSessionInterface,
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<ImageAttachment.Data> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, ImageAttachment.Data::class.java, imageUploaderUtils)
     }
