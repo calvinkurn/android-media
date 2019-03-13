@@ -57,7 +57,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
                 model.getWhitelist().getImage()
         );
 
-        if (mainView.getUserSession().hasShop()) {
+        if (!mainView.getUserSession().hasShop()) {
             btnSeeProfile.setText(R.string.feed_see_profile);
         } else {
             btnSeeProfile.setText(R.string.feed_see_shop);
@@ -75,7 +75,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     }
 
     private void onProfileClick() {
-        if (mainView.getUserSession().hasShop()) {
+        if (!mainView.getUserSession().hasShop()) {
             RouteManager.route(
                     btnSeeProfile.getContext(),
                     ApplinkConst.PROFILE.replace(USER_ID, mainView.getUserSession()
