@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
 @HomeScope
 abstract class ViewModelModule {
 
-    @HomeScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
