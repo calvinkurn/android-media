@@ -23,5 +23,6 @@ data class ProductInfoP2(
         var imageReviews: List<ImageReviewItem> = listOf(),
         var helpfulReviews: List<Review> = listOf(),
         var latestTalk: Talk = Talk(),
-        var productOthers: List<ProductOther> = listOf()
+        var productOthers: List<ProductOther> = listOf(),
+        var shopCod: Boolean = false
         )

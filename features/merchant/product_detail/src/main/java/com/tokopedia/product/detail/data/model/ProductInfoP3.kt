@@ -13,5 +13,6 @@ data class ProductInfoP3(
         var isWishlisted: Boolean = false,
         var displayAds: TopAdsModel? = null,
         var pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate? = null,
-        var isExpressCheckoutType: Boolean = false
+        var isExpressCheckoutType: Boolean = false,
+        var userCod: Boolean = false
 )
