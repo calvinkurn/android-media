@@ -136,6 +136,9 @@ open class PlayViewStateImpl(
             R.drawable.bg_play_3
     )
 
+    private var defaultType = arrayListOf(
+            "default", "default1", "default2", "default3")
+
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
                 imageListener,
@@ -233,6 +236,7 @@ open class PlayViewStateImpl(
         viewModel?.let { viewModel ->
             dynamicButtonsViewModel = it
 
+            webviewIcon.hide()
             if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.contentLinkUrl.isBlank()) {
                 it.floatingButton.run {
                     setFloatingIcon(this)
@@ -391,7 +395,8 @@ open class PlayViewStateImpl(
 
         lateinit var url: String
         it.let {
-            background = defaultBackground[it.default]
+            var index = defaultType.indexOf(it.default)
+            background = defaultBackground[Math.max(0, index-1)]
             url = it.url
 
             if (url.isBlank()) {
