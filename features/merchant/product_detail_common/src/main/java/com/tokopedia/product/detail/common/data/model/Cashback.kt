@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.common.data.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.constant.TimeUnitTypeDef
@@ -37,4 +39,28 @@ data class Wholesale(
         @SerializedName("price")
         @Expose
         val price: Float = 0f
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readFloat()) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(minQty)
+        parcel.writeFloat(price)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Wholesale> {
+        override fun createFromParcel(parcel: Parcel): Wholesale {
+            return Wholesale(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Wholesale?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

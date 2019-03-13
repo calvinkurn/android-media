@@ -47,6 +47,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
+        <activity android:name=".view.activity.WholesaleActivity"
+            android:label="@string/label_product_wholesale"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>
