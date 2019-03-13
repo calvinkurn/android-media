@@ -554,6 +554,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     prepareOpenWebView(uriData);
                 }
+                context.finish();
             }
         });
     }
@@ -567,13 +568,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         getProductUseCase.execute(response -> {
             viewListener.finishLoading();
             if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0) {
-                String productApplink = ApplinkConst.PRODUCT_INFO.replace("{product_id}",
-                        response.getData().getBasic().getId() + "");
+                String productApplink = UriUtil.buildUri(ApplinkConst.PRODUCT_INFO,
+                        String.valueOf(response.getData().getBasic().getId()));
                 if (RouteManager.isSupportApplink(context, productApplink)) {
                     RouteManager.route(context, productApplink);
                 } else {
                     prepareOpenWebView(uriData);
                 }
+                context.finish();
             }
             return null;
         }, throwable -> {
