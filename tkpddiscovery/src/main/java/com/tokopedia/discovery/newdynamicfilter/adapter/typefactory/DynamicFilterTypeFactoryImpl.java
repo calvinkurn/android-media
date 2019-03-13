@@ -45,7 +45,7 @@ public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
         if (viewType == R.layout.dynamic_filter_item_price) {
             return new DynamicFilterItemPriceViewHolder(view, filterController);
         } else if (viewType == R.layout.dynamic_filter_item_toggle) {
-            return new DynamicFilterItemToggleViewHolder(view, filterView, filterController);
+            return new DynamicFilterItemToggleViewHolder(view, filterController);
         } else if (viewType == R.layout.dynamic_filter_expandable_item) {
             return new DynamicFilterExpandableItemViewHolder(view, filterView, filterController);
         } else {
