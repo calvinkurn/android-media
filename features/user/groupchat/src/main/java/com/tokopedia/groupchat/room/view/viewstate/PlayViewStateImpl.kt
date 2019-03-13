@@ -1088,7 +1088,7 @@ open class PlayViewStateImpl(
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
                                     onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            welcomeInfoDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
         }
 
         welcomeInfoDialog.setOnDismissListener {
@@ -1146,7 +1146,7 @@ open class PlayViewStateImpl(
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
         if (!::pinnedMessageDialog.isInitialized) {
-            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            pinnedMessageDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
         }
 
         val pinnedMessageView = createPinnedMessageView(viewModel)
