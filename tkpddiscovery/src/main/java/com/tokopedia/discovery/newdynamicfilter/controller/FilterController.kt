@@ -4,9 +4,12 @@ import android.text.TextUtils
 import com.tokopedia.core.discovery.model.Filter
 import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView
 import java.io.Serializable
+import java.util.*
 
 class FilterController(private val dynamicFilterView : DynamicFilterView) : Serializable {
 
@@ -160,6 +163,11 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
         return value
     }
 
+    fun setAndApplyFilter(option: Option, value: String) {
+        setFilterValue(option, value)
+        applyFilter()
+    }
+
     fun applyFilter() {
         loadFlagFilterHelperToSearchParameter()
         dynamicFilterView.applyFilter(searchParameter)
@@ -190,6 +198,85 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
 
     fun getFilterValue(key: String): String {
         return searchParameter[key] ?: ""
+    }
+
+    fun getSelectedOptions(filter: Filter): List<Option> {
+        val selectedOptions = ArrayList<Option>()
+        val popularOptionList = getPopularOptionList(filter)
+
+        if (isAddCategoryFilter(filter, popularOptionList)) {
+            selectedOptions.add(getSelectedCategoryAsOption(filter))
+        } else {
+            selectedOptions.addAll(getCustomSelectedOptionList(filter))
+        }
+
+        selectedOptions.addAll(popularOptionList)
+        return selectedOptions
+    }
+
+    private fun getPopularOptionList(filter: Filter): List<Option> {
+        val checkedOptions = ArrayList<Option>()
+
+        for (option in filter.options) {
+            if (option.isPopular) {
+                checkedOptions.add(option)
+            }
+        }
+        return checkedOptions
+    }
+
+    private fun isAddCategoryFilter(filter: Filter, popularOptionList: List<Option>) : Boolean {
+        return filter.isCategoryFilter && isCategorySelected() && !isSelectedCategoryInList(popularOptionList)
+    }
+
+    private fun isCategorySelected(): Boolean {
+        return !TextUtils.isEmpty(getFilterValue(SearchApiConst.SC))
+    }
+
+    private fun isSelectedCategoryInList(optionList: List<Option>): Boolean {
+        val selectedCategoryId = getFilterValue(SearchApiConst.SC)
+
+        if (TextUtils.isEmpty(selectedCategoryId)) {
+            return false
+        }
+
+        for (option in optionList) {
+            if (selectedCategoryId == option.value) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private fun getSelectedCategoryAsOption(filter: Filter): Option {
+        val selectedCategoryId = getFilterValue(SearchApiConst.SC)
+        val category = FilterHelper.getSelectedCategoryDetails(filter, selectedCategoryId)
+        val selectedCategoryName = category?.categoryName ?: ""
+
+        return OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName)
+    }
+
+    private fun getCustomSelectedOptionList(filter: Filter): List<Option> {
+        val checkedOptions = ArrayList<Option>()
+
+        for (option in filter.options) {
+            val isDisplayed = isCustomOptionDisplayed(option)
+
+            if (isDisplayed && !option.isPopular) {
+                checkedOptions.add(option)
+            }
+        }
+        return checkedOptions
+    }
+
+    private fun isCustomOptionDisplayed(option: Option) : Boolean {
+        return java.lang.Boolean.TRUE == getFlagFilterHelperValue(option.key)
+                || java.lang.Boolean.TRUE == shownInMainState[option.uniqueId]
+    }
+
+    fun getFlagFilterHelperValue(key: String) : Boolean {
+        return flagFilterHelper[key] ?: false
     }
 
     fun getFilterList() : List<Filter> {

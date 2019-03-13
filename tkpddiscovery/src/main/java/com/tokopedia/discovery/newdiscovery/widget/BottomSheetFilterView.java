@@ -235,79 +235,14 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public List<Option> getSelectedOptions(Filter filter) {
-        List<Option> selectedOptions = new ArrayList<>();
-        List<Option> popularOptionList = getPopularOptionList(filter);
-
-        if (filter.isCategoryFilter() && isCategorySelected() && !isSelectedCategoryInList(popularOptionList)) {
-            selectedOptions.add(getSelectedCategoryAsOption(filter));
-        } else {
-            selectedOptions.addAll(getCustomSelectedOptionList(filter));
-        }
-
-        selectedOptions.addAll(popularOptionList);
-        return selectedOptions;
-    }
-
-    private boolean isSelectedCategoryInList(List<Option> optionList) {
-        if (TextUtils.isEmpty(selectedCategoryId)) {
-            return false;
-        }
-        for (Option option : optionList) {
-            if (selectedCategoryId.equals(option.getValue())) {
-                return true;
-            }
-        }
-        return false;
+        // Moved to Filter Controller
+        return null;
     }
 
     private boolean isCategorySelected() {
         return !TextUtils.isEmpty(selectedCategoryRootId) &&
                 !TextUtils.isEmpty(selectedCategoryId) &&
                 !TextUtils.isEmpty(selectedCategoryName);
-    }
-
-    private Option getSelectedCategoryAsOption(Filter filter) {
-        String selectedCategoryId = getFilterValue(SearchApiConst.SC);
-        Category category = FilterHelper.getSelectedCategoryDetails(filter, selectedCategoryId);
-        String selectedCategoryName = category != null ? category.getCategoryName() : "";
-
-        return OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
-    }
-
-    private List<Option> getPopularOptionList(Filter filter) {
-        List<Option> checkedOptions = new ArrayList<>();
-
-        for (Option option : filter.getOptions()) {
-            if (option.isPopular()) {
-                checkedOptions.add(option);
-            }
-        }
-        return checkedOptions;
-    }
-
-    private List<Option> getCustomSelectedOptionList(Filter filter) {
-        List<Option> checkedOptions = new ArrayList<>();
-
-        for (Option option : filter.getOptions()) {
-            boolean isDisplayed = Boolean.TRUE.equals(loadLastCheckedState(option))
-                    || Boolean.TRUE.equals(shownInMainState.get(option.getUniqueId()));
-
-            if (isDisplayed && !option.isPopular()) {
-                checkedOptions.add(option);
-            }
-        }
-        return checkedOptions;
-    }
-
-    private List<Option> getCheckedOptionList(Filter filter) {
-        List<Option> checkedOptions = new ArrayList<>();
-
-        for (Option option : filter.getOptions()) {
-            if (Boolean.TRUE.equals(loadLastCheckedState(option))) {
-                checkedOptions.add(option);
-            }
-        }
-        return checkedOptions;
     }
 
     @Override
