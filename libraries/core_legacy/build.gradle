@@ -46,6 +46,7 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.appIndexing

@@ -48,6 +48,7 @@ import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -82,7 +83,6 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -160,14 +160,10 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
@@ -230,7 +226,7 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -264,7 +260,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
+        MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
@@ -272,7 +268,6 @@ public abstract class SellerRouterApplication extends MainApplication
         com.tokopedia.tkpdpdp.ProductDetailRouter,
         TopAdsDashboardRouter,
         TopAdsManagementRouter,
-        DigitalRouter,
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
@@ -299,6 +294,8 @@ public abstract class SellerRouterApplication extends MainApplication
         analyticTracker = initializeAnalyticTracker();
         initializeDagger();
         initializeRemoteConfig();
+
+        //TODO if using Trackapp, remove TrackingUtils from MainApplication
     }
 
     private AnalyticTracker initializeAnalyticTracker() {
@@ -621,7 +618,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
-    @Override
     public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
@@ -743,31 +739,6 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = DashboardActivity.createInstance(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
-        return CartDigitalActivity.newInstance(this, passData);
-    }
-
-    @Override
-    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
-        return CartDigitalActivity.newInstance(this, bundle);
-    }
-
-    @Override
-    public Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData) {
-        return DigitalProductActivity.newInstance(this, passData);
-    }
-
-    @Override
-    public Intent instanceIntentDigitalCategoryList() {
-        return DigitalCategoryListActivity.newInstance(this);
-    }
-
-    @Override
-    public Intent instanceIntentDigitalWeb(String url) {
-        return DigitalWebActivity.newInstance(this, url);
     }
 
     @Override
@@ -966,12 +937,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return BuildConfig.FLAVOR;
     }
 
-    @Override
-    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
-        GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
-        return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
-    }
-
     public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
     }
@@ -1162,7 +1127,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void showForceLogoutDialog(Response response) {
-        ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
@@ -1243,18 +1207,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendEnhanceECommerceTracking(@NotNull Map<String, Object> events) {
         TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
-    }
-
-    @Override
-    public void sendTrackDefaultAuth() {
-        ScreenTracking.sendAuth(this);
-    }
-
-    @Override
-    public void sendTrackCustomAuth(@NotNull Context context, @NotNull String shopID,
-                                    @NotNull String shopType, @NotNull String pageType,
-                                    @NotNull String productId) {
-        ScreenTracking.sendCustomAuth(this, shopID, shopType, pageType, productId);
     }
 
     @Override
@@ -1430,17 +1382,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
         return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
     }
-
-    @Override
-    public Intent getPromoListIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public Intent getPromoDetailIntent(Context context, String slug) {
-        return null;
-    }
-
 
     @Override
     public Intent getCartIntent(Activity activity) {

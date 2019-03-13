@@ -31,6 +31,10 @@ fun View.invisible() {
     this.visibility = View.INVISIBLE
 }
 
+private fun View.isVisible(): Boolean {
+    return this.visibility == View.VISIBLE
+}
+
 fun View.shouldShowWithAction(shouldShow: Boolean, action: () -> Unit) {
     if (shouldShow) {
         show()

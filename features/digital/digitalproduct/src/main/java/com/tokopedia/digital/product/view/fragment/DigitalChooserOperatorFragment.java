@@ -1,23 +1,26 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.view.presenter.OperatorChooserContract;
@@ -26,13 +29,14 @@ import com.tokopedia.digital.product.view.presenter.OperatorChooserPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.subscriptions.CompositeSubscription;
 import javax.inject.Inject;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
-public class DigitalChooserOperatorFragment extends BasePresenterFragment<OperatorChooserContract.Presenter> implements
+public class DigitalChooserOperatorFragment extends BaseDaggerFragment implements
         OperatorChooserContract.View {
 
     private final String TAG = DigitalChooserOperatorFragment.class.getSimpleName();
@@ -64,6 +68,13 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
 
     @Inject
     OperatorChooserPresenter presenter;
+    @Inject
+    DigitalAnalytics digitalAnalytics;
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     public interface ActionListener {
         void onOperatorItemSelected(Operator operator);
@@ -82,48 +93,23 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_STATE_OPERATOR_STYLE_VIEW, operatorStyleView);
     }
 
-    @Override
-    protected void onFirstTimeLaunched() {
-        presenter.getOperatorsByCategoryId(categoryId);
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-        state.putString(EXTRA_STATE_OPERATOR_STYLE_VIEW, operatorStyleView);
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        operatorStyleView = savedState.getString(EXTRA_STATE_OPERATOR_STYLE_VIEW);
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
 
     @Override
     protected void initInjector() {
-        super.initInjector();
-
         DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
                 .inject(this);
     }
 
-    @Override
-    protected void initialPresenter() {
-        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
-
-        presenter.attachView(this);
-    }
 
     @Override
-    protected void initialListener(Activity activity) {
-        actionListener = (ActionListener) activity;
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        actionListener = (ActionListener) context;
     }
 
     public static int sizeAsParcel(@NonNull Bundle bundle) {
@@ -136,8 +122,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
         }
     }
 
-    @Override
-    protected void setupArguments(Bundle arguments) {
+    private void setupArguments(Bundle arguments) {
         Log.d(TAG, String.valueOf(sizeAsParcel(arguments)));
         categoryId = arguments.getString(ARG_PARAM_CATEGORY_ID);
         operatorStyleView = arguments.getString(ARG_PARAM_OPERATOR_STYLE_VIEW);
@@ -145,13 +130,32 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
         categoryName = arguments.getString(ARG_PARAM_CATEGORY);
     }
 
+
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_chooser_product_digital_module;
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
+        if (getArguments() != null) {
+            setupArguments(getArguments());
+        }
+        if (savedInstanceState != null){
+            operatorStyleView = savedInstanceState.getString(EXTRA_STATE_OPERATOR_STYLE_VIEW);
+        }
+        presenter.attachView(this);
+        presenter.getOperatorsByCategoryId(categoryId);
     }
 
     @Override
-    protected void initView(View view) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_chooser_product_digital_module, container, false);
+        initView(view);
+        initialVar();
+        setViewListener();
+        return view;
+    }
+
+    private void initView(View view) {
         rvOperatorList = view.findViewById(R.id.rv_list_chooser);
         fieldSearch = view.findViewById(R.id.field_search);
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
@@ -159,24 +163,18 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    @Override
     protected void setViewListener() {
         fieldSearch.setOnFocusChangeListener(onAnalyticsFocusChangedListener());
         fieldSearch.addTextChangedListener(onSearchTextChange());
     }
 
-    @Override
-    protected void initialVar() {
+    private void initialVar() {
         operatorChooserAdapter = new OperatorChooserAdapter(this, operators,
                 actionListener);
 
         rvOperatorList.setAdapter(operatorChooserAdapter);
     }
 
-    @Override
-    protected void setActionVar() {
-
-    }
 
     @Override
     public void showOperators(List<Operator> operators) {
@@ -185,7 +183,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
         operatorChooserAdapter.notifyDataSetChanged();
 
         if (operators.size() > 10) {
-            fieldSearch.setHint(getResources().getString(R.string.action_search_with_suffix, operatorLabel));
+            fieldSearch.setHint(getResources().getString(R.string.digital_action_search_with_suffix, operatorLabel));
             fieldSearch.clearFocus();
             fieldSearch.setVisibility(View.VISIBLE);
             rvOperatorList.requestFocus();
@@ -226,7 +224,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    UnifyTracking.eventClickSearchBar(getActivity(),categoryName, categoryName);
+                    digitalAnalytics.eventClickSearchBar(categoryName);
                 }
             }
         };

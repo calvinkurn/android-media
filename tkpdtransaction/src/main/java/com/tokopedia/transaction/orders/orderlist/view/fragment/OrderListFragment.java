@@ -2,6 +2,7 @@ package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,16 +10,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
+import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
@@ -35,14 +48,20 @@ import javax.inject.Inject;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
-        RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, OrderListAdapter.OnMenuItemListener {
+        RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, SearchInputView.ResetListener, OrderListAdapter.OnMenuItemListener {
 
     private static final String ORDER_CATEGORY = "orderCategory";
+    private static final String ORDER_TAB_LIST = "TAB_LIST";
+    private static final int MINIMUM_CHARATERS_HIT_API = 3;
+    private static final int FILTER_DATE_REQUEST = 1;
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
-    LinearLayout emptyLayout;
+    LinearLayout emptyLayoutOrderList, emptyLayoutMarketPlace;
     OrderListAdapter orderListAdapter;
+    LinearLayout filterDate;
+    RelativeLayout mainContent;
+    TextView tryAgain;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
     private int page_num = 1;
@@ -50,7 +69,19 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private int visibleThreshold = 2;
     private int lastVisibleItem;
     private Bundle savedState;
+    private String startDate = "";
+    private String endDate = "";
     private int orderId = 1;
+    @Inject
+    OrderListAnalytics orderListAnalytics;
+
+    private String selectedFilter = "0";
+
+    private CustomViewRounderCornerFilterView quickSingleFilterView;
+
+    private SearchInputView simpleSearchView;
+
+    private String searchedString = "";
 
     @Inject
     OrderListPresenterImpl presenter;
@@ -59,6 +90,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private ArrayList<Order> mOrderDataList;
     private String mOrderCategory;
+    private OrderLabelList orderLabelList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +105,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(getFragmentLayout(), container, false);
+        return inflater.inflate(R.layout.fragment_transaction_list_order_module, container, false);
     }
 
     protected int getFragmentLayout() {
@@ -95,6 +127,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         setHasOptionsMenu(getOptionsMenuEnable());
         initialListener(activity);
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -145,7 +178,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onDestroyView() {
         saveStateToArguments();
-        presenter.onDestroy();
         presenter.detachView();
         super.onDestroyView();
     }
@@ -190,12 +222,53 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
+        orderLabelList = arguments.getParcelable(ORDER_TAB_LIST);
+        if (arguments.getString(OrderListContants.ORDER_FILTER_ID) != null) {
+            selectedFilter = arguments.getString(OrderListContants.ORDER_FILTER_ID);
+        }
     }
 
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        emptyLayout = view.findViewById(R.id.empty_view);
+        emptyLayoutOrderList = view.findViewById(R.id.empty_state_order_list);
+        emptyLayoutMarketPlace = view.findViewById(R.id.empty_state_marketplace);
+        quickSingleFilterView = view.findViewById(R.id.quick_filter);
+        simpleSearchView = view.findViewById(R.id.simpleSearchView);
+        simpleSearchView.setSearchHint(getContext().getResources().getString(R.string.search_hint_text));
+        filterDate = view.findViewById(R.id.filterDate);
+        mainContent = view.findViewById(R.id.mainContent);
+        tryAgain = emptyLayoutMarketPlace.findViewById(R.id.tryAgain);
+        tryAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RouteManager.route(getContext(), ApplinkConst.HOME);
+            }
+        });
+        if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
+            presenter.buildAndRenderFilterList(orderLabelList.getFilterStatusList());
+        }
+
+        filterDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(SaveDateBottomSheetActivity.getInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
+            }
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == FILTER_DATE_REQUEST) {
+                startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
+                endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
+                refreshHandler.startRefresh();
+                orderListAnalytics.sendDateFilterClickEvent();
+            }
+        }
     }
 
     protected void setViewListener() {
@@ -203,6 +276,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
         refreshHandler.setPullEnabled(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(orderListAdapter);
+        quickSingleFilterView.setListener(this);
+        simpleSearchView.setListener(this);
+        simpleSearchView.setResetListener(this);
     }
 
     private void addRecyclerListener() {
@@ -231,9 +307,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onRefresh(View view) {
         page_num = 1;
         isLoading = true;
+        emptyLayoutOrderList.setVisibility(View.GONE);
+        emptyLayoutMarketPlace.setVisibility(View.GONE);
         if (orderListAdapter.getItemCount() != 0) {
             mOrderDataList.clear();
-
+            orderListAdapter.clearItemList();
+        }
+        if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+            quickSingleFilterView.setVisibility(View.VISIBLE);
+            simpleSearchView.setVisibility(View.VISIBLE);
         }
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
@@ -246,6 +328,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             isLoading = true;
             presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num, orderId);
         }
+        orderListAnalytics.sendLoadMoreEvent("load-" + page_num);
     }
 
     @Override
@@ -278,8 +361,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void renderEmptyList(int typeRequest) {
         if (typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
-            swipeToRefresh.setVisibility(View.GONE);
-            emptyLayout.setVisibility(View.VISIBLE);
+            swipeToRefresh.setVisibility(View.VISIBLE);
+            if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+                emptyLayoutMarketPlace.setVisibility(View.VISIBLE);
+            } else {
+                emptyLayoutOrderList.setVisibility(View.VISIBLE);
+            }
+            filterDate.setVisibility(View.GONE);
         }
     }
 
@@ -321,14 +409,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void showProcessGetData(String orderCategory) {
-        switch (orderCategory) {
-            case OrderCategory.DIGITAL:
-                if (!refreshHandler.isRefreshing()) {
-                    refreshHandler.setRefreshing(true);
-                    refreshHandler.setPullEnabled(false);
-                }
-                break;
+    public void showProcessGetData() {
+        if (!refreshHandler.isRefreshing()) {
+            refreshHandler.setRefreshing(true);
+            refreshHandler.setPullEnabled(false);
         }
     }
 
@@ -355,7 +439,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
 
         swipeToRefresh.setVisibility(View.VISIBLE);
-        emptyLayout.setVisibility(View.GONE);
+        emptyLayoutOrderList.setVisibility(View.GONE);
+        emptyLayoutMarketPlace.setVisibility(View.GONE);
+        if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+            filterDate.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -388,6 +476,61 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void selectFilter(String typeFilter) {
+        selectedFilter = typeFilter;
+        refreshHandler.startRefresh();
+        orderListAnalytics.sendQuickFilterClickEvent(typeFilter);
+    }
+
+
+    @Override
+    public void renderOrderStatus(List<QuickFilterItem> filterItems) {
+        quickSingleFilterView.setDefaultItem(null);
+        quickSingleFilterView.renderFilter(filterItems);
+    }
+
+    @Override
+    public String getSearchedString() {
+        return searchedString;
+    }
+
+    @Override
+    public String getStartDate() {
+        return startDate;
+    }
+
+    @Override
+    public String getEndDate() {
+        return endDate;
+    }
+
+    @Override
+    public String getSelectedFilter() {
+        return String.valueOf(selectedFilter);
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+            searchedString = text;
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+        if (text.length() >= MINIMUM_CHARATERS_HIT_API || text.length() == 0) {
+            searchedString = text;
+            orderListAnalytics.sendSearchFilterClickEvent();
+            filterDate.setVisibility(View.GONE);
+            refreshHandler.startRefresh();
+        }
+    }
+
+    @Override
+    public void onSearchReset() {
+        searchedString = "";
+        refreshHandler.startRefresh();
     }
 }
 

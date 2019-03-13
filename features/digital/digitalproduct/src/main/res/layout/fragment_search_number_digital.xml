@@ -27,7 +27,7 @@
                 android:padding="@dimen/digital_padding_12"
                 android:textColor="#212121"
                 android:textColorHint="@color/black_38"
-                android:textSize="@dimen/font_medium"
+                android:textSize="@dimen/sp_16"
                 android:maxLines="1" />
 
             <Button

@@ -1,5 +1,5 @@
 <resources>
-    <string name="toko_points_title">TokoPoints</string>
+    <string name="toko_points_title">Crack the Egg</string>
     <string name="title_activity_gamification">GamificationActivity</string>
     <string name="countdown_format" formatted="false">%02d:%02d:%02d</string>
     <string name="egg_crack_x_token_left">%1$s %2$s %3$s</string>
@@ -18,5 +18,8 @@
     <string name="error_reward_message">Terjadi Kesalahan Teknis</string>
     <string name="try_again_btn">Coba Lagi</string>
     <string name="return_to_home">Kembali ke Beranda</string>
+    <string name="rewards_increased_points">+%1$s %2$s</string>
+    <string name="rewards_increased_points_front_text">+%1$s\u0020</string>
+    <string name="egg_source">%1$s %2$s</string>
 
 </resources>

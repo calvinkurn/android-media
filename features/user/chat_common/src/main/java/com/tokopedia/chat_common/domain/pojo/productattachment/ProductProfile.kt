@@ -26,4 +26,13 @@ class ProductProfile {
     @SerializedName("variant")
     @Expose
     val variant: Any? = null
+    @SerializedName("drop_percentage")
+    @Expose
+    val dropPercentage: String = ""
+    @SerializedName("price_before")
+    @Expose
+    val priceBefore: String = ""
+    @SerializedName("shop_id")
+    @Expose
+    val shopId: Int = 0
 }
