@@ -11,7 +11,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary = vectorDrawable
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
