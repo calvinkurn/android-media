@@ -14,7 +14,7 @@ import okhttp3.Interceptor;
 public interface ChangePhoneNumberRouter {
     AnalyticTracker getAnalyticTracker();
 
-    Intent getWithdrawIntent(Context context);
+    Intent getWithdrawIntent(Context context, boolean isSeller);
 
     Interceptor getChuckInterceptor();
 }

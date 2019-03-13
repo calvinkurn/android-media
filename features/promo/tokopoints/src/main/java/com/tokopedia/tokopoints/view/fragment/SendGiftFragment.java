@@ -19,8 +19,11 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
+import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.contract.SendGiftContract;
 import com.tokopedia.tokopoints.view.presenter.SendGiftPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import javax.inject.Inject;
@@ -91,10 +94,14 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
             if (getArguments() == null || getActivity() == null) {
                 return;
             }
-
             mPresenter.sendGift(getArguments().getInt(CommonConstant.EXTRA_COUPON_ID),
                     mEditEmail.getText().toString(),
                     mEditNotes.getText().toString());
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_KIRIM_SEKARANG,
+                    getCouponTitle());
 
         }
     }
@@ -149,6 +156,24 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
         mBtnSendGift.setText(R.string.tp_label_send_now);
     }
 
+    private String getCouponTitle() {
+        if (getArguments() != null) {
+            String couponTitle = getArguments().getString(CommonConstant.EXTRA_COUPON_TITLE);
+            if (couponTitle != null)
+                return couponTitle;
+        }
+        return "";
+    }
+
+    private String getCouponPoint() {
+        if (getArguments() != null) {
+            String couponPoint = getArguments().getString(CommonConstant.EXTRA_COUPON_POINT);
+            if (couponPoint != null)
+                return couponPoint;
+        }
+        return "";
+    }
+
     @Override
     public void openPreConfirmationWindow() {
         mContainerMain.setDisplayedChild(CONTAINER_PRE_CONFIRMATION);
@@ -162,8 +187,8 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
         TextView textEmail = getView().findViewById(R.id.text_for_value);
         TextView textNotes = getView().findViewById(R.id.text_notes_value);
 
-        textTitle.setText(getArguments().getString(CommonConstant.EXTRA_COUPON_TITLE));
-        textPoint.setText(getArguments().getString(CommonConstant.EXTRA_COUPON_POINT));
+        textTitle.setText(getCouponTitle());
+        textPoint.setText(getCouponPoint());
         textEmail.setText(mEditEmail.getText().toString());
         if (!mEditNotes.getText().toString().trim().isEmpty()) {
             textNotes.setText("\"" + mEditNotes.getText().toString().trim() + "\"");
@@ -205,6 +230,19 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
         adb.setPositiveButton(R.string.tp_label_ok, (dialogInterface, i) -> {
                     if (getActivity() != null) {
                         getActivity().finish();
+                        if(title.equalsIgnoreCase(getString(R.string.tp_send_gift_success_title))){
+                            AnalyticsTrackerUtil.sendEvent(getContext(),
+                                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
+                                    AnalyticsTrackerUtil.ActionKeys.CLICK_OK_ON_SUCCESS,
+                                    getCouponTitle());
+                        }else{
+                            AnalyticsTrackerUtil.sendEvent(getContext(),
+                                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
+                                    AnalyticsTrackerUtil.ActionKeys.CLICK_OK_ON_FAILED,
+                                    "");
+                        }
                     }
                 }
         );

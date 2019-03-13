@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
 import com.tokopedia.topads.dashboard.view.viewmodel.ViewModelFactory
+import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,4 +26,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TopAdsDatePickerViewModel::class)
     internal abstract fun topadsDatePickerViewModel(viewModel: TopAdsDatePickerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TopAdsAutoTopUpViewModel::class)
+    internal abstract fun topadsAutoTopUpViewModel(viewModel: TopAdsAutoTopUpViewModel): ViewModel
 }

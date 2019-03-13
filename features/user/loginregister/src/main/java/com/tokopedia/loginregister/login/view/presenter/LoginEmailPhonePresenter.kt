@@ -104,6 +104,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                         }
 
                         override fun onNext(registerValidationViewModel: RegisterValidationPojo) {
+                            viewEmailPhone.trackSuccessValidate()
                             onSuccessValidate(registerValidationViewModel)
                         }
                     })

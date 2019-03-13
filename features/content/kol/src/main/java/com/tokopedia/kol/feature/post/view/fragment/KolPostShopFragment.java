@@ -10,10 +10,11 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
@@ -139,11 +140,9 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     }
 
     private void goToCreatePost() {
-        if (getActivity() != null && !TextUtils.isEmpty(createPostUrl)) {
+        if (getActivity() != null) {
             startActivityForResult(
-                    CreatePostImagePickerActivity.getInstance(
-                            getActivity(),
-                            createPostUrl),
+                    RouteManager.getIntent(getActivity(), ApplinkConst.CONTENT_CREATE_POST),
                     CREATE_POST
             );
         }

@@ -10,13 +10,13 @@ public class PendingCashbackModel {
 
     @SerializedName("amount")
     @Expose
-    private Integer amount;
+    private Integer amount = 0;
     @SerializedName("amount_text")
     @Expose
-    private String amountText;
+    private String amountText = "";
     @SerializedName("currency")
     @Expose
-    private String currency;
+    private String currency = "";
 
     public Integer getAmount() {
         return amount;

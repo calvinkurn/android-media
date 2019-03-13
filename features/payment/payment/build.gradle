@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
