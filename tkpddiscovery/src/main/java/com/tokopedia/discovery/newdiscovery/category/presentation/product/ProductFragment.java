@@ -563,15 +563,15 @@ public class ProductFragment extends BrowseSectionFragment
             }
         }
 
-        Intent intent = getProductIntent(data.id);
+        Intent intent = getProductIntent(data.id, data.getTrackerAttribution(), data.getTrackerListName());
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId, String trackerAttribution, String trackerListName){
         if (getContext() != null) {
             return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_WITH_ATTRIBUTION, productId, trackerAttribution, trackerListName));
         } else {
             return null;
         }
@@ -719,7 +719,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        Intent intent = getProductIntent(product.getId());
+        Intent intent = getProductIntent(product.getId(), "", "");
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
         TopAdsGtmTracker.eventCategoryProductClick(getContext(), "", product, position);
     }

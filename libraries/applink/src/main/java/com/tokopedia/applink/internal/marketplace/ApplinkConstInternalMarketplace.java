@@ -9,6 +9,8 @@ public class ApplinkConstInternalMarketplace {
 
     // ProductDetailActivity
     public static final String PRODUCT_DETAIL = INTERNAL_MARKETPLACE + "/product/{id}/";
+    public static final String PRODUCT_DETAIL_WITH_ATTRIBUTION = INTERNAL_MARKETPLACE +
+            "/product/{id}/?tracker_attribution={tracker_attribution},tracker_list_name={tracker_list_name}";
 
     // ProductEditActivity
     public static final String PRODUCT_EDIT = INTERNAL_MARKETPLACE + "/product/{id}/edit";

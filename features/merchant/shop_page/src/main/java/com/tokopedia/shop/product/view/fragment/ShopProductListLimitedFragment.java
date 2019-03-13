@@ -50,6 +50,7 @@ import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidge
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
@@ -851,7 +852,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         shopProductViewModel, productPosition, shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
             }
         }
-        goToPDP(shopProductViewModel.getId());
+        goToPDP(shopProductViewModel.getId(),  attribution,
+                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName));
 
 
     }
@@ -860,14 +862,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
      */
-    private void goToPDP(String productId) {
-        startActivity(getProductIntent(productId));
+    private void goToPDP(String productId, String attribution, String listNameOfProduct) {
+        startActivity(getProductIntent(productId, attribution, listNameOfProduct));
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId, String attribution, String listNameOfProduct){
         if (getContext() != null) {
             return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_WITH_ATTRIBUTION, productId, attribution, listNameOfProduct));
         } else {
             return null;
         }

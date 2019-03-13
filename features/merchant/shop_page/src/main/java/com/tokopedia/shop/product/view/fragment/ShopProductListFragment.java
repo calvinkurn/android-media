@@ -36,6 +36,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
@@ -547,13 +548,14 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
         //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
 
-        startActivity(getProductIntent(shopProductViewModel.getId()));
+        startActivity(getProductIntent(shopProductViewModel.getId(), attribution,
+                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)));
     }
 
-    private Intent getProductIntent(String productId) {
+    private Intent getProductIntent(String productId, String attribution, String listNameOfProduct) {
         if (getContext() != null) {
             return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_WITH_ATTRIBUTION, productId, attribution, listNameOfProduct));
         } else {
             return null;
         }

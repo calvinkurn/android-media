@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.internal.marketplace.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
@@ -61,6 +62,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         @DeepLink(ApplinkConst.PRODUCT_INFO)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build()
+            return Intent(context, ProductDetailActivity::class.java).setData(uri).putExtras(extras)
+        }
+
+        @DeepLink(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_ATTRIBUTION)
+        @JvmStatic
+        fun getCallingIntentAttribution(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build()
             return Intent(context, ProductDetailActivity::class.java).setData(uri).putExtras(extras)
         }
