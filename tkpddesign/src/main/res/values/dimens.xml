@@ -55,6 +55,7 @@
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
     <dimen name="dp_120">120dp</dimen>
     <dimen name="dp_128">128dp</dimen> <!-- not recommended -->
+    <dimen name="dp_140">140dp</dimen> <!-- not recommended -->
     <dimen name="dp_145">145dp</dimen> <!-- not recommended -->
     <dimen name="dp_150">150dp</dimen> <!-- not recommended -->
     <dimen name="dp_160">160dp</dimen> <!-- not recommended -->
