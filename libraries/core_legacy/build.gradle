@@ -50,7 +50,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.firebase.appIndexing
-    implementation rootProjext.ext.playServicesDependencies.tagManager
+    implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.location
