@@ -455,24 +455,12 @@ public class ExploreFragment
                                       boolean isSearch,
                                       boolean isPullToRefresh,
                                       SortFilterModel sortFilterModel) {
-        itemList.add(getDummyPopularProfile());
         populateFirstData(itemList, cursor);
         if (!isPullToRefresh) {
             populateFilter(sortFilterModel.getFilterList());
             populateSort(sortFilterModel.getSortList());
             if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortFilterModel);
         }
-    }
-
-    //TODO milhamj delete this
-    private PopularProfileViewModel getDummyPopularProfile() {
-        ArrayList<PopularProfileChildViewModel> list = new ArrayList<>();
-        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
-        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
-        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
-        list.add(new PopularProfileChildViewModel("", "https://ca.slack-edge.com/T038RGMSP-U2WPGER2T-0faadc531b0a-72"));
-        list.add(new PopularProfileChildViewModel("Febby Mulia", ""));
-        return new PopularProfileViewModel(list);
     }
 
     @Override
@@ -484,6 +472,7 @@ public class ExploreFragment
     }
 
     private void populateFirstData(List<Visitable> itemList, String cursor) {
+        itemList.add(getDummyPopularProfile());
         rvExplore.scrollTo(0,0);
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
@@ -492,6 +481,17 @@ public class ExploreFragment
         presenter.unsubscribeAutoComplete();
         sortButton.setVisibility(View.VISIBLE);
         populateExploreItem(itemList, cursor);
+    }
+
+    //TODO milhamj delete this
+    private PopularProfileViewModel getDummyPopularProfile() {
+        ArrayList<PopularProfileChildViewModel> list = new ArrayList<>();
+        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+        list.add(new PopularProfileChildViewModel("", "https://ca.slack-edge.com/T038RGMSP-U2WPGER2T-0faadc531b0a-72"));
+        list.add(new PopularProfileChildViewModel("Febby Mulia", ""));
+        return new PopularProfileViewModel(list);
     }
 
     private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, SortFilterModel sortFilterModel) {

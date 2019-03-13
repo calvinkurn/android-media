@@ -9,7 +9,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreT
 data class PopularProfileViewModel(
         val popularProfiles: MutableList<PopularProfileChildViewModel> = arrayListOf()
 ) : Visitable<ExploreTypeFactory> {
-    override fun type(typeFactory: ExploreTypeFactory?): Int {
-        return 0
+    override fun type(typeFactory: ExploreTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }
