@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:text="@string/home_header_fintech_scan"
             android:textColor="@color/font_black_disabled_38"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/sp_10"
             android:gravity="center"
             android:layout_marginBottom="@dimen/dp_8"/>
 
@@ -81,56 +81,18 @@
                 android:id="@+id/tv_btn_action_tokocash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/sp_4"
-                android:textColor="#42b549"
-                android:textSize="12sp"
-                android:visibility="gone"
-                tools:text="Top Up"
-                tools:visibility="gone" />
+                android:textColor="#03ac0e"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone" />
 
-            <RelativeLayout
+            <TextView
                 android:layout_below="@+id/tv_title_tokocash"
+                android:id="@+id/tv_balance_tokocash"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tv_ovo_point"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_5"
-                    android:layout_marginEnd="@dimen/dp_5"
-                    android:lineSpacingExtra="@dimen/sp_4"
-                    android:text="@string/home_header_fintech_points"
-                    android:textColor="@color/font_black_disabled_38"
-                    android:textSize="12sp"
-                    android:visibility="visible"
-                    tools:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/tv_balance_tokocash"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/tv_ovo_point"
-                    android:layout_toEndOf="@+id/tv_ovo_point"
-                    android:lineSpacingExtra="@dimen/sp_4"
-                    android:textColor="@color/black_70"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    tools:text="Rp 10000"
-                    tools:visibility="visible" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/info_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/tv_balance_tokocash"
-                    android:layout_alignBottom="@+id/tv_balance_tokocash"
-                    android:layout_toEndOf="@+id/tv_balance_tokocash"
-                    android:layout_toRightOf="@+id/tv_balance_tokocash"
-                    android:src="@drawable/ic_tokocash_info"
-                    android:visibility="gone" />
-
-            </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:textColor="@color/font_black_disabled_38"
+                android:textSize="@dimen/sp_12"/>
 
             <ProgressBar
                 android:id="@+id/progress_bar_tokocash"
@@ -141,8 +103,7 @@
                 android:orientation="vertical"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
-                android:visibility="visible"
-                tools:visibility="gone" />
+                android:visibility="visible" />
 
         </RelativeLayout>
 
@@ -155,7 +116,7 @@
         android:layout_marginBottom="8dp"
         android:background="#1e000000" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/container_tokopoint"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -164,44 +125,24 @@
 
         <ImageView
             android:id="@+id/iv_logo_tokopoint"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
-            android:layout_marginTop="@dimen/card_view_margin"
-            android:layout_marginBottom="@dimen/card_view_margin"
-            android:padding="@dimen/keyline_1_minus_8dp"
-            tools:src="@drawable/ic_hachiko_egg" />
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_margin="@dimen/dp_8"
+            android:layout_centerVertical="true" />
 
-        <LinearLayout
+        <ProgressBar
             android:id="@+id/progress_bar_tokopoint_layout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            tools:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingBottom="@dimen/dp_8"
-                    android:visibility="visible" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"  />
 
         <LinearLayout
             android:id="@+id/container_action_tokopoint"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/iv_logo_tokopoint"
+            android:layout_toEndOf="@+id/iv_logo_tokopoint"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="gone"
             tools:visibility="visible">
@@ -209,11 +150,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/card_view_margin"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:paddingTop="@dimen/dp_5"
-                android:paddingBottom="@dimen/dp_5"
                 android:visibility="visible">
 
                 <TextView
@@ -221,7 +159,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:lineSpacingExtra="@dimen/sp_4"
                     android:lines="1"
                     android:gravity="center"
                     android:textColor="@color/font_black_disabled_38"
@@ -236,7 +173,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:lineSpacingExtra="@dimen/sp_4"
                     android:lines="1"
                     android:singleLine="true"
                     android:textColor="#42b549"
@@ -265,6 +201,6 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
