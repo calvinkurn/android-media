@@ -273,7 +273,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     private static int convertCountReviewFormatToInt(String countReviewFormat) {
-        String countReviewString = countReviewFormat.replaceAll("[^\\d.]", "");
+        String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
 
         try {
             return Integer.parseInt(countReviewString);
