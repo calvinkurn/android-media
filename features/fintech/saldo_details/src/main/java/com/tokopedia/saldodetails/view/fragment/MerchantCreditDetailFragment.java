@@ -7,7 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,9 +142,39 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
         if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getBoxDesc())) {
             mclBoxDescTV.setVisibility(View.VISIBLE);
 
-            // TODO: 12/3/19 check for link
+            String linkText = merchantCreditDetails.getBoxInfo().getLinkText();
+            String descText = merchantCreditDetails.getBoxInfo().getBoxDesc() + " " + linkText;
 
-            mclBoxDescTV.setText(merchantCreditDetails.getBoxInfo().getBoxTitle());
+            SpannableString spannableString = new SpannableString(descText);
+            int startIndexOfLink = descText.indexOf(linkText);
+            if (startIndexOfLink != -1) {
+                spannableString.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View view) {
+                        if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getLinkUrl())) {
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                    merchantCreditDetails.getBoxInfo().getLinkUrl()));
+                        }
+                    }
+
+                    @Override
+                    public void updateDrawState(@NonNull TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                        try {
+                            ds.setColor(Color.parseColor(merchantCreditDetails.getBoxInfo().getLinkTextColor()));
+                        } catch (Exception e) {
+                            ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                        }
+
+                    }
+                }, startIndexOfLink, startIndexOfLink + linkText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                mclBoxDescTV.setMovementMethod(LinkMovementMethod.getInstance());
+                mclBoxDescTV.setText(spannableString);
+            } else {
+                mclBoxDescTV.setText(Html.fromHtml(descText));
+            }
+
         } else {
             mclBoxDescTV.setVisibility(View.GONE);
         }

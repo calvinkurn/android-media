@@ -379,22 +379,30 @@
         </LinearLayout>
 
 
-        <FrameLayout
-            android:id="@+id/merchant_credit_line_widget"
+        <LinearLayout
+            android:id="@+id/merchant_details_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
-            android:padding="@dimen/dp_16"
-            android:visibility="visible" />
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/merchant_credit_line_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16"
+                android:visibility="visible" />
 
 
-        <FrameLayout
-            android:id="@+id/saldo_prioritas_widget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:padding="@dimen/dp_16"
-            android:visibility="visible" />
+            <FrameLayout
+                android:id="@+id/saldo_prioritas_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:padding="@dimen/dp_16"
+                android:visibility="visible" />
+        </LinearLayout>
+
 
     </LinearLayout>
 
