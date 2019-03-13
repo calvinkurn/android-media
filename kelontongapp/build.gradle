@@ -107,8 +107,8 @@ dependencies {
         transitive = true
     }
 
-    implementation rootProject.ext.playServicesDependencies.firebase
-    implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
+    implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.core
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
 

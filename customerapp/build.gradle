@@ -439,10 +439,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
 
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)

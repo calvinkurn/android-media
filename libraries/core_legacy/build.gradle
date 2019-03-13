@@ -49,15 +49,15 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.playServicesDependencies.appIndexing
-    implementation "com.google.android.gms:play-services-tagmanager:16.0.7"
+    implementation rootProject.ext.firebase.appIndexing
+    implementation rootProjext.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.firebase.core
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.places
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
     implementation (rootProject.ext.analyticsDependencies.moengage) {
@@ -75,7 +75,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.iris)
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
+    implementation rootProject.ext.firebase.config
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore

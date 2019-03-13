@@ -50,6 +50,7 @@ ext {
     playServiceFirebasePerfMon = '16.2.3'
     playServiceAds = '17.1.2'
     playServiceFirebaseCore = '16.0.6'
+    playServiceTagManager = '16.0.6'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
@@ -103,23 +104,23 @@ ext {
     playServicesDependencies = [
             plus             : "com.google.android.gms:play-services-plus:${playServiceGms}",
             base             : "com.google.android.gms:play-services-base:${playServiceBase}",
-            appIndexing      : "com.google.firebase:firebase-appindexing:${playServiceAppIndexing}",
             analytics        : "com.google.android.gms:play-services-analytics:${playServiceAnalytics}",
-            firebase         : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             location         : "com.google.android.gms:play-services-location:${playServiceLocation}",
             maps             : "com.google.android.gms:play-services-maps:${playServiceMaps}",
             auth             : "com.google.android.gms:play-services-auth:${playServiceAuth}",
             places           : "com.google.android.gms:play-services-places:${playServicePlace}",
             phone            : "com.google.android.gms:play-services-auth-api-phone:${playServiceAuthApiPhone}",
             mapsUtils        : "com.google.maps.android:android-maps-utils:${playServiceMapsUtil}",
-            remoteConfig     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
-            perfMon          : "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
             ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
-            firebaseAnalytics: "com.google.firebase:firebase-core:${playServiceFirebaseCore}",
+            tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}"
     ]
 
     firebase = [
-           core: "com.google.firebase:firebase-core:${playServiceFirebaseCore}"
+            core        : "com.google.firebase:firebase-core:${playServiceFirebaseCore}",
+            appIndexing : "com.google.firebase:firebase-appindexing:${playServiceAppIndexing}",
+            messaging   : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
+            config      : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
+            performance : "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
     ]
 
     butterKnifeDependencies = [
