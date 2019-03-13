@@ -3,7 +3,6 @@ package com.tokopedia.shop.product.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
@@ -30,6 +29,8 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
 import com.tokopedia.wishlist.common.data.interceptor.WishListAuthInterceptor;
 import com.tokopedia.wishlist.common.data.repository.WishListCommonRepositoryImpl;
@@ -54,9 +55,8 @@ public class ShopProductModule {
 
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                                      AbstractionRouter abstractionRouter,
-                                                      UserSession userSession) {
-        return new GMAuthInterceptor(context, abstractionRouter, userSession);
+                                                      AbstractionRouter abstractionRouter) {
+        return new GMAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductGMFeaturedQualifier
@@ -114,9 +114,8 @@ public class ShopProductModule {
     // WishList
     @Provides
     public WishListAuthInterceptor provideWishListAuthInterceptor(@ApplicationContext Context context,
-                                                                  AbstractionRouter abstractionRouter,
-                                                                  UserSession userSession) {
-        return new WishListAuthInterceptor(context, abstractionRouter, userSession);
+                                                                  AbstractionRouter abstractionRouter) {
+        return new WishListAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductWishListFeaturedQualifier
@@ -190,9 +189,8 @@ public class ShopProductModule {
     // Product
     @Provides
     public ShopOfficialStoreAuthInterceptor provideShopOfficialStoreAuthInterceptor(@ApplicationContext Context context,
-                                                                                    AbstractionRouter abstractionRouter,
-                                                                                    UserSession userSession) {
-        return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter, userSession);
+                                                                                    AbstractionRouter abstractionRouter) {
+        return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductQualifier
@@ -244,5 +242,11 @@ public class ShopProductModule {
     @Provides
     public GetProductCampaignsUseCase provideGetProductCampaignsUseCase(ShopProductRepository wishListCommonRepository) {
         return new GetProductCampaignsUseCase(wishListCommonRepository);
+    }
+
+    @ShopProductScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

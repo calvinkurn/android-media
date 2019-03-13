@@ -27,15 +27,15 @@ public class TopAdsModel implements Parcelable {
 
     @SerializedName(KEY_ERROR)
     @Expose
-    private Error error;
+    private Error error = new Error();
 
     @SerializedName(KEY_STATUS)
     @Expose
-    private Status status;
+    private Status status = new Status();
 
     @SerializedName(KEY_HEADER)
     @Expose
-    private Header header;
+    private Header header = new Header();;
 
     @SerializedName(KEY_DATA)
     @Expose

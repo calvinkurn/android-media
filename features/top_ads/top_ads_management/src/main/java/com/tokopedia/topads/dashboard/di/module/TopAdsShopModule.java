@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
@@ -47,10 +46,9 @@ public class TopAdsShopModule {
     @TopAdsScope
     @Provides
     public ShopAuthInterceptor provideShopAuthInterceptor(@ApplicationContext Context context,
-                                                          AbstractionRouter abstractionRouter,
-                                                          UserSession userSession){
+                                                          AbstractionRouter abstractionRouter){
 
-        return new ShopAuthInterceptor(context, abstractionRouter, userSession);
+        return new ShopAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopQualifier

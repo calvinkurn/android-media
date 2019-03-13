@@ -46,12 +46,20 @@ public abstract class BaseDialog {
     }
 
     public void show() {
-        if (alertDialog != null)
+        if (alertDialog != null) {
             alertDialog.show();
+        }
     }
 
     public void dismiss() {
-        if (alertDialog != null)
+        if (alertDialog != null) {
             alertDialog.dismiss();
+        }
+    }
+
+    public void setCancelable(boolean cancelable) {
+        if (alertDialog != null) {
+            alertDialog.setCancelable(cancelable);
+        }
     }
 }

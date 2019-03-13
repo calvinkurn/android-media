@@ -104,7 +104,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
         int largeIconRes = R.drawable.ic_big_notif_customerapp;
         return new NotificationCompat.Builder(this, GENERAL)
                 .setContentTitle("Tokopedia Challenges")
-                .setSmallIcon(R.drawable.chuck_ic_notification_white_24dp)
+                .setSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setAutoCancel(true)

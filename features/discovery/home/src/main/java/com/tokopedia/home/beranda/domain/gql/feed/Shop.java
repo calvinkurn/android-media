@@ -8,22 +8,22 @@ public class Shop {
 
     @SerializedName("id")
     @Expose
-    private String id;
+    private String id = "";
     @SerializedName("name")
     @Expose
-    private String name;
+    private String name = "";
     @SerializedName("url")
     @Expose
-    private String url;
+    private String url = "";
     @SerializedName("applink")
     @Expose
-    private String applink;
+    private String applink = "";
     @SerializedName("city")
     @Expose
-    private String city;
+    private String city = "";
     @SerializedName("reputation")
     @Expose
-    private String reputation;
+    private String reputation = "";
 
     public String getId() {
         return id;

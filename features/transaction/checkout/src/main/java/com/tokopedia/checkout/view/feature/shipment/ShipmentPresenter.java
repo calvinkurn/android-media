@@ -800,42 +800,44 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private Map<String, Object> generateCheckoutAnalyticsStep2DataLayer(CheckoutRequest checkoutRequest) {
+        if (checkoutRequest != null) {
+            Map<String, Object> checkoutMapData = new HashMap<>();
+            EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+            enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_2);
+            enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON);
 
-        Map<String, Object> checkoutMapData = new HashMap<>();
-        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
-        enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_2);
-        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON);
-
-        EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
-        for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
-            for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
-                    EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
-                            new EnhancedECommerceProductCartMapData();
-                    enhancedECommerceProductCartMapData.setProductName(productDataCheckoutRequest.getProductName());
-                    enhancedECommerceProductCartMapData.setProductID(String.valueOf(productDataCheckoutRequest.getProductId()));
-                    enhancedECommerceProductCartMapData.setPrice(productDataCheckoutRequest.getProductPrice());
-                    enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
-                    enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
-                    enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
-                    enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
-                    enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
-                    enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
-                    enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
-                    enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
-                    enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
-                    enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
-                    enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
-                    enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+            EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
+            for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
+                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                    for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                                new EnhancedECommerceProductCartMapData();
+                        enhancedECommerceProductCartMapData.setProductName(productDataCheckoutRequest.getProductName());
+                        enhancedECommerceProductCartMapData.setProductID(String.valueOf(productDataCheckoutRequest.getProductId()));
+                        enhancedECommerceProductCartMapData.setPrice(productDataCheckoutRequest.getProductPrice());
+                        enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
+                        enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
+                        enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
+                        enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
+                        enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
+                        enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
+                        enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
+                        enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
+                        enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
+                        enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
+                        enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
+                        enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+                    }
                 }
             }
+            enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+            enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap());
+
+            checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
+
+            return checkoutMapData;
         }
-        enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
-        enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap());
-
-        checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
-
-        return checkoutMapData;
+        return null;
     }
 
     @Override
@@ -1487,9 +1489,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (TextUtils.isEmpty(data.getErrorMessage())
                             && data.getPriceSummary() != null && data.getPriceSummary().size() > 0) {
                         // validation succeeded, go to cod confirmation page
-                        if (checkoutRequest != null) mTrackerCod.eventEEClickButtonCod(
-                                generateCheckoutAnalyticsStep2DataLayer(checkoutRequest));
-                        getView().navigateToCodConfirmationPage(data);
+                        getView().navigateToCodConfirmationPage(data, checkoutRequest);
                     } else {
                         // show bottomsheet error indicating cod ineligibility
                         mTrackerCod.eventClickBayarDiTempatShipmentFailed(true);

@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -66,6 +67,8 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -795,6 +798,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             }
         });
+    }
+
+    @Override
+    public void sendAuthenticatedEvent(Uri uriData, String screenName){
+        try {
+            URL obtainedURL = new URL(uriData.getScheme(), uriData.getHost(), uriData.getPath());
+            if (obtainedURL != null)
+                ScreenTracking.sendScreen(context, screenName, obtainedURL.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

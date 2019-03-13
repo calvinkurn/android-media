@@ -30,9 +30,13 @@ import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter;
 import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.attachproduct.view.activity.AttachProductActivity.MAX_CHECKED_DEFAULT;
 
 /**
  * Created by Hendri on 13/02/18.
@@ -41,9 +45,10 @@ import javax.inject.Inject;
 public class AttachProductFragment extends BaseSearchListFragment<AttachProductItemViewModel, AttachProductListAdapterTypeFactory>
         implements CheckableInteractionListenerWithPreCheckedAction,
         AttachProductContract.View {
-    private final static int MAX_CHECKED = 3;
     private static final String IS_SELLER = "isSeller";
     private static final String SOURCE = "source";
+    private static final String MAX_CHECKED = "max_checked";
+    private static final String HIDDEN_PRODUCTS = "hidden_products";
     private Button sendButton;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -55,6 +60,22 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     private boolean isSeller = false;
     private String source = "";
+    private int maxChecked = MAX_CHECKED_DEFAULT;
+    private ArrayList<String> hiddenProducts = new ArrayList<>();
+
+    public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView,
+                                                    boolean isSeller, String source, int maxChecked,
+                                                    ArrayList<String> hiddenProducts) {
+        Bundle args = new Bundle();
+        args.putBoolean(IS_SELLER, isSeller);
+        args.putString(SOURCE, source);
+        args.putInt(MAX_CHECKED, maxChecked);
+        args.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts);
+        AttachProductFragment fragment = new AttachProductFragment();
+        fragment.setActivityContract(checkedUIView);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public void setActivityContract(AttachProductContract.Activity activityContract) {
         this.activityContract = activityContract;
@@ -80,15 +101,26 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
         if (savedInstanceState != null) {
             isSeller = savedInstanceState.getBoolean(IS_SELLER, false);
+            source = savedInstanceState.getString(SOURCE, "");
+            maxChecked = savedInstanceState.getInt(MAX_CHECKED, MAX_CHECKED_DEFAULT);
+            hiddenProducts = savedInstanceState.getStringArrayList(HIDDEN_PRODUCTS);
         } else if (getArguments() != null) {
             isSeller = getArguments().getBoolean(IS_SELLER, false);
+            source = getArguments().getString(SOURCE, "");
+            maxChecked = getArguments().getInt(MAX_CHECKED, MAX_CHECKED_DEFAULT);
+            hiddenProducts = getArguments().getStringArrayList(HIDDEN_PRODUCTS);
         }
 
-        if (savedInstanceState != null) {
-            source = savedInstanceState.getString(SOURCE, "");
-        } else if (getArguments() != null) {
-            source = getArguments().getString(SOURCE, "");
-        }
+        updateButtonBasedOnChecked(adapter.getCheckedCount());
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_SELLER, isSeller);
+        outState.putString(SOURCE, source);
+        outState.putInt(MAX_CHECKED, maxChecked);
+        outState.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts);
     }
 
     @Nullable
@@ -111,17 +143,6 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
                 activityContract = (AttachProductContract.Activity) getActivity();
             }
         }
-    }
-
-    public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView,
-                                                    boolean isSeller, String source) {
-        Bundle args = new Bundle();
-        args.putBoolean(IS_SELLER, isSeller);
-        args.putString(SOURCE, source);
-        AttachProductFragment fragment = new AttachProductFragment();
-        fragment.setActivityContract(checkedUIView);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -186,8 +207,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     public boolean shouldAllowCheckChange(int position, boolean checked) {
         boolean isCurrentlyChecked = isChecked(position);
         boolean willCheckedStatusChanged = (isCurrentlyChecked ^ checked);
-        if (adapter.getCheckedCount() >= MAX_CHECKED && (willCheckedStatusChanged && !isCurrentlyChecked)) {
-            String message = getString(R.string.string_attach_product_warning_max_product_format, String.valueOf(MAX_CHECKED));
+        if (adapter.getCheckedCount() >= maxChecked && (willCheckedStatusChanged && !isCurrentlyChecked)) {
+            String message = getString(R.string.string_attach_product_warning_max_product_format, String.valueOf(maxChecked));
             NetworkErrorHelper.showSnackbar(getActivity(), message);
             return false;
         } else {
@@ -215,6 +236,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
             sendButton.setVisibility(View.VISIBLE);
         }
 
+        removeHiddenProducts(products);
         renderList(products, hasNextPage);
     }
 
@@ -232,8 +254,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void updateButtonBasedOnChecked(int checkedCount) {
-        sendButton.setText(getString(R.string.string_attach_product_send_button_text, String.valueOf(checkedCount), String.valueOf(MAX_CHECKED)));
-        if (checkedCount > 0 && checkedCount <= MAX_CHECKED) {
+        sendButton.setText(getString(R.string.string_attach_product_send_button_text, String.valueOf(checkedCount), String.valueOf(maxChecked)));
+        if (checkedCount > 0 && checkedCount <= maxChecked) {
             sendButton.setEnabled(true);
         } else {
             sendButton.setEnabled(false);
@@ -278,6 +300,28 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     public void addProductClicked() {
         activityContract.goToAddProduct(activityContract.getShopId());
+    }
+
+    private void removeHiddenProducts(List<AttachProductItemViewModel> products) {
+        if (hiddenProducts == null) {
+            return;
+        }
+
+        Iterator<AttachProductItemViewModel> iterator = products.iterator();
+        while (iterator.hasNext()) {
+            AttachProductItemViewModel product = iterator.next();
+            boolean shouldHide = false;
+            for (String hiddenProduct : hiddenProducts) {
+                if (TextUtils.equals(String.valueOf(product.getProductId()), hiddenProduct)) {
+                    shouldHide = true;
+                    break;
+                }
+            }
+
+            if (shouldHide) {
+                iterator.remove();
+            }
+        }
     }
 
     private void trackAction(String source, int productId) {
