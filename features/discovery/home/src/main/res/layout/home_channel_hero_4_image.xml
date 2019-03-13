@@ -15,7 +15,8 @@
 
         <TextView
             android:id="@+id/channel_title"
-            style="@style/TextView.Title.Bold"
+            style="@style/TextView.Title"
+            android:textSize="@dimen/sp_18"
             android:layout_centerVertical="true"
             android:maxEms="12"
             tools:text="Hypebeast Banget Pokoknya" />

@@ -15,7 +15,8 @@
 
         <TextView
             android:id="@+id/home_channel_title"
-            style="@style/TextView.Title.Bold"
+            style="@style/TextView.Title"
+            android:textSize="@dimen/sp_18"
             android:layout_centerVertical="true"
             android:maxEms="12"
             android:paddingLeft="@dimen/page_margin"
