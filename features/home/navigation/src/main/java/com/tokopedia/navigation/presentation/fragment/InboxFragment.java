@@ -78,7 +78,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new GridLayoutManager(getContext(), 1);
+        layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
@@ -95,7 +95,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(adapter.getList().get(position) instanceof Inbox){
+                if(adapter.getList().get(position) instanceof Recomendation){
                     return 1;
                 } else {
                     return 2;
@@ -117,7 +117,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         List<Recomendation> list = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             Recomendation recomendation = new Recomendation();
-            recomendation.setImageUrl("https://2.bp.blogspot.com/-xyl_aPU1fxs/V2p0V-pZMuI/AAAAAAAAA_k/OA-376G2WAwin2Cg3N8Ve2eGfftzl_LHACLcB/s1600/tmp_22120-android_marshmallow_6.0-408175270.gif");
+            recomendation.setImageUrl("https://ecs7.tokopedia.net/img/cache/300/product-1/2019/3/7/7294997/7294997_1a2b8840-eaf2-4a9f-9356-827b0fa7166f_600_600.png");
             list.add(recomendation);
         }
         return list;
