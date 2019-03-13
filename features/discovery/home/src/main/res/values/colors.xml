@@ -14,4 +14,8 @@
     <color name="tkpd_dark_gray">#999999</color>
     <color name="orange_red">#ff5722</color>
     <color name="countdown_background">#ff3b30</color>
+    <color name="label_yellow">#ff8b00</color>
+    <color name="label_pink">#ef164c</color>
+    <color name="label_green">#03ac0e</color>
+    <color name="label_blue">#009bff</color>
 </resources>

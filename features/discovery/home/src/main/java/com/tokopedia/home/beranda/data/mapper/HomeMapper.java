@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
@@ -117,14 +118,21 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             }
                         }
 
-                        if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
-                            list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
-                        } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
-                            list.add(mappingDynamicTopAds(channel));
-                        } else {
-                            list.add(mappingDynamicChannel(channel));
-                            HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
-                                    list.size(),channel);
+                        switch (channel.getLayout()) {
+                            case DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET:
+                                list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_BU_WIDGET:
+                                list.add(new BusinessUnitViewModel(context.getString(R.string.digital_widget_title)));
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_TOPADS:
+                                list.add(mappingDynamicTopAds(channel));
+                                break;
+                            default:
+                                list.add(mappingDynamicChannel(channel));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                        list.size(), channel);
+                                break;
                         }
                     }
                 }

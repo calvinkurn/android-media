@@ -14,6 +14,11 @@ import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.data.source.RecommendationListDataSource;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.data.repository.GraphqlRepositoryImpl;
+import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore;
+import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
@@ -197,4 +202,10 @@ public class HomeModule {
                 recommendationListDataSource
         );
     }
+
+    @Provides
+    protected GraphqlRepository provideGraphqlRepository() {
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
 }

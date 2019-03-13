@@ -11,8 +11,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
 import kotlinx.android.synthetic.main.layout_template_small_business.view.*
-import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
-
 
 
 open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<HomeWidget.ContentItemTab>(itemView) {
