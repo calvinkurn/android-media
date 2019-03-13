@@ -58,6 +58,7 @@ import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
+import com.tokopedia.product.detail.common.data.model.Wholesale
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -71,6 +72,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
+import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -403,24 +405,33 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
-        if (productInfoViewModel.isUserSessionActive() && productInfoViewModel.isUserHasShop) {
-            open_shop.gone()
-        } else {
-            open_shop.visible()
-            open_shop.setOnClickListener {
-                activity?.let {
-                    if (productInfoViewModel.isUserSessionActive()) {
-                        val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.OPEN_SHOP) ?: return@let
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                    } else {
-                        startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                                REQUEST_CODE_LOGIN)
-                    }
+
+        open_shop.setOnClickListener {
+            activity?.let {
+                if (productInfoViewModel.isUserSessionActive()) {
+                    val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.OPEN_SHOP)
+                        ?: return@let
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                } else {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
                 }
             }
         }
-
+        open_shop.setOnClickListener {
+            activity?.let {
+                if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
+                    val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.OPEN_SHOP)
+                        ?: return@let
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                } else {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+                }
+            }
+        }
         loadProductData()
     }
 
@@ -542,19 +553,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
             otherProductView = PartialOtherProductView.build(base_other_product)
     }
 
-    private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false){
+    private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
         val productId = productInfo?.basic?.id ?: return
-        if (isSeeAll){
+        if (isSeeAll) {
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
         } else {
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
         }
         context?.let {
             startActivity(RouteManager.getIntentInternal(it,
-                    UriUtil.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString()))) }
+                UriUtil.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString())))
+        }
     }
 
-    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?){
+    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?) {
         productDetailTracking.eventClickReviewOnMostHelpfulReview(productInfo?.basic?.id, reviewId)
         context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(images), pos) }
     }
@@ -1000,9 +1012,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         partialVariantAndRateEstView.renderPriorityOrder(productInfoP2.shopCommitment)
         imageReviewViewView.renderData(productInfoP2.imageReviews)
         mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews, productInfo?.stats?.countReview
-                ?: 0)
+            ?: 0)
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
-                productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
+            productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
         otherProductView.renderData(productInfoP2.productOthers)
     }
@@ -1077,12 +1089,28 @@ class ProductDetailFragment : BaseDaggerFragment() {
             label_min_wholesale.text = getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
             label_wholesale.visibility = View.VISIBLE
             label_min_wholesale.visibility = View.VISIBLE
+            val onWholeSaleClick = { v: View ->
+                val wholesaleList = data.wholesale
+                if (wholesaleList != null && wholesaleList.isNotEmpty()) {
+                    context?.run {
+                        startActivity(WholesaleActivity.getIntent(this,
+                            (wholesaleList as ArrayList<Wholesale>)))
+                    }
+                }
+            }
+            label_wholesale.setOnClickListener { onWholeSaleClick.invoke(it) }
+            label_min_wholesale.setOnClickListener { onWholeSaleClick.invoke(it) }
             base_view_wholesale.visibility = View.VISIBLE
         } else {
             label_wholesale.visibility = View.GONE
             label_min_wholesale.visibility = View.GONE
             if (label_desc_installment.isVisible) base_view_wholesale.visibility = View.VISIBLE
             else base_view_wholesale.gone()
+        }
+        if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
+            open_shop.visible()
+        } else {
+            open_shop.gone()
         }
         activity?.invalidateOptionsMenu()
     }
