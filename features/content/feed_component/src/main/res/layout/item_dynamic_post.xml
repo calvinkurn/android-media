@@ -12,11 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <View
-        android:id="@+id/topShadow"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_5"
-        android:background="@drawable/card_shadow_top" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/header"
@@ -148,147 +143,186 @@
         android:textStyle="normal"
         tools:text="Welcoming October, road to hari batik nasional, you can wear batik and be stylish as well hey?" />
 
-    <RelativeLayout
-        android:id="@+id/contentLayout"
-        android:layout_width="match_parent"
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        tools:visibility="visible">
-
-        <com.tokopedia.feedcomponent.view.widget.WrapContentViewPager
-            android:id="@+id/contentViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/contentViewPager"
-            android:layout_marginBottom="@dimen/dp_4"
-            app:tabBackground="@drawable/kol_tab_selector"
-            app:tabGravity="center"
-            app:tabIndicatorHeight="0dp" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:gravity="center_vertical|end"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
-        android:visibility="visible"
-        tools:visibility="visible">
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:cardCornerRadius="@dimen/dp_8">F
 
-        <TextView
-            android:id="@+id/footerAction"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/medium_green"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            android:visibility="visible"
-            tools:ignore="RtlSymmetry"
-            tools:text="Info Vote Atau Enggak, Terserah dong"
-            tools:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/likeIcon"
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_18"
-            android:contentDescription="@string/kol_action_like"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_thumb"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/likeText"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/likeText"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:text="@string/kol_action_like"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            android:visibility="visible"
-            tools:ignore="RtlSymmetry"
-            tools:visibility="visible" />
+            android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/commentIcon"
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_18"
-            android:contentDescription="@string/kol_action_comment"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_comment"
-            android:visibility="visible"
-            tools:ignore="RtlSymmetry"
-            tools:visibility="visible" />
+            <RelativeLayout
+                android:id="@+id/contentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                tools:visibility="visible">
 
-        <TextView
-            android:id="@+id/commentText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:text="@string/kol_action_comment"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            android:visibility="visible"
-            tools:ignore="RtlSymmetry"
-            tools:visibility="visible" />
+                <com.tokopedia.feedcomponent.view.widget.WrapContentViewPager
+                    android:id="@+id/contentViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <ImageView
-            android:id="@+id/shareIcon"
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_18"
-            android:contentDescription="@string/kol_action_share"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_share_grey"
-            android:visibility="visible"
-            tools:visibility="visible" />
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/contentViewPager"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    app:tabBackground="@drawable/kol_tab_selector"
+                    app:tabGravity="center"
+                    app:tabIndicatorHeight="0dp" />
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/shareText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:text="@string/kol_action_share"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            android:visibility="visible"
-            tools:ignore="RtlSymmetry"
-            tools:visibility="visible" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible"
+                tools:visibility="visible">
 
-    <View
-        android:id="@+id/bottomShadow"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_10"
-        android:background="@drawable/card_shadow_bottom" />
+                <FrameLayout
+                    android:id="@+id/layoutFooterAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_40"
+                    android:background="@color/green_50"
+                    android:visibility="gone"
+                    tools:visibility="visible" >
+
+                    <TextView
+                        android:id="@+id/footerAction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/medium_green"
+                        android:textSize="@dimen/sp_12"
+                        android:textStyle="normal"
+                        android:layout_gravity="center|left"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        tools:text="Info Vote Atau Enggak, Terserah dong"
+                        tools:visibility="visible" />
+                </FrameLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/dp_16"
+                    android:paddingBottom="@dimen/dp_16">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_alignParentLeft="true">
+
+                        <ImageView
+                            android:id="@+id/likeIcon"
+                            android:layout_width="@dimen/dp_18"
+                            android:layout_height="@dimen/dp_18"
+                            android:contentDescription="@string/kol_action_like"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_thumb"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/likeText"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/likeText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:paddingStart="@dimen/dp_4"
+                            android:paddingLeft="@dimen/dp_4"
+                            android:paddingEnd="@dimen/dp_16"
+                            android:paddingRight="@dimen/dp_16"
+                            android:text="@string/kol_action_like"
+                            android:textColor="@color/color_like_comment_share"
+                            android:textSize="@dimen/sp_12"
+                            android:textStyle="normal"
+                            android:visibility="visible"
+                            tools:ignore="RtlSymmetry"
+                            tools:visibility="visible" />
+
+                        <ImageView
+                            android:id="@+id/commentIcon"
+                            android:layout_width="@dimen/dp_18"
+                            android:layout_height="@dimen/dp_18"
+                            android:contentDescription="@string/kol_action_comment"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_comment"
+                            android:visibility="visible"
+                            tools:ignore="RtlSymmetry"
+                            tools:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/commentText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:paddingStart="@dimen/dp_4"
+                            android:paddingLeft="@dimen/dp_4"
+                            android:paddingEnd="@dimen/dp_16"
+                            android:paddingRight="@dimen/dp_16"
+                            android:text="@string/kol_action_comment"
+                            android:textColor="@color/color_like_comment_share"
+                            android:textSize="@dimen/sp_12"
+                            android:textStyle="normal"
+                            android:visibility="visible"
+                            tools:ignore="RtlSymmetry"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_alignParentRight="true">
+
+                        <ImageView
+                            android:id="@+id/shareIcon"
+                            android:layout_width="@dimen/dp_18"
+                            android:layout_height="@dimen/dp_18"
+                            android:contentDescription="@string/kol_action_share"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_share_grey_profile"
+                            android:visibility="visible"
+                            tools:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/shareText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:paddingStart="@dimen/dp_4"
+                            android:paddingLeft="@dimen/dp_4"
+                            android:text="@string/kol_action_share"
+                            android:textColor="@color/color_like_comment_share"
+                            android:textSize="@dimen/sp_12"
+                            android:textStyle="normal"
+                            android:visibility="visible"
+                            tools:ignore="RtlSymmetry"
+                            tools:visibility="visible" />
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
 </LinearLayout>

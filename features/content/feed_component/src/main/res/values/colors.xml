@@ -9,4 +9,5 @@
     <color name="poll_second_white_image">#f8f8f8</color>
 
     <color name="feed_image_default">#eeeeee</color>
+    <color name="color_like_comment_share">#ae31353b</color>
 </resources>
