@@ -83,7 +83,6 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -242,8 +241,8 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestPar
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
-import com.tokopedia.abstraction.Actions.ActionCreator;
-import com.tokopedia.abstraction.Actions.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

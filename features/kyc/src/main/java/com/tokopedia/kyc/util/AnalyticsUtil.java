@@ -34,6 +34,8 @@ public class AnalyticsUtil {
         String CLK_KMBL_TKPD = "click kembali ke tokopedia";
         String CLK_PHN = "click phone";
         String CLK_EML = "click email";
+        String CLK_LNJKTN = "click lanjuktan";
+        String CLK_NNT_SJA = "click nanti saja";
     }
 
     public interface Keys{
