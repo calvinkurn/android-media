@@ -11,6 +11,7 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
@@ -124,12 +125,14 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private Option getPriceMinOption() {
         Option option = new Option();
         option.setKey(Option.KEY_PRICE_MIN);
+        option.setName(Option.KEY_PRICE_MIN);
         return option;
     }
 
     private Option getPriceMaxOption() {
         Option option = new Option();
         option.setKey(Option.KEY_PRICE_MAX);
+        option.setName(Option.KEY_PRICE_MAX);
         return option;
     }
 
