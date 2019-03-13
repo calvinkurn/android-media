@@ -40,4 +40,6 @@ public interface DynamicFilterView {
     boolean getFlagFilterHelperValue(String key);
 
     void applyFilter(Map<String, String> searchParameterWithFilter);
+    void trackSearch(String filterName, String filterValue, boolean isActive);
+    void updateResetButtonVisibility();
 }

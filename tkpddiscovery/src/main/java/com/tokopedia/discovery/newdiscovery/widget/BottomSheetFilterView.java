@@ -212,7 +212,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         filterController.applyFilter();
     }
 
-    private void updateResetButtonVisibility() {
+    @Override
+    public void updateResetButtonVisibility() {
         if (buttonReset != null) {
             buttonReset.setVisibility(isFilterActive() ? View.VISIBLE : View.GONE);
         }
@@ -658,6 +659,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
 
         return false;
+    }
+
+    @Override
+    public void trackSearch(String filterName, String filterValue, boolean isActive) {
+        SearchTracking.eventSearchResultFilterJourney(getContext(), filterName, filterValue, false, isActive);
     }
 
     public interface Callback {

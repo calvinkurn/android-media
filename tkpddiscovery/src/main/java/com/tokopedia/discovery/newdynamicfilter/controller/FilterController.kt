@@ -135,11 +135,6 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
         return minValue == pressedSliderMinValueState && maxValue == pressedSliderMaxValueState
     }
 
-    fun applyFilter() {
-        loadFlagFilterHelperToSearchParameter()
-        dynamicFilterView.applyFilter(searchParameter)
-    }
-
     private fun loadFlagFilterHelperToSearchParameter() {
         for ((key, value) in flagFilterHelper) {
             if (value) appendToMap(key)
@@ -163,6 +158,34 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
             value += ",$previousValue"
 
         return value
+    }
+
+    fun applyFilter() {
+        loadFlagFilterHelperToSearchParameter()
+        dynamicFilterView.applyFilter(searchParameter)
+    }
+
+    fun setFilterValue(option: Option, value: String) {
+        val isFilterAdded = isFilterAdded(value)
+        dynamicFilterView.trackSearch(option.name, value, isFilterAdded)
+
+        setOrRemoveFilterValue(isFilterAdded, option.key, value)
+
+        dynamicFilterView.updateResetButtonVisibility()
+    }
+
+    private fun isFilterAdded(value: String) : Boolean {
+        return if(value.toBoolean()) true
+        else isValueNotEmptyAndNotFalse(value)
+    }
+
+    private fun isValueNotEmptyAndNotFalse(value: String) : Boolean {
+        return !TextUtils.isEmpty(value) && value != java.lang.Boolean.FALSE.toString()
+    }
+
+    private fun setOrRemoveFilterValue(isFilterAdded: Boolean, key: String, value: String) {
+        if(isFilterAdded) searchParameter[key] = value
+        else searchParameter.remove(key)
     }
 
     fun getFilterValue(key: String): String {

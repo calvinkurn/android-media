@@ -21,7 +21,6 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
@@ -680,5 +679,14 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         }
 
         return false;
+    }
+
+    @Override
+    public void trackSearch(String filterName, String filterValue, boolean isActive) {
+    }
+
+    @Override
+    public void updateResetButtonVisibility() {
+
     }
 }
