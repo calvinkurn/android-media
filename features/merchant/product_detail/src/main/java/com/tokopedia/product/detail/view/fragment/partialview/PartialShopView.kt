@@ -39,7 +39,7 @@ class PartialShopView private constructor(private val view: View, private val cl
             shop_location_online.text = templateLocOnline
             if (shop.isAllowManage == TRUE_VALUE) btn_favorite.visible() else btn_favorite.gone()
             val drawable = if (shop.goldOS.isOfficial == TRUE_VALUE){
-                ContextCompat.getDrawable(context, R.drawable.ic_official_store)
+                ContextCompat.getDrawable(context, R.drawable.ic_official_store_product)
             } else if (shop.goldOS.isGold == TRUE_VALUE && shop.goldOS.isGoldBadge == TRUE_VALUE){
                 ContextCompat.getDrawable(context, R.drawable.ic_power_merchant)
             } else {

@@ -1,7 +1,6 @@
 package com.tokopedia.shopetalasepicker.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shopetalasepicker.view.listener.ShopEtalaseView
@@ -9,6 +8,7 @@ import com.tokopedia.shopetalasepicker.view.model.ShopEtalaseViewModel
 import rx.Subscriber
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created by normansyahputa on 2/28/18.
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class ShopEtalasePresenter @Inject
 constructor(private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-            private val userSession: UserSession) : BaseDaggerPresenter<ShopEtalaseView>() {
+            private val userSession: UserSessionInterface) : BaseDaggerPresenter<ShopEtalaseView>() {
 
     fun getShopEtalase(shopId: String?, isShowDefault: Boolean, isShowZeroProduct: Boolean) {
         if (shopId.isNullOrEmpty()) {

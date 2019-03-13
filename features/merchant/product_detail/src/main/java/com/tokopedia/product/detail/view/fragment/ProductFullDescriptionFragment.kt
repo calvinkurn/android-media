@@ -73,7 +73,7 @@ class ProductFullDescriptionFragment: BaseDaggerFragment() {
             product_price.text = it.getFloat(PARAM_PRODUCT_PRICE).getCurrencyFormatted()
             product_shop.text = it.getString(PARAM_PRODUCT_SHOP)
             if (it.getBoolean(PARAM_IS_OS, false)) {
-                product_shop.setDrawableLeft(R.drawable.ic_official_store)
+                product_shop.setDrawableLeft(R.drawable.ic_official_store_product)
             } else {
                 product_shop.setDrawableLeft(-1)
             }
