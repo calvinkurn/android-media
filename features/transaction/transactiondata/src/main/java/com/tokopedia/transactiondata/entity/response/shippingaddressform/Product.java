@@ -278,6 +278,6 @@ public class Product {
     }
 
     public TradeInInfo getTradeInInfo() {
-        return tradeInInfo;
+        return new TradeInInfo();
     }
 }
