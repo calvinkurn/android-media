@@ -1076,11 +1076,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showForceLogoutDialog(Response response) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
-    }
-
-    @Override
     public void showForceLogoutTokenDialog(String response) {
         ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
@@ -1879,36 +1874,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return remoteConfig.getBoolean(key, defaultValue);
     }
 
-    @Override
-    public String getBranchAutoApply(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public String getTrackingClientId() {
-        return null;
-    }
-
-    @Override
-    public Intent getDealDetailIntent(Activity activity, String slug, boolean enableBuy, boolean enableRecommendation, boolean enableShare, boolean enableLike) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoyaltyActivitySelectedCoupon(Context context, String digitalString, String categoryId) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoyaltyActivity(Context context, String platform, String categoryId) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
-        return null;
-    }
-
     /*@Override
     public String getContactUsBaseURL() {
         return TkpdBaseURL.ContactUs.URL_HELP;
@@ -1991,5 +1956,8 @@ public abstract class SellerRouterApplication extends MainApplication
         return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId, troubleId, solutionId);
     }
 
-
+    @Override
+    public void sendForceLogoutAnalytics(Response response) {
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+    }
 }
