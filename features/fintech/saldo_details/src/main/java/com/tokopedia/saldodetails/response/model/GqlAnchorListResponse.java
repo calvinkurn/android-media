@@ -23,7 +23,7 @@ public class GqlAnchorListResponse implements Parcelable {
     private String link;
 
 
-    protected GqlAnchorListResponse(Parcel in) {
+    public GqlAnchorListResponse(Parcel in) {
         this.label = in.readString();
         this.color = in.readString();
         this.showDialog = in.readByte() != 0;

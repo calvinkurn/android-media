@@ -80,11 +80,6 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         populateData();
-        initListeners();
-    }
-
-    private void initListeners() {
-
     }
 
     private void populateData() {
@@ -119,6 +114,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
             if (merchantCreditDetails.getInfoList() != null &&
                     merchantCreditDetails.getInfoList().size() > 0) {
+                mclInfoListLL.setVisibility(View.VISIBLE);
                 populateInfolistData();
             } else {
                 mclInfoListLL.setVisibility(View.GONE);
@@ -136,7 +132,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     private void populateBoxData() {
 
         Drawable drawable = mclBoxLayout.getBackground();
-        drawable.setColorFilter(Color.parseColor(merchantCreditDetails.getBoxInfo().getBoxBgColor()), PorterDuff.Mode.CLEAR);
+        drawable.setColorFilter(Color.parseColor(merchantCreditDetails.getBoxInfo().getBoxBgColor()), PorterDuff.Mode.SRC_ATOP);
         mclBoxLayout.setBackground(drawable);
 
         if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getBoxTitle())) {
@@ -148,36 +144,41 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
         if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getBoxDesc())) {
             mclBoxDescTV.setVisibility(View.VISIBLE);
+            String descText = merchantCreditDetails.getBoxInfo().getBoxDesc();
+            if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getLinkText())) {
+                String linkText = merchantCreditDetails.getBoxInfo().getLinkText();
+                descText += " " + linkText;
 
-            String linkText = merchantCreditDetails.getBoxInfo().getLinkText();
-            String descText = merchantCreditDetails.getBoxInfo().getBoxDesc() + " " + linkText;
-
-            SpannableString spannableString = new SpannableString(descText);
-            int startIndexOfLink = descText.indexOf(linkText);
-            if (startIndexOfLink != -1) {
-                spannableString.setSpan(new ClickableSpan() {
-                    @Override
-                    public void onClick(@NonNull View view) {
-                        if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getLinkUrl())) {
-                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                                    merchantCreditDetails.getBoxInfo().getLinkUrl()));
-                        }
-                    }
-
-                    @Override
-                    public void updateDrawState(@NonNull TextPaint ds) {
-                        super.updateDrawState(ds);
-                        ds.setUnderlineText(false);
-                        try {
-                            ds.setColor(Color.parseColor(merchantCreditDetails.getBoxInfo().getLinkTextColor()));
-                        } catch (Exception e) {
-                            ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                SpannableString spannableString = new SpannableString(descText);
+                int startIndexOfLink = descText.indexOf(linkText);
+                if (startIndexOfLink != -1) {
+                    spannableString.setSpan(new ClickableSpan() {
+                        @Override
+                        public void onClick(@NonNull View view) {
+                            if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getLinkUrl())) {
+                                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                        merchantCreditDetails.getBoxInfo().getLinkUrl()));
+                            }
                         }
 
-                    }
-                }, startIndexOfLink, startIndexOfLink + linkText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                mclBoxDescTV.setMovementMethod(LinkMovementMethod.getInstance());
-                mclBoxDescTV.setText(spannableString);
+                        @Override
+                        public void updateDrawState(@NonNull TextPaint ds) {
+                            super.updateDrawState(ds);
+                            ds.setUnderlineText(false);
+                            try {
+                                ds.setColor(Color.parseColor(merchantCreditDetails.getBoxInfo().getLinkTextColor()));
+                            } catch (Exception e) {
+                                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                            }
+
+                        }
+                    }, startIndexOfLink, startIndexOfLink + linkText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    mclBoxDescTV.setMovementMethod(LinkMovementMethod.getInstance());
+                    mclBoxDescTV.setText(spannableString);
+                } else {
+                    mclBoxDescTV.setText(Html.fromHtml(descText));
+                }
+
             } else {
                 mclBoxDescTV.setText(Html.fromHtml(descText));
             }
@@ -202,7 +203,6 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
             mclInfoListLL.addView(view);
         }
-        mclInfoListLL.setVisibility(View.VISIBLE);
     }
 
     private void populateAnchorListData() {
@@ -215,7 +215,6 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                 mclActionItemTV.setTextColor(getResources().getColor(R.color.tkpd_main_green));
             }
             mclActionItemTV.setOnClickListener(v -> {
-                saldoDetailsAnalytics.eventAnchorLabelClick(mclActionItemTV.getText().toString());
                 if (gqlAnchorListResponse.isShowDialog()) {
                     // TODO: 12/3/19 open bottom sheet
                 } else {

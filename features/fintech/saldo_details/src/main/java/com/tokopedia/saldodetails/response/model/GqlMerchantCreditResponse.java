@@ -54,7 +54,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
     };
 
 
-    protected GqlMerchantCreditResponse(Parcel in) {
+    public GqlMerchantCreditResponse(Parcel in) {
         this.isEligible = in.readByte() != 0;
         this.status = in.readInt();
         this.title = in.readString();

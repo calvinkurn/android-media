@@ -19,12 +19,13 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
             android:padding="@dimen/dp_8">
 
             <ImageView
                 android:id="@+id/mcl_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:src="@drawable/ic_refund_disbursement" />
@@ -35,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_2"
                 android:layout_toEndOf="@+id/mcl_logo"
                 android:layout_toRightOf="@+id/mcl_logo"
                 android:text="@string/modal_toko"
@@ -49,8 +51,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_toEndOf="@+id/mcl_title"
+                android:layout_toRightOf="@+id/mcl_title"
+                android:gravity="end"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_14"
+                android:textSize="@dimen/sp_10"
                 android:textStyle="bold"
                 tools:text="Pelajari" />
 
@@ -73,19 +79,20 @@
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_below="@+id/mcl_description"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_6"
                 android:divider="@android:color/transparent"
                 android:orientation="vertical"
-                android:padding="@dimen/dp_4"
                 android:scrollbars="vertical"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/mcl_box_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mcl_info_list"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:background="@drawable/bg_round_corner_solid_grey"
                 android:padding="@dimen/dp_8"
                 android:visibility="visible">

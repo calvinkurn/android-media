@@ -39,7 +39,7 @@ public class GqlBoxInfoResponse implements Parcelable {
     };
 
 
-    protected GqlBoxInfoResponse(Parcel in) {
+    public GqlBoxInfoResponse(Parcel in) {
         this.boxTitle = in.readString();
         this.boxDesc = in.readString();
         this.boxBgColor = in.readString();
