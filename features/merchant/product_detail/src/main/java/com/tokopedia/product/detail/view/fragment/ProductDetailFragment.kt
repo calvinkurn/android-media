@@ -409,7 +409,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         open_shop.setOnClickListener {
             activity?.let {
                 if (productInfoViewModel.isUserSessionActive()) {
-                    val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.OPEN_SHOP)
+                    val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.Marketplace.OPEN_SHOP)
                         ?: return@let
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -422,7 +422,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         open_shop.setOnClickListener {
             activity?.let {
                 if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
-                    val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.OPEN_SHOP)
+                    val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.Marketplace.OPEN_SHOP)
                         ?: return@let
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -489,7 +489,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
                 atcRequestParam.setQuantity(qty)
 
-                val expressCheckoutUriString = ApplinkConstInternal.EXPRESS_CHECKOUT
+                val expressCheckoutUriString = ApplinkConstInternal.Marketplace.EXPRESS_CHECKOUT
                 val intent = RouteManager.getIntentInternal(it, expressCheckoutUriString)
                 intent?.run {
                     putExtra("EXTRA_ATC_REQUEST", atcRequestParam)
@@ -562,7 +562,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
         context?.let {
             startActivity(RouteManager.getIntentInternal(it,
-                UriUtil.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString())))
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.IMAGE_REVIEW_GALLERY, productId.toString())))
         }
     }
 
@@ -1058,7 +1058,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val fullUrl = UriUtil.buildUri(ApplinkConstInternal.PRODUCT_EDIT, id)
+            val fullUrl = UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_EDIT, id)
             val intent = RouteManager.getIntentInternal(it, fullUrl)
             intent?.run {
                 startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
@@ -1251,7 +1251,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (productInfo != null) {
             //TODO SENT MOENGAGE
             context?.let {
-                val fullUrl = UriUtil.buildUri(ApplinkConstInternal.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
+                val fullUrl = UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
                 val intent = RouteManager.getIntentInternal(it, fullUrl)
                 intent?.run {
                     intent.putExtra("x_prd_nm", productInfo!!.basic.name)

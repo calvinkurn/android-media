@@ -571,7 +571,7 @@ public class ProductFragment extends BrowseSectionFragment
     private Intent getProductIntent(String productId){
         if (getContext() != null) {
             return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
         } else {
             return null;
         }

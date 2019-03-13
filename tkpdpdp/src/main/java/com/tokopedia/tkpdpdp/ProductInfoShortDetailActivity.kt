@@ -194,7 +194,7 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
         override fun onClick(v: View) {
             if (!GlobalConfig.isSellerApp()) {
                 val intent = RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, categoryId))
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, categoryId))
                 startActivity(intent)
             }
         }

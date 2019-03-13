@@ -454,7 +454,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle) {
         viewListener.navigateToActivity(RouteManager.getIntentInternal(context,
-                UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))));
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))));
     }
 
     @Override

@@ -128,7 +128,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
     private fun openCategory(category: Category.Detail) {
         if (GlobalConfig.isCustomerApp()) {
             val intent = RouteManager.getIntentInternal(view.context,
-                UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL,
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,
                 category.id))
             view.context.startActivity(intent)
         }

@@ -81,7 +81,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     protected void onCreate(Bundle savedInstanceState) {
         Uri uri = getIntent().getData();
         if (uri != null) {
-            List<String> paths = UriUtil.destructureUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, uri);
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, uri);
             if (!paths.isEmpty()) {
                 departmentId = paths.get(0);
             }

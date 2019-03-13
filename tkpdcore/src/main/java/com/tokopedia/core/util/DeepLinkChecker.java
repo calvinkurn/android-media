@@ -324,7 +324,7 @@ public class DeepLinkChecker {
             intent.putExtras(bundle);
         } else {
             intent = RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL,departmentId));
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,departmentId));
         }
         context.startActivity(intent);
     }
@@ -354,7 +354,7 @@ public class DeepLinkChecker {
     public static void openCategory(String url, Context context) {
         String departmentId = getLinkSegment(url).get(1);
         Intent intent = RouteManager.getIntentInternal(context,
-                UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, departmentId));
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
         context.startActivity(intent);
     }
 
