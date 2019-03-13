@@ -27,6 +27,8 @@ public class ShopGroupData implements Parcelable {
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
     private String shopBadge;
+    private boolean isFulfillment;
+    private String fulfillmentDistrict;
 
     // Total data which is calculated from cartItemDataList
     private long totalPrice;
@@ -35,56 +37,6 @@ public class ShopGroupData implements Parcelable {
 
     public ShopGroupData() {
     }
-
-    protected ShopGroupData(Parcel in) {
-        cartItemHolderDataList = in.createTypedArrayList(CartItemHolderData.CREATOR);
-        isError = in.readByte() != 0;
-        errorTitle = in.readString();
-        errorDescription = in.readString();
-        isWarning = in.readByte() != 0;
-        warningTitle = in.readString();
-        warningDescription = in.readString();
-        shopName = in.readString();
-        shopId = in.readString();
-        shopType = in.readString();
-        isGoldMerchant = in.readByte() != 0;
-        isOfficialStore = in.readByte() != 0;
-        shopBadge = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(cartItemHolderDataList);
-        dest.writeByte((byte) (isError ? 1 : 0));
-        dest.writeString(errorTitle);
-        dest.writeString(errorDescription);
-        dest.writeByte((byte) (isWarning ? 1 : 0));
-        dest.writeString(warningTitle);
-        dest.writeString(warningDescription);
-        dest.writeString(shopName);
-        dest.writeString(shopId);
-        dest.writeString(shopType);
-        dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
-        dest.writeByte((byte) (isOfficialStore ? 1 : 0));
-        dest.writeString(shopBadge);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ShopGroupData> CREATOR = new Creator<ShopGroupData>() {
-        @Override
-        public ShopGroupData createFromParcel(Parcel in) {
-            return new ShopGroupData(in);
-        }
-
-        @Override
-        public ShopGroupData[] newArray(int size) {
-            return new ShopGroupData[size];
-        }
-    };
 
     public List<CartItemHolderData> getCartItemDataList() {
         return cartItemHolderDataList;
@@ -229,4 +181,80 @@ public class ShopGroupData implements Parcelable {
     public void setShopBadge(String shopBadge) {
         this.shopBadge = shopBadge;
     }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
+    public String getFulfillmentDistrict() {
+        return fulfillmentDistrict;
+    }
+
+    public void setFulfillmentDistrict(String fulfillmentDistrict) {
+        this.fulfillmentDistrict = fulfillmentDistrict;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(this.cartItemHolderDataList);
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorTitle);
+        dest.writeString(this.errorDescription);
+        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
+        dest.writeString(this.warningTitle);
+        dest.writeString(this.warningDescription);
+        dest.writeString(this.shopName);
+        dest.writeString(this.shopId);
+        dest.writeString(this.shopType);
+        dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOfficialStore ? (byte) 1 : (byte) 0);
+        dest.writeString(this.shopBadge);
+        dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
+        dest.writeString(this.fulfillmentDistrict);
+        dest.writeLong(this.totalPrice);
+        dest.writeLong(this.totalCashback);
+        dest.writeInt(this.totalItem);
+    }
+
+    protected ShopGroupData(Parcel in) {
+        this.cartItemHolderDataList = in.createTypedArrayList(CartItemHolderData.CREATOR);
+        this.isError = in.readByte() != 0;
+        this.errorTitle = in.readString();
+        this.errorDescription = in.readString();
+        this.isWarning = in.readByte() != 0;
+        this.warningTitle = in.readString();
+        this.warningDescription = in.readString();
+        this.shopName = in.readString();
+        this.shopId = in.readString();
+        this.shopType = in.readString();
+        this.isGoldMerchant = in.readByte() != 0;
+        this.isOfficialStore = in.readByte() != 0;
+        this.shopBadge = in.readString();
+        this.isFulfillment = in.readByte() != 0;
+        this.fulfillmentDistrict = in.readString();
+        this.totalPrice = in.readLong();
+        this.totalCashback = in.readLong();
+        this.totalItem = in.readInt();
+    }
+
+    public static final Creator<ShopGroupData> CREATOR = new Creator<ShopGroupData>() {
+        @Override
+        public ShopGroupData createFromParcel(Parcel source) {
+            return new ShopGroupData(source);
+        }
+
+        @Override
+        public ShopGroupData[] newArray(int size) {
+            return new ShopGroupData[size];
+        }
+    };
 }
