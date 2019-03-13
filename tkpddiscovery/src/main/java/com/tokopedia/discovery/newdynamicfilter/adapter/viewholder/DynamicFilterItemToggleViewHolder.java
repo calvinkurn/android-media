@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 /**
@@ -20,12 +21,14 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
     TextView title;
     SwitchCompat toggle;
     private final DynamicFilterView dynamicFilterView;
+    private final FilterController filterController;
 
-    public DynamicFilterItemToggleViewHolder(View itemView, DynamicFilterView dynamicFilterView) {
+    public DynamicFilterItemToggleViewHolder(View itemView, DynamicFilterView dynamicFilterView, final FilterController filterController) {
         super(itemView);
         title = itemView.findViewById(R.id.title);
         toggle = itemView.findViewById(R.id.toggle);
         this.dynamicFilterView = dynamicFilterView;
+        this.filterController = filterController;
     }
 
     @Override

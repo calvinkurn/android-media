@@ -27,6 +27,7 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterCategoryActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterLocationActivity;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.BottomSheetDynamicFilterTypeFactoryImpl;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
@@ -387,7 +388,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     private void initFilterMainRecyclerView() {
-        DynamicFilterTypeFactory dynamicFilterTypeFactory = new BottomSheetDynamicFilterTypeFactoryImpl(this);
+        FilterController filterController = new FilterController(this);
+        DynamicFilterTypeFactory dynamicFilterTypeFactory = new BottomSheetDynamicFilterTypeFactoryImpl(this, filterController);
         filterMainAdapter = new DynamicFilterAdapter(dynamicFilterTypeFactory);
         filterMainRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration

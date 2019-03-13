@@ -10,6 +10,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.BottomSheetExpandableItemSelectedListAdapter;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 
 public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder {
@@ -20,10 +21,12 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
     private RecyclerView recyclerView;
     private BottomSheetExpandableItemSelectedListAdapter adapter;
     private BottomSheetDynamicFilterView filterView;
+    private final FilterController filterController;
 
-    public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView) {
+    public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView, final FilterController filterController) {
         super(itemView);
         this.filterView = filterView;
+        this.filterController = filterController;
         titleContainer = itemView.findViewById(R.id.title_container);
         seeAllButton = itemView.findViewById(R.id.see_all_button);
         title = itemView.findViewById(R.id.expandable_item_title);

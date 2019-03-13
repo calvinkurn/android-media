@@ -11,6 +11,7 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 /**
@@ -24,10 +25,12 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private View wholesaleContainer;
     private PriceRangeInputView priceRangeInputView;
     private final DynamicFilterView dynamicFilterView;
+    private final FilterController filterController;
 
-    public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView dynamicFilterView) {
+    public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView dynamicFilterView, final FilterController filterController) {
         super(itemView);
         this.dynamicFilterView = dynamicFilterView;
+        this.filterController = filterController;
         wholesaleTitle = itemView.findViewById(R.id.wholesale_title);
         wholesaleToggle = itemView.findViewById(R.id.wholesale_toggle);
         wholesaleContainer = itemView.findViewById(R.id.wholesale_container);

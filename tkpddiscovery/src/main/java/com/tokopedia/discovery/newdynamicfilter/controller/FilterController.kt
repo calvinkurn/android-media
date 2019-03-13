@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.newdynamicfilter
+package com.tokopedia.discovery.newdynamicfilter.controller
 
 import com.tokopedia.core.discovery.model.Filter
 import com.tokopedia.core.discovery.model.Option
@@ -6,16 +6,15 @@ import com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView
 import java.io.Serializable
 
-class FilterParameter(searchParameter: Map<String, String> = mapOf(),
-                      filterList: List<Filter> = listOf(),
-                      private val dynamicFilterView : DynamicFilterView) : Serializable {
+class FilterController(private val dynamicFilterView : DynamicFilterView) : Serializable {
 
     private val searchParameter = mutableMapOf<String, String>()
     private val flagFilterHelper = mutableMapOf<String, Boolean>()
     private val filterList = mutableListOf<Filter>()
     private val shownInMainState = mutableMapOf<String, Boolean>()
 
-    init {
+    fun initFilterController(searchParameter: Map<String, String> = mapOf(),
+                             filterList: List<Filter> = listOf()) {
         loadSearchParameter(searchParameter)
         loadFilterData(filterList)
         parseFilterHelper()
