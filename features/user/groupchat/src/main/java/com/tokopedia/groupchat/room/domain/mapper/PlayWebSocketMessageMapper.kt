@@ -81,7 +81,8 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             OverlayCloseViewModel.TYPE -> mapToOverlayClose(data)
             DynamicButtonsViewModel.TYPE -> mapToDynamicButton(data)
             BackgroundViewModel.TYPE -> mapToBackground(data)
-            StickyComponentViewModel.TYPE -> mapToStickyComponent(data)
+            StickyComponentViewModel.TYPE,
+            StickyComponentViewModel.TYPE_CLOSE -> mapToStickyComponent(data)
             else -> null
         }
     }
