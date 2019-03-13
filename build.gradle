@@ -36,6 +36,8 @@ buildscript {
             }
         }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.51"
+        classpath "com.google.gms:google-services:$googleServiceGradleVersion"
+        classpath "io.fabric.tools:gradle:$crashlyticsGradleVersion"
     }
 }
 
