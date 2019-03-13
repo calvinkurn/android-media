@@ -23,12 +23,10 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         RecyclerView.Adapter<BottomSheetExpandableItemSelectedListAdapter.ViewHolder> {
 
     private List<Option> selectedOptionsList = new ArrayList<>();
-    private BottomSheetDynamicFilterView filterView;
     private String filterTitle;
     private final FilterController filterController;
 
-    public BottomSheetExpandableItemSelectedListAdapter(BottomSheetDynamicFilterView filterView, final FilterController filterController, String filterTitle) {
-        this.filterView = filterView;
+    public BottomSheetExpandableItemSelectedListAdapter(final FilterController filterController, String filterTitle) {
         this.filterController = filterController;
         this.filterTitle = filterTitle;
     }
@@ -37,7 +35,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext()).inflate(R.layout.bottom_sheet_selected_filter_item, parent, false);
-        return new ViewHolder(view, filterView, this, filterController, filterTitle);
+        return new ViewHolder(view, this, filterController, filterTitle);
     }
 
     @Override
@@ -59,14 +57,12 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         private TextView itemText;
         private ColorSampleView colorIcon;
         private View itemContainer;
-        private BottomSheetDynamicFilterView filterView;
         private BottomSheetExpandableItemSelectedListAdapter adapter;
         private String filterTitle;
         private View ratingIcon;
         private final FilterController filterController;
 
         public ViewHolder(View itemView,
-                          BottomSheetDynamicFilterView filterView,
                           BottomSheetExpandableItemSelectedListAdapter adapter,
                           final FilterController filterController,
                           String filterTitle) {
@@ -74,7 +70,6 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
 
             initViewHolderViews(itemView);
 
-            this.filterView = filterView;
             this.adapter = adapter;
             this.filterController = filterController;
             this.filterTitle = filterTitle;
@@ -131,12 +126,11 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         }
 
         private void bindGeneralOption(final Option option, final int position) {
-            final boolean isOptionSelected = filterView.getFlagFilterHelperValue(option.getUniqueId());
+            final boolean isOptionSelected = filterController.getFlagFilterHelperValue(option.getUniqueId());
             setItemContainerBackgroundResource(isOptionSelected);
 
             itemContainer.setOnClickListener(view -> {
                 boolean newCheckedState = !isOptionSelected;
-                filterView.setFlagFilterHelper(option, newCheckedState, true);
                 filterController.setAndApplyFlagFilterHelper(option, newCheckedState);
                 adapter.notifyItemChanged(position);
             });

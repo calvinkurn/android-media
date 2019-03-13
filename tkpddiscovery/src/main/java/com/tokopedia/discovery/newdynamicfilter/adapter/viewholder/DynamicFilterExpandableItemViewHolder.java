@@ -42,12 +42,7 @@ public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHold
         recyclerView.setAdapter(adapter);
 
         title.setText(filter.getTitle());
-        titleContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                filterView.onExpandableItemClicked(filter);
-            }
-        });
+        titleContainer.setOnClickListener(view -> filterView.onExpandableItemClicked(filter));
 
         adapter.setSelectedOptionsList(filterView.getSelectedOptions(filter));
     }

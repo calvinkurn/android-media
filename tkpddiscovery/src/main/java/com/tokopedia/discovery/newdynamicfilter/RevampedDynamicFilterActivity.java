@@ -641,47 +641,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     @Override
-    public void setFlagFilterHelper(Option option, boolean value, boolean isAppliedImmediately) {
-        saveOrRemoveFlagFilterHelper(option.getUniqueId(), value);
-    }
-
-    public void saveOrRemoveFlagFilterHelper(String key, boolean value) {
-        if(value) flagFilterHelper.put(key, true);
-        else flagFilterHelper.remove(key);
-    }
-
-    @Override
-    public void setFilterValue(Option option, boolean value, boolean isAppliedImmediately) {
-        if (value) searchParameter.put(option.getKey(), String.valueOf(true));
-        else searchParameter.remove(option.getKey());
-    }
-
-    @Override
-    public void setFilterValue(Option option, String value, boolean isAppliedImmediately) {
-        if(!TextUtils.isEmpty(value)) searchParameter.put(option.getKey(), value);
-        else searchParameter.remove(option.getKey());
-    }
-
-    @Override
-    public String getFilterValue(String key) {
-        if(searchParameter.containsKey(key)) {
-            return searchParameter.get(key);
-        }
-
-        return "";
-    }
-
-    @Override
-    public boolean getFlagFilterHelperValue(String key) {
-        if(flagFilterHelper.containsKey(key)) {
-            Boolean returnValue = flagFilterHelper.get(key);
-            if(returnValue != null) return returnValue;
-        }
-
-        return false;
-    }
-
-    @Override
     public void trackSearch(String filterName, String filterValue, boolean isActive) {
     }
 

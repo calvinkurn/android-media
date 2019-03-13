@@ -11,7 +11,6 @@ import java.util.Map;
  */
 
 public interface DynamicFilterView {
-    void onExpandableItemClicked(Filter filter);
 
     @Deprecated
     Boolean loadLastCheckedState(Option option);
@@ -32,13 +31,7 @@ public interface DynamicFilterView {
 
     void onPriceEditedFromTextInput(int minValue, int maxValue);
 
-    void setFilterValue(Option option, boolean value, boolean isAppliedImmediately);
-    void setFilterValue(Option option, String value, boolean isAppliedImmediately);
-    String getFilterValue(String key);
-
-    void setFlagFilterHelper(Option option, boolean value, boolean isAppliedImmediately);
-    boolean getFlagFilterHelperValue(String key);
-
+    void onExpandableItemClicked(Filter filter);
     void applyFilter(Map<String, String> searchParameterWithFilter);
     void trackSearch(String filterName, String filterValue, boolean isActive);
     void updateResetButtonVisibility();
