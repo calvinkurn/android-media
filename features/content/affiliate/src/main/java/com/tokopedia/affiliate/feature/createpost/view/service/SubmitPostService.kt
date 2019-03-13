@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.*
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
+import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
