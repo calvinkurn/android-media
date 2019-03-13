@@ -110,5 +110,6 @@
     <string name="play_has_end">"%1$s telah berakhir"</string>
     <string name="play_next_event">"Nantikan dan gabung di channel Play selanjutnya"</string>
     <string name="play_start_shopping">"Mulai belanja"</string>
+    <string name="from">oleh</string>
 
 </resources>

@@ -115,7 +115,7 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     private View inflateCustomView(View view, String title, boolean isCloseable) {
         if(isRounded){
-            return inflateRoundedHeader(view);
+            return inflateRoundedHeader(view, isCloseable);
         } else {
             return inflateCloseableHeader(view, title, isCloseable);
         }
@@ -148,11 +148,17 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
     }
 
 
-    private View inflateRoundedHeader(View view) {
+    private View inflateRoundedHeader(View view, boolean isCloseable) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
                 .rounded_closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
+        View trayClose = contentView.findViewById(R.id.tray_close);
+        if (isCloseable) {
+            trayClose.setVisibility(View.VISIBLE);
+        } else {
+            trayClose.setVisibility(View.GONE);
+        }
         return contentView;
     }
 

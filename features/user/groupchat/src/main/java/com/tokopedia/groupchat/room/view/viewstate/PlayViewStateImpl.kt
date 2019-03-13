@@ -1160,7 +1160,7 @@ open class PlayViewStateImpl(
             }
         }
 
-        pinnedMessageDialog.setContentView(pinnedMessageView)
+        pinnedMessageDialog.setCustomContentView(pinnedMessageView, "", false)
         pinnedMessageDialog.show()
 
     }
@@ -1168,7 +1168,7 @@ open class PlayViewStateImpl(
     private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
         val view = activity.layoutInflater.inflate(R.layout
                 .layout_pinned_message_expanded, null)
-        (view.findViewById(R.id.nickname) as TextView).text = channelInfoViewModel.adminName
+        (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " "+ channelInfoViewModel.adminName
         channelInfoViewModel.pinnedMessageViewModel?.let {
             (view.findViewById(R.id.message) as TextView).text = it.message
             ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
