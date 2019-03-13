@@ -23,14 +23,12 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
@@ -43,7 +41,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -613,6 +610,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void applyFilterToSearchParameter(Map<String, String> searchParameterWithFilter) {
+        this.searchParameter.getSearchParameterHashMap().clear();
         this.searchParameter.getSearchParameterHashMap().putAll(searchParameterWithFilter);
     }
 }
