@@ -1,7 +1,6 @@
 package com.tokopedia.profile.domain.usecase
 
 import android.text.TextUtils
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kol.feature.post.domain.model.ContentListDomain
@@ -15,6 +14,7 @@ import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 import rx.functions.Func1
 import rx.schedulers.Schedulers
@@ -27,7 +27,7 @@ class GetProfileFirstPage @Inject constructor(
         private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
         private val getContentListUseCase: GetContentListUseCase,
         private val getAffiliateQuotaUseCase: GetAffiliateQuotaUseCase,
-        private val userSession: UserSession)
+        private val userSession: UserSessionInterface)
     : UseCase<ProfileFirstPageViewModel>() {
 
     var userId = 0

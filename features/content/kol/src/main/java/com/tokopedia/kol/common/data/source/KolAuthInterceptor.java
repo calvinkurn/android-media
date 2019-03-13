@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -23,9 +22,8 @@ public class KolAuthInterceptor extends TkpdAuthInterceptor {
 
     @Inject
     public KolAuthInterceptor(@ApplicationContext Context context,
-                              AbstractionRouter abstractionRouter,
-                              UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+                              AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
     }
 
 

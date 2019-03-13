@@ -124,28 +124,26 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         });
     }
 
-
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
-        if (isViewAttached()) {
-            List<QuickFilterItem> quickFilterItems = new ArrayList<>();
-            boolean isAnyItemSelected = false;
-            for (FilterStatus entry : filterItems) {
-                CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
-                finishFilter.setName(entry.getFilterName());
-                finishFilter.setType(entry.getFilterLabel());
-                finishFilter.setColorBorder(R.color.tkpd_main_green);
-                if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
-                    isAnyItemSelected = true;
-                    finishFilter.setSelected(true);
-                } else {
-                    finishFilter.setSelected(false);
-                }
-                quickFilterItems.add(finishFilter);
+        List<QuickFilterItem> quickFilterItems = new ArrayList<>();
+        int selctedIndex = 0;
+        boolean isAnyItemSelected = false;
+        for (FilterStatus entry : filterItems) {
+            CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
+            finishFilter.setName(entry.getFilterName());
+            finishFilter.setType(entry.getFilterLabel());
+            finishFilter.setColorBorder(R.color.tkpd_main_green);
+            if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
+                isAnyItemSelected = true;
+                finishFilter.setSelected(true);
+                selctedIndex = filterItems.indexOf(entry);
+            } else {
+                finishFilter.setSelected(false);
             }
-            getView().renderOrderStatus(quickFilterItems);
+            quickFilterItems.add(finishFilter);
         }
+        getView().renderOrderStatus(quickFilterItems, selctedIndex);
     }
-
 
     @Override
     public void detachView() {
@@ -258,13 +256,5 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 }
             }
         });
-    }
-
-    @Override
-    public void detachView() {
-        if (getOrderListUseCase != null) {
-            getOrderListUseCase.unsubscribe();
-        }
-        super.detachView();
     }
 }

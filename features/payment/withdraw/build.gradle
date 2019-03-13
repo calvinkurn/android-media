@@ -34,7 +34,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
-
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -61,6 +61,10 @@ dependencies {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
+    }
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
     }
 }
 
