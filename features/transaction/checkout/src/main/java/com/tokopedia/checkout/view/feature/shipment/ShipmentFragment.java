@@ -447,6 +447,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
+        if (isTradeIn()) {
+            checkoutAnalyticsCourierSelection.eventViewCheckoutPageTradeIn();
+        }
         cardFooter.setVisibility(View.VISIBLE);
     }
 
@@ -666,6 +669,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void sendAnalyticsChoosePaymentMethodFailed() {
+        if (isTradeIn()) {
+            checkoutAnalyticsCourierSelection.eventClickBayarTradeInFailed();
+        }
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess();
     }
 
@@ -879,7 +885,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap, String transactionId) {
-        checkoutAnalyticsCourierSelection.enhancedECommerceGoToCheckoutStep2(stringObjectMap, transactionId);
+        checkoutAnalyticsCourierSelection.enhancedECommerceGoToCheckoutStep2(stringObjectMap, transactionId, isTradeIn());
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceGoToCheckoutStep2();
     }
 
@@ -1164,6 +1170,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentCartItemModel.getIsBlackbox()) isBlackbox = "1";
         sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(isBlackbox);
         showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, shopShipmentList, cartPosition);
+        if (isTradeIn()) {
+            checkoutAnalyticsCourierSelection.eventClickButtonPilihDurasi();
+        }
     }
 
     private void showCourierChoiceBottomSheet(ShipmentDetailData shipmentDetailData,
@@ -1458,6 +1467,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
             shipmentAdapter.notifyItemChanged(errorPosition);
         } else if (shipmentData == null) {
+            if (isTradeIn()) {
+                checkoutAnalyticsCourierSelection.eventClickBayarCourierNotComplete();
+            }
             sendAnalyticsCourierNotComplete();
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
@@ -1615,6 +1627,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                           int cartItemPosition, int selectedServiceId,
                                           String selectedServiceName, boolean flagNeedToSetPinpoint,
                                           boolean hasCourierPromo) {
+        if (isTradeIn()) {
+            checkoutAnalyticsCourierSelection.eventClickKurirTradeIn(selectedServiceName);
+        }
         sendAnalyticsOnClickChecklistShipmentRecommendationDuration(selectedServiceName);
         // Has courier promo means that one of duration has promo, not always current selected duration.
         // It's for analytics purpose
@@ -1923,6 +1938,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onClickChangePhoneNumber() {
         if (getActivity() != null) {
+            checkoutAnalyticsCourierSelection.eventClickGantiNomor();
             getActivity().startActivityForResult(checkoutModuleRouter.getManageProfileIntent(getActivity()), REQUEST_CODE_MANAGE_PROFILE);
         }
     }
