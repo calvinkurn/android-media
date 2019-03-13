@@ -111,7 +111,7 @@ buildscript {
         classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
             exclude group: 'com.android.tools.build', module: 'gradle'
         }
-        classpath "io.fabric.tools:gradle:$rootProject.ext.crashlyticsGradleVersion"
+        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
     }
 }

@@ -62,6 +62,11 @@ ext {
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
 
+    gradlePlugin = [
+        crashlytics = "io.fabric.tools:gradle:$rootProject.ext.crashlyticsGradleVersion",
+        googleServices = "com.google.gms:google-services:${googleServiceGradleVersion}"
+    ]
+
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
             converterGson     : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
