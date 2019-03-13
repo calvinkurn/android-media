@@ -273,7 +273,9 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             infoCard.setApplink(ApplinkConst.CHALLENGE);
             infoCard.setTitleTrack(PEMBELI);
             infoCard.setSectionTrack(CLICK_CHALLENGE);
-            infoCard.setNewTxtVisiblle(View.VISIBLE);
+            if (context.getApplicationContext() instanceof AccountHomeRouter
+                    && ((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_ENTRY_CHALLENGE_BARU, true))
+                infoCard.setNewTxtVisiblle(View.VISIBLE);
             items.add(infoCard);
         }
 
