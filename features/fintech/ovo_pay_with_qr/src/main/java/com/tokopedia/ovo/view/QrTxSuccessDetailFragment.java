@@ -95,11 +95,11 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
 
     @Override
     public void setSuccessThankYouData(GoalQRThanks data) {
-        String dateTimeArray[] = (data.getTransactionDate()
-                .substring(0, data.getTransactionDate().lastIndexOf(":")).trim()).split(" ");
+       //String dateTimeArray[] = ().split(" ");
         String formattedDate = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD
-                ,DateFormatUtils.FORMAT_DD_MM_YYYY, dateTimeArray[0]);
-        date.setText(String.format("%s, %s", formattedDate, dateTimeArray[1]));
+                ,"dd MMM yyyy, hh.mm", data.getTransactionDate()
+                        .substring(0, data.getTransactionDate().lastIndexOf(":")).trim());
+        date.setText(formattedDate);
         amount.setText(Utils.convertToCurrencyStringWithoutRp(data.getAmount().longValue()));
         merchantName.setText(data.getMerchant().getName());
         merchantDescription.setText(data.getMerchant().getDescription());
