@@ -168,11 +168,6 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
         applyFilter()
     }
 
-    fun applyFilter() {
-        loadFlagFilterHelperToSearchParameter()
-        dynamicFilterView.applyFilter(searchParameter)
-    }
-
     fun setFilterValue(option: Option, value: String) {
         val isFilterAdded = isFilterAdded(value)
         dynamicFilterView.trackSearch(option.name, value, isFilterAdded)
@@ -182,6 +177,32 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
         dynamicFilterView.updateResetButtonVisibility()
     }
 
+    private fun setOrRemoveFilterValue(isFilterAdded: Boolean, key: String, value: String) {
+        if(isFilterAdded) searchParameter[key] = value
+        else searchParameter.remove(key)
+    }
+
+    fun setAndApplyFlagFilterHelper(option: Option, value: Boolean) {
+        setFlagFilterHelper(option, value)
+        applyFilter()
+    }
+
+    fun setFlagFilterHelper(option: Option, value: Boolean) {
+        setOrRemoveFlagFilterHelper(option.uniqueId, value)
+
+        dynamicFilterView.updateResetButtonVisibility()
+    }
+
+    private fun setOrRemoveFlagFilterHelper(key: String, value: Boolean) {
+        if(value) flagFilterHelper[key] = true
+        else flagFilterHelper.remove(key)
+    }
+
+    fun applyFilter() {
+        loadFlagFilterHelperToSearchParameter()
+        dynamicFilterView.applyFilter(searchParameter)
+    }
+
     private fun isFilterAdded(value: String) : Boolean {
         return if(value.toBoolean()) true
         else isValueNotEmptyAndNotFalse(value)
@@ -189,11 +210,6 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
 
     private fun isValueNotEmptyAndNotFalse(value: String) : Boolean {
         return !TextUtils.isEmpty(value) && value != java.lang.Boolean.FALSE.toString()
-    }
-
-    private fun setOrRemoveFilterValue(isFilterAdded: Boolean, key: String, value: String) {
-        if(isFilterAdded) searchParameter[key] = value
-        else searchParameter.remove(key)
     }
 
     fun getFilterValue(key: String): String {

@@ -137,6 +137,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
             itemContainer.setOnClickListener(view -> {
                 boolean newCheckedState = !isOptionSelected;
                 filterView.setFlagFilterHelper(option, newCheckedState, true);
+                filterController.setAndApplyFlagFilterHelper(option, newCheckedState);
                 adapter.notifyItemChanged(position);
             });
         }
