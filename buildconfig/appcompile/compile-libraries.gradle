@@ -1,6 +1,7 @@
 // Sort alphabetically by name
 include "libraries:analytics"
 include "libraries:applink"
+include "libraries:banner"
 include "libraries:base_adapter"
 include "libraries:base_list_seller"
 include "libraries:bottom_sheet_builder"
@@ -18,6 +19,7 @@ include "libraries:cache_manager"
 //include "libraries:cache_manager_no_op"
 include "libraries:image_picker"
 include 'libraries:imageuploader'
+include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 include 'libraries:locationmanager'
 //include 'libraries:iris'
@@ -42,3 +44,4 @@ include "libraries:trackinterface"
 include "libraries:graph_view"
 
 include "libraries:linker"
+include "libraries:webview"

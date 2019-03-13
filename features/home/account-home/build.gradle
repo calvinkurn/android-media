@@ -26,6 +26,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
 
+    implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.logout)
@@ -51,4 +52,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.trackinterface)
     implementation project(rootProject.ext.libraries.track)
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 }

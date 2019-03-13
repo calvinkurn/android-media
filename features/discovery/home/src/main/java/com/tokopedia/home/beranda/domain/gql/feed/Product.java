@@ -15,22 +15,22 @@ public class Product {
     private String name;
     @SerializedName("category_breadcrumbs")
     @Expose
-    private String categoryBreadcrumbs;
+    private String categoryBreadcrumbs = "";
     @SerializedName("url")
     @Expose
     private String url;
     @SerializedName("click_url")
     @Expose
-    private String clickUrl;
+    private String clickUrl = "";
     @SerializedName("image_url")
     @Expose
-    private String imageUrl;
+    private String imageUrl = "";
     @SerializedName("is_wishlist")
     @Expose
-    private Boolean isWishlist;
+    private Boolean isWishlist = false;
     @SerializedName("wishlist_url")
     @Expose
-    private String wishlistUrl;
+    private String wishlistUrl = "";
     @SerializedName("applink")
     @Expose
     private String applink;
@@ -39,37 +39,28 @@ public class Product {
     private Boolean isTopads;
     @SerializedName("tracker_image_url")
     @Expose
-    private String trackerImageUrl;
+    private String trackerImageUrl = "";
     @SerializedName("price")
     @Expose
     private String price;
     @SerializedName("price_int")
     @Expose
-    private Integer priceInt;
+    private Integer priceInt = 0;
     @SerializedName("slashed_price")
     @Expose
-    private String slashedPrice;
+    private String slashedPrice = "";
     @SerializedName("slashed_price_int")
     @Expose
-    private Integer slashedPriceInt;
+    private Integer slashedPriceInt = 0;
     @SerializedName("rating")
     @Expose
-    private Integer rating;
+    private Integer rating = 0;
     @SerializedName("count_review")
     @Expose
-    private Integer countReview;
+    private Integer countReview = 0;
     @SerializedName("recommendation_type")
     @Expose
-    private String recommendationType;
-    @SerializedName("shop")
-    @Expose
-    private Shop shop;
-    @SerializedName("labels")
-    @Expose
-    private List<Object> labels = null;
-    @SerializedName("badges")
-    @Expose
-    private List<Object> badges = null;
+    private String recommendationType = "";
 
     public String getId() {
         return id;
@@ -214,29 +205,4 @@ public class Product {
     public void setRecommendationType(String recommendationType) {
         this.recommendationType = recommendationType;
     }
-
-    public Shop getShop() {
-        return shop;
-    }
-
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
-
-    public List<Object> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(List<Object> labels) {
-        this.labels = labels;
-    }
-
-    public List<Object> getBadges() {
-        return badges;
-    }
-
-    public void setBadges(List<Object> badges) {
-        this.badges = badges;
-    }
-
 }

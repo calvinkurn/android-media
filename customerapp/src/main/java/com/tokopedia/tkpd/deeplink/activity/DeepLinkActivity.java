@@ -32,7 +32,6 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -89,6 +88,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
+        presenter.sendAuthenticatedEvent(uriData, getScreenName());
     }
 
     @Override

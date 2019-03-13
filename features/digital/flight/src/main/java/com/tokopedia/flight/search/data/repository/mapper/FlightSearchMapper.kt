@@ -78,6 +78,7 @@ class FlightSearchMapper @Inject constructor() {
                     0,
                     false,
                     beforeTotal,
+                    isShowSpecialPriceTag,
                     fare.adult,
                     fare.adultNumeric,
                     isReturn,

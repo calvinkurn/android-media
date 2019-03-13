@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,8 +133,9 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean isSeller = userSession.hasShop() || userSession.isAffiliate();
                 Intent intent = ((ChangePhoneNumberRouter) getActivity().getApplicationContext())
-                        .getWithdrawIntent(getActivity());
+                        .getWithdrawIntent(getActivity(), isSeller);
                 Bundle bundle = new Bundle();
                 bundle.putString(BUNDLE_TOTAL_BALANCE,
                         viewModel.getTokopediaBalance());

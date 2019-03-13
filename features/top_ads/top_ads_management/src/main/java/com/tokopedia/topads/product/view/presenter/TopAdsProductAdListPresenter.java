@@ -1,7 +1,7 @@
 package com.tokopedia.topads.product.view.presenter;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -11,12 +11,12 @@ import com.tokopedia.topads.dashboard.data.model.data.ProductAdAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.group.domain.usecase.TopAdsSearchGroupAdUseCase;
 import com.tokopedia.topads.product.domain.usecase.TopAdsGetProductAdUseCase;
 import com.tokopedia.topads.product.domain.usecase.TopAdsToggleStatusUseCase;
 import com.tokopedia.topads.product.view.listener.TopAdsProductAdListView;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +49,7 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
                                         TopAdsGetProductAdUseCase topAdsGetProductAdUseCase,
                                         TopAdsToggleStatusUseCase topAdsToggleStatusUseCase,
                                         TopAdsSearchGroupAdUseCase topAdsSearchGroupAdUseCase,
-                                        UserSession userSession) {
+                                        UserSessionInterface userSession) {
         super(topAdsDatePickerInteractor, topAdsAddSourceTaggingUseCase, userSession);
         this.topAdsGetProductAdUseCase = topAdsGetProductAdUseCase;
         this.topAdsToggleStatusUseCase = topAdsToggleStatusUseCase;

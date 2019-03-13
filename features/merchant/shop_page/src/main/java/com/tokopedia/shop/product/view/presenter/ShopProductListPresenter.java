@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -20,6 +19,7 @@ import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -42,7 +42,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
 
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
@@ -55,7 +55,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
                                     DeleteShopProductUseCase deleteShopProductUseCase,
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase,
-                                    UserSession userSession) {
+                                    UserSessionInterface userSession) {
         this.productListWithAttributeNewUseCase = productListWithAttributeNewUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;

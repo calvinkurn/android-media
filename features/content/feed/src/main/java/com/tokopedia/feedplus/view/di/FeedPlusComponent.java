@@ -2,11 +2,11 @@ package com.tokopedia.feedplus.view.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.kol.common.di.KolComponent;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -27,7 +27,7 @@ public interface FeedPlusComponent {
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 
-    UserSession userSession();
+    UserSessionInterface userSessionUserSessionInterface();
 
     void inject(FeedPlusFragment feedPlusFragment);
 
