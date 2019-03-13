@@ -11,7 +11,6 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
@@ -25,11 +24,10 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private SwitchCompat wholesaleToggle;
     private View wholesaleContainer;
     private PriceRangeInputView priceRangeInputView;
-    private final FilterController filterController;
 
-    public DynamicFilterItemPriceViewHolder(View itemView, final FilterController filterController) {
-        super(itemView);
-        this.filterController = filterController;
+    public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView filterView, final FilterController filterController) {
+        super(itemView, filterView, filterController);
+
         wholesaleTitle = itemView.findViewById(R.id.wholesale_title);
         wholesaleToggle = itemView.findViewById(R.id.wholesale_toggle);
         wholesaleContainer = itemView.findViewById(R.id.wholesale_container);
@@ -97,7 +95,9 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         return new RangeInputView.GestureListener() {
             @Override
             public void onButtonRelease(int minValue, int maxValue) {
-                filterController.checkSliderStateAndApplyFilter(minValue, maxValue);
+                if(filterController.isSliderValueHasChanged(minValue, maxValue)) {
+                    filterView.applyFilter();
+                }
             }
 
             @Override
@@ -107,7 +107,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
             @Override
             public void onValueEditedFromTextInput(int minValue, int maxValue) {
-                filterController.applyFilter();
+                filterView.applyFilter();
             }
         };
     }
@@ -115,11 +115,23 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private RangeInputView.OnValueChangedListener getPriceRangeInputViewOnValueChangeListener() {
         return (minValue, maxValue, minBound1, maxBound1) -> {
             String minValueString = minValue == minBound1 ? "" : String.valueOf(minValue);
-            filterController.setFilterValue(getPriceMinOption(), minValueString);
+            applyMinValueFilter(minValueString);
 
             String maxValueString = maxValue == maxBound1 ? "" : String.valueOf(maxValue);
-            filterController.setFilterValue(getPriceMaxOption(), maxValueString);
+            applyMaxValueFilter(maxValueString);
         };
+    }
+
+    private void applyMinValueFilter(String minValueString) {
+        Option priceMinOption = getPriceMinOption();
+        filterController.setFilterValue(priceMinOption, minValueString);
+        filterView.trackSearch(priceMinOption.getName(), minValueString, !TextUtils.isEmpty(minValueString));
+    }
+
+    private void applyMaxValueFilter(String maxValueString) {
+        Option priceMaxOption = getPriceMaxOption();
+        filterController.setFilterValue(getPriceMaxOption(), maxValueString);
+        filterView.trackSearch(priceMaxOption.getName(), maxValueString, !TextUtils.isEmpty(maxValueString));
     }
 
     private Option getPriceMinOption() {
@@ -142,9 +154,8 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
         wholesaleTitle.setOnClickListener(v -> wholesaleToggle.setChecked(!wholesaleToggle.isChecked()));
 
-        CompoundButton.OnCheckedChangeListener onCheckedChangeListener = (buttonView, isChecked) -> {
-            filterController.setAndApplyFilter(option, String.valueOf(isChecked));
-        };
+        CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
+                (buttonView, isChecked) -> setAndApplyFilter(option, String.valueOf(isChecked));
 
         String filterValueString = filterController.getFilterValue(option.getKey());
         boolean filterValueBoolean = Boolean.parseBoolean(filterValueString);

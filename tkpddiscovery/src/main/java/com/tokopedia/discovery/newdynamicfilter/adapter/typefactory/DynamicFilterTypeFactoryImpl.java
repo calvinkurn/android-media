@@ -18,10 +18,10 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 
-    private DynamicFilterView filterView;
+    private final DynamicFilterView filterView;
     private final FilterController filterController;
 
-    public DynamicFilterTypeFactoryImpl(DynamicFilterView filterView, final FilterController filterController) {
+    public DynamicFilterTypeFactoryImpl(final DynamicFilterView filterView, final FilterController filterController) {
         this.filterView = filterView;
         this.filterController = filterController;
     }
@@ -43,9 +43,9 @@ public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
     @Override
     public DynamicFilterViewHolder createViewHolder(View view, int viewType) {
         if (viewType == R.layout.dynamic_filter_item_price) {
-            return new DynamicFilterItemPriceViewHolder(view, filterController);
+            return new DynamicFilterItemPriceViewHolder(view, filterView, filterController);
         } else if (viewType == R.layout.dynamic_filter_item_toggle) {
-            return new DynamicFilterItemToggleViewHolder(view, filterController);
+            return new DynamicFilterItemToggleViewHolder(view, filterView, filterController);
         } else if (viewType == R.layout.dynamic_filter_expandable_item) {
             return new DynamicFilterExpandableItemViewHolder(view, filterView, filterController);
         } else {

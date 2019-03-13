@@ -12,11 +12,9 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
-import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class BottomSheetExpandableItemSelectedListAdapter extends
@@ -24,9 +22,13 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
 
     private List<Option> selectedOptionsList = new ArrayList<>();
     private String filterTitle;
+    private final DynamicFilterView filterView;
     private final FilterController filterController;
 
-    public BottomSheetExpandableItemSelectedListAdapter(final FilterController filterController, String filterTitle) {
+    public BottomSheetExpandableItemSelectedListAdapter(final DynamicFilterView filterView,
+                                                        final FilterController filterController,
+                                                        String filterTitle) {
+        this.filterView = filterView;
         this.filterController = filterController;
         this.filterTitle = filterTitle;
     }
@@ -35,7 +37,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext()).inflate(R.layout.bottom_sheet_selected_filter_item, parent, false);
-        return new ViewHolder(view, this, filterController, filterTitle);
+        return new ViewHolder(view, this, filterView, filterController, filterTitle);
     }
 
     @Override
@@ -60,10 +62,12 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         private BottomSheetExpandableItemSelectedListAdapter adapter;
         private String filterTitle;
         private View ratingIcon;
+        private final DynamicFilterView filterView;
         private final FilterController filterController;
 
         public ViewHolder(View itemView,
                           BottomSheetExpandableItemSelectedListAdapter adapter,
+                          final DynamicFilterView filterView,
                           final FilterController filterController,
                           String filterTitle) {
             super(itemView);
@@ -71,6 +75,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
             initViewHolderViews(itemView);
 
             this.adapter = adapter;
+            this.filterView = filterView;
             this.filterController = filterController;
             this.filterTitle = filterTitle;
         }
@@ -120,7 +125,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
             itemContainer.setOnClickListener(view -> {
                 boolean newCheckedState = !isOptionSelected;
                 String categoryValue = newCheckedState ? option.getValue() : "";
-                filterController.setAndApplyFilter(option, categoryValue);
+                setAndApplyFilter(option, categoryValue);
                 adapter.notifyDataSetChanged();
             });
         }
@@ -131,7 +136,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
 
             itemContainer.setOnClickListener(view -> {
                 boolean newCheckedState = !isOptionSelected;
-                filterController.setAndApplyFlagFilterHelper(option, newCheckedState);
+                setAndApplyFlagFilterHelper(option, newCheckedState);
                 adapter.notifyItemChanged(position);
             });
         }
@@ -142,6 +147,27 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
             } else {
                 itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
             }
+        }
+
+        private void setAndApplyFilter(Option option, String value) {
+            filterController.setFilterValue(option, value);
+            filterView.trackSearch(option.getName(), value, !isFilterApplied(value));
+            filterView.applyFilter();
+        }
+
+        private void setAndApplyFlagFilterHelper(Option option, Boolean value) {
+            filterController.setFlagFilterHelper(option, value);
+            filterView.trackSearch(option.getName(), option.getValue(), value);
+            filterView.applyFilter();
+        }
+
+        private boolean isFilterApplied(String value) {
+            if(Boolean.parseBoolean(value)) return true;
+            else return isValueNotEmptyAndNotFalse(value);
+        }
+
+        private boolean isValueNotEmptyAndNotFalse(String value) {
+            return !TextUtils.isEmpty(value) && value.equals(Boolean.FALSE.toString());
         }
     }
 }

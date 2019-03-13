@@ -139,7 +139,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filterController.applyFilter();
+                applyFilter();
             }
         });
         mainLayout = findViewById(R.id.main_layout);
@@ -162,7 +162,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private void initRecyclerView() {
-        filterController = new FilterController(this);
+        filterController = new FilterController();
         DynamicFilterTypeFactory dynamicFilterTypeFactory = new DynamicFilterTypeFactoryImpl(this, filterController);
         adapter = new DynamicFilterAdapter(dynamicFilterTypeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -413,22 +413,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     @Override
-    public void onPriceSliderRelease(int minValue, int maxValue) {
-
-    }
-
-    @Override
-    public void onPriceSliderPressed(int minValue, int maxValue) {
-
-    }
-
-    @Override
-    public void onPriceEditedFromTextInput(int minValue, int maxValue) {
-
-    }
-
-    @Override
-    public void applyFilter(Map<String, String> searchParameterWithFilter) {
+    public void applyFilter() {
         renderFilterResult();
         finish();
     }
@@ -609,22 +594,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         }
     }
 
-    @Override
-    public void updateLastRangeValue(int minValue, int maxValue) {
-        Filter priceFilter = getPriceFilter();
-        if (priceFilter == null) {
-            return;
-        }
-
-        for (Option option : priceFilter.getOptions()) {
-            if(Option.KEY_PRICE_MIN.equals(option.getKey())) {
-                option.setValue(String.valueOf(minValue));
-            } else if(Option.KEY_PRICE_MAX.equals(option.getKey())) {
-                option.setValue(String.valueOf(maxValue));
-            }
-        }
-    }
-
     public static Intent createInstance(Context context, String filterID, FilterFlagSelectedModel model) {
         Intent intent = new Intent(context, RevampedDynamicFilterActivity.class);
         intent.putExtra(EXTRA_FILTER_LIST, filterID);
@@ -642,10 +611,5 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     @Override
     public void trackSearch(String filterName, String filterValue, boolean isActive) {
-    }
-
-    @Override
-    public void updateResetButtonVisibility() {
-
     }
 }

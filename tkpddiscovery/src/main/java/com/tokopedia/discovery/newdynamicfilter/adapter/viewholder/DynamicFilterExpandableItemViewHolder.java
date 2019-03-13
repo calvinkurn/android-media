@@ -23,12 +23,10 @@ public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHold
     RecyclerView recyclerView;
     ExpandableItemSelectedListAdapter adapter;
     DynamicFilterView filterView;
-    private final FilterController filterController;
 
     public DynamicFilterExpandableItemViewHolder(View itemView, DynamicFilterView filterView, final FilterController filterController) {
-        super(itemView);
-        this.filterView = filterView;
-        this.filterController = filterController;
+        super(itemView, filterView, filterController);
+
         titleContainer = (LinearLayout) itemView.findViewById(R.id.title_container);
         title = (TextView) itemView.findViewById(R.id.expandable_item_title);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.expandable_item_selected_list);

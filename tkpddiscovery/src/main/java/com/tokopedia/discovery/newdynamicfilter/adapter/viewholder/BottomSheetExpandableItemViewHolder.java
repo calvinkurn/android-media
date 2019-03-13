@@ -20,13 +20,10 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
     private View seeAllButton;
     private RecyclerView recyclerView;
     private BottomSheetExpandableItemSelectedListAdapter adapter;
-    private BottomSheetDynamicFilterView filterView;
-    private final FilterController filterController;
 
     public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView, final FilterController filterController) {
-        super(itemView);
-        this.filterView = filterView;
-        this.filterController = filterController;
+        super(itemView, filterView, filterController);
+
         titleContainer = itemView.findViewById(R.id.title_container);
         seeAllButton = itemView.findViewById(R.id.see_all_button);
         title = itemView.findViewById(R.id.expandable_item_title);
@@ -35,7 +32,7 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
 
     @Override
     public void bind(final Filter filter) {
-        adapter = new BottomSheetExpandableItemSelectedListAdapter(filterController, filter.getTitle());
+        adapter = new BottomSheetExpandableItemSelectedListAdapter(filterView, filterController, filter.getTitle());
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);

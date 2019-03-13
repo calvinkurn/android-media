@@ -4,21 +4,21 @@ import android.view.View;
 
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.BottomSheetExpandableItemViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterItemPriceViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterItemToggleViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterNoViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterViewHolder;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 
 public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 
-    private BottomSheetDynamicFilterView filterView;
-    private FilterController filterController;
+    private final BottomSheetDynamicFilterView filterView;
+    private final FilterController filterController;
 
-    public BottomSheetDynamicFilterTypeFactoryImpl(BottomSheetDynamicFilterView filterView,
-                                                   FilterController filterController) {
+    public BottomSheetDynamicFilterTypeFactoryImpl(final BottomSheetDynamicFilterView filterView,
+                                                   final FilterController filterController) {
         this.filterView = filterView;
         this.filterController = filterController;
     }
@@ -39,9 +39,9 @@ public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTyp
     @Override
     public DynamicFilterViewHolder createViewHolder(View view, int viewType) {
         if (viewType == R.layout.dynamic_filter_item_price) {
-            return new DynamicFilterItemPriceViewHolder(view, filterController);
+            return new DynamicFilterItemPriceViewHolder(view, filterView, filterController);
         } else if (viewType == R.layout.dynamic_filter_item_toggle) {
-            return new DynamicFilterItemToggleViewHolder(view, filterController);
+            return new DynamicFilterItemToggleViewHolder(view, filterView, filterController);
         } else if (viewType == R.layout.dynamic_filter_expandable_item) {
             return new BottomSheetExpandableItemViewHolder(view, filterView, filterController);
         } else {

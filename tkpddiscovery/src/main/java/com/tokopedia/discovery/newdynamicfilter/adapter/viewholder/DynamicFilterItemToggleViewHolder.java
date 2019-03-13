@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdynamicfilter.adapter.viewholder;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tokopedia.core.discovery.model.Filter;
@@ -18,15 +17,14 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
 
-    TextView title;
-    SwitchCompat toggle;
-    private final FilterController filterController;
+    private TextView title;
+    private SwitchCompat toggle;
 
-    public DynamicFilterItemToggleViewHolder(View itemView, final FilterController filterController) {
-        super(itemView);
+    public DynamicFilterItemToggleViewHolder(View itemView, final DynamicFilterView filterView, final FilterController filterController) {
+        super(itemView, filterView, filterController);
+
         title = itemView.findViewById(R.id.title);
         toggle = itemView.findViewById(R.id.toggle);
-        this.filterController = filterController;
     }
 
     @Override
@@ -41,7 +39,7 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
 
     private void bindSwitchForOption(Option option) {
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
-                (buttonView, isChecked) -> filterController.setAndApplyFilter(option, String.valueOf(isChecked));
+                (buttonView, isChecked) -> setAndApplyFilter(option, String.valueOf(isChecked));
 
         String filterValueString = filterController.getFilterValue(option.getKey());
         boolean filterValueBoolean = Boolean.parseBoolean(filterValueString);
