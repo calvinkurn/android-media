@@ -50,6 +50,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.appIndexing
+    implementation "com.google.android.gms:play-services-tagmanager:16.0.7"
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.playServicesDependencies.firebase
     implementation rootProject.ext.playServicesDependencies.location
