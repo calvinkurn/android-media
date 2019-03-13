@@ -320,6 +320,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             toolbar = toolbarRemoveWithBackView();
         } else {
             toolbar = toolbarRemoveView();
+            // add padding programmatically
+            int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
+            view.setPadding(0,padding,0,0);
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);

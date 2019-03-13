@@ -61,7 +61,7 @@ public class Product implements Parcelable {
     @SerializedName(KEY_COUNT_TALK_FORMAT)
     private String countTalkFormat = "";
     @SerializedName(KEY_COUNT_REVIEW_FORMAT)
-    private String countReviewFormat = "";
+    private int countReviewFormat = 0;
     @SerializedName(KEY_CATEGORY)
     private Category category = new Category();
     @SerializedName(KEY_PRODUCT_PREORDER)
@@ -121,7 +121,7 @@ public class Product implements Parcelable {
             setCountTalkFormat(object.getString(KEY_COUNT_TALK_FORMAT));
         }
         if(!object.isNull(KEY_COUNT_REVIEW_FORMAT)){
-            setCountReviewFormat(object.getString(KEY_COUNT_REVIEW_FORMAT));
+            setCountReviewFormat(object.getInt(KEY_COUNT_REVIEW_FORMAT));
         }
         if(!object.isNull(KEY_CATEGORY)){
             setCategory(new Category(object.getJSONObject(KEY_CATEGORY)));
@@ -190,7 +190,7 @@ public class Product implements Parcelable {
         relativeUri = in.readString();
         priceFormat = in.readString();
         countTalkFormat = in.readString();
-        countReviewFormat = in.readString();
+        countReviewFormat = in.readInt();
         category = in.readParcelable(Category.class.getClassLoader());
         productPreorder = in.readByte() != 0;
         productWholesale = in.readByte() != 0;
@@ -219,7 +219,7 @@ public class Product implements Parcelable {
         dest.writeString(relativeUri);
         dest.writeString(priceFormat);
         dest.writeString(countTalkFormat);
-        dest.writeString(countReviewFormat);
+        dest.writeInt(countReviewFormat);
         dest.writeParcelable(category, flags);
         dest.writeByte((byte) (productPreorder ? 1 : 0));
         dest.writeByte((byte) (productWholesale ? 1 : 0));
@@ -341,7 +341,7 @@ public class Product implements Parcelable {
         this.countTalkFormat = countTalkFormat;
     }
 
-    public String getCountReviewFormat() {
+    public int getCountReviewFormat() {
         return countReviewFormat;
     }
 
@@ -353,7 +353,7 @@ public class Product implements Parcelable {
         this.productNewLabel = productNewLabel;
     }
 
-    public void setCountReviewFormat(String countReviewFormat) {
+    public void setCountReviewFormat(int countReviewFormat) {
         this.countReviewFormat = countReviewFormat;
     }
 
