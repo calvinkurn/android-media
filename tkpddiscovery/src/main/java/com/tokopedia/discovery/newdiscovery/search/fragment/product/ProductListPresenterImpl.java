@@ -259,7 +259,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
                     item.setRating(topAds.getProduct().getProductRating());
-                    item.setCountReview(topAds.getProduct().getCountReviewFormat());
+                    item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
                     list.add(i, item);
@@ -270,6 +270,18 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
             }
         }
         return list;
+    }
+
+    private static int convertCountReviewFormatToInt(String countReviewFormat) {
+        String countReviewString = countReviewFormat.replaceAll("[^\\d.]", "");
+
+        try {
+            return Integer.parseInt(countReviewString);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     private static List<BadgeItem> mapBadges(List<Badge> badges) {
