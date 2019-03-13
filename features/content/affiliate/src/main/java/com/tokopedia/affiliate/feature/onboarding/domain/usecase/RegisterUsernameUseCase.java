@@ -39,7 +39,8 @@ public class RegisterUsernameUseCase extends GraphqlUseCase {
         this.addRequest(new GraphqlRequest(
                 query,
                 RegisterUsernameData.class,
-                params.getParameters())
+                params.getParameters(),
+                false)
         );
         return super.createObservable(params);
     }
