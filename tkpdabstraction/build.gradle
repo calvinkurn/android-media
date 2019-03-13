@@ -26,6 +26,7 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.inappupdate)
 
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
