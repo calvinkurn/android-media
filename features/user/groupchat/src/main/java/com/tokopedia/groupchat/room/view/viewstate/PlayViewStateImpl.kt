@@ -1106,7 +1106,7 @@ open class PlayViewStateImpl(
             }
         }
 
-        welcomeInfoDialog.setContentView(welcomeInfoView, "")
+        welcomeInfoDialog.setCustomContentView(welcomeInfoView, "", false)
         view.setOnClickListener(null)
         welcomeInfoDialog.show()
 
