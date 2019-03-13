@@ -34,8 +34,12 @@ import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.experimental.CoroutineDispatcher;
+import kotlinx.coroutines.experimental.Dispatchers;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -203,6 +207,13 @@ public class HomeModule {
     @Provides
     protected GraphqlRepository provideGraphqlRepository() {
         return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @HomeScope
+    @Provides
+    @Named("Main")
+    protected CoroutineDispatcher provideMainDispatcher() {
+        return Dispatchers.getMain();
     }
 
 }

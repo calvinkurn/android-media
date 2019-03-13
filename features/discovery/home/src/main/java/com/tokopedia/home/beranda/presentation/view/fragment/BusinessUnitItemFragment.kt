@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -68,6 +70,10 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         return false
     }
 
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+    }
+
     override fun getAdapterTypeFactory(): BusinessWidgetTypeFactory {
         return BusinessWidgetTypeFactory()
     }
@@ -97,7 +103,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     private fun onSuccessGetList(data: HomeWidget) {
-
+        renderList(data.contentItemTabList, false)
     }
 
     private fun onErrorGetList(throwable: Throwable) {
