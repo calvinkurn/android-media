@@ -105,14 +105,14 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         val dialog = Dialog(this, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.af_leave_warning))
         dialog.setDesc(getString(R.string.af_leave_warning_desc))
-        dialog.setBtnOk(getString(R.string.cancel))
+        dialog.setBtnOk(getString(R.string.af_leave_title))
         dialog.setBtnCancel(getString(R.string.af_continue))
         dialog.setOnOkClickListener{
             dialog.dismiss()
+            super.onBackPressed()
         }
         dialog.setOnCancelClickListener{
             dialog.dismiss()
-            super.onBackPressed()
         }
         dialog.setCancelable(true)
         dialog.show()
