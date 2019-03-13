@@ -58,7 +58,7 @@ ext {
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
     crashlyticsGradleVersion = '1.26.1'
-    googleServiceGradleVersion = '4.2.0'
+    googleServiceGradleVersion = '4.1.0'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
