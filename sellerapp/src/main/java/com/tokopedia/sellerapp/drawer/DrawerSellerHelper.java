@@ -13,6 +13,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -56,6 +57,7 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.tracking.view.SimpleWebViewActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 import java.util.ArrayList;
@@ -376,15 +378,11 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
+                    context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
                     UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    intent = ((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA);
-
-                    context.startActivity(intent);
+                    context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
                     UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
