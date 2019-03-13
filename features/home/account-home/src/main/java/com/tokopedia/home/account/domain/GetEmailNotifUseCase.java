@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common.network.data.model.CacheType;
 import com.tokopedia.common.network.data.model.RestCacheStrategy;
@@ -14,8 +13,8 @@ import com.tokopedia.common.network.util.RestConstant;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AppNotificationSettingModel;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -26,16 +25,15 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.Interceptor;
-import rx.Observable;
 
 public class GetEmailNotifUseCase extends RestRequestSupportInterceptorUseCase {
     private static final String PARAM_SESSION_ID = "profile_user_id";
     private static final String PARAM_DEVICE_TIME = "device_time";
 
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private boolean forceRequest = false;
 
-    @Inject public GetEmailNotifUseCase(UserSession userSession, List<Interceptor> interceptors,
+    @Inject public GetEmailNotifUseCase(UserSessionInterface userSession, List<Interceptor> interceptors,
                                         @ApplicationContext Context context) {
         super(interceptors, context);
         this.userSession = userSession;

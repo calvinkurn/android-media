@@ -28,6 +28,10 @@ public class DataUpdateApp {
     @Expose
     private boolean isOptionalEnabled;
 
+    @SerializedName("inapp_update_enabled")
+    @Expose
+    private boolean inappUpdateEnabled;
+
     public int getLatestVersionForceUpdate() {
         return latestVersionForceUpdate;
     }
@@ -84,4 +88,7 @@ public class DataUpdateApp {
         this.isOptionalEnabled = isOptionalEnabled;
     }
 
+    public boolean isInappUpdateEnabled() {
+        return inappUpdateEnabled;
+    }
 }

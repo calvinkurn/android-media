@@ -15,6 +15,7 @@ import com.tokopedia.shopetalasepicker.R
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.di.component.DaggerShopEtalaseComponent
 import com.tokopedia.shopetalasepicker.di.component.ShopEtalaseComponent
+import com.tokopedia.shopetalasepicker.di.module.ShopEtalaseModule
 import com.tokopedia.shopetalasepicker.view.adapter.ShopEtalaseAdapterTypeFactory
 import com.tokopedia.shopetalasepicker.view.listener.ShopEtalaseView
 import com.tokopedia.shopetalasepicker.view.model.ShopEtalaseViewModel
@@ -98,6 +99,7 @@ class ShopEtalaseFragment : BaseListFragment<ShopEtalaseViewModel, ShopEtalaseAd
     override fun getComponent(): ShopEtalaseComponent {
         return DaggerShopEtalaseComponent.builder()
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .shopEtalaseModule(ShopEtalaseModule())
                 .build()
     }
 

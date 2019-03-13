@@ -51,7 +51,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     private Result challengeItem;
     private boolean isChallenge;
     private boolean showHeading;
-    private final static String SCREEN_NAME = "challenges/share";
+
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
 
@@ -102,7 +102,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         }
         View titleView = view.findViewById(R.id.layout_title);
         titleView.setOnClickListener(view1 -> dismiss());
-        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
+       // analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
         return view;
     }
 

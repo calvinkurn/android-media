@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -21,6 +20,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrappe
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,13 +63,13 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     private FlightAirlineUseCase flightAirlineUseCase;
     private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private CompositeSubscription compositeSubscription;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private FlightModuleRouter flightModuleRouter;
 
     @Inject
     public FlightCancellationReasonAndProofPresenter(FlightAirlineUseCase flightAirlineUseCase,
                                                      UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
-                                                     UserSession userSession,
+                                                     UserSessionInterface userSession,
                                                      FlightModuleRouter flightModuleRouter) {
         this.flightAirlineUseCase = flightAirlineUseCase;
         this.uploadImageUseCase = uploadImageUseCase;
@@ -236,7 +236,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
 
     @NonNull
     private Boolean checkIfAttachmentMandatory() {
-        return getView().getReason().getRequiredDocs().size() > 0;
+        return getView().getReason().getRequiredDocs().size() > 0 && getView().getAttachments() != null
+                && getView().getAttachments().size() > 0;
     }
 
     @Override

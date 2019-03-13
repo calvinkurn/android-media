@@ -35,7 +35,7 @@ import javax.inject.Inject;
 public class ShareInstagramBottomSheet extends BottomSheets {
 
     private static final String PACKAGENAME_INSTAGRAM = "com.instagram.android";
-    private final static String SCREEN_NAME = "challenges/instagram_hashtagcopy";
+    private final static String SCREEN_NAME = "challanges/instagram_hashtagcopy";
 
     private Result challengeItem;
     private SubmissionResult submissionResult;
@@ -148,6 +148,24 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         ClipData clip = ClipData.newPlainText("Tokopedia", contents);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(getActivity(), R.string.ch_copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
+
+        if (challengeItem != null) {
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_SHARE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_COPY, contents);
+        } else if (submissionResult != null) {
+            if (submissionResult.getMe() != null && submissionResult.getUser() != null
+                    && submissionResult.getMe().getId() != null
+                    && submissionResult.getUser().getId() != null
+                    && submissionResult.getMe().getId().equalsIgnoreCase(submissionResult.getUser().getId()))
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_MYSUBMISSIONS,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_COPY, contents);
+            else
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CHALLENGE_OTHER_SUBMISSION,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_COPY, contents);
+        }
     }
 
     @Override

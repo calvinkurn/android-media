@@ -45,13 +45,11 @@ class CourierFragment: BaseListFragment<BlackBoxShipmentHolder, CourierTypeFacto
             val bbInfos: List<BBInfo> = it.getParcelableArrayList(ARGS_BBINFO_LIST) ?: listOf()
             val rv = getRecyclerView(view)
             if (bbInfos.isNotEmpty()){
-                activity?.setTitle(R.string.product_detail_courier)
                 super.renderList(bbInfos, false)
                 view.title_bbinfo.visible()
                 if (rv.itemDecorationCount > 0)
                     rv.removeItemDecorationAt(rv.itemDecorationCount - 1)
             } else {
-                activity?.setTitle(R.string.courier_title)
                 super.renderList(shipments, false)
                 view.title_bbinfo.gone()
                 rv.addItemDecoration(DividerItemDecoration(activity))

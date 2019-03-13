@@ -33,6 +33,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -565,13 +566,53 @@ public class ProductListFragment extends SearchSectionFragment
         }
         getSelectedFilter().put(option.getKey(), mapValue);
         clearDataFilterSort();
+        if (option.isCategoryOption()) {
+            if (isQuickFilterSelected) {
+                getSearchParameter().setDepartmentId(option.getValue());
+            } else {
+                getSearchParameter().setDepartmentId("");
+            }
+        }
+        if (option.isOfficialOption()) {
+            getSearchParameter().setOfficial(isQuickFilterSelected);
+        }
         reloadData();
         UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
     }
 
     @Override
+    public void setSelectedFilter(HashMap<String, String> selectedFilter) {
+        super.setSelectedFilter(selectedFilter);
+        if (selectedFilter == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.OFFICIAL))) {
+            getSearchParameter().setOfficial(false);
+        } else {
+            getSearchParameter().setOfficial(Boolean.parseBoolean(selectedFilter.get(SearchApiConst.OFFICIAL)));
+        }
+        if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.SC))) {
+            getSearchParameter().setDepartmentId("");
+        } else {
+            getSearchParameter().setDepartmentId(selectedFilter.get(SearchApiConst.SC));
+        }
+    }
+
+    @Override
     public void onSelectedFilterRemoved(String uniqueId) {
         removeSelectedFilter(uniqueId);
+    }
+
+    @Override
+    protected void removeSelectedFilter(String uniqueId) {
+        String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
+
+        if (Option.KEY_CATEGORY.equals(optionKey)) {
+            getSearchParameter().setDepartmentId("");
+        } else if (Option.KEY_OFFICIAL.equals(optionKey)) {
+            getSearchParameter().setOfficial(false);
+        }
+        super.removeSelectedFilter(uniqueId);
     }
 
     @Override
@@ -784,19 +825,20 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     protected void openBottomSheetFilter() {
-        addPreFilteredCategory();
+        addPreFilteredCategoryAndIsOfficial();
         super.openBottomSheetFilter();
     }
 
     @Override
     protected void openFilterPage() {
-        addPreFilteredCategory();
+        addPreFilteredCategoryAndIsOfficial();
         super.openFilterPage();
     }
 
-    private void addPreFilteredCategory() {
+    private void addPreFilteredCategoryAndIsOfficial() {
         String preFilteredSc = getSearchParameter().getDepartmentId();
-        if (TextUtils.isEmpty(preFilteredSc)) {
+        boolean isOfficial = getSearchParameter().isOfficial();
+        if (TextUtils.isEmpty(preFilteredSc) && !isOfficial) {
             return;
         }
         if (getFlagFilterHelper() == null) {
@@ -804,6 +846,9 @@ public class ProductListFragment extends SearchSectionFragment
             getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
             getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
             FilterHelper.populateWithSelectedCategory(getFilters(), getFlagFilterHelper(), preFilteredSc);
+            if (isOfficial) {
+                FilterHelper.addPreFilteredIsOfficial(getFilters(), getFlagFilterHelper());
+            }
         }
     }
 
