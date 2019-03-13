@@ -16,7 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,32 +25,29 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.di.DigitalComponent;
+import com.tokopedia.digital.common.di.DigitalComponentInstance;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.mapper.SmartcardMapper;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.repository.ETollRepository;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardCommandDataSource;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardCommandUseCase;
-import com.tokopedia.digital.product.additionalfeature.etoll.domain.interactor.SmartcardInquiryUseCase;
+import com.tokopedia.digital.product.additionalfeature.etoll.di.DaggerDigitalETollComponent;
+import com.tokopedia.digital.product.additionalfeature.etoll.di.DigitalETollComponent;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.ETollUpdateBalanceResultView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.NFCDisabledView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.TapETollCardView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.ETollPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.listener.IETollView;
+import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.utils.NFCUtils;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 
 import java.io.IOException;
+
+import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
@@ -82,7 +78,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
-    private ETollPresenter presenter;
+    @Inject
+    ETollPresenter presenter;
 
     private TapETollCardView tapETollCardView;
     private NFCDisabledView nfcDisabledView;
@@ -109,14 +106,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     public static TaskStackBuilder intentForTaskStackBuilderMethods(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent homeIntent;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivityInterfaceRouter(context);
-        }
-        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+        Intent homeIntent = ((DigitalRouter) context.getApplicationContext()).getHomeIntent(context);
         taskStackBuilder.addNextIntent(homeIntent);
 
         DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
@@ -135,7 +125,9 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initInjector();
         super.onCreate(savedInstanceState);
+        presenter.attachView(this);
 
         remoteConfig = new FirebaseRemoteConfigImpl(this);
 
@@ -154,21 +146,13 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         intentFiltersArray = new IntentFilter [] {isodep, };
 
         techListsArray = new String[][] { new String[] { IsoDep.class.getName(), NfcA.class.getName()} };
-
-        SmartcardMapper mapper = new SmartcardMapper();
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        SmartcardInquiryDataSource smartcardInquiryDataSource = new SmartcardInquiryDataSource(
-                digitalEndpointService, mapper);
-        SmartcardCommandDataSource smartcardCommandDataSource = new SmartcardCommandDataSource(
-                digitalEndpointService, mapper);
-        ETollRepository eTollRepository = new ETollRepository(smartcardInquiryDataSource,
-                smartcardCommandDataSource);
-        SmartcardInquiryUseCase smartcardInquiryUseCase = new SmartcardInquiryUseCase(eTollRepository);
-        SmartcardCommandUseCase smartcardCommandUseCase = new SmartcardCommandUseCase(eTollRepository);
-
-        presenter = new ETollPresenter(this, smartcardInquiryUseCase, smartcardCommandUseCase);
-
         handleIntent(getIntent());
+    }
+
+    private void initInjector() {
+        DigitalComponent digitalComponent = DigitalComponentInstance.getInstance(getApplication());
+        DigitalETollComponent component = DaggerDigitalETollComponent.builder().digitalComponent(digitalComponent).build();
+        component.inject(this);
     }
 
     @Override
@@ -248,8 +232,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             DigitalCheckETollBalanceNFCActivityPermissionsDispatcher.detectNFCWithCheck(this);
         } else {
             // show webview help page
-            startActivity(DigitalWebActivity.newInstance(this, DigitalUrl.HelpUrl.ETOLL));
-            finish();
+            if (getApplication() instanceof DigitalModuleRouter) {
+                DigitalModuleRouter digitalModuleRouter =
+                        (DigitalModuleRouter) getApplication();
+                startActivity(digitalModuleRouter.getWebviewActivityWithIntent(this, DigitalUrl.HelpUrl.ETOLL));
+                finish();
+            }
         }
     }
 
@@ -495,4 +483,9 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
     }
 
+    @Override
+    protected void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
 }

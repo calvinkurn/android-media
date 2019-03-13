@@ -62,4 +62,16 @@ public class RouteManager {
         return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
     }
 
+    public static String routeWithAttribution(Context context, String applink,
+                                            String trackerAttribution) {
+        String attributionApplink;
+        if (applink.contains("?")) {
+            attributionApplink = applink + "&"+ trackerAttribution;
+        } else {
+            attributionApplink = applink + "?"+ trackerAttribution;
+        }
+
+//        ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, attributionApplink);
+        return attributionApplink;
+    }
 }

@@ -10,15 +10,15 @@ class Swipe {
     var isNeedSwipe: Boolean = false
     @SerializedName("text")
     @Expose
-    var text: String? = null
+    var text: String = ""
     @SerializedName("note")
     @Expose
-    var note: String? = null
+    var note: String = ""
     @SerializedName("partner_code")
     @Expose
-    var partnerCode: String? = null
+    var partnerCode: String = ""
     @SerializedName("pin")
     @Expose
-    var pin: Pin? = null
+    var pin: Pin = Pin()
 
 }

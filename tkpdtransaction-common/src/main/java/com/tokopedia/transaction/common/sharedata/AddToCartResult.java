@@ -11,7 +11,7 @@ public class AddToCartResult {
     private @Nullable
     String message;
     private String cartId;
-    private String source;
+    private String source = "";
 
     public AddToCartResult() {
     }

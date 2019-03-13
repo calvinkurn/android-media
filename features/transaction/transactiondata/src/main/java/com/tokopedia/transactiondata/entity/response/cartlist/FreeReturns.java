@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class FreeReturns {
     @SerializedName("free_returns_logo")
     @Expose
-    public String freeReturnsLogo;
+    public String freeReturnsLogo = "";
 
     public String getFreeReturnsLogo() {
         return freeReturnsLogo;

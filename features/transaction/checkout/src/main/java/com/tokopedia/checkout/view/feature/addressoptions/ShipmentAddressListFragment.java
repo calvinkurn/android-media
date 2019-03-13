@@ -30,7 +30,8 @@ import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListCompone
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
-import com.tokopedia.checkout.view.feature.addressoptions.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.checkout.view.feature.addressoptions.addressadapter.ShipmentAddressListAdapter;
+import com.tokopedia.checkout.view.feature.addressoptions.cornerbtmsheet.CornerBottomSheet;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
@@ -38,9 +39,9 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+import com.tokopedia.transactionanalytics.CornerAnalytics;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -55,7 +56,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         ISearchAddressListView<List<RecipientAddressModel>>, SearchInputView.Listener,
         SearchInputView.ResetListener, ShipmentAddressListAdapter.ActionListener {
 
-    private static final int ORDER_ASC = 1;
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
     public static final String TAG_CORNER_BS = "TAG_CORNER_BS";
     public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";
@@ -76,19 +76,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private boolean isDisableCorner;
     private RecipientAddressModel mCurrAddress;
 
-    private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
-
     private PerformanceMonitoring chooseAddressTracePerformance;
     private boolean isChooseAddressTraceStopped;
 
-    @Inject
-    ShipmentAddressListAdapter mShipmentAddressListAdapter;
-
-    @Inject
-    ShipmentAddressListPresenter mShipmentAddressListPresenter;
-
-    @Inject
-    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    @Inject ShipmentAddressListAdapter mShipmentAddressListAdapter;
+    @Inject ShipmentAddressListPresenter mShipmentAddressListPresenter;
+    @Inject CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    @Inject CornerAnalytics mCornerAnalytics;
 
     private Token token;
 
@@ -181,7 +175,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initView(View view) {
-        mCartAddressChoiceListener.setToolbarTitle(getActivity().getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         checkoutAnalyticsChangeAddress.eventViewAtcCartChangeAddressImpressionChangeAddress();
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
@@ -253,7 +246,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showList(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
-        mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
 
@@ -271,7 +263,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void populateCorner(List<CornerAddressModel> cornerAddressModelList) {
         mCornerBottomSheet = CornerBottomSheet.newInstance(cornerAddressModelList);
         mCornerBottomSheet.setOnBranchChosenListener(
-                corner -> mShipmentAddressListAdapter.setSampai(corner));
+                corner -> {
+                    mCornerAnalytics.sendClickCornerAddress(corner.getCornerBranchName());
+                    mShipmentAddressListAdapter.setSampai(corner);
+                });
     }
 
     @Override
@@ -302,7 +297,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showListEmpty() {
         mShipmentAddressListAdapter.setAddressList(new ArrayList<>());
-        mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.VISIBLE);
@@ -348,36 +342,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         return getActivity();
     }
 
-    private void initSearchView() {
-        mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
-        mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());
-
-        mSvAddressSearchBox.setListener(this);
-        mSvAddressSearchBox.setResetListener(this);
-        mSvAddressSearchBox.setSearchHint(getString(R.string.label_hint_search_address));
-    }
-
-    private View.OnTouchListener onSearchViewTouchListener() {
-        return new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
-                openSoftKeyboard();
-                return false;
-            }
-        };
-    }
-
-    private View.OnClickListener onSearchViewClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
-                openSoftKeyboard();
-            }
-        };
-    }
-
     @Override
     public void onSearchSubmitted(String text) {
         performSearch(text, true);
@@ -391,28 +355,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onSearchReset() {
         if (getArguments() != null) {
-            mShipmentAddressListPresenter.resetAddressList(ORDER_ASC,
+            mShipmentAddressListPresenter.resetAddressList(
                     getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), isDisableCorner);
-        }
-    }
-
-    private void performSearch(String query, boolean resetPage) {
-        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
-        if (getArguments() != null) {
-            if (!query.isEmpty()) {
-                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, query,
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true, isDisableCorner);
-            } else {
-                mShipmentAddressListPresenter.getAddressList(ORDER_ASC, "",
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage, isDisableCorner);
-            }
-        }
-    }
-
-    private void openSoftKeyboard() {
-        if (mInputMethodManager != null) {
-            mInputMethodManager.showSoftInput(
-                    mSvAddressSearchBox.getSearchTextView(), InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
@@ -430,16 +374,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position) {
         mShipmentAddressListAdapter.updateSelected(position);
         if (mCartAddressChoiceActivityListener != null && getActivity() != null && mCurrAddress != null) {
+            mCornerAnalytics.sendChooseCornerAddress();
             RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel, mCurrAddress.getId());
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
         } else {
             showError(getString(R.string.technical_problem_text));
         }
-    }
-
-    private void sendAnalyticsOnAddressSelectionClicked() {
-        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
-        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya();
     }
 
     @Override
@@ -472,7 +412,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
                         newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
                         newRecipientAddressModel.setPostalCode(newAddress.getPostalCode());
-                        mShipmentAddressListPresenter.getAddressFromNewCreated(newRecipientAddressModel, isDisableCorner);
+                        mShipmentAddressListPresenter.resetAddressList(newRecipientAddressModel, isDisableCorner);
                     }
                     onSearchReset();
                     break;
@@ -484,12 +424,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             }
         }
 
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) context;
     }
 
     @Override
@@ -512,5 +446,66 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onCornerButtonClicked() {
         showCornerBottomSheet();
+    }
+
+    private void sendAnalyticsOnAddressSelectionClicked() {
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya();
+    }
+
+    private void performSearch(String query, boolean resetPage) {
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
+        if (getArguments() != null) {
+            if (!query.isEmpty()) {
+                mShipmentAddressListPresenter.getAddressList(query,
+                        getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true, isDisableCorner);
+            } else {
+                mShipmentAddressListPresenter.getAddressList("",
+                        getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage, isDisableCorner);
+            }
+        }
+    }
+
+    private void openSoftKeyboard() {
+        if (mInputMethodManager != null) {
+            mInputMethodManager.showSoftInput(
+                    mSvAddressSearchBox.getSearchTextView(), InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    private void initSearchView() {
+        mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
+        mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());
+
+        mSvAddressSearchBox.setListener(this);
+        mSvAddressSearchBox.setResetListener(this);
+        mSvAddressSearchBox.setSearchHint(getString(R.string.label_hint_search_address));
+    }
+
+    private View.OnTouchListener onSearchViewTouchListener() {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+                openSoftKeyboard();
+                return false;
+            }
+        };
+    }
+
+    private View.OnClickListener onSearchViewClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+                openSoftKeyboard();
+            }
+        };
+    }
+
+    public interface ICartAddressChoiceActivityListener {
+
+        void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult);
+
     }
 }
