@@ -1465,7 +1465,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         CREATE_POST
                 );
             } else {
-                RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
+                RouteManager.route(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
             }
         }
     }
