@@ -88,7 +88,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
     }
 
     private fun mapToStickyComponent(data: JsonObject?): Visitable<*>? {
-        val pojo = gson.fromJson(data, StickyComponentPojo::class.java)
+        val pojo = gson.fromJson(data, StickyComponentData::class.java)
         return StickyComponentMapper().mapToViewModel(pojo)
     }
 
