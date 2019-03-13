@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.webview;
+package com.tokopedia.webview;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -11,12 +11,11 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.tokopedia.abstraction.R;
+import com.tokopedia.webview.R;
 
 /**
  * Created by nisie on 10/7/16.
  */
-@Deprecated
 public abstract class TkpdWebViewClient extends WebViewClient {
     @Override
     public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {

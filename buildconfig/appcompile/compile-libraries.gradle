@@ -44,3 +44,4 @@ include "libraries:trackinterface"
 include "libraries:graph_view"
 
 include "libraries:linker"
+include "libraries:webview"
