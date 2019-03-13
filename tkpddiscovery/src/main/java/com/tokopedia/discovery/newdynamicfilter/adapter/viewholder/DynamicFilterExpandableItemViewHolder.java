@@ -7,13 +7,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.ExpandableItemSelectedListAdapter;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by henrypriyono on 8/11/17.
@@ -26,10 +23,12 @@ public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHold
     RecyclerView recyclerView;
     ExpandableItemSelectedListAdapter adapter;
     DynamicFilterView filterView;
+    private final FilterController filterController;
 
-    public DynamicFilterExpandableItemViewHolder(View itemView, DynamicFilterView filterView) {
+    public DynamicFilterExpandableItemViewHolder(View itemView, DynamicFilterView filterView, final FilterController filterController) {
         super(itemView);
         this.filterView = filterView;
+        this.filterController = filterController;
         titleContainer = (LinearLayout) itemView.findViewById(R.id.title_container);
         title = (TextView) itemView.findViewById(R.id.expandable_item_title);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.expandable_item_selected_list);

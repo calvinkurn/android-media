@@ -612,7 +612,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
     }
 
-    public void applyFilterToSearchParameter(HashMap<String, String> searchParameterWithFilter) {
+    public void applyFilterToSearchParameter(Map<String, String> searchParameterWithFilter) {
         this.searchParameter.getSearchParameterHashMap().putAll(searchParameterWithFilter);
     }
 }

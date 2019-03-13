@@ -53,6 +53,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -592,7 +593,7 @@ public class SearchActivity extends DiscoveryActivity
     private void initBottomSheetListener() {
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
-            public void onApplyFilter(HashMap<String, String> searchParameterWithFilter) {
+            public void onApplyFilter(Map<String, String> searchParameterWithFilter) {
                 applyFilter(searchParameterWithFilter);
             }
 
@@ -662,7 +663,7 @@ public class SearchActivity extends DiscoveryActivity
         super.onDestroy();
     }
 
-    private void applyFilter(HashMap<String, String> searchParameterWithFilter) {
+    private void applyFilter(Map<String, String> searchParameterWithFilter) {
         SearchSectionFragment selectedFragment
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
 

@@ -1,8 +1,10 @@
 package com.tokopedia.discovery.newdynamicfilter.controller
 
+import android.text.TextUtils
 import com.tokopedia.core.discovery.model.Filter
 import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView
 import java.io.Serializable
 
@@ -13,11 +15,14 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
     private val filterList = mutableListOf<Filter>()
     private val shownInMainState = mutableMapOf<String, Boolean>()
 
+    private var pressedSliderMinValueState = -1
+    private var pressedSliderMaxValueState = -1
+
     fun initFilterController(searchParameter: Map<String, String> = mapOf(),
                              filterList: List<Filter> = listOf()) {
         loadSearchParameter(searchParameter)
         loadFilterData(filterList)
-        parseFilterHelper()
+        loadFlagFilterHelper()
 
         shownInMainState.clear()
     }
@@ -105,7 +110,7 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
         return null
     }
 
-    private fun parseFilterHelper() {
+    private fun loadFlagFilterHelper() {
         for (filter in filterList) {
             for (option in filter.options) {
                 if (searchParameter.containsKey(option.key)) {
@@ -115,12 +120,53 @@ class FilterController(private val dynamicFilterView : DynamicFilterView) : Seri
         }
     }
 
-    fun getFilterValue(key: String): String {
-        return searchParameter[key] ?: ""
+    fun saveSliderValueStates(minValue: Int, maxValue: Int) {
+        pressedSliderMinValueState = minValue
+        pressedSliderMaxValueState = maxValue
     }
 
-    fun getSearchParameter() : Map<String, String> {
-        return searchParameter
+    fun checkSliderStateAndApplyFilter(minValue: Int, maxValue: Int) {
+         if (!isPriceRangeValueSameAsSliderPressedState(minValue, maxValue)) {
+             applyFilter()
+         }
+    }
+
+    private fun isPriceRangeValueSameAsSliderPressedState(minValue: Int, maxValue: Int): Boolean {
+        return minValue == pressedSliderMinValueState && maxValue == pressedSliderMaxValueState
+    }
+
+    fun applyFilter() {
+        loadFlagFilterHelperToSearchParameter()
+        dynamicFilterView.applyFilter(searchParameter)
+    }
+
+    private fun loadFlagFilterHelperToSearchParameter() {
+        for ((key, value) in flagFilterHelper) {
+            if (value) appendToMap(key)
+        }
+    }
+
+    private fun appendToMap(uniqueId: String) {
+        val key = OptionHelper.parseKeyFromUniqueId(uniqueId)
+        val value = OptionHelper.parseValueFromUniqueId(uniqueId)
+        val appendedMapValue = appendMapValue(key, value)
+
+        searchParameter[key] = appendedMapValue
+    }
+
+    private fun appendMapValue(key: String, previousValue: String): String {
+        var value = searchParameter[key] ?: ""
+
+        if (TextUtils.isEmpty(value))
+            value = previousValue
+        else
+            value += ",$previousValue"
+
+        return value
+    }
+
+    fun getFilterValue(key: String): String {
+        return searchParameter[key] ?: ""
     }
 
     fun getFilterList() : List<Filter> {

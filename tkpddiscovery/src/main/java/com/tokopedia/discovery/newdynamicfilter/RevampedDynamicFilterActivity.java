@@ -25,6 +25,7 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDbHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
@@ -90,8 +91,12 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     private String selectedCategoryRootId;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
+    @Deprecated
     private HashMap<String, String> searchParameter = new HashMap<>();
+    @Deprecated
     private HashMap<String, Boolean> flagFilterHelper = new HashMap<>();
+
+    private FilterController filterController;
 
     @Deprecated
     public static void moveTo(AppCompatActivity activity,
@@ -135,7 +140,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                applyFilter();
+                filterController.applyFilter();
             }
         });
         mainLayout = findViewById(R.id.main_layout);
@@ -158,7 +163,8 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private void initRecyclerView() {
-        DynamicFilterTypeFactory dynamicFilterTypeFactory = new DynamicFilterTypeFactoryImpl(this);
+        filterController = new FilterController(this);
+        DynamicFilterTypeFactory dynamicFilterTypeFactory = new DynamicFilterTypeFactoryImpl(this, filterController);
         adapter = new DynamicFilterAdapter(dynamicFilterTypeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration
@@ -422,7 +428,8 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     }
 
-    private void applyFilter() {
+    @Override
+    public void applyFilter(Map<String, String> searchParameterWithFilter) {
         renderFilterResult();
         finish();
     }

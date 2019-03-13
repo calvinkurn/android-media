@@ -4,6 +4,7 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 8/16/17.
@@ -37,4 +38,6 @@ public interface DynamicFilterView {
 
     void setFlagFilterHelper(Option option, boolean value, boolean isAppliedImmediately);
     boolean getFlagFilterHelperValue(String key);
+
+    void applyFilter(Map<String, String> searchParameterWithFilter);
 }

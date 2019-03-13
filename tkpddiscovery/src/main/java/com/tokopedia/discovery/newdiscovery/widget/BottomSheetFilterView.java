@@ -96,8 +96,12 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private int pressedSliderMinValueState = -1;
     private int pressedSliderMaxValueState = -1;
 
+    @Deprecated
     private HashMap<String, String> searchParameter = new HashMap<>();
+    @Deprecated
     private HashMap<String, Boolean> flagFilterHelper = new HashMap<>();
+
+    private FilterController filterController;
 
     public BottomSheetFilterView(@NonNull Context context) {
         super(context);
@@ -205,7 +209,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             savedCheckedState.remove(option.getUniqueId());
         }
         updateResetButtonVisibility();
-        applyFilter();
+        filterController.applyFilter();
     }
 
     private void updateResetButtonVisibility() {
@@ -316,7 +320,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
             resetSelectedCategory();
             updateResetButtonVisibility();
-            applyFilter();
+            filterController.applyFilter();
         } else {
             saveCheckedState(option, false, filterTitle);
         }
@@ -369,10 +373,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
-    private boolean isPriceRangeValueSameAsSliderPressedState(int minValue, int maxValue) {
-        return minValue == pressedSliderMinValueState && maxValue == pressedSliderMaxValueState;
-    }
-
     private Filter getPriceFilter() {
         List<Filter> filterList = filterMainAdapter.getFilterList();
         for (Filter filter : filterList) {
@@ -388,7 +388,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     private void initFilterMainRecyclerView() {
-        FilterController filterController = new FilterController(this);
+        filterController = new FilterController(this);
         DynamicFilterTypeFactory dynamicFilterTypeFactory = new BottomSheetDynamicFilterTypeFactoryImpl(this, filterController);
         filterMainAdapter = new DynamicFilterAdapter(dynamicFilterTypeFactory);
         filterMainRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -414,149 +414,9 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     public void loadFilterItems(List<Filter> filterList, HashMap<String, String> searchParameter) {
-        this.searchParameter = new HashMap<>(searchParameter);
-        createFlagFilterHelperFromSearchParameter(filterList);
-        shownInMainState.clear();
+        filterController.initFilterController(searchParameter, filterList);
         updateResetButtonVisibility();
-        loadFilterData(filterList);
-    }
-
-    private void createFlagFilterHelperFromSearchParameter(List<Filter> filterList) {
-        flagFilterHelper = new HashMap<>();
-
-        for(Filter filter : filterList) {
-            for(Option option : filter.getOptions()) {
-                if(searchParameter.containsKey(option.getKey())) {
-                    flagFilterHelper.put(option.getUniqueId(), true);
-                }
-            }
-        }
-    }
-
-    private void loadFilterData(List<Filter> filterList) {
-        List<Filter> list = new ArrayList<>();
-        list.addAll(filterList);
-        removeFiltersWithEmptyOption(list);
-        mergeSizeFilterOptionsWithSameValue(list);
-        removeBrandFilterOptionsWithSameValue(list);
-        filterMainAdapter.setFilterList(list);
-    }
-
-    private void removeFiltersWithEmptyOption(List<Filter> filterList) {
-        Iterator<Filter> iterator = filterList.iterator();
-        while (iterator.hasNext()) {
-            Filter filter = iterator.next();
-            if (filter.getOptions().isEmpty() && !filter.isSeparator()) {
-                iterator.remove();
-            }
-        }
-    }
-
-    private void mergeSizeFilterOptionsWithSameValue(List<Filter> filterList) {
-        Filter sizeFilter = getSizeFilter(filterList);
-        if (sizeFilter == null) {
-            return;
-        }
-
-        List<Option> sizeFilterOptions = sizeFilter.getOptions();
-        Iterator<Option> iterator = sizeFilterOptions.iterator();
-        Map<String, Option> optionMap = new HashMap<>();
-
-        while (iterator.hasNext()) {
-            Option option = iterator.next();
-            Option existingOption = optionMap.get(option.getValue());
-            if (existingOption != null) {
-                existingOption.setName(existingOption.getName() + " / " + getFormattedSizeName(option));
-                iterator.remove();
-            } else {
-                option.setName(getFormattedSizeName(option));
-                option.setMetric("");
-                optionMap.put(option.getValue(), option);
-            }
-        }
-    }
-
-    private Filter getSizeFilter(List<Filter> filterList) {
-        for (Filter filter : filterList) {
-            if (filter.isSizeFilter()) return filter;
-        }
-        return null;
-    }
-
-    private void removeBrandFilterOptionsWithSameValue(List<Filter> filterList) {
-        Filter brandFilter = getBrandFilter(filterList);
-        if (brandFilter == null) {
-            return;
-        }
-
-        List<Option> brandFilterOptions = brandFilter.getOptions();
-        Iterator<Option> iterator = brandFilterOptions.iterator();
-        Map<String, Option> optionMap = new HashMap<>();
-
-        while (iterator.hasNext()) {
-            Option option = iterator.next();
-            Option existingOption = optionMap.get(option.getValue());
-            if (existingOption != null) {
-                iterator.remove();
-            } else {
-                optionMap.put(option.getValue(), option);
-            }
-        }
-    }
-
-    private Filter getBrandFilter(List<Filter> filterList) {
-        for (Filter filter : filterList) {
-            if (filter.isBrandFilter()) return filter;
-        }
-        return null;
-    }
-
-    private String getFormattedSizeName(Option option) {
-        if (METRIC_INTERNATIONAL.equals(option.getMetric())) {
-            return option.getName();
-        } else {
-            return option.getName() + " " + option.getMetric();
-        }
-    }
-
-    private Filter getRatingFilter(List<Filter> filterList) {
-        for (Filter filter : filterList) {
-            if (filter.isRatingFilter()) return filter;
-        }
-        return null;
-    }
-
-    private Option createFourAndAboveRatingOption() {
-        Option option = new Option();
-        option.setPopular(true);
-        option.setInputState(Boolean.toString(false));
-        option.setIconUrl("");
-        option.setInputType(Option.INPUT_TYPE_CHECKBOX);
-        option.setKey(Option.KEY_RATING);
-        option.setName(Option.RATING_ABOVE_FOUR_NAME);
-        option.setValue(Option.RATING_ABOVE_FOUR_VALUE);
-        return option;
-    }
-
-    private Filter generateOthersFilter(List<Option> othersOptionList) {
-        Filter filter = new Filter();
-        makeAllOptionPopular(othersOptionList);
-        filter.setOptions(othersOptionList);
-        filter.setTitle(getContext().getString(R.string.other_filter_title));
-        filter.setTemplateName(Filter.TEMPLATE_NAME_OTHER);
-
-        Search search = new Search();
-        search.setPlaceholder("");
-        search.setSearchable(0);
-        filter.setSearch(search);
-
-        return filter;
-    }
-
-    private void makeAllOptionPopular(List<Option> list) {
-        for (Option option : list) {
-            option.setPopular(true);
-        }
+        filterMainAdapter.setFilterList(filterController.getFilterList());
     }
 
     private void initBottomSheetListener() {
@@ -582,7 +442,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         buttonReset.setOnClickListener(v -> {
             if (isFilterActive()) {
                 resetAllFilter();
-                applyFilter();
+                filterController.applyFilter();
             }
         });
     }
@@ -593,20 +453,17 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void onPriceSliderRelease(int minValue, int maxValue) {
-        if (!isPriceRangeValueSameAsSliderPressedState(minValue, maxValue)) {
-            applyFilter();
-        }
+        // Moved to FilterController
     }
 
     @Override
     public void onPriceSliderPressed(int minValue, int maxValue) {
-        pressedSliderMinValueState = minValue;
-        pressedSliderMaxValueState = maxValue;
+        // Moved to FilterController
     }
 
     @Override
     public void onPriceEditedFromTextInput(int minValue, int maxValue) {
-        applyFilter();
+        // Moved to FilterController
     }
 
     @Override
@@ -624,7 +481,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         selectedCategoryName = filterFlagSelectedModel.getSelectedCategoryName();
         selectedCategoryRootId = filterFlagSelectedModel.getSelectedCategoryRootId();
         updateResetButtonVisibility();
-        applyFilter();
+        filterController.applyFilter();
     }
 
     public boolean isBottomSheetShown() {
@@ -641,36 +498,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
-    private void applyFilter() {
+    @Override
+    public void applyFilter(Map<String, String> searchParameterWithFilter) {
         loadingView.setVisibility(View.VISIBLE);
         buttonFinish.setText("");
-        applyFlagFilterOnSearchParameter();
-        callback.onApplyFilter(searchParameter);
-    }
-
-    private void applyFlagFilterOnSearchParameter() {
-        for (Map.Entry<String, Boolean> entry : flagFilterHelper.entrySet()) {
-            if (Boolean.TRUE.equals(entry.getValue())) {
-                appendToMap(entry.getKey());
-            }
-        }
-    }
-
-    private void appendToMap(String uniqueId) {
-        String key = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        String value = OptionHelper.parseValueFromUniqueId(uniqueId);
-        String appendedMapValue = appendMapValue(key, value);
-
-        searchParameter.put(key, appendedMapValue);
-    }
-
-    private String appendMapValue(String key, String previousValue) {
-        String value = searchParameter.get(key);
-
-        if (TextUtils.isEmpty(value)) value = previousValue;
-        else value += "," + previousValue;
-
-        return value;
+        callback.onApplyFilter(searchParameterWithFilter);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -679,7 +511,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 case AbstractDynamicFilterDetailActivity.REQUEST_CODE:
                     handleResultFromDetailPage(data);
                     filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
-                    applyFilter();
+                    filterController.applyFilter();
                     break;
                 case DynamicFilterLocationActivity.REQUEST_CODE:
                     handleResultFromLocationPage();
@@ -687,7 +519,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 case DynamicFilterCategoryActivity.REQUEST_CODE:
                     handleResultFromCategoryPage(data);
                     filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
-                    applyFilter();
+                    filterController.applyFilter();
                     break;
             }
             updateResetButtonVisibility();
@@ -729,7 +561,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                             OptionHelper.saveOptionShownInMainState(option, shownInMainState);
                         }
                         filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition);
-                        applyFilter();
+                        filterController.applyFilter();
                     }
                 });
     }
@@ -808,7 +640,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private void updateViewAfterFilter(boolean isAppliedImmediately) {
         updateResetButtonVisibility();
 
-        if(isAppliedImmediately) applyFilter();
+        if(isAppliedImmediately) filterController.applyFilter();
     }
 
     @Override
@@ -829,7 +661,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     public interface Callback {
-        void onApplyFilter(HashMap<String, String> searchParameter);
+        void onApplyFilter(Map<String, String> searchParameter);
         void onShow();
         void onHide();
         boolean isSearchShown();
