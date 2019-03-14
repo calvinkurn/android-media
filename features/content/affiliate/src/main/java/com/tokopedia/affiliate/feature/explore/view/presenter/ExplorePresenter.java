@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
 import com.tokopedia.affiliate.feature.explore.domain.usecase.AutoCompleteUseCase;
+import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreSectionUseCase;
 import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreUseCase;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.AutoCompleteSubscriber;
@@ -26,16 +27,19 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     private CheckQuotaUseCase checkQuotaUseCase;
     private CheckAffiliateUseCase checkAffiliateUseCase;
     private AutoCompleteUseCase autoCompleteUseCase;
+    private ExploreSectionUseCase exploreSectionUseCase;
 
     @Inject
-    public ExplorePresenter(ExploreUseCase exploreUseCase,
-                            CheckQuotaUseCase checkQuotaUseCase,
-                            CheckAffiliateUseCase checkAffiliateUseCase,
-                            AutoCompleteUseCase autoCompleteUseCase) {
+    ExplorePresenter(ExploreUseCase exploreUseCase,
+                     CheckQuotaUseCase checkQuotaUseCase,
+                     CheckAffiliateUseCase checkAffiliateUseCase,
+                     AutoCompleteUseCase autoCompleteUseCase,
+                     ExploreSectionUseCase exploreSectionUseCase) {
         this.exploreUseCase = exploreUseCase;
         this.checkQuotaUseCase = checkQuotaUseCase;
         this.checkAffiliateUseCase = checkAffiliateUseCase;
         this.autoCompleteUseCase = autoCompleteUseCase;
+        this.exploreSectionUseCase = exploreSectionUseCase;
     }
 
     @Override
@@ -45,6 +49,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         checkQuotaUseCase.unsubscribe();
         checkAffiliateUseCase.unsubscribe();
         autoCompleteUseCase.unsubscribe();
+        exploreSectionUseCase.unsubscribe();
     }
 
     @Override

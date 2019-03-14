@@ -6,24 +6,25 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.explore.data.pojo.section.ExploreSectionResponse
+import com.tokopedia.affiliate.feature.explore.domain.mapper.ExploreSectionMapper
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import rx.functions.Func1
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 14/03/19.
  */
-class ExploreSectionUseCase @Inject constructor(@ApplicationContext val context: Context,
-                                                val graphqlUseCase: GraphqlUseCase)
-    : UseCase<List<Visitable<*>>>() {
+class ExploreSectionUseCase @Inject constructor(
+        @ApplicationContext private val context: Context,
+        private val graphqlUseCase: GraphqlUseCase,
+        private val exploreSectionMapper: ExploreSectionMapper
+) : UseCase<List<Visitable<*>>>() {
 
     init {
         graphqlUseCase.setCacheStrategy(
@@ -40,13 +41,6 @@ class ExploreSectionUseCase @Inject constructor(@ApplicationContext val context:
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map(mapResponse())
-    }
-
-    private fun mapResponse(): Func1<GraphqlResponse, List<Visitable<*>>> {
-        return Func1 {
-            val sections: MutableList<Visitable<*>> = arrayListOf()
-            sections
-        }
+        return graphqlUseCase.createObservable(RequestParams.EMPTY).map(exploreSectionMapper)
     }
 }

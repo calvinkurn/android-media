@@ -9,7 +9,6 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreT
  * @author by milhamj on 14/03/19.
  */
 data class RecommendationViewModel(
-        val type: String = "",
         val cards: List<ExploreCardViewModel> = listOf(),
         val titleViewModel: ExploreTitleViewModel = ExploreTitleViewModel()
 ) : Visitable<ExploreTypeFactory> {

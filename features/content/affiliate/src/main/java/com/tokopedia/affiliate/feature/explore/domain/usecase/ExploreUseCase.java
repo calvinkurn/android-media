@@ -12,6 +12,9 @@ import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
+import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -36,8 +39,13 @@ public class ExploreUseCase extends GraphqlUseCase {
     private final static String PARAM_SORT_ASC = "asc";
 
     @Inject
-    public ExploreUseCase(@ApplicationContext Context context) {
+    ExploreUseCase(@ApplicationContext Context context) {
         this.context = context;
+        setCacheStrategy(new GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.DAY.val())
+                .setSessionIncluded(true)
+                .build()
+        );
     }
 
     public GraphqlRequest getRequest(ExploreParams exploreParams) {
@@ -64,7 +72,7 @@ public class ExploreUseCase extends GraphqlUseCase {
         );
     }
 
-    public static RequestParams getParam(ExploreParams exploreParams) {
+    private static RequestParams getParam(ExploreParams exploreParams) {
         RequestParams params = RequestParams.create();
         if (!TextUtils.isEmpty(exploreParams.getKeyword())) {
             params.putString(PARAM_KEYWORD, exploreParams.getKeyword());
