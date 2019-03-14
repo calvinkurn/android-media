@@ -4,46 +4,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
-import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
 public interface SaldoDetailContract {
     interface View extends CustomerView {
         Context getContext();
 
-        void setStartDate(String startDate);
-
-        void setEndDate(String endDate);
-
-        String getStartDate();
-
-        String getEndDate();
-
-        Visitable getDefaultEmptyViewModel();
+        void showSaldoBalanceSeparator();
 
         Activity getActivity();
 
-        void finishLoading();
-
-        SaldoDepositAdapter getAdapter();
-
         void showErrorMessage(String s);
-
-        void showInvalidDateError(String s);
 
         String getString(int resId);
 
-        void removeError();
-
         void hideWarning();
-
-        void setActionsEnabled(Boolean isEnabled);
-
-        void setLoading();
 
         void refresh();
 
@@ -51,17 +28,23 @@ public interface SaldoDetailContract {
 
         void setRetry();
 
-        void showEmptyState(String error);
-
         void setRetry(String error);
+
+        float getSellerSaldoBalance();
+
+        float getBuyerSaldoBalance();
+
+        float getTotalSaldoBalance();
 
         void showWithdrawalNoPassword();
 
-        void setBalance(String summaryUsableDepositIdr);
+        void setBalance(long totalBalance, String summaryUsableDepositIdr);
 
         void setWithdrawButtonState(boolean state);
 
         void showHoldWarning(String warningText);
+
+        void setBuyerSaldoBalance(float amount, String text);
 
         void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);
 
@@ -70,31 +53,24 @@ public interface SaldoDetailContract {
         void showTickerMessage(String withdrawalTicker);
 
         void hideTickerMessage();
+
+        boolean isSellerEnabled();
+
+        void showSellerSaldoRL();
+
+        void setSellerSaldoBalance(float amount, String formattedAmount);
+
+        void showBuyerSaldoRL();
+
     }
 
     interface Presenter extends CustomerPresenter<SaldoDetailContract.View> {
-        void setFirstDateParameter();
-
-        void setCache();
-
         void getSaldoBalance();
 
         void getTickerWithdrawalMessage();
 
         void getMerchantSaldoDetails();
 
-        void onSearchClicked();
-
-        void onEndDateClicked(SaldoDatePickerUtil datePicker);
-
-        void onStartDateClicked(SaldoDatePickerUtil datePicker);
-
-        void loadMore(int lastItemPosition, int visibleItem);
-
         void onDrawClicked(Intent intent);
-
-        void getSummaryDeposit();
-
-        void onRefresh();
     }
 }

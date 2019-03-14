@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">inappupdate</string>
+    <string name="downloading_update">Mendownload Tokopedia Versi Terbaru</string>
+    <string name="installing_update">Sedang menginstall Update</string>
+    <string name="installed_update">Berhasil menginstall Update</string>
+    <string name="completion_update_message">Update telah berhasil didowload.</string>
+    <string name="update_install_see_notif">Update sedang didownload. Silakan lihat notifikasi.</string>
+    <string name="restart_app">Restart</string>
+</resources>

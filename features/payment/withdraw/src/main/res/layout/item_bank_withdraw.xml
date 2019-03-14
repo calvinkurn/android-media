@@ -1,55 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8"
+    android:orientation="vertical"
     android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8"
-    android:gravity="center">
+    android:paddingBottom="@dimen/dp_8">
 
     <ImageView
         android:id="@+id/radio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/bank_withdraw_radio_button_default"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"/>
+        android:src="@drawable/bank_withdraw_radio_button_default" />
 
     <TextView
         android:id="@+id/bank_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:fontFamily="sans-serif"
-        android:lineSpacingExtra="@dimen/sp_8"
-        android:textColor="#b3000000"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="normal"
-        tools:text="PT BANK CENTRAL ASIA TBK"
-        android:layout_toLeftOf="@id/radio"
-        android:layout_marginRight="@dimen/dp_16"/>
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_toEndOf="@+id/radio"
+        android:layout_toRightOf="@+id/radio"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_12"
+        tools:text="PT BANK CENTRAL ASIA TBK" />
 
     <TextView
         android:id="@+id/bank_acc_name"
-        android:layout_below="@id/bank_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_12"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="#8a000000"
-        android:lineSpacingExtra="@dimen/sp_5"
-        android:layout_toLeftOf="@id/radio"
-        android:layout_marginRight="@dimen/dp_16"
-        android:singleLine="true"
+        android:layout_below="@+id/bank_name"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_toEndOf="@+id/radio"
+        android:layout_toRightOf="@+id/radio"
         android:ellipsize="marquee"
-        android:layout_alignParentLeft="true"
-        tools:text="5678908730 • Alexandra "
-        />
-
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:singleLine="true"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_12"
+        tools:text="5678908730 • Alexandra " />
 
 
 </RelativeLayout>

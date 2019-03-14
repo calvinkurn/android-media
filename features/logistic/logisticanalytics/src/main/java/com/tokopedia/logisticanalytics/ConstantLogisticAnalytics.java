@@ -45,6 +45,7 @@ public interface ConstantLogisticAnalytics {
         String CLICK_BACK_ON_CONFIRMATION = "click back on payment confirmation page";
         String CLICK_BAYAR_DI_TEMPAT = "click button bayar di tempat";
         String VIEW_BAYAR_DI_TEMPAT = "view button bayar di tempat";
+        String IMPRESSION_ELIGIBLE_COD = "impression eligible cod";
     }
 
     interface EventLabel {

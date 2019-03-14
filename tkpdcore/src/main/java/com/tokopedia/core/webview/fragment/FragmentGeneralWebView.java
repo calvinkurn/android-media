@@ -48,7 +48,7 @@ import java.net.URLDecoder;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * Use webview fragment from tkpd abstraction
+ * Use webview fragment from libraries/webview
  */
 @Deprecated
 public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback,

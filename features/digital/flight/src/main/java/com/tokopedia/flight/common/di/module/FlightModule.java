@@ -43,6 +43,8 @@ import com.tokopedia.flight.search.data.db.FlightComboDao;
 import com.tokopedia.flight.search.data.db.FlightJourneyDao;
 import com.tokopedia.flight.search.data.db.FlightRouteDao;
 import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -212,6 +214,12 @@ public class FlightModule {
     @Provides
     public FlightDateUtil provideFlightDateUtil(){
         return new FlightDateUtil();
+    }
+
+    @FlightScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
 }

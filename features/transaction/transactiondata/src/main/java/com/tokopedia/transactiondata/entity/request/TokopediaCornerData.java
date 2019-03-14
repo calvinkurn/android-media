@@ -1,12 +1,15 @@
 package com.tokopedia.transactiondata.entity.request;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by fajarnuha on 11/02/19.
  */
-public class TokopediaCornerData {
+public class TokopediaCornerData implements Parcelable {
 
     @SerializedName("is_tokopedia_corner")
     @Expose
@@ -26,6 +29,36 @@ public class TokopediaCornerData {
         this.userCornerId = userCornerId;
         this.cornerId = cornerId;
     }
+
+    protected TokopediaCornerData(Parcel in) {
+        isTokopediaCorner = in.readByte() != 0;
+        userCornerId = in.readString();
+        cornerId = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isTokopediaCorner ? 1 : 0));
+        dest.writeString(userCornerId);
+        dest.writeInt(cornerId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<TokopediaCornerData> CREATOR = new Creator<TokopediaCornerData>() {
+        @Override
+        public TokopediaCornerData createFromParcel(Parcel in) {
+            return new TokopediaCornerData(in);
+        }
+
+        @Override
+        public TokopediaCornerData[] newArray(int size) {
+            return new TokopediaCornerData[size];
+        }
+    };
 
     public boolean isTokopediaCorner() {
         return isTokopediaCorner;
