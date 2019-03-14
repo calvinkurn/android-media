@@ -23,7 +23,7 @@ if (project.hasProperty("code.quality")) {
         checkstyle {
             boolean enabled = true
             String toolVersion = '8.6'
-            String configFile = 'code_quality_tools/checkstyle.xml'
+            String configFile = 'tools/code_quality_tools/checkstyle.xml'
             Boolean ignoreFailures = null
             Boolean showViolations = null
             String source = 'src'
