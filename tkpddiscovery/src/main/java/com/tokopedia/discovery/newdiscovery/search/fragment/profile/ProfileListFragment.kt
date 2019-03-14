@@ -55,6 +55,9 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        if (savedInstanceState == null) {
+            onSwipeRefresh()
+        }
         if (userVisibleHint) {
             searchNavigationListener.hideBottomNavigation()
         }
