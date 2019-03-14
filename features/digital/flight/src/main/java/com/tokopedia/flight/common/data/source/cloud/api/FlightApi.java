@@ -21,7 +21,6 @@ import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequ
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
-import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.search.data.api.combined.request.FlightSearchCombinedRequestData;
 import com.tokopedia.flight.search.data.api.combined.response.FlightSearchCombinedResponse;
 import com.tokopedia.flight.search.data.api.single.request.FlightSearchSingleRequestData;
@@ -98,7 +97,7 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)
-    Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body JsonObject verifyRequest, @Header("x-tkpd-userid") String userId);
+    Observable<Response<String>> verifyBooking(@Body JsonObject verifyRequest, @Header("x-tkpd-userid") String userId);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)

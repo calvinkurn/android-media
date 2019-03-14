@@ -24,7 +24,7 @@ public class FlightUrl {
     public static final String FLIGHT_CANCELLATION_PASSENGER = FLIGHT_CANCELLATION_PATH + "passenger";
     public static final String FLIGHT_CANCELLATION_ESTIMATE_REFUND = FLIGHT_CANCELLATION_PATH + "estimate";
     public static final String FLIGHT_CANCELLATION_REQUEST = FLIGHT_CANCELLATION_PATH_V11 + "request";
-    public static final String FLIGHT_VERIFY_BOOKING = "travel/v1/oms/verify";
+    public static final String FLIGHT_VERIFY_BOOKING = "travel/v1.1/oms/verify";
     public static final String FLIGHT_CHECKOUT_BOOKING = "travel/v1/oms/checkout";
     public static final String FLIGHT_ORDERS = FLIGHT_PATH + "order/list";
     public static final String FLIGHT_ORDER = FLIGHT_PATH + "order/{id}";
