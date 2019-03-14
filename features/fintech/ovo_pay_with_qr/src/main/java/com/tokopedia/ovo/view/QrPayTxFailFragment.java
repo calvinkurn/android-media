@@ -69,6 +69,15 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
         callSection = view.findViewById(R.id.call_section);
         backToMain = view.findViewById(R.id.back_to_main);
         tryAgain = view.findViewById(R.id.try_again);
+        callSection.setOnClickListener(view1 -> {
+            startActivity(OvoWebViewActivity.createInstance(getActivity(), HELP_URL));
+        });
+        backToMain.setOnClickListener(view1 -> {
+            listener.setResult(Activity.RESULT_OK);
+            listener.finish();
+        });
+        tryAgain.setOnClickListener(view1 -> presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID)));
+
         presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID));
         return view;
     }
@@ -81,13 +90,5 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     @Override
     public void setFailThankYouData(GoalQRThanks data) {
         failDescription.setText(data.getMessage());
-        callSection.setOnClickListener(view -> {
-            startActivity(OvoWebViewActivity.createInstance(getActivity(), HELP_URL));
-        });
-        backToMain.setOnClickListener(view -> {
-            listener.setResult(Activity.RESULT_OK);
-            listener.finish();
-        });
-        tryAgain.setOnClickListener(view -> presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID)));
     }
 }

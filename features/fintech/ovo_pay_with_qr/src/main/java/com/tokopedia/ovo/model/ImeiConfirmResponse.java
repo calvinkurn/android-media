@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ImeiConfirmResponse {
+    @SerializedName("transfer_id")
+    @Expose
+    private int transferId;
     @SerializedName("transaction_id")
     @Expose
     private int transactionId;
@@ -21,6 +24,10 @@ public class ImeiConfirmResponse {
 
     public int getTransactionId() {
         return transactionId;
+    }
+
+    public int getTransferId() {
+        return transferId;
     }
 
     public String getStatus() {

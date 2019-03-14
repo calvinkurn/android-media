@@ -11,6 +11,9 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.ovo.R;
 
+import static com.tokopedia.ovo.Constants.OVO_THANKS_TRANSACTION_URL;
+import static com.tokopedia.ovo.Constants.OVO_THANKS_URL;
+
 public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements TransactionResultListener {
     private static final int SUCCESS = 0;
     private static final int FAIL = 1;
@@ -18,7 +21,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     public static final String TRANSACTION_ID = "transaction_id";
     private static final String CODE = "code";
 
-    @DeepLink({"tokopedia://ovoqrthanks/{transfer_id}","tokopedia://ovoqrthanks"})
+    @DeepLink({OVO_THANKS_TRANSACTION_URL, OVO_THANKS_URL})
     public static Intent getContactUsIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, QrOvoPayTxDetailActivity.class)
