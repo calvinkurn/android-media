@@ -1,102 +1,110 @@
 package com.tokopedia.saldodetails.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
-import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
+import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
+import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
-import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
-import com.tokopedia.saldodetails.response.model.DepositHistoryList;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
-import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>
-        implements SaldoDetailContract.View, SaldoItemListener, EmptyResultViewHolder.Callback, RefreshHandler.OnRefreshHandlerListener {
+public class SaldoDepositFragment extends BaseDaggerFragment
+        implements SaldoDetailContract.View {
 
+    public static final String IS_SELLER_ENABLED = "is_user_enabled";
+    public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
+
+    private final long animation_duration = 300;
+
+    public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
+    public static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int";
+
+
+    private final long SHOW_CASE_DELAY = 400;
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
 
     @Inject
     UserSession userSession;
-    TextView totalBalance;
-    RelativeLayout startDateLayout;
-    RelativeLayout endDateLayout;
-    TextView startDateTV;
-    TextView endDateTV;
-    TextView drawButton;
-    RecyclerView recyclerView;
-    RelativeLayout topSlideOffBar;
-    RelativeLayout holdBalanceLayout;
-    TextView amountBeingReviewed;
-    FrameLayout saldoFrameLayout;
-    SaldoDatePickerUtil datePicker;
-    SaldoDepositAdapter adapter;
-    LinearLayoutManager linearLayoutManager;
-    //    Snackbar snackbar;
-    LinearLayout tickerMessageRL;
-    TextView tickeRMessageTV;
-    ImageView tickerMessageCloseButton;
+    private TextView totalBalanceTV;
+    private TextView drawButton;
 
+    private RelativeLayout topSlideOffBar;
+    private RelativeLayout holdBalanceLayout;
+    private TextView amountBeingReviewed;
+    private View saldoFrameLayout;
+    private LinearLayout tickerMessageRL;
+    private TextView tickeRMessageTV;
+    private ImageView tickerMessageCloseButton;
+
+
+    private RelativeLayout buyerSaldoBalanceRL;
+    private RelativeLayout sellerSaldoBalanceRL;
+    private TextView buyerBalanceTV;
+    private TextView sellerBalanceTV;
     private Context context;
     private TextView checkBalanceStatus;
+    private TextView totalBalanceTitle;
+    private View totalBalanceInfo;
+    private View buyerBalanceInfoIcon;
+    private View sellerBalanceInfoIcon;
+    private View saldoBalanceSeparator;
+    private boolean isSellerEnabled;
+    private SaldoTransactionHistoryFragment saldoHistoryFragment;
 
-    public static SaldoDepositFragment createInstance() {
-        return new SaldoDepositFragment();
+    private float sellerSaldoBalance;
+    private float buyerSaldoBalance;
+    private float totalSaldoBalance;
+    private LinearLayout saldoTypeLL;
+
+    private ImageView saldoDepositExpandIV;
+    private boolean expandLayout;
+
+    public SaldoDepositFragment() {
     }
 
-    protected Bundle savedState;
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        saveStateToArguments();
-    }
-
-    private void saveStateToArguments() {
-        if (getView() != null)
-            savedState = saveState();
-        if (savedState != null) {
-            Bundle b = getArguments();
-            if (b == null) b = new Bundle();
-            b.putBundle("internalSavedViewState8954201239547", savedState);
-        }
-    }
-
-    private Bundle saveState() {
-        return new Bundle();
+    public static SaldoDepositFragment createInstance(boolean isSellerEnabled) {
+        SaldoDepositFragment saldoDepositFragment = new SaldoDepositFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_SELLER_ENABLED, isSellerEnabled);
+        saldoDepositFragment.setArguments(bundle);
+        return saldoDepositFragment;
     }
 
     @Nullable
@@ -113,33 +121,85 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         super.onViewCreated(view, savedInstanceState);
         initialVar();
         initListeners();
+        startShowCase();
     }
 
-    @Override
-    public void loadData(int page) {
-
+    private void startShowCase() {
+        new Handler().postDelayed(this::setShowCase, SHOW_CASE_DELAY);
     }
 
-    @Override
-    protected SaldoDetailTransactionFactory getAdapterTypeFactory() {
-        return new SaldoDetailTransactionFactory(this);
+    private void setShowCase() {
+        ArrayList<ShowCaseObject> list = buildShowCase();
+        if (context == null || list == null) {
+            return;
+        }
+        if (!ShowCasePreference.hasShown(context, SaldoDepositFragment.class.getName())) {
+            createShowCase().show((Activity) context,
+                    SaldoDepositFragment.class.getName(),
+                    list);
+        }
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .titleTextColorRes(R.color.white)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .nextStringRes(R.string.intro_seller_saldo_finish_string)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
+    }
+
+    private ArrayList<ShowCaseObject> buildShowCase() {
+
+        ArrayList<ShowCaseObject> list = new ArrayList<>();
+        if (isSellerEnabled && getActivity() instanceof SaldoDepositActivity) {
+            list.add(new ShowCaseObject(
+                    buyerSaldoBalanceRL,
+                    getString(R.string.saldo_total_balance_buyer),
+                    getString(R.string.saldo_balance_buyer_desc),
+                    ShowCaseContentPosition.BOTTOM,
+                    Color.WHITE));
+
+            list.add(new ShowCaseObject(
+                    sellerSaldoBalanceRL,
+                    getString(R.string.saldo_total_balance_seller),
+                    getString(R.string.saldo_intro_description_seller),
+                    ShowCaseContentPosition.BOTTOM,
+                    Color.WHITE));
+
+            return list;
+
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
     }
 
     @SuppressLint("Range")
     private void initViews(View view) {
 
-        totalBalance = view.findViewById(R.id.total_balance);
-        startDateLayout = view.findViewById(R.id.start_date_layout);
-        endDateLayout = view.findViewById(R.id.end_date_layout);
-        startDateTV = view.findViewById(R.id.start_date_tv);
-        endDateTV = view.findViewById(R.id.end_date_tv);
+        if (getArguments() != null) {
+            isSellerEnabled = getArguments().getBoolean(IS_SELLER_ENABLED);
+        }
+
+        expandLayout = isSellerEnabled;
+
+        totalBalanceTitle = view.findViewById(R.id.saldo_deposit_text);
+        totalBalanceInfo = view.findViewById(R.id.saldo_deposit_text_info);
+
+        buyerBalanceInfoIcon = view.findViewById(R.id.saldo_buyer_deposit_text_info);
+        sellerBalanceInfoIcon = view.findViewById(R.id.saldo_seller_deposit_text_info);
+        totalBalanceTV = view.findViewById(R.id.total_balance);
         drawButton = view.findViewById(R.id.withdraw_button);
         topSlideOffBar = view.findViewById(R.id.deposit_header);
         holdBalanceLayout = view.findViewById(R.id.hold_balance_layout);
@@ -149,15 +209,40 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         tickerMessageRL = view.findViewById(R.id.ticker_message_layout);
         tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
         tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
-    }
+        buyerBalanceTV = view.findViewById(R.id.buyer_balance);
+        sellerBalanceTV = view.findViewById(R.id.seller_balance);
+        buyerSaldoBalanceRL = view.findViewById(R.id.saldo_buyer_balance_rl);
+        sellerSaldoBalanceRL = view.findViewById(R.id.saldo_seller_balance_rl);
+        saldoBalanceSeparator = view.findViewById(R.id.saldo_balance_separator);
+        saldoDepositExpandIV = view.findViewById(R.id.saldo_deposit_layout_expand);
+        saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
+        saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
 
-    @Override
-    public RecyclerView getRecyclerView(View view) {
-        this.recyclerView = super.getRecyclerView(view);
-        return super.getRecyclerView(view);
+        if (expandLayout) {
+            saldoTypeLL.setVisibility(View.VISIBLE);
+        } else {
+            saldoDepositExpandIV.animate().rotation(180).setDuration(animation_duration);
+            saldoTypeLL.setVisibility(View.GONE);
+        }
+
+        saldoHistoryFragment = (SaldoTransactionHistoryFragment) getChildFragmentManager().findFragmentById(R.id.saldo_history_layout);
     }
 
     private void initListeners() {
+
+        saldoDepositExpandIV.setOnClickListener(v -> {
+            if (expandLayout) {
+                saldoDepositExpandIV.animate().rotation(180).setDuration(animation_duration);
+                expandLayout = false;
+                saldoTypeLL.setVisibility(View.GONE);
+            } else {
+                saldoDepositExpandIV.animate().rotation(0).setDuration(animation_duration);
+                expandLayout = true;
+                saldoTypeLL.setVisibility(View.VISIBLE);
+            }
+
+        });
+
         drawButton.setOnClickListener(v -> {
             try {
                 if (!userSession.isMsisdnVerified()) {
@@ -176,7 +261,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
         checkBalanceStatus.setOnClickListener(v -> {
             try {
-                Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
+                Intent intent = ((SaldoDetailsRouter) Objects.requireNonNull(getActivity()).getApplication())
                         .getInboxTicketCallingIntent(context);
                 startActivity(intent);
             } catch (Exception e) {
@@ -185,13 +270,10 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         });
 
         tickerMessageCloseButton.setOnClickListener(v -> tickerMessageRL.setVisibility(View.GONE));
-        startDateLayout.setOnClickListener(onStartDateClicked());
-        endDateLayout.setOnClickListener(onEndDateClicked());
-        recyclerView.addOnScrollListener(onScroll());
     }
 
     private void showMustVerify() {
-        new android.support.v7.app.AlertDialog.Builder(getActivity())
+        new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(R.string.sp_alert_not_verified_yet_title))
                 .setMessage(getActivity().getString(R.string.sp_alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
@@ -206,13 +288,16 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     private void goToWithdrawActivity() {
-        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context);
-        saldoDetailsPresenter.onDrawClicked(intent);
+        if (getActivity() != null) {
+            Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
+            saldoDetailsPresenter.onDrawClicked(intent);
+        }
+
     }
 
     private void showSaldoWarningDialog() {
 
-        new android.support.v7.app.AlertDialog.Builder(getActivity())
+        new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(R.string.sp_saldo_withdraw_warning_title))
                 .setMessage(getActivity().getString(R.string.sp_saldo_withdraw_warning_desc))
                 .setPositiveButton(
@@ -223,11 +308,19 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     protected void initialVar() {
-        datePicker = new SaldoDatePickerUtil(getActivity());
-        adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
-        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(adapter);
+        saldoDetailsPresenter.setSeller(isSellerEnabled);
+
+        totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
+        totalBalanceInfo.setVisibility(View.GONE);
+        buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
+        sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
+
+        totalBalanceInfo.setOnClickListener(v -> showBottomSheetInfoDialog(false));
+
+        buyerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(false));
+
+        sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
+
         if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
@@ -236,38 +329,41 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
             } else {
                 hideSaldoPrioritasFragment();
             }
+        } else {
+            hideSaldoPrioritasFragment();
         }
+
     }
 
-    private RecyclerView.OnScrollListener onScroll() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                int lastItemPosition = linearLayoutManager.findLastVisibleItemPosition();
-                int visibleItem = linearLayoutManager.getItemCount() - 1;
-                saldoDetailsPresenter.loadMore(lastItemPosition, visibleItem);
-            }
-        };
+    @Override
+    public void showSaldoBalanceSeparator() {
+        saldoBalanceSeparator.setVisibility(View.VISIBLE);
+    }
+
+    private void showBottomSheetInfoDialog(boolean isSellerClicked) {
+        UserStatusInfoBottomSheet userStatusInfoBottomSheet =
+                new UserStatusInfoBottomSheet(context);
+
+        if (isSellerClicked) {
+            userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_seller_desc));
+            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_seller));
+        } else {
+            userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_buyer_desc));
+            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_buyer));
+        }
+
+        userStatusInfoBottomSheet.setButtonText(getString(R.string.sp_saldo_withdraw_warning_positiv_button));
+        userStatusInfoBottomSheet.show();
     }
 
     @Override
     protected void initInjector() {
 
         SaldoDetailsComponent saldoDetailsComponent =
-                SaldoDetailsComponentInstance.getComponent(getActivity().getApplication());
+                SaldoDetailsComponentInstance.getComponent(Objects.requireNonNull(getActivity()).getApplication());
         saldoDetailsComponent.inject(this);
         saldoDetailsPresenter.attachView(this);
     }
-
-    private View.OnClickListener onEndDateClicked() {
-        return v -> saldoDetailsPresenter.onEndDateClicked(datePicker);
-    }
-
-    private View.OnClickListener onStartDateClicked() {
-        return v -> saldoDetailsPresenter.onStartDateClicked(datePicker);
-    }
-
 
     @Override
     protected String getScreenName() {
@@ -277,59 +373,27 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (!restoreStateFromArguments()) {
-            onFirstTimeLaunched();
-        }
+        onFirstTimeLaunched();
     }
 
     private void onFirstTimeLaunched() {
-        setActionsEnabled(false);
-        saldoDetailsPresenter.setFirstDateParameter();
-        saldoDetailsPresenter.setCache();
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
     }
 
-    private boolean restoreStateFromArguments() {
-        Bundle b = getArguments();
-        if (b == null) b = new Bundle();
-        savedState = b.getBundle("internalSavedViewState8954201239547");
-        return savedState != null;
+    @Override
+    public float getSellerSaldoBalance() {
+        return sellerSaldoBalance;
     }
 
     @Override
-    public Visitable getDefaultEmptyViewModel() {
-        EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setIconRes(R.drawable.sp_empty_state_icon);
-        emptyModel.setTitle(getString(R.string.no_saldo_transactions));
-        emptyModel.setButtonTitle(getString(R.string.sp_goto_home));
-        emptyModel.setCallback(this);
-        return emptyModel;
+    public float getBuyerSaldoBalance() {
+        return buyerSaldoBalance;
     }
 
     @Override
-    public void setStartDate(String date) {
-        startDateTV.setText(date);
-    }
-
-    @Override
-    public void setEndDate(String date) {
-        endDateTV.setText(date);
-    }
-
-    @Override
-    public String getStartDate() {
-        return startDateTV.getText().toString();
-    }
-
-    @Override
-    public String getEndDate() {
-        return endDateTV.getText().toString();
-    }
-
-    @Override
-    public void finishLoading() {
-        adapter.hideLoading();
+    public float getTotalSaldoBalance() {
+        return totalSaldoBalance;
     }
 
     @Override
@@ -357,8 +421,15 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     @Override
-    public void setBalance(String summaryUsebleDepositIdr) {
-        totalBalance.setText(summaryUsebleDepositIdr);
+    public void setBalance(long totalBalance, String summaryUsebleDepositIdr) {
+        totalSaldoBalance = totalBalance;
+        if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
+            totalBalanceTV.setText(summaryUsebleDepositIdr);
+            totalBalanceTV.setVisibility(View.VISIBLE);
+        } else {
+            totalBalanceTV.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -373,25 +444,10 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         drawButton.setClickable(state);
     }
 
-    @Override
-    public SaldoDepositAdapter getAdapter() {
-        return adapter;
-    }
-
-    @Override
-    public void setLoading() {
-        adapter.showLoading();
-    }
-
     @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
-    }
-
-    @Override
-    public void showInvalidDateError(String errorMessage) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -418,12 +474,39 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     @Override
+    public boolean isSellerEnabled() {
+        return isSellerEnabled;
+    }
+
+    @Override
+    public void showSellerSaldoRL() {
+        sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setBuyerSaldoBalance(float balance, String text) {
+        buyerSaldoBalance = balance;
+        buyerBalanceTV.setText(text);
+    }
+
+    @Override
+    public void setSellerSaldoBalance(float amount, String formattedAmount) {
+        sellerSaldoBalance = amount;
+        sellerBalanceTV.setText(formattedAmount);
+    }
+
+    @Override
+    public void showBuyerSaldoRL() {
+        buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
         if (sellerDetails != null &&
                 sellerDetails.isEligible()) {
 
             Bundle bundle = new Bundle();
-            bundle.putParcelable("seller_details", sellerDetails);
+            bundle.putParcelable(BUNDLE_PARAM_SELLER_DETAILS, sellerDetails);
             getChildFragmentManager()
                     .beginTransaction()
                     .replace(R.id.saldo_prioritas_widget, MerchantSaldoPriorityFragment.newInstance(bundle))
@@ -434,33 +517,18 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     @Override
-    public void removeError() {
-        adapter.removeErrorNetwork();
-    }
-
-    @Override
     public void hideWarning() {
         holdBalanceLayout.setVisibility(View.GONE);
     }
 
     @Override
-    public void setActionsEnabled(Boolean isEnabled) {
-        if (!isAdded() || startDateTV == null || endDateTV == null) {
-            return;
-        }
-        startDateLayout.setEnabled(isEnabled);
-        endDateLayout.setEnabled(isEnabled);
-    }
-
-    @Override
     public void refresh() {
-        saldoDetailsPresenter.onRefresh();
+        saldoHistoryFragment.onRefresh();
     }
 
     @Override
     public void showEmptyState() {
-        setActionsEnabled(false);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> saldoDetailsPresenter.getSummaryDeposit());
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> saldoDetailsPresenter.getSaldoBalance());
         try {
             View retryLoad = getView().findViewById(R.id.main_retry);
             retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
@@ -471,55 +539,13 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void setRetry() {
-        setActionsEnabled(false);
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> saldoDetailsPresenter.getSummaryDeposit()).showRetrySnackbar();
-    }
-
-    @Override
-    public void showEmptyState(String error) {
-        setActionsEnabled(false);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
-                () -> saldoDetailsPresenter.getSummaryDeposit());
-        try {
-            View retryLoad = getView().findViewById(R.id.main_retry);
-            retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> saldoDetailsPresenter.getSaldoBalance()).showRetrySnackbar();
     }
 
     @Override
     public void setRetry(String error) {
-        setActionsEnabled(false);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error,
-                () -> saldoDetailsPresenter.getSummaryDeposit()).showRetrySnackbar();
-    }
-
-    @Override
-    public void setTextColor(View view, int colorId) {
-        ((TextView) view).setTextColor(colorId);
-    }
-
-    @Override
-    public void onEmptyContentItemTextClicked() {
-
-    }
-
-    @Override
-    public void onEmptyButtonClicked() {
-        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
-                .getHomeIntent(context);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onRefresh(View view) {
-        saldoDetailsPresenter.onRefresh();
-    }
-
-    @Override
-    public void onItemClicked(DepositHistoryList depositHistoryList) {
-
+                () -> saldoDetailsPresenter.getSaldoBalance()).showRetrySnackbar();
     }
 
     @Override

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_cardView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardUseCompatPadding="true"
+    app:elevation="@dimen/dp_16">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_12">
+
+        <ImageView
+            android:id="@+id/ss_image_view"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:src="@drawable/ic_saldo_green"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ss_text_view_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/ss_text_view_title"
+            style="@style/TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:maxLines="1"
+            android:text="@string/title_seller_saldo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ss_image_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginBottom="0dp" />
+
+
+        <TextView
+            android:id="@+id/saldo_balance_text_view"
+            style="@style/TextView.Title.BlackSecondary"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginEnd="@dimen/dp_8"
+            app:layout_goneMarginRight="@dimen/dp_8"
+            tools:text="@string/app_name"
+            tools:visibility="visible" />
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.v7.widget.CardView>
