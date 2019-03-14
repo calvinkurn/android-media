@@ -47,6 +47,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.kol.common.util.PostMenuListener
+import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
@@ -495,27 +497,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
-        val menus = Menus(context!!)
-        val menuList = ArrayList<Menus.ItemMenus>()
-        if (element.isDeletable) {
-            menuList.add(
-                    Menus.ItemMenus(
-                            getString(R.string.profile_delete_post),
-                            R.drawable.ic_af_trash
-                    )
-            )
-        }
-        menus.itemMenuList = menuList
-        menus.setActionText(getString(R.string.close))
-        menus.setOnActionClickListener { menus.dismiss() }
-        menus.setOnItemMenuClickListener { itemMenus, _ ->
-            when (itemMenus.title) {
-                getString(R.string.profile_delete_post) ->
+        context?.let {
+            val menus = createBottomMenu(it, element, object: PostMenuListener{
+                override fun onDeleteClicked() {
                     createDeleteDialog(rowNumber, element.contentId).show()
-            }
-            menus.dismiss()
+                }
+
+                override fun onReportClick() {
+                    goToContentReport(element.contentId)
+                }
+
+                override fun onEditClick() {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            })
+            menus.show()
         }
-        menus.show()
     }
 
     override fun onSuccessFollowKol() {

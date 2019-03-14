@@ -1112,7 +1112,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         public void onReportClick() {
                             goToContentReport(element.getContentId());
                         }
+
+                        @Override
+                        public void onEditClick() {
+
+                        }
                     }
+
             );
             menus.show();
         }
