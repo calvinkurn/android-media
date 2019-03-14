@@ -6,5 +6,6 @@ package com.tokopedia.affiliate.feature.explore.view.viewmodel
 data class RecommendationViewModel(
         val title: String = "",
         val subtitle: String = "",
-        val type: String = ""
+        val type: String = "",
+        val cards: List<ExploreCardViewModel> = listOf()
 )

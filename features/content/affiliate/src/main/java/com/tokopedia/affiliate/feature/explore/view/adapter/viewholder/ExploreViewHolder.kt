@@ -12,7 +12,9 @@ import kotlinx.android.synthetic.main.item_af_explore.view.*
 /**
  * @author by yfsx on 24/09/18.
  */
-class ExploreViewHolder(itemView: View, private val mainView: ExploreContract.View) : AbstractViewHolder<ExploreViewModel>(itemView) {
+class ExploreViewHolder(itemView: View,
+                        private val mainView: ExploreContract.View)
+    : AbstractViewHolder<ExploreViewModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
