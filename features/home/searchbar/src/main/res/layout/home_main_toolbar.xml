@@ -51,6 +51,7 @@
             android:background="@null"
             android:enabled="true"
             android:focusable="false"
+            android:ellipsize="end"
             android:hint="@string/search_tokopedia"
             android:inputType="none"
             android:maxLines="1"

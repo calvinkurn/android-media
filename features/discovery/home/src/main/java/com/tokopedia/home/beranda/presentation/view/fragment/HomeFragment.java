@@ -165,6 +165,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isTraceStopped = false;
     private boolean isFeedLoaded = false;
 
+    private View statusBarBackground;
+          
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -240,6 +242,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        statusBarBackground = view.findViewById(R.id.status_bar_bg);
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
@@ -249,10 +252,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeFeedsViewPager = view.findViewById(R.id.view_pager_home_feeds);
         homeFeedsTabLayout = view.findViewById(R.id.tab_layout_home_feeds);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-        initStatusBarDark();
 
         if (getArguments() != null) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+        }
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.INVISIBLE);
         }
 
         initEggDragListener();
@@ -500,7 +508,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     homeMainToolbar.switchToDarkToolbar();
                 } else {
                     homeMainToolbar.switchToLightToolbar();
-                    initStatusBarDark();
+                }
+
+                if (offsetAlpha >= 0 && offsetAlpha <= 2.55) {
+                    homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
                 }
 
                 if (isAppBarFullyCollapsed(offset) &&
@@ -512,8 +523,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
                     homeMainToolbar.showShadow();
                 }
-
-                homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
 
                 if (isAppBarFullyExpanded(offset)) {
                     refreshLayout.setCanChildScrollUp(false);
@@ -1345,22 +1354,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    private boolean getWindowValidation() {
+        return getActivity() != null && getActivity().getWindow() != null;
+    }
+
     @Override
     public void onNotificationChanged(int notificationCount, int inboxCount) {
         if (homeMainToolbar != null) {
             homeMainToolbar.setNotificationNumber(notificationCount);
             homeMainToolbar.setInboxNumber(inboxCount);
         }
-    }
-
-    private void initStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation() && isAdded()) {
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
-    private boolean getWindowValidation() {
-        return getActivity() != null && getActivity().getWindow() != null;
     }
 }

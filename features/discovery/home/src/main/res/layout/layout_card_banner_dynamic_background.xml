@@ -20,13 +20,13 @@
             android:scaleType="centerCrop"
             android:id="@+id/img_banner_background"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/banner_background_height"
             tools:src="@drawable/ic_icon_market_toped" />
 
         <ImageView
             android:id="@+id/overlay_img"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/banner_background_height"
             android:scaleType="centerCrop"
             android:background="#31353B"
             android:alpha="0.32" />
@@ -56,13 +56,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/dp_72" />
+        app:layout_constraintGuide_begin="?actionBarSize" />
 
     <com.tokopedia.home.beranda.presentation.view.customview.CardBannerView
         android:id="@+id/card_banner_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/banner_margin_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:layout_height="wrap_content" />
