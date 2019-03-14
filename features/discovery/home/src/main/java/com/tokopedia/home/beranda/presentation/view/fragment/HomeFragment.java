@@ -861,10 +861,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void setItems(List<Visitable> items) {
         this.serverTimeOffset = 0;
 
-//        if (items.get(0) instanceof HeaderViewModel) {
-//            HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
-//            updateHeaderItem(dataHeader);
-//        }
 //        Visitable dummyTicker = new TickerViewModel();
 //        ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
 //        Ticker.Tickers tis = new Ticker.Tickers();
@@ -885,10 +881,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-//        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
-//            adapter.getItems().set(0, headerViewModel);
-//            adapter.notifyItemChanged(0);
-//        }
+        if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
+            adapter.getItems().set(1, headerViewModel);
+            adapter.notifyItemChanged(1);
+        }
     }
 
     @Override
