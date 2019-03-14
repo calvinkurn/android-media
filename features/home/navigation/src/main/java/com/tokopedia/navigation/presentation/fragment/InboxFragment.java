@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -58,12 +59,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private InboxAdapter adapter;
     private View emptyLayout;
     private GridLayoutManager layoutManager;
-    protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener() {
-        @Override
-        public void onLoadMore(int page, int totalItemsCount) {
-            presenter.getRecomData(page);
-        }
-    };
+    protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -90,6 +86,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.addItemDecoration(new RecomItemDecoration(getResources()
                 .getDimensionPixelSize(R.dimen.dp_8)));
         layoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT);
+        endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
         recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
@@ -107,6 +104,16 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             }
         });
         presenter.getRecomData(0);
+    }
+
+    @NonNull
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewScrollListener() {
+        return new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                presenter.getRecomData(page);
+            }
+        };
     }
 
     @Override
