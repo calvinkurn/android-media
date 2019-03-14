@@ -173,6 +173,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     DigitalWidgetRepository digitalWidgetRepository;
 
+    private View statusBarBackground;
+
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -249,6 +251,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        statusBarBackground = view.findViewById(R.id.status_bar_bg);
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
@@ -261,6 +264,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (getArguments() != null) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+        }
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.INVISIBLE);
         }
 
         initEggDragListener();
@@ -507,9 +516,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
                 if (offsetAlpha >= 2.55) {
                     offsetAlpha = 2.55f;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        homeMainToolbar.switchToDarkToolbar();
-                    }
+                    homeMainToolbar.switchToDarkToolbar();
                 } else {
                     homeMainToolbar.switchToLightToolbar();
                 }
