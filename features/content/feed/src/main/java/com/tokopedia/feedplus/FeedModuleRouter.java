@@ -38,10 +38,6 @@ public interface FeedModuleRouter {
 
     Intent getBrandsWebViewIntent(Context context, String url);
 
-    void goToProductDetailForResult(Fragment fragment, String productId,
-                                    int adapterPosition,
-                                    int requestCode);
-
     void shareFeed(Activity activity, String detailId, String url, String title, String imageUrl,
                    String description);
 
