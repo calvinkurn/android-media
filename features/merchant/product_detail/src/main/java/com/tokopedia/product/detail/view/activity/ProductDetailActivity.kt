@@ -138,7 +138,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         if (remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL)) {
             if (application is ProductDetailRouter) {
                 (application as ProductDetailRouter).goToOldProductDetailPage(this, productId, shopDomain, productKey, trackerAttribution, trackerListName)
-                finish()
             }
         }
 
