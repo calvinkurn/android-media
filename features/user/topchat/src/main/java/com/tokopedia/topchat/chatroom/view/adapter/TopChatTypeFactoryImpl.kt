@@ -7,12 +7,15 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
+import com.tokopedia.merchantvoucher.voucherList.adapter.viewholder.MerchantVoucherViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ImageDualAnnouncementViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.SecurityInfoChatViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.SecurityInfoListener
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
 
 open class TopChatTypeFactoryImpl(
         imageAnnouncementListener: ImageAnnouncementListener,
@@ -20,7 +23,8 @@ open class TopChatTypeFactoryImpl(
         imageUploadListener: ImageUploadListener,
         productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
-        private val securityInfoListener: SecurityInfoListener
+        private val securityInfoListener: SecurityInfoListener,
+        private val merchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -37,11 +41,16 @@ open class TopChatTypeFactoryImpl(
         return ImageDualAnnouncementViewHolder.LAYOUT
     }
 
+    override fun type(merchantVoucherViewModel: MerchantVoucherViewModel): Int {
+        return MerchantVoucherViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SecurityInfoChatViewHolder.LAYOUT -> SecurityInfoChatViewHolder(parent, securityInfoListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent,
                     imageDualAnnouncementListener)
+            MerchantVoucherViewHolder.LAYOUT -> MerchantVoucherViewHolder(parent, merchantVoucherViewListener)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -37,6 +37,8 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -64,7 +66,7 @@ import javax.inject.Inject
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
-        HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener {
+        HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener, MerchantVoucherView.OnMerchantVoucherViewListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -386,6 +388,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 this,
                 this,
                 this,
+                this,
                 this))
     }
 
@@ -688,6 +691,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (redirectUrl.isNotEmpty()) {
             onGoToWebView(redirectUrl, attachmentId)
         }
+    }
+
+    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+
+    }
+
+    override fun isOwner(): Boolean {
+        return false
     }
 
     override fun onGoToSecurityInfo(url: String) {

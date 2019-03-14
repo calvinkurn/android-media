@@ -3,14 +3,15 @@ package com.tokopedia.topchat.chatroom.domain.mapper
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.topchat.chatlist.data.TopChatUrl
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
 import javax.inject.Inject
 
 /**
@@ -32,8 +33,13 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
+            TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
+    }
+
+    private fun convertToVoucher(chatItemPojoByDateByTime: Reply): Visitable<*> {
+
     }
 
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
