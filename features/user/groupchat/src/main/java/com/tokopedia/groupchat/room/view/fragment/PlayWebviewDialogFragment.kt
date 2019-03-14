@@ -98,7 +98,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             activity?.windowManager?.defaultDisplay?.let {
                 var displayMetrics = DisplayMetrics()
                 it.getMetrics(displayMetrics)
-                Toast.makeText(activity, "screen "+ displayMetrics.heightPixels.toString(), Toast.LENGTH_LONG).show()
                 behavior.peekHeight = displayMetrics.heightPixels * 9 / 16
             }
 
@@ -362,7 +361,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         fun processHeight(height: Float) {
             var webViewHeight = (height * resources.displayMetrics.density)
             var marginTop = (10 * resources.displayMetrics.density)
-            Toast.makeText(activity, "webview "+webViewHeight.toString(), Toast.LENGTH_LONG).show()
             activity?.runOnUiThread {
                 behavior?.peekHeight = (webViewHeight + marginTop).toInt()
             }
