@@ -38,7 +38,8 @@
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-        <activity android:name=".searchV3.presentation.activity.FlightSearchReturnActivity"
+        <activity
+            android:name=".searchV3.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -58,6 +59,10 @@
             android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".booking.view.activity.FlightBookingActivity"
+            android:label="@string/flight_booking_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity android:name=".bookingV2.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -172,7 +177,6 @@
             android:name=".airport.service.GetAirportListJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 
 </manifest>

@@ -7,6 +7,7 @@ import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
@@ -75,6 +76,16 @@ public interface FlightApi {
                                          @Header("Idempotency-Key") String idemPotencyKeyHeader,
                                          @Header("x-tkpd-userid") String userId
     );
+
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_CART_PATH_V11)
+    Observable<DataResponse<AddToCartEntity>> addToCartV11(@Body DataRequest<FlightCartRequest> request,
+                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader,
+                                                           @Header("x-tkpd-userid") String userId);
+
+    @Headers({"Content-Type: application/json"})
+    @GET(FlightUrl.FLIGHT_CART_PATH)
+    Observable<Response<String>> getCart(@Path("cart_id") String cartId);
 
     @GET(FlightUrl.FLIGHT_CHECK_VOUCHER_CODE)
     Observable<Response<DataResponse<AttributesVoucher>>> checkVoucherCode(@QueryMap HashMap<String, String> paramsAllValueInString);

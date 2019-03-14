@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import com.tokopedia.flight.booking.data.cloud.entity.Amenity
 import com.tokopedia.flight.booking.data.cloud.entity.InsuranceEntity
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
 import com.tokopedia.flight.search.data.api.single.response.AttributesAirport
@@ -42,6 +43,11 @@ class FlightCartJsonDeserializer @Inject constructor(private val gson: Gson) : J
                                 val airportEntity = gson.fromJson(jsonObj.get(KEY_ATTRIBUTES).toString(), AttributesAirport::class.java)
                                 airportEntities[jsonObj.get(KEY_ID).asString] = airportEntity
                             }
+                            if (jsonObj.get(KEY_TYPE).asString.equals(KEY_AMENITY, true)) {
+                                // amenity
+                                val amenity = gson.fromJson(jsonObj.get(KEY_ATTRIBUTES).toString(), Amenity::class.java)
+                                getCartEntity.attributes.flight.amenities.add(amenity)
+                            }
                         }
                         getCartEntity.attributes.insurances = insuranceEntities
 
@@ -70,6 +76,7 @@ class FlightCartJsonDeserializer @Inject constructor(private val gson: Gson) : J
         private val KEY_INCLUDED = "included"
         private val KEY_TYPE = "type"
         private val KEY_INSURANCE = "insurance_benefit"
+        private val KEY_AMENITY = "amenity"
         private val KEY_ATTRIBUTES = "attributes"
         private val KEY_ID = "id"
         private val KEY_AIRPORT = "airport"

@@ -18,6 +18,7 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
+import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
@@ -134,12 +135,13 @@ public class FlightModule {
                                                     FlightOrderMapper flightOrderMapper,
                                                     FlightPassengerFactorySource flightPassengerFactorySource,
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource,
-                                                    FlightCancelVoucherDataSource flightCancelVoucherDataSource) {
+                                                    FlightCancelVoucherDataSource flightCancelVoucherDataSource,
+                                                    FlightBookingCartDataSource flightBookingCartDataSource) {
         return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource, flightAirlineDataListSource,
                 getFlightClassesUseCase, flightCartDataSource, flightAirportDataListBackgroundSource,
                 flightCheckVoucheCodeDataSource, flightBookingDataSource, flightAirportVersionDBSource,
                 flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource,
-                flightCancelVoucherDataSource);
+                flightCancelVoucherDataSource, flightBookingCartDataSource);
     }
 
     @Provides

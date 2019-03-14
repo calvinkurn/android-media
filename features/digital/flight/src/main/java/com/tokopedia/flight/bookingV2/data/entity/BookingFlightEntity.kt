@@ -2,6 +2,7 @@ package com.tokopedia.flight.bookingV2.data.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.flight.booking.data.cloud.entity.Amenity
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity
 
 /**
@@ -28,7 +29,7 @@ class BookingFlightEntity(
         var totalPriceNumeric: Long = 0,
         @SerializedName("journeys")
         @Expose
-        var journeys: List<BookingJourneyEntity> = arrayListOf(),
+        var journeys: MutableList<BookingJourneyEntity> = arrayListOf(),
         @SerializedName("payment")
         @Expose
         var payment: PaymentInfoEntity = PaymentInfoEntity(),
@@ -55,5 +56,8 @@ class BookingFlightEntity(
         var comboKey: String = "",
         @SerializedName("mandatory_dob")
         @Expose
-        var mandatoryDob: Boolean = false
+        var mandatoryDob: Boolean = false,
+        @SerializedName("amenities")
+        @Expose
+        var amenities: MutableList<Amenity> = arrayListOf()
 )

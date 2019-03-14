@@ -17,6 +17,12 @@ public class BaseCartData implements Cloneable {
     private List<FlightBookingAmenityViewModel> amenities;
     private List<NewFarePrice> newFarePrices;
     private int refreshTime;
+    private int departureAdultPrice;
+    private int departureChildPrice;
+    private int departureInfantPrice;
+    private int returnAdultPrice;
+    private int returnChildPrice;
+    private int returnInfantPrice;
 
     public int getTotal() {
         return total;
@@ -85,5 +91,53 @@ public class BaseCartData implements Cloneable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getDepartureAdultPrice() {
+        return departureAdultPrice;
+    }
+
+    public void setDepartureAdultPrice(int departureAdultPrice) {
+        this.departureAdultPrice = departureAdultPrice;
+    }
+
+    public int getDepartureChildPrice() {
+        return departureChildPrice;
+    }
+
+    public void setDepartureChildPrice(int departureChildPrice) {
+        this.departureChildPrice = departureChildPrice;
+    }
+
+    public int getDepartureInfantPrice() {
+        return departureInfantPrice;
+    }
+
+    public void setDepartureInfantPrice(int departureInfantPrice) {
+        this.departureInfantPrice = departureInfantPrice;
+    }
+
+    public int getReturnAdultPrice() {
+        return returnAdultPrice;
+    }
+
+    public void setReturnAdultPrice(int returnAdultPrice) {
+        this.returnAdultPrice = returnAdultPrice;
+    }
+
+    public int getReturnChildPrice() {
+        return returnChildPrice;
+    }
+
+    public void setReturnChildPrice(int returnChildPrice) {
+        this.returnChildPrice = returnChildPrice;
+    }
+
+    public int getReturnInfantPrice() {
+        return returnInfantPrice;
+    }
+
+    public void setReturnInfantPrice(int returnInfantPrice) {
+        this.returnInfantPrice = returnInfantPrice;
     }
 }

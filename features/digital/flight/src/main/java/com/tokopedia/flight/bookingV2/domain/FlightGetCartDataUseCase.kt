@@ -5,6 +5,7 @@ import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -13,8 +14,21 @@ import javax.inject.Inject
 class FlightGetCartDataUseCase @Inject constructor(val flightRepository: FlightRepository)
     : UseCase<GetCartEntity>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<GetCartEntity> =
-            flightRepository.getCart(requestParams!!.getString(PARAM_CART_ID, ""))
+    override fun createObservable(requestParams: RequestParams?): Observable<GetCartEntity> {
+        val numOfAttempts = intArrayOf(0)
+        val pollDelay = intArrayOf(0)
+
+        return flightRepository.getCart(requestParams!!.getString(PARAM_CART_ID, ""))
+                .doOnNext {
+                    pollDelay[0] = it.meta.refreshTime
+                    numOfAttempts[0]++
+                }.repeatWhen {
+                    it.delay(pollDelay[0].toLong(), TimeUnit.SECONDS)
+                    it.flatMap { Observable.timer(pollDelay[0].toLong(), TimeUnit.SECONDS) }
+                }.takeUntil {
+                    (!it.meta.isNeedRefresh) || (numOfAttempts[0] >= it.meta.maxRetry)
+                }.last().map { it }
+    }
 
     fun createRequestParam(cartId: String): RequestParams {
         val requestParams = RequestParams.create()
