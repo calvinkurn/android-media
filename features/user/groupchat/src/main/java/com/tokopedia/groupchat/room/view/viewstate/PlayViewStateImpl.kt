@@ -919,8 +919,7 @@ open class PlayViewStateImpl(
     private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
         webviewIcon.hide()
         if (floatingButton.imageUrl.isBlank()
-                || floatingButton.contentLinkUrl.isBlank()
-                || !RouteManager.isSupportApplink(view.context, floatingButton.contentLinkUrl)) {
+                || floatingButton.contentLinkUrl.isBlank()) {
             return
         }
 
