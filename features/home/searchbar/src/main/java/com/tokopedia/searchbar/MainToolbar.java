@@ -22,8 +22,6 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class MainToolbar extends Toolbar {
 
-    protected final static String TAG_INBOX = "inbox";
-
     protected ImageView btnNotification;
     protected ImageView btnWishlist;
     protected ImageView btnInbox;
