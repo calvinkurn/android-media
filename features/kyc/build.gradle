@@ -25,12 +25,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.cacheManager)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
-
-    compile project(path: ':libraries:common_network')
-    compile project(path: ':libraries:graphql')
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 }

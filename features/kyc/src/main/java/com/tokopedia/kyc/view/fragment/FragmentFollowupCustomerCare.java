@@ -30,32 +30,44 @@ public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.call){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_PHN);
-            KycUtil.makeCall(getContext());
+            executeCall();
         }
         else if(i == R.id.email){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_EML);
-            KycUtil.sendEmail(getContext());
+            executeEmail();
         }
         else if(i == R.id.back_to_app){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_KMBL_TKPD);
-            getActivity().finish();
+            executeBackToApp();
         }
+    }
+
+    private void executeCall(){
+        KycUtil.makeCall(getContext());
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_PHN);
+    }
+
+    private void executeEmail(){
+        KycUtil.sendEmail(getContext());
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_EML);
+    }
+
+    private void executeBackToApp(){
+        getActivity().finish();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_KMBL_TKPD);
     }
 
     @Override

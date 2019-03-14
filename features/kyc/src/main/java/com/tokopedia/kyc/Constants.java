@@ -26,6 +26,12 @@ public interface Constants {
         int PASSPORT_NO_MAX_LENGTH = 11;
         String WEB_VIEW_TITLE = "Sayarat dan Ketentuan";
         String SELFIE = "SELFIE";
+        String TYPE = "plain/text";
+        String CS_EMAIL = "cs@ovo.id";
+        String CS_EMAIL_SUBJECT = "[Upgrade Ke OVO Premier] Dalam Proses Issue";
+        String CHOOSER_TTL_MAIL = "Kirim mail...";
+        String CS_TEL_NO = "tel:1500696";
+        String CHOOSER_TTL_CALL = "Lakukan panggilan";
     }
     interface AppLinks{
         String OVOUPGRADE = "tokopedia://ovoupgrade";
@@ -41,7 +47,10 @@ public interface Constants {
         String STATUS = "status";
         String FROM_RETAKE_FLOW = "from_retake_flow";
         String MESSAGE = "message";
-
+        String ID_DOCTYP = "identity_document_type";
+        String ID_DOCNO = "identity_document_number";
+        String ID_MOMMDNNM = "mother_maiden_name";
+        String DOCS = "documents";
     }
 
     interface URLs{

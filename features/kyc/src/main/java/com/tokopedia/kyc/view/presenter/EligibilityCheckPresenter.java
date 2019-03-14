@@ -12,6 +12,8 @@ import rx.Subscriber;
 
 public class EligibilityCheckPresenter  extends BaseDaggerPresenter<GenericOperationsView> implements IEligibilityCheckListener{
 
+    private Subscriber eligibilityCheckSubscriber;
+
     @Inject
     public EligibilityCheckPresenter(){
 
@@ -24,7 +26,7 @@ public class EligibilityCheckPresenter  extends BaseDaggerPresenter<GenericOpera
     }
 
     private Subscriber getEligibilityCheckSubscriber(){
-        return new Subscriber<GraphqlResponse>() {
+        eligibilityCheckSubscriber = new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -49,6 +51,14 @@ public class EligibilityCheckPresenter  extends BaseDaggerPresenter<GenericOpera
                 }
             }
         };
+        return eligibilityCheckSubscriber;
     }
 
+    @Override
+    public void detachView() {
+        if(eligibilityCheckSubscriber != null){
+            eligibilityCheckSubscriber.unsubscribe();
+        }
+        super.detachView();
+    }
 }

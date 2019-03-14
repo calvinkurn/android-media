@@ -18,7 +18,7 @@
             <ImageView
                 android:id="@+id/card_id_img"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
+                android:layout_height="@dimen/dp_260"
                 android:scaleType="centerCrop" />
 
             <Button
@@ -33,8 +33,8 @@
                 android:background="@color/transparent"
                 android:gravity="center"
                 android:text="@string/ulng_fto"
-                android:textColor="#06b3ba"
-                android:textSize="14sp" />
+                android:textColor="@color/clr_06b3ba"
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/txtv_select_id"
@@ -45,8 +45,8 @@
                 android:layout_marginTop="@dimen/dp_35"
                 android:layout_marginRight="@dimen/dp_30"
                 android:text="@string/slct_id_typ"
-                android:textColor="#6b767e"
-                android:textSize="16sp" />
+                android:textColor="@color/clr_6b767e"
+                android:textSize="@dimen/sp_16" />
 
             <RadioGroup
                 android:id="@+id/id_radio_group"
@@ -64,8 +64,8 @@
                     android:layout_marginTop="@dimen/dp_20"
                     android:checked="true"
                     android:text="@string/ktpwni"
-                    android:textColor="#2d263b"
-                    android:textSize="14sp" />
+                    android:textColor="@color/clr_2d263b"
+                    android:textSize="@dimen/sp_14" />
 
                 <RadioButton
                     android:id="@+id/passport"
@@ -74,8 +74,8 @@
                     android:layout_marginLeft="@dimen/dp_25"
                     android:layout_marginTop="@dimen/dp_20"
                     android:text="@string/psprt"
-                    android:textColor="#2d263b"
-                    android:textSize="14sp" />
+                    android:textColor="@color/clr_2d263b"
+                    android:textSize="@dimen/sp_14" />
             </RadioGroup>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -98,7 +98,7 @@
                     android:singleLine="true"
                     android:inputType="number"
                     android:textColor="@color/font_black_primary_70"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp_16" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -120,7 +120,7 @@
                     android:inputType="textAutoComplete"
                     android:singleLine="true"
                     android:textColor="@color/font_black_primary_70"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp_16" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <Button
@@ -135,8 +135,8 @@
                 android:background="@drawable/btn_bg_rounded_corners"
                 android:gravity="center"
                 android:text="@string/cnfrm"
-                android:textColor="#ffffff"
-                android:textSize="14sp" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
 
         </RelativeLayout>
     </ScrollView>

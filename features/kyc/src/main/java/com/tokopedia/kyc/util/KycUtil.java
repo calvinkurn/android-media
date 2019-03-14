@@ -86,17 +86,17 @@ public class KycUtil {
     public static void sendEmail(Context context){
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 
-        emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"cs@ovo.id"});
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "[Upgrade Ke OVO Premier] Dalam Proses Issue");
+        emailIntent.setType(Constants.Values.TYPE);
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{Constants.Values.CS_EMAIL});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, Constants.Values.CS_EMAIL_SUBJECT);
 
-        context.startActivity(Intent.createChooser(emailIntent, "Kirim mail..."));
+        context.startActivity(Intent.createChooser(emailIntent, Constants.Values.CHOOSER_TTL_MAIL));
     }
 
     public static void makeCall(Context context){
         Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:1500696"));
-        context.startActivity(Intent.createChooser(intent, "Lakukan panggilan"));
+        intent.setData(Uri.parse(Constants.Values.CS_TEL_NO));
+        context.startActivity(Intent.createChooser(intent, Constants.Values.CHOOSER_TTL_CALL));
     }
 
     public static AlertDialog.Builder getErrorDialogBuilder(Activity context, View.OnClickListener onClickListener){

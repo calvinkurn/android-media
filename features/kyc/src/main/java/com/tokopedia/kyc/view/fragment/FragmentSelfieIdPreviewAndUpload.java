@@ -55,46 +55,16 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.selfieid_intro_proceed){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_OK_STP3);
-            KycUtil.createKYCIdCameraFragment(getContext(),
-                    activityListener, getSefieIdImageAction(),
-                    Constants.Keys.KYC_SELFIEID_CAMERA, false);
+            executeSlfeIntroPrcd();
         }
         else if(i == R.id.use_img){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_GNKN_STP3);
-            makeSelfieUploadRequest();
+            executeUseImg();
         }
         else if(i == R.id.retake_image){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_OK_ULN_STP3);
-            KycUtil.createKYCIdCameraFragment(getContext(),
-                    activityListener,
-                    getSefieIdImageAction(),
-                    Constants.Keys.KYC_SELFIEID_CAMERA, false);
+            executeRetakeImg();
         }
         else if(i == R.id.btn_ok){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_OK_STP3);
-            makeSelfieUploadRequest();
-            if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
+            executeBtnOk();
         }
     }
 
@@ -102,6 +72,52 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     protected void initInjector() {
         getComponent(KYCComponent.class).inject(this);
 
+    }
+
+    private void executeSlfeIntroPrcd(){
+        KycUtil.createKYCIdCameraFragment(getContext(),
+                activityListener, getSefieIdImageAction(),
+                Constants.Keys.KYC_SELFIEID_CAMERA, false);
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_OK_STP3);
+    }
+
+    private void executeUseImg(){
+        makeSelfieUploadRequest();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_GNKN_STP3);
+    }
+
+    private void executeRetakeImg(){
+        KycUtil.createKYCIdCameraFragment(getContext(),
+                activityListener,
+                getSefieIdImageAction(),
+                Constants.Keys.KYC_SELFIEID_CAMERA, false);
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_OK_ULN_STP3);
+    }
+
+    private void executeBtnOk(){
+        makeSelfieUploadRequest();
+        if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_OK_STP3);
     }
 
     @Override

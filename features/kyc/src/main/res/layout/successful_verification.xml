@@ -29,8 +29,8 @@
                 android:layout_marginTop="@dimen/dp_36"
                 android:gravity="center_horizontal"
                 android:text="@string/hore_kamu"
-                android:textColor="#b3000000"
-                android:textSize="17sp" />
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_17" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -38,10 +38,10 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center_horizontal"
-                android:lineSpacingExtra="4sp"
+                android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/satny_nkmt"
-                android:textColor="#61000000"
-                android:textSize="14sp" />
+                android:textColor="@color/light_disabled"
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 style="@style/TextView.CheckList"
@@ -49,10 +49,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_16"
-                android:lineSpacingExtra="4sp"
+                android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/bts_sld"
-                android:textColor="#61000000"
-                android:textSize="14sp" />
+                android:textColor="@color/light_disabled"
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 style="@style/TextView.CheckList"
@@ -62,8 +62,8 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:lineSpacingExtra="4sp"
                 android:text="@string/tnsfr_k_antr"
-                android:textColor="#61000000"
-                android:textSize="14sp" />
+                android:textColor="@color/light_disabled"
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 style="@style/TextView.CheckList"
@@ -71,10 +71,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_10"
-                android:lineSpacingExtra="4sp"
+                android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/bbs_bia"
-                android:textColor="#61000000"
-                android:textSize="14sp" />
+                android:textColor="@color/light_disabled"
+                android:textSize="@dimen/sp_14" />
 
             <Button
                 android:id="@+id/continue_shopping"
@@ -85,8 +85,8 @@
                 android:gravity="center"
                 android:textAllCaps="false"
                 android:text="@string/mli_tnskn"
-                android:textColor="#ffffff"
-                android:textSize="14sp" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
 
         </LinearLayout>
     </ScrollView>

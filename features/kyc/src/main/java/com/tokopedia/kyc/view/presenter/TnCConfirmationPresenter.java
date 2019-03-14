@@ -2,6 +2,7 @@ package com.tokopedia.kyc.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
 import com.tokopedia.kyc.model.ConfirmSubmitResponse;
 import com.tokopedia.kyc.model.GqlDocModel;
@@ -17,6 +18,8 @@ import rx.Subscriber;
 
 public class TnCConfirmationPresenter extends BaseDaggerPresenter<GenericOperationsView> implements ITncConfirmation{
 
+    private Subscriber tncAcceptSubs;
+
     @Inject
     public TnCConfirmationPresenter(){
 
@@ -25,12 +28,12 @@ public class TnCConfirmationPresenter extends BaseDaggerPresenter<GenericOperati
     @Override
     public void submitKycTnCConfirmForm(ConfirmRequestDataContainer confirmRequestDataContainer) {
         HashMap<String, Object> gqlDataHashMap = new HashMap<>();
-        gqlDataHashMap.put("kyc_request_id", confirmRequestDataContainer.getKycReqId());
-        gqlDataHashMap.put("identity_document_type",
+        gqlDataHashMap.put(Constants.Keys.KYC_REQUEST_ID, confirmRequestDataContainer.getKycReqId());
+        gqlDataHashMap.put(Constants.Keys.ID_DOCTYP,
                 confirmRequestDataContainer.getDocumentType());
-        gqlDataHashMap.put("identity_document_number",
+        gqlDataHashMap.put(Constants.Keys.ID_DOCNO,
                 confirmRequestDataContainer.getDocumentNumber());
-        gqlDataHashMap.put("mother_maiden_name",
+        gqlDataHashMap.put(Constants.Keys.ID_MOMMDNNM,
                 confirmRequestDataContainer.getMothersMaidenName());
         GqlDocModel ob1 = new GqlDocModel();
         GqlDocModel ob2 = new GqlDocModel();
@@ -39,13 +42,13 @@ public class TnCConfirmationPresenter extends BaseDaggerPresenter<GenericOperati
         ob2.setKey(confirmRequestDataContainer.getSelfieIdDocumentId());
         list.add(ob1);
         list.add(ob2);
-        gqlDataHashMap.put("documents", list);
+        gqlDataHashMap.put(Constants.Keys.DOCS, list);
 
         KycUtil.executeKycConfirmation(getView().getActivity(), getTnCAcceptGQLSubscriber(), gqlDataHashMap);
     }
 
     private Subscriber getTnCAcceptGQLSubscriber() {
-        return new Subscriber<GraphqlResponse>() {
+        tncAcceptSubs = new Subscriber<GraphqlResponse>() {
 
             @Override
             public void onCompleted() {
@@ -69,6 +72,14 @@ public class TnCConfirmationPresenter extends BaseDaggerPresenter<GenericOperati
                 }
             }
         };
+        return tncAcceptSubs;
     }
 
+    @Override
+    public void detachView() {
+        if(tncAcceptSubs != null){
+            tncAcceptSubs.unsubscribe();
+        }
+        super.detachView();
+    }
 }

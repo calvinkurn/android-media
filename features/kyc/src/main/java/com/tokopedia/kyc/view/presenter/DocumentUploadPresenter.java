@@ -15,6 +15,7 @@ import rx.Subscriber;
 
 public class DocumentUploadPresenter extends BaseDaggerPresenter<GenericOperationsView> implements IDocumentUploadListener {
 
+    private UploadDocumentUseCase uploadDocumentUseCase;
 
     @Inject
     public DocumentUploadPresenter(){
@@ -23,7 +24,7 @@ public class DocumentUploadPresenter extends BaseDaggerPresenter<GenericOperatio
 
     @Override
     public void makeDocumentUploadRequest(String imagePath, String docType, int kycReqId) {
-        UploadDocumentUseCase uploadDocumentUseCase = new UploadDocumentUseCase(null,
+        uploadDocumentUseCase = new UploadDocumentUseCase(null,
                 getView().getActivity(), imagePath, docType, kycReqId);
         uploadDocumentUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -51,5 +52,13 @@ public class DocumentUploadPresenter extends BaseDaggerPresenter<GenericOperatio
                 }
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        if(uploadDocumentUseCase != null) {
+            uploadDocumentUseCase.unsubscribe();
+        }
+        super.detachView();
     }
 }

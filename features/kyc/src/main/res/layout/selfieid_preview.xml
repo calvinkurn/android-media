@@ -26,12 +26,12 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#2d263b">
+                    android:background="@color/clr_2d263b">
 
                     <ImageView
                         android:id="@+id/selfieid_img"
-                        android:layout_width="201dp"
-                        android:layout_height="260dp"
+                        android:layout_width="@dimen/dp_200"
+                        android:layout_height="@dimen/dp_260"
                         android:layout_gravity="center"
                         android:scaleType="center"
                         android:src="@drawable/ovo_premier_verifikasi_gagal"/>
@@ -47,8 +47,8 @@
                     android:layout_marginRight="@dimen/dp_30"
                     android:background="@drawable/btn_bg_rounded_corners"
                     android:text="@string/gnkn"
-                    android:textColor="#ffffff"
-                    android:textSize="14sp" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/retake_image"
@@ -63,8 +63,8 @@
                     android:textAllCaps="true"
                     android:text="@string/ulng"
                     android:background="@color/white"
-                    android:textColor="#06b3ba"
-                    android:textSize="14sp" />
+                    android:textColor="@color/clr_06b3ba"
+                    android:textSize="@dimen/sp_14" />
             </LinearLayout>
         </FrameLayout>
     </ScrollView>

@@ -28,14 +28,18 @@ public class FragmentErrorKyc extends BaseDaggerFragment implements
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.try_again){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_CBLG_STLGGL);
-            getActivity().getSupportFragmentManager().popBackStack(FragmentUpgradeToOvo.TAG, 0);
+            executeTryAgain();
         }
+    }
+
+    private void executeTryAgain(){
+        getActivity().getSupportFragmentManager().popBackStack(FragmentUpgradeToOvo.TAG, 0);
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_CBLG_STLGGL);
     }
 
 
@@ -73,6 +77,7 @@ public class FragmentErrorKyc extends BaseDaggerFragment implements
         View view = inflater.inflate(R.layout.error_kyc, container, false);
         errorDescription = view.findViewById(R.id.error_desc);
         tryAgain = view.findViewById(R.id.try_again);
+        tryAgain.setOnClickListener(this::onClick);
         return view;
     }
 }

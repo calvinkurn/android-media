@@ -29,8 +29,8 @@
                 android:layout_marginTop="@dimen/dp_36"
                 android:gravity="center_horizontal"
                 android:text="@string/ovo_lvl_upgrd_fail"
-                android:textColor="#b3000000"
-                android:textSize="17sp" />
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_17" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -38,10 +38,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center_horizontal"
-                android:lineSpacingExtra="4sp"
+                android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/upgrade_failure"
-                android:textColor="#61000000"
-                android:textSize="14sp" />
+                android:textColor="@color/light_disabled"
+                android:textSize="@dimen/sp_14" />
 
             <Button
                 android:id="@+id/upgrade_now"
@@ -51,8 +51,8 @@
                 android:background="@drawable/btn_bg_green_curved_corners"
                 android:gravity="center"
                 android:text="@string/upgrd_now"
-                android:textColor="#ffffff"
-                android:textSize="14sp" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
 
             <Button
                 android:id="@+id/returnto_main_page"
@@ -64,8 +64,8 @@
                 android:paddingTop="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_10"
                 android:text="@string/rtrn_mnpg"
-                android:textColor="#61000000"
-                android:textSize="14sp" />
+                android:textColor="@color/light_disabled"
+                android:textSize="@dimen/sp_14" />
         </LinearLayout>
     </ScrollView>
 

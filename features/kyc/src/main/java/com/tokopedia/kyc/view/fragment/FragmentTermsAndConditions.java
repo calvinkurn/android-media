@@ -59,53 +59,73 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.cardid_container) {
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_ULN_KTP);
-            retakeImage(Constants.Keys.KYC_CARDID_CAMERA);
+            executeRetakeCardId();
         } else if (i == R.id.selfieid_container) {
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_ULN_SLFE);
-            retakeImage(Constants.Keys.KYC_SELFIEID_CAMERA);
+            executeRetakeSelfie();
         } else if (i == R.id.proceed_tnc) {
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_PRCS);
-            showConfirmationDialog();
+            executePrcdTnC();
         }
         else if (i == R.id.txtv_tnc){
             ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
                     Constants.URLs.OVO_TNC_PAGE);
         }
         else if(i == R.id.back_btn){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_BTLKN_STP4);
-            alertDialog.dismiss();
+            executeBckBtn();
         }
         else if(i == R.id.continue_btn){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_LNJTN_STP4);
-            alertDialog.dismiss();
-            submitKycTnCConfirmForm();
+            executeCntnu();
         }
+    }
+
+    private void executeRetakeCardId(){
+        retakeImage(Constants.Keys.KYC_CARDID_CAMERA);
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_ULN_KTP);
+    }
+
+    private void executeRetakeSelfie(){
+        retakeImage(Constants.Keys.KYC_SELFIEID_CAMERA);
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_ULN_SLFE);
+    }
+
+    private void executePrcdTnC(){
+        showConfirmationDialog();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_PRCS);
+    }
+
+    private void executeBckBtn(){
+        alertDialog.dismiss();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_BTLKN_STP4);
+    }
+
+    private void executeCntnu(){
+        alertDialog.dismiss();
+        submitKycTnCConfirmForm();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_LNJTN_STP4);
     }
 
     private void submitKycTnCConfirmForm(){

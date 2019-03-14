@@ -95,25 +95,33 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.upgrade_btn) {
-            makeEligibilityRequest();
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_LNJKTN);
+            executeUpgrd();
         } else if (i == R.id.later_btn) {
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_NNT_SJA);
-            getActivity().finish();
+            executeLtrBtn();
         } else if(i == R.id.btn_ok){
             makeEligibilityRequest();
             if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
         }
+    }
+
+    private void executeUpgrd(){
+        makeEligibilityRequest();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_LNJKTN);
+    }
+
+    private void executeLtrBtn(){
+        getActivity().finish();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_NNT_SJA);
     }
 
     private void makeEligibilityRequest(){

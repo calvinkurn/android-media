@@ -4,7 +4,7 @@
     android:id="@+id/branding_container"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="#f8f8f8"
+    android:background="@color/clr_f8f8f8"
     android:gravity="center"
     android:padding="@dimen/dp_9">
 
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_12"
         android:text="@string/branding"
-        android:textColor="#8a000000" />
+        android:textColor="@color/black_54" />
 
     <ImageView
         android:layout_width="@dimen/dp_36"

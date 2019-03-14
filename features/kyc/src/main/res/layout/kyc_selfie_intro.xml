@@ -14,10 +14,10 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_24"
         android:gravity="center_horizontal"
-        android:lineSpacingExtra="8sp"
+        android:lineSpacingExtra="@dimen/sp_8"
         android:text="@string/slfewth_ktppsprt"
-        android:textColor="#4c2a86"
-        android:textSize="16sp" />
+        android:textColor="@color/clr_4c2a86"
+        android:textSize="@dimen/sp_16" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,10 +25,10 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_12"
         android:gravity="center_horizontal"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/mksur_fcovl"
-        android:textColor="#2d263b"
-        android:textSize="14sp" />
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_14" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
         android:background="@drawable/btn_bg_rounded_corners"
         android:gravity="center"
         android:text="@string/oke"
-        android:textColor="#ffffff"
-        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
         android:layout_marginBottom="@dimen/dp_36"/>
 </LinearLayout>

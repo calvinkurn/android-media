@@ -70,45 +70,53 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.confirmation_btn){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_CONF_STP2);
-            makeCardIDUploadRequest();
+            executeConfirmation();
         }
         else if(i == R.id.retake_photo){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_ULN_PIC_STP2);
-            ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
-                @Override
-                public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
-                    ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
-                    imagePath = ((String) dataObj.get(keysList.get(0)));
-                    toBeFlipped = ((Boolean) dataObj.get(keysList.get(1)));
-                    activityListener.getDataContatainer().setFlipCardIdImg(toBeFlipped);
-                    activityListener.getDataContatainer().setCardIdImage(imagePath);
-                    activityListener.showHideActionbar(true);
-                    KycUtil.setCameraCapturedImage(imagePath, toBeFlipped, idCardImageView);
-                }
-
-                @Override
-                public void actionError(int actionId, Integer dataObj) {
-
-                }
-            };
-            KycUtil.createKYCIdCameraFragment(getContext(),
-                    activityListener, actionCreator, Constants.Keys.KYC_CARDID_CAMERA, true);
+            executeRetakePhoto();
         }
         else if(i == R.id.btn_ok){
             makeCardIDUploadRequest();
             if(errorSnackbar.isShownOrQueued()) errorSnackbar.dismiss();
         }
+    }
+
+    private void executeConfirmation(){
+        makeCardIDUploadRequest();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_CONF_STP2);
+    }
+
+    private void executeRetakePhoto(){
+        ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
+            @Override
+            public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
+                ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
+                imagePath = ((String) dataObj.get(keysList.get(0)));
+                toBeFlipped = ((Boolean) dataObj.get(keysList.get(1)));
+                activityListener.getDataContatainer().setFlipCardIdImg(toBeFlipped);
+                activityListener.getDataContatainer().setCardIdImage(imagePath);
+                activityListener.showHideActionbar(true);
+                KycUtil.setCameraCapturedImage(imagePath, toBeFlipped, idCardImageView);
+            }
+
+            @Override
+            public void actionError(int actionId, Integer dataObj) {
+
+            }
+        };
+        KycUtil.createKYCIdCameraFragment(getContext(),
+                activityListener, actionCreator, Constants.Keys.KYC_CARDID_CAMERA, true);
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_ULN_PIC_STP2);
     }
 
     @Override

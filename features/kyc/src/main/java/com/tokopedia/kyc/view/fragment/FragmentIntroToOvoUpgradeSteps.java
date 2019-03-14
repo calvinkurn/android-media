@@ -79,44 +79,48 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.start_upgrade_process){
-            AnalyticsUtil.sendEvent(getContext(),
-                    AnalyticsUtil.EventName.CLICK_OVO,
-                    AnalyticsUtil.EventCategory.OVO_KYC,
-                    "",
-                    ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                    AnalyticsUtil.EventAction.CLK_MUL_STP1);
-            ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
-                @Override
-                public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
-                    AnalyticsUtil.sendEvent(getContext(),
-                            AnalyticsUtil.EventName.CLICK_OVO,
-                            AnalyticsUtil.EventCategory.OVO_KYC,
-                            "",
-                            ((KYCRouter)getContext().getApplicationContext()).getUserId(),
-                            AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP2);
-                    Bundle bundle = new Bundle();
-                    ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
-                    activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
-                    activityListener.getDataContatainer().setCardIdImage((String) dataObj.get(keysList.get(0)));
-                    activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(bundle), true,
-                            FragmentCardIDUpload.TAG);
-                    activityListener.showHideActionbar(true);
-                }
-
-                @Override
-                public void actionError(int actionId, Integer dataObj) {
-
-                }
-            };
-            KycUtil.createKYCIdCameraFragment(getContext(),
-                    activityListener,
-                    actionCreator,
-                    Constants.Keys.KYC_CARDID_CAMERA,
-                    true);
+            executeStartUpgrade();
         }
         else if(v.getId() == R.id.ovo_tncpage_link){
             ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
                     Constants.URLs.OVO_TNC_PAGE);
         }
+    }
+
+    private void executeStartUpgrade(){
+        ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
+            @Override
+            public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
+                AnalyticsUtil.sendEvent(getContext(),
+                        AnalyticsUtil.EventName.CLICK_OVO,
+                        AnalyticsUtil.EventCategory.OVO_KYC,
+                        "",
+                        ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                        AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP2);
+                Bundle bundle = new Bundle();
+                ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
+                activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
+                activityListener.getDataContatainer().setCardIdImage((String) dataObj.get(keysList.get(0)));
+                activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(bundle), true,
+                        FragmentCardIDUpload.TAG);
+                activityListener.showHideActionbar(true);
+            }
+
+            @Override
+            public void actionError(int actionId, Integer dataObj) {
+
+            }
+        };
+        KycUtil.createKYCIdCameraFragment(getContext(),
+                activityListener,
+                actionCreator,
+                Constants.Keys.KYC_CARDID_CAMERA,
+                true);
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_MUL_STP1);
     }
 }

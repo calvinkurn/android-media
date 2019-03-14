@@ -21,20 +21,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:lineSpacingExtra="4sp"
+            android:lineSpacingExtra="@dimen/sp_4"
             android:text="@string/aplikasi_ovo"
-            android:textColor="#b3000000"
-            android:textSize="12sp" />
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_bg_green_curved_corners"
             android:gravity="center"
-            android:lineSpacingExtra="11sp"
+            android:lineSpacingExtra="@dimen/sp_11"
             android:layout_marginTop="@dimen/dp_12"
             android:text="@string/liht_sel"
-            android:textColor="#ffffff"
-            android:textSize="13sp" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

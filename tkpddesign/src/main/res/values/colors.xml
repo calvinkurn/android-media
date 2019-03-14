@@ -112,5 +112,14 @@
     <color name="yellow_1">#ffb03b</color>
     <color name="medium_green_70">#b242b549</color>
     <color name="red_pink">#ef144a</color>
+    <color name="clr_4c2a86">#4c2a86</color>
+    <color name="clr_2d263b">#2d263b</color>
+    <color name="clr_f8f8f8">#f8f8f8</color>
+    <color name="clr_cc003d">#cc003d</color>
+    <color name="clr_6b767e">#6b767e</color>
+    <color name="clr_06b3ba">#06b3ba</color>
+    <color name="clr_4a4a4a">#4a4a4a</color>
+    <color name="clr_f531353b">#f531353b</color>
+    <color name="clr_ae31353b">#ae31353b</color>
 
 </resources>
