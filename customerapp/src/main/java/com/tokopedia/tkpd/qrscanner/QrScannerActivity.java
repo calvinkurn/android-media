@@ -32,6 +32,7 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -102,13 +103,19 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void goToPaymentPage(String imeiNumber, JsonObject barcodeData) {
-        SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this,true);
-        cacheManager.put(QR_RESPONSE,barcodeData);
-        Intent intent = ((TokoCashRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
-        intent.putExtra(QR_DATA, cacheManager.getId());
-        intent.putExtra(IMEI,imeiNumber);
-        startActivity(intent);
-        finish();
+        UserSession session = new UserSession(this);
+        if(session.isLoggedIn()) {
+            SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, true);
+            cacheManager.put(QR_RESPONSE, barcodeData);
+            Intent intent = ((TokoCashRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
+            intent.putExtra(QR_DATA, cacheManager.getId());
+            intent.putExtra(IMEI, imeiNumber);
+            startActivity(intent);
+            finish();
+        } else {
+//            Intent intent = ((ChallengesModuleRouter) (this.getApplication())).getLoginIntent(this);
+//            startActivityForResult(intent, 0);
+        }
     }
 
     @NeedsPermission({Manifest.permission.CAMERA})

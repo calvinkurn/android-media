@@ -87,6 +87,8 @@ import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
+import com.tokopedia.ovo.OvoPayWithQrApplinkModule;
+import com.tokopedia.ovo.OvoPayWithQrApplinkModuleLoader;
 import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModule;
 import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
@@ -196,7 +198,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         SaldoDetailsAppLinkModule.class,
         ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
-        OfficialStoreApplinkModule.class
+        OfficialStoreApplinkModule.class,
+        OvoPayWithQrApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -261,7 +264,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SaldoDetailsAppLinkModuleLoader(),
                     new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
-                    new OfficialStoreApplinkModuleLoader()
+                    new OfficialStoreApplinkModuleLoader(),
+                    new OvoPayWithQrApplinkModuleLoader()
             );
         }
 

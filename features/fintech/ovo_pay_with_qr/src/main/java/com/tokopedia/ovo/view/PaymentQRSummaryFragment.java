@@ -35,6 +35,9 @@ import com.tokopedia.ovo.model.Wallet;
 import com.tokopedia.ovo.presenter.PaymentQrSummaryContract;
 import com.tokopedia.ovo.presenter.PaymentQrSummaryPresenterImpl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 public class PaymentQRSummaryFragment extends BaseDaggerFragment implements PaymentQrSummaryContract.View {
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
@@ -164,7 +167,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
                         inputAmount.addTextChangedListener(this);
                         inputAmount.setSelection(inputAmount.getText().length());
 
-                        if (amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
+                        if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
                             ovoPoints.setText(String.format(getString(R.string.ovo_cash_point_amnt),
                                     wallet.getPointBalance()));
                             long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
@@ -244,7 +247,11 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
         if (!TextUtils.isEmpty(response.getStatus())) {
             setProgressButton();
             if (response.getStatus().equalsIgnoreCase(PENDING_STATUS)) {
-                ((OvoPayWithQrRouter)getActivity().getApplication()).openTokopointWebview(getActivity(),response.getPinUrl(),"Verifikasi PIN OVO");
+                try {
+                    ((OvoPayWithQrRouter)getActivity().getApplication()).openTokopointWebview(getActivity(),URLDecoder.decode(response.getPinUrl(),"UTF-8"),"Verifikasi PIN OVO");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
 //            startActivity(OvoWebViewActivity.createInstance(getActivity(), response.getPinUrl()));
 //                RouteManager.route(getContext(), String.format("%s?url=%s",
 //                        ApplinkConst.WEBVIEW,

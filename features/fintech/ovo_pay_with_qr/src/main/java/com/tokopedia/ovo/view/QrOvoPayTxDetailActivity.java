@@ -18,7 +18,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     public static final String TRANSACTION_ID = "transaction_id";
     private static final String CODE = "code";
 
-    @DeepLink("tokopedia://ovoqrthanks/{transfer_id}")
+    @DeepLink({"tokopedia://ovoqrthanks/{transfer_id}","tokopedia://ovoqrthanks"})
     public static Intent getContactUsIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, QrOvoPayTxDetailActivity.class)
