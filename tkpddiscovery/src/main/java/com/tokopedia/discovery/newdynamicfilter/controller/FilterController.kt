@@ -182,7 +182,33 @@ class FilterController() : Parcelable {
         return minValue != pressedSliderMinValueState || maxValue != pressedSliderMaxValueState
     }
 
-    fun setFlagFilterHelper(option: Option, value: Boolean) {
+    fun setFilterValueFromDetailActivity(optionList: List<Option>) {
+        val tempHashMapSearchParameter = mutableMapOf<String, String>()
+
+        for(option in optionList) {
+            val isFilterApplied = isFilterApplied(option.inputState)
+            setOrRemoveShownInMainState(option.uniqueId, isFilterApplied)
+            setOrRemoveFlagFilterHelper(option.uniqueId, isFilterApplied)
+
+            if(isFilterApplied) {
+                insertToTempHashMap(tempHashMapSearchParameter, option)
+            }
+        }
+
+        searchParameter.putAll(tempHashMapSearchParameter)
+    }
+
+    private fun insertToTempHashMap(tempHashMap: MutableMap<String, String>, option: Option) {
+        val currentValueInHashMap = tempHashMap[option.key] ?: ""
+
+        tempHashMap[option.key] =
+            if(!TextUtils.isEmpty(currentValueInHashMap))
+                currentValueInHashMap + Option.VALUE_SEPARATOR + option.value
+            else
+                option.value
+    }
+
+    fun setFilterValueExpandableItem(option: Option, value: Boolean) {
         setOrRemoveFlagFilterHelper(option.uniqueId, value)
 
         setFilterValue(option, getNewFilterValue(value, option.key, option.value))
@@ -229,14 +255,6 @@ class FilterController() : Parcelable {
         setOrRemoveFilterValue(isFilterApplied, option.key, value)
     }
 
-    fun setFilterValue(optionList: List<Option>) {
-        for(option in optionList) {
-            val isFilterApplied = isFilterApplied(option.inputState)
-            setOrRemoveShownInMainState(isFilterApplied, option.uniqueId, option.inputState?.toBoolean() ?: false)
-            setOrRemoveFilterValue(isFilterApplied, option.key, option.inputState)
-        }
-    }
-
     private fun isFilterApplied(value: String) : Boolean {
         return if(value.toBoolean()) true
         else isValueNotEmptyAndNotFalse(value)
@@ -246,8 +264,8 @@ class FilterController() : Parcelable {
         return !TextUtils.isEmpty(value) && value != java.lang.Boolean.FALSE.toString()
     }
 
-    private fun setOrRemoveShownInMainState(isFilterAdded: Boolean, key: String, value: Boolean) {
-        if(isFilterAdded) shownInMainState[key] = value
+    private fun setOrRemoveShownInMainState(key: String, value: Boolean) {
+        if(value) shownInMainState[key] = true
         else shownInMainState.remove(key)
     }
 
@@ -355,7 +373,7 @@ class FilterController() : Parcelable {
     }
 
     private fun isCustomOptionDisplayed(option: Option) : Boolean {
-        return java.lang.Boolean.TRUE == getFlagFilterHelperValue(option.key)
+        return java.lang.Boolean.TRUE == getFlagFilterHelperValue(option.uniqueId)
                 || java.lang.Boolean.TRUE == shownInMainState[option.uniqueId]
     }
 

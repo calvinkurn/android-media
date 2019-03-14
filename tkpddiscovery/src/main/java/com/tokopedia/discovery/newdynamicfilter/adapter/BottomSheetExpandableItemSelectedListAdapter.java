@@ -156,7 +156,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         }
 
         private void setAndApplyFlagFilterHelper(Option option, Boolean value) {
-            filterController.setFlagFilterHelper(option, value);
+            filterController.setFilterValueExpandableItem(option, value);
             filterView.trackSearch(option.getName(), option.getValue(), value);
             filterView.applyFilter();
         }

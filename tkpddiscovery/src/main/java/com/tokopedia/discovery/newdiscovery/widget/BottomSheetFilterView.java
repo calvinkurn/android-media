@@ -275,7 +275,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         List<Option> optionList
                 = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT);
 
-        filterController.setFilterValue(optionList);
+        filterController.setFilterValueFromDetailActivity(optionList);
         applyFilterFromDetailPage();
     }
 
@@ -296,7 +296,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
                     @Override
                     public void onNext(List<Option> optionList) {
-                        filterController.setFilterValue(optionList);
+                        filterController.setFilterValueFromDetailActivity(optionList);
                         applyFilterFromDetailPage();
                     }
                 });
