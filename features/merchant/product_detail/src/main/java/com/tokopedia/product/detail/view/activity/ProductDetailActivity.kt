@@ -55,7 +55,10 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
         @JvmStatic
         fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
-            putExtra(PARAM_PRODUCT_ID, productId.toString())
+            val bundle = Bundle().apply {
+                putString(PARAM_PRODUCT_ID, productId.toString())
+            }
+            putExtras(bundle)
         }
     }
 
@@ -101,14 +104,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             } else { // affiliate, tokopedia-internal
                 productId = uri.lastPathSegment
             }
-        } else{
-            productId = intent.getStringExtra(PARAM_PRODUCT_ID)
-            shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
-            productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
         }
 
         if (bundle != null) {
             bundle.let {
+                if(!TextUtils.isEmpty(it.getString(PARAM_PRODUCT_ID))) {
+                    productId = it.getString(PARAM_PRODUCT_ID)
+                }
                 if(!TextUtils.isEmpty(it.getString(PARAM_SHOP_DOMAIN))) {
                     shopDomain = it.getString(PARAM_SHOP_DOMAIN)
                 }
