@@ -99,6 +99,10 @@ class HomeMainToolbar : MainToolbar {
         }
     }
 
+    fun isShadowApplied() : Boolean {
+        return shadowApplied
+    }
+
     companion object {
         val TOOLBAR_LIGHT_TYPE = 0
         val TOOLBAR_DARK_TYPE = 1
