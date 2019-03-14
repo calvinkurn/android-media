@@ -171,6 +171,12 @@ public class ShipmentMapper implements IShipmentMapper {
                         groupShopResult.setDropshipperPhone(groupShop.getDropshiper() != null ? groupShop.getDropshiper().getTelpNo() : "");
                         groupShopResult.setUseInsurance(groupShop.isInsurance());
 
+                        groupShopResult.setFulfillment(groupShop.isFulfillment());
+                        if (groupShop.getWarehouse() != null) {
+                            groupShopResult.setFulfillmentId(groupShop.getWarehouse().getWarehouseId());
+                            groupShopResult.setFulfillmentName(groupShop.getWarehouse().getCityName());
+                        }
+
                         if (groupShop.getShop() != null) {
                             Shop shopResult = new Shop();
 
