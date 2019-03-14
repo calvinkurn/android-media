@@ -905,7 +905,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             ToasterNormal.make(view, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
                 .setAction(getString(R.string.label_atc_open_cart)) { v ->
                     //TODO tracking
-
                     val intent = RouteManager.getIntent(this, ApplinkConst.CART)
                     startActivity(intent)
                 }

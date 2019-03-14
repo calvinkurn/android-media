@@ -170,6 +170,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
@@ -843,6 +845,20 @@ public abstract class SellerRouterApplication extends MainApplication
         if (activity != null) {
             activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
         }
+    }
+
+    @Override
+    public void goToOldProductDetailPage(@NotNull Context context, @Nullable String productId,
+                                         @Nullable String shopDomain, @Nullable String productKey,
+                                         @Nullable String trackerAttribution, @Nullable String trackerListName) {
+        ProductPass productPass = ProductPass.Builder.aProductPass()
+                .setProductId(productId)
+                .setShopDomain(shopDomain)
+                .setProductKey(productKey)
+                .setTrackerAttribution(trackerAttribution)
+                .setTrackerListName(trackerListName)
+                .build();
+        context.startActivity(ProductInfoActivity.createInstance(context, productPass));
     }
 
     @Override

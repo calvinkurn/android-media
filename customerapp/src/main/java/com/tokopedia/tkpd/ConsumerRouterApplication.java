@@ -27,6 +27,8 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
