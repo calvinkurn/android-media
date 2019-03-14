@@ -762,11 +762,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
             val screenWidth = resources.displayMetrics.widthPixels
             if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.height = screenWidth / 3
+                val height = screenWidth / 3
+                layoutParams.height = height
+                view_picture.layoutParams.height = height
                 appbar.visibility = View.VISIBLE
             } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                 layoutParams.height = screenWidth
+                view_picture.layoutParams.height = screenWidth
                 appbar.visibility = View.VISIBLE
             }
         }
