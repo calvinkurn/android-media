@@ -4,16 +4,15 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialogFragment
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
+import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.R
@@ -35,7 +34,54 @@ import javax.inject.Inject
  * Created by fwidjaja on 03/03/19.
  */
 
-open class MerchantVoucherListBottomSheetFragment : BottomSheetDialogFragment(), MerchantVoucherListView, MerchantVoucherViewUsed.OnMerchantVoucherViewListener {
+open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVoucherListView, MerchantVoucherViewUsed.OnMerchantVoucherViewListener {
+
+    lateinit var voucherShopId: String
+    @Suppress("DEPRECATION")
+    private var loadingUseMerchantVoucher: ProgressDialog? = null
+    private var progressDialog: ProgressDialog? = null
+    private lateinit var merchantVoucherListBottomSheetAdapter: MerchantVoucherListBottomSheetAdapter
+    private lateinit var rvVoucherList: RecyclerView
+
+    @Inject
+    lateinit var presenter: MerchantVoucherListPresenter
+
+    companion object {
+        @JvmStatic
+        fun newInstance(shopId: String): MerchantVoucherListBottomSheetFragment {
+            return MerchantVoucherListBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putString(MerchantVoucherListFragment.EXTRA_SHOP_ID, shopId)
+                }
+            }
+        }
+    }
+
+    override fun initView(view: View) {
+        voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
+        merchantVoucherListBottomSheetAdapter = MerchantVoucherListBottomSheetAdapter(this)
+        if (activity != null) {
+            initInjector()
+        }
+
+        @Suppress("DEPRECATION")
+        progressDialog = ProgressDialog(activity)
+        progressDialog?.setMessage(getString(R.string.title_loading))
+
+        // merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget)
+        rvVoucherList = view.findViewById(R.id.rvVoucherList)
+        presenter.clearCache()
+        presenter.getVoucherList(voucherShopId)
+    }
+
+    override fun getLayoutResourceId(): Int {
+        return R.layout.bottomsheet_merchant_voucher
+    }
+
+    override fun title(): String {
+        return getString(R.string.merchant_bottomsheet_title)
+    }
+
     override fun isOwner(): Boolean {
         return true
     }
@@ -63,37 +109,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheetDialogFragment(),
         }
     }
 
-    lateinit var voucherShopId: String
-    private var mTitle: String? = null
-    @Suppress("DEPRECATION")
-    private var loadingUseMerchantVoucher: ProgressDialog? = null
-    private var progressDialog: ProgressDialog? = null
-    private lateinit var merchantVoucherListBottomSheetAdapter: MerchantVoucherListBottomSheetAdapter
-
-    @Inject
-    lateinit var presenter: MerchantVoucherListPresenter
-
-    companion object {
-        @JvmStatic
-        fun newInstance(shopId: String): MerchantVoucherListBottomSheetFragment {
-            return MerchantVoucherListBottomSheetFragment().apply {
-                arguments = Bundle().apply {
-                    putString(MerchantVoucherListFragment.EXTRA_SHOP_ID, shopId)
-                }
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
-        merchantVoucherListBottomSheetAdapter = MerchantVoucherListBottomSheetAdapter(this)
-        if (activity != null) {
-            initInjector()
-            mTitle = activity!!.getString(R.string.merchant_bottomsheet_title)
-        }
-    }
-
     fun initInjector() {
         activity?.run {
             DaggerMerchantVoucherComponent.builder()
@@ -102,35 +117,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheetDialogFragment(),
                     .build()
                     .inject(this@MerchantVoucherListBottomSheetFragment)
             presenter.attachView(this@MerchantVoucherListBottomSheetFragment)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        presenter.clearCache()
-        presenter.getVoucherList(voucherShopId)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.widget_bottomsheet, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val container = view.findViewById<FrameLayout>(R.id.bottomsheet_container)
-        View.inflate(context, R.layout.bottomsheet_merchant_voucher, container)
-
-        val textViewTitle = view.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
-        textViewTitle.text = mTitle
-
-        @Suppress("DEPRECATION")
-        progressDialog = ProgressDialog(activity)
-        progressDialog?.setMessage(getString(R.string.title_loading))
-
-        // merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget)
-
-        val layoutTitle = view.findViewById<View>(com.tokopedia.design.R.id.layout_title)
-        layoutTitle.setOnClickListener {
-            dismiss()
         }
     }
 
@@ -200,7 +186,8 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheetDialogFragment(),
                 context, LinearLayoutManager.VERTICAL, false)
         rvVoucherList.layoutManager = linearLayoutManager
         rvVoucherList.adapter = merchantVoucherListBottomSheetAdapter
-        promoContainer.visibility = View.VISIBLE
+//        promoContainer.visibility = View.VISIBLE
+        updateHeight()
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
