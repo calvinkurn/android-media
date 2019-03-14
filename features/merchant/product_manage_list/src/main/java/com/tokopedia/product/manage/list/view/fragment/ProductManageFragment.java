@@ -462,9 +462,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
      */
     private void goToPDP(String productId) {
         if (getContext() != null){
-            Intent intent = RouteManager.getIntentInternal(getContext(),
+            RouteManager.routeInternal(getContext(),
                     UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
-            startActivity(intent);
         }
     }
 

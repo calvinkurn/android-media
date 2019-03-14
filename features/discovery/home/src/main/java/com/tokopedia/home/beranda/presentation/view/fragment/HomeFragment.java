@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -564,7 +565,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this,
                 this
-                );
+        );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -1138,12 +1139,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void startDeeplinkShopInfo(String url) {
-        if (getActivity() != null) {
-            if ((getActivity()).getApplication() instanceof IHomeRouter) {
-                ((IHomeRouter) (getActivity()).getApplication())
-                        .goToProductDetail(
-                                getActivity(),
-                                url);
+        Context context = getContext();
+        if (context != null) {
+            Uri uri = Uri.parse(url);
+            List<String> pathSegmentList = uri.getPathSegments();
+            if (pathSegmentList.size() > 1) {
+                String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
+                String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
+                Intent intent = RouteManager.getIntentInternal(context,
+                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_DOMAIN,
+                                shopDomain, productKey));
+                if (intent != null) {
+                    startActivity(intent);
+                } else {
+                    RouteManager.routeInternal(context, url);
+                }
+            } else {
+                RouteManager.routeInternal(context, url);
             }
         }
     }
@@ -1257,7 +1269,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().startActivity(getProductIntent(productId));
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId) {
         if (getContext() != null) {
             return RouteManager.getIntentInternal(getContext(),
                     UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));

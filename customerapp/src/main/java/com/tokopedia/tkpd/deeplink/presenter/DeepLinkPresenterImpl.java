@@ -15,9 +15,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -32,7 +32,6 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
@@ -565,11 +564,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         getProductUseCase.execute(response -> {
             viewListener.finishLoading();
             if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0) {
-                String productApplink = UriUtil.buildUri(ApplinkConst.PRODUCT_INFO,
+                String productApplink = UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL,
                         String.valueOf(response.getData().getBasic().getId()));
-                if (RouteManager.isSupportApplink(context, productApplink)) {
-                    RouteManager.route(context, productApplink);
-                } else {
+                try {
+                    context.startActivity(RouteManager.getIntentInternal(context, productApplink));
+                } catch (Exception e) {
                     prepareOpenWebView(uriData);
                 }
                 context.finish();
@@ -635,11 +634,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     uriData
             );
         } else {
-            context.startActivity(
-                    RouteManager.getIntentInternal(context,
-                            UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,
-                                    urlParser.getDepIDfromURI(context)))
-            );
+            RouteManager.routeInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,
+                            urlParser.getDepIDfromURI(context)));
         }
         context.finish();
     }
@@ -784,7 +781,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void sendAuthenticatedEvent(Uri uriData, String screenName){
+    public void sendAuthenticatedEvent(Uri uriData, String screenName) {
         try {
             URL obtainedURL = new URL(uriData.getScheme(), uriData.getHost(), uriData.getPath());
             if (obtainedURL != null)

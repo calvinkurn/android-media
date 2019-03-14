@@ -571,8 +571,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
         }
         context?.let {
-            startActivity(RouteManager.getIntentInternal(it,
-                UriUtil.buildUri(ApplinkConstInternal.Marketplace.IMAGE_REVIEW_GALLERY, productId.toString())))
+            RouteManager.routeInternal(it,
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.IMAGE_REVIEW_GALLERY, productId.toString()))
         }
     }
 
@@ -863,6 +863,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     goToNormalCheckout()
                 }
             }
+            REQUEST_CODE_EDIT_PRODUCT -> {
+                loadProductData(true)
+            }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
         }
@@ -902,7 +905,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             ToasterNormal.make(view, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
                 .setAction(getString(R.string.label_atc_open_cart)) { v ->
                     //TODO tracking
-
                     val intent = RouteManager.getIntent(this, ApplinkConst.CART)
                     startActivity(intent)
                 }

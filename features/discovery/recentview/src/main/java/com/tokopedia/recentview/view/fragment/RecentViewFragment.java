@@ -19,7 +19,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.recentview.R;
-import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.analytics.RecentViewTracking;
 import com.tokopedia.recentview.di.DaggerRecentViewComponent;
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter;

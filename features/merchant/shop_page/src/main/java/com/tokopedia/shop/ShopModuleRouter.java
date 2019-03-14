@@ -15,8 +15,6 @@ import java.util.Map;
 
 public interface ShopModuleRouter {
 
-    Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
-
     Fragment getKolPostShopFragment(String shopId, String createPostUrl);
 
     void goToEditShop(Context context);

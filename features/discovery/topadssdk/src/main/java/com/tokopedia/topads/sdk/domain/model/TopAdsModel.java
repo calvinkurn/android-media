@@ -35,7 +35,7 @@ public class TopAdsModel implements Parcelable {
 
     @SerializedName(KEY_HEADER)
     @Expose
-    private Header header = new Header();;
+    private Header header = new Header();
 
     @SerializedName(KEY_DATA)
     @Expose

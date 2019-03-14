@@ -40,8 +40,6 @@ public interface IHomeRouter {
 
     void goToWallet(Context context, String url);
 
-    void goToProductDetail(Context context, String productUrl);
-
     void goToTokoCash(String appLinkBalance, Activity activity);
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);

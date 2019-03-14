@@ -101,9 +101,8 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             public void onClick(View view) {
                 if(position < data.size()) {
                     UnifyTracking.eventFeedRecent(view.getContext(), data.get(position).getName());
-                    Intent intent = RouteManager.getIntentInternal(getContext(),
+                    RouteManager.routeInternal(getContext(),
                             UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, data.get(position).getId()));
-                    context.startActivity(intent);
                 }
             }
         };

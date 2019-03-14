@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.TextUtils
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -14,9 +13,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
-import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -29,7 +28,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var productId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
-    lateinit var remoteConfig : RemoteConfig
+    lateinit var remoteConfig: RemoteConfig
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -50,19 +49,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
         @JvmStatic
         fun createIntent(context: Context, shopDomain: String, productKey: String) = Intent(context, ProductDetailActivity::class.java).apply {
-            val bundle = Bundle().apply {
-                putString(PARAM_SHOP_DOMAIN, shopDomain)
-                putString(PARAM_PRODUCT_KEY, productKey)
-            }
-            putExtras(bundle)
+            putExtra(PARAM_SHOP_DOMAIN, shopDomain)
+            putExtra(PARAM_PRODUCT_KEY, productKey)
         }
 
         @JvmStatic
         fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
-            val bundle = Bundle().apply {
-                putString(PARAM_PRODUCT_ID, productId.toString())
-            }
-            putExtras(bundle)
+            putExtra(PARAM_PRODUCT_ID, productId.toString())
         }
     }
 
@@ -97,39 +90,44 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         val uri = intent.data
         val bundle = intent.extras
         if (uri != null) {
-            if (uri.scheme != ApplinkConstInternal.INTERNAL_SCHEME &&
-                uri.pathSegments.size >= 2 &&
-                uri.host != AFFILIATE_HOST){
-                val segmentUri: List<String> = uri.pathSegments
-                if (segmentUri.size > 1) {
-                    shopDomain = segmentUri[0]
-                    productKey = segmentUri[1]
+            if (uri.scheme == ApplinkConstInternal.INTERNAL_SCHEME) {
+                val segmentUri = uri.pathSegments
+                if (segmentUri.size == 2) {
+                    productId = uri.lastPathSegment
+                } else {
+                    shopDomain = segmentUri[segmentUri.size - 2]
+                    productKey = segmentUri[segmentUri.size - 1]
                 }
-            } else { // affiliate, tokopedia-internal
+            } else if (uri.pathSegments.size >= 2 && // might be tokopedia.com/
+                uri.host != AFFILIATE_HOST) {
+                val segmentUri = uri.pathSegments
+                if (segmentUri.size > 1) {
+                    shopDomain = segmentUri[segmentUri.size - 2]
+                    productKey = segmentUri[segmentUri.size - 1]
+                }
+            } else { // affiliate
                 productId = uri.lastPathSegment
             }
+            trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
+            trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
         }
-
-        if (bundle != null) {
-            bundle.let {
-                if(!TextUtils.isEmpty(it.getString(PARAM_PRODUCT_ID))) {
-                    productId = it.getString(PARAM_PRODUCT_ID)
-                }
-                if(!TextUtils.isEmpty(it.getString(PARAM_SHOP_DOMAIN))) {
-                    shopDomain = it.getString(PARAM_SHOP_DOMAIN)
-                }
-                if(!TextUtils.isEmpty(it.getString(PARAM_PRODUCT_KEY))) {
-                    productKey = it.getString(PARAM_PRODUCT_KEY)
-                }
-                if(!TextUtils.isEmpty(it.getString(PARAM_TRACKER_ATTRIBUTION))) {
-                    trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
-                }
-                if(!TextUtils.isEmpty(it.getString(PARAM_TRACKER_LIST_NAME))) {
-                    trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
-                }
+        bundle?.let {
+            if (productId.isNullOrEmpty()) {
+                productId = it.getString(PARAM_PRODUCT_ID)
+            }
+            if (shopDomain.isNullOrEmpty()) {
+                shopDomain = it.getString(PARAM_SHOP_DOMAIN)
+            }
+            if (productKey.isNullOrEmpty()) {
+                productKey = it.getString(PARAM_PRODUCT_KEY)
+            }
+            if (trackerAttribution.isNullOrEmpty()) {
+                trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
+            }
+            if (trackerListName.isNullOrEmpty()) {
+                trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
             }
         }
-
         if (uri != null && uri.host == AFFILIATE_HOST) {
             isFromAffiliate = true
         } else {
@@ -137,8 +135,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(this)
-        if(remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL)){
-            if(application is ProductDetailRouter){
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL)) {
+            if (application is ProductDetailRouter) {
                 (application as ProductDetailRouter).goToOldProductDetailPage(this, productId, shopDomain, productKey, trackerAttribution, trackerListName)
                 finish()
             }

@@ -203,8 +203,8 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     private boolean share() {
 
         Bundle bundle = this.bundleData;
-        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
-        LinkerData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
+        boolean isAddingProduct = bundle.getBoolean(IS_ADDING_PRODUCT);
+        LinkerData shareData = bundle.getParcelable(SHARE_DATA);
 
         if (isAddingProduct) {
             ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, true);

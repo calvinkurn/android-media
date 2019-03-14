@@ -324,7 +324,7 @@ public class DeepLinkChecker {
             intent.putExtras(bundle);
         } else {
             intent = RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,departmentId));
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
         }
         context.startActivity(intent);
     }
@@ -353,33 +353,25 @@ public class DeepLinkChecker {
 
     public static void openCategory(String url, Context context) {
         String departmentId = getLinkSegment(url).get(1);
-        Intent intent = RouteManager.getIntentInternal(context,
+        RouteManager.routeInternal(context,
                 UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
-        context.startActivity(intent);
     }
 
     public static void openProduct(String url, Context context) {
         if (context != null) {
-            Bundle bundle = new Bundle();
-            if (getLinkSegment(url).size() > 1) {
-                bundle.putString("shop_domain", getLinkSegment(url).get(0));
-                bundle.putString("product_key", getLinkSegment(url).get(1));
+            Uri uri = Uri.parse(url);
+            List<String> pathSegmentList = uri.getPathSegments();
+            if (pathSegmentList.size() > 1) {
+                String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
+                String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
+                RouteManager.routeInternal(context,
+                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_DOMAIN,
+                                shopDomain, productKey));
+            } else {
+                String productId = uri.getLastPathSegment();
+                RouteManager.routeInternal(context,
+                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
             }
-            bundle.putString("url", url);
-            Intent intent = RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, ""));
-            intent.putExtras(bundle);
-            intent.setData(Uri.parse(url));
-            context.startActivity(intent);
-        }
-    }
-
-    private Intent getProductIntent(String productId, Context context){
-        if (context != null) {
-            return RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
-        } else {
-            return null;
         }
     }
 

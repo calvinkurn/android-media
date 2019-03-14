@@ -1,14 +1,15 @@
-package com.tokopedia.applink.internal.marketplace;
+package com.tokopedia.applink.internal;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_MARKETPLACE;
 
 /**
  * This class is used to store deeplink "tokopedia-android-internal://marketplace".
  */
-public class ApplinkConstInternalMarketplace {
+class ApplinkConstInternalMarketplace {
 
     // ProductDetailActivity
     public static final String PRODUCT_DETAIL = INTERNAL_MARKETPLACE + "/product/{id}/";
+    public static final String PRODUCT_DETAIL_DOMAIN = INTERNAL_MARKETPLACE + "/product/{shop_domain}/{product_key}/";
 
     // ProductEditActivity
     public static final String PRODUCT_EDIT = INTERNAL_MARKETPLACE + "/product/{id}/edit";
