@@ -45,7 +45,7 @@ public interface Constants {
     }
 
     interface URLs{
-        String KYC_UPLOAD_IMAGE = "https://goalapi-staging.tokopedia.com/api/v1/kyc/upload_document";
+        String KYC_UPLOAD_IMAGE = "https://goal.tokopedia.com/api/v1/ws/kyc/upload_document";
         String KYC_CONFIRM = "https://goal.tokopedia.com/api/v1/kyc/confirm";
         String OVO_TNC_PAGE = "https://www.ovo.id/tnc";
     }
