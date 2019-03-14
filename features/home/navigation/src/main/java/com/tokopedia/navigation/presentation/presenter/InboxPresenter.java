@@ -7,9 +7,12 @@ import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.data.entity.RecomendationEntity;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.GetRecomendationUseCase;
+import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber;
 import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -51,7 +54,7 @@ public class InboxPresenter extends BaseDaggerPresenter{
         if(this.inboxView == null)
             return;
         getRecomendationUseCase.execute(getRecomendationUseCase.getRecomParams(page),
-                new Subscriber<RecomendationEntity.RecomendationData>() {
+                new Subscriber<List<Recomendation>>() {
             @Override
             public void onCompleted() {
 
@@ -63,8 +66,8 @@ public class InboxPresenter extends BaseDaggerPresenter{
             }
 
             @Override
-            public void onNext(RecomendationEntity.RecomendationData recomendationData) {
-                inboxView.onRenderRecomInbox(recomendationData);
+            public void onNext(List<Recomendation> recomendations) {
+                inboxView.onRenderRecomInbox(recomendations);
             }
         });
     }
