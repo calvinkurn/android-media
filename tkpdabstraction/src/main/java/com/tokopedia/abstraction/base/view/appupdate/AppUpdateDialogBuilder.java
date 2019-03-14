@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 
 /**
  * Created by okasurya on 7/26/17.
@@ -40,11 +44,44 @@ public class AppUpdateDialogBuilder {
             Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
             positiveButton.setOnClickListener(v -> {
-                activity.startActivity(
-                        new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink()))
-                );
-
-                if (!detail.isForceUpdate()) dialog.dismiss();
+                negativeButton.setEnabled(false);
+                positiveButton.setEnabled(false);
+                if (detail.isInAppUpdateEnabled() &&
+                        android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (detail.isForceUpdate()) {
+                        AppUpdateManagerWrapper.checkAndDoImmediateUpdate(activity, () -> {
+                            /* on Error */
+                            goToPlayStore();
+                            return null;
+                        }, /* onFinished */ () -> {
+                            negativeButton.setEnabled(true);
+                            positiveButton.setEnabled(true);
+                            return null;
+                        });
+                    } else { // flexible update
+                        AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, onProgressMessage -> {
+                            // if in progress
+                            ToasterNormal.show(activity, onProgressMessage);
+                            return null;
+                        }, () -> {
+                            // if flexible update fail or cannot be operated
+                            goToPlayStore();
+                            return null;
+                        }, () -> {
+                            // action after do the checking, close the dialog
+                            dialog.dismiss();
+                            return null;
+                        });
+                    }
+                } else {
+                    goToPlayStore();
+                    if (detail.isForceUpdate()) {
+                        negativeButton.setEnabled(true);
+                        positiveButton.setEnabled(true);
+                    } else {
+                        dialog.dismiss();
+                    }
+                }
                 listener.onPositiveButtonClicked(detail);
             });
 
@@ -56,6 +93,12 @@ public class AppUpdateDialogBuilder {
         });
 
         return alertDialog;
+    }
+
+    private void goToPlayStore() {
+        activity.startActivity(
+                new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink()))
+        );
     }
 
     public interface Listener {

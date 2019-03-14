@@ -2,7 +2,6 @@ package com.tokopedia.shop.page.view.presenter
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.gm.common.domain.interactor.DeleteFeatureProductListCacheUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -19,6 +18,8 @@ import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
 import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -37,7 +38,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase,
             private val deleteReputationSpeedDailyUseCase: DeleteReputationSpeedDailyCacheUseCase,
             private val getWhitelistUseCase: GetWhitelistUseCase,
-            private val userSession: UserSession) : BaseDaggerPresenter<ShopPageView>() {
+            private val userSession: UserSessionInterface) : BaseDaggerPresenter<ShopPageView>() {
 
     fun isMyShop(shopId: String) = (userSession.shopId == shopId)
 

@@ -38,6 +38,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_SELLER_DETAILS;
+
 public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         MerchantSaldoPriorityContract.View {
 
@@ -75,7 +77,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saldo_prioritas, container, false);
         Bundle bundle = getArguments();
-        sellerDetails = bundle != null ? bundle.getParcelable("seller_details") : null;
+        sellerDetails = bundle != null ? bundle.getParcelable(BUNDLE_PARAM_SELLER_DETAILS) : null;
         initViews(view);
         return view;
     }

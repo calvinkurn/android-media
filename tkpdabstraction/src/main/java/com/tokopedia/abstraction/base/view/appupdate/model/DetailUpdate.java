@@ -11,9 +11,14 @@ public class DetailUpdate {
     private String updateTitle;
     private String updateMessage;
     private String updateLink;
+    private boolean inAppUpdateEnabled;
 
     public boolean isNeedUpdate() {
         return isNeedUpdate;
+    }
+
+    public boolean isInAppUpdateEnabled() {
+        return inAppUpdateEnabled;
     }
 
     public void setNeedUpdate(boolean needUpdate) {
@@ -58,5 +63,9 @@ public class DetailUpdate {
 
     public void setUpdateLink(String updateLink) {
         this.updateLink = updateLink;
+    }
+
+    public void setInAppUpdateEnabled(boolean inAppUpdateEnabled) {
+        this.inAppUpdateEnabled = inAppUpdateEnabled;
     }
 }

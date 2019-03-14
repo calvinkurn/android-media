@@ -42,6 +42,12 @@ public class ScreenTrackingBuilder {
         return this;
     }
 
+    public ScreenTrackingBuilder setDeepLinkUrl(String deepLinkUrlStr) {
+        if (!TextUtils.isEmpty(deepLinkUrlStr))
+            customDimension.put(Authenticated.KEY_DEEPLINK_URL, deepLinkUrlStr);
+        return this;
+    }
+
     public void execute(Context context) {
         if (!TextUtils.isEmpty(screenName)) {
             ScreenTracking.eventAuthScreen(context, customDimension, screenName);
