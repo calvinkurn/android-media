@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.view;
 
+import com.tokopedia.navigation.data.entity.RecomendationEntity;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
 /**
@@ -9,4 +10,5 @@ public interface InboxView extends LoadDataView {
 
     void onRenderNotifInbox(NotificationsModel entity);
 
+    void onRenderRecomInbox(RecomendationEntity.RecomendationData recomendationData);
 }

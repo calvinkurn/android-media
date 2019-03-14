@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.data.entity.RecomendationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
@@ -218,6 +219,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         emptyLayout.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         adapter.updateValue(entity);
+    }
+
+    @Override
+    public void onRenderRecomInbox(RecomendationEntity.RecomendationData recomendationData) {
+
     }
 
     @Override
