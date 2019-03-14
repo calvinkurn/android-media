@@ -1,26 +1,23 @@
 package com.tokopedia.digital.product.view.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalUssdFragment;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DigitalUssdActivity extends BasePresenterActivity implements DigitalUssdFragment.ActionListener {
+public class DigitalUssdActivity extends BaseSimpleActivity implements DigitalUssdFragment.ActionListener {
 
     private String titleToolbar;
     public static final String EXTRA_BALANCE_PASS_DATA = "EXTRA_BALANCE_PASS_DATA";
@@ -40,12 +37,12 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
     private List<Validation> validationList;
     private List<Operator> selectedOperatorList;
 
-    public static Intent newInstance(Context context, PulsaBalance passData, Operator passOperatorData ,
+    public static Intent newInstance(Context context, PulsaBalance passData, Operator passOperatorData,
                                      List<Validation> validationListData, String categoryId,
                                      String categoryName, int selectedSim, List<Operator> selectedOperatorList) {
 
         Intent intent = new Intent(context, DigitalUssdActivity.class);
-        intent.putExtra(EXTRA_OPERATOR_PASS_DATA,  passOperatorData);
+        intent.putExtra(EXTRA_OPERATOR_PASS_DATA, passOperatorData);
         intent.putExtra(EXTRA_BALANCE_PASS_DATA, passData);
         intent.putExtra(EXTRA_STATE_CATEGORY_ID, categoryId);
         intent.putExtra(EXTRA_STATE_CATEGORY_NAME, categoryName);
@@ -59,59 +56,22 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
 
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
+    protected void onCreate(Bundle savedInstanceState) {
+        Bundle extras = getIntent().getExtras();
         this.selectedOperator = extras.getParcelable(EXTRA_OPERATOR_PASS_DATA);
         this.validationList = extras.getParcelableArrayList(EXTRA_VALIDATION_LIST_PASS_DATA);
         this.pulsaBalance = extras.getParcelable(EXTRA_BALANCE_PASS_DATA);
-        this.mCategoryId=extras.getString(EXTRA_STATE_CATEGORY_ID);
-        this.mCategoryName=extras.getString(EXTRA_STATE_CATEGORY_NAME);
+        this.mCategoryId = extras.getString(EXTRA_STATE_CATEGORY_ID);
+        this.mCategoryName = extras.getString(EXTRA_STATE_CATEGORY_NAME);
         this.selectedSimIndex = extras.getInt(ARG_PARAM_EXTRA_SIM_INDEX_DATA, 0);
         this.selectedOperatorList = extras.getParcelableArrayList(EXTRA_STATE_SELECTED_OPERATOR_LIST_DATA);
 
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_digital_ussd;
-    }
-
-    @Override
-    protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof DigitalUssdFragment))
-            getFragmentManager().beginTransaction().replace(R.id.container,
-                    DigitalUssdFragment.newInstance(pulsaBalance, selectedOperator,validationList,mCategoryId,mCategoryName, selectedSimIndex,selectedOperatorList)).commit();
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {
         return super.onCreateView(name, context, attrs);
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -143,4 +103,8 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
     }
 
+    @Override
+    protected android.support.v4.app.Fragment getNewFragment() {
+        return DigitalUssdFragment.newInstance(pulsaBalance, selectedOperator, validationList, mCategoryId, mCategoryName, selectedSimIndex, selectedOperatorList);
+    }
 }

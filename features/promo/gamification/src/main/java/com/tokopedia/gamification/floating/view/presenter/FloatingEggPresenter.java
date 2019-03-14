@@ -2,9 +2,13 @@ package com.tokopedia.gamification.floating.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.gamification.domain.GetTokenTokopointsUseCase;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
-import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import javax.inject.Inject;
 
@@ -17,11 +21,11 @@ import rx.Subscriber;
 public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContract.View>
         implements FloatingEggContract.Presenter {
 
-    private GetTokenTokopointsUseCase getTokenTokopointsUseCase;
+    private GraphqlUseCase getTokenTokopointsUseCase;
     private UserSession userSession;
 
     @Inject
-    public FloatingEggPresenter(GetTokenTokopointsUseCase getTokenTokopointsUseCase,
+    public FloatingEggPresenter(GraphqlUseCase getTokenTokopointsUseCase,
                                 UserSession userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.userSession = userSession;
@@ -29,7 +33,11 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
 
     @Override
     public void getGetTokenTokopoints() {
-        getTokenTokopointsUseCase.execute(null, new Subscriber<TokenData>() {
+        getTokenTokopointsUseCase.clearRequest();
+        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.token_tokopoint_query),
+                ResponseTokenTokopointEntity.class, false);
+        getTokenTokopointsUseCase.addRequest(tokenTokopointsRequest);
+        getTokenTokopointsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -38,11 +46,15 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
             @Override
             public void onError(Throwable e) {
                 getView().onErrorGetToken(e);
+
             }
 
             @Override
-            public void onNext(TokenData tokenData) {
-                getView().onSuccessGetToken(tokenData);
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ResponseTokenTokopointEntity responseTokenTokopointEntity = graphqlResponse.getData(ResponseTokenTokopointEntity.class);
+                if (responseTokenTokopointEntity != null && responseTokenTokopointEntity.getTokopointsToken() != null)
+                    getView().onSuccessGetToken(responseTokenTokopointEntity.getTokopointsToken());
+
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -125,13 +126,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    context.startActivity(((UnifiedOrderListRouter) context.getApplicationContext())
-                            .getWebviewActivityWithIntent(context,
-                            URLEncoder.encode(uri, "UTF-8")));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                    ((UnifiedOrderListRouter) context.getApplicationContext())
+                            .actionOpenGeneralWebView((Activity)context, uri);
             }
         };
     }

@@ -17,4 +17,15 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Button.Submit.Green.Rounded">
+        <item name="android:background">@drawable/gf_bg_button_green_rounded</item>
+    </style>
+
+
+    <style name="Button.Submit.GreyRounded">
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:textColor">@color/text_submit_button</item>
+        <item name="android:background">@drawable/gf_bg_button_grey_rounded</item>
+    </style>
+
 </resources>

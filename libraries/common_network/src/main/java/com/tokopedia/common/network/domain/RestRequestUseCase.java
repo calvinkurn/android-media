@@ -1,17 +1,22 @@
 package com.tokopedia.common.network.domain;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.common.network.BuildConfig;
 import com.tokopedia.common.network.data.ObservableFactory;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Rest api call UseCase
@@ -25,7 +30,31 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
 
     @Override
     public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
-        return ObservableFactory.create(buildRequest(requestParams));
+        return ObservableFactory.create(buildRequest(requestParams)).map(checkForNull());
+    }
+
+    private Func1<Map<Type, RestResponse>, Map<Type, RestResponse>> checkForNull() {
+        return responseMap -> {
+            for (Map.Entry<Type, RestResponse> pair : responseMap.entrySet()) {
+                NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
+                    String message = String.format("Found %s in %s | shouldThrowException: %s",
+                            errorMessage,
+                            RestRequestUseCase.class.getSimpleName(),
+                            shouldThrowException()
+                    );
+                    ContainNullException exception = new ContainNullException(message);
+                    if (shouldThrowException()) {
+                        if (!BuildConfig.DEBUG) {
+                            Crashlytics.logException(exception);
+                        }
+                        throw exception;
+                    }
+                    return Unit.INSTANCE;
+                });
+
+            }
+            return responseMap;
+        };
     }
 
     /**
@@ -83,4 +112,13 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
      */
     protected abstract List<RestRequest> buildRequest(RequestParams requestParams);
 
+    /**
+     * A function to indicate whether the use case needs to throw exception when null is found in the response
+     *
+     * Please override this function and return `false`
+     * if you want the use case to _NOT_ throw exception
+     **/
+    protected boolean shouldThrowException() {
+        return false;
+    }
 }

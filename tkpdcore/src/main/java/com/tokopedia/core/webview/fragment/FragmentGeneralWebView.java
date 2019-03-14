@@ -30,7 +30,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -41,6 +40,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core2.R;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.URLDecoder;
 
@@ -55,6 +56,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_OVERRIDE_URL = "allow_override";
     public static final String EXTRA_SHOW_TOOLBAR = "show_toolbar";
+    public static final String EXTRA_NEED_LOGIN = "need_login";
     private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
     private static final String SEAMLESS = "seamless";
     private static final String LOGIN_TYPE = "login_type";
@@ -62,12 +64,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     private static final int LOGIN_GPLUS = 123453;
+    private static final int REQUEST_CODE_LOGIN = 123321;
     private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
     private String url;
     private boolean showToolbar;
+    private boolean needLogin;
     private ValueCallback<Uri> callbackBeforeL;
     public ValueCallback<Uri[]> callbackAfterL;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -81,21 +85,23 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     /**
-     * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean, boolean)} ()}
+     * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean, boolean, boolean)}
+     * ()}
      * instead.
      */
     @Deprecated
     public static FragmentGeneralWebView createInstance(String url) {
-        return createInstance(url, false, true);
+        return createInstance(url, false, true, false);
     }
 
     public static FragmentGeneralWebView createInstance(String url, boolean allowOverride,
-                                                        boolean showToolbar) {
+                                                        boolean showToolbar, boolean needLogin) {
         FragmentGeneralWebView fragment = new FragmentGeneralWebView();
         Bundle args = new Bundle();
         args.putString(EXTRA_URL, url);
         args.putBoolean(EXTRA_OVERRIDE_URL, allowOverride);
         args.putBoolean(EXTRA_SHOW_TOOLBAR, showToolbar);
+        args.putBoolean(EXTRA_NEED_LOGIN, needLogin);
         fragment.setArguments(args);
         return fragment;
     }
@@ -105,7 +111,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             url = getArguments().getString(EXTRA_URL);
+            needLogin = getArguments().getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = getArguments().getBoolean(EXTRA_SHOW_TOOLBAR, true);
+        } else if (savedInstanceState != null) {
+            url = savedInstanceState.getString(EXTRA_URL);
+            needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
+            showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
     }
 
@@ -139,6 +150,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         } else if (!showToolbar && getActivity() != null) {
             getActivity().getActionBar().hide();
         }
+
+        if (getActivity() != null) {
+            UserSessionInterface userSession = new UserSession(getActivity().getApplicationContext());
+            if (needLogin && !userSession.isLoggedIn()) {
+                startActivityForResult(((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
+            }
+        }
     }
 
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
@@ -157,6 +176,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         WebViewGeneral.getSettings().setDomStorageEnabled(true);
         WebViewGeneral.setWebViewClient(new MyWebClient());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            WebViewGeneral.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        }
         WebViewGeneral.setWebChromeClient(new WebChromeClient() {
             //For Android 3.0+
             public void openFileChooser(ValueCallback<Uri> uploadMsg) {
@@ -189,7 +211,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             //For Android 5.0+
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
-                    WebChromeClient.FileChooserParams fileChooserParams) {
+                    FileChooserParams fileChooserParams) {
                 if (callbackAfterL != null) {
                     callbackAfterL.onReceiveValue(null);
                 }
@@ -428,6 +450,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 callbackBeforeL = null;
             }
         }
+
         if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = WebViewGeneral.copyBackForwardList();
@@ -442,6 +465,19 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             else {
                 WebViewGeneral.loadAuthUrl(historyUrl);
             }
+        } else if (requestCode == REQUEST_CODE_LOGIN
+                && resultCode == Activity.RESULT_OK
+                && WebViewGeneral != null
+                && !TextUtils.isEmpty(url)
+                && getActivity() != null) {
+            WebViewGeneral.loadAuthUrl(!url.contains(SEAMLESS)
+                    ? URLGenerator.generateURLSessionLogin(url, getActivity()) : url);
+        } else if (requestCode == REQUEST_CODE_LOGIN
+                && getActivity() != null
+                && !getActivity().isTaskRoot()) {
+            getActivity().finish();
+        } else if (requestCode == REQUEST_CODE_LOGIN) {
+            openHomePage();
         }
     }
 
@@ -544,4 +580,21 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_URL, url);
+        outState.putBoolean(EXTRA_NEED_LOGIN, needLogin);
+        outState.putBoolean(EXTRA_SHOW_TOOLBAR, showToolbar);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            url = savedInstanceState.getString(EXTRA_URL);
+            needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
+            showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
+        }
+    }
 }

@@ -13,10 +13,12 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Common use-case class for all graphql network response
@@ -76,15 +78,18 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
     }
 
     public void clearCache() {
-        try {
-            initCacheManager();
-            if (mRequests != null && !mRequests.isEmpty() && mCacheStrategy != null) {
-                mCacheManager.delete(mFingerprintManager.generateFingerPrint(mRequests.toString(),
-                        mCacheStrategy.isSessionIncluded()));
+        Observable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                initCacheManager();
+                if (mRequests != null && !mRequests.isEmpty() && mCacheStrategy != null) {
+                    mCacheManager.delete(mFingerprintManager.generateFingerPrint(mRequests.toString(),
+                            mCacheStrategy.isSessionIncluded()));
+                    return true;
+                }
+                return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }).subscribeOn(Schedulers.io()).subscribe();
     }
 
     private void initCacheManager() {
@@ -101,7 +106,6 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         if (mRequests == null || mRequests.isEmpty()) {
             throw new RuntimeException("Please set valid request parameter before executing the use-case");
         }
-
         return graphqlRepository.getResponse(mRequests, mCacheStrategy);
     }
 }

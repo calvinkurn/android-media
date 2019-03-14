@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author  by alvarisi on 6/8/2016.
  */
-public class Campaign extends BaseGTMModel {
+public class Campaign {
     private Map<String, Object> campaignMap = new HashMap<>();
 
     public Campaign() {

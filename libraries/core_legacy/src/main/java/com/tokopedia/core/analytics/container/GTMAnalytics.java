@@ -3,11 +3,11 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.tkpd.library.utils.legacy.CommonUtils;
@@ -21,22 +21,24 @@ import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
+
 /**
  * formerly {@link GTMContainer}
  */
 public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
+    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
 
     // have status that describe pending.
 
@@ -49,6 +51,11 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneral(value);
     }
 
+    @Override
+    public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+        clearEnhanceEcommerce();
+        pushGeneral(value);
+    }
 
     public TagManager getTagManager() {
         return TagManager.getInstance(getContext());
@@ -62,6 +69,21 @@ public class GTMAnalytics extends ContextAnalytics {
         } catch (Exception e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        try {
+            Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+            TagManager tagManager = getTagManager();
+            PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
+                    bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
+
+            pResult.setResultCallback(ContainerHolderSingleton::setContainerHolder, 2, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            eventError(getContext().getClass().toString(), e.toString());
         }
     }
 
@@ -144,83 +166,59 @@ public class GTMAnalytics extends ContextAnalytics {
                 "currencyCode", null, "actionField", null, "ecommerce", null));
     }
 
-    public GTMAnalytics sendScreenAuthenticated(String screenName) {
-
-        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
-
-        Authenticated authEvent = new Authenticated();
-        authEvent.setUserFullName(sessionHandler.getLoginName());
-        authEvent.setUserID(sessionHandler.getGTMLoginID());
-        authEvent.setShopID(sessionHandler.getShopID());
-        authEvent.setShopId(sessionHandler.getShopID());
-        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
-
-        CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-
-        eventAuthenticate(authEvent);
+    public void sendScreenAuthenticated(String screenName) {
+        eventAuthenticate(null);
         sendScreen(screenName);
-
-        return this;
     }
 
-    public GTMAnalytics sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
-        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
-
-        Authenticated authEvent = new Authenticated();
-        authEvent.setUserFullName(sessionHandler.getLoginName());
-        authEvent.setUserID(sessionHandler.getGTMLoginID());
-        authEvent.setShopId(shopID);
-        authEvent.setShopType(shopType);
-        authEvent.setPageType(pageType);
-        authEvent.setProductId(productId);
-        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
-
-        CommonUtils.dumper("GAv4 appdata authenticated " + new JSONObject(authEvent.getAuthDataLayar()).toString());
-
-        eventAuthenticate(authEvent);
-
-        return this;
+    public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+        eventAuthenticate(customDimension);
+        sendScreen(screenName, customDimension);
     }
 
-    public GTMAnalytics eventAuthenticate(Authenticated authenticated) {
-        CommonUtils.dumper("GAv4 send authenticated");
+    public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+        Map<String, String> customDimension = new HashMap<>();
+        customDimension.put(Authenticated.KEY_SHOP_ID_SELLER, shopID);
+        customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);
+        customDimension.put(Authenticated.KEY_SHOP_TYPE, shopType);
+        customDimension.put(Authenticated.KEY_PRODUCT_ID, productId);
+        eventAuthenticate(customDimension);
+        sendScreen(screenName, customDimension);
+    }
 
+    public void eventAuthenticate() {
+        eventAuthenticate(null);
+    }
+
+    public void eventAuthenticate(Map<String, String> customDimension) {
+        String afUniqueId = getAfUniqueId(context);
         final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
-
-        authenticated.setAdsId(sessionHandler.getAdsId());
-
-        authenticated.setAndroidId(sessionHandler.getAndroidId());
-
-
-        if (TextUtils.isEmpty(authenticated.getcIntel())) {
-            pushEvent( "authenticated", DataLayer.mapOf(
-                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
-                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
-                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
-                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
-                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId(),
-                    Authenticated.GA_CLIENT_ID, getClientIDString()
-            ));
-
-        } else {
-            pushEvent( "authenticated", DataLayer.mapOf(
-                    Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
-                    Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                    Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
-                    Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed(),
-                    Authenticated.KEY_PAGE_TYPE, authenticated.getPageType(),
-                    Authenticated.KEY_PRODUCT_ID, authenticated.getProductId(),
-                    Authenticated.KEY_COMPETITOR_INTELLIGENCE, authenticated.getcIntel(),
-                    Authenticated.ANDROID_ID, authenticated.getAndroidId(),
-                    Authenticated.ADS_ID, authenticated.getAdsId(),
-                    Authenticated.GA_CLIENT_ID, getClientIDString()
-            ));
+        Map<String, Object> map = DataLayer.mapOf(
+                Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
+                        Authenticated.KEY_USER_SELLER, (sessionHandler.isUserHasShop() ? 1 : 0),
+                        Authenticated.KEY_USER_FULLNAME, sessionHandler.getLoginName(),
+                        Authenticated.KEY_USER_ID, sessionHandler.getGTMLoginID(),
+                        Authenticated.KEY_SHOP_ID, sessionHandler.getShopID(),
+                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none"),
+                        Authenticated.KEY_USER_EMAIL, sessionHandler.getEmail()
+                ),
+                Authenticated.ANDROID_ID, sessionHandler.getAndroidId(),
+                Authenticated.ADS_ID, sessionHandler.getAdsId(),
+                Authenticated.GA_CLIENT_ID, getClientIDString()
+        );
+        if (customDimension != null && customDimension.size() > 0) {
+            map.putAll(customDimension);
         }
+        pushEvent(Authenticated.KEY_CD_NAME, map);
+    }
 
-        return this;
+    public void sendScreen(String screenName, Map<String, String> customDimension) {
+        Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
+        Map<String, Object> map = DataLayer.mapOf("screenName", screenName);
+        if (customDimension != null && customDimension.size() > 0) {
+            map.putAll(customDimension);
+        }
+        pushEvent("openScreen", map);
     }
 
     public GTMAnalytics eventAddtoCart(GTMCart cart) {
@@ -406,7 +404,8 @@ public class GTMAnalytics extends ContextAnalytics {
                         "eventLabel", null,
                         "products", null,
                         "promotions", null,
-                        "ecommerce", null
+                        "ecommerce", null,
+                        "currentSite", null
                 )
         );
     }

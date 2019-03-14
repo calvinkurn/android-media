@@ -21,6 +21,7 @@ class CodPresenter @Inject constructor(val useCase: CodConfirmUseCase) : CodCont
                 mView?.hideLoading()
                 val response = objects.getData<CodResponse>(CodResponse::class.java)
                 response.checkoutCod?.data?.data?.thanksApplink?.let {
+                    mView?.sendEventEECod()
                     mView?.navigateToThankYouPage(it)
                 }
             }

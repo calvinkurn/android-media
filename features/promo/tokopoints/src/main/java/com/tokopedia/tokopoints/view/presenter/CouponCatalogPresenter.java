@@ -87,7 +87,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, item.getId());
         variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 0);   //Never be a gift
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_validate_redeem),
-                ValidateCouponBaseEntity.class, variables);
+                ValidateCouponBaseEntity.class, variables, false);
         mValidateCouponUseCase.clearRequest();
         mValidateCouponUseCase.addRequest(graphqlRequest);
         mValidateCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -132,7 +132,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_tokopoint_apply_coupon),
                 com.tokopedia.tokopoints.view.model.ApplyCouponBaseEntity.class,
-                variables);
+                variables, false);
         mSaveCouponUseCase.clearRequest();
         mSaveCouponUseCase.addRequest(request);
         mSaveCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -162,7 +162,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_tokopoint_redeem_coupon),
                 RedeemCouponBaseEntity.class,
-                variables);
+                variables, false);
         mRedeemCouponUseCase.clearRequest();
         mRedeemCouponUseCase.addRequest(request);
         mRedeemCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -212,12 +212,12 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_coupon_detail),
                 CouponDetailOuter.class,
-                variables);
+                variables, false);
         mGetCouponDetail.clearRequest();
         mGetCouponDetail.addRequest(request);
 
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_current_points),
-                TokoPointDetailEntity.class);
+                TokoPointDetailEntity.class, false);
         mGetCouponDetail.addRequest(graphqlRequestPoints);
         mGetCouponDetail.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -250,12 +250,12 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_catalog_detail),
                 CatalogDetailOuter.class,
-                variables);
+                variables, false);
         mGetCouponDetail.clearRequest();
         mGetCouponDetail.addRequest(request);
 
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_current_points),
-                TokoPointDetailEntity.class);
+                TokoPointDetailEntity.class, false);
         mGetCouponDetail.addRequest(graphqlRequestPoints);
 
         mGetCouponDetail.execute(new Subscriber<GraphqlResponse>() {
@@ -267,15 +267,21 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
             @Override
             public void onError(Throwable e) {
                 //NA
-                getView().hideLoader();
+                if (getView() != null) {
+                    getView().hideLoader();
+                    getView().onFinishRendering();
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-                getView().hideLoader();
-                CatalogDetailOuter data = response.getData(CatalogDetailOuter.class);
-                getView().populateDetail(data.getDetail());
-                handlePointQuery(response.getData(TokoPointDetailEntity.class));
+                if (getView() != null) {
+                    getView().hideLoader();
+                    CatalogDetailOuter data = response.getData(CatalogDetailOuter.class);
+                    getView().populateDetail(data.getDetail());
+                    handlePointQuery(response.getData(TokoPointDetailEntity.class));
+                    getView().onFinishRendering();
+                }
             }
         });
     }
@@ -288,7 +294,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_refetch_real_code),
                 CouponDetailOuter.class,
-                variables);
+                variables, false);
         mGetCouponDetail.clearRequest();
         mGetCouponDetail.addRequest(request);
 
@@ -319,7 +325,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_catalog_status),
                 CatalogStatusOuter.class,
-                variables);
+                variables, false);
         mRefreshCatalogStatus.clearRequest();
         mRefreshCatalogStatus.addRequest(request);
         mRefreshCatalogStatus.execute(new Subscriber<GraphqlResponse>() {
@@ -378,7 +384,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_pre_validate_redeem),
                 PreValidateRedeemBase.class,
-                variables);
+                variables, false);
         mStartSendGift.clearRequest();
         mStartSendGift.addRequest(request);
         mStartSendGift.execute(new Subscriber<GraphqlResponse>() {
@@ -430,7 +436,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_swipe_coupon),
                 CouponSwipeUpdateOuter.class,
-                variables);
+                variables, false);
         mStartSendGift.clearRequest();
         mStartSendGift.addRequest(request);
         mStartSendGift.execute(new Subscriber<GraphqlResponse>() {

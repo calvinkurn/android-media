@@ -61,15 +61,13 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             val intent = getCallingIntent(context, "", shopName, LABEL_SELLER, toShopId, ROLE_SELLER,
                     MODE_DEFAULT_GET_CHAT, "", avatar)
             intent.putExtra(ApplinkConst.Chat.SOURCE, source)
-            val toShopIdInt = if(toShopId.isBlank()) 0 else toShopId.toInt()
-            intent.putExtra(ApplinkConst.Chat.TO_SHOP_ID, toShopIdInt)
+            intent.putExtra(ApplinkConst.Chat.TO_SHOP_ID, toShopId)
             return intent
         }
 
         @JvmStatic
         fun getAskSellerIntent(context: Context, toShopId: String, shopName: String,
-                               customSubject: String, customMessage: String, source: String,
-                               avatar: String): Intent {
+                               customMessage: String, source: String, avatar: String): Intent {
             val intent = getAskSellerIntent(context, toShopId, shopName, source,
                     avatar)
             val bundle = intent.extras
@@ -85,15 +83,13 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             val intent = getCallingIntent(context, "", userName, LABEL_USER, userId, ROLE_USER,
                     MODE_DEFAULT_GET_CHAT, "", avatar)
             intent.putExtra(ApplinkConst.Chat.SOURCE, source)
-            val toUserIdInt = if(userId.isBlank()) 0 else userId.toInt()
-            intent.putExtra(ApplinkConst.Chat.TO_USER_ID, toUserIdInt)
+            intent.putExtra(ApplinkConst.Chat.TO_USER_ID, userId)
             return intent
         }
 
         @JvmStatic
         fun getAskBuyerIntent(context: Context, toUserId: String, customerName: String,
-                              customSubject: String, customMessage: String, source: String,
-                              avatar: String): Intent {
+                              customMessage: String, source: String, avatar: String): Intent {
             val intent = getAskUserIntent(context, toUserId, customerName, source, avatar)
             val bundle = intent.extras
             bundle.putString(ApplinkConst.Chat.CUSTOM_MESSAGE, customMessage)
@@ -118,6 +114,46 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             return Intent(context, TopChatRoomActivity::class.java)
                     .setData(uri.build())
                     .putExtras(extras)
+        }
+
+        @JvmStatic
+        @DeepLink(ApplinkConst.TOPCHAT_ASKSELLER)
+        fun getAskSellerIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            val toShopId = extras.getString(ApplinkConst.Chat.TO_SHOP_ID,"0")
+            val shopName = extras.getString(ApplinkConst.Chat.OPPONENT_NAME,"")
+            val customMessage = extras.getString(ApplinkConst.Chat.CUSTOM_MESSAGE,"")
+            val avatar = extras.getString(ApplinkConst.Chat.AVATAR,"")
+            val source = extras.getString(ApplinkConst.Chat.SOURCE,"deeplink")
+
+            val intent = getAskSellerIntent(context,
+                    toShopId,
+                    shopName,
+                    customMessage,
+                    source,
+                    avatar
+                    )
+            return intent
+        }
+
+        @JvmStatic
+        @DeepLink(ApplinkConst.TOPCHAT_ASKBUYER)
+        fun getAskBuyerIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            val toUserId = extras.getString(ApplinkConst.Chat.TO_USER_ID,"0")
+            val userName = extras.getString(ApplinkConst.Chat.OPPONENT_NAME,"")
+            val customMessage = extras.getString(ApplinkConst.Chat.CUSTOM_MESSAGE,"")
+            val avatar = extras.getString(ApplinkConst.Chat.AVATAR,"")
+            val source = extras.getString(ApplinkConst.Chat.SOURCE,"deeplink")
+
+            val intent = getAskBuyerIntent(context,
+                    toUserId,
+                    userName,
+                    customMessage,
+                    source,
+                    avatar
+            )
+            return intent
         }
 
     }
