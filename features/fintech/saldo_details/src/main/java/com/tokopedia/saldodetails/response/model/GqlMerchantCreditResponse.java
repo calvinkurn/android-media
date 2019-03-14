@@ -18,6 +18,9 @@ public class GqlMerchantCreditResponse implements Parcelable {
     @SerializedName("title")
     private String title;
 
+    @SerializedName("side_text")
+    private String sideText;
+
     @SerializedName("main_redirect_url")
     private String mainRedirectUrl;
 
@@ -56,6 +59,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
         this.isEligible = in.readByte() != 0;
         this.status = in.readInt();
         this.title = in.readString();
+        this.sideText = in.readString();
         this.mainRedirectUrl = in.readString();
         this.logoURL = in.readString();
         this.bodyDesc = in.readString();
@@ -76,6 +80,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
         dest.writeByte((byte) (isEligible ? 1 : 0));
         dest.writeInt(status);
         dest.writeString(title);
+        dest.writeString(sideText);
         dest.writeString(mainRedirectUrl);
         dest.writeString(logoURL);
         dest.writeString(bodyDesc);
@@ -163,5 +168,13 @@ public class GqlMerchantCreditResponse implements Parcelable {
 
     public void setBoxInfo(GqlBoxInfoResponse boxInfo) {
         this.boxInfo = boxInfo;
+    }
+
+    public String getSideText() {
+        return sideText;
+    }
+
+    public void setSideText(String sideText) {
+        this.sideText = sideText;
     }
 }

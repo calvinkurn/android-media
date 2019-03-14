@@ -28,12 +28,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
 import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
-
-import javax.inject.Inject;
 
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS;
 
@@ -51,8 +48,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     private TextView mclboxTitleTV;
     private TextView mclBoxDescTV;
 
-    @Inject
-    SaldoDetailsAnalytics saldoDetailsAnalytics;
+    private TextView mclBlockedStatusTV;
 
     @Nullable
     @Override
@@ -74,6 +70,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
         mclBoxLayout = view.findViewById(R.id.mcl_box_layout);
         mclboxTitleTV = view.findViewById(R.id.mcl_box_title);
         mclBoxDescTV = view.findViewById(R.id.mcl_box_Desc);
+        mclBlockedStatusTV = view.findViewById(R.id.mcl_blocked_status);
     }
 
     @Override
@@ -96,6 +93,13 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                 mclTitleTV.setText(Html.fromHtml(merchantCreditDetails.getTitle()));
             } else {
                 mclTitleTV.setText(getString(R.string.modal_toko));
+            }
+
+            if (!TextUtils.isEmpty(merchantCreditDetails.getSideText())) {
+                mclBlockedStatusTV.setVisibility(View.VISIBLE);
+                mclBlockedStatusTV.setText(merchantCreditDetails.getSideText());
+            } else {
+                mclBlockedStatusTV.setVisibility(View.GONE);
             }
 
             if (merchantCreditDetails.getAnchorList() != null &&

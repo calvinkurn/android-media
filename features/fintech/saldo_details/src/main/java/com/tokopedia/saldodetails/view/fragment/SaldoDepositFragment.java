@@ -15,6 +15,8 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -253,11 +255,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             if (expandLayout) {
                 saldoDepositExpandIV.animate().rotation(180).setDuration(animation_duration);
                 expandLayout = false;
-                saldoTypeLL.setVisibility(View.GONE);
+                collapse(saldoTypeLL);
             } else {
                 saldoDepositExpandIV.animate().rotation(0).setDuration(animation_duration);
                 expandLayout = true;
-                saldoTypeLL.setVisibility(View.VISIBLE);
+                expand(saldoTypeLL);
             }
 
         });
@@ -266,11 +268,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             if (expandMerchantDetailLayout) {
                 merchantDetailsExpandIV.animate().rotation(180).setDuration(animation_duration);
                 expandMerchantDetailLayout = false;
-                merchantDetailLL.setVisibility(View.GONE);
+                collapse(merchantDetailLL);
             } else {
                 merchantDetailsExpandIV.animate().rotation(0).setDuration(animation_duration);
                 expandMerchantDetailLayout = true;
-                merchantDetailLL.setVisibility(View.VISIBLE);
+                expand(merchantDetailLL);
             }
         });
 
@@ -302,6 +304,52 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         tickerMessageCloseButton.setOnClickListener(v -> tickerMessageRL.setVisibility(View.GONE));
     }
+
+    private void expand(final View v) {
+        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();    // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+        v.getLayoutParams().height = 1;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? ViewGroup.LayoutParams.WRAP_CONTENT
+                        : (int) (targetHeight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };    // 1dp/ms
+        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
+    private void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if (interpolatedTime == 1) {
+                    v.setVisibility(View.GONE);
+                } else {
+                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };    // 1dp/ms
+        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
 
     private void showMustVerify() {
         new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
