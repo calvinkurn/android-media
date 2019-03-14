@@ -38,6 +38,12 @@ public class GroupShop {
     @SerializedName("is_insurance")
     @Expose
     private boolean isInsurance;
+    @SerializedName("is_fulfillment_service")
+    @Expose
+    private boolean isFulfillment;
+    @SerializedName("warehouse")
+    @Expose
+    private Warehouse warehouse;
 
     public List<String> getErrors() {
         return errors;
@@ -73,5 +79,13 @@ public class GroupShop {
 
     public boolean isInsurance() {
         return isInsurance;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
     }
 }
