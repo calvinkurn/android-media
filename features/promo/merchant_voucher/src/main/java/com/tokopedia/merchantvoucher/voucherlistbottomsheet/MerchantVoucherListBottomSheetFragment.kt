@@ -1,4 +1,4 @@
-package com.tokopedia.merchantvoucher.voucherList.bottomsheet
+package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -35,7 +35,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 03/03/19.
  */
 
-open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVoucherListView, MerchantVoucherViewUsed.OnMerchantVoucherViewListener {
+open class MerchantVoucherListBottomSheetFragment : BottomSheetDialogFragment(), MerchantVoucherListView, MerchantVoucherViewUsed.OnMerchantVoucherViewListener {
     override fun isOwner(): Boolean {
         return true
     }
@@ -68,15 +68,15 @@ open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVo
     @Suppress("DEPRECATION")
     private var loadingUseMerchantVoucher: ProgressDialog? = null
     private var progressDialog: ProgressDialog? = null
-    private lateinit var merchantBottomSheetAdapter: MerchantBottomSheetAdapter
+    private lateinit var merchantVoucherListBottomSheetAdapter: MerchantVoucherListBottomSheetAdapter
 
     @Inject
     lateinit var presenter: MerchantVoucherListPresenter
 
     companion object {
         @JvmStatic
-        fun newInstance(shopId: String): MerchantBottomSheetFragment {
-            return MerchantBottomSheetFragment().apply {
+        fun newInstance(shopId: String): MerchantVoucherListBottomSheetFragment {
+            return MerchantVoucherListBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putString(MerchantVoucherListFragment.EXTRA_SHOP_ID, shopId)
                 }
@@ -87,7 +87,7 @@ open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
-        merchantBottomSheetAdapter = MerchantBottomSheetAdapter(this)
+        merchantVoucherListBottomSheetAdapter = MerchantVoucherListBottomSheetAdapter(this)
         if (activity != null) {
             initInjector()
             mTitle = activity!!.getString(R.string.merchant_bottomsheet_title)
@@ -100,8 +100,8 @@ open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVo
                     .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                     .shopCommonModule(ShopCommonModule())
                     .build()
-                    .inject(this@MerchantBottomSheetFragment)
-            presenter.attachView(this@MerchantBottomSheetFragment)
+                    .inject(this@MerchantVoucherListBottomSheetFragment)
+            presenter.attachView(this@MerchantVoucherListBottomSheetFragment)
         }
     }
 
@@ -194,12 +194,12 @@ open class MerchantBottomSheetFragment : BottomSheetDialogFragment(), MerchantVo
         /*adapter.clearAllElements()
         super.renderList(merchantVoucherViewModelList, false)*/
 
-        merchantBottomSheetAdapter.setViewModelList(merchantVoucherViewModelList)
+        merchantVoucherListBottomSheetAdapter.setViewModelList(merchantVoucherViewModelList)
 
         val linearLayoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false)
         rvVoucherList.layoutManager = linearLayoutManager
-        rvVoucherList.adapter = merchantBottomSheetAdapter
+        rvVoucherList.adapter = merchantVoucherListBottomSheetAdapter
         promoContainer.visibility = View.VISIBLE
     }
 

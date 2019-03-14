@@ -100,7 +100,7 @@ import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
-import com.tokopedia.merchantvoucher.voucherList.bottomsheet.MerchantBottomSheetFragment;
+import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
@@ -3847,7 +3847,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showBottomSheetPromoMerchantList(FragmentManager fragmentManager) {
-        MerchantBottomSheetFragment merchantBottomSheetFragment = MerchantBottomSheetFragment.newInstance("1767940");
-        merchantBottomSheetFragment.show(fragmentManager, null);
+        MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance("1767940");
+        merchantVoucherListBottomSheetFragment.show(fragmentManager, null);
     }
 }

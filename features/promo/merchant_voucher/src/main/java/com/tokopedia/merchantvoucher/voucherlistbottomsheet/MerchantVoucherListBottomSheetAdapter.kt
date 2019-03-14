@@ -1,4 +1,4 @@
-package com.tokopedia.merchantvoucher.voucherList.bottomsheet
+package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 /**
  * Created by fwidjaja on 10/03/19.
  */
-class MerchantBottomSheetAdapter(onMerchantVoucherViewListener: MerchantVoucherViewUsed.OnMerchantVoucherViewListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MerchantVoucherListBottomSheetAdapter(onMerchantVoucherViewListener: MerchantVoucherViewUsed.OnMerchantVoucherViewListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onMerchantVoucherViewListener: MerchantVoucherViewUsed.OnMerchantVoucherViewListener? = null
     private var merchantBottomSheetViewModelList = ArrayList<MerchantVoucherViewModel>()
@@ -24,7 +24,7 @@ class MerchantBottomSheetAdapter(onMerchantVoucherViewListener: MerchantVoucherV
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return MerchantBottomSheetViewHolder(view, onMerchantVoucherViewListener)
+        return MerchantVoucherListBottomSheetViewHolder(view, onMerchantVoucherViewListener)
     }
 
     override fun getItemCount(): Int {
@@ -36,10 +36,10 @@ class MerchantBottomSheetAdapter(onMerchantVoucherViewListener: MerchantVoucherV
             (holder as MerchantBottomSheetViewHolder).bind(merchantVoucherViewModel)
         }*/
 
-        (holder as MerchantBottomSheetViewHolder).bind(merchantBottomSheetViewModelList[position])
+        (holder as MerchantVoucherListBottomSheetViewHolder).bind(merchantBottomSheetViewModelList[position])
     }
 
     override fun getItemViewType(position: Int): Int {
-        return MerchantBottomSheetViewHolder.ITEM_MERCHANT_VOUCHER
+        return MerchantVoucherListBottomSheetViewHolder.ITEM_MERCHANT_VOUCHER
     }
 }
