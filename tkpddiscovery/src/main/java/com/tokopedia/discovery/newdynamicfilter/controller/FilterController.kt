@@ -23,13 +23,16 @@ class FilterController() : Parcelable {
     private var pressedSliderMaxValueState = -1
 
     constructor(parcel: Parcel) : this() {
+        resetStatesBeforeLoad()
+
         parcel.readMap(searchParameter, String::class.java.classLoader)
+        parcel.readMap(flagFilterHelper, Boolean::class.java.classLoader)
         parcel.readList(filterList, Filter::class.java.classLoader)
-
-        initFilterController(searchParameter, filterList)
-
+        parcel.readMap(shownInMainState, Boolean::class.java.classLoader)
         pressedSliderMinValueState = parcel.readInt()
         pressedSliderMaxValueState = parcel.readInt()
+
+        loadActiveFilter()
     }
 
     fun initFilterController(searchParameter: Map<String, String> = mapOf(),
@@ -378,7 +381,9 @@ class FilterController() : Parcelable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeMap(searchParameter)
+        parcel.writeMap(flagFilterHelper)
         parcel.writeList(filterList)
+        parcel.writeMap(shownInMainState)
         parcel.writeInt(pressedSliderMinValueState)
         parcel.writeInt(pressedSliderMaxValueState)
     }
