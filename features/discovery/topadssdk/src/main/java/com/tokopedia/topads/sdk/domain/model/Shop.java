@@ -39,28 +39,28 @@ public class Shop implements Parcelable {
     @Expose
     private String id = "";
 
-    private String adRefKey = "";;
-    private String adId = "";;
+    private String adRefKey = "";
+    private String adId = "";
 
     @SerializedName(KEY_NAME)
     @Expose
-    private String name = "";;
+    private String name = "";
 
     @SerializedName(KEY_DOMAIN)
     @Expose
-    private String domain = "";;
+    private String domain = "";
 
     @SerializedName(KEY_TAGLINE)
     @Expose
-    private String tagline = "";;
+    private String tagline = "";
 
     @SerializedName(KEY_LOCATION)
     @Expose
-    private String location = "";;
+    private String location = "";
 
     @SerializedName(KEY_CITY)
     @Expose
-    private String city = "";;
+    private String city = "";
 
     @SerializedName(KEY_IMAGE_SHOP)
     @Expose
@@ -72,7 +72,7 @@ public class Shop implements Parcelable {
 
     @SerializedName(KEY_GOLD_SHOP_BADGE)
     @Expose
-    private boolean goldShopBadge = false;;
+    private boolean goldShopBadge = false;
 
     @SerializedName(KEY_LUCKY_SHOP)
     @Expose

@@ -42,7 +42,6 @@ import com.tokopedia.tkpd.home.adapter.viewmodel.EmptyStateItem;
 import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import java.util.List;
 

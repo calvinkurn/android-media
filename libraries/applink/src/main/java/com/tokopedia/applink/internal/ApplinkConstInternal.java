@@ -1,7 +1,5 @@
 package com.tokopedia.applink.internal;
 
-import com.tokopedia.applink.internal.marketplace.ApplinkConstInternalMarketplace;
-
 /**
  * This class is used to store deeplink started with scheme "tokopedia-android-internal".
  * Since it is for android internal only, if the applink is shared between iOS or site,
