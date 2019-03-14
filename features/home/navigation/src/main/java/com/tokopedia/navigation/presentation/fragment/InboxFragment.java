@@ -91,6 +91,15 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clearAllElements();
+                adapter.addElement(dataInbox);
+                presenter.getInboxData();
+                presenter.getRecomData(0);
+            }
+        });
 
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
