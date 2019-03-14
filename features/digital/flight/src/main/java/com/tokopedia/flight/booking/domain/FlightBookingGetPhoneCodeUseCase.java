@@ -1,8 +1,8 @@
 package com.tokopedia.flight.booking.domain;
 
-import com.tokopedia.flight.airport.data.source.database.FlightAirportCountryTable;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -36,19 +36,10 @@ public class FlightBookingGetPhoneCodeUseCase extends UseCase<List<FlightBooking
                     List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels = new ArrayList<>();
                     for (FlightAirportCountryTable flightAirportDB : flightAirportCountryTables) {
                         FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel = new FlightBookingPhoneCodeViewModel();
-                        boolean isCountryIdDuplicate = false;
-                        for (FlightBookingPhoneCodeViewModel flightBookingPhoneCodeTemp : flightBookingPhoneCodeViewModels) {
-                            if (flightBookingPhoneCodeTemp.getCountryId().equals(flightAirportDB.getCountryId())) {
-                                isCountryIdDuplicate = true;
-                            }
-                        }
-
-                        if (!isCountryIdDuplicate) {
-                            flightBookingPhoneCodeViewModel.setCountryId(flightAirportDB.getCountryId());
-                            flightBookingPhoneCodeViewModel.setCountryName(flightAirportDB.getCountryName());
-                            flightBookingPhoneCodeViewModel.setCountryPhoneCode(String.valueOf(flightAirportDB.getPhoneCode()));
-                            flightBookingPhoneCodeViewModels.add(flightBookingPhoneCodeViewModel);
-                        }
+                        flightBookingPhoneCodeViewModel.setCountryId(flightAirportDB.getCountryId());
+                        flightBookingPhoneCodeViewModel.setCountryName(flightAirportDB.getCountryName());
+                        flightBookingPhoneCodeViewModel.setCountryPhoneCode(String.valueOf(flightAirportDB.getPhoneCode()));
+                        flightBookingPhoneCodeViewModels.add(flightBookingPhoneCodeViewModel);
                     }
                     return Observable.just(flightBookingPhoneCodeViewModels);
                 });
