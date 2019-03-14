@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,7 +16,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
@@ -49,7 +48,6 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
@@ -565,15 +563,19 @@ public class ProductFragment extends BrowseSectionFragment
             }
         }
 
-        Intent intent = getProductIntent(data.id);
+        Intent intent = getProductIntent(data.id, data.getTrackerAttribution(), data.getTrackerListName());
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId, String trackerAttribution, String trackerListName){
         if (getContext() != null) {
-            return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+            Bundle bundle = new Bundle();
+            bundle.putString("tracker_attribution", trackerAttribution);
+            bundle.putString("tracker_list_name", trackerListName);
+            Intent intent = RouteManager.getIntentInternal(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+            return intent;
         } else {
             return null;
         }
@@ -721,7 +723,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        Intent intent = getProductIntent(product.getId());
+        Intent intent = getProductIntent(product.getId(), "", "");
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
         TopAdsGtmTracker.eventCategoryProductClick(getContext(), "", product, position);
     }

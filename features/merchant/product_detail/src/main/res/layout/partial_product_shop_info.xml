@@ -47,7 +47,7 @@
         android:layout_marginStart="@dimen/dp_12"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:src="@drawable/ic_official_store"
+        tools:src="@drawable/ic_official_store_product"
         app:layout_constraintLeft_toRightOf="@+id/shop_ava"
         app:layout_constraintStart_toEndOf="@+id/shop_ava"
         app:layout_constraintTop_toTopOf="@+id/shop_name"

@@ -52,7 +52,7 @@
         android:text="@string/promote_topads"
         android:gravity="center"
         android:textColor="@color/color_href_link"
-        android:background="@drawable/btn_buy"
+        android:background="@drawable/rect_orange"
         android:visibility="gone"
         tools:visibility="gone"
         app:fontSize="title"

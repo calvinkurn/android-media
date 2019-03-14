@@ -32,7 +32,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackinterface)
 
     implementation project(rootProject.ext.features.affiliateCommon)
-    implementation project(rootProject.ext.features.expressCheckout)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.merchantVoucher)

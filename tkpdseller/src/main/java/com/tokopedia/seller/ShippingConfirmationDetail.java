@@ -16,6 +16,9 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
@@ -139,12 +142,7 @@ ShippingConfirmationDetail extends TActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                     long arg3) {
-                startActivity(
-                        ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                                ShippingConfirmationDetail.this,
-                                getProductDataToPass(dataProducts.get(position))
-                        )
-                );
+                startActivity(getProductIntent(dataProducts.get(position).ProductId));
             }
         });
 
@@ -167,6 +165,11 @@ ShippingConfirmationDetail extends TActivity {
         setDataToViewV4();
 
 
+    }
+
+    private Intent getProductIntent(String productId){
+        return RouteManager.getIntentInternal(this,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
     }
 
     private void initView(){

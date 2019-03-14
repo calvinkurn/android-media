@@ -24,7 +24,7 @@ public class ShopGroup {
     private int sortKey;
     @SerializedName("shop")
     @Expose
-    private Shop shop;
+    private Shop shop = new Shop();
     @SerializedName("cart_details")
     @Expose
     private List<CartDetail> cartDetails = new ArrayList<>();

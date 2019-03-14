@@ -12,6 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -66,12 +69,19 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             public void onClick(View view) {
                 UnifyTracking.eventFavoriteView(view.getContext(), item.getName());
                 Context context = view.getContext();
-                Intent intent
-                        = ProductDetailRouter
-                        .createInstanceProductDetailInfoActivity(context, item.getProductId());
+                Intent intent = getProductIntent(context, item.getProductId());
                 context.startActivity(intent);
             }
         };
+    }
+
+    private Intent getProductIntent(Context context, String productId){
+        if (context != null) {
+            return RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     public void setData(List<WishlistItem> data) {

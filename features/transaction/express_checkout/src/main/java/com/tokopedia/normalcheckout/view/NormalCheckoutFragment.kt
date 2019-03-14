@@ -405,16 +405,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     fun onFinishAddToCart(atcSuccessMessage: String?) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
-                if (!selectedVariantId.isNullOrEmpty()) {
-                    putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
-                    selectedProductInfo?.let { it ->
+                putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+                if (!selectedVariantId.isNullOrEmpty()) { selectedProductInfo } else { originalProduct?.productInfo}
+                    .let { it ->
                         val cacheManager =
                             SaveInstanceCacheManager(this@run, true).apply {
                                 put(RESULT_PRODUCT_DATA, it)
                             }
                         putExtra(RESULT_PRODUCT_DATA_CACHE_ID, cacheManager.id)
                     }
-                }
                 putExtra(EXTRA_QUANTITY, quantity)
                 putExtra(EXTRA_NOTES, notes)
                 putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)

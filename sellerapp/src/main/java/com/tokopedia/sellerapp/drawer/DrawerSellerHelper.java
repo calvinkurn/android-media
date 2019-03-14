@@ -13,6 +13,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -24,9 +25,17 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
+import com.tokopedia.gm.common.constant.GMParamConstant;
+import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
+import com.tokopedia.gm.subscribe.tracking.GMTracking;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
@@ -48,6 +57,7 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.tracking.view.SimpleWebViewActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 import java.util.ArrayList;
@@ -105,7 +115,6 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getProductMenu());
 
-        data.add(getPaymentAndTopupMenu());
         data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu());
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
@@ -205,23 +214,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
         return inboxMenu;
-    }
-
-    private DrawerItem getPaymentAndTopupMenu() {
-        DrawerGroup sellerMenu = new DrawerGroup(context.getResources().getString(R.string.digital_product),
-                R.drawable.payment_and_topup,
-                TkpdState.DrawerPosition.SELLER_PRODUCT_DIGITAL_EXTEND,
-                drawerCache.getBoolean(DrawerAdapter.IS_PRODUCT_DIGITAL_OPENED, false),
-                0);
-
-        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.payment_and_topup),
-                TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP,
-                true));
-        sellerMenu.add(new DrawerItem(context.getResources().getString(R.string.digital_transaction_list),
-                TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL,
-                true));
-
-        return sellerMenu;
     }
 
     private DrawerItem getProductMenu() {
@@ -368,15 +360,11 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
+                    context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
                     UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    intent = ((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA);
-
-                    context.startActivity(intent);
+                    context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
                     UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:

@@ -27,7 +27,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -58,6 +58,7 @@ import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ProductInfo
 import com.tokopedia.product.detail.common.data.model.ProductParams
+import com.tokopedia.product.detail.common.data.model.Wholesale
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -71,6 +72,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
+import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -122,6 +124,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
+    private var trackerAttribution: String? = ""
+    private var trackerListName: String? = ""
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
 
@@ -191,6 +195,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
         private const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
         private const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
+        private const val ARG_TRACKER_ATTRIBUTION = "ARG_TRACKER_ATTRIBUTION"
+        private const val ARG_TRACKER_LIST_NAME = "ARG_TRACKER_LIST_NAME"
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
 
@@ -201,12 +207,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         shopDomain: String? = null,
                         productKey: String? = null,
                         isFromDeeplink: Boolean = false,
-                        isAffiliate: Boolean = false) =
+                        isAffiliate: Boolean = false,
+                        trackerAttribution: String? = null,
+                        trackerListName: String? = null) =
             ProductDetailFragment().also {
                 it.arguments = Bundle().apply {
                     productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
                     productKey?.let { pkey -> putString(ARG_PRODUCT_KEY, pkey) }
                     shopDomain?.let { domain -> putString(ARG_SHOP_DOMAIN, domain) }
+                    trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
+                    trackerListName?.let { listName -> putString(ARG_TRACKER_LIST_NAME, listName) }
                     putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                     putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
                 }
@@ -231,6 +241,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productId = it.getString(ARG_PRODUCT_ID)
             productKey = it.getString(ARG_PRODUCT_KEY)
             shopDomain = it.getString(ARG_SHOP_DOMAIN)
+            trackerAttribution = it.getString(ARG_TRACKER_ATTRIBUTION)
+            trackerListName = it.getString(ARG_TRACKER_LIST_NAME)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
         }
@@ -403,24 +415,33 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
-        if (productInfoViewModel.isUserSessionActive() && productInfoViewModel.isUserHasShop) {
-            open_shop.gone()
-        } else {
-            open_shop.visible()
-            open_shop.setOnClickListener {
-                activity?.let {
-                    if (productInfoViewModel.isUserSessionActive()) {
-                        val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.OPEN_SHOP) ?: return@let
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                    } else {
-                        startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                                REQUEST_CODE_LOGIN)
-                    }
+
+        open_shop.setOnClickListener {
+            activity?.let {
+                if (productInfoViewModel.isUserSessionActive()) {
+                    val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.Marketplace.OPEN_SHOP)
+                        ?: return@let
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                } else {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
                 }
             }
         }
-
+        open_shop.setOnClickListener {
+            activity?.let {
+                if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
+                    val intent = RouteManager.getIntentInternal(it, ApplinkConstInternal.Marketplace.OPEN_SHOP)
+                        ?: return@let
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                } else {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+                }
+            }
+        }
         loadProductData()
     }
 
@@ -478,7 +499,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
                 atcRequestParam.setQuantity(qty)
 
-                val expressCheckoutUriString = ApplinkConstInternal.EXPRESS_CHECKOUT
+                val expressCheckoutUriString = ApplinkConstInternal.Marketplace.EXPRESS_CHECKOUT
                 val intent = RouteManager.getIntentInternal(it, expressCheckoutUriString)
                 intent?.run {
                     putExtra("EXTRA_ATC_REQUEST", atcRequestParam)
@@ -542,19 +563,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
             otherProductView = PartialOtherProductView.build(base_other_product)
     }
 
-    private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false){
+    private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
         val productId = productInfo?.basic?.id ?: return
-        if (isSeeAll){
+        if (isSeeAll) {
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
         } else {
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
         }
         context?.let {
-            startActivity(RouteManager.getIntentInternal(it,
-                    UriUtil.buildUri(ApplinkConstInternal.IMAGE_REVIEW_GALLERY, productId.toString()))) }
+            RouteManager.routeInternal(it,
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.IMAGE_REVIEW_GALLERY, productId.toString()))
+        }
     }
 
-    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?){
+    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?) {
         productDetailTracking.eventClickReviewOnMostHelpfulReview(productInfo?.basic?.id, reviewId)
         context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(images), pos) }
     }
@@ -740,11 +762,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
             val screenWidth = resources.displayMetrics.widthPixels
             if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.height = screenWidth / 3
+                val height = screenWidth / 3
+                layoutParams.height = height
+                view_picture.layoutParams.height = height
                 appbar.visibility = View.VISIBLE
             } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                 layoutParams.height = screenWidth
+                view_picture.layoutParams.height = screenWidth
                 appbar.visibility = View.VISIBLE
             }
         }
@@ -781,22 +806,25 @@ class ProductDetailFragment : BaseDaggerFragment() {
             REQUEST_CODE_NORMAL_CHECKOUT -> {
                 //TODO need to check when device don't keep activity
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
-                    val cacheManager = SaveInstanceCacheManager(this@ProductDetailFragment.context!!, objectId)
-                    val selectedProductInfo: ProductInfo? = cacheManager.get(NormalCheckoutFragment.RESULT_PRODUCT_DATA, ProductInfo::class.java)
-                    if (selectedProductInfo != null) {
-                        userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
-                        productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
+                    if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
+                        //refresh product by selected variant/product
+                        val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
+                        val cacheManager = SaveInstanceCacheManager(this@ProductDetailFragment.context!!, objectId)
+                        val selectedProductInfo: ProductInfo? = cacheManager.get(NormalCheckoutFragment.RESULT_PRODUCT_DATA, ProductInfo::class.java)
+                        if (selectedProductInfo != null) {
+                            userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
+                            productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
+                        }
                     }
-                    userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
-                    userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
-
+                    //refresh variant
                     val variantResult = productInfoViewModel.productVariantResp.value
                     if (variantResult is Success) {
                         variantResult.data.run {
                             onSuccessGetProductVariantInfo(this)
                         }
                     }
+                    userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
+                    userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
 
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
@@ -838,6 +866,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     goToNormalCheckout()
                 }
             }
+            REQUEST_CODE_EDIT_PRODUCT -> {
+                loadProductData(true)
+            }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
         }
@@ -877,7 +908,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             ToasterNormal.make(view, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
                 .setAction(getString(R.string.label_atc_open_cart)) { v ->
                     //TODO tracking
-
                     val intent = RouteManager.getIntent(this, ApplinkConst.CART)
                     startActivity(intent)
                 }
@@ -942,6 +972,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
+        productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, productInfoP2.shopInfo, trackerAttribution)
         productInfoP2.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo
@@ -1000,9 +1031,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         partialVariantAndRateEstView.renderPriorityOrder(productInfoP2.shopCommitment)
         imageReviewViewView.renderData(productInfoP2.imageReviews)
         mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews, productInfo?.stats?.countReview
-                ?: 0)
+            ?: 0)
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
-                productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
+            productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
         otherProductView.renderData(productInfoP2.productOthers)
     }
@@ -1046,7 +1077,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val fullUrl = UriUtil.buildUri(ApplinkConstInternal.PRODUCT_EDIT, id)
+            val fullUrl = UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_EDIT, id)
             val intent = RouteManager.getIntentInternal(it, fullUrl)
             intent?.run {
                 startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
@@ -1077,12 +1108,28 @@ class ProductDetailFragment : BaseDaggerFragment() {
             label_min_wholesale.text = getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
             label_wholesale.visibility = View.VISIBLE
             label_min_wholesale.visibility = View.VISIBLE
+            val onWholeSaleClick = { v: View ->
+                val wholesaleList = data.wholesale
+                if (wholesaleList != null && wholesaleList.isNotEmpty()) {
+                    context?.run {
+                        startActivity(WholesaleActivity.getIntent(this,
+                            (wholesaleList as ArrayList<Wholesale>)))
+                    }
+                }
+            }
+            label_wholesale.setOnClickListener { onWholeSaleClick.invoke(it) }
+            label_min_wholesale.setOnClickListener { onWholeSaleClick.invoke(it) }
             base_view_wholesale.visibility = View.VISIBLE
         } else {
             label_wholesale.visibility = View.GONE
             label_min_wholesale.visibility = View.GONE
             if (label_desc_installment.isVisible) base_view_wholesale.visibility = View.VISIBLE
             else base_view_wholesale.gone()
+        }
+        if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
+            open_shop.visible()
+        } else {
+            open_shop.gone()
         }
         activity?.invalidateOptionsMenu()
     }
@@ -1223,7 +1270,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (productInfo != null) {
             //TODO SENT MOENGAGE
             context?.let {
-                val fullUrl = UriUtil.buildUri(ApplinkConstInternal.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
+                val fullUrl = UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
                 val intent = RouteManager.getIntentInternal(it, fullUrl)
                 intent?.run {
                     intent.putExtra("x_prd_nm", productInfo!!.basic.name)

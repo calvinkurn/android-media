@@ -21,6 +21,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
@@ -236,6 +238,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         } else {
             showErrorTalk(ErrorHandler.getErrorMessage(context, throwable) ?: "")
         }
+        stopTrace()
     }
 
     override fun onErrorActionTalk(throwable: Throwable) {
@@ -564,8 +567,17 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
+            val intent: Intent? = getProductIntent(productId)
             this@TalkDetailsFragment.startActivity(intent)
+        }
+    }
+
+    private fun getProductIntent(productId: String): Intent? {
+        return if (context != null) {
+            RouteManager.getIntentInternal(context!!,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId))
+        } else {
+            null
         }
     }
 

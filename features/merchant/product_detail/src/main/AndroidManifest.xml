@@ -21,6 +21,10 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_product_detail"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_product_detail_domain"/>
 
             </intent-filter>
         </activity>
@@ -34,7 +38,7 @@
             android:theme="@style/Theme.White"/>
 
         <activity android:name=".view.activity.CourierActivity"
-            android:label="@string/courier_title"
+            android:label="@string/product_detail_courier"
             android:theme="@style/Theme.White"/>
 
         <activity android:name=".estimasiongkir.view.activity.RatesEstimationDetailActivity"
@@ -44,6 +48,11 @@
 
         <activity android:name=".view.activity.ProductInstallmentActivity"
             android:label="@string/label_product_installment"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".view.activity.WholesaleActivity"
+            android:label="@string/label_product_wholesale"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 

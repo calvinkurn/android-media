@@ -415,4 +415,31 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
         );
     }
 
+
+    public void eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
+        );
+    }
+
+    public void eventClickAddressCartChangeAddressClickButtonSimpanFromEditSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
+                EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickAddressCartChangeAddressClickButtonSimpanFromEditNotSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
+                EventLabel.NOT_SUCCESS
+        );
+    }
+
 }

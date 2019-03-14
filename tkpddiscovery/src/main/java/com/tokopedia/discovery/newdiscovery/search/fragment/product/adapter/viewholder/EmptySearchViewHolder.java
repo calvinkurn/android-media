@@ -18,6 +18,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
@@ -146,16 +149,17 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         context.startActivity(intent);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     @Override

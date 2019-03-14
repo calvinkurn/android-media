@@ -249,6 +249,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
         TkpdBaseURL.CHAT_DOMAIN = ConsumerAppBaseUrl.CHAT_DOMAIN;
         TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN =
+                ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN =
+                ConsumerAppBaseUrl.GROUP_CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         TkpdBaseURL.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
@@ -277,6 +281,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        GroupChatUrl.BASE_GCP_URL = ConsumerAppBaseUrl.PLAY_DOMAIN;
         VoteUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
@@ -325,7 +330,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         CheckMsisdnUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
         com.tokopedia.network.constant.TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
-        com.tokopedia.common_digital.common.constant.DigitalUrl.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
+        com.tokopedia.common_digital.common.constant.DigitalUrl.INSTANCE.setDIGITAL_API_DOMAIN(ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN);
         DigitalDealsUrl.BASE_URL = ConsumerAppBaseUrl.DEALS_DOMAIN;
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;

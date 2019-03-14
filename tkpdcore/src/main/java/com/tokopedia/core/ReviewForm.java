@@ -160,9 +160,9 @@ public class ReviewForm extends TActivity {
 		mProductLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-                Intent intent = ProductDetailRouter
-                        .createInstanceProductDetailInfoActivity(ReviewForm.this, mProdID);
-                startActivity(intent);
+//                Intent intent = ProductDetailRouter
+//                        .createInstanceProductDetailInfoActivity(ReviewForm.this, mProdID);
+//                startActivity(intent);
 			}
 		});
 

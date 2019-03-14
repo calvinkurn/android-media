@@ -13,15 +13,13 @@ import android.view.View
 import android.view.WindowManager
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.applink.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.core.`var`.TkpdCache.Key.STATE_ORIENTATION_CHANGED
 import com.tokopedia.core.`var`.TkpdCache.PRODUCT_DETAIL
 import com.tokopedia.core.analytics.UnifyTracking
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi
 import com.tokopedia.core.product.model.productdetail.ProductDetailData
-import com.tokopedia.core.router.discovery.BrowseProductRouter
 import com.tokopedia.core.router.productdetail.PdpRouter
 import com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID
 import com.tokopedia.core.util.MethodChecker
@@ -195,9 +193,8 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
 
         override fun onClick(v: View) {
             if (!GlobalConfig.isSellerApp()) {
-                val intent = RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, categoryId))
-                startActivity(intent)
+                RouteManager.routeInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, categoryId))
             }
         }
     }

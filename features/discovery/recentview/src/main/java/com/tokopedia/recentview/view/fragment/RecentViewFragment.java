@@ -1,5 +1,6 @@
 package com.tokopedia.recentview.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -14,8 +15,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.recentview.R;
-import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.analytics.RecentViewTracking;
 import com.tokopedia.recentview.di.DaggerRecentViewComponent;
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter;
@@ -130,15 +133,15 @@ public class RecentViewFragment extends BaseDaggerFragment
                                     String productName,
                                     String  productPrice,
                                     String productImage) {
-        if (getActivity() != null &&
-                getActivity().getApplication() instanceof RecentViewRouter) {
-            ((RecentViewRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    productId,
-                    productImage,
-                    productName,
-                    productPrice
-            );
+        getActivity().startActivity(getProductIntent(productId));
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntentInternal(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
         }
     }
 

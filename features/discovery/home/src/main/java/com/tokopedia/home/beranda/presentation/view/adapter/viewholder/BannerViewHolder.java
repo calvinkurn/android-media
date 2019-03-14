@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implements BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
-        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener{
+        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;

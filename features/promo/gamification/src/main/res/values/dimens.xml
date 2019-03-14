@@ -1,10 +1,10 @@
 <resources>
     <dimen name="width_egg">200dp</dimen>
     <dimen name="height_egg">200dp</dimen>
-    <fraction name="to_x_scale_reward_anim">400%</fraction>
-    <fraction name="to_y_scale_reward_anim">400%</fraction>
-    <fraction name="to_x_scale_bg_reward_anim">600%</fraction>
-    <fraction name="to_y_scale_bg_reward_anim">600%</fraction>
+    <fraction name="to_x_scale_reward_anim">500%</fraction>
+    <fraction name="to_y_scale_reward_anim">500%</fraction>
+    <fraction name="to_x_scale_bg_reward_anim">700%</fraction>
+    <fraction name="to_y_scale_bg_reward_anim">700%</fraction>
     <integer name="translate_egg_to_y_delta">-50</integer>
     <dimen name="text_size_countdown_timer">24sp</dimen>
     <dimen name="floating_egg_widget_width">104dp</dimen>

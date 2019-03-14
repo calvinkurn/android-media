@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,11 +33,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.digital.common.constant.DigitalEventTracking;
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -71,10 +73,8 @@ import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
-import com.tokopedia.navigation_common.AbTestingOfficialStore;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.InboxNotificationListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -103,9 +103,8 @@ import rx.Observable;
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        CountDownView.CountDownListener,
-        NotificationListener, FragmentListener, HomeEggListener,
-        InboxNotificationListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
+        CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
+        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -138,7 +137,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
-    private AbTestingOfficialStore abTestingOfficialStore;
     private ViewPager homeFeedsViewPager;
     private CollapsingTabLayout homeFeedsTabLayout;
     private AppBarLayout appBarLayout;
@@ -159,9 +157,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isTraceStopped = false;
     private boolean isFeedLoaded = false;
 
-    @Inject
-    DigitalWidgetRepository digitalWidgetRepository;
-
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -174,7 +169,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
-        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
     }
@@ -270,8 +264,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initResources() {
         TypedValue typedValue = new TypedValue();
         if (getActivity() != null && getActivity().getTheme() != null &&
-                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
-        {
+                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
         }
     }
@@ -427,9 +420,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
             ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
         }
-        notifyToolbarForAbTesting();
         presenter.onResume();
-        if(activityStateListener!=null){
+        if (activityStateListener != null) {
             activityStateListener.onResume();
         }
     }
@@ -438,7 +430,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onPause() {
         super.onPause();
         trackingQueue.sendAll();
-        if(activityStateListener!=null) {
+        if (activityStateListener != null) {
             activityStateListener.onPause();
         }
     }
@@ -992,6 +984,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onThreeGridItemClicked(String actionLink, String trackingAttribution) {
+        onActionLinkClicked(actionLink, trackingAttribution);
+    }
+
+    @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
         if (getUserVisibleHint()) {
             presenter.hitBannerImpression(bannerSlidesModel);
@@ -1039,6 +1036,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isHomeFragment() {
+        if (getActivity() == null) {
+            return false;
+        }
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
         return (fragment instanceof HomeFragment);
     }
@@ -1128,13 +1128,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     };
 
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        if (mainToolbar != null) {
-            mainToolbar.setNotificationNumber(number);
-        }
-    }
-
     public void startShopInfo(String shopId) {
         if (getActivity() != null
                 && getActivity().getApplication() != null
@@ -1146,12 +1139,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void startDeeplinkShopInfo(String url) {
-        if (getActivity() != null) {
-            if ((getActivity()).getApplication() instanceof IHomeRouter) {
-                ((IHomeRouter) (getActivity()).getApplication())
-                        .goToProductDetail(
-                                getActivity(),
-                                url);
+        Context context = getContext();
+        if (context != null) {
+            Uri uri = Uri.parse(url);
+            List<String> pathSegmentList = uri.getPathSegments();
+            if (pathSegmentList.size() > 1) {
+                String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
+                String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
+                Intent intent = RouteManager.getIntentInternal(context,
+                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_DOMAIN,
+                                shopDomain, productKey));
+                if (intent != null) {
+                    startActivity(intent);
+                } else {
+                    RouteManager.routeInternal(context, url);
+                }
+            } else {
+                RouteManager.routeInternal(context, url);
             }
         }
     }
@@ -1162,7 +1166,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             Intent intentBalanceWalet = RouteManager.getIntent(getActivity(), applinkActivation);
             getContext().startActivity(intentBalanceWalet);
             Activity activity = (Activity) getContext();
-            activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
         }
     }
 
@@ -1237,19 +1241,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
     }
 
-    public void notifyToolbarForAbTesting() {
-        if (mainToolbar != null) {
-            mainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
-        }
-    }
-
-    @Override
-    public void onNotifyBadgeInboxNotification(int number) {
-        if (mainToolbar != null) {
-            mainToolbar.setInboxNumber(number);
-        }
-    }
-
     @Override
     public void hideEggOnScroll() {
         hideEggFragmentOnScrolling();
@@ -1275,14 +1266,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        if (getActivity().getApplication() instanceof IHomeRouter) {
-            ((IHomeRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    productId,
-                    imageSourceSingle,
-                    name,
-                    price
-            );
+        getActivity().startActivity(getProductIntent(productId));
+    }
+
+    private Intent getProductIntent(String productId) {
+        if (getContext() != null) {
+            return RouteManager.getIntentInternal(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void onNotificationChanged(int notificationCount, int inboxCount) {
+        if (mainToolbar != null) {
+            mainToolbar.setNotificationNumber(notificationCount);
+            mainToolbar.setInboxNumber(inboxCount);
         }
     }
 }

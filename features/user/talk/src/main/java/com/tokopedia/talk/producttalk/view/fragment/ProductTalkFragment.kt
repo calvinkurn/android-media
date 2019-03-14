@@ -19,6 +19,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterNormal
@@ -327,6 +329,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
             presenter.getProductTalk(productId)
         }
+        stopTrace()
     }
 
     override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
@@ -552,9 +555,17 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
         activity?.applicationContext?.run {
             analytics.trackClickProductFromAttachment()
-            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, attachProduct
-                    .productId.toString())
+            val intent: Intent? = getProductIntent(attachProduct.productId.toString())
             this@ProductTalkFragment.startActivity(intent)
+        }
+    }
+
+    private fun getProductIntent(productId: String): Intent? {
+        return if (context != null) {
+            RouteManager.getIntentInternal(context!!,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId))
+        } else {
+            null
         }
     }
 

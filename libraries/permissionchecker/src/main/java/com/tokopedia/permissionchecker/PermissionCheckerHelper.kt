@@ -18,6 +18,7 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISS
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
 import org.jetbrains.annotations.NotNull
+import com.tokopedia.permissionchecker.R
 
 /**
  * @author by nisie on 28/11/18.
@@ -32,7 +33,8 @@ import org.jetbrains.annotations.NotNull
  * to handle it yourself.
  *
  * 4. (optional) if you want to add new permission, make sure to add permission name (e.g : android
- * .permission.CAMERA) in [Companion] and add visual permission name (e.g : Kamera) in function
+ * .permission.CAMERA) in [Companion] to track which permissions used in this app and add visual
+ * permission name (e.g : Kamera) in function
  * [getPermissionName]
  */
 
@@ -49,10 +51,10 @@ class PermissionCheckerHelper {
     private lateinit var listener: PermissionCheckListener
 
     object Companion {
-        val PERMISSION_CAMERA = Manifest.permission.CAMERA
-        val PERMISSION_RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
-        val PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
-        val PERMISSION_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
+        const val PERMISSION_CAMERA = Manifest.permission.CAMERA
+        const val PERMISSION_RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
+        const val PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
+        const val PERMISSION_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
     }
 
     interface PermissionCheckListener {
@@ -67,12 +69,21 @@ class PermissionCheckerHelper {
      * companion object for easier naming.
      * @param listener to call dialogue or perform other action should permission be denied or
      * granted.
+     * @param rationaleText (optional) to put in dialogue why you need the permission. Leave
+     * empty to use default.
      */
-    fun checkPermission(@NotNull context: Context,
+    fun checkPermission(@NotNull activity: Activity,
                         @NotNull permission: String,
                         @NotNull listener: PermissionCheckListener,
                         @NotNull rationaleText : String = "") {
-        checkPermissions(context, arrayOf(permission), listener, rationaleText)
+        checkPermissions(activity, arrayOf(permission), listener, rationaleText)
+    }
+
+    fun checkPermission(@NotNull fragment: Fragment,
+                        @NotNull permission: String,
+                        @NotNull listener: PermissionCheckListener,
+                        @NotNull rationaleText : String = "") {
+        checkPermissions(fragment, arrayOf(permission), listener, rationaleText)
     }
 
     /**
@@ -82,21 +93,36 @@ class PermissionCheckerHelper {
      * companion object for easier naming.
      * @param listener to call dialogue or perform other action should permission be denied or
      * granted.
+     * @param rationaleText (optional) to put in dialogue why you need the permission. Leave
+     * empty to use default.
      */
 
-    fun checkPermissions(@NotNull context: Context,
+    fun checkPermissions(@NotNull activity: Activity,
                          @NotNull permissions: Array<String>,
                          @NotNull listener: PermissionCheckListener,
                          @NotNull rationaleText : String = "") {
         this.listener = listener
 
-        if (!(context is Activity || context is Fragment)) {
-            return
+        try {
+            if (!hasPermission(activity, permissions)) {
+                onPermissionNotGranted(activity, permissions, listener, rationaleText)
+            } else {
+                listener.onPermissionGranted()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+    }
+
+    fun checkPermissions(@NotNull fragment: Fragment,
+                         @NotNull permissions: Array<String>,
+                         @NotNull listener: PermissionCheckListener,
+                         @NotNull rationaleText : String = "") {
+        this.listener = listener
 
         try {
-            if (!hasPermission(context, permissions)) {
-                onPermissionNotGranted(context, permissions, listener, rationaleText)
+            if (!hasPermission(fragment.requireContext(), permissions)) {
+                onPermissionNotGranted(fragment, permissions, listener, rationaleText)
             } else {
                 listener.onPermissionGranted()
             }
@@ -115,7 +141,7 @@ class PermissionCheckerHelper {
         }
     }
 
-    private fun onPermissionNotGranted(context: Context, permissions: Array<String>, listener:
+    private fun onPermissionNotGranted(activity: Activity, permissions: Array<String>, listener:
     PermissionCheckListener, rationaleText: String) {
         if (!permissions.isEmpty() && permissions.size > 1) {
 
@@ -124,10 +150,10 @@ class PermissionCheckerHelper {
             val iterator = permissions.iterator()
             while (iterator.hasNext()) {
                 val permission = iterator.next()
-                if (shouldShowRequestPermissionRationale(context, permission)) {
+                if (shouldShowRequestPermissionRationale(activity, permission)) {
                     permissionCount += 1
 
-                    val permissionName = getPermissionName(context, permission)
+                    val permissionName = getPermissionName(activity, permission)
                     if (listPermissionText.isBlank()) {
                         listPermissionText = permissionName
                     } else if (!listPermissionText.contains(permissionName)) {
@@ -137,34 +163,76 @@ class PermissionCheckerHelper {
             }
 
             when {
-                permissionCount > 1 -> onShowRationale(context, permissions, listPermissionText ,
+                permissionCount > 1 -> onShowRationale(activity, permissions, listPermissionText ,
                         listener, rationaleText)
-                permissionCount == 1 -> onShowRationale(context, permissions,
+                permissionCount == 1 -> onShowRationale(activity, permissions,
                         listPermissionText.replace(",", "").trim()
                         , listener, rationaleText)
-                else -> requestPermissions(context, permissions, REQUEST_PERMISSION_CODE)
+                else -> requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
             }
 
         } else if (!permissions.isEmpty()
-                && shouldShowRequestPermissionRationale(context, permissions[0])) {
-            onShowRationale(context, permissions, permissions[0], listener, rationaleText)
+                && shouldShowRequestPermissionRationale(activity, permissions[0])) {
+            onShowRationale(activity, permissions, permissions[0], listener, rationaleText)
         } else if (!permissions.isEmpty()) {
-            requestPermissions(context, permissions, REQUEST_PERMISSION_CODE)
+            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
         }
     }
 
-    private fun requestPermissions(context: Context, permissions: Array<String>,
+    private fun onPermissionNotGranted(fragment: Fragment, permissions: Array<String>, listener:
+    PermissionCheckListener, rationaleText: String) {
+        if (!permissions.isEmpty() && permissions.size > 1) {
+
+            var permissionCount = 0
+            var listPermissionText = ""
+            val iterator = permissions.iterator()
+            while (iterator.hasNext()) {
+                val permission = iterator.next()
+                if (shouldShowRequestPermissionRationale(fragment.requireContext(), permission)) {
+                    permissionCount += 1
+
+                    val permissionName = getPermissionName(fragment.requireContext(), permission)
+                    if (listPermissionText.isBlank()) {
+                        listPermissionText = permissionName
+                    } else if (!listPermissionText.contains(permissionName)) {
+                        listPermissionText = String.format("%s, %s", listPermissionText, permissionName)
+                    }
+                }
+            }
+
+            when {
+                permissionCount > 1 -> onShowRationale(fragment, permissions, listPermissionText ,
+                        listener, rationaleText)
+                permissionCount == 1 -> onShowRationale(fragment, permissions,
+                        listPermissionText.replace(",", "").trim()
+                        , listener, rationaleText)
+                else -> requestPermissions(fragment, permissions, REQUEST_PERMISSION_CODE)
+            }
+
+        } else if (!permissions.isEmpty()
+                && shouldShowRequestPermissionRationale(fragment.requireContext(), permissions[0])) {
+            onShowRationale(fragment, permissions, permissions[0], listener, rationaleText)
+        } else if (!permissions.isEmpty()) {
+            requestPermissions(fragment, permissions, REQUEST_PERMISSION_CODE)
+        }
+    }
+
+    private fun requestPermissions(activity: Activity, permissions: Array<String>,
                                    REQUEST_PERMISSION_CODE: Int) {
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                when (context) {
-                    is AppCompatActivity , is Activity->
-                        (context as Activity).requestPermissions(permissions,
-                            REQUEST_PERMISSION_CODE)
-                    is Fragment -> context.requestPermissions(permissions, REQUEST_PERMISSION_CODE)
-                }
-            }
+            activity.requestPermissions(permissions,
+                    REQUEST_PERMISSION_CODE)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun requestPermissions(fragment: Fragment, permissions: Array<String>,
+                                   REQUEST_PERMISSION_CODE: Int) {
+
+        try {
+            fragment.requestPermissions(permissions, REQUEST_PERMISSION_CODE)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -176,7 +244,7 @@ class PermissionCheckerHelper {
             when (context) {
                 is AppCompatActivity, is Activity -> ActivityCompat
                         .shouldShowRequestPermissionRationale(context as Activity,
-                        permission)
+                                permission)
                 is Fragment -> {
                     val activity: Activity = context.requireActivity().parent
                     ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
@@ -189,25 +257,43 @@ class PermissionCheckerHelper {
     }
 
 
-    private fun onShowRationale(context: Context, permissions: Array<String>,
+    private fun onShowRationale(activity: Activity, permissions: Array<String>,
                                 permissionText: String, listener: PermissionCheckListener,
                                 rationaleText : String) {
 
-        val activity: Activity = context as? Activity ?: if (context is Fragment) {
-            context.activity as Activity
-        } else {
-            return
-        }
-
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(context.getString(TEXT_TITLE))
-        dialog.setDesc(getNeedPermissionMessage(context, permissionText, rationaleText))
-        dialog.setBtnOk(context.getString(TEXT_OK))
-        dialog.setBtnCancel(context.getString(TEXT_CANCEL))
+        dialog.setTitle(activity.getString(TEXT_TITLE))
+        dialog.setDesc(getNeedPermissionMessage(activity, permissionText, rationaleText))
+        dialog.setBtnOk(activity.getString(TEXT_OK))
+        dialog.setBtnCancel(activity.getString(TEXT_CANCEL))
         dialog.alertDialog.setCancelable(true)
         dialog.alertDialog.setCanceledOnTouchOutside(true)
         dialog.setOnOkClickListener {
-            requestPermissions(context, permissions, REQUEST_PERMISSION_CODE)
+            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
+            dialog.dismiss()
+        }
+        dialog.setOnCancelClickListener {
+            listener.onPermissionDenied(permissionText)
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun onShowRationale(fragment: Fragment, permissions: Array<String>,
+                                permissionText: String, listener: PermissionCheckListener,
+                                rationaleText : String) {
+
+        val activity: Activity = fragment.activity as Activity
+
+        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        dialog.setTitle(fragment.getString(TEXT_TITLE))
+        dialog.setDesc(getNeedPermissionMessage(fragment.requireContext(), permissionText, rationaleText))
+        dialog.setBtnOk(fragment.getString(TEXT_OK))
+        dialog.setBtnCancel(fragment.getString(TEXT_CANCEL))
+        dialog.alertDialog.setCancelable(true)
+        dialog.alertDialog.setCanceledOnTouchOutside(true)
+        dialog.setOnOkClickListener {
+            requestPermissions(fragment, permissions, REQUEST_PERMISSION_CODE)
             dialog.dismiss()
         }
         dialog.setOnCancelClickListener {
@@ -261,10 +347,10 @@ class PermissionCheckerHelper {
                 listener.onPermissionGranted()
             } else if (permissionsDenied.size > 1
                     && permissionsDenied.size > permissionsDeniedNeedToShowRationale.size) {
-                listener.onNeverAskAgain(getJoinedText(context, permissionsDenied))
+                listener.onNeverAskAgain(getJoinedText(permissionsDenied))
             } else {
                 listener.onPermissionDenied(getJoinedText
-                (context, permissionsDeniedNeedToShowRationale))
+                (permissionsDeniedNeedToShowRationale))
             }
         }
     }
@@ -281,7 +367,7 @@ class PermissionCheckerHelper {
                 Toast.LENGTH_LONG).show()
     }
 
-    private fun getJoinedText(context: Context, permissions: Array<String>): String {
+    private fun getJoinedText(permissions: Array<String>): String {
         var permissionText = ""
         val iterator = permissions.iterator()
         while (iterator.hasNext()) {

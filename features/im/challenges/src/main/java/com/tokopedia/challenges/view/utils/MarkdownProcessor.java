@@ -53,7 +53,9 @@ public class MarkdownProcessor {
         unEscapeSpecialChars(text);
 
         text.append("\n");
-        return text.toString();
+        String result = text.toString().replace("<h1>","<b>")
+                .replace("</h1>", "</b>");
+        return result;
     }
 
     private TextEditor encodeBackslashEscapes(TextEditor text) {

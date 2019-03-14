@@ -8,13 +8,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -258,7 +257,8 @@ public class DeepLinkChecker {
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
-                && !isMyBills(linkSegment);
+                && !isMyBills(linkSegment)
+                && !linkSegment.get(0).equals("contact-us");
     }
 
     private static boolean isSearch(String url) {
@@ -324,7 +324,7 @@ public class DeepLinkChecker {
             intent.putExtras(bundle);
         } else {
             intent = RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL,departmentId));
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
         }
         context.startActivity(intent);
     }
@@ -353,23 +353,25 @@ public class DeepLinkChecker {
 
     public static void openCategory(String url, Context context) {
         String departmentId = getLinkSegment(url).get(1);
-        Intent intent = RouteManager.getIntentInternal(context,
-                UriUtil.buildUri(ApplinkConstInternal.DISCOVERY_CATEGORY_DETAIL, departmentId));
-        context.startActivity(intent);
+        RouteManager.routeInternal(context,
+                UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
     }
 
     public static void openProduct(String url, Context context) {
         if (context != null) {
-            Bundle bundle = new Bundle();
-            if (getLinkSegment(url).size() > 1) {
-                bundle.putString("shop_domain", getLinkSegment(url).get(0));
-                bundle.putString("product_key", getLinkSegment(url).get(1));
+            Uri uri = Uri.parse(url);
+            List<String> pathSegmentList = uri.getPathSegments();
+            if (pathSegmentList.size() > 1) {
+                String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
+                String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
+                RouteManager.routeInternal(context,
+                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_DOMAIN,
+                                shopDomain, productKey));
+            } else {
+                String productId = uri.getLastPathSegment();
+                RouteManager.routeInternal(context,
+                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
             }
-            bundle.putString("url", url);
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-            intent.putExtras(bundle);
-            intent.setData(Uri.parse(url));
-            context.startActivity(intent);
         }
     }
 

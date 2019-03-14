@@ -33,6 +33,8 @@ public interface ReactConst {
         String BRANDLIST_PAGE = "brandlist-page";
         String HOW_TO_PAY = "how-to-pay";
         String DEV_OPTIONS = "dev-options-rn";
+        String OFFICIAL_STORE_HOME = "OFFICIAL_STORE_HOME";
+        String OFFICIAL_STORE_CATEGORY = "OFFICIAL_STORE_CATEGORY";
     }
 
     interface EventEmitter{

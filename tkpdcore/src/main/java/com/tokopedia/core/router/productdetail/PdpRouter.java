@@ -26,12 +26,6 @@ import rx.Observable;
 
 public interface PdpRouter {
 
-    void goToProductDetail(Context context, String productUrl);
-
-    void goToProductDetail(Context context, ProductPass productPass);
-
-    void goToProductDetail(Context context, LinkerData shareData);
-
     void openImagePreview(Context context, ArrayList<String> images, int position);
 
     Intent getProductReputationIntent(Context context, String productId, String productName);

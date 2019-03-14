@@ -10,11 +10,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
-import com.tokopedia.product.detail.di.DaggerProductDetailComponent
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
     private var isFromDeeplink = false
@@ -22,6 +26,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
+    private var trackerAttribution: String? = null
+    private var trackerListName: String? = null
+    lateinit var remoteConfig: RemoteConfig
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -29,20 +36,21 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val PARAM_PRODUCT_KEY = "product_key"
         private const val PARAM_IS_FROM_DEEPLINK = "is_from_deeplink"
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
+        private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
+        private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
+
+        private const val AFFILIATE_HOST = "affiliate"
 
         @JvmStatic
         fun createIntent(context: Context, productUrl: String) =
-                Intent(context, ProductDetailActivity::class.java).apply {
-                    data = Uri.parse(productUrl)
-                }
+            Intent(context, ProductDetailActivity::class.java).apply {
+                data = Uri.parse(productUrl)
+            }
 
         @JvmStatic
         fun createIntent(context: Context, shopDomain: String, productKey: String) = Intent(context, ProductDetailActivity::class.java).apply {
-            val bundle = Bundle().apply {
-                putString(PARAM_SHOP_DOMAIN, shopDomain)
-                putString(PARAM_PRODUCT_KEY, productKey)
-            }
-            putExtras(bundle)
+            putExtra(PARAM_SHOP_DOMAIN, shopDomain)
+            putExtra(PARAM_PRODUCT_KEY, productKey)
         }
 
         @JvmStatic
@@ -65,35 +73,73 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             extras.putBoolean(IS_FROM_EXPLORE_AFFILIATE, true)
             return Intent(context, ProductDetailActivity::class.java)
-                    .putExtras(extras)
+                .putExtras(extras)
         }
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
-            .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate)
+        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, trackerAttribution, trackerListName)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+        .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
+        val bundle = intent.extras
         if (uri != null) {
-            val segmentUri: List<String> = uri.pathSegments
-            if (segmentUri.size > 1 && uri.scheme != ApplinkConstInternal.INTERNAL_SCHEME) {
-                shopDomain = segmentUri[segmentUri.size-2]
-                productKey = segmentUri[segmentUri.size-1]
-            } else { // applink tokopedia or tokopedia internal
+            if (uri.scheme == ApplinkConstInternal.INTERNAL_SCHEME) {
+                val segmentUri = uri.pathSegments
+                if (segmentUri.size == 2) {
+                    productId = uri.lastPathSegment
+                } else {
+                    shopDomain = segmentUri[segmentUri.size - 2]
+                    productKey = segmentUri[segmentUri.size - 1]
+                }
+            } else if (uri.pathSegments.size >= 2 && // might be tokopedia.com/
+                uri.host != AFFILIATE_HOST) {
+                val segmentUri = uri.pathSegments
+                if (segmentUri.size > 1) {
+                    shopDomain = segmentUri[segmentUri.size - 2]
+                    productKey = segmentUri[segmentUri.size - 1]
+                }
+            } else { // affiliate
                 productId = uri.lastPathSegment
             }
-        } else {
-            productId = intent.getStringExtra(PARAM_PRODUCT_ID)
-            shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
-            productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
+            trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
+            trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
         }
-        isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
+        bundle?.let {
+            if (productId.isNullOrEmpty()) {
+                productId = it.getString(PARAM_PRODUCT_ID)
+            }
+            if (shopDomain.isNullOrEmpty()) {
+                shopDomain = it.getString(PARAM_SHOP_DOMAIN)
+            }
+            if (productKey.isNullOrEmpty()) {
+                productKey = it.getString(PARAM_PRODUCT_KEY)
+            }
+            if (trackerAttribution.isNullOrEmpty()) {
+                trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
+            }
+            if (trackerListName.isNullOrEmpty()) {
+                trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
+            }
+        }
+        if (uri != null && uri.host == AFFILIATE_HOST) {
+            isFromAffiliate = true
+        } else {
+            isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
+        }
+
+        remoteConfig = FirebaseRemoteConfigImpl(this)
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL)) {
+            if (application is ProductDetailRouter) {
+                (application as ProductDetailRouter).goToOldProductDetailPage(this, productId, shopDomain, productKey, trackerAttribution, trackerListName)
+            }
+        }
 
         super.onCreate(savedInstanceState)
     }

@@ -1,10 +1,14 @@
 package com.tokopedia.gm.statistic.view.adapter.viewholder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.gm.R;
@@ -38,17 +42,11 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
                 break;
         }
 
-        final Context applicationContext = itemView.getContext().getApplicationContext();
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductPass productPass = ProductPass.Builder.aProductPass()
-                        .setProductId(productId)
-                        .build();
-                if (applicationContext != null && applicationContext instanceof PdpRouter) {
-                    ((PdpRouter) applicationContext).goToProductDetail(itemView.getContext(), productPass);
-                }
-
+                RouteManager.routeInternal(itemView.getContext(),
+                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, String.valueOf(productId)));
             }
         });
 

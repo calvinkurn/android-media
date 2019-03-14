@@ -3,7 +3,6 @@ package com.tokopedia.shop.product.view.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,7 +29,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.design.button.BottomActionView;
@@ -549,13 +548,18 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
         //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
 
-        startActivity(getProductIntent(shopProductViewModel.getId()));
+        startActivity(getProductIntent(shopProductViewModel.getId(), attribution,
+                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)));
     }
 
-    private Intent getProductIntent(String productId) {
+    private Intent getProductIntent(String productId, String attribution, String listNameOfProduct) {
         if (getContext() != null) {
-            return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.PRODUCT_DETAIL, productId));
+            Bundle bundle = new Bundle();
+            bundle.putString("tracker_attribution", attribution);
+            bundle.putString("tracker_list_name", listNameOfProduct);
+            Intent intent = RouteManager.getIntentInternal(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+            return intent;
         } else {
             return null;
         }
