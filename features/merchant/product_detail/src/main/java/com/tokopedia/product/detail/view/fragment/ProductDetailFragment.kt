@@ -803,22 +803,25 @@ class ProductDetailFragment : BaseDaggerFragment() {
             REQUEST_CODE_NORMAL_CHECKOUT -> {
                 //TODO need to check when device don't keep activity
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
-                    val cacheManager = SaveInstanceCacheManager(this@ProductDetailFragment.context!!, objectId)
-                    val selectedProductInfo: ProductInfo? = cacheManager.get(NormalCheckoutFragment.RESULT_PRODUCT_DATA, ProductInfo::class.java)
-                    if (selectedProductInfo != null) {
-                        userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
-                        productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
+                    if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
+                        //refresh product by selected variant/product
+                        val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
+                        val cacheManager = SaveInstanceCacheManager(this@ProductDetailFragment.context!!, objectId)
+                        val selectedProductInfo: ProductInfo? = cacheManager.get(NormalCheckoutFragment.RESULT_PRODUCT_DATA, ProductInfo::class.java)
+                        if (selectedProductInfo != null) {
+                            userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
+                            productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
+                        }
                     }
-                    userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
-                    userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
-
+                    //refresh variant
                     val variantResult = productInfoViewModel.productVariantResp.value
                     if (variantResult is Success) {
                         variantResult.data.run {
                             onSuccessGetProductVariantInfo(this)
                         }
                     }
+                    userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
+                    userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
 
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
