@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg_ovo_tokopoint_widget"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/margin_16"
+    android:layout_marginStart="@dimen/margin_16"
+    android:layout_marginRight="@dimen/dp_14"
+    android:layout_marginEnd="@dimen/dp_14"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="1px"
+    android:weightSum="7"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:id="@+id/container_action_scan"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/img_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_product_fintech_qr_normal_24"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:layout_below="@+id/img_scan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_header_fintech_scan"
+            android:textColor="@color/font_black_disabled_38"
+            android:textSize="@dimen/sp_10"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/dp_8"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="#1e000000" />
+
+
+    <RelativeLayout
+        android:id="@+id/container_nonlogin"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_logo_tokopoint"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_margin="@dimen/dp_8"
+            android:src="@drawable/ic_product_fintech_tokopoint_green_24"
+            android:layout_centerVertical="true"/>
+
+        <RelativeLayout
+            android:layout_toRightOf="@+id/iv_logo_tokopoint"
+            android:layout_toEndOf="@+id/iv_logo_tokopoint"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_title_tokopoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_12"
+                android:text="@string/home_header_tokopoint_no_tokopoints"
+                android:textColor="@color/font_black_primary_70"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_below="@+id/tv_title_tokopoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#03ac0e"
+                android:textStyle="bold"
+                android:text="@string/home_header_fintech_cek_sekarang"
+                android:textSize="@dimen/sp_12" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+
+        <ImageView
+            android:id="@+id/bg_container_nonlogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

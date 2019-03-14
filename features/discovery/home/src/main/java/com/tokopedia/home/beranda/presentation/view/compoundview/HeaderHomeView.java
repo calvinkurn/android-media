@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.gamification.util.HexValidator;
@@ -41,6 +42,9 @@ import com.tokopedia.tokocash.tracker.WalletAnalytics;
  */
 
 public class HeaderHomeView extends BaseCustomView {
+
+    private static final String CDN_URL = "https://ecs7.tokopedia.net/img/android/";
+    private static final String BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/bg_product_fintech_tokopoint_normal.png";
 
     private static final String TITLE_HEADER_WEBSITE = "TokoPoints";
     private static final String RP_NOL = "Rp0";
@@ -97,20 +101,34 @@ public class HeaderHomeView extends BaseCustomView {
             walletAnalytics = new WalletAnalytics(analyticTracker);
         }
 
-        renderHeaderTokocashWithTokopoint();
-    }
-
-    public void setHeaderViewModel(HeaderViewModel headerViewModel) {
-        this.headerViewModel = headerViewModel;
+        if (headerViewModel.isUserLogin()) {
+            render();
+        } else {
+            renderNonLogin();
+        }
     }
 
     public void setListener(HomeCategoryListener listener) {
         this.listener = listener;
     }
 
-    private void renderHeaderTokocashWithTokopoint() {
+    private void renderNonLogin() {
         if (view == null) {
-            view = inflate(getContext(), R.layout.layout_header_home_with_tokopoint, this);
+            view = inflate(getContext(), R.layout.layout_item_widget_ovo_tokopoint_nonlogin, this);
+            scanHolder = view.findViewById(R.id.container_action_scan);
+            View container = view.findViewById(R.id.container_nonlogin);
+            ImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
+
+            ImageHandler.loadImageFitCenter(getContext(), imgNonLogin, BG_CONTAINER_URL);
+
+            container.setOnClickListener(onCheckNowListener());
+            scanHolder.setOnClickListener(onScanListener());
+        }
+    }
+
+    private void render() {
+        if (view == null) {
+            view = inflate(getContext(), R.layout.layout_item_widget_ovo_tokopoint_login, this);
             scanHolder = view.findViewById(R.id.container_action_scan);
             tokoCashHolder = view.findViewById(R.id.container_tokocash);
             tvActionTokocash = view.findViewById(R.id.tv_btn_action_tokocash);
@@ -126,15 +144,22 @@ public class HeaderHomeView extends BaseCustomView {
             tokopointProgressBarLayout = view.findViewById(R.id.progress_bar_tokopoint_layout);
             tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
             mTextCouponCount = view.findViewById(R.id.text_coupon_count);
+
+            scanHolder.setOnClickListener(onScanListener());
         }
         viewListener();
     }
 
-    private void viewListener() {
-        scanHolder.setOnClickListener(v ->
-                getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
-                        .gotoQrScannerPage(false)));
+    private OnClickListener onScanListener() {
+        return v -> getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
+                .gotoQrScannerPage(false));
+    }
 
+    private OnClickListener onCheckNowListener() {
+        return v -> RouteManager.route(getContext(), ApplinkConst.LOGIN);
+    }
+
+    private void viewListener() {
         renderTokocashLayoutListener();
         renderTokoPointLayoutListener();
     }
@@ -172,7 +197,7 @@ public class HeaderHomeView extends BaseCustomView {
             tvActionTokopoint.setVisibility(VISIBLE);
             tokopointProgressBarLayout.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
-            ivLogoTokoPoint.setImageResource(R.drawable.ic_hachiko_egg);
+            ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24);
         } else if (headerViewModel.getTokopointsDrawerHomeData() == null && !headerViewModel.isTokoPointDataError()) {
             tokoPointHolder.setOnClickListener(null);
             tokopointProgressBarLayout.setVisibility(VISIBLE);
