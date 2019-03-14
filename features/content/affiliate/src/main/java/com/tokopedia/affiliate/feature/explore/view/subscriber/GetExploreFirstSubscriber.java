@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.data.pojo.CategoryPojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreProductPojo;
@@ -13,6 +14,7 @@ import com.tokopedia.affiliate.feature.explore.data.pojo.FilterQuery;
 import com.tokopedia.affiliate.feature.explore.data.pojo.SortData;
 import com.tokopedia.affiliate.feature.explore.data.pojo.SortQuery;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
@@ -31,9 +33,9 @@ import rx.Subscriber;
 public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
 
     protected ExploreContract.View mainView;
-    protected boolean isSearch;
     protected boolean isPullToRefresh;
-    protected ExploreParams exploreParams;
+    private ExploreParams exploreParams;
+    private boolean isSearch;
 
     public GetExploreFirstSubscriber(ExploreContract.View mainView,
                                      boolean isSearch,
@@ -134,23 +136,27 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
 
     }
 
-    public static List<Visitable> mappingProducts(List<ExploreProductPojo> pojoList, ExploreContract.View mainView) {
+    public static List<Visitable> mappingProducts(List<ExploreProductPojo> pojoList,
+                                                  ExploreContract.View mainView) {
         List<Visitable> itemList = new ArrayList<>();
         for (ExploreProductPojo pojo : pojoList) {
             itemList.add(
-                    new ExploreViewModel(
-                            pojo.getAdId(),
-                            pojo.getImage(),
+                    new ExploreViewModel(new ExploreCardViewModel(
                             pojo.getName(),
+                            mainView.getContext().getString(R.string.af_get_commission),
                             pojo.getCommission(),
-                            pojo.getProductId(),
-                            ""));
+                            pojo.getImage(),
+                            "",
+                            pojo.getAdId(),
+                            pojo.getProductId()
+                    ))
+            );
             mainView.getAffiliateAnalytics().onProductImpression(pojo.getProductId());
         }
         return itemList;
     }
 
     private boolean isFirstDataWithFilterSort(ExploreParams exploreParams) {
-        return exploreParams.getFilters().size()!=0 || !TextUtils.isEmpty(exploreParams.getSort().getText());
+        return exploreParams.getFilters().size() != 0 || !TextUtils.isEmpty(exploreParams.getSort().getText());
     }
 }

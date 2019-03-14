@@ -47,6 +47,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
@@ -426,11 +427,12 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreViewModel model) {
-        affiliateAnalytics.onByMeButtonClicked(model.getProductId());
+        ExploreCardViewModel cardViewModel = model.getExploreCardViewModel();
+        affiliateAnalytics.onByMeButtonClicked(cardViewModel.getProductId());
         if (isCanDoAction) {
             isCanDoAction = false;
             if (userSession.isLoggedIn()) {
-                presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
+                presenter.checkIsAffiliate(cardViewModel.getProductId(), cardViewModel.getAdId());
             } else {
                 goToLogin();
             }
@@ -439,14 +441,16 @@ public class ExploreFragment
 
     @Override
     public void onProductClicked(ExploreViewModel model) {
-        affiliateAnalytics.onProductClicked(model.getProductId());
-        if (isCanDoAction) {
-            isCanDoAction = false;
+        ExploreCardViewModel cardViewModel = model.getExploreCardViewModel();
+        affiliateAnalytics.onProductClicked(cardViewModel.getProductId());
+        if (getContext() != null &&  isCanDoAction) {
             RouteManager.route(
                     getContext(),
-                    ApplinkConst.AFFILIATE_PRODUCT.replace(PRODUCT_ID_PARAM, model.getProductId())
+                    ApplinkConst.AFFILIATE_PRODUCT
+                            .replace(PRODUCT_ID_PARAM, cardViewModel.getProductId())
             );
         }
+        isCanDoAction = false;
     }
 
     @Override

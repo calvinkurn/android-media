@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/card_background_with_shadow"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_0"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.design.image.SquareImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:minHeight="@dimen/dp_50"
+            android:scaleType="centerCrop"
+            tools:background="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/bymeIcon"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:src="@drawable/ic_product_affiliate_logo_grayscale_32" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:gravity="top|start"
+            android:lineSpacingExtra="@dimen/dp_4"
+            android:lines="2"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_14"
+            android:visibility="gone"
+            tools:text="default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:lineSpacingExtra="4sp"
+            android:text="@string/af_get_commission"
+            android:textColor="@color/black_38"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/commission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/subtitle"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/af_commission_blue"
+            android:textSize="@dimen/sp_14"
+            tools:text="Rp14.000" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
