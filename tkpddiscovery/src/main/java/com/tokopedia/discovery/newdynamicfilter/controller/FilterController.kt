@@ -171,12 +171,32 @@ class FilterController : Serializable {
     fun setFlagFilterHelper(option: Option, value: Boolean) {
         setOrRemoveFlagFilterHelper(option.uniqueId, value)
 
-        setFilterValue(option, value.toString())
+        setFilterValue(option, getNewFilterValue(value, option.key, option.value))
     }
 
     private fun setOrRemoveFlagFilterHelper(key: String, value: Boolean) {
         if(value) flagFilterHelper[key] = true
         else flagFilterHelper.remove(key)
+    }
+
+    private fun getNewFilterValue(isFilterAdded: Boolean, key: String, value: String) : String {
+        return if(isFilterAdded) {
+            appendFilterValue(key, value)
+        } else {
+            removeFilterValue(key, value)
+        }
+    }
+
+    private fun appendFilterValue(key: String, value: String) : String {
+        return getFilterValue(key) + Option.VALUE_SEPARATOR + value
+    }
+
+    private fun removeFilterValue(key: String, value: String) : String {
+        val currentValueList = getFilterValue(key).split(Option.VALUE_SEPARATOR).toMutableList()
+        val newValueList = value.split(Option.VALUE_SEPARATOR)
+        currentValueList.removeAll(newValueList)
+
+        return currentValueList.joinToString(separator = Option.VALUE_SEPARATOR)
     }
 
     fun setFilterValue(option: Option, value: String) {
