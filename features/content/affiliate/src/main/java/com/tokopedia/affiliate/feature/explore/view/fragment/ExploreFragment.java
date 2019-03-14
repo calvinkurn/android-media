@@ -477,7 +477,7 @@ public class ExploreFragment
     }
 
     private void populateFirstData(List<Visitable> itemList, String cursor) {
-        itemList.add(getDummyPopularProfile());
+        itemList.add(0, getDummyPopularProfile());
         rvExplore.scrollTo(0,0);
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
