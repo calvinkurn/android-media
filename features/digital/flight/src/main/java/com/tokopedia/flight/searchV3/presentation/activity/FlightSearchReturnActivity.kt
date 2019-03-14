@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
-import com.tokopedia.flight.booking.view.activity.FlightBookingActivity
+import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
