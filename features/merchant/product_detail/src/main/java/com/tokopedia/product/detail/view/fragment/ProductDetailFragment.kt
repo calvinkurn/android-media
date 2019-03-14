@@ -812,12 +812,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             userInputVariant = data.getStringExtra(NormalCheckoutFragment.EXTRA_SELECTED_VARIANT_ID)
                             productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
                         }
-                        //refresh variant
-                        val variantResult = productInfoViewModel.productVariantResp.value
-                        if (variantResult is Success) {
-                            variantResult.data.run {
-                                onSuccessGetProductVariantInfo(this)
-                            }
+                    }
+                    //refresh variant
+                    val variantResult = productInfoViewModel.productVariantResp.value
+                    if (variantResult is Success) {
+                        variantResult.data.run {
+                            onSuccessGetProductVariantInfo(this)
                         }
                     }
                     userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
