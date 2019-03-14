@@ -100,18 +100,14 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             } else { // affiliate, tokopedia-internal
                 productId = uri.lastPathSegment
             }
-        } else if(bundle != null) {
-            bundle.let {
-                shopDomain = it.getString(PARAM_SHOP_DOMAIN)
+        } else {
+            bundle?.let {
+                productId = it.getString(PARAM_PRODUCT_ID)
                 shopDomain = it.getString(PARAM_SHOP_DOMAIN)
                 productKey = it.getString(PARAM_PRODUCT_KEY)
                 trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
             }
-        }else{
-            productId = intent.getStringExtra(PARAM_PRODUCT_ID)
-            shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
-            productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
         }
 
         if (uri != null && uri.host == AFFILIATE_HOST) {
