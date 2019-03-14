@@ -19,6 +19,7 @@ import android.webkit.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -56,15 +57,16 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     lateinit var errorView: View
     lateinit var errorImage: ImageView
     lateinit var retryButton: View
-    lateinit var closeButton: View
+    private var behavior: BottomSheetBehavior<FrameLayout?>? = null
 
+    lateinit var closeButton: View
     companion object {
+
         fun createInstance(bundle: Bundle): PlayWebviewDialogFragment {
             val fragment = PlayWebviewDialogFragment()
             fragment.arguments = bundle
             return fragment
         }
-
         fun createInstance(url: String): PlayWebviewDialogFragment {
             val fragment = PlayWebviewDialogFragment()
             val bundle = Bundle()
@@ -73,6 +75,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             fragment.arguments = bundle
             return fragment
         }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,11 +93,12 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             var finalDialog = dialog as BottomSheetDialog
             val bottomSheet = finalDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
             var behavior = BottomSheetBehavior.from(bottomSheet)
+            this.behavior = behavior
             behavior.peekHeight = 600
             activity?.windowManager?.defaultDisplay?.let {
                 var displayMetrics = DisplayMetrics()
                 it.getMetrics(displayMetrics)
-
+                Toast.makeText(activity, "screen "+ displayMetrics.heightPixels.toString(), Toast.LENGTH_LONG).show()
                 behavior.peekHeight = displayMetrics.heightPixels * 9 / 16
             }
 
@@ -179,8 +183,10 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
         webview.settings.javaScriptEnabled = true
+        webview.addJavascriptInterface(WebViewResizer(), "WebViewResizer")
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webview.settings.domStorageEnabled = true
+        webview.settings.javaScriptEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webview.settings.mediaPlaybackRequiresUserGesture = false
         }
@@ -294,6 +300,11 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 val requestUrl = url.toString()
                 return onOverrideUrl(requestUrl)
             }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                webview.loadUrl("javascript:window.WebViewResizer.processHeight(document.querySelector('body').offsetHeight);")
+                super.onPageFinished(view, url)
+            }
         }
     }
 
@@ -345,4 +356,16 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         return header
     }
 
+
+    private inner class WebViewResizer {
+        @JavascriptInterface
+        fun processHeight(height: Float) {
+            var webViewHeight = (height * resources.displayMetrics.density)
+            var marginTop = (10 * resources.displayMetrics.density)
+            Toast.makeText(activity, "webview "+webViewHeight.toString(), Toast.LENGTH_LONG).show()
+            activity?.runOnUiThread {
+                behavior?.peekHeight = (webViewHeight + marginTop).toInt()
+            }
+        }
+    }
 }
