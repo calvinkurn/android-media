@@ -249,7 +249,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeFeedsViewPager = view.findViewById(R.id.view_pager_home_feeds);
         homeFeedsTabLayout = view.findViewById(R.id.tab_layout_home_feeds);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-        initStatusBarDark();
 
         if (getArguments() != null) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
@@ -497,10 +496,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
                 if (offsetAlpha >= 2.55) {
                     offsetAlpha = 2.55f;
-                    homeMainToolbar.switchToDarkToolbar();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        homeMainToolbar.switchToDarkToolbar();
+                    }
                 } else {
                     homeMainToolbar.switchToLightToolbar();
-                    initStatusBarDark();
+                }
+
+                if (offsetAlpha >= 0 && offsetAlpha <= 2.55) {
+                    homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
                 }
 
                 if (isAppBarFullyCollapsed(offset) &&
@@ -512,8 +516,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
                     homeMainToolbar.showShadow();
                 }
-
-                homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
 
                 if (isAppBarFullyExpanded(offset)) {
                     refreshLayout.setCanChildScrollUp(false);
@@ -1346,21 +1348,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     name,
                     price
             );
-        }
-    }
-
-    @Override
-    public void onNotificationChanged(int notificationCount, int inboxCount) {
-        if (homeMainToolbar != null) {
-            homeMainToolbar.setNotificationNumber(notificationCount);
-            homeMainToolbar.setInboxNumber(inboxCount);
-        }
-    }
-
-    private void initStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation() && isAdded()) {
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
     }
 

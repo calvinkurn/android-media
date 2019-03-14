@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 class HomeMainToolbar : MainToolbar {
 
     var toolbarType: Int = 0
-        private set
+
+    var shadowApplied: Boolean = false
 
     constructor(context: Context) : super(context) {}
 
@@ -28,6 +29,7 @@ class HomeMainToolbar : MainToolbar {
 
     override fun init(context: Context, attrs: AttributeSet?) {
         super.init(context, attrs)
+
         showShadow()
 
         icon_search.setImageResource(R.drawable.ic_searchbar_search_grey)
@@ -47,17 +49,25 @@ class HomeMainToolbar : MainToolbar {
     }
 
     fun hideShadow() {
-        toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+        if(isShadowApplied()){
+            shadowApplied = false
+            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+        }
     }
 
     fun showShadow() {
-        val pL = toolbar.paddingLeft
-        val pT = ViewHelper.getStatusBarHeight(context)
-        val pR = toolbar.paddingRight
-        val pB = toolbar.paddingBottom
+        if(!isShadowApplied()){
+            shadowApplied = true
+            val pL = toolbar.paddingLeft
+            var pT = ViewHelper.getStatusBarHeight(context)
+            val pR = toolbar.paddingRight
+            val pB = toolbar.paddingBottom
 
-        toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-        toolbar!!.setPadding(pL, pT, pR, pB)
+            toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+
+            toolbar!!.setPadding(pL, pT, pR, pB)
+        }
     }
 
     override fun inflateResource(context: Context) {
