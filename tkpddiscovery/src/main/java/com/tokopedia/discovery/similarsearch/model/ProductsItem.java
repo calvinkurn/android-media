@@ -9,253 +9,258 @@ import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("com.robohorse.robopojogenerator")
-public class ProductsItem{
+public class ProductsItem {
 
-	@SerializedName("original_price")
-	private String originalPrice = "";
+    @SerializedName("original_price")
+    private String originalPrice = "";
 
-	@SerializedName("shop")
-	private Shop shop;
+    @SerializedName("shop")
+    private Shop shop;
 
-	@SerializedName("category_name")
-	private String categoryName = "";
+    @SerializedName("category_name")
+    private String categoryName = "";
 
-	@SerializedName("image_url")
-	private String imageUrl = "";
+    @SerializedName("image_url")
+    private String imageUrl = "";
 
-	@SerializedName("image_url_700")
-	private String imageUrl700 = "";
+    @SerializedName("image_url_700")
+    private String imageUrl700 = "";
 
-	@SerializedName("rating")
-	private int rating;
+    @SerializedName("rating")
+    private int rating;
 
-	@SerializedName("discount_start_time")
-	private String discountStartTime = "";
+    @SerializedName("discount_start_time")
+    private String discountStartTime = "";
 
-	@SerializedName("discount_percentage")
-	private int discountPercentage;
+    @SerializedName("discount_percentage")
+    private int discountPercentage;
 
-	@SerializedName("url")
-	private String url;
+    @SerializedName("url")
+    private String url;
 
-	@SerializedName("category_id")
-	private int categoryId;
+    @SerializedName("category_id")
+    private int categoryId;
 
-	@SerializedName("count_review")
-	private int countReview;
+    @SerializedName("count_review")
+    private int countReview;
 
-	@SerializedName("price")
-	private String price = "";
+    @SerializedName("price")
+    private String price = "";
 
-	@SerializedName("name")
-	private String name = "";
+    @SerializedName("name")
+    private String name = "";
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("discount_expired_time")
-	private String discountExpiredTime;
+    @SerializedName("discount_expired_time")
+    private String discountExpiredTime;
 
-	@SerializedName("badges")
-	private List<Badges> badges;
+    @SerializedName("badges")
+    private List<Badges> badges;
 
-	private String originProductID;
-	private boolean wishListed;
-	private boolean isWishlistButtonEnabled = true;
+    @SerializedName("wishlist")
+    private boolean wishListed;
 
-	public boolean isWishListed() {
-		return wishListed;
-	}
+    private String originProductID;
+    private boolean isWishlistButtonEnabled = true;
 
-	public boolean isWishlistButtonEnabled() {
-		return isWishlistButtonEnabled;
-	}
+    public boolean isWishListed() {
+        return wishListed;
+    }
 
-	public void setWishlistButtonEnabled(boolean wishlistButtonEnabled) {
-		isWishlistButtonEnabled = wishlistButtonEnabled;
-	}
+    public boolean isWishlistButtonEnabled() {
+        return isWishlistButtonEnabled;
+    }
 
-	public void setWishListed(boolean wishListed) {
-		this.wishListed = wishListed;
-	}
+    public void setWishlistButtonEnabled(boolean wishlistButtonEnabled) {
+        isWishlistButtonEnabled = wishlistButtonEnabled;
+    }
 
-	public void setOriginalPrice(String originalPrice){
-		this.originalPrice = originalPrice;
-	}
+    public void setWishListed(boolean wishListed) {
+        this.wishListed = wishListed;
+    }
 
-	public String getOriginalPrice(){
-		return originalPrice;
-	}
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
 
-	public void setShop(Shop shop){
-		this.shop = shop;
-	}
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
 
-	public Shop getShop(){
-		return shop;
-	}
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
 
-	public void setCategoryName(String categoryName){
-		this.categoryName = categoryName;
-	}
+    public Shop getShop() {
+        return shop;
+    }
 
-	public String getCategoryName(){
-		return categoryName;
-	}
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
-	public void setImageUrl(String imageUrl){
-		this.imageUrl = imageUrl;
-	}
+    public String getCategoryName() {
+        return categoryName;
+    }
 
-	public String getImageUrl(){
-		return imageUrl;
-	}
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
-	public void setImageUrl700(String imageUrl700){
-		this.imageUrl700 = imageUrl700;
-	}
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-	public String getImageUrl700(){
-		return imageUrl700;
-	}
+    public void setImageUrl700(String imageUrl700) {
+        this.imageUrl700 = imageUrl700;
+    }
 
-	public void setRating(int rating){
-		this.rating = rating;
-	}
+    public String getImageUrl700() {
+        return imageUrl700;
+    }
 
-	public int getRating(){
-		return rating;
-	}
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
-	public void setDiscountStartTime(String discountStartTime){
-		this.discountStartTime = discountStartTime;
-	}
+    public int getRating() {
+        return rating;
+    }
 
-	public String getDiscountStartTime(){
-		return discountStartTime;
-	}
+    public void setDiscountStartTime(String discountStartTime) {
+        this.discountStartTime = discountStartTime;
+    }
 
-	public void setDiscountPercentage(int discountPercentage){
-		this.discountPercentage = discountPercentage;
-	}
+    public String getDiscountStartTime() {
+        return discountStartTime;
+    }
 
-	public int getDiscountPercentage(){
-		return discountPercentage;
-	}
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
 
-	public void setUrl(String url){
-		this.url = url;
-	}
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
 
-	public String getUrl(){
-		return url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public void setCategoryId(int categoryId){
-		this.categoryId = categoryId;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public int getCategoryId(){
-		return categoryId;
-	}
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
 
-	public void setCountReview(int countReview){
-		this.countReview = countReview;
-	}
+    public int getCategoryId() {
+        return categoryId;
+    }
 
-	public int getCountReview(){
-		return countReview;
-	}
+    public void setCountReview(int countReview) {
+        this.countReview = countReview;
+    }
 
-	public void setPrice(String price){
-		this.price = price;
-	}
+    public int getCountReview() {
+        return countReview;
+    }
 
-	public String getPrice(){
-		return price;
-	}
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public String getPrice() {
+        return price;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setDiscountExpiredTime(String discountExpiredTime){
-		this.discountExpiredTime = discountExpiredTime;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getDiscountExpiredTime(){
-		return discountExpiredTime;
-	}
+    public void setDiscountExpiredTime(String discountExpiredTime) {
+        this.discountExpiredTime = discountExpiredTime;
+    }
 
-	public List<Badges> getBadges() {
-		return badges;
-	}
+    public String getDiscountExpiredTime() {
+        return discountExpiredTime;
+    }
 
-	public void setBadges(List<Badges> badges) {
-		this.badges = badges;
-	}
+    public List<Badges> getBadges() {
+        return badges;
+    }
 
-	public String getOriginProductID() {
-		return originProductID;
-	}
+    public void setBadges(List<Badges> badges) {
+        this.badges = badges;
+    }
 
-	public void setOriginProductID(String originProductID) {
-		this.originProductID = originProductID;
-	}
+    public String getOriginProductID() {
+        return originProductID;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"ProductsItem{" + 
-			"original_price = '" + originalPrice + '\'' + 
-			",shop = '" + shop + '\'' + 
-			",category_name = '" + categoryName + '\'' + 
-			",image_url = '" + imageUrl + '\'' + 
-			",image_url_700 = '" + imageUrl700 + '\'' + 
-			",rating = '" + rating + '\'' + 
-			",discount_start_time = '" + discountStartTime + '\'' + 
-			",discount_percentage = '" + discountPercentage + '\'' + 
-			",url = '" + url + '\'' + 
-			",category_id = '" + categoryId + '\'' + 
-			",count_review = '" + countReview + '\'' + 
-			",price = '" + price + '\'' + 
-			",name = '" + name + '\'' + 
-			",id = '" + id + '\'' + 
-			",discount_expired_time = '" + discountExpiredTime + '\'' + 
-			"}";
-		}
-	public Object getProductAsObjectDataLayer(String position) {
-		String price = "";
-		if(!getPrice().trim().isEmpty()) {
-			price = Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice()));
-		}
-			return DataLayer.mapOf(
-				"name", getName(),
-				"id", getId(),
-				"price",price,
-				"brand", "none / other",
-				"category", categoryName,
-				"variant", "none / other",
-				"list", "/similarproduct",
-				"position", position
-		);
-	}
-	@Override
-	public boolean equals(Object obj) {
-		ProductsItem productsItem = (ProductsItem) obj;
-		return id == productsItem.getId();
+    public void setOriginProductID(String originProductID) {
+        this.originProductID = originProductID;
+    }
 
-	}
+    @Override
+    public String toString() {
+        return
+                "ProductsItem{" +
+                        "original_price = '" + originalPrice + '\'' +
+                        ",shop = '" + shop + '\'' +
+                        ",category_name = '" + categoryName + '\'' +
+                        ",image_url = '" + imageUrl + '\'' +
+                        ",image_url_700 = '" + imageUrl700 + '\'' +
+                        ",rating = '" + rating + '\'' +
+                        ",discount_start_time = '" + discountStartTime + '\'' +
+                        ",discount_percentage = '" + discountPercentage + '\'' +
+                        ",url = '" + url + '\'' +
+                        ",category_id = '" + categoryId + '\'' +
+                        ",count_review = '" + countReview + '\'' +
+                        ",price = '" + price + '\'' +
+                        ",wishlist = '" + wishListed + '\'' +
+                        ",name = '" + name + '\'' +
+                        ",id = '" + id + '\'' +
+                        ",discount_expired_time = '" + discountExpiredTime + '\'' +
+                        "}";
+    }
+
+    public Object getProductAsObjectDataLayer(String position) {
+        String price = "";
+        if (!getPrice().trim().isEmpty()) {
+            price = Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice()));
+        }
+        return DataLayer.mapOf(
+                "name", getName(),
+                "id", getId(),
+                "price", price,
+                "brand", "none / other",
+                "category", categoryName,
+                "variant", "none / other",
+                "list", "/similarproduct",
+                "position", position
+        );
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        ProductsItem productsItem = (ProductsItem) obj;
+        return id == productsItem.getId();
+
+    }
 }
