@@ -40,64 +40,63 @@
                     android:id="@+id/cb_select_shop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingRight="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
                     android:theme="@style/TransactionCheckbox" />
 
-                <TextView
-                    android:id="@+id/tv_label_shop_name"
-                    style="@style/TextSmallMediumBlack38"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/ll"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@id/cb_select_shop"
-                    android:layout_toRightOf="@+id/cb_select_shop"
-                    android:lineSpacingExtra="@dimen/sp_5"
-                    android:text="@string/label_seller"
-                    tools:ignore="RtlSymmetry" />
+                    android:layout_alignTop="@+id/cb_select_shop"
+                    android:layout_alignBottom="@+id/cb_select_shop"
+                    android:layout_toEndOf="@+id/cb_select_shop"
+                    android:layout_toRightOf="@id/cb_select_shop"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tv_shop_name"
-                    style="@style/TextSmallMediumBlack70"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@id/tv_label_shop_name"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
-                    android:layout_toEndOf="@+id/tv_label_shop_name"
-                    android:layout_toRightOf="@+id/tv_label_shop_name"
-                    android:lineSpacingExtra="@dimen/sp_5"
-                    tools:ignore="RelativeOverlap"
-                    tools:text="Loaa Store df" />
+                    <TextView
+                        android:id="@+id/tv_label_shop_name"
+                        style="@style/TextSmallMediumBlack38"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_seller" />
+
+                    <TextView
+                        android:id="@+id/tv_shop_name"
+                        style="@style/TextSmallMediumBlack70"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_4"
+                        tools:text="Loaa Store df" />
+
+                    <ImageView
+                        android:id="@+id/img_shop_badge"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        tools:src="@drawable/ic_badge_shop_official"
+                        tools:visibility="visible" />
+
+                    <ImageView
+                        android:id="@+id/img_shop_fulfill"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_18"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_fulfill_district"
                     style="@style/TextSmallMediumBlack38"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_label_shop_name"
-                    android:layout_marginTop="@dimen/dp_4"
+                    android:layout_below="@+id/ll"
                     android:layout_toEndOf="@+id/cb_select_shop"
                     android:layout_toRightOf="@+id/cb_select_shop"
                     tools:text="Tangerang Selatan" />
-
-                <ImageView
-                    android:id="@+id/img_shop_badge"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    android:layout_alignBottom="@id/tv_shop_name"
-                    android:layout_toEndOf="@+id/tv_shop_name"
-                    android:layout_toRightOf="@+id/tv_shop_name"
-                    tools:src="@drawable/ic_badge_shop_official" />
-
-                <ImageView
-                    android:id="@+id/img_shop_fulfill"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    android:layout_alignBottom="@id/tv_shop_name"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_toEndOf="@+id/img_shop_badge"
-                    android:layout_toRightOf="@+id/img_shop_badge"
-                    android:src="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
 
             </RelativeLayout>
 
