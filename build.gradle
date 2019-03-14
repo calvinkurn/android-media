@@ -38,6 +38,8 @@ buildscript {
             }
         }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.51"
+        classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0-SNAPSHOT"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
     }
 }
 

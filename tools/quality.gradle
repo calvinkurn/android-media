@@ -1,21 +1,3 @@
-buildscript {
-    repositories {
-        google()
-        maven { url "https://maven.google.com" }
-        jcenter()
-        mavenLocal()
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://central.maven.org/maven2/' }
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0-SNAPSHOT"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
-    }
-}
-
 if (project.hasProperty("code.quality")) {
     apply plugin: "com.vanniktech.code.quality.tools"
 }
