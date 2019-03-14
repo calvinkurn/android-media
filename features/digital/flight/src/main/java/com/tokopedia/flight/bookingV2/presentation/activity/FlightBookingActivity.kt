@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingComponent> {
 
-    private lateinit var flightPassengerDeleteAllListUseCase: FlightPassengerDeleteAllListUseCase
+    lateinit var flightPassengerDeleteAllListUseCase: FlightPassengerDeleteAllListUseCase
         @Inject set
 
     private lateinit var flightBookingFragment: FlightBookingFragment
