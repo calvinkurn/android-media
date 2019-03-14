@@ -1224,7 +1224,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void fetchTokopointsNotification(String type) {
-//        TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
+        TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
     }
 
     @Override
