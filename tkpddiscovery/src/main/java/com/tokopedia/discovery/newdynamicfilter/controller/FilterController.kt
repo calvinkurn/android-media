@@ -188,7 +188,14 @@ class FilterController : Serializable {
     }
 
     private fun appendFilterValue(key: String, value: String) : String {
-        return getFilterValue(key) + Option.VALUE_SEPARATOR + value
+        val currentValue = getFilterValue(key)
+
+        return if(!TextUtils.isEmpty(currentValue)) {
+            currentValue + Option.VALUE_SEPARATOR + value
+        }
+        else {
+            value
+        }
     }
 
     private fun removeFilterValue(key: String, value: String) : String {
