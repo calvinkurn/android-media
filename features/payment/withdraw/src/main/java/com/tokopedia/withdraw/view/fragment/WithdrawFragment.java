@@ -616,10 +616,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void goToSettingBank() {
-        Intent intent = new Intent(getActivity(), SettingBankActivity.class);
+        /*Intent intent = new Intent(getActivity(), SettingBankActivity.class);
         Bundle bundle = new Bundle();
         intent.putExtras(bundle);
-        startActivityForResult(intent, BANK_SETTING_INTENT);
+        startActivityForResult(intent, BANK_SETTING_INTENT);*/
     }
 
     @Override
