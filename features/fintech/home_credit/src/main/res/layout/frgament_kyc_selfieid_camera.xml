@@ -61,15 +61,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:shadowColor="#80000000"
+            android:shadowColor="@color/clr_80000000"
             android:shadowDy="2"
             android:shadowRadius="4"
             android:id="@+id/desc_1"
             android:textSize="15sp"
-            android:textColor="#ffffff"
-            android:lineSpacingExtra="5sp"
+            android:textColor="@color/white"
+            android:lineSpacingExtra="@dimen/sp_5"
             android:gravity="center_horizontal"
-            android:text="Pastikan wajah Anda berada di area oval dan Kartu Identitas Anda berada di area kotak" />
+            android:text="@string/pstkn_wjh" />
 
         <include
             layout="@layout/camera_action_layout"
