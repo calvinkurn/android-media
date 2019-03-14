@@ -84,7 +84,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         val args: Bundle = savedInstanceState ?: arguments!!
 
         departureId = args.getString(EXTRA_FLIGHT_DEPARTURE_ID)
-        returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID)
+        returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
         paramViewModel = FlightBookingParamViewModel()
         paramViewModel.searchParam = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
         progressDialog = ProgressDialog(activity)
@@ -593,7 +593,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         private val REQUEST_CODE_OTP = 5
 
         fun newInstance(searchPassDataViewModel: FlightSearchPassDataViewModel,
-                        departureId: String, returnId: String,
+                        departureId: String, returnId: String?,
                         priceViewModel: FlightPriceViewModel): FlightBookingFragment {
             val fragment = FlightBookingFragment()
             val bundle = Bundle()

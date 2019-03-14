@@ -10,6 +10,8 @@ import com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import dagger.Component;
 
 /**
@@ -34,7 +36,7 @@ public interface FlightBookingComponent {
 
     void inject(FlightBookingActivity flightBookingActivity);
 
-    void inject(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity flightBookingActivity);
+    void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity flightBookingActivity);
 
-    void inject(com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingFragment flightBookingFragment);
+    void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingFragment flightBookingFragment);
 }
