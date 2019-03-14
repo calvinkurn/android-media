@@ -354,6 +354,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         if (position != 0 && item != null && !isTopads(item)) {
                             trackImpression(item);
                         }
+
+                        if (item instanceof DynamicPostViewModel) {
+                            if (!TextUtils.isEmpty(((DynamicPostViewModel) item).getFooter().getButtonCta().getAppLink())) {
+                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
+                            }
+                        }
                     }
                 } catch (IndexOutOfBoundsException e) {
                     Log.d(FeedPlusFragment.TAG, e.toString());

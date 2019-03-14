@@ -191,9 +191,16 @@
                     android:id="@+id/layoutFooterAction"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_40"
-                    android:background="@color/green_50"
                     android:visibility="gone"
-                    tools:visibility="visible" >
+                    tools:visibility="visible"
+                    android:animateLayoutChanges="true">
+
+                    <View
+                        android:id="@+id/footerBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/background_footer_green"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/footerAction"
@@ -201,12 +208,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@color/medium_green"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal"
                         android:layout_gravity="center|left"
-                        android:layout_marginLeft="@dimen/dp_16"
                         tools:text="Info Vote Atau Enggak, Terserah dong"
                         tools:visibility="visible" />
                 </FrameLayout>

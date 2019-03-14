@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
@@ -13,6 +14,7 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,7 @@ import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -44,6 +47,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
@@ -103,6 +107,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener{
 
+    private val TAG = ProfileFragment::class.simpleName
     private var userId: Int = 0
     private var afterPost: Boolean = false
     private var afterEdit: Boolean = false
@@ -113,6 +118,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
     private var profileHeader:ProfileHeaderViewModel? = null
+    private lateinit var layoutManager: LinearLayoutManager
 
     override lateinit var profileRouter: ProfileModuleRouter
 
@@ -596,6 +602,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     //newfeed section
     override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
+        if (adapter.list.get(positionInFeed) is FeedRecommendationViewModel) {
+
+            val card = adapter.list.get(positionInFeed)
+//            trackRecommendationClick(
+//                    positionInFeed,
+//                    adapterPosition,
+//                    cards[adapterPosition].trackingRecommendationModel,
+//                    FeedAnalytics.Element.AVATAR
+//            )
+        }
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
@@ -766,6 +782,52 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         remoteConfig = FirebaseRemoteConfigImpl(context)
 
         isOwner = userId.toString() == userSession.userId
+
+        layoutManager = LinearLayoutManager(activity)
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+           override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+               super.onScrollStateChanged(recyclerView, newState)
+               try {
+                   if (hasFeed()
+                           && newState == RecyclerView.SCROLL_STATE_IDLE
+                           && layoutManager != null) {
+                       var position = 0
+                       val item: Visitable<*>?
+                       if (itemIsFullScreen()) {
+                           position = layoutManager.findLastVisibleItemPosition()
+                       } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
+                           position = layoutManager.findFirstCompletelyVisibleItemPosition()
+                       } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
+                           position = layoutManager.findLastCompletelyVisibleItemPosition()
+                       }
+
+                       item = adapter.list.get(position)
+
+                       if (item is DynamicPostViewModel) {
+                           if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
+                               adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                           }
+                       }
+                   }
+               } catch (e: IndexOutOfBoundsException) {
+                   Log.d(TAG, e.toString())
+               }
+           }
+
+        })
+
+    }
+
+    fun hasFeed(): Boolean {
+        return (adapter.list != null
+                && !adapter.list.isEmpty()
+                && adapter.list.size > 1
+                && adapter.list.get(0) !is EmptyModel)
+    }
+
+    private fun itemIsFullScreen(): Boolean {
+        return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
     }
 
     private fun setToolbarTitle(title: String) {
@@ -939,6 +1001,29 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    private fun trackRecommendationClick(positionInFeed: Int, cardPosition: Int,
+                                         trackingRecommendationModel: TrackingRecommendationModel,
+                                         element: String) {
+        var userId = 0
+        try {
+            userId = Integer.valueOf(userSession.userId)
+        } catch (ignored: NumberFormatException) {
+        }
+
+//        profileAnalytics.eventRecommendationClick(
+//                trackingRecommendationModel.templateType,
+//                trackingRecommendationModel.activityName,
+//                trackingRecommendationModel.trackingType,
+//                trackingRecommendationModel.mediaType,
+//                trackingRecommendationModel.authorName,
+//                trackingRecommendationModel.authorType,
+//                element,
+//                trackingRecommendationModel.authorId,
+//                positionInFeed,
+//                cardPosition,
+//                userId
+//        )
+    }
     private fun showAfterPostToaster(addAction: Boolean) {
         if (addAction) {
             view?.showNormalToaster(getString(R.string.profile_recommend_success), getString(R.string.profile_add_more)) {
