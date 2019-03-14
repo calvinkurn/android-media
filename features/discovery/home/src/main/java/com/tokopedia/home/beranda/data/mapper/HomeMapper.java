@@ -134,10 +134,26 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             case DynamicHomeChannel.Channels.LAYOUT_TOPADS:
                                 list.add(mappingDynamicTopAds(channel));
                                 break;
-                            default:
+                            case "spotlight":
+                                break;
+                            case "6_image":
                                 list.add(mappingDynamicChannel(channel));
                                 HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                         list.size(), channel);
+                                break;
+                            case "home_widget":
+                                break;
+                            case "lego_3_image":
+                                list.add(mappingDynamicChannel(channel));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                        list.size(), channel);
+                                break;
+                            case "organic":
+                                list.add(mappingDynamicChannel(channel));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                        list.size(), channel);
+                                break;
+                            default:
                                 break;
                         }
                     }
