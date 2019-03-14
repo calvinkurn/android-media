@@ -336,11 +336,7 @@ public class MainParentActivity extends BaseActivity implements
             return false;
         }
 
-        if (position == HOME_MENU) {
-            setHomeStatusBar();
-        } else {
-            setDefaultStatusBar();
-        }
+        setHomeStatusBar();
 
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
