@@ -103,6 +103,9 @@ buildscript {
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
+        flatDir {
+            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
+        }
     }
     dependencies {
         classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){

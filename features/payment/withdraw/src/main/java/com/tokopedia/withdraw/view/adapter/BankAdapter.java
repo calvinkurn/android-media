@@ -13,13 +13,11 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
+import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
-import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 
 /**
@@ -27,36 +25,39 @@ import javax.inject.Inject;
  */
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
+    private static final String DEFAULT_BANK_ID = "1";
     WithdrawAnalytics analytics;
 
 
     int selectedItem;
+
     public interface OnBankClickListener {
 
         void onClick(int position);
     }
-    private final List<BankAccountViewModel> listBank;
+
+    private final List<BankAccount> listBank;
 
     private int isEmpty = 0;
     private WithdrawContract.View context;
     private String selectedBankId;
     private OnBankClickListener listener;
-    private BankAccountViewModel accountButton;
+    private BankAccount accountButton;
 
-    public BankAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank, WithdrawAnalytics analytics) {
+    public BankAdapter(WithdrawContract.View context, List<BankAccount> listBank, WithdrawAnalytics analytics) {
         this.context = context;
         this.listBank = listBank;
         this.selectedBankId = "";
         this.selectedItem = -1;
-        this.accountButton = new BankAccountViewModel();
+        this.accountButton = new BankAccount();
         this.analytics = analytics;
     }
 
-    public static BankAdapter createAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank, WithdrawAnalytics analytics) {
+    public static BankAdapter createAdapter(WithdrawContract.View context, List<BankAccount> listBank, WithdrawAnalytics analytics) {
         return new BankAdapter(context, listBank, analytics);
     }
 
-    public void setList(List<BankAccountViewModel> listBank) {
+    public void setList(List<BankAccount> listBank) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
                 new Callback(new ArrayList<>(this.listBank), new ArrayList<>(listBank)));
         diffResult.dispatchUpdatesTo(this);
@@ -67,14 +68,14 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
 
-    public void addItem(BankAccountViewModel bankViewModel) {
+    public void addItem(BankAccount bankViewModel) {
         this.listBank.remove(accountButton);
         this.listBank.add(bankViewModel);
         this.listBank.add(accountButton);
-        notifyItemRangeChanged(listBank.size()-1, 2);
+        notifyItemRangeChanged(listBank.size() - 1, 2);
     }
 
-    public List<BankAccountViewModel> getListBank() {
+    public List<BankAccount> getListBank() {
         return listBank;
     }
 
@@ -136,19 +137,19 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
         switch (holder.getItemViewType()) {
             case 1:
-                if(listBank.size()<4){
+                if (listBank.size() < 4) {
                     holder.text.setText(context.getStringResource(R.string.title_add_account_bank));
-                }else {
+                } else {
                     holder.text.setText(context.getStringResource(R.string.title_set_account_bank));
                 }
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(listBank.size()<4){
+                        if (listBank.size() < 4) {
                             analytics.eventClickAddAccount();
                             context.goToAddBank();
-                        }else {
+                        } else {
                             context.goToSettingBank();
                         }
 
@@ -158,7 +159,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
             default:
                 ItemBankViewHolder viewHolder = (ItemBankViewHolder) holder;
                 Context context = viewHolder.itemView.getContext();
-                BankAccountViewModel thisItem = listBank.get(position);
+                BankAccount thisItem = listBank.get(position);
 
                 View.OnClickListener l = (View v) -> {
                     analytics.eventClickAccountBank();
@@ -167,10 +168,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 holder.itemView.setOnClickListener(l);
 
                 Drawable drawabl;
-                if(listBank.get(position).isChecked()){
+                if (listBank.get(position).isChecked()) {
                     drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_selected);
-                }else {
-                    drawabl =MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_default);
+                } else {
+                    drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_default);
                 }
                 ((ItemBankViewHolder) holder).mRadio.setImageDrawable(drawabl);
 
@@ -205,15 +206,23 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
 
-    public BankAccountViewModel getSelectedBank() {
-        if(selectedItem < 0){
+    public BankAccount getSelectedBank() {
+        if (selectedItem < 0) {
             return null;
         }
         return listBank.get(selectedItem);
     }
 
-    public void setDefault(int defaultBank) {
-        selectedItem = defaultBank;
+    public void setDefault() {
+        if (listBank.size() > 0) {
+            for (int i = 0; i < listBank.size(); i++) {
+                if (DEFAULT_BANK_ID.equalsIgnoreCase(listBank.get(i).getType())) {
+                    selectedItem = i;
+                    listBank.get(selectedItem).setChecked(true);
+                    break;
+                }
+            }
+        }
     }
 
     static class Callback extends DiffUtil.Callback {
@@ -240,10 +249,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
             Object oldItem = oldList.get(oldItemPosition);
             Object newItem = newList.get(newItemPosition);
 
-            if (oldItem instanceof BankAccountViewModel) {
-                return newItem instanceof BankAccountViewModel
-                        && ((BankAccountViewModel) oldItem).getBankAccountId()
-                        == ((BankAccountViewModel) oldItem).getBankAccountId();
+            if (oldItem instanceof BankAccount) {
+                return newItem instanceof BankAccount
+                        && ((BankAccount) oldItem).getBankAccountId() != null
+                        && ((BankAccount) oldItem).getBankAccountId().equals(((BankAccount) newItem).getBankAccountId());
             }
             return false;
         }
@@ -253,13 +262,16 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
             Object oldItem = oldList.get(oldItemPosition);
             Object newItem = newList.get(newItemPosition);
 
-            if (oldItem instanceof BankAccountViewModel && newItem instanceof BankAccountViewModel) {
-                BankAccountViewModel oldPost = ((BankAccountViewModel) oldItem);
-                BankAccountViewModel newPost = ((BankAccountViewModel) newItem);
+            if (oldItem instanceof BankAccount && newItem instanceof BankAccount) {
+                BankAccount oldPost = ((BankAccount) oldItem);
+                BankAccount newPost = ((BankAccount) newItem);
 
-                return oldPost.getBankName() == newPost.getBankAccountName()
-                        && oldPost.getBankAccountNumber() == newPost.getBankAccountNumber()
-                        && oldPost.getBankAccountName() == newPost.getBankAccountName();
+                return oldPost.getBankName() != null &&
+                        oldPost.getBankName().equalsIgnoreCase(newPost.getBankName()) &&
+                        oldPost.getBankAccountNumber() != null &&
+                        oldPost.getBankAccountNumber().equalsIgnoreCase(newPost.getBankAccountNumber()) &&
+                        oldPost.getBankAccountName() != null &&
+                        oldPost.getBankAccountName().equalsIgnoreCase(newPost.getBankAccountName());
             }
             return oldItem.equals(newItem);
         }
