@@ -1,0 +1,103 @@
+buildscript {
+    repositories {
+        google()
+        maven { url "https://maven.google.com" }
+        jcenter()
+        mavenLocal()
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'http://central.maven.org/maven2/' }
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0-SNAPSHOT"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
+    }
+}
+
+if (project.hasProperty("code.quality")) {
+    apply plugin: "com.vanniktech.code.quality.tools"
+}
+apply plugin: 'org.sonarqube'
+
+if (project.hasProperty("code.quality")) {
+    codeQualityTools {
+        boolean failEarly = true
+        boolean xmlReports = true
+        boolean htmlReports = false
+        boolean textReports = false
+        String[] ignoreProjects = []
+
+        findbugs {
+            boolean enabled = false
+            String toolVersion = '3.0.1'
+            String excludeFilter = 'code_quality_tools/findbugs-filter.xml'
+            Boolean ignoreFailures = null
+            String source = 'src'
+            String effort = 'max'
+            String reportLevel = 'low'
+        }
+        checkstyle {
+            boolean enabled = true
+            String toolVersion = '8.6'
+            String configFile = 'code_quality_tools/checkstyle.xml'
+            Boolean ignoreFailures = null
+            Boolean showViolations = null
+            String source = 'src'
+            List<String> include = ['**/*.java']
+            List<String> exclude = ['**/gen/**']
+        }
+        pmd {
+            boolean enabled = false
+            String toolVersion = '6.0.0'
+            String ruleSetFile = 'code_quality_tools/pmd.xml'
+            Boolean ignoreFailures = null
+            String source = 'src'
+            List<String> include = ['**/*.java']
+            List<String> exclude = ['**/gen/**']
+        }
+        lint {
+            boolean enabled = false
+            Boolean textReport = null
+            String textOutput = 'stdout'
+            Boolean abortOnError = null
+            Boolean warningsAsErrors = null
+            Boolean checkAllWarnings = null
+            String baselineFileName = null
+            Boolean absolutePaths = null
+            File lintConfig = null
+            Boolean checkReleaseBuilds = false
+            Boolean checkTestSources = null
+            Boolean checkDependencies = null
+        }
+        ktlint {
+            boolean enabled = false
+            String toolVersion = '0.14.0'
+        }
+        detekt {
+            boolean enabled = false
+            String toolVersion = '1.0.0.RC6'
+            String config = 'code_quality_tools/detekt.yml'
+            String baselineFileName = null
+        }
+        cpd {
+            boolean enabled = false
+            String source = 'src'
+            String language = 'java'
+            Boolean ignoreFailures = null
+            int minimumTokenCount = 50
+        }
+        errorProne {
+            boolean enabled = false
+            String toolVersion = '2.1.3'
+        }
+    }
+
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.enabled false
+            html.enabled true
+        }
+    }
+}
