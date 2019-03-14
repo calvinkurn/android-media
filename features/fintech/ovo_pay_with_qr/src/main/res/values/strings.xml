@@ -24,7 +24,7 @@
     <string name="transaction_id_text">Kode Transaksi</string>
     <string name="merchant">Merchant</string>
     <string name="fake_date">12 Des 2018, 11.20</string>
-    <string name="success_transaction">Transaksi Berhasil</string>
-    <string name="fail_transaction">Transaksi Gagal</string>
+    <string name="success_transaction">  Transaksi Berhasil</string>
+    <string name="fail_transaction">  Transaksi Gagal</string>
 
 </resources>

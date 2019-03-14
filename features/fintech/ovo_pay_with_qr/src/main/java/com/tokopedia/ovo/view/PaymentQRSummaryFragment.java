@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.ovo.model.ImeiConfirmResponse;
@@ -41,6 +42,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
     private static final int SUCCESS = 0;
     private static final int FAIL = 1;
     private static final int REQUEST_CODE = 0;
+    private static final String PENDING_STATUS = "pending";
+    private static final String SUCEESS_STATUS = "success";
     String id;
     String imeiNumber;
     BarcodeResponseData responseData;
@@ -240,9 +243,14 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
     public void goToUrl(ImeiConfirmResponse response) {
         if (!TextUtils.isEmpty(response.getStatus())) {
             setProgressButton();
-            if (response.getStatus().equalsIgnoreCase("pending")) {
-                startActivity(OvoWebViewActivity.createInstance(getActivity(), response.getPinUrl()));
-            } else if (response.getStatus().equalsIgnoreCase("success")) {
+            if (response.getStatus().equalsIgnoreCase(PENDING_STATUS)) {
+                ((OvoPayWithQrRouter)getActivity().getApplication()).openTokopointWebview(getActivity(),response.getPinUrl(),"Verifikasi PIN OVO");
+//            startActivity(OvoWebViewActivity.createInstance(getActivity(), response.getPinUrl()));
+//                RouteManager.route(getContext(), String.format("%s?url=%s",
+//                        ApplinkConst.WEBVIEW,
+//                        response.getPinUrl()));
+
+            } else if (response.getStatus().equalsIgnoreCase(SUCEESS_STATUS)) {
                 startActivityForResult(QrOvoPayTxDetailActivity.createInstance(
                         getActivity(), transferId, response.getTransactionId(), SUCCESS), REQUEST_CODE);
             } else {

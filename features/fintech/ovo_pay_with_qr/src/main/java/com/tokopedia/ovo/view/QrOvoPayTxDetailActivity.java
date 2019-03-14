@@ -14,6 +14,9 @@ import com.tokopedia.ovo.R;
 public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements TransactionResultListener {
     private static final int SUCCESS = 0;
     private static final int FAIL = 1;
+    public static final String TRANSFER_ID = "transfer_id";
+    public static final String TRANSACTION_ID = "transaction_id";
+    private static final String CODE = "code";
 
     @DeepLink("tokopedia://ovoqrthanks/{transfer_id}")
     public static Intent getContactUsIntent(Context context, Bundle bundle) {
@@ -34,41 +37,41 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
 
     public static Intent createInstance(Context context, int transferId, int transactionId, int code) {
         Intent intent = new Intent(context, QrOvoPayTxDetailActivity.class);
-        intent.putExtra("transfer_id", transferId);
-        intent.putExtra("transaction_id", transactionId);
-        intent.putExtra("code", code);
+        intent.putExtra(TRANSFER_ID, transferId);
+        intent.putExtra(TRANSACTION_ID, transactionId);
+        intent.putExtra(CODE, code);
         return intent;
     }
 
 
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent().getIntExtra("code", -1) == SUCCESS) {
+        if (getIntent().getIntExtra(CODE, -1) == SUCCESS) {
             updateTitle(getString(R.string.success_transaction));
             return QrTxSuccessDetailFragment.createInstance(
-                    getIntent().getIntExtra("transfer_id", -1),
-                    getIntent().getIntExtra("transaction_id", -1));
+                    getIntent().getIntExtra(TRANSFER_ID, -1),
+                    getIntent().getIntExtra(TRANSACTION_ID, -1));
         } else {
             updateTitle(getString(R.string.fail_transaction));
             return QrPayTxFailFragment.createInstance(
-                    getIntent().getIntExtra("transfer_id", -1),
-                    getIntent().getIntExtra("transaction_id", -1));
+                    getIntent().getIntExtra(TRANSFER_ID, -1),
+                    getIntent().getIntExtra(TRANSACTION_ID, -1));
         }
     }
 
     public void goToFailFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.parent_view, QrPayTxFailFragment.createInstance(
-                getIntent().getIntExtra("transfer_id", -1),
-                getIntent().getIntExtra("transaction_id", -1)));
+                getIntent().getIntExtra(TRANSFER_ID, -1),
+                getIntent().getIntExtra(TRANSACTION_ID, -1)));
         transaction.commit();
     }
 
     public void goToSuccessFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.parent_view, QrTxSuccessDetailFragment.createInstance(
-                getIntent().getIntExtra("transfer_id", -1),
-                getIntent().getIntExtra("transaction_id", -1)));
+                getIntent().getIntExtra(TRANSFER_ID, -1),
+                getIntent().getIntExtra(TRANSACTION_ID, -1)));
         transaction.commit();
     }
 }

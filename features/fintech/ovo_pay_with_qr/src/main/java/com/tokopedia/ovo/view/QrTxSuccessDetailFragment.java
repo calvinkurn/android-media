@@ -22,8 +22,12 @@ import com.tokopedia.ovo.model.GoalQRThanks;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailContract;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailPresenter;
 
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSACTION_ID;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSFER_ID;
+
 public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrOvoPayTxDetailContract.View {
 
+    private static final String FORMAT_DD_MMM_YYYY_HH_MM = "dd MMM yyyy, HH.mm";
     QrOvoPayTxDetailPresenter presenter;
     private TextView date;
     private TextView amount;
@@ -38,8 +42,8 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
     public static Fragment createInstance(int transferId, int transactionId) {
         Fragment fragment = new QrTxSuccessDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("transfer_id", transferId);
-        bundle.putInt("transaction_id", transactionId);
+        bundle.putInt(TRANSFER_ID, transferId);
+        bundle.putInt(TRANSACTION_ID, transactionId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -78,7 +82,7 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
         transactionCode = view.findViewById(R.id.transaction_code);
         pasteToClipboard = view.findViewById(R.id.paste_top_clipboard);
         backToMain = view.findViewById(R.id.back_to_main);
-        transferId = getArguments().getInt("transfer_id");
+        transferId = getArguments().getInt(TRANSFER_ID);
         backToMain.setOnClickListener(view1 -> {
             listener.setResult(Activity.RESULT_OK);
             listener.finish();
@@ -95,15 +99,14 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
 
     @Override
     public void setSuccessThankYouData(GoalQRThanks data) {
-       //String dateTimeArray[] = ().split(" ");
-        String formattedDate = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD
-                ,"dd MMM yyyy, hh.mm", data.getTransactionDate()
+        String formattedDate = DateFormatUtils.formatDate("yyyy-MM-dd HH:mm"
+                ,FORMAT_DD_MMM_YYYY_HH_MM, data.getTransactionDate()
                         .substring(0, data.getTransactionDate().lastIndexOf(":")).trim());
         date.setText(formattedDate);
         amount.setText(Utils.convertToCurrencyStringWithoutRp(data.getAmount().longValue()));
         merchantName.setText(data.getMerchant().getName());
         merchantDescription.setText(data.getMerchant().getDescription());
-        transactionCode.setText(String.valueOf(getArguments().getInt("transaction_id")));
+        transactionCode.setText(String.valueOf(getArguments().getInt(TRANSACTION_ID)));
 
     }
 

@@ -102,6 +102,7 @@ import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokoca
 import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
 import com.tokopedia.officialstore.activity.OldReactNativeOfficialStoreActivity;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
@@ -578,7 +579,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingOptimizerRouter,
         LoginRegisterPhoneRouter,
         ExpressCheckoutRouter,
-        ResolutionRouter {
+        ResolutionRouter,
+        OvoPayWithQrRouter {
 
 
     private final static int IRIS_ROW_LIMIT = 50;

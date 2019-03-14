@@ -17,6 +17,10 @@ import com.tokopedia.ovo.model.GoalQRThanks;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailContract;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailPresenter;
 
+import static com.tokopedia.ovo.Constants.HELP_URL;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSACTION_ID;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSFER_ID;
+
 public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayTxDetailContract.View {
     private TextView failDescription;
     private LinearLayout callSection;
@@ -28,8 +32,8 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     public static Fragment createInstance(int transferId, int transactionId) {
         Fragment fragment = new QrPayTxFailFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("transfer_id", transferId);
-        bundle.putInt("transaction_id", transactionId);
+        bundle.putInt(TRANSFER_ID, transferId);
+        bundle.putInt(TRANSACTION_ID, transactionId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -65,7 +69,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
         callSection = view.findViewById(R.id.call_section);
         backToMain = view.findViewById(R.id.back_to_main);
         tryAgain = view.findViewById(R.id.try_again);
-        presenter.requestForThankYouPage(getActivity(), getArguments().getInt("transfer_id"));
+        presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID));
         return view;
     }
 
@@ -78,12 +82,12 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     public void setFailThankYouData(GoalQRThanks data) {
         failDescription.setText(data.getMessage());
         callSection.setOnClickListener(view -> {
-            startActivity(OvoWebViewActivity.createInstance(getActivity(), "https://www.tokopedia.com/help"));
+            startActivity(OvoWebViewActivity.createInstance(getActivity(), HELP_URL));
         });
         backToMain.setOnClickListener(view -> {
             listener.setResult(Activity.RESULT_OK);
             listener.finish();
         });
-        tryAgain.setOnClickListener(view -> presenter.requestForThankYouPage(getActivity(), getArguments().getInt("transfer_id")));
+        tryAgain.setOnClickListener(view -> presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID)));
     }
 }
