@@ -48,23 +48,19 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
     @Override
     public Observable<DataResponseVerify> createObservable(RequestParams requestParams) {
         final int[] numOfAttempts = {0};
-        List<Integer> poolDelay = new ArrayList<>(0);
+        final int[] poolDelay = {0};
 
         return flightRepository.verifyBooking((VerifyRequest) requestParams.getObject(VERIFY_REQUEST))
                 .doOnNext(dataResponseVerify -> {
-                    poolDelay.set(0, dataResponseVerify.getMeta().getRefreshTime());
+                    poolDelay[0] = dataResponseVerify.getMeta().getRefreshTime();
                     numOfAttempts[0]++;
                 }).repeatWhen(observable -> {
-                    observable.delay(poolDelay.get(0), TimeUnit.SECONDS);
+                    observable.delay(poolDelay[0], TimeUnit.SECONDS);
                     return observable.flatMap((Func1<Void, Observable<?>>) aVoid ->
-                            Observable.timer(poolDelay.get(0), TimeUnit.SECONDS));
+                            Observable.timer(poolDelay[0], TimeUnit.SECONDS));
                 }).takeUntil(dataResponseVerify -> (!dataResponseVerify.getMeta().isNeedRefresh()) ||
-                        (numOfAttempts[0] >= dataResponseVerify.getMeta().getMaxRetry())).last().map(new Func1<DataResponseVerify, DataResponseVerify>() {
-                    @Override
-                    public DataResponseVerify call(DataResponseVerify dataResponseVerify) {
-                        return dataResponseVerify;
-                    }
-                });
+                        (numOfAttempts[0] >= dataResponseVerify.getMeta().getMaxRetry())).last()
+                .map(dataResponseVerify -> dataResponseVerify);
     }
 
     public RequestParams createRequestParams(String promoCode, int price, String cartId,

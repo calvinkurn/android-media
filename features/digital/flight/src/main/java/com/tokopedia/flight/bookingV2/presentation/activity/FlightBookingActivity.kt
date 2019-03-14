@@ -36,7 +36,7 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
 
     override fun getComponent(): FlightBookingComponent {
         if (application is FlightModuleRouter) {
-            DaggerFlightBookingComponent.builder()
+            return DaggerFlightBookingComponent.builder()
                     .flightComponent(flightComponent)
                     .build()
         }
