@@ -36,6 +36,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_LEGO_3_IMAGE = "lego_3_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
         public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
+        public static final String LAYOUT_BU_WIDGET = "bu_widget";
         public static final String LAYOUT_TOPADS = "topads";
 
         @Expose

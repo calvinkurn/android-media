@@ -8,26 +8,32 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
-import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
-import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
-import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.beranda.di.HomeScope;
+import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
+import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.experimental.CoroutineDispatcher;
+import kotlinx.coroutines.experimental.Dispatchers;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -137,4 +143,43 @@ public class HomeModule {
     protected CategoryMapper provideCategoryMapper(){
         return new CategoryMapper();
     }
+
+    @HomeScope
+    @Provides
+    protected DigitalGqlApiService provideDigitalGqlApiService() {
+        return new DigitalGqlApiService();
+    }
+
+    @HomeScope
+    @Provides
+    protected RecommendationListDataSource provideRecommendationListDataSource(
+            DigitalGqlApiService digitalGqlApiService, @ApplicationContext Context context) {
+        return new RecommendationListDataSource(digitalGqlApiService, context);
+    }
+
+    @HomeScope
+    @Provides
+    protected DigitalWidgetRepository providetDigitalWidgetRepository(
+            StatusDataSource statusDataSource,
+            CategoryListDataSource categoryListDataSource,
+            RecommendationListDataSource recommendationListDataSource){
+        return new DigitalWidgetRepository(
+                statusDataSource,
+                categoryListDataSource,
+                recommendationListDataSource
+        );
+    }
+
+    @Provides
+    protected GraphqlRepository provideGraphqlRepository() {
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @HomeScope
+    @Provides
+    @Named("Main")
+    protected CoroutineDispatcher provideMainDispatcher() {
+        return Dispatchers.getMain();
+    }
+
 }
