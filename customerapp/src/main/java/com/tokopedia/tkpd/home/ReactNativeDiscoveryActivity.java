@@ -26,13 +26,13 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     public static final String PAGE_ID = "page_id";
     public static final String SHAKE_SHAKE = "shake-shake";
     private static final String MP_FLASHSALE = "mp_flashsale";
-    private static boolean disableShakeShake = true;
+    private static boolean mShakeStatus = true;
     private PermissionListener mPermissionListener;
 
     @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
         if (bundle != null && bundle.getString(SHAKE_SHAKE) != null) {
-            disableShakeShake = Boolean.parseBoolean(bundle.getString(SHAKE_SHAKE));
+            mShakeStatus = Boolean.parseBoolean(bundle.getString(SHAKE_SHAKE));
         }
         ReactUtils.startTracing(MP_FLASHSALE);
         return ReactNativeDiscoveryActivity.createApplinkCallingIntent(
@@ -104,7 +104,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
 
     @Override
     protected void registerShake() {
-        if(disableShakeShake) {
+        if(mShakeStatus) {
             super.registerShake();
         }
     }
