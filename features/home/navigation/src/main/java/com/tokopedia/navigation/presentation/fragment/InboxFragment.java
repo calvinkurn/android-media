@@ -95,7 +95,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             @Override
             public void onRefresh() {
                 adapter.clearAllElements();
-                adapter.addElement(dataInbox);
+                adapter.addElement(getData());
                 presenter.getInboxData();
                 presenter.getRecomData(0);
             }
