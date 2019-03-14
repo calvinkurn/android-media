@@ -2,7 +2,6 @@ package com.tokopedia.navigation.presentation.fragment;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -16,12 +15,12 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.data.entity.RecomendationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
+import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -45,6 +44,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public static final int DISCUSSION_MENU = 1;
     public static final int REVIEW_MENU = 2;
     public static final int HELP_MENU = 3;
+    public static final int GRID_SPAN_COUNT = 2;
+    public static final int SINGLE_SPAN_COUNT = 1;
 
     @Inject
     InboxPresenter presenter;
@@ -79,7 +80,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerView.addItemDecoration(new RecomItemDecoration(getResources()
+                .getDimensionPixelSize(R.dimen.dp_8)));
+        layoutManager = new GridLayoutManager(getContext(), GRID_SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
@@ -89,16 +92,16 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-
+                    presenter.getRecomData(page);
             }
         });
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 if(adapter.getList().get(position) instanceof Recomendation){
-                    return 1;
+                    return SINGLE_SPAN_COUNT;
                 } else {
-                    return 2;
+                    return GRID_SPAN_COUNT;
                 }
             }
         });
