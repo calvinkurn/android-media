@@ -21,14 +21,15 @@ import rx.Subscriber;
 /**
  * Created by meta on 25/07/18.
  */
-public class InboxPresenter extends BaseDaggerPresenter{
+public class InboxPresenter extends BaseDaggerPresenter {
 
     private InboxView inboxView;
 
     private final GetDrawerNotificationUseCase getNotificationUseCase;
     private final GetRecomendationUseCase getRecomendationUseCase;
 
-    @Inject InboxPresenter(GetDrawerNotificationUseCase getNotificationUseCase, GetRecomendationUseCase recomendationUseCase) {
+    @Inject
+    InboxPresenter(GetDrawerNotificationUseCase getNotificationUseCase, GetRecomendationUseCase recomendationUseCase) {
         this.getNotificationUseCase = getNotificationUseCase;
         this.getRecomendationUseCase = recomendationUseCase;
     }
@@ -47,29 +48,35 @@ public class InboxPresenter extends BaseDaggerPresenter{
         requestParams.putString(GlobalNavConstant.QUERY,
                 GraphqlHelper.loadRawString(this.inboxView.getContext().getResources(), R.raw.query_notification));
         getNotificationUseCase.execute(requestParams, new InboxSubscriber(this.inboxView));
-        getRecomData(1);
     }
 
     public void getRecomData(int page) {
-        if(this.inboxView == null)
+        if (this.inboxView == null)
             return;
         getRecomendationUseCase.execute(getRecomendationUseCase.getRecomParams(page),
                 new Subscriber<List<Recomendation>>() {
-            @Override
-            public void onCompleted() {
 
-            }
+                    @Override
+                    public void onStart() {
+                        inboxView.showLoadMoreLoading();
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onNext(List<Recomendation> recomendations) {
-                inboxView.onRenderRecomInbox(recomendations);
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        inboxView.hideLoadMoreLoading();
+                    }
+
+                    @Override
+                    public void onNext(List<Recomendation> recomendations) {
+                        inboxView.hideLoadMoreLoading();
+                        inboxView.onRenderRecomInbox(recomendations);
+                    }
+                });
     }
 
     public void onResume() {

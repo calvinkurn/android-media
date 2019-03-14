@@ -14,4 +14,8 @@ public interface InboxView extends LoadDataView {
     void onRenderNotifInbox(NotificationsModel entity);
 
     void onRenderRecomInbox(List<Recomendation> recomendationList);
+
+    void hideLoadMoreLoading();
+
+    void showLoadMoreLoading();
 }

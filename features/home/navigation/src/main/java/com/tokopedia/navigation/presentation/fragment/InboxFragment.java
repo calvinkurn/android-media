@@ -93,7 +93,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                adapter.showLoading();
                 presenter.getRecomData(page);
             }
         });
@@ -106,6 +105,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 return DEFAULT_SPAN_COUNT;
             }
         });
+        presenter.getRecomData(0);
     }
 
     @Override
@@ -217,9 +217,18 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
+    public void hideLoadMoreLoading() {
+        adapter.hideLoading();
+    }
+
+    @Override
+    public void showLoadMoreLoading() {
+        adapter.showLoading();
+    }
+
+    @Override
     public void onRenderRecomInbox(List<Recomendation> recomendationList) {
         adapter.addElement(recomendationList);
-        adapter.hideLoading();
     }
 
     @Override
