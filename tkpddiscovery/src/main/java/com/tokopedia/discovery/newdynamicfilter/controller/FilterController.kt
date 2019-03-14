@@ -139,10 +139,15 @@ class FilterController() : Parcelable {
     }
 
     private fun loadFlagFilterHelper() {
+        val optionsForFlagFilterHelper = mutableListOf<Option>()
+
         loopOptionsInFilterList { option ->
-            if (isOptionSelected(option)) {
-                flagFilterHelper[option.uniqueId] = true
-            }
+            if(isOptionSelected(option))
+                addOrCombineOptions(optionsForFlagFilterHelper, option)
+        }
+
+        for(option in optionsForFlagFilterHelper) {
+            flagFilterHelper[option.uniqueId] = true
         }
     }
 
@@ -157,6 +162,36 @@ class FilterController() : Parcelable {
         }
 
         return false
+    }
+
+    private fun addOrCombineOptions(optionsForFlagFilterHelper: MutableList<Option>, option: Option) {
+        val optionsWithSameKey = optionsForFlagFilterHelper.filter { it.key == option.key }.toMutableList()
+
+        if (optionsWithSameKey.isEmpty()) {
+            optionsForFlagFilterHelper.add(option)
+        } else {
+            combineOptionsToFlagFilterHelper(optionsForFlagFilterHelper, option)
+        }
+    }
+
+    private fun combineOptionsToFlagFilterHelper(optionsForFlagFilterHelper: MutableList<Option>, option: Option) {
+        val iterator = optionsForFlagFilterHelper.listIterator()
+        while (iterator.hasNext()) {
+            val existingOption = iterator.next()
+
+            if(existingOption.key == option.key) {
+                val existingOptionValueList = existingOption.value.split(Option.VALUE_SEPARATOR).toList()
+                val currentOptionValueList = option.value.split(Option.VALUE_SEPARATOR).toList()
+
+                if (currentOptionValueList.containsAll(existingOptionValueList)) {
+                    iterator.set(option)
+                } else if (!existingOptionValueList.containsAll(currentOptionValueList)
+                    && existingOptionValueList != currentOptionValueList
+                ) {
+                    iterator.add(option)
+                }
+            }
+        }
     }
 
     private fun loadActiveFilter() {
