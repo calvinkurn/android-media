@@ -21,6 +21,7 @@ import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
+import com.tokopedia.navigation.presentation.adapter.RecomendationViewHolder;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -44,7 +45,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public static final int DISCUSSION_MENU = 1;
     public static final int REVIEW_MENU = 2;
     public static final int HELP_MENU = 3;
-    public static final int GRID_SPAN_COUNT = 2;
+    public static final int DEFAULT_SPAN_COUNT = 2;
     public static final int SINGLE_SPAN_COUNT = 1;
 
     @Inject
@@ -82,7 +83,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new RecomItemDecoration(getResources()
                 .getDimensionPixelSize(R.dimen.dp_8)));
-        layoutManager = new GridLayoutManager(getContext(), GRID_SPAN_COUNT);
+        layoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
@@ -92,28 +93,28 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                    presenter.getRecomData(page);
+                adapter.showLoading();
+                presenter.getRecomData(page);
             }
         });
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(adapter.getList().get(position) instanceof Recomendation){
+                if (adapter.getItemViewType(position) == RecomendationViewHolder.LAYOUT) {
                     return SINGLE_SPAN_COUNT;
-                } else {
-                    return GRID_SPAN_COUNT;
                 }
+                return DEFAULT_SPAN_COUNT;
             }
         });
     }
 
     @Override
     public void onItemClickListener(Visitable item, int position) {
-        if(item instanceof Inbox){
+        if (item instanceof Inbox) {
             Inbox inbox = (Inbox) item;
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
-        } else if(item instanceof Recomendation){
+        } else if (item instanceof Recomendation) {
 
         }
     }
@@ -218,6 +219,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onRenderRecomInbox(List<Recomendation> recomendationList) {
         adapter.addElement(recomendationList);
+        adapter.hideLoading();
     }
 
     @Override

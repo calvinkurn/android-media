@@ -13,7 +13,7 @@ import com.tokopedia.topads.sdk.view.ImpressedImageView;
 /**
  * Author errysuprayogi on 13,March,2019
  */
-class RecomendationViewHolder extends AbstractViewHolder<Recomendation> {
+public class RecomendationViewHolder extends AbstractViewHolder<Recomendation> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_recomendation;

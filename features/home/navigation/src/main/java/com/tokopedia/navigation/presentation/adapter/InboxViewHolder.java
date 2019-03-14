@@ -13,7 +13,7 @@ import com.tokopedia.navigation.domain.model.Inbox;
 /**
  * Author errysuprayogi on 13,March,2019
  */
-class InboxViewHolder extends AbstractViewHolder<Inbox> {
+public class InboxViewHolder extends AbstractViewHolder<Inbox> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_single_notification;
