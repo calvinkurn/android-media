@@ -50,7 +50,7 @@ class ItemTabBusinessViewModel @Inject constructor(
             }.getSuccessData<HomeWidget.Response>()
 
             if (data.errors.isEmpty()) {
-                homeWidget.value = Success(validateTemplate(data.data.homeWidget))
+                homeWidget.value = Success(data.data.homeWidget)
             } else {
                 val listMessage = arrayListOf<String>()
                 data.errors.forEach { listMessage.add(it.message) }

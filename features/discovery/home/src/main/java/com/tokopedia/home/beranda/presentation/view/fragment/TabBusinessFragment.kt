@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
@@ -33,7 +34,10 @@ class TabBusinessFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(BerandaComponent::class.java).inject(this)
+        val component = DaggerBerandaComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication)
+                .baseAppComponent)
+                .build()
+        component.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

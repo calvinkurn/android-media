@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
@@ -59,7 +60,10 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     override fun initInjector() {
-        getComponent(BerandaComponent::class.java).inject(this)
+        val component = DaggerBerandaComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication)
+                .baseAppComponent)
+                .build()
+        component.inject(this)
     }
 
     override fun getScreenName(): String {
