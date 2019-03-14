@@ -99,11 +99,13 @@ public class MainToolbar extends Toolbar {
             editTextSearch.setTextSize(18);
         }
 
-        btnQrCode.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingSqanQr();
-            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoQrScannerPage(false));
-        });
+        if (btnQrCode != null) {
+            btnQrCode.setOnClickListener(v -> {
+                searchBarAnalytics.eventTrackingSqanQr();
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoQrScannerPage(false));
+            });
+        }
 
         btnWishlist.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
