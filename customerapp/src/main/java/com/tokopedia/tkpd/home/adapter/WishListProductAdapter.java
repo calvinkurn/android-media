@@ -42,7 +42,6 @@ import com.tokopedia.tkpd.home.adapter.viewmodel.EmptyStateItem;
 import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import java.util.List;
 
@@ -282,11 +281,8 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
                     UnifyTracking.eventWishlistView(view.getContext(), product.getProductName());
-                    context.startActivity(
-                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                                    context, getProductDataToPass((RecentView) data.get(position))
-                            )
-                    );
+                    Intent intent = getProductIntent(((ProductItem) data.get(position)).id);
+                    context.startActivity(intent);
                 }
             }
         };

@@ -40,12 +40,6 @@ public interface IHomeRouter {
 
     void goToWallet(Context context, String url);
 
-    void goToProductDetail(Context context,
-                           String productId,
-                           String imageSourceSingle,
-                           String name,
-                           String price);
-
     void goToProductDetail(Context context, String productUrl);
 
     void goToTokoCash(String appLinkBalance, Activity activity);
@@ -65,12 +59,6 @@ public interface IHomeRouter {
     Intent getShopPageIntent(Context context, String shopId);
 
     Intent getInstantLoanIntent(Context context);
-
-    Intent getTopAdsProductDetailIntentForHome(Context context,
-                                                      String id,
-                                                      String name,
-                                                      String priceFormat,
-                                                      String imageMUrl);
 
     Intent getLoginIntent(Context context);
 

@@ -47,6 +47,7 @@ import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenterImpl;
 
 /**
  * Use ProductDetailActivity. This will deleted.
+ *
  */
 @Deprecated
 public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductInfoPresenter> implements

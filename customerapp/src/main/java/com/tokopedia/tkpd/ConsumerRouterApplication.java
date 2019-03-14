@@ -398,7 +398,6 @@ import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -758,22 +757,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToProductDetail(Context context, String productId, String name, String displayedPrice, String imageUrl, String attribution, String listNameOfProduct) {
-        ProductItem data = new ProductItem();
-        data.setId(productId);
-        data.setName(name);
-        data.setPrice(displayedPrice);
-        data.setImgUri(imageUrl);
-        data.setTrackerAttribution(attribution);
-        data.setTrackerListName(listNameOfProduct);
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
     }
@@ -802,43 +785,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
         return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
-    }
-
-
-    @Override
-    public void goToProductDetail(Context context, ProductPass productPass) {
-        Intent intent = ProductInfoActivity.createInstance(context, productPass);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToProductDetail(Context context, LinkerData shareData) {
-        Intent intent = ProductInfoActivity.createInstance(context, shareData);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SHARE_DATA, shareData);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToProductDetail(Context context, String productId, String imageSourceSingle,
-                                  String name, String price) {
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(productId)
-                .setProductImage(imageSourceSingle)
-                .setProductName(name)
-                .setProductPrice(price)
-                .build();
-        goToProductDetail(context, productPass);
-    }
-
-    @Override
-    public void goToProductDetailForResult(Fragment fragment, String productId,
-                                           int adapterPosition,
-                                           int requestCode) {
-        Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
-                adapterPosition);
-        fragment.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -2188,20 +2134,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getAppContext());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    @Override
     public Intent checkoutModuleRouterGetTransactionSummaryIntent() {
         return TransactionPurchaseRouter.createIntentTxSummary(getAppContext());
     }
@@ -2215,11 +2147,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
         PersistentCacheManager persistentCacheManager = new PersistentCacheManager(context, TkpdCache.CACHE_PROMO_CODE);
         return persistentCacheManager.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
-    }
-
-    @Override
-    public Intent checkoutModuleRouterGetProductDetailIntent(String productId) {
-        return ProductInfoActivity.createInstance(this, productId);
     }
 
     @Override
@@ -2358,16 +2285,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToProductDetailById(Context activity, String productId) {
-        activity.startActivity(ProductInfoActivity.createInstance(activity, productId));
-    }
-
-    @Override
-    public Intent getProductPageIntent(Context context, String productId) {
-        return ProductInfoActivity.createInstance(context, productId);
-    }
-
-    @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
@@ -2434,25 +2351,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getTopAdsProductDetailIntentForHome(Context context,
-                                                      String id,
-                                                      String name,
-                                                      String priceFormat,
-                                                      String imageMUrl) {
-        ProductItem data = new ProductItem();
-        data.setId(id);
-        data.setName(name);
-        data.setPrice(priceFormat);
-        data.setImgUri(imageMUrl);
-        Bundle bundle = new Bundle();
-
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
@@ -2500,12 +2398,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public File writeImage(String filePath, int qualityProcentage) {
         return FileUtils.writeImageToTkpdPath(filePath, qualityProcentage);
     }
-
-    public Intent getProductDetailIntent(Context context, ProductPass productPass) {
-        Intent intent = ProductInfoActivity.createInstance(context, productPass);
-        return intent;
-    }
-
 
     @Override
     public void startAddProduct(Activity activity, String shopId) {
