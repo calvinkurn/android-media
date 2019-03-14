@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
@@ -23,27 +24,32 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<Brand> brandItems;
     private Context context;
     private int MAX_BRANDS = 8;
-    private static final int ITEM = 1;
-    private static final int FOOTER = 2;
-    private static final int ITEM2 = 3;
+
+    public static final int ITEM_BRAND_HOME = 1;
+    public static final int ITEM_BRAND_SHORT = 2;
+    public static final int ITEM_BRAND_NORMAL = 3;
+    private static final int ITEM_FOOTER = 4;
+
+    private int itemViewType;
     private boolean isFooterAdded = false;
-    private boolean isShortLayout;
     private boolean isPopularBrands;
     DealsAnalytics dealsAnalytics;
     private boolean fromSearchResult;
 
 
-    public DealsBrandAdapter(List<Brand> brandItems, boolean isShortLayout) {
-        this.brandItems = new ArrayList<>();
-        this.isShortLayout = isShortLayout;
-        if (isShortLayout) {
+    public DealsBrandAdapter(List<Brand> brandItems, int itemViewType) {
+
+        if (brandItems != null && itemViewType == ITEM_BRAND_SHORT) {
+            this.brandItems = new ArrayList<>();
             MAX_BRANDS = brandItems.size() < MAX_BRANDS ? brandItems.size() : MAX_BRANDS;
             for (int i = 0; i < MAX_BRANDS; i++) {
                 this.brandItems.add(brandItems.get(i));
             }
+        } else {
+            this.brandItems = (brandItems == null ? new ArrayList<>() : brandItems);
         }
+        this.itemViewType = itemViewType;
     }
-
 
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
@@ -71,7 +77,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void updateAdapter(List<Brand> brands, boolean fromSearchResult) {
-        this.brandItems=new ArrayList<>(brands);
+        this.brandItems = new ArrayList<>(brands);
         this.fromSearchResult = fromSearchResult;
         notifyDataSetChanged();
     }
@@ -84,6 +90,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class BrandViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
         private ImageView imageViewBrandItem;
+        private TextView brandName;
         private int index;
         private boolean isShown;
 
@@ -91,10 +98,13 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(itemView);
             this.itemView = itemView;
             imageViewBrandItem = itemView.findViewById(R.id.iv_brand);
+            brandName = itemView.findViewById(R.id.brandName);
         }
 
         public void bindData(final Brand brand, int position) {
-
+            if (itemViewType == ITEM_BRAND_HOME) {
+                brandName.setText(brand.getTitle());
+            }
             ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
             itemView.setOnClickListener(this);
         }
@@ -149,9 +159,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-
-        return isShortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM
-                : (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM2;
+        return (isLastPosition(position) && isFooterAdded) ? ITEM_FOOTER : itemViewType;
     }
 
     private boolean isLastPosition(int position) {
@@ -205,43 +213,30 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         dealsAnalytics = new DealsAnalytics(context.getApplicationContext());
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
-        RecyclerView.ViewHolder holder = null;
-        View v;
+
+        View view = null;
         switch (viewType) {
-            case ITEM:
-                v = inflater.inflate(R.layout.item_brand, parent, false);
-                holder = new DealsBrandAdapter.BrandViewHolder(v);
+            case ITEM_BRAND_HOME:
+                view = inflater.inflate(R.layout.item_brand_home, parent, false);
                 break;
-            case FOOTER:
-                v = inflater.inflate(R.layout.footer_layout, parent, false);
-                holder = new DealsBrandAdapter.FooterViewHolder(v);
+            case ITEM_BRAND_SHORT:
+                view = inflater.inflate(R.layout.item_brand_short, parent, false);
                 break;
-            case ITEM2:
-                v = inflater.inflate(R.layout.item_brand_big, parent, false);
-                holder = new DealsBrandAdapter.BrandViewHolder(v);
-            default:
+            case ITEM_BRAND_NORMAL:
+                view = inflater.inflate(R.layout.item_brand_normal, parent, false);
+                break;
+            case ITEM_FOOTER:
+                view = inflater.inflate(R.layout.footer_layout, parent, false);
                 break;
         }
-        return holder;
+        return new DealsBrandAdapter.BrandViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-        switch (getItemViewType(position)) {
-            case ITEM:
-                ((DealsBrandAdapter.BrandViewHolder) holder).bindData(brandItems.get(position), position);
-                ((DealsBrandAdapter.BrandViewHolder) holder).setIndex(position);
-                break;
-            case FOOTER:
-                break;
-            case ITEM2:
-                ((DealsBrandAdapter.BrandViewHolder) holder).bindData(brandItems.get(position), position);
-                ((DealsBrandAdapter.BrandViewHolder) holder).setIndex(position);
-                break;
-            default:
-                break;
+        if (getItemViewType(position) != ITEM_FOOTER) {
+            ((DealsBrandAdapter.BrandViewHolder) holder).bindData(brandItems.get(position), position);
+            ((DealsBrandAdapter.BrandViewHolder) holder).setIndex(position);
         }
-
     }
 }

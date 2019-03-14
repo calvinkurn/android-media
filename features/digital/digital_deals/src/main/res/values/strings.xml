@@ -8,7 +8,7 @@
     <string name="bantuan">Bantuan</string>
     <string name="promo">Promo</string>
     <string name="trending_deals">TRENDING DEALS</string>
-    <string name="search_input_hint_deals">Cari Voucher/Outlet</string>
+    <string name="search_input_hint_deals">Cari Deals atau Brand</string>
     <string name="search_input_hint_location">Cari Kota</string>
     <string name="empty_search_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="empty_search_text_lower">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
@@ -34,11 +34,11 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="hot_deal">HOT DEAL</string>
     <string name="text_trending_deals">Trending Deals</string>
+    <string name="text_trending_promos">Koleksi dan Promo Deals</string>
     <string name="text_all_deals">Semua Deals</string>
     <string name="favourite">Favourite Deals</string>
     <string name="collapse">Sembunyikan</string>
     <string name="expand">Selengkapnya</string>
-
 
 
     <string name="valid_through">Berlaku hingga tanggal %s</string>

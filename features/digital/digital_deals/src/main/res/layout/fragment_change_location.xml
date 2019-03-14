@@ -1,124 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_content"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainContent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:background="@color/bottomnav_bg">
+    android:layout_gravity="center"
+    app:justifyContent="center"
+    android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_search_results"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/bottomnav_bg"
-        app:elevation="@dimen/dp_0">
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_20"
+        tools:listitem="@layout/location_item" />
 
-        <LinearLayout
-            android:id="@+id/ll_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <View
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/divider_height_thinv"
-                android:background="@color/divider_color" />
-
-            <com.tokopedia.digital_deals.view.customview.SearchInputView
-                android:id="@+id/search_input_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8" />
-        </LinearLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/base_main_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bottomnav_bg"
-        android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-        <LinearLayout
-            android:id="@+id/ll_topcities"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <TextView
-                android:id="@+id/tv_popular_cities"
-                style="@style/TextView.Micro.FontMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
-                android:text="@string/popular_location"
-                android:textColor="@color/black_38" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_search_results"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                tools:listitem="@layout/location_item" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/no_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/margin_error_text"
-            android:background="@color/bottomnav_bg"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/dp_20"
-            android:paddingRight="@dimen/dp_20"
-            android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <TextView
-                style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/empty_location_list_text_upper" />
-
-            <TextView
-                style="@style/TextView.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:gravity="center_horizontal"
-                android:text="@string/empty_location_list_text_lower"
-                android:textColor="@color/black_38" />
-
-        </LinearLayout>
-
-
-    </android.support.design.widget.CoordinatorLayout>
-
-    <FrameLayout
-        android:id="@+id/progress_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black_12"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:id="@+id/prog_bar"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            android:layout_gravity="center" />
-    </FrameLayout>
-</android.support.design.widget.CoordinatorLayout>
+</com.google.android.flexbox.FlexboxLayout>

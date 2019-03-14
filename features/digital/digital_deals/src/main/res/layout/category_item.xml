@@ -1,44 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:id="@+id/container"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:gravity="center_horizontal|top"
     android:layout_gravity="center_horizontal"
-    android:layout_marginBottom="@dimen/dp_24">
+    android:layout_marginBottom="@dimen/dp_2"
+    android:orientation="vertical">
 
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cv_card"
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardElevation="@dimen/dp_0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:layout_height="wrap_content">
 
         <ImageView
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72"
+            app:srcCompat="@drawable/ic_squircle" />
+
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_category"
-            android:layout_width="@dimen/image_width_ll"
-            android:layout_height="@dimen/image_width_ll"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-
-    </android.support.v7.widget.CardView>
-
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_gravity="center" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_category"
-        android:layout_width="70dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:fontFamily="sans-serif"
         android:gravity="center"
+        android:lineSpacingExtra="2sp"
+        android:textColor="@color/black_70"
+        android:textSize="10sp"
+        android:textStyle="normal"
         android:singleLine="true"
-        tools:text="Makanan"
-        style="@style/TextView.Micro.BlackPrimary"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_card" />
-</android.support.constraint.ConstraintLayout><!--android:layout_marginRight="@dimen/new_margin_med"-->
+        tools:text="Ajukan" />
+</LinearLayout>

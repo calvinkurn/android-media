@@ -75,6 +75,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private DealsCategoryAdapter dealsAdapter;
     private int adapterPosition = -1;
     private boolean forceRefresh;
+    private final int MAX_BRANDS = 8;
 
 
     @Override
@@ -185,10 +186,15 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             clBrands.setVisibility(View.VISIBLE);
-            recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList, true));
+            setBrandsAdapter(brandList);
         } else {
             clBrands.setVisibility(View.GONE);
         }
+    }
+
+    private void setBrandsAdapter(List<Brand> brandList) {
+        int maxBrands = brandList.size() < MAX_BRANDS ? brandList.size() : MAX_BRANDS;
+        recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList.subList(0, maxBrands), DealsBrandAdapter.ITEM_BRAND_SHORT));
     }
 
     @Override

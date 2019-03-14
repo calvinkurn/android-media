@@ -29,5 +29,6 @@
     <dimen name="image_width_ll">60dp</dimen>
     <dimen name="banner_height_deals">120dp</dimen>
     <dimen name="border_width">1px</dimen>
+    <dimen name="location_bottomsheet_height">200dp</dimen>
 
 </resources>

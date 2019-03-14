@@ -71,6 +71,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextDealPageUseCase getNextDealPageUseCase;
     private ArrayList<CategoryItem> categoryItems;
+    private ArrayList<CategoryItem> curatedItems;
     private List<Brand> brands;
     private List<CategoriesModel> categoriesModels;
     private WrapContentHeightViewPager mTouchViewPager;
@@ -176,10 +177,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
             TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-        } else if (id == R.id.tv_location_name) {
-            getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
-            getView().getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.hold);
-
+        } else if (id == R.id.tv_location_name || id == R.id.toolbar_title) {
+            getView().startLocationFragment();
         } else if (id == R.id.action_menu_favourite) {
 
         } else if (id == R.id.action_promo) {
@@ -206,11 +205,13 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivity(brandIntent);
-        } else if (id == R.id.see_all_promo) {
-            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_ALL_PROMO,
-                    "");
-            getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
-        } else {
+        }
+//        else if (id == R.id.see_all_promo) {
+//            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_ALL_PROMO,
+//                    "");
+//            getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
+//        }
+        else {
             getView().getActivity().onBackPressed();
         }
         return true;
@@ -278,6 +279,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 getView().renderCategoryList(getCategories(categoryItems),
                         getCarouselOrTop(categoryItems, CAROUSEL),
                         getCarouselOrTop(categoryItems, TOP));
+                getView().renderCuratedDealsList(getCuratedDeals(categoryItems));
 
                 Type token2 = new TypeToken<DataResponse<AllBrandsResponse>>() {
                 }.getType();
@@ -378,6 +380,16 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         } else {
             return categoryList.get(1);
         }
+    }
+
+    private List<CategoryItem> getCuratedDeals(List<CategoryItem> categoryItems) {
+        curatedItems = new ArrayList<>();
+        for (CategoryItem categoryItem: categoryItems) {
+            if (categoryItem.getIsCard() == 1) {
+                curatedItems.add(categoryItem);
+            }
+        }
+        return curatedItems;
     }
 
     private List<CategoryItem> getCategories(List<CategoryItem> listItems) {

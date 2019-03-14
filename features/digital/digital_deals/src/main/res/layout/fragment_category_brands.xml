@@ -47,7 +47,7 @@
             app:layoutManager="android.support.v7.widget.GridLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/search_input_view"
             app:spanCount="3"
-            tools:listitem="@layout/item_brand_big" />
+            tools:listitem="@layout/item_brand_normal" />
 
         <LinearLayout
             android:id="@+id/no_content"

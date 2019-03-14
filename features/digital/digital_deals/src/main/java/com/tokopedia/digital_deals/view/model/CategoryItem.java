@@ -35,6 +35,9 @@ public class CategoryItem implements Parcelable {
     @SerializedName("count")
     @Expose
     private int count;
+    @SerializedName("is_card")
+    @Expose
+    private int isCard;
 
     public CategoryItem() {
     }
@@ -105,6 +108,14 @@ public class CategoryItem implements Parcelable {
         this.count = count;
     }
 
+    public int getIsCard() {
+        return isCard;
+    }
+
+    public void setIsCard(int isCard) {
+        this.isCard = isCard;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -120,6 +131,7 @@ public class CategoryItem implements Parcelable {
         dest.writeList(this.items);
         dest.writeInt(categoryId);
         dest.writeInt(count);
+        dest.writeInt(isCard);
     }
 
     protected CategoryItem(Parcel in) {
@@ -132,6 +144,7 @@ public class CategoryItem implements Parcelable {
         in.readList(this.items, ProductItem.class.getClassLoader());
         this.categoryId = in.readInt();
         this.count = in.readInt();
+        this.isCard = in.readInt();
     }
 
     public static final Parcelable.Creator<CategoryItem> CREATOR = new Parcelable.Creator<CategoryItem>() {

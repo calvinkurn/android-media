@@ -50,15 +50,17 @@ import javax.inject.Inject;
 
 public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
+    private int itemViewType;
     private List<ProductItem> categoryItems;
     private Context context;
-    private final int ITEM = 1;
-    private final int FOOTER = 2;
-    private final int ITEM2 = 3;
-    private final int HEADER = 4;
-    private final int ITEM3 = 5;
-    private final int HEADER2 = 6;
+    private final int ITEM_PRODUCT_NORMAL = 1;
+    private final int ITEM_PRODUCT_SHORT = 2;
+    private final int ITEM_PRODUCT_TOP_DEALS = 3;
+    private final int ITEM_PRODUCT_HOME = 4;
+    private final int HEADER_TRENDING_DEALS = 5;
+    private final int HEADER_TRENDING_DEALS_SEARCHED = 6;
     private final int HEADER_BRAND = 7;
+    private final int FOOTER = 8;
     private boolean isFooterAdded;
     private boolean isHeaderAdded;
     private boolean shortLayout;
@@ -86,6 +88,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String brandHeaderText;
     private int productCount;
     private Brand brand;
+    private boolean isDealsHomeLayout;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
@@ -107,13 +110,38 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     }
 
+    public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, int itemViewType, Boolean... layoutType) {
+        if (categoryItems == null)
+            this.categoryItems = new ArrayList<>();
+        else
+            this.categoryItems = categoryItems;
+        if (layoutType.length > 0) {
+            if (layoutType[0] != null) {
+                this.shortLayout = layoutType[0];
+            }
+        }
+        if (layoutType.length > 1) {
+            if (layoutType[1] != null) {
+                brandPageCard = layoutType[1];
+            }
+        }
+        this.toActivityRequest = toActivityRequest;
+        this.pageType = pageType;
+        this.itemViewType = itemViewType;
+
+    }
+
     public void setTopDealsLayout(boolean isTopDealsLayout) {
         topDealsLayout = isTopDealsLayout;
     }
 
+    public void setDealsHomeLayout(boolean isDealsHomeLayout) {
+        this.isDealsHomeLayout = isDealsHomeLayout;
+    }
+
     @Override
     public int getItemCount() {
-        return (categoryItems == null) ? 0 : categoryItems.size();
+        return (categoryItems == null) ? 0 : (isDealsHomeLayout) ? 9 : categoryItems.size();
     }
 
     @Override
@@ -125,33 +153,37 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         RecyclerView.ViewHolder holder = null;
         View v;
         switch (viewType) {
-            case ITEM:
+            case ITEM_PRODUCT_NORMAL:
                 v = inflater.inflate(R.layout.deal_item_card, parent, false);
-                holder = new ItemViewHolder(v);
+                holder = new ItemViewHolderNormal(v);
                 break;
-            case FOOTER:
-                v = inflater.inflate(R.layout.footer_layout, parent, false);
-                holder = new FooterViewHolder(v);
-                break;
-            case ITEM2:
+            case ITEM_PRODUCT_SHORT:
                 v = inflater.inflate(R.layout.deal_item_card_short, parent, false);
-                holder = new ItemViewHolder2(v);
+                holder = new ItemViewHolderShort(v);
                 break;
-            case HEADER:
-                v = inflater.inflate(R.layout.header_layout, parent, false);
-                holder = new HeaderViewHolder(v);
+            case ITEM_PRODUCT_HOME:
+                v = inflater.inflate(R.layout.deal_item_card_home, parent, false);
+                holder = new ItemViewHolderNormal(v);
                 break;
-            case ITEM3:
+            case ITEM_PRODUCT_TOP_DEALS:
                 v = inflater.inflate(R.layout.item_top_suggestions, parent, false);
                 holder = new TopSuggestionHolder(v);
                 break;
-            case HEADER2:
+            case HEADER_TRENDING_DEALS:
+                v = inflater.inflate(R.layout.header_layout, parent, false);
+                holder = new HeaderViewHolder(v);
+                break;
+            case HEADER_TRENDING_DEALS_SEARCHED:
                 v = inflater.inflate(R.layout.header_layout_trending_deals, parent, false);
                 holder = new HeaderViewHolder(v);
                 break;
             case HEADER_BRAND:
                 v = inflater.inflate(R.layout.header_layout_brand_page, parent, false);
                 holder = new HeaderBrandViewHolder(v);
+                break;
+            case FOOTER:
+                v = inflater.inflate(R.layout.footer_layout, parent, false);
+                holder = new FooterViewHolder(v);
                 break;
             default:
                 break;
@@ -167,27 +199,31 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         switch (getItemViewType(position)) {
-            case ITEM:
-                ((ItemViewHolder) holder).setIndex(position);
-                ((ItemViewHolder) holder).bindData(categoryItems.get(position));
+            case ITEM_PRODUCT_NORMAL:
+                ((ItemViewHolderNormal) holder).setIndex(position);
+                ((ItemViewHolderNormal) holder).bindData(categoryItems.get(position));
                 break;
-            case FOOTER:
+            case ITEM_PRODUCT_SHORT:
+                ((ItemViewHolderShort) holder).setIndex(position);
+                ((ItemViewHolderShort) holder).bindData(categoryItems.get(position));
                 break;
-            case ITEM2:
-                ((ItemViewHolder2) holder).setIndex(position);
-                ((ItemViewHolder2) holder).bindData(categoryItems.get(position));
+            case ITEM_PRODUCT_HOME:
+                ((ItemViewHolderNormal) holder).setIndex(position);
+                ((ItemViewHolderNormal) holder).bindData(categoryItems.get(position));
                 break;
-            case HEADER:
-                ((HeaderViewHolder) holder).bindData(headerText);
-                break;
-            case ITEM3:
+            case ITEM_PRODUCT_TOP_DEALS:
                 ((TopSuggestionHolder) holder).setIndex(position);
                 ((TopSuggestionHolder) holder).setDealTitle(position, categoryItems.get(position));
                 break;
-            case HEADER2:
+            case HEADER_TRENDING_DEALS:
+                ((HeaderViewHolder) holder).bindData(headerText);
+                break;
+            case HEADER_TRENDING_DEALS_SEARCHED:
                 break;
             case HEADER_BRAND:
                 ((HeaderBrandViewHolder) holder).bindData(brandHeaderText, productCount);
+                break;
+            case FOOTER:
                 break;
             default:
                 break;
@@ -195,18 +231,55 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     }
 
+//    @Override
+//    public int getItemViewType(int position) {
+//        return (shortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
+//                ? HEADER_TRENDING_DEALS : ITEM_PRODUCT_SHORT
+//                :
+//                (topDealsLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
+//                        ? HEADER_TRENDING_DEALS_SEARCHED : ITEM_PRODUCT_TOP_DEALS
+//                        :
+//                        (isLastPosition(position) && isFooterAdded)
+//                                ? FOOTER : (position == 0 && isHeaderAdded)
+//                                ? HEADER_TRENDING_DEALS : (position == 0 && isBrandHeaderAdded && brandPageCard)
+//                                ? HEADER_BRAND : ITEM_PRODUCT_NORMAL));
+//    }
+
     @Override
     public int getItemViewType(int position) {
-        return (shortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
-                ? HEADER : ITEM2
-                :
-                (topDealsLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
-                        ? HEADER2 : ITEM3
-                        :
-                        (isLastPosition(position) && isFooterAdded)
-                                ? FOOTER : (position == 0 && isHeaderAdded)
-                                ? HEADER : (position == 0 && isBrandHeaderAdded && brandPageCard)
-                                ? HEADER_BRAND : ITEM));
+        int itemType;
+        if (shortLayout) {
+            if (isLastPosition(position) && isFooterAdded) {
+                itemType = FOOTER;
+            } else if ((position == 0 && isHeaderAdded)) {
+                itemType = HEADER_TRENDING_DEALS;
+            } else {
+                itemType = ITEM_PRODUCT_SHORT;
+            }
+
+        } else if (topDealsLayout) {
+            if ((isLastPosition(position) && isFooterAdded)) {
+                itemType = FOOTER;
+            } else if ((position == 0 && isHeaderAdded)) {
+                itemType = HEADER_TRENDING_DEALS_SEARCHED;
+            } else {
+                itemType = ITEM_PRODUCT_TOP_DEALS;
+            }
+        } else {
+            if ((isLastPosition(position) && isFooterAdded)) {
+                itemType = FOOTER;
+            } else if ((position == 0 && isHeaderAdded)) {
+                itemType = HEADER_TRENDING_DEALS;
+            } else if ((position == 0 && isBrandHeaderAdded && brandPageCard)) {
+                itemType = HEADER_BRAND;
+            } else if (isDealsHomeLayout) {
+                itemType = ITEM_PRODUCT_HOME;
+            } else {
+                itemType = ITEM_PRODUCT_NORMAL;
+            }
+        }
+
+        return itemType;
     }
 
     private boolean isLastPosition(int position) {
@@ -266,15 +339,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (holder instanceof ItemViewHolder) {
-            ItemViewHolder holder1 = ((ItemViewHolder) holder);
+        if (holder instanceof ItemViewHolderNormal) {
+            ItemViewHolderNormal holder1 = ((ItemViewHolderNormal) holder);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
                 dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
                         categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
             }
-        } else if (holder instanceof ItemViewHolder2) {
-            ItemViewHolder2 holder1 = ((ItemViewHolder2) holder);
+        } else if (holder instanceof ItemViewHolderShort) {
+            ItemViewHolderShort holder1 = ((ItemViewHolderShort) holder);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
                 dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
@@ -368,7 +441,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.brand = brand;
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ItemViewHolderNormal extends RecyclerView.ViewHolder implements View.OnClickListener {
         private static final String LIKE = "LIKE";
         private static final String UNLIKE = "UNLIKE";
         private View itemView;
@@ -388,7 +461,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private int index;
         private boolean isShown;
 
-        ItemViewHolder(View itemView) {
+        ItemViewHolderNormal(View itemView) {
             super(itemView);
             this.itemView = itemView;
             dealImage = itemView.findViewById(R.id.iv_product);
@@ -404,6 +477,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             dealSellingPrice = itemView.findViewById(R.id.tv_sales_price);
             hotDeal = itemView.findViewById(R.id.tv_hot_deal);
             cvBrand = itemView.findViewById(R.id.cv_brand);
+            if (isDealsHomeLayout) {
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                int devicewidth = (int) (displaymetrics.widthPixels / 1.2);
+                itemView.getLayoutParams().width = devicewidth;
+            }
         }
 
         void bindData(final ProductItem productItem) {
@@ -434,7 +513,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 setLikes(productItem.getLikes(), productItem.isLiked());
             }
 
-            if (productItem.getDisplayTags() != null) {
+            if (productItem.getDisplayTags() != null && !isDealsHomeLayout) {
                 hotDeal.setVisibility(View.VISIBLE);
             } else {
                 hotDeal.setVisibility(View.GONE);
@@ -534,7 +613,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         categoryItems.get(getIndex()).getImageWeb(), categoryItems.get(getIndex()).getDesktopUrl());
             } else if (v.getId() == R.id.iv_wish_list) {
                 ProductItem item = categoryItems.get(getIndex());
-                boolean isLoggedIn = mPresenter.setDealLike(item.getId(),item.isLiked(), getIndex(),item.getLikes() );
+                boolean isLoggedIn = mPresenter.setDealLike(item.getId(), item.isLiked(), getIndex(), item.getLikes());
                 if (isLoggedIn) {
                     dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_LOVE, getFavouriteLabel(position));
                     if (categoryItems.get(getIndex()).isLiked()) {
@@ -575,7 +654,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public class ItemViewHolder2 extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ItemViewHolderShort extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private View itemView;
         private ImageView dealImage;
@@ -590,7 +669,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private int index;
         private boolean isShown;
 
-        ItemViewHolder2(View itemView) {
+        ItemViewHolderShort(View itemView) {
             super(itemView);
             this.itemView = itemView;
             dealImage = itemView.findViewById(R.id.iv_product);

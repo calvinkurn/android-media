@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,10 +28,12 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
     private List<CategoryItem> categoryItems;
     private Context context;
     DealsAnalytics dealsAnalytics;
+    CategorySelected categorySelected;
 
-    public DealsCategoryItemAdapter(List<CategoryItem> categoryItems) {
+    public DealsCategoryItemAdapter(List<CategoryItem> categoryItems, CategorySelected categorySelected) {
         this.categoryItems = new ArrayList<>();
         this.categoryItems = categoryItems;
+        this.categorySelected = categorySelected;
 
     }
 
@@ -73,11 +76,12 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
             categoriesModel.setCategoryUrl(categoryItems.get(getIndex()).getCategoryUrl());
             categoriesModel.setCategoryId(categoryItems.get(getIndex()).getCategoryId());
             categoriesModel.setPosition(getIndex() + 1);
-            Intent detailsIntent = new Intent(context, CategoryDetailActivity.class);
-            detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
-            detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());
-            context.startActivity(detailsIntent);
+            categorySelected.openCategoryDetail(categoriesModel);
         }
+    }
+
+    public interface CategorySelected {
+        void openCategoryDetail(CategoriesModel categoriesModel);
     }
 
     @Override

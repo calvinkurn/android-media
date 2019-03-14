@@ -27,6 +27,8 @@ public class DealsContract {
 
         void renderBrandList(List<Brand> brandList);
 
+        void renderCuratedDealsList(List<CategoryItem> categoryItems);
+
         void addDealsToCards(CategoryItem categoryItemsViewModels);
 
         RequestParams getParams();
@@ -56,6 +58,10 @@ public class DealsContract {
         void startOrderListActivity();
 
         int getRequestCode();
+
+        void startLocationFragment();
+
+        void startDealsCategoryFragment(List<CategoryItem> categoryItems);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
