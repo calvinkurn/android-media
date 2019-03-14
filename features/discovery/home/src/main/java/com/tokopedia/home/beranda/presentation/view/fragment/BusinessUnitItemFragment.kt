@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.di.BerandaComponent
+import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.usecase.coroutines.Fail
