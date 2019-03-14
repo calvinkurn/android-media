@@ -45,28 +45,34 @@
                         android:textSize="@dimen/sp_16"
                         tools:text="@string/fake_date" />
 
-                    <LinearLayout
+                    <android.support.constraint.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginTop="@dimen/dp_8">
 
                         <TextView
+                            android:id="@+id/rp_string_id"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginTop="@dimen/dp_8"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center_horizontal"
                             android:text="@string/rp_string"
+                            android:textStyle="bold"
                             android:textColor="@color/amount_color_black"
                             android:textSize="@dimen/sp_14" />
 
                         <TextView
+                            app:layout_constraintLeft_toRightOf="@+id/rp_string_id"
+                            android:layout_marginLeft="@dimen/dp_4"
                             android:id="@+id/transaction_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/amount_color_black"
                             android:textSize="@dimen/sp_34"
-                            tools:text="@string/fake_number" />
-                    </LinearLayout>
+                            tools:text="@string/fake_number"
+                            android:layout_marginStart="@dimen/dp_4" />
+                    </android.support.constraint.ConstraintLayout>
                 </LinearLayout>
 
                 <LinearLayout
