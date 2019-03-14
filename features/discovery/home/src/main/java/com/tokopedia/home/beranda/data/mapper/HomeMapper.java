@@ -126,7 +126,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
                         switch (channel.getLayout()) {
                             case DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET:
-                                list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
+                                list.add(new BusinessUnitViewModel(context.getString(R.string.digital_widget_title)));
+//                                list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
                                 break;
                             case DynamicHomeChannel.Channels.LAYOUT_BU_WIDGET:
                                 list.add(new BusinessUnitViewModel(context.getString(R.string.digital_widget_title)));
