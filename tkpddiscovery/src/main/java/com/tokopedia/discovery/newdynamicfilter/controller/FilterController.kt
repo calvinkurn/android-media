@@ -23,12 +23,22 @@ class FilterController : Serializable {
 
     fun initFilterController(searchParameter: Map<String, String> = mapOf(),
                              filterList: List<Filter> = listOf()) {
+        resetStatesBeforeLoad()
+
         loadSearchParameter(searchParameter)
         loadFilterList(filterList)
         loadFlagFilterHelper()
         loadActiveFilter()
+    }
 
+    private fun resetStatesBeforeLoad() {
+        searchParameter.clear()
+        flagFilterHelper.clear()
+        filterList.clear()
+        activeFilterKeyList.clear()
         shownInMainState.clear()
+        pressedSliderMaxValueState = -1
+        pressedSliderMaxValueState = -1
     }
 
     private fun loadSearchParameter(searchParameter: Map<String, String>) {
@@ -115,21 +125,38 @@ class FilterController : Serializable {
     }
 
     private fun loadFlagFilterHelper() {
-        for (filter in filterList) {
-            for (option in filter.options) {
-                if (searchParameter.containsKey(option.key)) {
-                    flagFilterHelper[option.uniqueId] = true
-                }
+        loopOptionsInFilterList { option ->
+            if (isOptionSelected(option)) {
+                flagFilterHelper[option.uniqueId] = true
             }
         }
     }
 
+    private fun isOptionSelected(option: Option) : Boolean {
+        val key = option.key
+
+        if(searchParameter.containsKey(key)) {
+            val optionValues = option.value.split(Option.VALUE_SEPARATOR)
+            val searchParameterValues = getFilterValue(key).split(Option.VALUE_SEPARATOR)
+
+            return searchParameterValues.containsAll(optionValues)
+        }
+
+        return false
+    }
+
     private fun loadActiveFilter() {
-        for(filter in filterList) {
-            for(option in filter.options) {
-                if(searchParameter.containsKey(option.key)) activeFilterKeyList.add(option.key)
+        loopOptionsInFilterList { option ->
+            if(searchParameter.containsKey(option.key)) {
+                activeFilterKeyList.add(option.key)
             }
         }
+    }
+
+    private fun loopOptionsInFilterList(action: (option: Option) -> Unit) {
+        for(filter in filterList)
+            for(option in filter.options)
+                action(option)
     }
 
     fun saveSliderValueStates(minValue: Int, maxValue: Int) {
@@ -181,7 +208,18 @@ class FilterController : Serializable {
     }
 
     fun resetAllFilters() {
-        for(activeFilterKey in activeFilterKeyList) {
+        removeActiveFiltersFromSearchParameter()
+
+        flagFilterHelper.clear()
+
+        resetSliderStates()
+    }
+
+    private fun removeActiveFiltersFromSearchParameter() {
+        val activeFiltersForReset = mutableListOf<String>()
+        activeFiltersForReset.addAll(activeFilterKeyList)
+
+        for(activeFilterKey in activeFiltersForReset) {
             setOrRemoveFilterValue(false, activeFilterKey, "")
         }
     }
@@ -195,6 +233,11 @@ class FilterController : Serializable {
             searchParameter.remove(key)
             activeFilterKeyList.remove(key)
         }
+    }
+
+    private fun resetSliderStates() {
+        pressedSliderMinValueState = -1
+        pressedSliderMaxValueState = -1
     }
 
     fun getSelectedOptions(filter: Filter): List<Option> {
