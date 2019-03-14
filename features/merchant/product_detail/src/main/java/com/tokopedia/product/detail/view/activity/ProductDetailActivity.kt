@@ -15,6 +15,10 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.product.detail.ProductDetailRouter
 
 class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
     private var isFromDeeplink = false
@@ -24,6 +28,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var productId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
+    lateinit var remoteConfig : RemoteConfig
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -53,7 +58,10 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
         @JvmStatic
         fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
-            putExtra(PARAM_PRODUCT_ID, productId.toString())
+            val bundle = Bundle().apply {
+                putString(PARAM_PRODUCT_ID, productId.toString())
+            }
+            putExtras(bundle)
         }
     }
 
@@ -106,7 +114,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             } else { // affiliate
                 productId = uri.lastPathSegment
             }
-        } else { // uri is null, get from bundle for last resort
+        } else { // uri is null
             bundle?.let {
                 productId = it.getString(PARAM_PRODUCT_ID)
                 shopDomain = it.getString(PARAM_SHOP_DOMAIN)
@@ -121,6 +129,14 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             isFromAffiliate = true
         } else {
             isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
+        }
+
+        remoteConfig = FirebaseRemoteConfigImpl(this)
+        if(remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL)){
+            if(application is ProductDetailRouter){
+                (application as ProductDetailRouter).goToOldProductDetailPage(this, productId, shopDomain, productKey, trackerAttribution, trackerListName)
+                finish()
+            }
         }
 
         super.onCreate(savedInstanceState)
