@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.modules.core.PermissionAwareActivity;
@@ -35,7 +34,6 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
         if (bundle != null && bundle.getString(SHAKE_SHAKE) != null) {
             disableShakeShake = Boolean.parseBoolean(bundle.getString(SHAKE_SHAKE));
         }
-
         ReactUtils.startTracing(MP_FLASHSALE);
         return ReactNativeDiscoveryActivity.createApplinkCallingIntent(
                 context, ReactConst.Screen.DISCOVERY_PAGE,
