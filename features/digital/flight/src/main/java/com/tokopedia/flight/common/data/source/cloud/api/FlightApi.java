@@ -83,7 +83,7 @@ public interface FlightApi {
                                                            @Header("x-tkpd-userid") String userId);
 
     @Headers({"Content-Type: application/json"})
-    @GET(FlightUrl.FLIGHT_CART_PATH)
+    @GET(FlightUrl.FLIGHT_CART_PATH_V11)
     Observable<Response<String>> getCart(@Path("cart_id") String cartId);
 
     @GET(FlightUrl.FLIGHT_CHECK_VOUCHER_CODE)
