@@ -24,4 +24,8 @@ class ExploreViewHolder(itemView: View,
     override fun bind(element: ExploreViewModel) {
         itemView.card.bind(element.exploreCardViewModel)
     }
+
+    override fun onViewRecycled() {
+        itemView.card.clearImage()
+    }
 }

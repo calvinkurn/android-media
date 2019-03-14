@@ -77,7 +77,7 @@ class DynamicPostViewHolder(v: View,
         }
     }
 
-    fun onViewRecycled() {
+    override fun onViewRecycled() {
         itemView.authorImage.clearImage()
     }
 
