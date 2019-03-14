@@ -85,7 +85,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
-        adapter.addElement(getRecomData());
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
