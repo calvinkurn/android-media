@@ -37,11 +37,11 @@ class ProfilePresenter @Inject constructor(
         trackAffiliateClickUseCase.unsubscribe()
     }
 
-    override fun getProfileFirstPage(userId: Int) {
+    override fun getProfileFirstPage(userId: Int, isFromLogin: Boolean) {
         cursor = ""
         getProfileFirstPage.execute(
                 GetProfileFirstPage.createRequestParams(userId),
-                GetProfileFirstPageSubscriber(view)
+                GetProfileFirstPageSubscriber(view, isFromLogin)
         )
     }
 

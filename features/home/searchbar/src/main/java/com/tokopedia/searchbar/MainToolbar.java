@@ -26,7 +26,9 @@ public class MainToolbar extends Toolbar {
 
     protected ImageView btnNotification;
     protected ImageView btnWishlist;
-    protected BadgeView badgeView;
+    protected ImageView btnInbox;
+    private BadgeView badgeViewInbox;
+    private BadgeView badgeViewNotification;
 
     protected SearchBarAnalytics searchBarAnalytics;
     protected UserSessionInterface userSession;
@@ -50,34 +52,23 @@ public class MainToolbar extends Toolbar {
 
     public void setNotificationNumber(int badgeNumber) {
         if (btnNotification != null) {
-            if (badgeView == null)
-                badgeView = new BadgeView(getContext());
+            if (badgeViewNotification == null)
+                badgeViewNotification = new BadgeView(getContext());
 
-            badgeView.bindTarget(btnNotification);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(badgeNumber);
+            badgeViewNotification.bindTarget(btnNotification);
+            badgeViewNotification.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewNotification.setBadgeNumber(badgeNumber);
         }
     }
 
     public void setInboxNumber(int badgeNumber) {
-        if (btnWishlist != null && btnWishlist.getTag() != null
-                && btnWishlist.getTag().toString().equalsIgnoreCase(TAG_INBOX)) {
-            if (badgeView == null)
-                badgeView = new BadgeView(getContext());
+        if (btnInbox != null) {
+            if (badgeViewInbox == null)
+                badgeViewInbox = new BadgeView(getContext());
 
-            badgeView.bindTarget(btnWishlist);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(badgeNumber);
-        }
-    }
-
-    public void showInboxIconForAbTest(boolean shouldShowInbox) {
-        if (shouldShowInbox) {
-            btnWishlist.setTag(TAG_INBOX);
-            btnWishlist.setImageResource(R.drawable.ic_inbox_searcbar);
-        } else {
-            btnWishlist.setTag("");
-            btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_grey);
+            badgeViewInbox.bindTarget(btnInbox);
+            badgeViewInbox.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewInbox.setBadgeNumber(badgeNumber);
         }
     }
 
@@ -89,6 +80,7 @@ public class MainToolbar extends Toolbar {
         inflateResource(context);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
+        btnInbox = findViewById(R.id.btn_inbox);
         btnWishlist = findViewById(R.id.btn_wishlist);
         EditText editTextSearch = findViewById(R.id.et_search);
 
@@ -115,16 +107,19 @@ public class MainToolbar extends Toolbar {
 
         btnWishlist.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
-                if (btnWishlist.getTag() != null && btnWishlist.getTag().toString()
-                        .equalsIgnoreCase(TAG_INBOX)) {
-                    searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
-                    getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                            .gotoInboxMainPage(getContext()));
-                } else {
-                    searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
-                    getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                            .gotoWishlistPage(getContext()));
-                }
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoWishlistPage(getContext()));
+            } else {
+                RouteManager.route(context, ApplinkConst.LOGIN);
+            }
+        });
+
+        btnInbox.setOnClickListener(v -> {
+            if (userSession.isLoggedIn()) {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoInboxMainPage(getContext()));
             } else {
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }

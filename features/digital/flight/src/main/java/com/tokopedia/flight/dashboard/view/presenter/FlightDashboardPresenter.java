@@ -5,7 +5,10 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
+import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
@@ -29,6 +32,7 @@ import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 import com.tokopedia.flight_dbflow.FlightAirportDB;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -49,7 +53,8 @@ import rx.subscriptions.CompositeSubscription;
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboardContract.View> implements FlightDashboardContract.Presenter {
+public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboardContract.View>
+        implements FlightDashboardContract.Presenter {
 
     private static final String DEVICE_ID = "5";
     private static final String CATEGORY_ID = FlightUrl.CATEGORY_ID;
@@ -73,13 +78,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
     private FlightSelectPassengerValidator passengerValidator;
     private FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase;
     private FlightModuleRouter flightModuleRouter;
     private FlightAirportViewModelMapper flightAirportViewModelMapper;
+    private TravelTickerUseCase travelTickerUseCase;
 
     private FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase;
 
@@ -90,13 +96,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
-                                    UserSession userSession,
+                                    UserSessionInterface userSession,
                                     FlightAnalytics flightAnalytics,
                                     FlightSelectPassengerValidator passengerValidator,
                                     FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase,
                                     FlightModuleRouter flightModuleRouter,
                                     FlightAirportViewModelMapper flightAirportViewModelMapper,
-                                    FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase) {
+                                    FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase,
+                                    TravelTickerUseCase travelTickerUseCase) {
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.getFlightAirportWithParamUseCase = getFlightAirportWithParamUseCase;
@@ -110,6 +117,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.flightModuleRouter = flightModuleRouter;
         this.flightAirportViewModelMapper = flightAirportViewModelMapper;
         this.flightDeleteAllFlightSearchDataUseCase = flightDeleteAllFlightSearchDataUseCase;
+        this.travelTickerUseCase = travelTickerUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -450,6 +458,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onDestroyView() {
         if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
+        travelTickerUseCase.unsubscribe();
+        bannerGetDataUseCase.unsubscribe();
+        flightAirportVersionCheckUseCase.unsubscribe();
+        flightDeleteAllFlightSearchDataUseCase.unsubscribe();
+        getFlightAirportWithParamUseCase.unsubscribe();
+        getFlightClassByIdUseCase.unsubscribe();
         detachView();
     }
 
@@ -754,5 +768,29 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void actionOnPromoScrolled(int position, BannerDetail bannerData) {
         flightAnalytics.eventPromoImpression(position, bannerData);
+    }
+
+    @Override
+    public void fetchTickerData() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getHOME()),
+                new Subscriber<TravelTickerViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(TravelTickerViewModel travelTickerViewModel) {
+                        if (travelTickerViewModel.getMessage().length() > 0) {
+                            getView().renderTickerView(travelTickerViewModel);
+                        }
+                    }
+                });
     }
 }

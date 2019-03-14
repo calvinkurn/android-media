@@ -3,13 +3,14 @@ package com.tokopedia.home.beranda.presentation.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -20,9 +21,9 @@ import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
@@ -99,20 +100,17 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         recomId = getArguments().getInt(ARG_RECOM_ID);
         tabName = getArguments().getString(ARG_TAB_NAME);
         super.onViewCreated(view, savedInstanceState);
-        addRecyclerViewItemDecoration();
+        setupRecyclerView();
         loadFirstPageData();
         initListeners();
     }
 
-    private void addRecyclerViewItemDecoration() {
+    private void setupRecyclerView() {
+        ((StaggeredGridLayoutManager) getRecyclerView(getView()).getLayoutManager())
+                .setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         getRecyclerView(getView()).addItemDecoration(
-                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8),
-                        calculateTabHeight())
+                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8))
         );
-    }
-
-    private int calculateTabHeight() {
-        return ((getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height)));
     }
 
     @Override
@@ -153,17 +151,15 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (getAdapter().getItemViewType(position) == HomeFeedViewHolder.LAYOUT) {
-                    return 1;
-                }
-                return DEFAULT_SPAN_COUNT;
-            }
-        });
-        return gridLayoutManager;
+        return new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapter<HomeFeedViewModel, HomeFeedTypeFactory> createAdapterInstance() {
+        HomeFeedAdapter homeFeedAdapter = new HomeFeedAdapter(getAdapterTypeFactory());
+        homeFeedAdapter.setOnAdapterInteractionListener(this);
+        return homeFeedAdapter;
     }
 
     @Override
@@ -268,9 +264,13 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     public void scrollToTop() {
-        GridLayoutManager gridLayoutManager = ((GridLayoutManager) getRecyclerView(getView()).getLayoutManager());
+        if (getView() == null) {
+            return;
+        }
 
-        if (gridLayoutManager != null && gridLayoutManager.findFirstVisibleItemPosition() > 10) {
+        StaggeredGridLayoutManager staggeredGridLayoutManager = ((StaggeredGridLayoutManager) getRecyclerView(getView()).getLayoutManager());
+
+        if (staggeredGridLayoutManager != null && staggeredGridLayoutManager.findFirstVisibleItemPositions(null)[0] > 10) {
             getRecyclerView(getView()).scrollToPosition(10);
         }
         getRecyclerView(getView()).smoothScrollToPosition(0);

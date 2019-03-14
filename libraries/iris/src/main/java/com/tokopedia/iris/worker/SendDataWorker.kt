@@ -1,7 +1,6 @@
 package com.tokopedia.iris.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.tokopedia.iris.MAX_ROW
@@ -35,7 +34,8 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
                     response.await()
                 }
 
-                if (response.isSuccessful && response.code() == 200) {
+                if (response.isSuccessful
+                        && response.code() == 200) {
                     trackingRepository.delete(trackings)
                 }
             } catch (e: Exception) {

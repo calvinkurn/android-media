@@ -40,6 +40,8 @@ public interface HomeCategoryListener {
 
     void onSixGridItemClicked(String actionLink, String trackingAttribution);
 
+    void onThreeGridItemClicked(String actionLink, String trackingAttribution);
+
     void onPromoScrolled(BannerSlidesModel bannerSlidesModel);
 
     void onPromoAllClick();
@@ -55,4 +57,8 @@ public interface HomeCategoryListener {
     void onPromoDragEnd();
 
     void setActivityStateListener(ActivityStateListener activityStateListener);
+
+    void onDynamicIconScrollStart();
+
+    void onDynamicIconScrollEnd();
 }

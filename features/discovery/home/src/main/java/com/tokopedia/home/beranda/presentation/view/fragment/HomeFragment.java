@@ -40,8 +40,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
-import com.tokopedia.digital.common.constant.DigitalEventTracking;
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.common.analytic.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -78,10 +77,8 @@ import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
-import com.tokopedia.navigation_common.AbTestingOfficialStore;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.InboxNotificationListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -111,9 +108,8 @@ import rx.Observable;
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        CountDownView.CountDownListener,
-        NotificationListener, FragmentListener, HomeEggListener,
-        InboxNotificationListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
+        CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
+        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -149,7 +145,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
-    private AbTestingOfficialStore abTestingOfficialStore;
     private ViewPager homeFeedsViewPager;
     private CollapsingTabLayout homeFeedsTabLayout;
     private AppBarLayout appBarLayout;
@@ -170,11 +165,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isTraceStopped = false;
     private boolean isFeedLoaded = false;
 
-    @Inject
-    DigitalWidgetRepository digitalWidgetRepository;
-
     private View statusBarBackground;
-
+          
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -187,7 +179,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
-        abTestingOfficialStore = new AbTestingOfficialStore(getContext());
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
     }
@@ -290,8 +281,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initResources() {
         TypedValue typedValue = new TypedValue();
         if (getActivity() != null && getActivity().getTheme() != null &&
-                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
-        {
+                getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
         }
     }
@@ -444,9 +434,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        notifyToolbarForAbTesting();
         presenter.onResume();
-        if(activityStateListener!=null){
+        if (activityStateListener != null) {
             activityStateListener.onResume();
         }
     }
@@ -455,7 +444,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onPause() {
         super.onPause();
         trackingQueue.sendAll();
-        if(activityStateListener!=null) {
+        if (activityStateListener != null) {
             activityStateListener.onPause();
         }
     }
@@ -632,7 +621,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this,
                 this
-        );
+                );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -1059,6 +1048,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onThreeGridItemClicked(String actionLink, String trackingAttribution) {
+        onActionLinkClicked(actionLink, trackingAttribution);
+    }
+
+    @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
         if (getUserVisibleHint()) {
             presenter.hitBannerImpression(bannerSlidesModel);
@@ -1106,6 +1100,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isHomeFragment() {
+        if (getActivity() == null) {
+            return false;
+        }
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
         return (fragment instanceof HomeFragment);
     }
@@ -1125,6 +1122,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setActivityStateListener(ActivityStateListener activityStateListener) {
         this.activityStateListener = activityStateListener;
+    }
+
+    @Override
+    public void onDynamicIconScrollStart() {
+        refreshLayout.setCanChildScrollUp(true);
+    }
+
+    @Override
+    public void onDynamicIconScrollEnd() {
+        if (isAppBarFullyExpanded(lastOffset)) {
+            refreshLayout.setCanChildScrollUp(false);
+        }
     }
 
     @Override
@@ -1195,13 +1204,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     };
 
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        if (homeMainToolbar != null) {
-            homeMainToolbar.setNotificationNumber(number);
-        }
-    }
-
     public void startShopInfo(String shopId) {
         if (getActivity() != null
                 && getActivity().getApplication() != null
@@ -1229,7 +1231,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             Intent intentBalanceWalet = RouteManager.getIntent(getActivity(), applinkActivation);
             getContext().startActivity(intentBalanceWalet);
             Activity activity = (Activity) getContext();
-            activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            activity.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay);
         }
     }
 
@@ -1318,19 +1320,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchTokopointsNotification(String type) {
         TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
-    }
-
-    public void notifyToolbarForAbTesting() {
-        if (homeMainToolbar != null) {
-            homeMainToolbar.showInboxIconForAbTest(abTestingOfficialStore.shouldDoAbTesting());
-        }
-    }
-
-    @Override
-    public void onNotifyBadgeInboxNotification(int number) {
-        if (homeMainToolbar != null) {
-            homeMainToolbar.setInboxNumber(number);
-        }
     }
 
     @Override

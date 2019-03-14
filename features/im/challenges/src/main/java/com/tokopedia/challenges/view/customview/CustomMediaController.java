@@ -12,7 +12,8 @@ import android.widget.MediaController;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.activity.FullScreenLandscapeActivity;
 import com.tokopedia.challenges.view.activity.FullScreenPortraitVideoActivity;
-import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
+//import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 
 public class CustomMediaController extends MediaController {
 
@@ -55,8 +56,8 @@ public class CustomMediaController extends MediaController {
                 @Override
                 public void onClick(View v) {
                     if (isFullScreen) {
-                        ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
-                        ChallegeneSubmissionFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
+                        ChallengeDetailsFragment.VIDEO_POS = iCurrentPos.getPosition();
+                        ChallengeDetailsFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
                         ((Activity) getContext()).finish();
                     } else {
                         Intent intent = new Intent(getContext(), FullScreenPortraitVideoActivity.class);
@@ -73,8 +74,8 @@ public class CustomMediaController extends MediaController {
                 @Override
                 public void onClick(View v) {
                     if (isFullScreen) {
-                        ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
-                        ChallegeneSubmissionFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
+                        ChallengeDetailsFragment.VIDEO_POS = iCurrentPos.getPosition();
+                        ChallengeDetailsFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
                         ((Activity) getContext()).finish();
                     } else {
                         Intent intent = new Intent(getContext(), FullScreenLandscapeActivity.class);

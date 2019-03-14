@@ -11,7 +11,8 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.CategorySectionViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicIconSectionViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DummyViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelHeroViewHolder;
@@ -23,12 +24,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SprintSaleCarouselViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SixGridChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.ThreeGridChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsDynamicChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
@@ -85,8 +88,13 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
-    public int type(CategorySectionViewModel categorySectionViewModel) {
-        return CategorySectionViewHolder.LAYOUT;
+    public int type(UseCaseIconSectionViewModel useCaseIconSectionViewModel) {
+        return UseCaseIconSectionViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(DynamicIconSectionViewModel dynamicIconSectionViewModel) {
+        return DynamicIconSectionViewHolder.LAYOUT;
     }
 
     @Override
@@ -133,6 +141,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             return DynamicChannelHeroViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_6_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SixGridChannelViewHolder.LAYOUT;
+        } else if (DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return ThreeGridChannelViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SprintSaleCarouselViewHolder.LAYOUT;
         } else {
@@ -149,8 +159,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new TickerViewHolder(view, listener);
         else if (type == DigitalsViewHolder.LAYOUT)
             viewHolder = new DigitalsViewHolder(listener, fragmentManager, view);
-        else if (type == CategorySectionViewHolder.LAYOUT)
-            viewHolder = new CategorySectionViewHolder(view, listener);
+        else if (type == UseCaseIconSectionViewHolder.LAYOUT)
+            viewHolder = new UseCaseIconSectionViewHolder(view, listener);
+        else if (type == DynamicIconSectionViewHolder.LAYOUT)
+            viewHolder = new DynamicIconSectionViewHolder(view, listener);
         else if (type == SellViewHolder.LAYOUT)
             viewHolder = new SellViewHolder(view, listener);
         else if(type == HeaderViewHolder.LAYOUT)
@@ -171,6 +183,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new SprintSaleCarouselViewHolder(view, listener, countDownListener);
         else if (type == SixGridChannelViewHolder.LAYOUT)
             viewHolder = new SixGridChannelViewHolder(view, listener, countDownListener);
+        else if (type == ThreeGridChannelViewHolder.LAYOUT)
+            viewHolder = new ThreeGridChannelViewHolder(view, listener, countDownListener);
         else if (type == EmptyBlankViewHolder.LAYOUT)
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)

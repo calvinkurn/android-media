@@ -20,18 +20,6 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_8">
 
-        <ImageButton
-            android:id="@+id/btn_qrcode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:src="@drawable/ic_qr_scan_searchbar"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_centerVertical="true"/>
-
         <LinearLayout
             android:id="@+id/layout_search"
             android:layout_toRightOf="@+id/btn_qrcode"
@@ -78,7 +66,6 @@
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
-            android:src="@drawable/ic_wishlist_searchbar"
             android:layout_toLeftOf="@+id/btn_notification"/>
 
         <ImageView
@@ -88,8 +75,7 @@
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
-            android:scaleType="center"
-            android:src="@drawable/ic_notif_searchbar"/>
+            android:scaleType="center"/>
 
     </android.support.v7.widget.CardView>
 

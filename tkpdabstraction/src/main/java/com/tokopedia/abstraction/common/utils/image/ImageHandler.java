@@ -22,6 +22,7 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
+import android.support.transition.Transition;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.content.res.AppCompatResources;
@@ -29,6 +30,7 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.util.Base64;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -44,6 +46,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.R;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -906,6 +911,17 @@ public class ImageHandler {
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageView);
+        }
+    }
+
+    public static void loadBackgroundImage(@Nullable Window window, @NotNull String backgroundUrl) {
+        if (window != null && window.getContext() != null) {
+            Glide.with(window.getContext()).load(backgroundUrl).into(new SimpleTarget<GlideDrawable>() {
+                @Override
+                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                    window.setBackgroundDrawable(resource);
+                }
+            });
         }
     }
 }

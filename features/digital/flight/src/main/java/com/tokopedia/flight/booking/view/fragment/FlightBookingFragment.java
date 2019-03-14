@@ -28,8 +28,11 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.ticker.TravelTickerUtils;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -120,6 +123,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatEditText etPhoneNumber;
     private LinearLayout insuranceLayout;
     private RecyclerView insuranceRecyclerView;
+    TickerView tickerView;
 
     private FlightSimpleAdapter priceListAdapter;
 
@@ -205,6 +209,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         sameAsContactCheckbox = view.findViewById(R.id.checkbox);
         insuranceLayout = view.findViewById(R.id.insurance_layout);
         insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
+        tickerView = view.findViewById(R.id.flight_ticker_view);
 
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,6 +283,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             hideFullPageLoading();
             presenter.renderUi(flightBookingCartData, true);
         }
+
+        presenter.fetchTickerData();
     }
 
     @Override
@@ -646,6 +653,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         DialogFragment dialogFragment = FlightBookingNewPriceDialogFragment.newInstance(newTotalPrice, oldTotalPrice);
         dialogFragment.setTargetFragment(this, REQUEST_CODE_NEW_PRICE_DIALOG);
         dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
+    }
+
+    @Override
+    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
     }
 
     @Override

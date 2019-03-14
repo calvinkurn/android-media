@@ -14,10 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.contractor.SubmissionAdapterContract;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -289,7 +289,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
                 detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, categoryItems.get(getIndex()));
                 detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
-                navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
+                navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailsActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
             }
         }
     }
