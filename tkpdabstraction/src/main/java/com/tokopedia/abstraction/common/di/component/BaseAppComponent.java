@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.module.AppModule;
@@ -45,5 +44,4 @@ public interface BaseAppComponent {
 
     CacheManager globalCacheManager();
 
-    ViewModelFactory viewModelFactory();
 }

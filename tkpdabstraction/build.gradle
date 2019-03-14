@@ -39,6 +39,9 @@ dependencies {
     api rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 }
 
 apply from: '../publish_local.gradle'
