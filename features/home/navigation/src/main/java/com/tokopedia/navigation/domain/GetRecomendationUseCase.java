@@ -9,8 +9,12 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.entity.RecomendationEntity;
+import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,7 +24,7 @@ import rx.functions.Func1;
 /**
  * Author errysuprayogi on 14,March,2019
  */
-public class GetRecomendationUseCase extends UseCase<RecomendationEntity.RecomendationData> {
+public class GetRecomendationUseCase extends UseCase<List<Recomendation>> {
 
     public static final String USER_ID = "userID";
     public static final String X_SOURCE = "xSource";
@@ -42,24 +46,40 @@ public class GetRecomendationUseCase extends UseCase<RecomendationEntity.Recomen
     }
 
     @Override
-    public Observable<RecomendationEntity.RecomendationData> createObservable(RequestParams requestParams) {
+    public Observable<List<Recomendation>> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_inbox_recomendation), RecomendationEntity.class, requestParams.getParameters());
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map(new Func1<GraphqlResponse, RecomendationEntity.RecomendationData>() {
+                .map(new Func1<GraphqlResponse, List<Recomendation>>() {
                     @Override
-                    public RecomendationEntity.RecomendationData call(GraphqlResponse graphqlResponse) {
+                    public List<Recomendation> call(GraphqlResponse graphqlResponse) {
                         RecomendationEntity entity = graphqlResponse.getData(RecomendationEntity.class);
-                        return entity.getProductRecommendationWidget().getData().get(0);
+                        List<Recomendation> recomendationList = new ArrayList<>();
+                        for (RecomendationEntity.Recommendation r : entity.getProductRecommendationWidget()
+                                .getData().get(0).getRecommendation()) {
+                            Recomendation recomendation = new Recomendation();
+                            recomendation.setImageUrl(r.getImageUrl());
+                            recomendation.setCategoryBreadcrumbs(r.getCategoryBreadcrumbs());
+                            recomendation.setClickUrl(r.getClickUrl());
+                            recomendation.setPrice(r.getPrice());
+                            recomendation.setPriceNumber(r.getPriceInt());
+                            recomendation.setProductId(r.getId());
+                            recomendation.setProductName(r.getName());
+                            recomendation.setRecommendationType(r.getRecommendationType());
+                            recomendation.setTopAds(r.isIsTopads());
+                            recomendation.setTrackerImageUrl(r.getTrackerImageUrl());
+                            recomendationList.add(recomendation);
+                        }
+                        return recomendationList;
                     }
                 });
     }
 
     public RequestParams getRecomParams(int pageNumber) {
         RequestParams params = RequestParams.create();
-        params.putString(USER_ID, userSession.getUserId());
+        params.putInt(USER_ID, Integer.parseInt(userSession.getUserId()));
         params.putInt(PAGE_NUMBER, pageNumber);
         params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE);
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE);

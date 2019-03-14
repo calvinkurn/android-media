@@ -111,17 +111,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             Inbox inbox = (Inbox) item;
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
-        }
-    }
+        } else if(item instanceof Recomendation){
 
-    private List<Recomendation> getRecomData() {
-        List<Recomendation> list = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            Recomendation recomendation = new Recomendation();
-            recomendation.setImageUrl("https://ecs7.tokopedia.net/img/cache/300/product-1/2019/3/7/7294997/7294997_1a2b8840-eaf2-4a9f-9356-827b0fa7166f_600_600.png");
-            list.add(recomendation);
         }
-        return list;
     }
 
     private void intiInjector() {
@@ -222,8 +214,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void onRenderRecomInbox(RecomendationEntity.RecomendationData recomendationData) {
-
+    public void onRenderRecomInbox(List<Recomendation> recomendationList) {
+        adapter.addElement(recomendationList);
     }
 
     @Override

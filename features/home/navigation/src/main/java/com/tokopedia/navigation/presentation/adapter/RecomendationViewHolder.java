@@ -44,6 +44,7 @@ class RecomendationViewHolder extends AbstractViewHolder<Recomendation> {
             @Override
             public void onClick(View v) {
                 listener.onItemClickListener(element, getAdapterPosition());
+                new ImpresionTask().execute(element.getClickUrl());
             }
         });
     }

@@ -9,7 +9,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
  */
 public class Recomendation extends ImpressHolder implements Visitable<InboxTypeFactory> {
 
-    private String productId = "";
+    private int productId;
     private String productName = "";
     private String categoryBreadcrumbs = "";
     private String recommendationType = "";
@@ -20,11 +20,11 @@ public class Recomendation extends ImpressHolder implements Visitable<InboxTypeF
     private int priceNumber;
     private boolean isTopAds;
 
-    public String getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
