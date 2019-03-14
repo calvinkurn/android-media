@@ -49,6 +49,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     public static final int RESULT_CODE_HOME = 1;
     private static final int REQUEST_CODE_NOMINAL = 211;
     private static final int REQUEST_CODE_LOGIN = 3;
+    private static final int REQUEST_PAY_WITH_QR = 4;
 
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
@@ -113,9 +114,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
             startActivity(intent);
             finish();
         } else {
-//            Intent intent = ((ChallengesModuleRouter) (this.getApplication())).getLoginIntent(this);
-//            startActivityForResult(intent, 0);
+            moveToLoginPage(REQUEST_PAY_WITH_QR);
         }
+    }
+
+    private void moveToLoginPage(int requestCode) {
+        startActivityForResult(LoginActivity.getCallingIntent(getApplicationContext()), requestCode);
     }
 
     @NeedsPermission({Manifest.permission.CAMERA})
@@ -314,6 +318,9 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
             decoratedBarcodeView.pause();
             hideAnimation();
             presenter.onScanCompleteAfterLoginQrPayment();
+        } else if(resultCode == RESULT_OK && requestCode == REQUEST_PAY_WITH_QR) {
+            //TODO. let user try again
+            finish();
         }
     }
 }

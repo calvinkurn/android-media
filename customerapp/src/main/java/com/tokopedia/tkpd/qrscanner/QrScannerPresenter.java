@@ -97,8 +97,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
-        } else if (barcodeData.contains("ovo") || barcodeData.contains("OVO")
-                || barcodeData.contains("GPNQR") || barcodeData.contains("gpnqr")) {
+        } else if (barcodeData.toLowerCase().contains("ovo") || barcodeData.toLowerCase().contains("gpnqr")) {
             checkBarCode(barcodeData);
         } else {
             getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
