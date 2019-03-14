@@ -123,7 +123,17 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
         } else if (item instanceof Recomendation) {
-
+            Recomendation r = (Recomendation) item;
+            if (getActivity() != null &&
+                    getActivity().getApplication() instanceof GlobalNavRouter) {
+                ((GlobalNavRouter) getActivity().getApplication()).goToProductDetail(
+                        getActivity(),
+                        String.valueOf(r.getProductId()),
+                        r.getImageUrl(),
+                        r.getProductName(),
+                        r.getPrice()
+                );
+            }
         }
     }
 

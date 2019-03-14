@@ -210,7 +210,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                     tabName.toLowerCase()
             );
         }
-        new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
+        if(homeFeedViewModel.isTopAds()) {
+            new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
+        }
         goToProductDetail(homeFeedViewModel.getProductId(),
                 homeFeedViewModel.getImageUrl(),
                 homeFeedViewModel.getProductName(), homeFeedViewModel.getPrice());
