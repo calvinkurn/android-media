@@ -71,6 +71,13 @@ public class RemoteConfigKey {
     public static final String fireBaseShareMsgKey = "app_referral_product_share_format";
     public static final String fireBaseGuestShareMsgKey = "app_pdp_share_msg_guest";
     public static final String LOGIN_REVAMP_UI = "mainapp_enable_login_revamp_phone";
+    public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
+
+    public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
+
+    public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
+
+    public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
 }

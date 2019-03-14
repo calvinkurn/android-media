@@ -168,12 +168,13 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private void checkCanLoadNext(FeedResult feedResult, ArrayList<Visitable> listFeedView) {
 
+        viewListener.onSuccessGetFeedFirstPage(listFeedView);
         if (hasFeed(feedResult.getFeedDomain())
                 && !feedResult.isHasNext()
                 && feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
-            viewListener.onSuccessGetFeedFirstPageWithAddFeed(listFeedView);
+            viewListener.unsetEndlessScroll();
         } else {
-            viewListener.onSuccessGetFeedFirstPage(listFeedView);
+            viewListener.setEndlessScroll();
         }
     }
 

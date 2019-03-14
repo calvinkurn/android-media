@@ -19,8 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="@string/label_instant_payment_digital"
-            android:textColor="@color/checkbox_text"
-            android:textSize="@dimen/fontvs" />
+            android:textColor="@color/light_disabled"
+            android:textSize="@dimen/sp_12" />
 
         <ImageView
             android:id="@+id/tooltip_instant_checkout"
@@ -36,12 +36,12 @@
     <Button
         android:id="@+id/btn_buy"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        android:layout_height="@dimen/dp_44"
         android:layout_weight="0.40"
         android:textAllCaps="false"
         android:minHeight="0dp"
         android:background="@drawable/btn_buy"
-        android:text="@string/title_buy"
+        android:text="@string/digital_title_buy"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_gravity="right"
         android:textColor="@color/white" />

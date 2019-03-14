@@ -26,7 +26,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.ChallengeDetailActivity"
+            android:name=".view.activity.ChallengeDetailsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
@@ -44,10 +44,6 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service android:name=".view.service.UploadChallengeService" />
-
-        <activity
-            android:name=".view.activity.AllSubmissionsActivity"
-            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

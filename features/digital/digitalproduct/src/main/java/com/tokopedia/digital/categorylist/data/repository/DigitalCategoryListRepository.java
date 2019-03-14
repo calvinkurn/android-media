@@ -3,17 +3,15 @@ package com.tokopedia.digital.categorylist.data.repository;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.model.SimpleDatabaseModel;
-import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
-import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
+import com.tokopedia.digital.categorylist.data.cloud.entity.HomeCategoryMenuItem;
 import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -26,16 +24,17 @@ import rx.functions.Func1;
  */
 
 public class DigitalCategoryListRepository implements IDigitalCategoryListRepository {
+    public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
 
     private DigitalCategoryListApi digitalApi;
-    private final GlobalCacheManager globalCacheManager;
+    private final CacheManager globalCacheManager;
     private final ICategoryDigitalListDataMapper digitalListDataMapper;
-    private final SessionHandler sessionHandler;
+    private final UserSession sessionHandler;
 
     public DigitalCategoryListRepository(DigitalCategoryListApi digitalApi,
-                                         GlobalCacheManager globalCacheManager,
+                                         CacheManager globalCacheManager,
                                          ICategoryDigitalListDataMapper digitalListDataMapper,
-                                         SessionHandler sessionHandler) {
+                                         UserSession sessionHandler) {
         this.digitalApi = digitalApi;
         this.globalCacheManager = globalCacheManager;
         this.digitalListDataMapper = digitalListDataMapper;
@@ -45,7 +44,7 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
     @Override
     public Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataList(String deviceVersion) {
         return Observable.just(
-                globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST)
+                globalCacheManager.get(DIGITAL_CATEGORY_ITEM_LIST)
         ).flatMap(getFuncObservableDigitalCategoryListDataFromCache())
                 .onErrorResumeNext(getResumeFunctionObservableDigitalCategoryListDataFromNetwork(deviceVersion));
     }
@@ -68,8 +67,8 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
             @Override
             public Observable<List<DigitalCategoryItemData>> call(String s) {
                 HomeCategoryMenuItem homeCategoryMenuItem = new Gson()
-                        .fromJson(globalCacheManager.getValueString(
-                                TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST),
+                        .fromJson(globalCacheManager.get(
+                                DIGITAL_CATEGORY_ITEM_LIST),
                                 HomeCategoryMenuItem.class
                         );
 
@@ -89,7 +88,7 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
     private Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataListFromNetwork(String deviceVersion) {
         return digitalApi
                 .getDigitalCategoryList(
-                        sessionHandler.getLoginID(),
+                        sessionHandler.getUserId(),
                         GlobalConfig.getPackageApplicationName(),
                         deviceVersion)
                 .map(
@@ -110,16 +109,13 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
                             );
                     if (homeCategoryMenuItem != null && homeCategoryMenuItem.getData() != null
                             && !homeCategoryMenuItem.getData().getLayoutSections().isEmpty()) {
-                        globalCacheManager.setKey(TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST);
-                        globalCacheManager.setValue(stringResponse.body());
-                        globalCacheManager.store();
+                        globalCacheManager.save(DIGITAL_CATEGORY_ITEM_LIST, stringResponse.body(), 0);
                     }
                     return digitalListDataMapper.transformDigitalCategoryItemDataList(
                             homeCategoryMenuItem
                     );
-                } else {
-                    throw new RuntimeHttpErrorException(stringResponse.code());
                 }
+                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
         };
     }

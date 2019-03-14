@@ -69,6 +69,8 @@ public interface LoginContract {
         void onSuccessLoginEmail();
 
         void stopTrace();
+
+        void trackErrorLoginEmail();
     }
 
     interface Presenter extends CustomerPresenter<View> {

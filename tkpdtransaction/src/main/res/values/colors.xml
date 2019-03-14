@@ -9,6 +9,7 @@
     <color name="text_warning_red">#d30b16</color>
     <color name="text_warning_grey">#8b000000</color>
     <color name="text_cart_item_error_red">#d30b16</color>
+    <color name="dropshipper_bg">#2ef5a623</color>
     <color name="bg_upload_awb">#fde18e</color>
     <color name="bg_redeem_btn">#b4000000</color>
     <color name="grey_1100">#f6f6f6</color>
@@ -19,4 +20,5 @@
     <color name="yellow_100">#fffbcd</color>
     <color name="yellow_200">#ecdb77</color>
     <color name="valid_date_bg">#f6f6f6</color>
+    <color name="tkpd_survey_icon_gray">#979797</color>
 </resources>

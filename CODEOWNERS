@@ -5,6 +5,7 @@
 /tkpdinbox/         @tokopedia/minion-kevin
 /tkpddiscovery/     @tokopedia/minion-dave
 /tkpdtransaction/   @tokopedia/minion-bob
+/feature/discovery/category_common/     @tokopedia/minion-stuart
 /feature/discovery/topadssdk/           @tokopedia/minion-dave
 /feature/discovery/home/                @tokopedia/minion-dave
 /feature/discovery/recentview/          @tokopedia/minion-dave
@@ -17,7 +18,9 @@
 /tkpdabstraction/   @tokopedia/core-team
 /customerapp/       @tokopedia/core-team
 
+/features/common/developer_options                 @tokopedia/core-team
 /features/common/nps                               @tokopedia/core-team
+/features/common/resources_common                  @tokopedia/core-team
 
 /features/home/account-home/                       @tokopedia/core-team
 /features/home/navigation/                         @tokopedia/core-team
@@ -54,6 +57,8 @@
 /features/payment/payment_setting/              @tokopedia/minion-bob
 /features/payment/pms/                          @tokopedia/minion-bob
 /features/transaction/checkout/                 @tokopedia/minion-bob
+/features/transaction/express_checkout/         @tokopedia/minion-bob
+/features/transaction/express_checkout_common/  @tokopedia/minion-bob
 /features/transaction/transactionanalytics/     @tokopedia/minion-bob
 /features/transaction/transactiondata/          @tokopedia/minion-bob
 /features/logistic/cod/                         @tokopedia/minion-bob
@@ -99,7 +104,6 @@
 /features/content/kol_common/           @tokopedia/minion-kevin
 /features/content/profile/              @tokopedia/minion-kevin
 
-/features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
 /libraries/base_list_seller/            @tokopedia/minion-stuart
@@ -130,6 +134,8 @@
 /features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
 /features/promo/tokopoints_notification @tokopedia/minion-solo
+/features/promo/gamification            @tokopedia/minion-solo
+/features/payment/withdraw/             @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda

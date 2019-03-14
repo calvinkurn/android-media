@@ -2,8 +2,8 @@ package com.tokopedia.digital.product.additionalfeature.etoll.data.repository;
 
 import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.requestbody.smartcardcommand.RequestBodySmartcardCommand;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.entity.requestbody.smartcardinquiry.RequestBodySmartcardInquiry;
-import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardCommandDataSource;
+import com.tokopedia.digital.product.additionalfeature.etoll.data.source.SmartcardInquiryDataSource;
 import com.tokopedia.digital.product.additionalfeature.etoll.domain.IETollRepository;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 

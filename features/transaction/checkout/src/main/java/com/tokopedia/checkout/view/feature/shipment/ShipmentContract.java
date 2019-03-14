@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
@@ -12,20 +12,22 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,13 +117,14 @@ public interface ShipmentContract {
 
         void showBottomSheetError(String htmlMessage);
 
-        void navigateToCodConfirmationPage(Data data);
+        void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest);
 
         void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void showToastFailedTickerPromo(String text);
 
         void stopTrace();
+
     }
 
     interface AnalyticsActionListener {
@@ -170,8 +173,7 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnCourierChanged(String agent, String service);
 
-
-        void sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation();
+        void sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(String isBlackbox);
 
         void sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration();
 
@@ -206,7 +208,7 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment);
+        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
@@ -218,7 +220,7 @@ public interface ShipmentContract {
 
         void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment);
 
-        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment);
+        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId);
 
         void processCheckout(String voucherCode, boolean isOneClickShipment);
 
@@ -270,7 +272,11 @@ public interface ShipmentContract {
 
         ShipmentCostModel getShipmentCostModel();
 
+        EgoldAttributeModel getEgoldAttributeModel();
+
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
+
+        void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel);
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 

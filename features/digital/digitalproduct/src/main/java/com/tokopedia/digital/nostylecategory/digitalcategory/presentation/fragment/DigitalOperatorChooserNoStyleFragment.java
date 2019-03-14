@@ -17,8 +17,8 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
-import com.tokopedia.common_digital.common.di.DigitalComponent;
+import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent;
+import com.tokopedia.common_digital.common.di.DigitalCommonComponent;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 import com.tokopedia.digital.R;
@@ -120,12 +120,12 @@ public class DigitalOperatorChooserNoStyleFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DigitalComponent digitalComponent =
-                DaggerDigitalComponent.builder().baseAppComponent((
+        DigitalCommonComponent digitalCommonComponent =
+                DaggerDigitalCommonComponent.builder().baseAppComponent((
                         (BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                         .build();
         DigitalCategoryNoStyleComponent digitalCategoryNoStyleComponent =
-                DaggerDigitalCategoryNoStyleComponent.builder().digitalComponent(digitalComponent)
+                DaggerDigitalCategoryNoStyleComponent.builder().digitalCommonComponent(digitalCommonComponent)
                         .build();
         digitalCategoryNoStyleComponent.inject(this);
     }
@@ -143,7 +143,7 @@ public class DigitalOperatorChooserNoStyleFragment extends BaseDaggerFragment
         operatorChooserAdapter.notifyDataSetChanged();
 
         if (renderProductModels.size() > 10) {
-            fieldSearch.setHint(getResources().getString(R.string.action_search_with_suffix, operatorLabel));
+            fieldSearch.setHint(getResources().getString(R.string.digital_action_search_with_suffix, operatorLabel));
             fieldSearch.clearFocus();
             fieldSearch.setVisibility(View.VISIBLE);
             rvOperatorList.requestFocus();

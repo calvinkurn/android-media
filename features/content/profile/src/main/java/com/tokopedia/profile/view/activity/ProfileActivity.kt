@@ -8,6 +8,7 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
 
@@ -25,6 +26,7 @@ class ProfileActivity : BaseSimpleActivity() {
         const val EXTRA_PARAM_POST_ID = "post_id"
         const val EXTRA_PARAM_AFTER_POST = "after_post"
         const val EXTRA_PARAM_AFTER_EDIT = "after_edit"
+        const val EXTRA_PARAM_SUCCESS_POST = "success_post"
         const val TRUE = "true"
         const val ZERO = "0"
 
@@ -56,9 +58,14 @@ class ProfileActivity : BaseSimpleActivity() {
             bundle.putAll(it)
         }
         return if (GlobalConfig.isCustomerApp()) {
+            hideToolbar()
             ProfileFragment.createInstance(bundle)
         } else {
             ProfileEmptyFragment.createInstance(bundle)
         }
+    }
+
+     fun hideToolbar(){
+        toolbar.hide()
     }
 }

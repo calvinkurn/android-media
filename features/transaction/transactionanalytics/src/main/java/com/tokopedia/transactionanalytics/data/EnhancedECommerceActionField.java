@@ -12,6 +12,8 @@ public class EnhancedECommerceActionField {
     public static final String STEP_2 = "2";
     public static final String OPTION_CART_PAGE_LOADED = "cart page loaded";
     public static final String OPTION_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
+    public static final String OPTION_CLICK_CHECKOUT = "click checkout";
+    public static final String OPTION_CLICK_BAYAR = "click bayar";
 
     private static final String KEY_STEP = "step";
     private static final String KEY_OPTION = "option";

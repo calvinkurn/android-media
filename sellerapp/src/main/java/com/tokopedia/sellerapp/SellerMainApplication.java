@@ -23,6 +23,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.chat_common.network.ChatUrl;
+import com.tokopedia.core.common.category.CategoryDbFlow;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -121,11 +122,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             return false;
         }
 
-    }
-
-    @Override
-    public int getApplicationType() {
-        return SELLER_APPLICATION;
     }
 
     @Override
@@ -248,6 +244,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         FlowManager.initModule(ProductDraftGeneratedDatabaseHolder.class);
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         PushNotification.initDatabase(getApplicationContext());
+        CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {

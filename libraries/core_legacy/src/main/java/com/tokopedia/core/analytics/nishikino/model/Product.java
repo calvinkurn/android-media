@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by ricoharisin on 9/29/15.
  */
-public class Product extends BaseGTMModel {
+public class Product {
 
     private Map<String, Object> Product = new HashMap<>();
 

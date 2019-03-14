@@ -8,8 +8,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.graphql)
 
-    testCompile rootProject.ext.testDependencies.junit
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }

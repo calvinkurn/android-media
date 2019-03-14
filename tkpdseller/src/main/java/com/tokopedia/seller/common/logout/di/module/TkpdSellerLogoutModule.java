@@ -44,8 +44,8 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    ClearCategoryCacheUseCase provideClearCategoryCacheUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository){
-        return new ClearCategoryCacheUseCase(threadExecutor, postExecutionThread, categoryRepository);
+    ClearCategoryCacheUseCase provideClearCategoryCacheUseCase(CategoryRepository categoryRepository){
+        return new ClearCategoryCacheUseCase(categoryRepository);
     }
 
     @TkpdSellerLogoutScope
