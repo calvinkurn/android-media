@@ -44,7 +44,7 @@ import com.tokopedia.tokocash.tracker.WalletAnalytics;
 public class HeaderHomeView extends BaseCustomView {
 
     private static final String CDN_URL = "https://ecs7.tokopedia.net/img/android/";
-    private static final String BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/bg_product_fintech_tokopoint_normal.png";
+    private static final String BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/drawable-xxxhdpi/bg_product_fintech_tokopoint_normal.png";
 
     private static final String TITLE_HEADER_WEBSITE = "TokoPoints";
     private static final String RP_NOL = "Rp0";
