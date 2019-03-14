@@ -361,9 +361,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         fun processHeight(height: Float) {
             var webViewHeight = (height * resources.displayMetrics.density)
             var marginTop = (10 * resources.displayMetrics.density)
-            activity?.runOnUiThread {
-                behavior?.peekHeight = (webViewHeight + marginTop).toInt()
-            }
         }
     }
 }

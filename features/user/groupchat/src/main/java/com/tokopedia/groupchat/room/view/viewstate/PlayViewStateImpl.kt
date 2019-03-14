@@ -539,6 +539,8 @@ open class PlayViewStateImpl(
                 }
                 (pinnedMessageContainer.findViewById(R.id.message) as TextView).text =
                         it.title
+                (pinnedMessageContainer.findViewById(R.id.nickname) as TextView).text =
+                        channelInfoViewModel.adminName
                 pinnedMessageContainer.setOnClickListener { view ->
                     channelInfoViewModel.pinnedMessageViewModel?.let {
                         analytics.eventClickAdminPinnedMessage(
