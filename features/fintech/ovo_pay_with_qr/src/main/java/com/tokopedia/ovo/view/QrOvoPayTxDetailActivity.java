@@ -23,6 +23,15 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
                 .putExtras(bundle);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+
+    }
+
     public static Intent createInstance(Context context, int transferId, int transactionId, int code) {
         Intent intent = new Intent(context, QrOvoPayTxDetailActivity.class);
         intent.putExtra("transfer_id", transferId);

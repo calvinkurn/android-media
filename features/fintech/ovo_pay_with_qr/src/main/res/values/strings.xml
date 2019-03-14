@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Ovo</string>
-    <string name="payment_summary">Payment Summary</string>
+    <string name="payment_summary">Pembayaran</string>
     <string name="ovo_cash_point_amnt">%s</string>
     <string name="balance_exceed_error">Saldo Anda tidak mencukupi</string>
     <string name="min_input_hint">Minimal pembayaran Rp1.000</string>
