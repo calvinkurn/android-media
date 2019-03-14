@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.airport.data.source.FlightAirportListDbSource;
-import com.tokopedia.flight.airport.data.source.database.FlightAirportCountryDao;
+import com.tokopedia.flight.country.data.FlightCountryListDbSource;
+import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
@@ -124,7 +124,7 @@ public class FlightModule {
     @FlightScope
     @Provides
     public FlightRepository provideFlightRepository(BannerDataSource bannerDataSource,
-                                                    FlightAirportListDbSource flightAirportListDbSource,
+                                                    FlightCountryListDbSource flightCountryListDbSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
@@ -134,7 +134,7 @@ public class FlightModule {
                                                     FlightPassengerFactorySource flightPassengerFactorySource,
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource,
                                                     FlightCancelVoucherDataSource flightCancelVoucherDataSource) {
-        return new FlightRepositoryImpl(bannerDataSource, flightAirportListDbSource,
+        return new FlightRepositoryImpl(bannerDataSource, flightCountryListDbSource,
                 getFlightClassesUseCase, flightCartDataSource, flightCheckVoucheCodeDataSource,
                 flightBookingDataSource, flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource,
                 flightCancelVoucherDataSource);

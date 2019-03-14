@@ -3,7 +3,7 @@ package com.tokopedia.flight.common.data.source.cloud.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
+import com.tokopedia.flight.country.data.FlightCountryEntity;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
@@ -62,7 +62,7 @@ public interface FlightApi {
 
     @Headers({"Accept-Encoding: gzip"})
     @GET(FlightUrl.FLIGHT_AIRPORT_PATH)
-    Observable<Response<DataResponse<List<FlightAirportCountry>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
+    Observable<Response<DataResponse<List<FlightCountryEntity>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CART_PATH)

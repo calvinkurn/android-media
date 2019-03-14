@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.data.source.cloud.model.ResponseFlightPopularCity
+import com.tokopedia.flight.airport.data.source.entity.ResponseFlightPopularCity
 import com.tokopedia.flight.airport.domain.FlightAirportMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse

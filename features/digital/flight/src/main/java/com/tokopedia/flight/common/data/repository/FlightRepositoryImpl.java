@@ -1,8 +1,8 @@
 package com.tokopedia.flight.common.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.flight.airport.data.source.FlightAirportListDbSource;
-import com.tokopedia.flight.airport.data.source.database.FlightAirportCountryTable;
+import com.tokopedia.flight.country.data.FlightCountryListDbSource;
+import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
@@ -49,7 +49,7 @@ import rx.functions.Func1;
 
 public class FlightRepositoryImpl implements FlightRepository {
     private BannerDataSource bannerDataSource;
-    private FlightAirportListDbSource flightAirportListDbSource;
+    private FlightCountryListDbSource flightCountryListDbSource;
     private FlightClassesDataSource flightClassesDataSource;
     private FlightCartDataSource flightCartDataSource;
     private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
@@ -61,7 +61,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightCancelVoucherDataSource flightCancelVoucherDataSource;
 
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
-                                FlightAirportListDbSource flightAirportListDbSource,
+                                FlightCountryListDbSource flightCountryListDbSource,
                                 FlightClassesDataSource flightClassesDataSource,
                                 FlightCartDataSource flightCartDataSource,
                                 FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
@@ -72,7 +72,7 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightCancellationCloudDataSource flightCancellationCloudDataSource,
                                 FlightCancelVoucherDataSource flightCancelVoucherDataSource) {
         this.bannerDataSource = bannerDataSource;
-        this.flightAirportListDbSource = flightAirportListDbSource;
+        this.flightCountryListDbSource = flightCountryListDbSource;
         this.flightClassesDataSource = flightClassesDataSource;
         this.flightCartDataSource = flightCartDataSource;
         this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
@@ -86,12 +86,12 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     @Override
     public Observable<List<FlightAirportCountryTable>> getPhoneCodeList(String query) {
-        return flightAirportListDbSource.getPhoneCodeList(query);
+        return flightCountryListDbSource.getPhoneCodeList(query);
     }
 
     @Override
     public Observable<FlightAirportCountryTable> getAirportByCountryId(String id) {
-        return flightAirportListDbSource.getAirportByCountryId(id);
+        return flightCountryListDbSource.getAirportByCountryId(id);
     }
 
     @Override

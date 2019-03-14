@@ -1,9 +1,8 @@
 package com.tokopedia.flight.airport.domain
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportSuggestionEntity
-import com.tokopedia.flight.airport.data.source.cloud.model.FlightPopularCityEntity
-import com.tokopedia.flight.airport.domain.model.FlightAirport
+import com.tokopedia.flight.airport.data.source.entity.FlightAirportSuggestionEntity
+import com.tokopedia.flight.airport.data.source.entity.FlightPopularCityEntity
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel
 import java.util.*
@@ -30,7 +29,7 @@ class FlightAirportMapper @Inject constructor() {
             if (!listCountry.containsKey(it.countryId)) {
                 listCountry.put(it.countryId, mutableListOf())
             }
-            val listAirports = listCountry.get(it.countryId) as List<FlightAirport>
+            val listAirports = listCountry[it.countryId] as List<FlightAirport>
             val listNewAirport = mutableListOf<FlightAirport>()
             listNewAirport.addAll(listAirports)
             listNewAirport.add(flightAirport)
@@ -58,12 +57,12 @@ class FlightAirportMapper @Inject constructor() {
                 flightAirportinOneCountry.add(
                         FlightAirport(
                                 itemSuggestion.countryId,
-                                itemSuggestion.countryName.get(0).value,
+                                itemSuggestion.countryName[0].value,
                                 itemSuggestion.code,
                                 it.id,
                                 itemSuggestion.code,
-                                itemSuggestion.cityName.get(0).value,
-                                it.name.get(0).value,
+                                itemSuggestion.cityName[0].value,
+                                it.name[0].value,
                                 airportArray)
                 )
             }
@@ -71,19 +70,19 @@ class FlightAirportMapper @Inject constructor() {
                 flightAirportinOneCountry.add(
                         FlightAirport(
                                 itemSuggestion.countryId,
-                                itemSuggestion.countryName.get(0).value,
+                                itemSuggestion.countryName[0].value,
                                 itemSuggestion.code,
                                 itemSuggestion.code,
                                 itemSuggestion.code,
-                                itemSuggestion.cityName.get(0).value,
-                                itemSuggestion.name.get(0).value)
+                                itemSuggestion.cityName[0].value,
+                                itemSuggestion.name[0].value)
                 )
             }
 
             if (!listCountry.containsKey(itemSuggestion.countryId)) {
                 listCountry.put(itemSuggestion.countryId, mutableListOf())
             }
-            val listAirports = listCountry.get(itemSuggestion.countryId) as List<FlightAirport>
+            val listAirports = listCountry[itemSuggestion.countryId] as List<FlightAirport>
             val listNewAirport = mutableListOf<FlightAirport>()
             listNewAirport.addAll(listAirports)
             listNewAirport.addAll(flightAirportinOneCountry)
@@ -99,8 +98,8 @@ class FlightAirportMapper @Inject constructor() {
             val flightAirportList: List<FlightAirport> = it.value
 
             val countryAirportViewModel = FlightCountryAirportViewModel(
-                    flightAirportList.get(0).countryId,
-                    flightAirportList.get(0).countryName,
+                    flightAirportList[0].countryId,
+                    flightAirportList[0].countryName,
                     mutableListOf())
             visitables.add(countryAirportViewModel)
 

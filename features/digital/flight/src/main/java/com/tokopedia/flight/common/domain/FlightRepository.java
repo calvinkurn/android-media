@@ -1,6 +1,6 @@
 package com.tokopedia.flight.common.domain;
 
-import com.tokopedia.flight.airport.data.source.database.FlightAirportCountryTable;
+import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;

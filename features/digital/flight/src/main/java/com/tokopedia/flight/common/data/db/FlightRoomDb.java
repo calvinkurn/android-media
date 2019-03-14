@@ -9,8 +9,8 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.flight.airport.data.source.database.FlightAirportCountryDao;
-import com.tokopedia.flight.airport.data.source.database.FlightAirportCountryTable;
+import com.tokopedia.flight.country.database.FlightAirportCountryDao;
+import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.passenger.data.db.FlightPassengerDao;
 import com.tokopedia.flight.passenger.data.db.FlightPassengerTable;
 
