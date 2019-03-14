@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_48"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
@@ -16,13 +16,15 @@
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_48"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="6sp"
         android:lines="1"
+        android:paddingLeft="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_2"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_10"
         tools:text="\ufeff@Raisa anak baik" />

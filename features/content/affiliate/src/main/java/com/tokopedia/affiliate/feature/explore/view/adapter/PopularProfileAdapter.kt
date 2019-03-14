@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChildViewModel
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import kotlinx.android.synthetic.main.item_af_popular_profile_child.view.*
 
 /**
@@ -24,7 +24,7 @@ class PopularProfileAdapter: RecyclerView.Adapter<PopularProfileAdapter.ViewHold
         val element = list[position]
         val itemView = holder.itemView
 
-        itemView.avatar.loadImage(element.avatar)
+        itemView.avatar.loadImageCircle(element.avatar)
         itemView.name.text = element.name
     }
 

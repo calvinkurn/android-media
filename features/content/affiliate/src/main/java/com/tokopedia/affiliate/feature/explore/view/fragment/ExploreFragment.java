@@ -496,6 +496,15 @@ public class ExploreFragment
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
         list.add(new PopularProfileChildViewModel("", "https://ca.slack-edge.com/T038RGMSP-U2WPGER2T-0faadc531b0a-72"));
         list.add(new PopularProfileChildViewModel("Febby Mulia", ""));
+        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
         return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling berjasa", "Dimulai dari Tokopedia"));
     }
 
