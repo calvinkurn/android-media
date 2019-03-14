@@ -17,13 +17,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.tradein.R;
 import com.google.gson.Gson;
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.tradein.R;
 
 import org.json.JSONObject;
 
@@ -138,7 +138,8 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     public void getPriceFromSDK() {
-        laku6TradeIn = Laku6TradeIn.getInstance(activityWeakReference.get());
+        laku6TradeIn = Laku6TradeIn.getInstance(activityWeakReference.get(),"tokopediaSandbox",
+                "1:109002668043:android:f4cc247c743f7921","AIzaSyAJk4XqSdT0qWg5ahBxWYT5CJ9vzv2TqS4","http://wst.laku6.com/");
         laku6TradeIn.setCampaignTradeInId("tokopediaSandbox");
         inData = activityWeakReference.get().getIntent().getExtras();
         requestPermission();

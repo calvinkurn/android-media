@@ -3,7 +3,8 @@ package viewmodel;
 import android.arch.lifecycle.Observer;
 import android.view.View;
 
-import com.example.tradein.R;
+
+import com.tokopedia.tradein.R;
 
 import javax.annotation.Nullable;
 

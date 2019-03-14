@@ -25,8 +25,9 @@ public class DeviceDataResponse {
     @SerializedName("CommissionFee")
     private CommissionFee commissionFee;
     @SerializedName("Message")
-    @Expose
     private String message;
+
+    private KYCDetails kycDetails;
 
     public Boolean getIsEligible() {
         return isEligible;
@@ -108,4 +109,11 @@ public class DeviceDataResponse {
         this.message = message;
     }
 
+    public KYCDetails getKycDetails() {
+        return kycDetails;
+    }
+
+    public void setKycDetails(KYCDetails kycDetails) {
+        this.kycDetails = kycDetails;
+    }
 }

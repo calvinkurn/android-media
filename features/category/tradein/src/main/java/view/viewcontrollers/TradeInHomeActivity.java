@@ -12,13 +12,12 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.tradein.R;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.tradein.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

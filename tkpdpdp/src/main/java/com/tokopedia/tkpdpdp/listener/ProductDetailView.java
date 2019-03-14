@@ -389,4 +389,6 @@ public interface ProductDetailView extends ViewListener {
     void navigateToOneClickShipment();
 
     void navigateToExpressCheckout();
+
+    String getDeviceId();
 }

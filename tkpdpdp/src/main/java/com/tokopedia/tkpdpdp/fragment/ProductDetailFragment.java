@@ -2973,6 +2973,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
+    @Override
+    public String getDeviceId() {
+        com.tokopedia.tkpdpdp.ProductDetailRouter productDetailRouter = (com.tokopedia.tkpdpdp.ProductDetailRouter) getActivity().getApplication();
+        return productDetailRouter.getDeviceId(getContext());
+    }
+
     public class ElligibleBroadcastReceiver extends BroadcastReceiver {
 
         @Override

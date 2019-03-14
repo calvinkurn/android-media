@@ -182,10 +182,7 @@ public class VariantActivity extends TActivity implements
         viewContainerButton = findViewById(R.id.all_kind_button_buy);
         tradeInTextView = findViewById(R.id.tv_trade_in);
         if (tradeInParams != null) {
-            if (tradeInParams.getUsedPrice() > 0)
-                tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, true);
-            else
-                tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, false);
+            tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, true);
         }
 
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
@@ -288,10 +285,6 @@ public class VariantActivity extends TActivity implements
     private String generateTextCartPrice() {
         if (isCampaign()) {
             return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * selectedQuantity, true);
-        } else if (stateFormVariantPage == STATE_BUTTON_TRADEIN) {
-            long finalprice = productDetailData.getInfo().getProductPriceUnformatted().longValue() -
-                    tradeInParams.getUsedPrice();
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(finalprice, true);
         } else {
             for (ProductWholesalePrice item : productDetailData.getWholesalePrice()) {
                 if (selectedQuantity >= item.getWholesaleMinRaw() && selectedQuantity <= item.getWholesaleMaxRaw()) {
@@ -345,11 +338,7 @@ public class VariantActivity extends TActivity implements
             case STATE_BUTTON_CART:
                 return getResources().getString(R.string.title_add_to_cart);
             case STATE_BUTTON_TRADEIN:
-                if (tradeInParams.getUsedPrice() > 0) {
-                    return getResources().getString(R.string.buy_now);
-                } else {
                     getResources().getString(R.string.tukar_tambah);
-                }
             default:
                 if (isPreOrder()) {
                     return getResources().getString(R.string.title_pre_order);

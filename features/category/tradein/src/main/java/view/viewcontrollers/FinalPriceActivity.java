@@ -16,15 +16,16 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.tradein.R;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
+import com.tokopedia.tradein.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import model.DeviceDataResponse;
+import model.KYCDetails;
 import model.TradeInParams;
+import tradein_common.router.TradeInRouter;
 import viewmodel.FinalPriceViewModel;
 
 public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel> implements Observer<DeviceDataResponse> {
@@ -77,7 +78,6 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         viewArrayList.add(mTvButtonPayOrKtp);
         mTvTnc = findViewById(R.id.tv_tnc);
         viewArrayList.add(mTvTnc);
-        setVisibilityGroup(View.INVISIBLE);
     }
 
     @Override
@@ -145,52 +145,21 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         mTvDeviceReview.setText(stringBuilder.toString());
         mTvPriceExchange.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true));
         mTvFinalAmount.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getRemainingPrice(), true));
+
         if (tradeInData != null) {
-            if (!tradeInData.getBoolean(TradeInParams.PARAM_USE_KYC)) {
-                String notElligible = getString(R.string.harga_tnc);
-                SpannableString spannableString = new SpannableString(notElligible);
-                ClickableSpan clickableSpan = new ClickableSpan() {
-                    @Override
-                    public void onClick(View widget) {
-                        showTnC(R.string.tradein_tnc);
-                    }
-                };
-                int greenColor = getResources().getColor(R.color.green_nob);
-                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
-                spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                mTvTnc.setText(spannableString);
-                mTvTnc.setClickable(true);
-                mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
-                mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_orange);
-                mTvButtonPayOrKtp.setText(R.string.buy_now);
+            KYCDetails kycDetails = deviceDataResponse.getKycDetails();
+            if (kycDetails == null) {
+                setbuttonCheckout();
             } else {
-                String notElligible = getString(R.string.harga_tnc_kyc);
-                SpannableString spannableString = new SpannableString(notElligible);
-                ClickableSpan clickableSpan = new ClickableSpan() {
-                    @Override
-                    public void onClick(View widget) {
-                        showTnC(R.string.tradein_tnc);
-                    }
-                };
-                int greenColor = getResources().getColor(R.color.green_nob);
-                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
-                spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                mTvTnc.setText(spannableString);
-                mTvTnc.setClickable(true);
-                mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
-                mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_green);
-                mTvButtonPayOrKtp.setText(R.string.do_ktp);
-                mTvButtonPayOrKtp.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        goToFormActivity();
-                    }
-                });
+                if (kycDetails.getDetail().getStatus() != 1) {
+                    setButtonKyc();
+                } else {
+                    setbuttonCheckout();
+                }
             }
         }
         setVisibilityGroup(View.VISIBLE);
+        hideProgressBar();
     }
 
     private void setVisibilityGroup(int visibility) {
@@ -199,9 +168,9 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         }
     }
 
-    private void goToFormActivity() {
-        Intent intent = UserIdentificationFormActivity.getIntent(this);
-        intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 4);
+    private void goToKycActivity() {
+        TradeInRouter router = (TradeInRouter) getApplication();
+        Intent intent = router.getKYCIntent(this, 4);
         startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
     }
 
@@ -216,9 +185,55 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     }
 
     private void goToCheckout() {
-        //                ShipmentFormRequest shipmentFormRequest = new ShipmentFormRequest.BundleBuilder()
-//                        .deviceId("devID")
-//                        .build();
-//                Intent checkoutIntent = router.getCheckoutIntent(getActivity(), shipmentFormRequest);
+        TradeInRouter router = (TradeInRouter) getApplication();
+        String deviceid = getDeviceId();
+        Intent checkoutIntent;
+        if (deviceid != null) {
+            checkoutIntent = router.getCheckoutIntent(this, deviceid);
+            startActivity(checkoutIntent);
+        } else
+            throw new RuntimeException("Device ID null");
+    }
+
+    private void setbuttonCheckout() {
+        String notElligible = getString(R.string.harga_tnc);
+        SpannableString spannableString = new SpannableString(notElligible);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                showTnC(R.string.tradein_tnc);
+            }
+        };
+        int greenColor = getResources().getColor(R.color.green_nob);
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
+        spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        mTvTnc.setText(spannableString);
+        mTvTnc.setClickable(true);
+        mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
+        mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_orange);
+        mTvButtonPayOrKtp.setText(R.string.buy_now);
+        mTvButtonPayOrKtp.setOnClickListener(v -> goToCheckout());
+    }
+
+    private void setButtonKyc() {
+        String notElligible = getString(R.string.harga_tnc_kyc);
+        SpannableString spannableString = new SpannableString(notElligible);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                showTnC(R.string.tradein_tnc);
+            }
+        };
+        int greenColor = getResources().getColor(R.color.green_nob);
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
+        spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        mTvTnc.setText(spannableString);
+        mTvTnc.setClickable(true);
+        mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
+        mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_green);
+        mTvButtonPayOrKtp.setText(R.string.do_ktp);
+        mTvButtonPayOrKtp.setOnClickListener(v -> goToKycActivity());
     }
 }

@@ -457,6 +457,7 @@ import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActiv
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
@@ -479,7 +480,8 @@ import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
-
+import tradein_common.TradeInUtils;
+import tradein_common.router.TradeInRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -578,7 +580,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingOptimizerRouter,
         LoginRegisterPhoneRouter,
         ExpressCheckoutRouter,
-        ResolutionRouter {
+        ResolutionRouter,
+        TradeInRouter {
 
 
     private final static int IRIS_ROW_LIMIT = 50;
@@ -2159,6 +2162,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return ShipmentActivity.createInstance(context, shipmentFormRequest);
     }
 
+    @NonNull
+    @Override
+    public Intent getCheckoutIntent(@NonNull Context context, String deviceid) {
+        ShipmentFormRequest shipmentFormRequest = new ShipmentFormRequest.BundleBuilder()
+                .deviceId(deviceid)
+                .build();
+        return ShipmentActivity.createInstance(context, shipmentFormRequest);
+    }
+
+    @NonNull
+    @Override
+    public Intent getKYCIntent(Context context, int projectId) {
+        Intent intent = UserIdentificationFormActivity.getIntent(this);
+        intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
+        return intent;
+    }
+
     @Override
     public Intent getAddToCartIntent(Context context, String productId, String price, String
             imageSource) {
@@ -3537,6 +3557,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         mIris.setUserId(userId);
         mIris.setDeviceId(userSession.getDeviceId());
+    }
+
+    @Override
+    public String getDeviceId(Context context) {
+        return TradeInUtils.getDeviceId(context);
     }
 
     @Override

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
-import com.example.tradein.R;
+import com.tokopedia.tradein.R;
 
 import viewmodel.ITradeInParamReceiver;
 

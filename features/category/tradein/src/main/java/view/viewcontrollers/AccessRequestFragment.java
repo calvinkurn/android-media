@@ -14,7 +14,7 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.tradein.R;
+import com.tokopedia.tradein.R;
 
 import viewmodel.AccessRequestViewModel;
 import viewmodel.IAccessRequestListener;

@@ -129,13 +129,6 @@ class ProductModalFragment : BaseDaggerFragment() {
     private fun generateTextCartPrice(): String {
         if (isCampaign()) {
             return CurrencyFormatUtil.convertPriceValueToIdrFormat(productData?.campaign?.discountedPrice!! * selectedQuantity!!, true)
-        } else if (stateProductModal == STATE_BUTTON_TRADEIN) {
-            var price = productData?.info?.productPriceUnformatted!!.toLong() *
-                    selectedQuantity!!.toLong()
-            price -= tradeInParams!!.usedPrice
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    price,
-                    true)
         } else {
             for (item in productData!!.wholesalePrice) {
                 if (selectedQuantity!! >= item.wholesaleMinRaw && selectedQuantity!! <= item.wholesaleMaxRaw) {
@@ -159,11 +152,8 @@ class ProductModalFragment : BaseDaggerFragment() {
                 resources.getString(R.string.title_buy_now)
             }
             STATE_BUTTON_CART -> resources.getString(R.string.title_add_to_cart)
-            STATE_BUTTON_TRADEIN -> if (tradeInParams!!.usedPrice > 0) {
-                resources.getString(R.string.title_buy_now)
-            } else {
+            STATE_BUTTON_TRADEIN ->
                 resources.getString(R.string.title_trade_in)
-            }
             else -> if (isPreOrder()) {
                 resources.getString(R.string.title_pre_order)
             } else {
@@ -266,12 +256,8 @@ class ProductModalFragment : BaseDaggerFragment() {
         }
 
         if (stateProductModal == STATE_BUTTON_TRADEIN) {
-            if (tradeInParams!!.usedPrice > 0) {
-                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams,true)
-            }
-            else {
-                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams,false)
-            }
+            tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, true)
+
         }
 
         if (stateProductModal == STATE_BUTTON_TRADEIN) {

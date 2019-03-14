@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.tradein.R;
+import com.tokopedia.tradein.R;
+
 
 public class TnCFragment extends Fragment {
 

@@ -14,12 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.example.tradein.R;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.tradein.R;
 
+import tradein_common.TradeInUtils;
 import viewmodel.TradeInVMFactory;
 
 public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpleActivity implements TradeInBaseView {
@@ -178,5 +179,9 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
         transaction.addToBackStack("TNC");
         transaction.replace(R.id.root_view, fragment);
         transaction.commit();
+    }
+
+    protected String getDeviceId() {
+        return TradeInUtils.getDeviceId(this);
     }
 }

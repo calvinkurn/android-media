@@ -562,20 +562,20 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.onProductDetailLoaded(productDetailData, mappingToViewData(productDetailData));
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
-                            UserSession userSession = new UserSession(viewListener.getActivityContext());
-                            TradeInParams tradeInParams = new TradeInParams();
-                            //tradeInParams.setCategoryId(Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId()));
-                            tradeInParams.setCategoryId(24);
-                            tradeInParams.setDeviceId(userSession.getDeviceId());
-                            tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
-                            productDetailData.getInfo().setProductPriceUnformatted(3000000);  //todo remove later
-                            tradeInParams.setPrice(productDetailData.getInfo().getProductPriceUnformatted());
-                            tradeInParams.setProductId(productDetailData.getInfo().getProductId());
-                            //tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
-                            tradeInParams.setShopId(2400899);
-                            tradeInParams.setProductName(productDetailData.getInfo().getProductName());
+                            int productid = Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId());
+                            if (productid == 24) {
+                                UserSession userSession = new UserSession(viewListener.getActivityContext());
+                                TradeInParams tradeInParams = new TradeInParams();
+                                tradeInParams.setCategoryId(Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId()));
+                                tradeInParams.setDeviceId(viewListener.getDeviceId());
+                                tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
+                                tradeInParams.setPrice(productDetailData.getInfo().getProductPriceUnformatted());
+                                tradeInParams.setProductId(productDetailData.getInfo().getProductId());
+                                tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
+                                tradeInParams.setProductName(productDetailData.getInfo().getProductName());
 
-                            viewListener.checkTradeIn(tradeInParams);
+                                viewListener.checkTradeIn(tradeInParams);
+                            }
 
                             checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
 
@@ -1163,21 +1163,20 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
 
                         viewListener.onProductDetailLoaded(data, mappingToViewData(data));
+                        int productid = Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId());
+                        if (productid == 24) {
+                            TradeInParams tradeInParams = new TradeInParams();
+                            UserSession userSession = new UserSession(viewListener.getActivityContext());
+                            tradeInParams.setCategoryId(Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId()));
+                            tradeInParams.setDeviceId(viewListener.getDeviceId());
+                            tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
+                            tradeInParams.setPrice(data.getInfo().getProductPriceUnformatted());
+                            tradeInParams.setProductId(data.getInfo().getProductId());
+                            tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
+                            tradeInParams.setProductName(data.getInfo().getProductName());
 
-                        TradeInParams tradeInParams = new TradeInParams();
-                        UserSession userSession = new UserSession(viewListener.getActivityContext());
-//                        tradeInParams.setCategoryId(Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId()));
-                        tradeInParams.setCategoryId(24);
-                        tradeInParams.setDeviceId(userSession.getDeviceId());
-                        tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
-                        data.getInfo().setProductPriceUnformatted(3000000); //todo remove later
-                        tradeInParams.setPrice(data.getInfo().getProductPriceUnformatted());
-                        tradeInParams.setProductId(data.getInfo().getProductId());
-//                        tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
-                        tradeInParams.setShopId(2400899);
-                        tradeInParams.setProductName(data.getInfo().getProductName());
-
-                        viewListener.checkTradeIn(tradeInParams);
+                            viewListener.checkTradeIn(tradeInParams);
+                        }
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 

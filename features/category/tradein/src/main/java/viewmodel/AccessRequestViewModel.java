@@ -4,7 +4,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 public class AccessRequestViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
     private MutableLiveData<Boolean> permissionLiveData;
 
     public AccessRequestViewModel() {
