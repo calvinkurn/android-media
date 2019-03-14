@@ -1,7 +1,6 @@
 package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import android.util.Patterns
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
@@ -25,6 +24,7 @@ import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -42,7 +42,7 @@ import javax.inject.Inject
 class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: FlightAddToCartV11UseCase,
                                                  private val flightBookingGetPhoneCodeUseCase: FlightBookingGetPhoneCodeUseCase,
                                                  val flightAnalytics: FlightAnalytics,
-                                                 val userSession: UserSession,
+                                                 val userSession: UserSessionInterface,
                                                  val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
                                                  flightGetCartDataUseCase: FlightGetCartDataUseCase,
                                                  flightBookingCartDataMapper: FlightBookingCartDataMapper)
