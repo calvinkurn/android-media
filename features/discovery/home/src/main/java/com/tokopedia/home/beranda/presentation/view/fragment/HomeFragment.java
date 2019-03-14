@@ -622,6 +622,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         onActionLinkClicked(actionLink);
     }
 
+    @Override
+    public void onSpotlightItemClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
+    }
+
     private void onGoToSell() {
         if (isUserLoggedIn()) {
             String shopId = getUserShopId();

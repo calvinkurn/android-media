@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/spotlightContainer"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_width="@dimen/spotlight_width"
+    android:layout_height="@dimen/spotlight_height">
+
+    <ImageView
+        android:id="@+id/spotlightBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <TextView
+        android:id="@+id/spotlightTitle"
+        style="@style/TextView.Title"
+        android:textSize="@dimen/sp_18"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/spotlightTagContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="@dimen/dp_12"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:layout_toRightOf="@id/spotlightTitle"
+        android:background="@drawable/spotlight_tag_background">
+
+        <TextView
+            android:id="@+id/spotlightTag"
+            style="@style/TextView"
+            android:textSize="@dimen/sp_10"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/spotlightDesc"
+        style="@style/TextView.Micro"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_below="@id/spotlightTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+</RelativeLayout>
