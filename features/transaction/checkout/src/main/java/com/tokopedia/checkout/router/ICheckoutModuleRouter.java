@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -71,4 +72,6 @@ public interface ICheckoutModuleRouter {
     Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
 
     Intent getCodPageIntent(Context context, Data data);
+
+    void showBottomSheetPromoMerchantList(FragmentManager fragmentManager);
 }

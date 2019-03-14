@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
@@ -41,6 +42,7 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -89,6 +91,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private SwipeRefreshLayout swipeRefreshLayout;
     private NestedScrollView nestedScrollView;
     private TickerCheckoutView tickerCheckoutView;
+    private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
     private TextView btnContinueShoppingEmptyCart;
     private CardView cvRecommendation;
     private TopAdsView topAdsView;
@@ -213,6 +216,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         tickerCheckoutView = view.findViewById(R.id.ticker_checkout_view);
+        tickerPromoStackingCheckoutView = view.findViewById(R.id.ticker_promostacking_checkout_view);
         btnContinueShoppingEmptyCart = view.findViewById(R.id.btn_shopping_now);
         cvRecommendation = view.findViewById(R.id.cv_recommendation);
         topAdsView = view.findViewById(R.id.topads);
@@ -270,13 +274,21 @@ public class EmptyCartFragment extends BaseCheckoutFragment
             navigateToHome();
         });
 
-        AutoApplyData autoApplyData = new AutoApplyData();
+        /*AutoApplyData autoApplyData = new AutoApplyData();
         if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(ARG_AUTO_APPLY_MESSAGE))) {
             autoApplyData.setMessageSuccess(getArguments().getString(ARG_AUTO_APPLY_MESSAGE));
             autoApplyData.setState(getArguments().getString(ARG_AUTO_APPLY_STATE));
             autoApplyData.setTitleDescription(getArguments().getString(ARG_AUTO_APPLY_TITLE));
         }
-        renderEmptyCart(autoApplyData);
+        renderEmptyCart(autoApplyData);*/
+
+        AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
+        if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(ARG_AUTO_APPLY_MESSAGE))) {
+            autoApplyStackData.setMessageSuccess(getArguments().getString(ARG_AUTO_APPLY_MESSAGE));
+            autoApplyStackData.setState(getArguments().getString(ARG_AUTO_APPLY_STATE));
+            autoApplyStackData.setTitleDescription(getArguments().getString(ARG_AUTO_APPLY_TITLE));
+        }
+        renderEmptyCartStack(autoApplyStackData);
         stopCartTrace();
     }
 
@@ -285,6 +297,17 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         double itemWidth = getItemWidth();
 
         renderAutoApplyPromo(autoApplyData);
+        renderTopAds();
+        renderWishList((int) itemWidth);
+        renderRecentView((int) itemWidth);
+        cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
+    }
+
+    @Override
+    public void renderEmptyCartStack(AutoApplyStackData autoApplyStackData) {
+        double itemWidth = getItemWidth();
+
+        renderAutoApplyPromoStacking(autoApplyStackData);
         renderTopAds();
         renderWishList((int) itemWidth);
         renderRecentView((int) itemWidth);
@@ -400,6 +423,37 @@ public class EmptyCartFragment extends BaseCheckoutFragment
             });
         } else {
             tickerCheckoutView.setVisibility(View.GONE);
+        }
+        btnContinueShoppingEmptyCart.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
+            navigateToHome();
+        });
+    }
+
+    private void renderAutoApplyPromoStacking(AutoApplyStackData autoApplyStackData) {
+        if (autoApplyStackData!= null && TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()) != TickerPromoStackingCheckoutView.State.EMPTY) {
+            tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
+            tickerPromoStackingCheckoutView.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()));
+            tickerPromoStackingCheckoutView.setTitle(autoApplyStackData.getTitleDescription());
+            tickerPromoStackingCheckoutView.setDesc(autoApplyStackData.getMessageSuccess());
+            tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+                @Override
+                public void onClickUsePromo() {
+                    //do nothing
+                }
+
+                @Override
+                public void onDisablePromoDiscount() {
+                    presenter.processCancelAutoApply();
+                }
+
+                @Override
+                public void onClickDetailPromo() {
+                    //do nothing
+                }
+            });
+        } else {
+            tickerPromoStackingCheckoutView.setVisibility(View.GONE);
         }
         btnContinueShoppingEmptyCart.setOnClickListener(v -> {
             cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();

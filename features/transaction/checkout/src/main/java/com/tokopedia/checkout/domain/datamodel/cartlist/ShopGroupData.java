@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartData;
+import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,9 @@ public class ShopGroupData implements Parcelable {
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
     private String shopBadge;
+    private boolean hasPromoList;
+    private String cartString;
+    private VoucherOrdersItemData voucherOrdersItemData;
 
     // Total data which is calculated from cartItemDataList
     private long totalPrice;
@@ -50,6 +55,9 @@ public class ShopGroupData implements Parcelable {
         isGoldMerchant = in.readByte() != 0;
         isOfficialStore = in.readByte() != 0;
         shopBadge = in.readString();
+        hasPromoList = in.readByte() != 0;
+        cartString = in.readString();
+        voucherOrdersItemData = in.readParcelable(VoucherOrdersItemData.class.getClassLoader());
     }
 
     @Override
@@ -67,6 +75,9 @@ public class ShopGroupData implements Parcelable {
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
         dest.writeString(shopBadge);
+        dest.writeByte((byte) (hasPromoList ? 1 : 0));
+        dest.writeString(cartString);
+        dest.writeParcelable(voucherOrdersItemData, flags);
     }
 
     @Override
@@ -228,5 +239,19 @@ public class ShopGroupData implements Parcelable {
 
     public void setShopBadge(String shopBadge) {
         this.shopBadge = shopBadge;
+    }
+
+    public boolean isHasPromoList() { return hasPromoList; }
+
+    public void setHasPromoList(boolean hasPromoList) { this.hasPromoList = hasPromoList; }
+
+    public String getCartString() { return cartString; }
+
+    public void setCartString(String cartString) { this.cartString = cartString; }
+
+    public VoucherOrdersItemData getVoucherOrdersItemData() { return voucherOrdersItemData; }
+
+    public void setVoucherOrdersItemData(VoucherOrdersItemData voucherOrdersItemData) {
+        this.voucherOrdersItemData = voucherOrdersItemData;
     }
 }

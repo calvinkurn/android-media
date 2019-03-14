@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="RadioToggleButton" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">#3e9d43</item>
-        <item name="colorSwitchThumbNormal">#f1f1f1</item>
-    </style>
-
-</resources>

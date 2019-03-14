@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -99,6 +100,7 @@ import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
+import com.tokopedia.merchantvoucher.voucherList.bottomsheet.MerchantBottomSheetFragment;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
@@ -3841,5 +3843,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
         return CheckLoginPhoneNumberActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public void showBottomSheetPromoMerchantList(FragmentManager fragmentManager) {
+        MerchantBottomSheetFragment merchantBottomSheetFragment = MerchantBottomSheetFragment.newInstance("1767940");
+        merchantBottomSheetFragment.show(fragmentManager, null);
     }
 }

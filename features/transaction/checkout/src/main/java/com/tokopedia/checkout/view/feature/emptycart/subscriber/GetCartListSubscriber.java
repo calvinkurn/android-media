@@ -51,7 +51,8 @@ public class GetCartListSubscriber extends Subscriber<CartListData> {
             if (!cartListData.getShopGroupDataList().isEmpty()) {
                 view.navigateToCartFragment(cartListData);
             } else {
-                view.renderEmptyCart(cartListData.getAutoApplyData());
+                // view.renderEmptyCart(cartListData.getAutoApplyData());
+                view.renderEmptyCartStack(cartListData.getAutoApplyStackData());
             }
             stopTrace();
         }

@@ -1,0 +1,29 @@
+mutation get_promo_stack_first($params: PromoStackRequest) {
+  get_promo_stack_first(params: $params) {
+    status
+    data {
+      global_success
+      success
+      promo_code_id
+      title_description
+      discount_amount
+      cashback_wallet_amount
+      cashback_advocate_referral_amount
+      cashback_voucher_description
+      invoice_description
+      gateway_id
+      is_coupon
+      coupon_description
+      voucher_orders {
+        code
+        success
+        unique_id
+        cart_id
+        type
+        cashback_wallet_amount
+        discount_amount
+        invoice_description
+      }
+    }
+  }
+}

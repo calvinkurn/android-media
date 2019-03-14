@@ -30,6 +30,7 @@ import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -43,6 +44,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActiv
 import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressFormActivity;
+import com.tokopedia.checkout.view.feature.promostacking.TotalBenefitBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
@@ -62,8 +64,6 @@ import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.merchantvoucher.voucherList.bottomsheet.MerchantBottomSheetFragment;
-import com.tokopedia.merchantvoucher.voucherList.bottomsheet.TotalBenefitBottomSheetFragment;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
@@ -72,7 +72,6 @@ import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 // import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -915,11 +914,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCancelAutoApplyCouponSuccess() {
+    public void renderCancelAutoApplyCouponSuccess(String variant) {
         shipmentAdapter.updatePromo(null);
         shipmentPresenter.setHasDeletePromoAfterChecKPromoCodeFinal(true);
         shipmentAdapter.resetCourierPromoState();
-        shipmentAdapter.cancelAutoApplyCoupon();
+        shipmentAdapter.cancelAutoApplyCoupon(variant);
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
     }
 
@@ -1500,7 +1499,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onRemovePromoCode() {
-        shipmentPresenter.cancelAutoApplyCoupon();
+        shipmentPresenter.cancelAutoApplyCoupon("");
     }
 
     @Override
@@ -1543,8 +1542,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartPromoUseVoucherMerchantPromoClickedTest() {
         if (getFragmentManager() != null) {
-            MerchantBottomSheetFragment bottomSheet = MerchantBottomSheetFragment.newInstance("1767940");
-            bottomSheet.show(getFragmentManager(), null);
+            /*MerchantBottomSheetFragment bottomSheet = MerchantBottomSheetFragment.newInstance("1767940");
+            bottomSheet.show(getFragmentManager(), null);*/
+
+            checkoutModuleRouter.showBottomSheetPromoMerchantList(getFragmentManager());
         }
     }
 
@@ -1559,7 +1560,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
-        shipmentPresenter.cancelAutoApplyCoupon();
+        shipmentPresenter.cancelAutoApplyCoupon("");
+        if (isToogleYearEndPromoOn()) {
+            shipmentAdapter.cancelAllCourierPromo();
+        }
+    }
+
+    @Override
+    public void onCartPromoCancelVoucherPromoMerchantClicked(VoucherOrdersItemData voucherOrdersItemData, int position) {
+        shipmentPresenter.cancelAutoApplyCoupon(voucherOrdersItemData.getVariant());
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
         }
@@ -2061,7 +2070,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCourierPromoCanceled(String shipperName) {
         if (shipmentAdapter.isCourierPromoStillExist()) {
-            shipmentAdapter.cancelAutoApplyCoupon();
+            shipmentAdapter.cancelAutoApplyCoupon("");
             shipmentAdapter.updatePromo(null);
             onRemovePromoCode();
             showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));

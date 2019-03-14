@@ -803,11 +803,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
     }
 
-    public void cancelAutoApplyCoupon() {
+    public void cancelAutoApplyCoupon(String variant) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             Object shipmentData = shipmentDataList.get(i);
             if (shipmentData instanceof PromoStackingData) {
                 ((PromoStackingData) shipmentData).setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                if (!variant.isEmpty() && variant.equalsIgnoreCase("merchant_voucher")) {
+                    ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
+                } else {
+                    ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
+                }
                 notifyItemChanged(i);
             } else if (shipmentData instanceof CartPromoSuggestion) {
                 ((CartPromoSuggestion) shipmentData).setVisible(true);

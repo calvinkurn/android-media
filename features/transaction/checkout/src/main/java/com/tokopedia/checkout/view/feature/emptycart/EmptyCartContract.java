@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.RecentViewViewModel;
@@ -36,6 +37,8 @@ public interface EmptyCartContract {
         void renderCancelAutoApplyCouponSuccess();
 
         void renderEmptyCart(AutoApplyData autoApplyMessage);
+
+        void renderEmptyCartStack(AutoApplyStackData autoApplyStackData);
 
         void renderHasWishList(boolean hasMoreItem);
 

@@ -106,6 +106,8 @@ public interface ICartListView extends IBaseView {
 
     void renderCancelAutoApplyCouponSuccess();
 
+    void renderCancelAutoApplyCouponStackSuccess(int position);
+
     void renderCancelAutoApplyCouponError();
 
     void onDeleteCartDataSuccess();

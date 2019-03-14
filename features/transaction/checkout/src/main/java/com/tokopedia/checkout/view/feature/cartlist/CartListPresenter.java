@@ -1092,6 +1092,59 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
+    public void processCancelAutoApplyStackMerchant(int shopId, int position) {
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new com.tokopedia.network.utils.TKPDMapParam<>());
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CancelAutoApplyCouponUseCase.PARAM_REQUEST_AUTH_MAP_STRING, authParam);
+
+        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        view.renderCancelAutoApplyCouponError();
+                    }
+
+                    @Override
+                    public void onNext(String stringResponse) {
+                        boolean resultSuccess = false;
+                        try {
+                            JSONObject jsonObject = new JSONObject(stringResponse);
+                            NullCheckerKt.isContainNull(jsonObject, s -> {
+                                ContainNullException exception = new ContainNullException("Found " + s + " on " + CartListPresenter.class.getSimpleName());
+                                if (!BuildConfig.DEBUG) {
+                                    Crashlytics.logException(exception);
+                                }
+                                throw exception;
+                            });
+
+                            resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
+                                    .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (resultSuccess) {
+                            view.renderCancelAutoApplyCouponSuccess();
+                        } else {
+                            view.renderCancelAutoApplyCouponError();
+                        }
+                    }
+                })
+        );
+    }
+
+    @Override
     public void processCancelAutoApply() {
         Map<String, String> authParam = AuthUtil.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new com.tokopedia.network.utils.TKPDMapParam<>());

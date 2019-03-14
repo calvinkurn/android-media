@@ -29,29 +29,4 @@
     <string name="label_ketik_promo_code">Ketik Kode Voucher</string>
     <string name="hint_promo_code">Ketik di sini</string>
     <string name="use_promo_label_button">Gunakan</string>
-
-    <string name="clash_bottomsheet_title">Oops.. Terjadi Konflik Voucher</string>
-    <string name="clash_bottomsheet_subtitle">Pilih Voucher yang akan digunakan</string>
-    <string name="clash_bottomsheet_latest_voucher">Voucher Baru Dipilih</string>
-    <string name="clash_bottomsheet_latest_potential_promo">Nilai Potensi Promo Rp 75.000</string>
-    <string name="clash_bottomsheet_latest_potential_promo_desc">Cashback Tokped Hingga Rp 75.000</string>
-    <string name="clash_bottomsheet_previous_voucher">Voucher Sebelumnya</string>
-    <string name="clash_bottomsheet_previous_potential_promo">Nilai Potensi Promo Rp 150.000</string>
-    <string name="clash_bottomsheet_previous_potential_promo_origin1">Dari toko Jakarta</string>
-    <string name="clash_bottomsheet_previous_potential_promo_desc1">Cashback Tokped Hingga Rp 75.000</string>
-    <string name="clash_bottomsheet_previous_potential_promo_origin2">Dari toko Bandung</string>
-    <string name="clash_bottomsheet_previous_potential_promo_desc2">Cashback Tokped Hingga Rp 75.000</string>
-    <string name="clash_bottomsheet_info_warning">Voucher yang baru dipilih tidak dapat digunakan bersamaan dengan voucher sebelumnya.</string>
-    <string name="clash_bottomsheet_submit">Submit</string>
-
-    <string name="totalbenefit_bottomsheet_title">Total Nilai Promo</string>
-    <string name="totalbenefit_bottomsheet_title1">Total Potongan Ongkos Kirim</string>
-    <string name="totalbenefit_bottomsheet_title2">Total Diskon</string>
-    <string name="totalbenefit_bottomsheet_title3">Total Potensi Cashback</string>
-    <string name="totalbenefit_bottomsheet_amount1">Rp 15.000</string>
-    <string name="totalbenefit_bottomsheet_amount2">Rp 10.000</string>
-    <string name="totalbenefit_bottomsheet_amount3">Rp 30.000</string>
-    <string name="totalbenefit_bottomsheet_all_title">Total Nilai Promo</string>
-    <string name="totalbenefit_bottomsheet_all_amount">Rp 55.000</string>
-    <string name="totalbenefit_bottomsheet_info">Cashback akan ditambahkan ke OVO Points setelah kamu terima barang</string>
 </resources>

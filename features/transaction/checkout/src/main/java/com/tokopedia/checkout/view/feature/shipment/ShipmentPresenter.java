@@ -1181,7 +1181,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void cancelAutoApplyCoupon() {
+    public void cancelAutoApplyCoupon(String variant) {
         Map<String, String> authParam = AuthUtil.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>());
 
@@ -1226,7 +1226,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                 if (resultSuccess) {
                                     setCouponStateChanged(true);
-                                    getView().renderCancelAutoApplyCouponSuccess();
+                                    getView().renderCancelAutoApplyCouponSuccess(variant);
                                 } else {
                                     getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                                 }

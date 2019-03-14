@@ -43,14 +43,9 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
         if(data.getState() != TickerPromoStackingCheckoutView.State.FAILED){
             actionListener.onCartPromoGlobalTrackingImpression(data, position);
         }
-        // tickerPromoStackingCheckoutView.setState(data.getState());
-        // tickerPromoStackingCheckoutView.setDesc(data.getDescription());
-        // tickerPromoStackingCheckoutView.setTitle(data.getTitle());
-
-        // tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.FAILED);
         tickerPromoStackingCheckoutView.setState(data.getState());
-        tickerPromoStackingCheckoutView.setTitle("Gratis Ongkir Grab Sudah Terpasang");
-        tickerPromoStackingCheckoutView.setDesc("Cashback Tokopedia 15rb sudah terpasang");
+        tickerPromoStackingCheckoutView.setTitle(data.getTitle());
+        tickerPromoStackingCheckoutView.setDesc(data.getDescription());
         tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
     }
 

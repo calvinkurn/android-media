@@ -21,6 +21,7 @@ public class CartListData implements Parcelable {
     private boolean promoCouponActive;
     private CartTickerErrorData cartTickerErrorData;
     private AutoApplyData autoApplyData;
+    private AutoApplyStackData autoApplyStackData;
     private String defaultPromoDialogTab;
     private boolean allSelected;
     private TopAdsModel adsModel;
@@ -87,6 +88,14 @@ public class CartListData implements Parcelable {
 
     public void setAutoApplyData(AutoApplyData autoApplyData) {
         this.autoApplyData = autoApplyData;
+    }
+
+    public AutoApplyStackData getAutoApplyStackData() {
+        return autoApplyStackData;
+    }
+
+    public void setAutoApplyStackData(AutoApplyStackData autoApplyStackData) {
+        this.autoApplyStackData = autoApplyStackData;
     }
 
     public List<ShopGroupData> getShopGroupDataList() {

@@ -1,4 +1,4 @@
-package com.tokopedia.merchantvoucher.voucherList.bottomsheet
+package com.tokopedia.checkout.view.feature.promostacking
 
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.tokopedia.merchantvoucher.R
+import com.tokopedia.checkout.R
 
 /**
  * Created by fwidjaja on 10/03/19.
@@ -37,7 +37,7 @@ open class TotalBenefitBottomSheetFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val container = view.findViewById<FrameLayout>(R.id.bottomsheet_container)
-        View.inflate(context, R.layout.bottomsheet_total_benefit, container)
+        View.inflate(context, R.layout.bottom_sheet_total_benefit, container)
 
         val textViewTitle = view.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
         textViewTitle.text = mTitle

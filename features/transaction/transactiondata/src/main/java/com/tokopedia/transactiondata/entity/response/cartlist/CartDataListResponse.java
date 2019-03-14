@@ -47,6 +47,13 @@ public class CartDataListResponse {
     @SerializedName("autoapply_v2")
     @Expose
     private AutoapplyV2 autoapplyV2;
+    @SerializedName("autoapply_stack")
+    @Expose
+    private AutoapplyStack autoapplyStack;
+
+    public AutoapplyStack getAutoapplyStack() {
+        return autoapplyStack;
+    }
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;

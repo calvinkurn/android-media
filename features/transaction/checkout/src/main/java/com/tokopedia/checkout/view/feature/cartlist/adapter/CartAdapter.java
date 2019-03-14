@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
@@ -26,6 +27,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -394,6 +396,19 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public void updateItemPromoStackVoucher(PromoStackingData promoStackingData) {
+        for (int i = 0; i < cartDataList.size(); i++) {
+            Object object = cartDataList.get(i);
+            if (object instanceof PromoStackingData) {
+                cartDataList.set(i, promoStackingData);
+                notifyItemChanged(i);
+            } else if (object instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) object).setVisible(false);
+                notifyItemChanged(i);
+            }
+        }
+    }
+
     public void cancelAutoApplyCoupon() {
         for (int i = 0; i < cartDataList.size(); i++) {
             Object object = cartDataList.get(i);
@@ -406,6 +421,20 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
     }
+
+    public void cancelAutoApplyStackCoupon(int position) {
+        // for (int i = 0; i < cartDataList.size(); i++) {
+            Object object = cartDataList.get(position);
+            if (object instanceof VoucherOrdersItemData) {
+                ((VoucherOrdersItemData) object).setState("grey");
+                notifyItemChanged(position);
+            } else if (object instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) object).setVisible(true);
+                notifyItemChanged(position);
+            }
+        // }
+    }
+
 
     public void updateSuggestionPromo() {
         for (int i = 0; i < cartDataList.size(); i++) {

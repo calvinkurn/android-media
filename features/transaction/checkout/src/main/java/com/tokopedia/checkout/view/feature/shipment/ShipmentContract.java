@@ -87,7 +87,7 @@ public interface ShipmentContract {
 
         void renderChangeAddressSuccess(RecipientAddressModel recipientAddressModel);
 
-        void renderCancelAutoApplyCouponSuccess();
+        void renderCancelAutoApplyCouponSuccess(String variant);
 
         void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition);
 
@@ -284,7 +284,7 @@ public interface ShipmentContract {
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
-        void cancelAutoApplyCoupon();
+        void cancelAutoApplyCoupon(String variant);
 
         void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -14,11 +15,14 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
+import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
+import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.CartDetail;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.ShopGroup;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
@@ -100,6 +104,33 @@ public class CartMapper implements ICartMapper {
             } else if (shopGroup.getShop().getGoldMerchant().isGoldBadge()) {
                 shopGroupData.setShopBadge(shopGroup.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
             }
+            shopGroupData.setCartString(shopGroup.getCartString());
+            shopGroupData.setHasPromoList(shopGroup.getHasPromoList());
+
+            VoucherOrdersItemData voucherOrdersItemData;
+            // for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
+                // kasi kondisi if unique_id == cart_string
+
+                // remark
+                VoucherOrdersItem voucherOrdersItem = cartDataListResponse.getAutoapplyStack().getVoucherOrders().get(0);
+                voucherOrdersItemData = new VoucherOrdersItemData();
+                voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
+                voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
+                voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
+                voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
+                // voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
+                voucherOrdersItemData.setShopId(shopGroup.getShop().getShopId());
+                voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
+                voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
+                voucherOrdersItemData.setType(voucherOrdersItem.getType());
+                voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
+                voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
+                voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
+                voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+                voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
+                voucherOrdersItemData.setVariant(voucherOrdersItem.getType());
+                shopGroupData.setVoucherOrdersItemData(voucherOrdersItemData);
+            // }
 
             List<CartItemData> cartItemDataList = new ArrayList<>();
             for (CartDetail data : shopGroup.getCartDetails()) {
@@ -247,7 +278,7 @@ public class CartMapper implements ICartMapper {
         cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
 
-        AutoApplyData autoApplyData = new AutoApplyData();
+        /*AutoApplyData autoApplyData = new AutoApplyData();
         autoApplyData.setCode(cartDataListResponse.getAutoapplyV2().getCode());
         autoApplyData.setDiscountAmount(cartDataListResponse.getAutoApply().getDiscountAmount());
         autoApplyData.setIsCoupon(cartDataListResponse.getAutoapplyV2().getIsCoupon());
@@ -260,7 +291,38 @@ public class CartMapper implements ICartMapper {
         autoApplyData.setSuccess(cartDataListResponse.getAutoApply().isSuccess());
         autoApplyData.setTitleDescription(cartDataListResponse.getAutoapplyV2().getTitleDescription());
         autoApplyData.setState(cartDataListResponse.getAutoapplyV2().getMessage().getState());
-        cartListData.setAutoApplyData(autoApplyData);
+        cartListData.setAutoApplyData(autoApplyData);*/
+
+        AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
+        autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
+        autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
+        autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
+        autoApplyStackData.setMessageSuccess(cartDataListResponse.getAutoapplyStack().getMessage().getText());
+        autoApplyStackData.setPromoCodeId(cartDataListResponse.getAutoapplyStack().getPromoCodeId());
+        autoApplyStackData.setSuccess(cartDataListResponse.getAutoapplyStack().isSuccess());
+        autoApplyStackData.setTitleDescription(cartDataListResponse.getAutoapplyStack().getTitleDescription());
+        autoApplyStackData.setState(cartDataListResponse.getAutoapplyStack().getMessage().getState());
+
+        List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
+        for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
+            VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
+            voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
+            voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
+            voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
+            voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
+            voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
+            voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
+            voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
+            voucherOrdersItemData.setType(voucherOrdersItem.getType());
+            voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
+            voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
+            voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
+            voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
+            voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+            voucherOrdersItemDataList.add(voucherOrdersItemData);
+        }
+        autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
+        cartListData.setAutoApplyStackData(autoApplyStackData);
 
         return cartListData;
     }
@@ -416,7 +478,7 @@ public class CartMapper implements ICartMapper {
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
 
-        AutoApplyData autoApplyData = new AutoApplyData();
+        /*AutoApplyData autoApplyData = new AutoApplyData();
         autoApplyData.setCode(cartDataListResponse.getAutoApply().getCode());
         autoApplyData.setDiscountAmount(cartDataListResponse.getAutoApply().getDiscountAmount());
         autoApplyData.setIsCoupon(cartDataListResponse.getAutoApply().getIsCoupon());
@@ -424,7 +486,38 @@ public class CartMapper implements ICartMapper {
         autoApplyData.setPromoId(cartDataListResponse.getAutoApply().getPromoId());
         autoApplyData.setSuccess(cartDataListResponse.getAutoApply().isSuccess());
         autoApplyData.setTitleDescription(cartDataListResponse.getAutoApply().getTitleDescription());
-        cartListData.setAutoApplyData(autoApplyData);
+        cartListData.setAutoApplyData(autoApplyData);*/
+
+        AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
+        autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
+        autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
+        autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
+        autoApplyStackData.setMessageSuccess(cartDataListResponse.getAutoapplyStack().getMessage().getText());
+        autoApplyStackData.setPromoCodeId(cartDataListResponse.getAutoapplyStack().getPromoCodeId());
+        autoApplyStackData.setSuccess(cartDataListResponse.getAutoapplyStack().isSuccess());
+        autoApplyStackData.setTitleDescription(cartDataListResponse.getAutoapplyStack().getTitleDescription());
+        autoApplyStackData.setState(cartDataListResponse.getAutoapplyStack().getMessage().getState());
+
+        List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
+        for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
+            VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
+            voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
+            voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
+            voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
+            voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
+            voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
+            voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
+            voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
+            voucherOrdersItemData.setType(voucherOrdersItem.getType());
+            voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
+            voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
+            voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
+            voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
+            voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+            voucherOrdersItemDataList.add(voucherOrdersItemData);
+        }
+        autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
+        cartListData.setAutoApplyStackData(autoApplyStackData);
 
         return cartListData;
 
