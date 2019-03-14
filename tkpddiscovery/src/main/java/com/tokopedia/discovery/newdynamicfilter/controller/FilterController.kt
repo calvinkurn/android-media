@@ -201,7 +201,10 @@ class FilterController : Serializable {
     private fun removeFilterValue(key: String, value: String) : String {
         val currentValueList = getFilterValue(key).split(Option.VALUE_SEPARATOR).toMutableList()
         val newValueList = value.split(Option.VALUE_SEPARATOR)
-        currentValueList.removeAll(newValueList)
+
+        for(newValue in newValueList) {
+            currentValueList.remove(newValue)
+        }
 
         return currentValueList.joinToString(separator = Option.VALUE_SEPARATOR)
     }
