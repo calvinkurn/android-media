@@ -48,10 +48,6 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map(dynamicPostMapper)
     }
 
-    public fun setQuery(queryRes: Int) {
-        queryRaw = queryRes
-    }
-
     companion object {
         private const val PARAM_USER_ID = "userID"
         private const val PARAM_LIMIT = "limit"

@@ -244,8 +244,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 this)
     }
 
-
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
@@ -601,16 +599,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     //newfeed section
     override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
-
-//        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
-//            val trackingPostModel = adapter.list.get(positionInFeed)
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    trackingPostModel,
-//                    FeedAnalytics.Element.AVATAR,
-//                    redirectUrl
-//            )
-//        }
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
@@ -626,16 +614,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 onFollowKolClicked(positionInFeed, userIdInt)
             }
         }
-
-//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
-//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    trackingPostModel,
-//                    FeedAnalytics.Element.FOLLOW,
-//                    ""
-//            )
-//        }
     }
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
@@ -699,103 +677,23 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
-
-//        if (adapter.getlist().get(positionInFeed) is BannerViewModel) {
-//            val (itemViewModels) = adapter.getlist().get(positionInFeed)
-//            trackBannerClick(
-//                    positionInFeed,
-//                    adapterPosition,
-//                    itemViewModels[adapterPosition].trackingBannerModel,
-//                    FeedAnalytics.Element.IMAGE
-//            )
-//        }
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
         val intent = profileRouter.getShopPageIntent(activity!!, shop.id)
         startActivity(intent)
-//
-//        if (adapter.getlist().get(positionInFeed) is TopadsShopViewModel) {
-//            val (_, _, _, trackingList) = adapter.getlist().get(positionInFeed)
-//
-//            for (tracking in trackingList) {
-//                if (TextUtils.equals(tracking.authorName, shop.name)) {
-//                    trackRecommendationClick(
-//                            positionInFeed,
-//                            adapterPosition,
-//                            tracking,
-//                            FeedAnalytics.Element.FOLLOW
-//                    )
-//                    break
-//                }
-//            }
-//        }
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
-//        presenter.toggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
-//
-//        if (adapter.getlist().get(positionInFeed) is TopadsShopViewModel) {
-//            val (_, _, _, trackingList) = adapter.getlist().get(positionInFeed)
-//
-//            for (tracking in trackingList) {
-//                if (TextUtils.equals(tracking.authorName, data.shop.name)) {
-//                    trackRecommendationClick(
-//                            positionInFeed,
-//                            adapterPosition,
-//                            tracking,
-//                            FeedAnalytics.Element.FOLLOW
-//                    )
-//                    break
-//                }
-//            }
-//        }
+
     }
 
     override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
-
-//        if (adapter.getlist().get(positionInFeed) is FeedRecommendationViewModel) {
-//
-//            val (_, cards) = adapter.getlist().get(positionInFeed)
-//            trackRecommendationClick(
-//                    positionInFeed,
-//                    adapterPosition,
-//                    cards[adapterPosition].trackingRecommendationModel,
-//                    FeedAnalytics.Element.AVATAR
-//            )
-//        }
     }
 
     override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean) {
-        if (type == FollowCta.AUTHOR_USER) {
-            var userIdInt = 0
-            try {
-                userIdInt = Integer.valueOf(id)
-            } catch (ignored: NumberFormatException) {
-            }
 
-//            if (isFollow) {
-//                onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
-//            } else {
-//                onFollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
-//            }
-
-        }
-//        else if (type == FollowCta.AUTHOR_SHOP) {
-//            presenter.toggleFavoriteShop(positionInFeed, id)
-//        }
-//
-//        if (adapter.getlist().get(positionInFeed) is FeedRecommendationViewModel) {
-//
-//            val (_, cards) = adapter.getlist().get(positionInFeed)
-//            trackRecommendationClick(
-//                    positionInFeed,
-//                    adapterPosition,
-//                    cards[adapterPosition].trackingRecommendationModel,
-//                    FeedAnalytics.Element.FOLLOW
-//            )
-//        }
     }
 
     override fun onActionPopup() {
@@ -812,17 +710,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
-
-//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
-//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    contentPosition,
-//                    trackingPostModel,
-//                    FeedAnalytics.Element.IMAGE,
-//                    redirectLink
-//            )
-//        }
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
@@ -837,37 +724,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onPollOptionClick(positionInFeed: Int, contentPosition: Int, option: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String) {
-//        if (isVoted) {
-//            onGoToLink(redirectLink)
-//        } else {
-//            onVoteOptionClicked(positionInFeed, pollId, optionId)
-//        }
-//
-//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
-//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    contentPosition,
-//                    trackingPostModel,
-//                    FeedAnalytics.Element.OPTION + option,
-//                    redirectLink
-//            )
-//        }
+
     }
 
     override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
-
-//        if (adapter.getlist().get(positionInFeed) is DynamicPostViewModel) {
-//            val (_, _, _, _, _, _, _, trackingPostModel) = adapter.getlist().get(positionInFeed)
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    contentPosition,
-//                    trackingPostModel,
-//                    FeedAnalytics.Element.PRODUCT,
-//                    redirectLink
-//            )
-//        }
     }
 
     //end of new feed section
@@ -1366,8 +1227,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     fun onGoToLink(link: String) {
-        if (!TextUtils.isEmpty(link)) {
-            profileRouter.openRedirectUrl(activity!!, link)
+        activity?.let{
+            if (!TextUtils.isEmpty(link)) {
+                profileRouter.openRedirectUrl(it, link)
+            }
         }
+
     }
 }

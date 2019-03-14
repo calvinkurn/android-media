@@ -53,10 +53,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return ProfileHeaderViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: ProfileEmptyViewModel): Int {
-        return ProfileEmptyViewHolder.LAYOUT
-    }
-
     override fun type(kolPostViewModel: KolPostViewModel): Int {
         return KolPostViewHolder.LAYOUT
     }
@@ -101,8 +97,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return when(type) {
             ProfileHeaderViewHolder.LAYOUT ->
                 ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
-            ProfileEmptyViewHolder.LAYOUT ->
-                ProfileEmptyViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             KolPostViewHolder.LAYOUT ->
                     KolPostViewHolder(parent,
                             kolPostViewListener,
