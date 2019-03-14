@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -118,7 +117,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         if (cartShopHolderData.getShopGroupData().isFulfillment()) {
             imgFulfillment.setVisibility(View.VISIBLE);
             tvFulfillDistrict.setVisibility(View.VISIBLE);
-            tvFulfillDistrict.setText(cartShopHolderData.getShopGroupData().getFulfillmentDistrict());
+            tvFulfillDistrict.setText(cartShopHolderData.getShopGroupData().getFulfillmentName());
         } else {
             imgFulfillment.setVisibility(View.GONE);
             tvFulfillDistrict.setVisibility(View.GONE);

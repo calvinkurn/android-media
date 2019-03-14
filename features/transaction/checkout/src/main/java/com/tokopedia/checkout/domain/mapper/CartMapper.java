@@ -102,7 +102,7 @@ public class CartMapper implements ICartMapper {
                 shopGroupData.setShopBadge(shopGroup.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
             }
             if (shopGroup.getWarehouse() != null) {
-                shopGroupData.setFulfillmentDistrict(shopGroup.getWarehouse().getDistrictName());
+                shopGroupData.setFulfillmentName(shopGroup.getWarehouse().getCityName());
             }
 
             List<CartItemData> cartItemDataList = new ArrayList<>();

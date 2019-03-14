@@ -28,7 +28,7 @@ public class ShopGroupData implements Parcelable {
     private boolean isOfficialStore;
     private String shopBadge;
     private boolean isFulfillment;
-    private String fulfillmentDistrict;
+    private String fulfillmentName;
 
     // Total data which is calculated from cartItemDataList
     private long totalPrice;
@@ -190,12 +190,12 @@ public class ShopGroupData implements Parcelable {
         isFulfillment = fulfillment;
     }
 
-    public String getFulfillmentDistrict() {
-        return fulfillmentDistrict;
+    public String getFulfillmentName() {
+        return fulfillmentName;
     }
 
-    public void setFulfillmentDistrict(String fulfillmentDistrict) {
-        this.fulfillmentDistrict = fulfillmentDistrict;
+    public void setFulfillmentName(String fulfillmentName) {
+        this.fulfillmentName = fulfillmentName;
     }
 
     @Override
@@ -219,7 +219,7 @@ public class ShopGroupData implements Parcelable {
         dest.writeByte(this.isOfficialStore ? (byte) 1 : (byte) 0);
         dest.writeString(this.shopBadge);
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
-        dest.writeString(this.fulfillmentDistrict);
+        dest.writeString(this.fulfillmentName);
         dest.writeLong(this.totalPrice);
         dest.writeLong(this.totalCashback);
         dest.writeInt(this.totalItem);
@@ -240,7 +240,7 @@ public class ShopGroupData implements Parcelable {
         this.isOfficialStore = in.readByte() != 0;
         this.shopBadge = in.readString();
         this.isFulfillment = in.readByte() != 0;
-        this.fulfillmentDistrict = in.readString();
+        this.fulfillmentName = in.readString();
         this.totalPrice = in.readLong();
         this.totalCashback = in.readLong();
         this.totalItem = in.readInt();
