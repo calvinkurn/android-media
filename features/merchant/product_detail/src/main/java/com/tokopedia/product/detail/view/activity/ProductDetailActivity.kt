@@ -12,9 +12,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
-import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 
 class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
     private var isFromDeeplink = false
@@ -89,13 +89,12 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         val bundle = intent.extras
         if (uri != null) {
             if (uri.scheme == ApplinkConstInternal.INTERNAL_SCHEME) {
-                when (uri.scheme) {
-                    ApplinkConstInternal.Marketplace.PRODUCT_DETAIL -> productId = uri.lastPathSegment
-                    ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_DOMAIN -> {
-                        val segmentUri = uri.pathSegments
-                        shopDomain = segmentUri[segmentUri.size - 2]
-                        productKey = segmentUri[segmentUri.size - 1]
-                    }
+                val segmentUri = uri.pathSegments
+                if (segmentUri.size == 2 ){
+                    productId = uri.lastPathSegment
+                } else {
+                    shopDomain = segmentUri[segmentUri.size - 2]
+                    productKey = segmentUri[segmentUri.size - 1]
                 }
             } else if (uri.pathSegments.size >= 2 && // might be tokopedia.com/
                 uri.host != AFFILIATE_HOST) {
@@ -107,11 +106,14 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             } else { // affiliate
                 productId = uri.lastPathSegment
             }
+        } else { // uri is null, get from bundle for last resort
+            bundle?.let {
+                productId = it.getString(PARAM_PRODUCT_ID)
+                shopDomain = it.getString(PARAM_SHOP_DOMAIN)
+                productKey = it.getString(PARAM_PRODUCT_KEY)
+            }
         }
         bundle?.let {
-            productId = it.getString(PARAM_PRODUCT_ID)
-            shopDomain = it.getString(PARAM_SHOP_DOMAIN)
-            productKey = it.getString(PARAM_PRODUCT_KEY)
             trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
         }

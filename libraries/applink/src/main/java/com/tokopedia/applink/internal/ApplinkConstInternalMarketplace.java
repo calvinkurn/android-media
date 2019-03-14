@@ -9,7 +9,7 @@ class ApplinkConstInternalMarketplace {
 
     // ProductDetailActivity
     public static final String PRODUCT_DETAIL = INTERNAL_MARKETPLACE + "/product/{id}/";
-    public static final String PRODUCT_DETAIL_DOMAIN = INTERNAL_MARKETPLACE + "/product/{shop_domain}/{product_key}";
+    public static final String PRODUCT_DETAIL_DOMAIN = INTERNAL_MARKETPLACE + "/product/{shop_domain}/{product_key}/";
 
     // ProductEditActivity
     public static final String PRODUCT_EDIT = INTERNAL_MARKETPLACE + "/product/{id}/edit";
