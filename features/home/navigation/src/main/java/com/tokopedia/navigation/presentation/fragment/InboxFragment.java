@@ -58,6 +58,12 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private InboxAdapter adapter;
     private View emptyLayout;
     private GridLayoutManager layoutManager;
+    protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener() {
+        @Override
+        public void onLoadMore(int page, int totalItemsCount) {
+            presenter.getRecomData(page);
+        }
+    };
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -90,12 +96,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                presenter.getRecomData(page);
-            }
-        });
+        recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -219,6 +220,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void hideLoadMoreLoading() {
         adapter.hideLoading();
+        endlessRecyclerViewScrollListener.updateStateAfterGetData();
     }
 
     @Override
