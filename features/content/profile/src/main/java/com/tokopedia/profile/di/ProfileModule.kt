@@ -29,17 +29,4 @@ class ProfileModule {
         return profileEmptyPresenter
     }
 
-    @ProfileScope
-    @Provides
-    fun provideDynamicFeedUseCase(@ApplicationContext context: Context,
-                                  dynamicFeedMapper: DynamicFeedMapper,
-                                  graphqlUseCase: GraphqlUseCase): GetDynamicFeedUseCase {
-        return GetDynamicFeedUseCase(context, graphqlUseCase, dynamicFeedMapper)
-    }
-
-    @ProfileScope
-    @Provides fun provideDynamicFeedMapper():DynamicFeedMapper {
-        return DynamicFeedMapper();
-    }
-
 }

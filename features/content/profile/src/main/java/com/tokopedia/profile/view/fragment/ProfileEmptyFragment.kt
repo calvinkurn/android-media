@@ -18,7 +18,7 @@ import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
-import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
+import com.tokopedia.profile.view.adapter.factory.ProfileEmptyTypeFactoryImpl
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -78,18 +78,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     override fun loadData(page: Int) = presenter.getProfileHeader(userId)
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return ProfileTypeFactoryImpl(
-                this,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null)
+        return ProfileEmptyTypeFactoryImpl()
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {

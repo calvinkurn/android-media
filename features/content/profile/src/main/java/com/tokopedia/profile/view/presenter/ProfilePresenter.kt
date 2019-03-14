@@ -102,7 +102,7 @@ class ProfilePresenter @Inject constructor(
         )
     }
 
-    fun getUserId(): String {
+    private fun getUserId(): String {
         var userId: String = "0"
         if (!view.getUserSession().userId.isEmpty()) {
             userId = view.getUserSession().userId
