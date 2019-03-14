@@ -144,32 +144,6 @@ public class HomeModule {
         return new CategoryMapper();
     }
 
-    @HomeScope
-    @Provides
-    protected DigitalGqlApiService provideDigitalGqlApiService() {
-        return new DigitalGqlApiService();
-    }
-
-    @HomeScope
-    @Provides
-    protected RecommendationListDataSource provideRecommendationListDataSource(
-            DigitalGqlApiService digitalGqlApiService, @ApplicationContext Context context) {
-        return new RecommendationListDataSource(digitalGqlApiService, context);
-    }
-
-    @HomeScope
-    @Provides
-    protected DigitalWidgetRepository providetDigitalWidgetRepository(
-            StatusDataSource statusDataSource,
-            CategoryListDataSource categoryListDataSource,
-            RecommendationListDataSource recommendationListDataSource){
-        return new DigitalWidgetRepository(
-                statusDataSource,
-                categoryListDataSource,
-                recommendationListDataSource
-        );
-    }
-
     @Provides
     protected GraphqlRepository provideGraphqlRepository() {
         return GraphqlInteractor.getInstance().getGraphqlRepository();
