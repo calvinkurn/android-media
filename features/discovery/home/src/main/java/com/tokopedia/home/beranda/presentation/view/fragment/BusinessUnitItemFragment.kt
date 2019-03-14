@@ -88,7 +88,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     override fun loadData(page: Int) {
         viewModel.getList(
-                GraphqlHelper.loadRawString(resources, R.raw.query_content_tab_business_widget),
+                GraphqlHelper.loadRawString(activity?.resources, R.raw.query_content_tab_business_widget),
                 itemTab.id
         )
     }

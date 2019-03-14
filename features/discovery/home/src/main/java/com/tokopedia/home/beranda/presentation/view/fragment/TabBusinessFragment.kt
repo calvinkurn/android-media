@@ -74,7 +74,7 @@ class TabBusinessFragment : BaseDaggerFragment() {
     }
 
     private fun getRawQuery(): String {
-        return GraphqlHelper.loadRawString(resources, R.raw.query_tab_business_widget)
+        return GraphqlHelper.loadRawString(activity?.resources, R.raw.query_tab_business_widget)
     }
 
     override fun onDestroy() {
