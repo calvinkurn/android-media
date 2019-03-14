@@ -1354,4 +1354,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean getWindowValidation() {
         return getActivity() != null && getActivity().getWindow() != null;
     }
+
+    @Override
+    public void onNotificationChanged(int notificationCount, int inboxCount) {
+        if (homeMainToolbar != null) {
+            homeMainToolbar.setNotificationNumber(notificationCount);
+            homeMainToolbar.setInboxNumber(inboxCount);
+        }
+    }
 }
