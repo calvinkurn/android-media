@@ -66,13 +66,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             return Intent(context, ProductDetailActivity::class.java).setData(uri).putExtras(extras)
         }
 
-        @DeepLink(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_ATTRIBUTION)
-        @JvmStatic
-        fun getCallingIntentAttribution(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build()
-            return Intent(context, ProductDetailActivity::class.java).setData(uri).putExtras(extras)
-        }
-
         @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
         @JvmStatic
         fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
@@ -94,6 +87,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     override fun onCreate(savedInstanceState: Bundle?) {
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
+        val bundle = intent.extras
         if (uri != null) {
             if (uri.scheme != ApplinkConstInternal.INTERNAL_SCHEME &&
                 uri.pathSegments.size >= 2 &&
@@ -106,13 +100,20 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             } else { // affiliate, tokopedia-internal
                 productId = uri.lastPathSegment
             }
-        } else {
+        } else if(bundle != null) {
+            bundle.let {
+                shopDomain = it.getString(PARAM_SHOP_DOMAIN)
+                shopDomain = it.getString(PARAM_SHOP_DOMAIN)
+                productKey = it.getString(PARAM_PRODUCT_KEY)
+                trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
+                trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
+            }
+        }else{
             productId = intent.getStringExtra(PARAM_PRODUCT_ID)
             shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
             productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
-            trackerAttribution = intent.getStringExtra(PARAM_TRACKER_ATTRIBUTION)
-            trackerListName = intent.getStringExtra(PARAM_TRACKER_LIST_NAME)
         }
+
         if (uri != null && uri.host == AFFILIATE_HOST) {
             isFromAffiliate = true
         } else {

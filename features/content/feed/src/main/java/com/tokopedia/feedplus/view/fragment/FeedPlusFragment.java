@@ -32,6 +32,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
@@ -417,9 +419,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name,
                                    String price) {
-        feedModuleRouter.goToProductDetail(getContext(), productId, imageSourceSingle, name, price);
+        getActivity().startActivity(getProductIntent(productId));
     }
 
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntentInternal(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
+    }
     @Override
     public void onGoToProductDetail(int rowNumber, int page, String productId, String
             imageSourceSingle, String name, String price) {

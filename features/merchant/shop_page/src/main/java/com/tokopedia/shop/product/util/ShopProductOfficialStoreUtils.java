@@ -1,11 +1,16 @@
 package com.tokopedia.shop.product.util;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 
@@ -70,7 +75,8 @@ public class ShopProductOfficialStoreUtils {
                 case URL_PATH_PRODUCT:
                     if (activity.getApplication() instanceof ShopModuleRouter) {
                         String productId = uri.getLastPathSegment();
-                        ((ShopModuleRouter) activity.getApplication()).goToProductDetailById(activity, productId);
+                        activity.startActivity(RouteManager.getIntentInternal(activity,
+                                UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId)));
                     }
                     break;
                 case URL_PATH_PAGE:

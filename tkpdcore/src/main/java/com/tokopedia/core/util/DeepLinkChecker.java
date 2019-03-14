@@ -366,10 +366,20 @@ public class DeepLinkChecker {
                 bundle.putString("product_key", getLinkSegment(url).get(1));
             }
             bundle.putString("url", url);
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            Intent intent = RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, ""));
             intent.putExtras(bundle);
             intent.setData(Uri.parse(url));
             context.startActivity(intent);
+        }
+    }
+
+    private Intent getProductIntent(String productId, Context context){
+        if (context != null) {
+            return RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
         }
     }
 

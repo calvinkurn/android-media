@@ -19,6 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
@@ -274,9 +277,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                     UnifyTracking.eventWishlistView(view.getContext(), product.getName());
                     wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf(position+1), product.getProductAsObjectDataLayerForWishlistClick(position+1));
                     Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
-                    intent.putExtras(bundle);
+                    Intent intent = getProductIntent(((ProductItem) data.get(position)).id);
                     context.startActivity(intent);
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
@@ -289,6 +290,15 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 }
             }
         };
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {

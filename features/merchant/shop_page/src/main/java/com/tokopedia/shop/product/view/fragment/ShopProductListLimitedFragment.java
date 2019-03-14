@@ -868,8 +868,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     private Intent getProductIntent(String productId, String attribution, String listNameOfProduct){
         if (getContext() != null) {
-            return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_WITH_ATTRIBUTION, productId, attribution, listNameOfProduct));
+            Bundle bundle = new Bundle();
+            bundle.putString("tracker_attribution", attribution);
+            bundle.putString("tracker_list_name", listNameOfProduct);
+            Intent intent = RouteManager.getIntentInternal(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+            return intent;
         } else {
             return null;
         }

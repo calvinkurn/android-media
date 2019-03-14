@@ -19,6 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternal;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
@@ -255,21 +258,26 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
                     Bundle bundle = new Bundle();
                     Intent intent
-                            = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-                    bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
-                    intent.putExtras(bundle);
+                            = getProductIntent(((ProductItem) data.get(position)).id);
                     context.startActivity(intent);
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
                     UnifyTracking.eventWishlistView(view.getContext(), product.getProductName());
                     context.startActivity(
-                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                                    context, getProductDataToPass((RecentView) data.get(position))
-                            )
+                            getProductIntent(((RecentView) data.get(position)).getProductId().toString())
                     );
                 }
             }
         };
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntentInternal(context,
+                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {
