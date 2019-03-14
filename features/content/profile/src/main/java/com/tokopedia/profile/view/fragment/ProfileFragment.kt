@@ -44,11 +44,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.common.util.PostMenuListener
@@ -77,7 +75,6 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
-import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -362,10 +359,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             if (follow) {
                 presenter.followKol(userId)
-                profileAnalytics.eventClickFollow(userId.toString())
+                profileAnalytics.eventClickFollow(isOwner, userId.toString())
             } else {
                 presenter.unfollowKol(userId)
-                profileAnalytics.eventClickUnfollow(userId.toString())
+                profileAnalytics.eventClickUnfollow(isOwner, userId.toString())
             }
         } else {
             followAfterLogin()
@@ -437,9 +434,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun trackContentClick(hasMultipleContent: Boolean, activityId: String,
                                    activityType: String, position: String) {
-        if (isOwner.not()) {
-            profileAnalytics.eventClickCard(hasMultipleContent, activityId, activityType, position)
-        }
     }
 
     override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String,
@@ -604,13 +598,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
         if (adapter.list.get(positionInFeed) is FeedRecommendationViewModel) {
 
-            val card = adapter.list.get(positionInFeed)
-//            trackRecommendationClick(
-//                    positionInFeed,
-//                    adapterPosition,
-//                    cards[adapterPosition].trackingRecommendationModel,
-//                    FeedAnalytics.Element.AVATAR
-//            )
+            if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+                val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+                trackCardPostClick(
+                        positionInFeed,
+                        model.trackingPostModel,
+                        ProfileAnalytics.Element.AVATAR,
+                        redirectUrl
+                )
+            }
         }
     }
 
@@ -625,6 +621,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 onUnfollowKolClicked(positionInFeed, userIdInt)
             } else {
                 onFollowKolClicked(positionInFeed, userIdInt)
+            }
+            if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+                val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+                trackCardPostClick(
+                        positionInFeed,
+                        model.trackingPostModel,
+                        ProfileAnalytics.Element.FOLLOW,
+                        ""
+                )
             }
         }
     }
@@ -681,10 +686,28 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     description
             )
         }
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.SHARE,
+                    url
+            )
+        }
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.TAG,
+                    redirectUrl
+            )
+        }
 
     }
 
@@ -723,6 +746,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.IMAGE,
+                    redirectLink
+            )
+        }
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
@@ -734,14 +767,46 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     redirectUrl
             )
         }
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.VIDEO,
+                    redirectUrl
+            )
+        }
     }
 
     override fun onPollOptionClick(positionInFeed: Int, contentPosition: Int, option: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String) {
-
+        if (isVoted) {
+            onGoToLink(redirectLink)
+        }
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.OPTION + option,
+                    redirectLink
+            )
+        }
     }
 
     override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.PRODUCT,
+                    redirectLink
+            )
+        }
     }
 
     //end of new feed section
@@ -988,42 +1053,26 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         visitableList.forEachIndexed { position, model ->
             val adapterPosition = adapter.data.size + position
             when (model) {
-                is KolPostViewModel -> {
+                is DynamicPostViewModel -> {
+                    var trackingPostModel = model.trackingPostModel
                     profileAnalytics.eventViewCard(
-                            isOwner,
-                            model.isMultipleContent,
-                            model.contentId.toString(),
-                            model.activityType,
-                            adapterPosition.toString()
+                            trackingPostModel.templateType,
+                            trackingPostModel.activityName,
+                            trackingPostModel.trackingType,
+                            trackingPostModel.mediaType,
+                            trackingPostModel.tagsType,
+                            trackingPostModel.redirectUrl,
+                            trackingPostModel.totalContent,
+                            trackingPostModel.postId,
+                            adapterPosition,
+                            userId,
+                            isOwner
                     )
                 }
             }
         }
     }
 
-    private fun trackRecommendationClick(positionInFeed: Int, cardPosition: Int,
-                                         trackingRecommendationModel: TrackingRecommendationModel,
-                                         element: String) {
-        var userId = 0
-        try {
-            userId = Integer.valueOf(userSession.userId)
-        } catch (ignored: NumberFormatException) {
-        }
-
-//        profileAnalytics.eventRecommendationClick(
-//                trackingRecommendationModel.templateType,
-//                trackingRecommendationModel.activityName,
-//                trackingRecommendationModel.trackingType,
-//                trackingRecommendationModel.mediaType,
-//                trackingRecommendationModel.authorName,
-//                trackingRecommendationModel.authorType,
-//                element,
-//                trackingRecommendationModel.authorId,
-//                positionInFeed,
-//                cardPosition,
-//                userId
-//        )
-    }
     private fun showAfterPostToaster(addAction: Boolean) {
         if (addAction) {
             view?.showNormalToaster(getString(R.string.profile_recommend_success), getString(R.string.profile_add_more)) {
@@ -1108,6 +1157,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun shareLinkClickListener(link: String): View.OnClickListener {
         return View.OnClickListener {
+            profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
             shareLink(link)
         }
     }
@@ -1239,7 +1289,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToDashboard() {
         RouteManager.route(context, ApplinkConst.AFFILIATE_DASHBOARD)
-        profileAnalytics.eventClickStatistic()
+        profileAnalytics.eventClickStatistic(userId.toString())
     }
 
     private fun goToLogin() {
@@ -1314,6 +1364,36 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 profileRouter.openRedirectUrl(it, link)
             }
         }
+    }
 
+    private fun trackCardPostClick(positionInFeed: Int, trackingPostModel: TrackingPostModel,
+                                   element: String, redirectUrl: String) {
+        trackCardPostClick(positionInFeed, -1, trackingPostModel, element, redirectUrl)
+    }
+
+    private fun trackCardPostClick(positionInFeed: Int, contentPosition: Int,
+                                   trackingPostModel: TrackingPostModel, element: String,
+                                   redirectUrl: String) {
+        var userId = 0
+        try {
+            userId = Integer.valueOf(userSession.userId)
+        } catch (ignored: NumberFormatException) {
+        }
+
+        profileAnalytics.eventClickCard(
+                trackingPostModel.templateType,
+                trackingPostModel.activityName,
+                trackingPostModel.trackingType,
+                trackingPostModel.mediaType,
+                trackingPostModel.tagsType,
+                redirectUrl,
+                element,
+                trackingPostModel.totalContent,
+                trackingPostModel.postId,
+                positionInFeed,
+                if (contentPosition != -1) contentPosition.toString() else "",
+                userId,
+                isOwner
+        )
     }
 }
