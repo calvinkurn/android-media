@@ -109,13 +109,12 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void recoverLastFilterState(Bundle savedInstanceState) {
-        filterController = (FilterController) savedInstanceState.getSerializable(FILTER_CONTROLLER);
+    private void recoverLastFilterState(@NonNull Bundle savedInstanceState) {
+        filterController = savedInstanceState.getParcelable(FILTER_CONTROLLER);
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(FILTER_CONTROLLER, filterController);
+        outState.putParcelable(FILTER_CONTROLLER, filterController);
     }
 
     public void setFilterResultCount(String formattedResultCount) {

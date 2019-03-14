@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.newdynamicfilter.controller
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.TextUtils
 import com.tokopedia.core.discovery.model.Filter
 import com.tokopedia.core.discovery.model.Option
@@ -7,10 +9,9 @@ import com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
-import java.io.Serializable
 import java.util.*
 
-class FilterController : Serializable {
+class FilterController() : Parcelable {
 
     private val searchParameter = mutableMapOf<String, String>()
     private val flagFilterHelper = mutableMapOf<String, Boolean>()
@@ -20,6 +21,16 @@ class FilterController : Serializable {
 
     private var pressedSliderMinValueState = -1
     private var pressedSliderMaxValueState = -1
+
+    constructor(parcel: Parcel) : this() {
+        parcel.readMap(searchParameter, String::class.java.classLoader)
+        parcel.readList(filterList, Filter::class.java.classLoader)
+
+        initFilterController(searchParameter, filterList)
+
+        pressedSliderMinValueState = parcel.readInt()
+        pressedSliderMaxValueState = parcel.readInt()
+    }
 
     fun initFilterController(searchParameter: Map<String, String> = mapOf(),
                              filterList: List<Filter> = listOf()) {
@@ -363,5 +374,26 @@ class FilterController : Serializable {
 
     fun getFilterList() : List<Filter> {
         return filterList
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeMap(searchParameter)
+        parcel.writeList(filterList)
+        parcel.writeInt(pressedSliderMinValueState)
+        parcel.writeInt(pressedSliderMaxValueState)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FilterController> {
+        override fun createFromParcel(parcel: Parcel): FilterController {
+            return FilterController(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FilterController?> {
+            return arrayOfNulls(size)
+        }
     }
 }
