@@ -14,6 +14,7 @@ import java.util.Map;
 
 /**
  * @author by nisie on 10/2/18.
+ * https://docs.google.com/spreadsheets/d/1TCCs1XsXFtRZR8cO4ZQEDwOHCqCTVMXjDApzZ-fLEC8
  */
 public class LoginRegisterAnalytics {
 
@@ -82,13 +83,239 @@ public class LoginRegisterAnalytics {
         analyticTracker.sendScreen(activity, screenName);
     }
 
+    //#3
+    public void trackClickOnNext() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button selanjutnya",
+                "click"
+        );
+    }
+
+    //#3
+    public void trackClickOnNextFail() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button selanjutnya",
+                "failed validasi"
+        );
+    }
+
+    //#3
+    public void trackClickOnNextSuccess() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button selanjutnya",
+                "success validasi"
+        );
+    }
+
+    //#5
+    public void trackLoginPhoneNumber() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "enter login phone number",
+                "click"
+        );
+    }
+
+    //#5
+    public void trackLoginPhoneNumberSuccess() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "enter login phone number",
+                "success"
+        );
+    }
+
+    //#5
+    public void trackLoginPhoneNumberFailed() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "enter login phone number",
+                "failed"
+        );
+    }
+
+    //#5
+    public void trackChangeButtonClicked() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button ubah",
+                ""
+        );
+    }
+
+    //#5
+    public void eventClickPasswordHide() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on hide kata sandi",
+                ""
+        );
+    }
+
+    //#6
+    public void eventClickPasswordShow() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on unhide kata sandi",
+                ""
+        );
+    }
+
+    //#7
+    public void trackClickForgotPassword() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on lupa kata sandi",
+                ""
+        );
+    }
+
+    //#8
+    public void trackClickRegisterOnFooter() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar bottom",
+                ""
+        );
+    }
+
+    //#9
+    public void trackClickRegisterOnMenu() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button daftar top",
+                ""
+        );
+    }
+
+    //#11
     public void eventClickLoginButton(Context applicationContext) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button masuk",
+                "click"
+        );
 
         Map<String, Object> map = new HashMap<>();
         TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN,
                 map, applicationContext);
 
     }
+
+    //#11
+    public void trackClickOnLoginButtonSuccess() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button masuk",
+                "success"
+        );
+    }
+
+    //#11
+    public void trackClickOnLoginButtonError() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button masuk",
+                "failed"
+        );
+    }
+
+
+    //#12
+    public void eventClickLoginGoogle(Context applicationContext) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button google",
+                "click"
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+                map, applicationContext);
+    }
+
+    //#13
+    public void eventClickLoginFacebook(Context applicationContext) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button facebook",
+                "click"
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Facebook");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK,
+                map, applicationContext);
+    }
+
+    //#14
+    public void eventClickLoginWebview(String name) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button yahoo",
+                "click"
+        );
+
+        analyticTracker.sendEventTracking(
+                EVENT_LOGIN_CLICK,
+                CATEGORY_LOGIN,
+                ACTION_CLICK,
+                name
+        );
+    }
+
+    //#12, 13, 14
+    public void trackEventSuccessLoginSosmed(String loginMethod) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button " + loginMethod,
+                "success"
+        );
+    }
+
+    //#12, 13, 14
+    public void trackEventFailedLoginSosmed(String loginMethod) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click on button " + loginMethod,
+                "failed"
+        );
+    }
+
+    //#15
+    public void trackOnBackPressed() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                "click back",
+                ""
+        );
+    }
+
 
     public void eventClickRegisterFromLogin() {
         analyticTracker.sendEventTracking(
@@ -126,24 +353,6 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    public void eventSuccessLoginSosmed(String loginMethod) {
-        analyticTracker.sendEventTracking(
-                EVENT_REGISTER_LOGIN,
-                CATEGORY_LOGIN,
-                ACTION_REGISTER,
-                loginMethod
-        );
-    }
-
-    public void eventClickLoginWebview(String name) {
-        analyticTracker.sendEventTracking(
-                EVENT_LOGIN_CLICK,
-                CATEGORY_LOGIN,
-                ACTION_CLICK,
-                name
-        );
-    }
-
     public void eventClickLoginPhoneNumber(Context applicationContext) {
         analyticTracker.sendEventTracking(
                 EVENT_LOGIN_CLICK,
@@ -158,21 +367,6 @@ public class LoginRegisterAnalytics {
                 map, applicationContext);
     }
 
-    public void eventClickLoginGoogle(Context applicationContext) {
-
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
-                map, applicationContext);
-    }
-
-    public void eventClickLoginFacebook(Context applicationContext) {
-
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Facebook");
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK,
-                map, applicationContext);
-    }
 
     public void eventClickForgotPasswordFromLogin(Context applicationContext) {
         Map<String, Object> map = new HashMap<>();
@@ -400,66 +594,4 @@ public class LoginRegisterAnalytics {
         );
     }
 
-    public void trackClickOnNext() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button selanjutnya",
-                "click"
-        );
-    }
-
-    public void trackChangeButtonClicked() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button ubah",
-                ""
-        );
-    }
-
-    public void trackClickForgotPassword() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on lupa kata sandi",
-                ""
-        );
-    }
-
-    public void trackClickRegisterOnFooter() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button daftar bottom",
-                ""
-        );
-    }
-
-    public void trackClickRegisterOnMenu() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button daftar top",
-                ""
-        );
-    }
-
-    public void trackClickOnLoginButton() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on button masuk",
-                ""
-        );
-    }
-
-    public void trackOnBackPressed() {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click back",
-                ""
-        );
-    }
 }

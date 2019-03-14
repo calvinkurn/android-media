@@ -125,11 +125,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     @Override
-    public int getApplicationType() {
-        return SELLER_APPLICATION;
-    }
-
-    @Override
     public void onCreate() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;

@@ -18,6 +18,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.Target;
 import com.tokopedia.design.R;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,8 +30,8 @@ import java.util.List;
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
     private static final String TAG = BannerPagerAdapter.class.getSimpleName();
-    protected final List<String> bannerImageUrls;
-    private final BannerView.OnPromoClickListener onPromoClickListener;
+    private BannerView.OnPromoClickListener onPromoClickListener;
+    protected List<String> bannerImageUrls = new ArrayList<>();
 
     public BannerPagerAdapter(List<String> bannerImageUrls, BannerView.OnPromoClickListener onPromoClickListener) {
         this.bannerImageUrls = bannerImageUrls;
@@ -53,8 +56,9 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         return bannerImageUrls.size();
     }
 
+    @NotNull
     @Override
-    public BannerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BannerViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         return new BannerViewHolder(
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.layout_slider_banner_design, parent, false)
@@ -104,5 +108,17 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
             context = ((ContextWrapper) context).getBaseContext();
         }
         return null;
+    }
+
+    public void setItems(List<String> bannerImageUrls) {
+        this.bannerImageUrls = bannerImageUrls;
+    }
+
+    public void clear() {
+        this.bannerImageUrls.clear();
+    }
+
+    public void setOnItemClickListener(BannerView.OnPromoClickListener onPromoClickListener) {
+        this.onPromoClickListener = onPromoClickListener;
     }
 }

@@ -93,6 +93,12 @@ public class AnalyticsTrackerUtil {
         String COPY_CODE = "salin kode swipe";
         String CLICK_MEM_BOTTOM = "click footer status membership";
         String CLICK_SELL_ALL_COUPON = "click kupon milik saya";
+        String CLICK_PENUKARAN_POINTS = "click penukaran point";
+        String CLICK_COUPON_SAYA = "click coupon saya";
+        String CLICK_KIRIM_SEKARANG = "click kirim sekarang";
+        String CLICK_OK_ON_SUCCESS = "click ok on success";
+        String CLICK_OK_ON_FAILED = "click ok on failed";
+        String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String VIEW_REDEEM_SUCCESS = "view redeem success";
     }
 

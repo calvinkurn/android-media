@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
@@ -21,6 +20,8 @@ import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.network.exception.WalletException;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -48,19 +49,19 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
     private Context context;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private LocalCacheHandler localCacheHandler;
     private CompositeSubscription compositeSubscription;
 
     @Inject
     public QrScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase,
                               BranchIODeeplinkUseCase branchIODeeplinkUseCase,
-                              @ApplicationContext Context context, UserSession userSession,
+                              @ApplicationContext Context context,
                               @IdentifierWalletQualifier LocalCacheHandler localCacheHandler
     ) {
         this.postBarCodeDataUseCase = postBarCodeDataUseCase;
         this.context = context;
-        this.userSession = userSession;
+        this.userSession = new UserSession(context);
         this.localCacheHandler = localCacheHandler;
         this.branchIODeeplinkUseCase = branchIODeeplinkUseCase;
         this.compositeSubscription = new CompositeSubscription();

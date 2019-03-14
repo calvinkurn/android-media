@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_3"
         android:textColor="@color/digital_voucher_notes"
-        android:text="@string/title_nominal"
+        android:text="@string/digital_title_nominal"
         android:textSize="@dimen/sp_14"/>
 
     <Spinner
@@ -28,6 +28,6 @@
         android:paddingLeft="@dimen/dp_3"
         android:text="@string/title_empty_stock"
         android:textColor="@color/red_600"
-        android:textSize="@dimen/fontvs"/>
+        android:textSize="@dimen/sp_12"/>
 
 </LinearLayout>

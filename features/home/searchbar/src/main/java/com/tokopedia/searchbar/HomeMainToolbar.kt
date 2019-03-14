@@ -99,29 +99,6 @@ class HomeMainToolbar : MainToolbar {
         }
     }
 
-    override fun showInboxIconForAbTest(shouldShowInbox: Boolean) {
-        if (shouldShowInbox) {
-            btnWishlist.tag = TAG_INBOX
-            btnWishlist.setImageResource(R.drawable.ic_searchbar_inbox_white)
-        } else {
-            btnWishlist.tag = ""
-            btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_white)
-        }
-    }
-
-    override fun setInboxNumber(badgeNumber: Int) {
-        if (badgeView == null)
-            badgeView = BadgeView(context)
-
-        badgeView.bindTarget(btn_inbox)
-        badgeView.badgeGravity = Gravity.END or Gravity.TOP
-        badgeView.badgeNumber = badgeNumber
-    }
-
-    fun isShadowApplied() : Boolean {
-        return shadowApplied
-    }
-
     companion object {
         val TOOLBAR_LIGHT_TYPE = 0
         val TOOLBAR_DARK_TYPE = 1

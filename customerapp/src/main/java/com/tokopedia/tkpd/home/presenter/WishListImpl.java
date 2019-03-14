@@ -64,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -273,7 +274,7 @@ public class WishListImpl implements WishList {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_search_wishlist),
                 GqlWishListDataResponse.class,
-                variables);
+                variables, false);
 
         List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
         graphqlRequestList.add(graphqlRequest);
@@ -316,7 +317,7 @@ public class WishListImpl implements WishList {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
                 GqlWishListDataResponse.class,
-                variables);
+                variables, false);
 
         List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
         graphqlRequestList.add(graphqlRequest);
@@ -703,7 +704,7 @@ public class WishListImpl implements WishList {
                     if (!BuildConfig.DEBUG) {
                         Crashlytics.logException(exception);
                     }
-                    throw exception;
+                    return Unit.INSTANCE;
                 });
 
                 wishListView.dismissProgressDialog();

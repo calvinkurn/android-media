@@ -4,8 +4,10 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedLoadingMoreViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 
@@ -20,6 +22,8 @@ public class HomeFeedTypeFactory extends BaseAdapterTypeFactory {
             return new HomeFeedViewHolder(parent);
         } else if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
             return new LoadingShimmeringGridViewHolder(parent);
+        } else if (type == HomeFeedLoadingMoreViewHolder.LAYOUT) {
+            return new HomeFeedLoadingMoreViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -28,5 +32,10 @@ public class HomeFeedTypeFactory extends BaseAdapterTypeFactory {
     @Override
     public int type(LoadingModel viewModel) {
         return LoadingShimmeringGridViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(LoadingMoreModel viewModel) {
+        return HomeFeedLoadingMoreViewHolder.LAYOUT;
     }
 }

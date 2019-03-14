@@ -76,4 +76,6 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
+
+    public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 }

@@ -16,6 +16,7 @@ public interface InboxBaseContract {
         int REQUEST_DETAILS = 204;
 
         int REQUEST_IMAGE_PICKER = 145;
+        public static final int REQUEST_SUBMIT_FEEDBACK = 0X1;
 
         void showMessage(String message);
 
@@ -44,6 +45,7 @@ public interface InboxBaseContract {
         boolean isSearchMode();
 
         void toggleSearch(int visibility);
+        void startActivityForResult(Intent intent, int requestCode);
     }
 
     interface InboxBasePresenter extends CustomerPresenter<InboxBaseView> {
