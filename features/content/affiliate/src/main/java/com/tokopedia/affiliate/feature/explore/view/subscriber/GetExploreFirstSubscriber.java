@@ -14,7 +14,7 @@ import com.tokopedia.affiliate.feature.explore.data.pojo.FilterQuery;
 import com.tokopedia.affiliate.feature.explore.data.pojo.SortData;
 import com.tokopedia.affiliate.feature.explore.data.pojo.SortQuery;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreCardViewModel;
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;

@@ -35,6 +35,8 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.common.preference.AffiliatePreference;
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
+import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.education.view.activity.AffiliateEducationActivity;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
@@ -47,7 +49,6 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
@@ -495,7 +496,7 @@ public class ExploreFragment
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
         list.add(new PopularProfileChildViewModel("", "https://ca.slack-edge.com/T038RGMSP-U2WPGER2T-0faadc531b0a-72"));
         list.add(new PopularProfileChildViewModel("Febby Mulia", ""));
-        return new PopularProfileViewModel(list);
+        return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling berjasa", "Dimulai dari Tokopedia"));
     }
 
     private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, SortFilterModel sortFilterModel) {

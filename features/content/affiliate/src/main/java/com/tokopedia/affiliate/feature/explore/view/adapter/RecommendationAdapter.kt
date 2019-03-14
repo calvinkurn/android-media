@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreCardViewModel
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
 import kotlinx.android.synthetic.main.item_af_recommendation_child.view.*
 
 /**

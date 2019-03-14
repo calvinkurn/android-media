@@ -5,7 +5,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreCardViewModel
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.loadImage

@@ -9,12 +9,14 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreEm
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.FilterViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.PopularProfileViewHolder;
+import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.RecommendationViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -53,6 +55,11 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
     }
 
     @Override
+    public int type(RecommendationViewModel recommendationViewModel) {
+        return RecommendationViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder abstractViewHolder;
         if (type == ExploreViewHolder.LAYOUT) {
@@ -65,6 +72,8 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
             abstractViewHolder = new FilterViewHolder(view);
         } else if (type == PopularProfileViewHolder.LAYOUT) {
             abstractViewHolder = new PopularProfileViewHolder(view);
+        } else if (type == RecommendationViewHolder.LAYOUT) {
+            abstractViewHolder = new RecommendationViewHolder(view);
         } else {
             abstractViewHolder = super.createViewHolder(view, type);
         }

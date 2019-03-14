@@ -5,7 +5,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreTitleViewModel
+import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.widget_af_affiliate_title.view.*

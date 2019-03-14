@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.feature.explore.view.viewmodel
+package com.tokopedia.affiliate.common.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable

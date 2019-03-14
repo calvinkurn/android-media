@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactory
 
 /**
