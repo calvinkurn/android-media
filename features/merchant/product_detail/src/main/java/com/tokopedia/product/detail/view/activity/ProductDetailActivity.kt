@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -100,18 +101,27 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             } else { // affiliate, tokopedia-internal
                 productId = uri.lastPathSegment
             }
-        } else if(bundle != null) {
-            bundle.let {
-                shopDomain = it.getString(PARAM_SHOP_DOMAIN)
-                shopDomain = it.getString(PARAM_SHOP_DOMAIN)
-                productKey = it.getString(PARAM_PRODUCT_KEY)
-                trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
-                trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
-            }
-        }else{
+        } else{
             productId = intent.getStringExtra(PARAM_PRODUCT_ID)
             shopDomain = intent.getStringExtra(PARAM_SHOP_DOMAIN)
             productKey = intent.getStringExtra(PARAM_PRODUCT_KEY)
+        }
+
+        if (bundle != null) {
+            bundle.let {
+                if(!TextUtils.isEmpty(it.getString(PARAM_SHOP_DOMAIN))) {
+                    shopDomain = it.getString(PARAM_SHOP_DOMAIN)
+                }
+                if(!TextUtils.isEmpty(it.getString(PARAM_PRODUCT_KEY))) {
+                    productKey = it.getString(PARAM_PRODUCT_KEY)
+                }
+                if(!TextUtils.isEmpty(it.getString(PARAM_TRACKER_ATTRIBUTION))) {
+                    trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
+                }
+                if(!TextUtils.isEmpty(it.getString(PARAM_TRACKER_LIST_NAME))) {
+                    trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
+                }
+            }
         }
 
         if (uri != null && uri.host == AFFILIATE_HOST) {
