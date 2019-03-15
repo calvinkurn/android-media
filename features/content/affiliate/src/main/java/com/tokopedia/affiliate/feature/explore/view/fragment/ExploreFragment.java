@@ -111,7 +111,7 @@ public class ExploreFragment
     private FilterAdapter filterAdapter;
     private EmptyModel emptyResultModel;
     private String firstCursor = "";
-    private List<Visitable> tempFirstData = new ArrayList<>();
+    private List<Visitable<?>> tempFirstData = new ArrayList<>();
     private List<SortViewModel> tempLocalSortData = new ArrayList<>();
     private RemoteConfig remoteConfig;
     private PerformanceMonitoring performanceMonitoring;
@@ -455,7 +455,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable> itemList,
+    public void onSuccessGetFirstData(List<Visitable<?>> itemList,
                                       String cursor,
                                       boolean isSearch,
                                       boolean isPullToRefresh,
@@ -468,14 +468,14 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFilteredSortedFirstData(List<Visitable> itemList,
+    public void onSuccessGetFilteredSortedFirstData(List<Visitable<?>> itemList,
                                                     String cursor,
                                                     boolean isSearch,
                                                     boolean isPullToRefresh) {
         populateFirstData(itemList, cursor);
     }
 
-    private void populateFirstData(List<Visitable> itemList, String cursor) {
+    private void populateFirstData(List<Visitable<?>> itemList, String cursor) {
         itemList.add(0, getDummyPopularProfile());
         rvExplore.scrollTo(0,0);
         layoutEmpty.setVisibility(View.GONE);
@@ -507,18 +507,18 @@ public class ExploreFragment
         return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling berjasa", "Dimulai dari Tokopedia"));
     }
 
-    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, List<SortViewModel> sortViewModels) {
+    private void saveFirstDataToLocal(List<Visitable<?>> itemList, String firstCursor, List<SortViewModel> sortViewModels) {
         tempFirstData = itemList;
         this.firstCursor = firstCursor;
         this.tempLocalSortData = sortViewModels;
     }
 
-    private List<Visitable> getLocalFirstData() {
+    private List<Visitable<?>> getLocalFirstData() {
         exploreParams.setCursorForLoadMore(this.firstCursor);
         return tempFirstData;
     }
 
-    private void populateExploreItem(List<Visitable> itemList, String cursor) {
+    private void populateExploreItem(List<Visitable<?>> itemList, String cursor) {
         if (itemList.size() == 0) {
             itemList = new ArrayList<>();
             itemList.add(emptyResultModel);

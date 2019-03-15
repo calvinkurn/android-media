@@ -10,11 +10,11 @@ data class SectionItem(
         @SerializedName("category_id")
         val categoryId: Int = 0,
         @SerializedName("commission_percent")
-        val commissionPercent: Int = 0,
+        val commissionPercent: Float = 0f,
         @SerializedName("commission_percent_display")
         val commissionPercentDisplay: String = "",
         @SerializedName("commission_value")
-        val commissionValue: Int = 0,
+        val commissionValue: Float = 0f,
         @SerializedName("commission_value_display")
         val commissionValueDisplay: String = "",
         @SerializedName("fav_icon")

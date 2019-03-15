@@ -23,12 +23,12 @@ class ExploreFirstPageUseCase @Inject constructor(
                 exploreSectionUseCase.createObservable(requestParams).observeOn(Schedulers.io()),
                 exploreUseCase.createObservable(requestParams).observeOn(Schedulers.io()),
                 exploreSortUseCase.createObservable(requestParams).observeOn(Schedulers.io()))
-        { sections, products, sorts ->
+        { sections, exploreViewModel, sorts ->
             val visitables: MutableList<Visitable<*>> = arrayListOf()
             visitables.addAll(sections)
-            visitables.addAll(products)
+            visitables.addAll(exploreViewModel.exploreProducts)
 
-            ExploreFirstPageViewModel(visitables, sorts)
+            ExploreFirstPageViewModel(visitables, sorts, exploreViewModel.nextCursor)
         }
     }
 }

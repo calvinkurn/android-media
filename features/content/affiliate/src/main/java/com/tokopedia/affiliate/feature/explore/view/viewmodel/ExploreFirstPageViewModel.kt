@@ -7,5 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  */
 data class ExploreFirstPageViewModel(
         val visitables: List<Visitable<*>> = arrayListOf(),
-        val sortList: List<SortViewModel> = arrayListOf()
+        val sortList: List<SortViewModel> = arrayListOf(),
+        val nextCursor: String = ""
 )

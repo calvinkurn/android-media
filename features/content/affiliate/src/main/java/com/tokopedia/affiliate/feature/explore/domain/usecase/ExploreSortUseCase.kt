@@ -12,11 +12,12 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import java.util.*
+import javax.inject.Inject
 
 /**
  * @author by milhamj on 15/03/19.
  */
-class ExploreSortUseCase(
+class ExploreSortUseCase @Inject constructor(
         @ApplicationContext private val context: Context,
         private val graphqlUseCase: GraphqlUseCase
 ) : UseCase<List<SortViewModel>>() {

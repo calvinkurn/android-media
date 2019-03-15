@@ -4,17 +4,16 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreFirstPageViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import rx.Subscriber;
 
 /**
  * @author by yfsx on 08/10/18.
  */
-public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
+public class GetExploreFirstSubscriber extends Subscriber<ExploreFirstPageViewModel> {
 
     protected ExploreContract.View mainView;
     protected boolean isPullToRefresh;
@@ -50,39 +49,27 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
     }
 
     @Override
-    public void onNext(GraphqlResponse response) {
+    public void onNext(ExploreFirstPageViewModel firstPageViewModel) {
         mainView.hideLoading();
-        ExploreData query = response.getData(ExploreData.class);
-        if (isSearch && query.getExploreProduct() != null
-                && query.getExploreProduct().getProducts() == null) {
+        if (isSearch && firstPageViewModel.getVisitables().isEmpty()) {
             mainView.getAffiliateAnalytics().onSearchNotFound(exploreParams.getKeyword());
             mainView.onEmptySearchResult();
         } else {
-            //TODO milhamj
-//            ExploreProduct exploreQuery = query.getExploreProduct();
-//            if (isFirstDataWithFilterSort(exploreParams)) {
-//                mainView.onSuccessGetFilteredSortedFirstData(
-//                        exploreQuery.getProducts() != null ?
-//                                mappingProducts(exploreQuery.getProducts(), mainView) :
-//                                new ArrayList<>(),
-//                        exploreQuery.getPagination() != null ?
-//                                exploreQuery.getPagination().getNextCursor() :
-//                                "",
-//                        isSearch,
-//                        isPullToRefresh);
-//            } else {
-//                mainView.onSuccessGetFirstData(
-//                        exploreQuery.getProducts() != null ?
-//                                mappingProducts(exploreQuery.getProducts(), mainView) :
-//                                new ArrayList<>(),
-//                        exploreQuery.getPagination() != null ?
-//                                exploreQuery.getPagination().getNextCursor() :
-//                                "",
-//                        isSearch,
-//                        isPullToRefresh,
-//                        mappingSortFilter(query.getFilter(), query.getSort())
-//                );
-//            }
+            if (isFirstDataWithFilterSort(exploreParams)) {
+                mainView.onSuccessGetFilteredSortedFirstData(
+                        firstPageViewModel.getVisitables(),
+                        firstPageViewModel.getNextCursor(),
+                        isSearch,
+                        isPullToRefresh);
+            } else {
+                mainView.onSuccessGetFirstData(
+                        firstPageViewModel.getVisitables(),
+                        firstPageViewModel.getNextCursor(),
+                        isSearch,
+                        isPullToRefresh,
+                        firstPageViewModel.getSortList()
+                );
+            }
         }
 
         mainView.stopTrace();
