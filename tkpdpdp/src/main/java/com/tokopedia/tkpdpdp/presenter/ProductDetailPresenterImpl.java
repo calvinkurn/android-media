@@ -572,7 +572,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                 tradeInParams.setProductId(productDetailData.getInfo().getProductId());
                                 tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
                                 tradeInParams.setProductName(productDetailData.getInfo().getProductName());
-                                tradeInParams.setPreorder(Integer.parseInt(productDetailData.getPreOrder().getPreorderStatus()) == 1);
+                                String preorderstatus = productDetailData.getPreOrder().getPreorderStatus();
+                                if (preorderstatus != null && !preorderstatus.isEmpty())
+                                    tradeInParams.setPreorder(Integer.parseInt(preorderstatus) == 1);
+                                else
+                                    tradeInParams.setPreorder(false);
                                 tradeInParams.setOnCampaign(productDetailData.getCampaign().getActive());
                                 viewListener.checkTradeIn(tradeInParams);
                             }
@@ -1174,7 +1178,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             tradeInParams.setProductId(data.getInfo().getProductId());
                             tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
                             tradeInParams.setProductName(data.getInfo().getProductName());
-                            tradeInParams.setPreorder(Integer.parseInt(data.getPreOrder().getPreorderStatus()) == 1);
+                            String preorderstatus = data.getPreOrder().getPreorderStatus();
+                            if (preorderstatus != null && !preorderstatus.isEmpty())
+                                tradeInParams.setPreorder(Integer.parseInt(data.getPreOrder().getPreorderStatus()) == 1);
+                            else
+                                tradeInParams.setPreorder(false);
                             tradeInParams.setOnCampaign(data.getCampaign().getActive());
 
                             viewListener.checkTradeIn(tradeInParams);
