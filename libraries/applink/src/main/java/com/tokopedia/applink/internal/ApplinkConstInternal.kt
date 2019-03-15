@@ -13,6 +13,4 @@ object ApplinkConstInternal {
 
     const val INTERNAL_SCHEME = "tokopedia-android-internal"
 
-    const val HOST_MARKETPLACE = "marketplace"
-
 }

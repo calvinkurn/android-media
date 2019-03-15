@@ -23,6 +23,11 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
+/**
+ * For navigating to this class
+ * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
+ * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
+ */
 class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
     private var isFromDeeplink = false
     private var isFromAffiliate = false

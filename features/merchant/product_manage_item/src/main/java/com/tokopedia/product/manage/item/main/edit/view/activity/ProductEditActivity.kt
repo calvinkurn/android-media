@@ -11,6 +11,10 @@ import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFrag
 import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
 import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
 
+/**
+ * For navigating
+ * use ApplinkConstInternalMarketplace.PRODUCT_EDIT
+ */
 class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent> {
     override fun getNewFragment(): Fragment {
         val uri = intent.data

@@ -11,8 +11,8 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
+ * For navigate: use ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
  */
-
 open class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {

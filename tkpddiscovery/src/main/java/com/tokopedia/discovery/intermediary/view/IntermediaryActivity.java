@@ -37,7 +37,7 @@ import java.net.URLDecoder;
 import java.util.List;
 
 /**
- * deeplink = "tokopedia-internal_scheme://marketplace/category/{DEPARTMENT_ID}"
+ * For navigate: use ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL
  */
 public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener, YoutubeViewHolder.YouTubeThumbnailLoadInProcess {
 

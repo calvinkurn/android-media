@@ -1,6 +1,5 @@
 package com.tokopedia.applink.internal
 
-import com.tokopedia.applink.internal.ApplinkConstInternal.HOST_MARKETPLACE
 import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
 
 /**
@@ -8,6 +7,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
  */
 object ApplinkConstInternalMarketplace {
 
+    const val HOST_MARKETPLACE = "marketplace"
     val INTERNAL_MARKETPLACE = "${INTERNAL_SCHEME}://${HOST_MARKETPLACE}"
 
     // ProductDetailActivity
@@ -19,6 +19,7 @@ object ApplinkConstInternalMarketplace {
     // ProductEditActivity
     @JvmField
     val PRODUCT_EDIT = "$INTERNAL_MARKETPLACE/product/{id}/edit"
+
     // ReviewProductActivity, "x_prd_nm" = productName
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
@@ -30,10 +31,12 @@ object ApplinkConstInternalMarketplace {
     // IntermediaryActivity
     @JvmField
     val DISCOVERY_CATEGORY_DETAIL = "$INTERNAL_MARKETPLACE/category/{DEPARTMENT_ID}/"
+
     // ImageReviewGalleryActivity
     @JvmField
     val IMAGE_REVIEW_GALLERY = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery"
 
+    //ShopOpenRoutingActivity
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/buka-toko"
 }
