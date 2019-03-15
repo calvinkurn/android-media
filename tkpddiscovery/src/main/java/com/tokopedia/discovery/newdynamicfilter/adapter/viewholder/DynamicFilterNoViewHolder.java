@@ -10,7 +10,7 @@ import com.tokopedia.core.discovery.model.Filter;
 
 public class DynamicFilterNoViewHolder extends DynamicFilterViewHolder {
     public DynamicFilterNoViewHolder(View itemView) {
-        super(itemView, null, null);
+        super(itemView, null);
     }
 
     @Override
