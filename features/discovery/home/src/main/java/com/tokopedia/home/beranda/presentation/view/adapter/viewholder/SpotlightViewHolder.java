@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatImageView;
@@ -10,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -116,10 +118,10 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
         private TextView tag;
         private TextView description;
         private ImageView background;
-        private View tagContainer;
         private View container;
         private Context context;
         private HomeCategoryListener listener;
+        private Typeface titleTypeface;
 
         public SpotlightItemViewHolder(View itemView, HomeCategoryListener listener) {
             super(itemView);
@@ -128,18 +130,24 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
             tag = itemView.findViewById(R.id.spotlightTag);
             description = itemView.findViewById(R.id.spotlightDesc);
             background = itemView.findViewById(R.id.spotlightBackground);
-            tagContainer = itemView.findViewById(R.id.spotlightTagContainer);
             container = itemView.findViewById(R.id.spotlightContainer);
             this.listener = listener;
+            titleTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
         }
 
         public void bind(SpotlightItemViewModel model) {
+            title.setTypeface(titleTypeface);
             title.setText(model.getTitle());
-            tag.setText(model.getTagName());
-            tag.setTextColor(Color.parseColor(model.getTagNameHexcolor()));
-            ViewCompat.setBackgroundTintList(
-                    tagContainer,
-                    ColorStateList.valueOf(Color.parseColor(model.getTagHexcolor())));
+            if (!TextUtils.isEmpty(model.getTagName())) {
+                tag.setText(model.getTagName().toUpperCase());
+                tag.setTextColor(Color.parseColor(model.getTagNameHexcolor()));
+                ViewCompat.setBackgroundTintList(
+                        tag,
+                        ColorStateList.valueOf(Color.parseColor(model.getTagHexcolor())));
+                tag.setVisibility(View.VISIBLE);
+            } else {
+                tag.setVisibility(View.GONE);
+            }
 
             SpannableStringBuilder longDescription = new SpannableStringBuilder();
             longDescription.append(model.getDescription());
