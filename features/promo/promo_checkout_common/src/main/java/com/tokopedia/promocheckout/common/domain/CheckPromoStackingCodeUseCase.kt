@@ -1,157 +1,126 @@
 package com.tokopedia.promocheckout.common.domain
 
+import android.content.Context
 import android.content.res.Resources
-import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
-import com.tokopedia.promocheckout.common.domain.model.DataResponseCheckPromoCode
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
-import com.tokopedia.promocheckout.common.domain.model.ResponseCheckPromoCode
-import com.tokopedia.promocheckout.common.domain.model.promostacking.OrdersItem
-import com.tokopedia.promocheckout.common.domain.model.promostacking.ProductDetailsItem
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.Data
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.DataResponseFirstStep
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import rx.Subscriber
 import java.util.*
 
-class CheckPromoStackingCodeUseCase(val resources: Resources, val graphqlUseCase: GraphqlUseCase) : UseCase<DataVoucher>() {
+open class CheckPromoStackingCodeUseCase(val context: Context) : GraphqlUseCase() {
 
-    val PARAMS = "params"
-    val PROMO_CODES = "codes"
-    val SKIP_APPLY = "skipApply"
-    val PARAM_PROMO_SUGGESTED = "suggested"
-    val ONE_CLICK_SHIPMENT = "oneClickShipment"
     lateinit var variables: HashMap<String, Any?>
 
     private object PARAM {
         internal val PRODUCT_ID = "product_id"
         internal val QUANTITY = "quantity"
+        internal val SHOP_ID = "shop_id"
+        internal val UNIQUE_ID = "unique_id"
+        internal val PRODUCT_DETAILS = "product_details"
+        internal val CODES = "codes"
+        internal val SKIP_APPLY = "skip_apply"
+        internal val IS_SUGGESTED = "is_suggested"
+        internal val ORDERS = "orders"
+        internal val PARAMS = "params"
     }
 
-    override fun createObservable(requestParams: RequestParams?): Observable<DataVoucher> {
+    override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
+                R.raw.check_promo_code_promostacking), DataResponseFirstStep::class.java, variables)
+        clearRequest()
+        addRequest(graphqlRequest)
+
+        super.execute(requestParams, subscriber)
+    }
+
+    override fun createObservable(requestParams: RequestParams): Observable<GraphqlResponse>? {
+        val variables = HashMap<String, Any>()
+        createRequestParams()
+
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
+                R.raw.check_promo_code_promostacking), DataResponseFirstStep::class.java, variables)
+
+        clearRequest()
+        addRequest(graphqlRequest)
+        return createObservable(RequestParams.EMPTY)?.map {
+            it
+        }
+    }
+
+    /*override fun createObservable(requestParams: RequestParams?): Observable<Data> {
         graphqlUseCase.clearRequest()
         val variables = HashMap<String, Any>()
-        variables[PROMO_CODES] = requestParams?.getString(PROMO_CODES, "[\"\"]") ?: "[\"\"]"
-        variables[SKIP_APPLY] = requestParams?.getBoolean(SKIP_APPLY, false) ?: false
-        variables[PARAM_PROMO_SUGGESTED] = requestParams?.getBoolean(PARAM_PROMO_SUGGESTED, false)?:false
-        variables[ONE_CLICK_SHIPMENT] = requestParams?.getBoolean(ONE_CLICK_SHIPMENT, false)?:false
+        createRequestParams()
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.check_promo_code), DataResponseCheckPromoCode::class.java, variables)
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.check_promo_code_promostacking), DataResponseFirstStep::class.java, variables)
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .flatMap {
-                    val checkPromoCode = it.getData<DataResponseCheckPromoCode>(DataResponseCheckPromoCode::class.java)
-                    if(checkPromoCode?.checkPromoCartV2?.status.equals("error", true)){
-                        throw CheckPromoCodeException(checkPromoCode?.checkPromoCartV2?.errorMessage?.joinToString()?:"")
+                    val checkFirstStep = it.getData<DataResponseFirstStep>(DataResponseFirstStep::class.java)
+                    if(checkFirstStep?.getPromoStackFirst?.status.equals("false", true)){
+                        throw CheckPromoCodeException("Tidak berhasil check promo stacking code!!")
                     }
-                    Observable.just(checkPromoCode?.checkPromoCartV2?.data?.dataVoucher)
+                    Observable.just(checkFirstStep?.getPromoStackFirst?.data)
                 }
-    }
+    }*/
 
-    fun setParams() {
+    fun createRequestParams(): RequestParams? {
+        val requestParams = RequestParams.create()
         variables = HashMap()
 
         val productId = 123
         val quantity = 1
-        val productDetail = JsonObject()
-        productDetail.addProperty(PARAM.PRODUCT_ID, productId)
-        productDetail.addProperty(PARAM.QUANTITY, quantity)
+        val promoCode1 = "VOUCHERTOKO10"
+        val promoCode2 = "JNE100"
+        val shopId = 1
+        val uniqueId = ""
+        val promoMerchantCode = "CASHBACK50"
+        val skipApply = 0
+        val isSuggested = 1
+
+        val objProductDetail = JsonObject()
+        objProductDetail.addProperty(PARAM.PRODUCT_ID, productId)
+        objProductDetail.addProperty(PARAM.QUANTITY, quantity)
+
         val listProductDetails = JsonArray()
-        listProductDetails.add(productDetail)
+        listProductDetails.add(objProductDetail)
 
+        val listPromoCodes = JsonArray()
+        listPromoCodes.add(promoCode1)
+        listPromoCodes.add(promoCode2)
 
-        // belum selesai
-        // variables.put("params", jsonObjectAtcRequest)
-    }
+        val objOrders = JsonObject()
+        objOrders.addProperty(PARAM.SHOP_ID, shopId)
+        objOrders.addProperty(PARAM.UNIQUE_ID, uniqueId)
+        objOrders.add(PARAM.PRODUCT_DETAILS, listProductDetails)
+        objOrders.add(PARAM.CODES, listPromoCodes)
 
-    fun createRequestParams(): RequestParams {
-        val requestParams = RequestParams.create()
+        val listOrders = JsonArray()
+        listOrders.add(objOrders)
 
-        /*{
-            "params": {
-                "promo": {
-                    "codes": [
-                        "CASHBACK50"
-                    ],
-                    "skip_apply": 0,
-                    "is_suggested": 1,
-                    "orders": [
-                         {
-                            "shop_id": 123,
-                            "unique_id": "",
-                            "product_details": [
-                                {
-                                    "product_id": 123,
-                                    "quantity": 1
-                                }
-                            ],
-                            "codes": [
-                                "VOUCHERTOKO10",
-                                "JNE100"
-                                ]
-                          }
-                     ]
-                }
-            }
-        }*/
+        val promoMerchantCodeArray = JsonArray()
+        promoMerchantCodeArray.add(promoMerchantCode)
 
-        /*val object = JsonObject()
-        val arrayCodesOrders = JsonArray()
-        // for (item in listMove) {
-            // val first = item.first as ChatListViewModel
-            // array.add(Integer.valueOf(first.getId()))
-        // }
-        arrayCodesOrders.add("VOUCHERTOKO10")
-        arrayCodesOrders.add("JNE100")
+        val objPromo = JsonObject()
+        objPromo.add(PARAM.CODES, promoMerchantCodeArray)
+        objPromo.addProperty(PARAM.SKIP_APPLY, skipApply)
+        objPromo.addProperty(PARAM.IS_SUGGESTED, isSuggested)
+        objPromo.add(PARAM.ORDERS, listOrders)
 
-        `object`.add("list_msg_id", array)
-        requestParams.putObject("json", `object`)
-
-        requestParams.putObject(PARAMS, )
-
-        requestParams.putObject(PROMO_CODES, promoCodes)
-        requestParams.putBoolean(SKIP_APPLY, skipApply)
-        requestParams.putBoolean(PARAM_PROMO_SUGGESTED, suggestedPromo)
-        requestParams.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment)*/
+        variables[PARAM.PARAMS] = objPromo
+        requestParams.putObject(PARAM.PARAMS, objPromo)
         return requestParams
     }
-
-    /*fun writeToJson(): JsonObject {
-        val `object` = JsonObject()
-        try {
-            if (complaints.size != 0) {
-                `object`.add(PARAM_COMPLAINT, getProblemArray())
-            }
-            if (solution != 0) {
-                val solutionObject = JsonObject()
-                solutionObject.addProperty(PARAM_ID, solution)
-                `object`.add(PARAM_SOLUTION, solutionObject)
-            }
-            if (refundAmount != 0) {
-                `object`.addProperty(PARAM_REFUND, refundAmount)
-            }
-            if (attachmentCount != 0) {
-                val attachmentObject = JsonObject()
-                attachmentObject.addProperty(PARAM_COUNT, attachmentCount)
-                `object`.add(PARAM_ATTACHMENT, attachmentObject)
-            }
-            if (message != null) {
-                if (message.remark != "") {
-                    `object`.add(PARAM_CONVERSATION, message.writeToJson())
-                }
-            }
-            if (resolutionId != null) {
-                `object`.addProperty(PARAM_RESOLUTION_ID, Integer.valueOf(resolutionId))
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return `object`
-    }*/
-
 }

@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
+import com.tokopedia.checkout.domain.usecase.CheckPromoStackingCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
@@ -28,8 +29,10 @@ import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.ICheckPromoStackingCodeMapper;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -58,6 +61,12 @@ public class CartUseCaseModule {
                                                                 IVoucherCouponMapper iVoucherCouponMapper,
                                                                 @PromoCheckoutQualifier CheckPromoCodeUseCase checkPromoCodeUseCase) {
         return new CheckPromoCodeCartListUseCase(cartRepository, iVoucherCouponMapper, checkPromoCodeUseCase);
+    }
+
+    @Provides
+    CheckPromoStackingCodeCartListUseCase checkPromoStackingCodeCartListUseCase(ICheckPromoStackingCodeMapper iCheckPromoStackingCodeMapper,
+                                                                                @PromoCheckoutQualifier CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase) {
+        return new CheckPromoStackingCodeCartListUseCase(iCheckPromoStackingCodeMapper, checkPromoStackingCodeUseCase);
     }
 
     @Provides

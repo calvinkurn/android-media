@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.CheckPromoStackingCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
@@ -84,7 +85,7 @@ public class CartListModule {
         return new TopAdsGqlUseCase(context);
     }
 
-    @Provides
+    /*@Provides
     @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
@@ -103,6 +104,30 @@ public class CartListModule {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                userSessionInterface, topAdsGqlUseCase);
+    }*/
+
+    @Provides
+    @CartListScope
+    ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
+                                                 DeleteCartUseCase deleteCartUseCase,
+                                                 DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                                                 UpdateCartUseCase updateCartUseCase,
+                                                 ResetCartGetCartListUseCase resetCartGetCartListUseCase,
+                                                 CheckPromoStackingCodeCartListUseCase checkPromoStackingCodeCartListUseCase,
+                                                 CompositeSubscription compositeSubscription,
+                                                 CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                                                 AddWishListUseCase addWishListUseCase,
+                                                 RemoveWishListUseCase removeWishListUseCase,
+                                                 UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
+                                                 UserSessionInterface userSessionInterface,
+                                                 TopAdsGqlUseCase topAdsGqlUseCase) {
+        return new CartListPresenter(
+                cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
+                updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeCartListUseCase,
                 compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
                 addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                 userSessionInterface, topAdsGqlUseCase);
