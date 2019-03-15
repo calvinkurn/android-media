@@ -88,6 +88,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     TextView totalRes;
     @BindView(R2.id.tv_count_current)
     TextView currentRes;
+    @BindView(R2.id.tv_priority_label)
+    TextView tvPriorityLabel;
 
 
     private ImageUploadAdapter imageUploadAdapter;

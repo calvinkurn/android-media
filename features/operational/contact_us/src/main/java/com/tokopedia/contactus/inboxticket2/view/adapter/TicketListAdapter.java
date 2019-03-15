@@ -159,6 +159,9 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tvTicketDesc;
         @BindView(R2.id.tv_ticket_date)
         TextView tvTicketDate;
+        @BindView(R2.id.tv_priority_label)
+        TextView tvPrioritylabel;
+
 
         TicketItemHolder(View itemView) {
             super(itemView);
