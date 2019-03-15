@@ -1,5 +1,10 @@
 package com.tokopedia.profile.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedMapper
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.presenter.ProfileEmptyPresenter
@@ -23,4 +28,5 @@ class ProfileModule {
             : ProfileEmptyContract.Presenter {
         return profileEmptyPresenter
     }
+
 }
