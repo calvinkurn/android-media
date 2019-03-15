@@ -54,8 +54,10 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     object Category {
         const val KOL_TOP_PROFILE = "kol top profile"
-        const val USER_PROFILE_PAGE = "user profile socialcommerce"
-        const val MY_PROFILE_PAGE = "my profile socialcommerce"
+        const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
+        const val MY_PROFILE_SOCIALCOMMERCE = "my profile socialcommerce"
+        const val USER_PROFILE_PAGE = "user profile page"
+        const val MY_PROFILE_PAGE = "my profile page"
     }
 
     object Action {
@@ -64,6 +66,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         const val CLICK_FOLLOW = "click follow"
         const val CLICK_UNFOLLOW = "click unfollow"
         const val CLICK_SHARE_THIS_PROFILE = "click share profil ini"
+        const val CLICK_SHARE_THIS_POST = "click share post ini"
         const val CLICK_SEE_DETAIL = "click lihat detail"
         const val CLICK_STATISTIC_PROFILE = "click statistics"
         const val CLICK_TAG = "click-%s-user-all-%s-tag"
@@ -130,7 +133,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     fun eventClickFollowing(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         analyticTracker.sendEventTracking(
                 getDefaultData(
                         screen,
@@ -144,7 +147,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     fun eventClickFollow(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         analyticTracker.sendEventTracking(
                 getDefaultData(
                         screen,
@@ -158,7 +161,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     fun eventClickUnfollow(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         analyticTracker.sendEventTracking(
                 getDefaultData(
                         screen,
@@ -172,7 +175,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     fun eventClickShareProfileIni(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         analyticTracker.sendEventTracking(
                 getDefaultData(
                         screen,
@@ -184,15 +187,15 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         )
     }
 
-    fun eventBagikanProfile(isOwner: Boolean, profileId: String) {
+    fun eventClickSharePostIni(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         analyticTracker.sendEventTracking(
                 getDefaultData(
                         screen,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
                         category,
-                        Action.CLICK_BAGIKAN_PROFILE,
+                        Action.CLICK_SHARE_THIS_POST,
                         profileId
                 )
         )
@@ -203,7 +206,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 getDefaultData(
                         Screen.MY_PROFILE,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.MY_PROFILE_PAGE,
+                        Category.MY_PROFILE_SOCIALCOMMERCE,
                         Action.CLICK_SEE_DETAIL,
                         profileId
                 )
@@ -215,7 +218,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 getDefaultData(
                         Screen.MY_PROFILE,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.MY_PROFILE_PAGE,
+                        Category.MY_PROFILE_SOCIALCOMMERCE,
                         Action.CLICK_STATISTIC_PROFILE,
                         profileId
                 )
@@ -226,7 +229,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
     fun eventClickTag(isOwner: Boolean, hasMultipleContent: Boolean, activityId: String,
                       activityType: String, position: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         val action = String.format(
                 Action.CLICK_TAG,
                 singleOrMultiple(hasMultipleContent),
@@ -249,7 +252,8 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                            redirectUrl: String, element: String, totalContent: Int,
                            postId: Int, position: Int, contentPosition: String, userId: Int, isOwner: Boolean) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
         val promotionList = ArrayList<ProfileEnhancedTracking.Promotion>()
         promotionList.add(ProfileEnhancedTracking.Promotion(
                 postId,
@@ -267,7 +271,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         analyticTracker.sendEnhancedEcommerce(
                 getEventEcommerceClick(
                         screen,
-                        category,
+                        name,
                         ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType + DASH + element,
                         mediaType,
@@ -283,7 +287,8 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                       redirectUrl: String,
                       totalContent: Int, postId: Int, position: Int, userId: Int, isOwner: Boolean) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
         val promotionList = ArrayList<ProfileEnhancedTracking.Promotion>()
         promotionList.add(ProfileEnhancedTracking.Promotion(
                 postId,
@@ -301,7 +306,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         analyticTracker.sendEnhancedEcommerce(
                 getEventEcommerceView(
                         screen,
-                        category,
+                        name,
                         ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType,
                         mediaType,
@@ -313,7 +318,8 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     fun eventClickBagikanProfile(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
         analyticTracker.sendEventTracking(
                 getDefaultData(
                         screen,
@@ -335,7 +341,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 getDefaultData(
                         Screen.PROFILE,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.USER_PROFILE_PAGE,
+                        Category.USER_PROFILE_SOCIALCOMMERCE,
                         action,
                         activityId
                 )
@@ -352,7 +358,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 getDefaultData(
                         Screen.PROFILE,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.USER_PROFILE_PAGE,
+                        Category.USER_PROFILE_SOCIALCOMMERCE,
                         action,
                         activityId
                 )
@@ -369,7 +375,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 getDefaultData(
                         Screen.PROFILE,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.USER_PROFILE_PAGE,
+                        Category.USER_PROFILE_SOCIALCOMMERCE,
                         action,
                         activityId
                 )
@@ -398,7 +404,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         val data = getDefaultData(
                 Screen.MY_PROFILE,
                 Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                Category.MY_PROFILE_PAGE,
+                Category.MY_PROFILE_SOCIALCOMMERCE,
                 action,
                 activityId
         )
@@ -410,7 +416,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 getDefaultData(
                         Screen.MY_PROFILE,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.MY_PROFILE_PAGE,
+                        Category.MY_PROFILE_SOCIALCOMMERCE,
                         Action.CLICK_ADD_RECCOMENDATION,
                         ""
                 )
@@ -422,7 +428,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 getDefaultData(
                         Screen.MY_PROFILE,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.MY_PROFILE_PAGE,
+                        Category.MY_PROFILE_SOCIALCOMMERCE,
                         Action.CLICK_EMPTY_CTA,
                         ""
                 )

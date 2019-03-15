@@ -131,6 +131,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val PARAM_CATEGORY_ID = "{category_id}"
         private const val YOUTUBE_URL = "{youtube_url}";
         private const val TAB_INSPIRASI = "inspirasi"
+        private const val SOURCE_PROFILE_HEADER = "SOURCE_PROFILE_HEADER"
+        private const val SOURCE_PROFILE_FOOTER = "SOURCE_PROFILE_FOOTER"
         private const val CATEGORY_0 = "0"
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
@@ -328,7 +330,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
             successPost -> {
                 when {
-                    isAutomaticOpenShareUser() -> shareLink(element.profileHeaderViewModel.link)
+                    isAutomaticOpenShareUser() -> shareLink(element.profileHeaderViewModel.link, SOURCE_PROFILE_FOOTER)
                     onlyOnePost -> showShowCaseDialog(shareProfile)
                     else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
                 }
@@ -685,15 +687,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     description
             )
         }
-        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
-            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
-            trackCardPostClick(
-                    positionInFeed,
-                    model.trackingPostModel,
-                    ProfileAnalytics.Element.SHARE,
-                    url
-            )
-        }
+//        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+//            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    model.trackingPostModel,
+//                    ProfileAnalytics.Element.SHARE,
+//                    url
+//            )
+//        }
+        profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
@@ -924,7 +927,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 } else {
                     toolbar.visibility = View.GONE
                 }
-
             }
         })
 
@@ -934,7 +936,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (!selfProfile) {
             iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
             iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
-            action = shareLinkClickListener(element.link)
+            action = shareLinkClickListener(element.link, SOURCE_PROFILE_FOOTER)
         } else {
             iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
             iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
@@ -1101,7 +1103,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 true
             }
 
-            shareProfile.setOnClickListener(shareLinkClickListener(headerViewModel.link))
+            shareProfile.setOnClickListener(shareLinkClickListener(headerViewModel.link, SOURCE_PROFILE_FOOTER))
             shareProfile.setOnLongClickListener {
                 showToast(getString(R.string.profile_share_this_profile))
                 true
@@ -1153,14 +1155,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .build()
     }
 
-    private fun shareLinkClickListener(link: String): View.OnClickListener {
+    private fun shareLinkClickListener(link: String, source: String): View.OnClickListener {
         return View.OnClickListener {
-            profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-            shareLink(link)
+            shareLink(link, source)
         }
     }
 
-    private fun shareLink(link: String) {
+    private fun shareLink(link: String, source: String) {
         val shareBody = String.format(getString(R.string.profile_share_text), link)
         val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
         sharingIntent.type = TEXT_PLAIN
@@ -1168,7 +1169,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivity(
                 Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
         )
-        profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+        when (source) {
+            SOURCE_PROFILE_FOOTER ->
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+            SOURCE_PROFILE_HEADER ->
+                profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+        }
     }
 
     private fun getEmptyModel(isShowAffiliateContent: Boolean,
