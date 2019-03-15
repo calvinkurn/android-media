@@ -142,7 +142,7 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
             String errorMessage = data.
                     getGoalKYCRequest().getErrors().get(0).get(Constants.Keys.MESSAGE);
             if(TextUtils.isEmpty(errorMessage)){
-                errorMessage = Constants.ErrorMsg.SOMETHING_WENT_WRONG;
+                errorMessage = getResources().getString(R.string.er_smtng_wnt_wrng);
             }
             errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), FragmentUpgradeToOvo.this::onClick, errorMessage);
             errorSnackbar.show();

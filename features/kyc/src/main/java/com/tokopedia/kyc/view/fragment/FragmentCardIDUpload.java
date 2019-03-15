@@ -198,14 +198,14 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
         setNumberWrapperLableHint();
         if (i == R.id.KTP_WNI && isChecked) {
             docType = "KTP";
-            edtxtName.setHint(Constants.HintMsg.EDTXT_NAMA_GADIAS);
-            edtxtNumber.setHint(Constants.HintMsg.EDTXT_KTP_NO);
+            edtxtName.setHint(getResources().getString(R.string.hnt_edtxt_nama_gadias));
+            edtxtNumber.setHint(getResources().getString(R.string.hnt_edtxt_ktp_no));
             edtxtNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
         else if(i == R.id.passport && isChecked){
             docType = "PASSPORT";
-            edtxtNumber.setHint(Constants.HintMsg.EDTXT_PASSPORT_NO);
-            edtxtName.setHint(Constants.HintMsg.EDTXT_MOTHERS_NAME);
+            edtxtNumber.setHint(getResources().getString(R.string.hnt_edtxt_psprt_no));
+            edtxtName.setHint(getResources().getString(R.string.hnt_edtxt_mothers_name));
             edtxtNumber.setInputType(InputType.TYPE_CLASS_TEXT);
         }
     }
@@ -264,12 +264,12 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     private void setNameWrapperLableHint(){
         if(KTPWNISelection.isChecked()){
             wrapperName.setLabel(Constants.Values.NAMA_GADIS);
-            wrapperName.setHelper(Constants.HintMsg.NAMA_GADIAS);
+            wrapperName.setHelper(getResources().getString(R.string.hnt_nama_gadis));
             wrapperName.setError("");
         }
         else if(passportSelection.isChecked()){
             wrapperName.setLabel(Constants.Values.MOTHERS_MAIDEN_NAME);
-            wrapperName.setHelper(Constants.HintMsg.MOTHERS_NAME);
+            wrapperName.setHelper(getResources().getString(R.string.hnt_mothers_name));
             wrapperName.setError("");
         }
     }
@@ -277,11 +277,11 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     private void setNumberWrapperLableHint(){
         if(KTPWNISelection.isChecked()){
             wrapperNumberKtp.setLabel(Constants.Values.NOMOR_KTP);
-            wrapperNumberKtp.setHelper(Constants.HintMsg.KTP);
+            wrapperNumberKtp.setHelper(getResources().getString(R.string.hnt_ktp));
             wrapperNumberKtp.setError("");
         }
         else if(passportSelection.isChecked()){
-            wrapperNumberKtp.setHelper(Constants.HintMsg.PASSPORT);
+            wrapperNumberKtp.setHelper(getResources().getString(R.string.hnt_passport));
             wrapperNumberKtp.setLabel(Constants.Values.PASSPORT_NUMBER);
             wrapperNumberKtp.setError("");
         }
@@ -291,30 +291,30 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
         wrapperNumberKtp.setHelper("");
         if(TextUtils.isEmpty(edtxtNumber.getText())){
             if(KTPWNISelection.isChecked()){
-                wrapperNumberKtp.setError(Constants.ErrorMsg.KTP_NUMBER);
+                wrapperNumberKtp.setError(getResources().getString(R.string.er_ktp_no));
 
             }
             else if(passportSelection.isChecked()){
-                wrapperNumberKtp.setError(Constants.ErrorMsg.PASSPORT_NUMBER);
+                wrapperNumberKtp.setError(getResources().getString(R.string.er_passport_no));
             }
             return true;
         }
         else {
             if(KTPWNISelection.isChecked()){
                 if(!edtxtNumber.getText().toString().matches(Constants.RegEx.ktp)){
-                    wrapperNumberKtp.setError(Constants.ErrorMsg.KTP_NUMBER);
+                    wrapperNumberKtp.setError(getResources().getString(R.string.er_ktp_no));
                     return true;
                 }else if(edtxtNumber.getText().length() != Constants.Values.KTP_NUMBER_LENGTH){
-                    wrapperNumberKtp.setError(Constants.ErrorMsg.KTP_NUMBER_LENGTH);
+                    wrapperNumberKtp.setError(getResources().getString(R.string.er_ktp_no_len));
                     return true;
                 }
             }else if(passportSelection.isChecked()){
                 if(!edtxtNumber.getText().toString().matches(Constants.RegEx.passport)){
-                    wrapperNumberKtp.setError(Constants.ErrorMsg.PASSPORT_NUMBER);
+                    wrapperNumberKtp.setError(getResources().getString(R.string.er_passport_no));
                     return true;
                 }
                 if(edtxtNumber.getText().length() > Constants.Values.PASSPORT_NO_MAX_LENGTH){
-                    wrapperNumberKtp.setError(Constants.ErrorMsg.PASSPORT_NUMBER_LENGTH);
+                    wrapperNumberKtp.setError(getResources().getString(R.string.er_passport_no_len));
                     return true;
                 }
             }
@@ -328,19 +328,19 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
         if(TextUtils.isEmpty(edtxtName.getText()) ||
                 !(edtxtName.getText().toString().matches(Constants.RegEx.name))){
             if(KTPWNISelection.isChecked()){
-                wrapperName.setError(Constants.ErrorMsg.MOTHERS_NAME);
+                wrapperName.setError(getResources().getString(R.string.er_mothers_name));
             }
             else if(passportSelection.isChecked()) {
-                wrapperName.setError(Constants.ErrorMsg.FORIEGNER_MOTHERS_NAME);
+                wrapperName.setError(getResources().getString(R.string.er_frgnrs_mothers_name));
             }
             return true;
         }
         else if(edtxtName.getText().length() > Constants.Values.MAIDEN_NAME_LENGTH){
             if(KTPWNISelection.isChecked()){
-                wrapperName.setError(Constants.ErrorMsg.MOTHERS_NAME_LENGTH);
+                wrapperName.setError(getResources().getString(R.string.er_mothers_name_len));
             }
             else if(passportSelection.isChecked()) {
-                wrapperName.setError(Constants.ErrorMsg.FORIEGNER_MOTHERS_NAME_LENGTH);
+                wrapperName.setError(getResources().getString(R.string.er_frgnrs_mothers_name_len));
             }
             return true;
         }

@@ -59,4 +59,25 @@
     <string name="mul">MULAI</string>
     <string name="prs_hny">Proses hanya membutuhkan waktu beberapa menit</string>
     <string name="mhn_spkn">Mohon siapkan KTP Anda bagi WNI dan Passport Anda bagi WNA/Foreigner</string>
+
+    <!--Error Messages-->
+    <string name="er_ktp_no">Nomor KTP tidak valid</string>
+    <string name="er_ktp_no_len">Nomor KTP harus 16 digit</string>
+    <string name="er_mothers_name">Nama gadis ibu kandung tidak valid</string>
+    <string name="er_mothers_name_len">Nama gadis ibu kandung maksimal 30 karakter</string>
+    <string name="er_passport_no">Passport number is not valid</string>
+    <string name="er_passport_no_len">Passport number must be 11 characters or less</string>
+    <string name="er_frgnrs_mothers_name">Mother\'s maiden name is not valid</string>
+    <string name="er_frgnrs_mothers_name_len">Maximum mother\'s maiden name is 30 characters</string>
+    <string name="er_smtng_wnt_wrng">Ada yang salah, harap coba lagi</string>
+
+    <!--Hint messages-->
+    <string name="hnt_ktp">Masukkan 16 digit angka sesuai pada KTP</string>
+    <string name="hnt_nama_gadis">Maksimal 30 karakter</string>
+    <string name="hnt_passport">Input your passport number</string>
+    <string name="hnt_mothers_name">Maximum 30 characters</string>
+    <string name="hnt_edtxt_ktp_no">Contoh: 320110108960XXXX</string>
+    <string name="hnt_edtxt_psprt_no">Example: 320110108960XXXX</string>
+    <string name="hnt_edtxt_nama_gadias">Contoh: Luna Maya</string>
+    <string name="hnt_edtxt_mothers_name">Example: Luna Maya</string>
 </resources>

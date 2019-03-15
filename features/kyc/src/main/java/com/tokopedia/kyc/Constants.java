@@ -65,29 +65,6 @@ public interface Constants {
         String passport = "^[a-zA-Z0-9\\s]+";
     }
 
-    interface ErrorMsg{
-        String KTP_NUMBER = "Nomor KTP tidak valid";
-        String KTP_NUMBER_LENGTH = "Nomor KTP harus 16 digit";
-        String MOTHERS_NAME = "Nama gadis ibu kandung tidak valid";
-        String MOTHERS_NAME_LENGTH = "Nama gadis ibu kandung maksimal 30 karakter";
-        String PASSPORT_NUMBER = "Passport number is not valid";
-        String PASSPORT_NUMBER_LENGTH = "Passport number must be 11 characters or less";
-        String FORIEGNER_MOTHERS_NAME = "Mother's maiden name is not valid";
-        String FORIEGNER_MOTHERS_NAME_LENGTH = "Maximum mother's maiden name is 30 characters";
-        String SOMETHING_WENT_WRONG = "Ada yang salah, harap coba lagi";
-    }
-
-    interface HintMsg{
-        String KTP ="Masukkan 16 digit angka sesuai pada KTP";
-        String NAMA_GADIAS ="Maksimal 30 karakter";
-        String PASSPORT = "Input your passport number";
-        String MOTHERS_NAME = "Maximum 30 characters";
-        String EDTXT_KTP_NO = "Contoh: 320110108960XXXX";
-        String EDTXT_PASSPORT_NO = "Example: 320110108960XXXX";
-        String EDTXT_NAMA_GADIAS = "Contoh: Luna Maya";
-        String EDTXT_MOTHERS_NAME= "Example: Luna Maya";
-    }
-
     interface Status{
         String INPROGRESS = "inprogress";
         String SUCCESSFUL = "successful";
