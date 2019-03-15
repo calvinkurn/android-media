@@ -104,7 +104,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener{
 
-    private val TAG = ProfileFragment::class.simpleName
     private var userId: Int = 0
     private var afterPost: Boolean = false
     private var afterEdit: Boolean = false
@@ -265,9 +264,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun loadData(page: Int) {
-        footerOwn.visibility = View.GONE
-        app_bar_layout.visibility = View.GONE
         if (isLoadingInitialData) {
+            footerOwn.visibility = View.GONE
+            app_bar_layout.visibility = View.GONE
             presenter.getProfileFirstPage(userId, false)
         } else {
             presenter.getProfilePost(userId)
@@ -876,7 +875,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                        }
                    }
                } catch (e: IndexOutOfBoundsException) {
-                   Log.d(TAG, e.toString())
                }
            }
 
