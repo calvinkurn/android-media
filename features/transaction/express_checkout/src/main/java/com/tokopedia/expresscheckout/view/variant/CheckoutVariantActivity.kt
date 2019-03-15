@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter.Companion.EXTRA_ATC_REQUEST
+import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_ATTRIBUTION
+import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_LIST_NAME
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 
@@ -22,7 +24,13 @@ open class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragme
     }
 
     override fun getNewFragment(): Fragment {
-        return CheckoutVariantFragment.createInstance(intent.extras[EXTRA_ATC_REQUEST] as AtcRequestParam)
+        val extra = intent.extras
+        if (extra!= null) {
+            return CheckoutVariantFragment.createInstance(extra[EXTRA_ATC_REQUEST] as AtcRequestParam,
+                extra.getString(TRACKER_ATTRIBUTION),extra.getString(TRACKER_LIST_NAME))
+        } else {
+            return Fragment()
+        }
     }
 
     override fun finishWithResult(messages: String) {

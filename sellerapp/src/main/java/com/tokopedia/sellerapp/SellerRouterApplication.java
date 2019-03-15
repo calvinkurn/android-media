@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -222,6 +223,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.WithdrawRouter;
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -1560,6 +1562,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getHelpUsIntent(Context context) {
         return new Intent(context, ContactUsActivity.class);
+    }
+
+    @Override
+    public Intent getWithdrawIntent(Context context, boolean isSeller) {
+        return WithdrawActivity.getCallingIntent(context, isSeller);
     }
 
     @Override

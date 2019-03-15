@@ -503,6 +503,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 val intent = RouteManager.getIntent(it, expressCheckoutUriString)
                 intent?.run {
                     putExtra("EXTRA_ATC_REQUEST", atcRequestParam)
+                    putExtra("tracker_attribution", trackerAttribution)
+                    putExtra("tracker_list_name", trackerListName)
                     startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
                     it.overridePendingTransition(R.anim.pull_up, 0)
                 }

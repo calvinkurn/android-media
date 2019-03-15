@@ -23,6 +23,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
         const val EXTRA_ACTION = "action"
+        private const val TRACKER_ATTRIBUTION = "tracker_attribution"
+        private const val TRACKER_LIST_NAME = "tracker_list_name"
 
         /**
          * shopID: mandatory
@@ -34,7 +36,9 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
                       notes: String? = "", quantity: Int? = 0,
                       selectedVariantId: String? = null,
                       @ProductAction action: Int = ATC_AND_BUY,
-                      placeholderProductImage: String? = ""): Intent {
+                      placeholderProductImage: String? = "",
+                      trackerAttribution: String? = "",
+                      trackerListName: String? = ""): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(EXTRA_SHOP_ID, shopId)
                 putExtra(EXTRA_PRODUCT_ID, productId)
@@ -43,6 +47,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
                 putExtra(EXTRA_ACTION, action)
                 putExtra(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
+                putExtra(TRACKER_ATTRIBUTION, trackerAttribution)
+                putExtra(TRACKER_LIST_NAME, trackerListName)
             }
         }
     }
@@ -57,12 +63,14 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
         val bundle = intent.extras
         bundle?.run {
             return NormalCheckoutFragment.createInstance(getString(EXTRA_SHOP_ID),
-                    getString(EXTRA_PRODUCT_ID),
-                    getString(EXTRA_NOTES),
-                    getInt(EXTRA_QUANTITY),
-                    getString(EXTRA_SELECTED_VARIANT_ID),
-                    getInt(EXTRA_ACTION),
-                    getString(EXTRA_PRODUCT_IMAGE))
+                getString(EXTRA_PRODUCT_ID),
+                getString(EXTRA_NOTES),
+                getInt(EXTRA_QUANTITY),
+                getString(EXTRA_SELECTED_VARIANT_ID),
+                getInt(EXTRA_ACTION),
+                getString(EXTRA_PRODUCT_IMAGE),
+                getString(TRACKER_ATTRIBUTION),
+                getString(TRACKER_LIST_NAME))
         }
         return Fragment()
     }
