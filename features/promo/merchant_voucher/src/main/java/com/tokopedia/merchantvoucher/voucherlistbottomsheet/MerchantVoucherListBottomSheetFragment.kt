@@ -14,6 +14,7 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.R
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
@@ -91,6 +92,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     override fun onMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
         context?.let {
             merchantVoucherViewModel.run {
+                this.status = MerchantVoucherStatusTypeDef.TYPE_RUN_OUT
                 val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
                         this, shopId)
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
