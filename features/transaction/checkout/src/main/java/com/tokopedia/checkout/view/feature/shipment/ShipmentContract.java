@@ -23,6 +23,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
@@ -116,7 +117,7 @@ public interface ShipmentContract {
 
         void showBottomSheetError(String htmlMessage);
 
-        void navigateToCodConfirmationPage(Data data);
+        void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest);
 
         void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
 

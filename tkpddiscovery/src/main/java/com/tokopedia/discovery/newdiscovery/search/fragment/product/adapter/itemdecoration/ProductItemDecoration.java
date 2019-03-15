@@ -50,11 +50,6 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
                 outRect.right = 0;
             }
             outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
-        } else if(isAdsItem(parent, absolutePos)){
-            outRect.left = spacing;
-            outRect.right = spacing;
-            outRect.top = !isProductItem(parent, absolutePos - 1) ? spacing : 0;
-            outRect.bottom = !isProductItem(parent, absolutePos + 1) ? spacing : 0;
         }
     }
 
@@ -108,7 +103,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
             int absolutePos = parent.getChildAdapterPosition(child);
-            if (isProductItem(parent, absolutePos) || isAdsItem(parent, absolutePos) || child == null) {
+            if (isProductItem(parent, absolutePos) || child == null) {
                 canvas.drawRect(child.getLeft() - spacing, child.getTop() - spacing, child.getRight() + spacing, child.getTop(), paint);
                 canvas.drawRect(child.getLeft() - spacing, child.getBottom(), child.getRight() + spacing, child.getBottom() + spacing, paint);
                 canvas.drawRect(child.getLeft() - spacing, child.getTop(), child.getLeft(), child.getBottom(), paint);

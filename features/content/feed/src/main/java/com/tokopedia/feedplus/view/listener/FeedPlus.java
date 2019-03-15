@@ -132,8 +132,6 @@ public interface FeedPlus {
 
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
-        void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
-
         void onRetryClicked();
 
         void onShowRetryGetFeed();
@@ -147,6 +145,8 @@ public interface FeedPlus {
         void onShowEmpty();
 
         void clearData();
+
+        void setEndlessScroll();
 
         void unsetEndlessScroll();
 
@@ -184,7 +184,7 @@ public interface FeedPlus {
 
         int getAdapterListSize();
 
-        void onWhitelistClicked(String url);
+        void onWhitelistClicked();
 
         void onSuccessToggleFavoriteShop(int rowNumber, int adapterPosition);
 

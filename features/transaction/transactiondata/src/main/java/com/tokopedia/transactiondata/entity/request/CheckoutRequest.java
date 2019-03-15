@@ -1,5 +1,8 @@
 package com.tokopedia.transactiondata.entity.request;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +13,7 @@ import java.util.List;
  * @author anggaprasetiyo on 05/03/18.
  */
 
-public class CheckoutRequest {
+public class CheckoutRequest implements Parcelable {
 
     @SerializedName("promo_code")
     @Expose
@@ -30,6 +33,40 @@ public class CheckoutRequest {
 
     public CheckoutRequest() {
     }
+
+    protected CheckoutRequest(Parcel in) {
+        promoCode = in.readString();
+        isDonation = in.readInt();
+        egoldData = in.readParcelable(EgoldData.class.getClassLoader());
+        data = in.createTypedArrayList(DataCheckoutRequest.CREATOR);
+        cornerData = in.readParcelable(TokopediaCornerData.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(promoCode);
+        dest.writeInt(isDonation);
+        dest.writeParcelable(egoldData, flags);
+        dest.writeTypedList(data);
+        dest.writeParcelable(cornerData, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CheckoutRequest> CREATOR = new Creator<CheckoutRequest>() {
+        @Override
+        public CheckoutRequest createFromParcel(Parcel in) {
+            return new CheckoutRequest(in);
+        }
+
+        @Override
+        public CheckoutRequest[] newArray(int size) {
+            return new CheckoutRequest[size];
+        }
+    };
 
     public boolean isHavingPurchaseProtectionEnabled() {
         for (DataCheckoutRequest datum : data) {

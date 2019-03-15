@@ -44,7 +44,7 @@ class SaveChatBlastSellerUseCase @Inject constructor(
 
     private fun createGqlSubmitBlastSeller(imageUrl: String?, requestParams: RequestParams?): Observable<BlastMessageResponse>{
         val mutation = GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_add_broadcast)
-        val graphqlRequest = GraphqlRequest(mutation, BlastMessageResponse.Result::class.java, createSubmitVariable(imageUrl, requestParams))
+        val graphqlRequest = GraphqlRequest(mutation, BlastMessageResponse.Result::class.java, createSubmitVariable(imageUrl, requestParams), false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).flatMap { graphqlResponse ->
