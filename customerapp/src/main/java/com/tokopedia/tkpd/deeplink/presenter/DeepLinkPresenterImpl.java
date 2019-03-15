@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -564,10 +564,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         getProductUseCase.execute(response -> {
             viewListener.finishLoading();
             if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0) {
-                String productApplink = UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL,
+                String productApplink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                         String.valueOf(response.getData().getBasic().getId()));
                 try {
-                    context.startActivity(RouteManager.getIntentInternal(context, productApplink));
+                    context.startActivity(RouteManager.getIntent(context, productApplink));
                 } catch (Exception e) {
                     prepareOpenWebView(uriData);
                 }
@@ -634,8 +634,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     uriData
             );
         } else {
-            RouteManager.routeInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,
+            RouteManager.route(context,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
                             urlParser.getDepIDfromURI(context)));
         }
         context.finish();

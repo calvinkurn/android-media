@@ -13,7 +13,7 @@ import android.view.View
 import android.view.WindowManager
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.core.`var`.TkpdCache.Key.STATE_ORIENTATION_CHANGED
@@ -193,8 +193,8 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
 
         override fun onClick(v: View) {
             if (!GlobalConfig.isSellerApp()) {
-                RouteManager.routeInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, categoryId))
+                RouteManager.route(context,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, categoryId))
             }
         }
     }

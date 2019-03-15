@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -81,7 +81,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     protected void onCreate(Bundle savedInstanceState) {
         Uri uri = getIntent().getData();
         if (uri != null) {
-            List<String> paths = UriUtil.destructureUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, uri);
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, uri);
             if (!paths.isEmpty()) {
                 departmentId = paths.get(0);
             }

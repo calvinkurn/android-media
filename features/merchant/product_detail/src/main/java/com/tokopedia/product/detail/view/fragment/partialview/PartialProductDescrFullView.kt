@@ -11,7 +11,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.gone
@@ -127,8 +127,8 @@ class PartialProductDescrFullView private constructor(private val view: View,
 
     private fun openCategory(category: Category.Detail) {
         if (GlobalConfig.isCustomerApp()) {
-            RouteManager.routeInternal(view.context,
-                UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,
+            RouteManager.route(view.context,
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
                 category.id))
         }
     }

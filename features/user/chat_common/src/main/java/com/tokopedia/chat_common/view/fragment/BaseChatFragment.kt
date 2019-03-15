@@ -17,7 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -193,8 +193,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
         if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
             activity?.run {
-                RouteManager.routeInternal(this,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL,
+                RouteManager.route(this,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                         element.productId.toString()))
             }
 

@@ -22,7 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
@@ -574,8 +574,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private fun getProductIntent(productId: String): Intent? {
         return if (context != null) {
-            RouteManager.getIntentInternal(context!!,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId))
+            RouteManager.getIntent(context!!,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId))
         } else {
             null
         }

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
@@ -131,8 +131,8 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
 
         private Intent getProductIntent(String productId){
             if (itemView.getContext() != null) {
-                return RouteManager.getIntentInternal(itemView.getContext(),
-                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+                return RouteManager.getIntent(itemView.getContext(),
+                        UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
             } else {
                 return null;
             }

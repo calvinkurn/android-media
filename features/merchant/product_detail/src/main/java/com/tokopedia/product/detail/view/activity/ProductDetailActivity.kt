@@ -10,7 +10,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -63,20 +66,21 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         @DeepLink(ApplinkConst.PRODUCT_INFO)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI))
-            return Intent(context, ProductDetailActivity::class.java)
-                .setData(uri)
-                .putExtras(extras)
+            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
+            return RouteManager.getIntent(context,
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                uri.lastPathSegment)) ?: Intent()
         }
 
         @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
         @JvmStatic
         fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI))
-            extras.putBoolean(IS_FROM_EXPLORE_AFFILIATE, true)
-            return Intent(context, ProductDetailActivity::class.java)
-                .setData(uri)
-                .putExtras(extras)
+            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
+            val intent = RouteManager.getIntent(context,
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    uri.lastPathSegment)) ?: Intent()
+            intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
+            return intent
         }
     }
 

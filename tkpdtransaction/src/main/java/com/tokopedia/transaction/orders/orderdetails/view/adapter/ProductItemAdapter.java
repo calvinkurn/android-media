@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
@@ -124,8 +124,8 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String applink = UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
-                    RouteManager.routeInternal(context, applink);
+                    String applink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
+                    RouteManager.route(context, applink);
                 }
             });
 
