@@ -186,6 +186,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
         selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
         selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
+        filterController = savedInstanceState.getParcelable(FILTER_CONTROLLER);
     }
 
     private void loadLastFilterStateFromPreference() {

@@ -395,6 +395,10 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     }
 
     protected void openFilterPage() {
+        if(getSelectedFilter().isEmpty()) {
+            setSelectedFilter(new HashMap<>());
+        }
+
         Intent intent = RevampedDynamicFilterActivity.createInstance(
                 getActivity(), getScreenName(), getSelectedFilter(), getFlagFilterHelper()
         );
