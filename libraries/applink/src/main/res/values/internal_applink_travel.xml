@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="host_marketplace" translatable="false">travel</string>
+    <string name="host_travel" translatable="false">travel</string>
 
     <!--
         If the link is Ended with {id}, must end with "/"
