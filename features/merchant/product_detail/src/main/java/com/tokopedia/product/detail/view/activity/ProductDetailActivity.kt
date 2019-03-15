@@ -153,6 +153,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             val intent = Intent()
             intent.setClassName(packageName, "com.tokopedia.tkpdpdp.ProductInfoActivity")
             if (intent.resolveActivity(packageManager) != null) {
+                intent.putExtra(PARAM_PRODUCT_ID, productId)
+                intent.putExtra(PARAM_SHOP_DOMAIN, shopDomain)
+                intent.putExtra(PARAM_PRODUCT_KEY, productKey)
+                intent.putExtra(PARAM_TRACKER_ATTRIBUTION, trackerAttribution)
+                intent.putExtra(PARAM_TRACKER_LIST_NAME, trackerListName)
+                intent.putExtra(PARAM_IS_FROM_DEEPLINK, isFromDeeplink)
+                intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, isFromAffiliate)
                 startActivity(intent)
                 finish()
             }
