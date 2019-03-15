@@ -26,6 +26,7 @@ public class FingerprintInterceptor implements Interceptor {
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
     private static final String BEARER = "Bearer ";
     private static final String KEY_ADSID = "X-GA-ID";
+    public static final String TYPING_VELOCITY = "typing_velocity";
 
     private NetworkRouter networkRouter;
     private UserSessionInterface userSession;
@@ -61,6 +62,17 @@ public class FingerprintInterceptor implements Interceptor {
 
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
         FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
+        if(characterPerMinuteInterface != null && characterPerMinuteInterface.isEnable()){
+            if(characterPerMinuteInterface.getCPM()!=null) {
+                newRequest.addHeader(TYPING_VELOCITY, characterPerMinuteInterface.getCPM());
+
+                if(fingerprintModel!=null){
+                    fingerprintModel.setTypingVelocity(characterPerMinuteInterface.getCPM());
+                }
+            }
+        }
+
+
         String json = fingerprintModel.getFingerprintHash();
         newRequest.addHeader(KEY_SESSION_ID, fingerprintModel.getRegistrarionId());
         newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
@@ -69,10 +81,7 @@ public class FingerprintInterceptor implements Interceptor {
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, fingerprintModel.getAdsId());
 
-        if(characterPerMinuteInterface != null && characterPerMinuteInterface.isEnable()){
-            if(characterPerMinuteInterface.getCPM()!=null)
-                newRequest.addHeader("Fingerprint-Velocity", characterPerMinuteInterface.getCPM());
-        }
+
 
         return newRequest;
     }

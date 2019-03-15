@@ -564,17 +564,17 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void saveCPM(@NonNull String cpm) {
-        cacheManager.save("CPM", cpm, 60);
+        cacheManager.save(CharacterPerMinuteInterface.KEY, cpm, 60);
     }
 
     @Override
     public String getCPM() {
-        return cacheManager.get("CPM");
+        return cacheManager.get(CharacterPerMinuteInterface.KEY);
     }
 
     @Override
     public boolean isEnable() {
-        return true; // getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
+        return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
     }
 
 
