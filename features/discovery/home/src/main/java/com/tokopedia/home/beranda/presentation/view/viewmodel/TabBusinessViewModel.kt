@@ -74,7 +74,8 @@ class TabBusinessViewModel @Inject constructor(
 
 class TabBusinessSubscriber(private val homeWidget: MutableLiveData<Result<HomeWidget>>) : Subscriber<GraphqlResponse>() {
     override fun onNext(data: GraphqlResponse) {
-        if (data.getError(HomeWidget.Data::class.java).isEmpty()) {
+        if (data.getError(HomeWidget.Data::class.java) == null ||
+                data.getError(HomeWidget.Data::class.java).isEmpty()) {
             if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
                 homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
             } else {
