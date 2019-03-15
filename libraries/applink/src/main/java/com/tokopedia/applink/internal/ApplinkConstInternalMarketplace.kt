@@ -7,7 +7,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
  */
 object ApplinkConstInternalMarketplace {
 
-    const val HOST_MARKETPLACE = "marketplace"
+    @JvmField
+    val HOST_MARKETPLACE = "marketplace"
+
+    @JvmField
     val INTERNAL_MARKETPLACE = "${INTERNAL_SCHEME}://${HOST_MARKETPLACE}"
 
     // ProductDetailActivity

@@ -10,19 +10,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ProductDetailRouteManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * For navigating to this class
@@ -37,7 +33,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var productId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
-    lateinit var remoteConfig: RemoteConfig
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -150,12 +145,16 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         } else {
             isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
+
         super.onCreate(savedInstanceState)
 
-        remoteConfig = FirebaseRemoteConfigImpl(this)
-        if (remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL)) {
-            if (application is ProductDetailRouter) {
-                (application as ProductDetailRouter).goToOldProductDetailPage(this, productId, shopDomain, productKey, trackerAttribution, trackerListName)
+        //Last resort to route to old pdp, if some link is missing in route manager.
+        if (ProductDetailRouteManager.isGoToOldProductDetail(this) ){
+            val intent = Intent()
+            intent.setClassName(packageName, "com.tokopedia.tkpdpdp.ProductInfoActivity")
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+                finish()
             }
         }
     }
