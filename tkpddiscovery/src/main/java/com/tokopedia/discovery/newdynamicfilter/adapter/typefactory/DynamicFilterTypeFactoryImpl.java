@@ -9,7 +9,6 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilter
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterItemToggleViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterNoViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterViewHolder;
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 /**
@@ -19,11 +18,9 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 
     private final DynamicFilterView filterView;
-    private final FilterController filterController;
 
-    public DynamicFilterTypeFactoryImpl(final DynamicFilterView filterView, final FilterController filterController) {
+    public DynamicFilterTypeFactoryImpl(final DynamicFilterView filterView) {
         this.filterView = filterView;
-        this.filterController = filterController;
     }
 
     @Override
@@ -43,11 +40,11 @@ public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
     @Override
     public DynamicFilterViewHolder createViewHolder(View view, int viewType) {
         if (viewType == R.layout.dynamic_filter_item_price) {
-            return new DynamicFilterItemPriceViewHolder(view, filterView, filterController);
+            return new DynamicFilterItemPriceViewHolder(view, filterView);
         } else if (viewType == R.layout.dynamic_filter_item_toggle) {
-            return new DynamicFilterItemToggleViewHolder(view, filterView, filterController);
+            return new DynamicFilterItemToggleViewHolder(view, filterView);
         } else if (viewType == R.layout.dynamic_filter_expandable_item) {
-            return new DynamicFilterExpandableItemViewHolder(view, filterView, filterController);
+            return new DynamicFilterExpandableItemViewHolder(view, filterView);
         } else {
             return new DynamicFilterNoViewHolder(view);
         }

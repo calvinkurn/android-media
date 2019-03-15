@@ -48,7 +48,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -701,11 +700,6 @@ public class ProductListFragment extends SearchSectionFragment
     public void setEmptyProduct() {
         adapter.showEmptyState(getActivity(), productViewModel.getQuery(), isFilterActive(), getFlagFilterHelper(), getString(R.string.product_tab_title).toLowerCase());
         SearchTracking.eventSearchNoResult(getActivity(), productViewModel.getQuery(), getScreenName(), getSelectedFilter());
-    }
-
-    @Override
-    protected void updateDepartmentId(String deptId) {
-        getSearchParameter().set(SearchApiConst.SC, deptId);
     }
 
     @Override

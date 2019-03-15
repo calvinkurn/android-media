@@ -17,23 +17,18 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.share.ShareBottomSheet;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
@@ -401,7 +396,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     protected void openFilterPage() {
         Intent intent = RevampedDynamicFilterActivity.createInstance(
-                getActivity(), getScreenName(), getFlagFilterHelper()
+                getActivity(), getScreenName(), getSelectedFilter(), getFlagFilterHelper()
         );
         startActivityForResult(intent, getFilterRequestCode());
         getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);

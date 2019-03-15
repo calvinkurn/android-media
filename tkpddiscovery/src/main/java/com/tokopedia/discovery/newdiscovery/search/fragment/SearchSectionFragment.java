@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -298,18 +297,27 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 clearDataFilterSort();
                 reloadData();
             } else if (requestCode == getFilterRequestCode()) {
-                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
-                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistFilter(getActivity(), getSelectedFilter());
-                } else {
-                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
-                }
+                Map<String, String> filterParameter = getFilterParameterFromIntent(data);
+
+                SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), filterParameter);
+
+                applyFilterToSearchParameter(filterParameter);
                 clearDataFilterSort();
-                updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
             }
         }
+    }
+
+    private Map<String, String> getFilterParameterFromIntent(Intent data) {
+        Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_FILTER_PARAMETER);
+
+        Map<String, String> filterParameter = new HashMap<>(filterParameterMapIntent.size());
+
+        for(Map.Entry<?, ?> entry: filterParameterMapIntent.entrySet()) {
+            filterParameter.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+
+        return filterParameter;
     }
 
     private void setFilterData(List<Filter> filters) {
@@ -406,7 +414,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     protected void openFilterPage() {
         Intent intent = RevampedDynamicFilterActivity.createInstance(
-                getActivity(), getScreenName(), getFlagFilterHelper()
+                getActivity(), getScreenName(), searchParameter.getSearchParameterHashMap(), null
         );
         startActivityForResult(intent, getFilterRequestCode());
         getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
@@ -522,10 +530,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     }
 
-    protected void updateDepartmentId(String deptId) {
-
-    }
-
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         setFilterData(savedInstanceState.<Filter>getParcelableArrayList(EXTRA_FILTER));
@@ -609,8 +613,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
     }
 
-    public void applyFilterToSearchParameter(Map<String, String> searchParameterWithFilter) {
+    public void applyFilterToSearchParameter(Map<String, String> filterParameter) {
         this.searchParameter.getSearchParameterHashMap().clear();
-        this.searchParameter.getSearchParameterHashMap().putAll(searchParameterWithFilter);
+        this.searchParameter.getSearchParameterHashMap().putAll(filterParameter);
     }
 }

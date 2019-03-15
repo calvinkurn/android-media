@@ -9,18 +9,14 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilter
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterItemToggleViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterNoViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterViewHolder;
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 
 public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 
     private final BottomSheetDynamicFilterView filterView;
-    private final FilterController filterController;
 
-    public BottomSheetDynamicFilterTypeFactoryImpl(final BottomSheetDynamicFilterView filterView,
-                                                   final FilterController filterController) {
+    public BottomSheetDynamicFilterTypeFactoryImpl(final BottomSheetDynamicFilterView filterView) {
         this.filterView = filterView;
-        this.filterController = filterController;
     }
 
     @Override
@@ -39,11 +35,11 @@ public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTyp
     @Override
     public DynamicFilterViewHolder createViewHolder(View view, int viewType) {
         if (viewType == R.layout.dynamic_filter_item_price) {
-            return new DynamicFilterItemPriceViewHolder(view, filterView, filterController);
+            return new DynamicFilterItemPriceViewHolder(view, filterView);
         } else if (viewType == R.layout.dynamic_filter_item_toggle) {
-            return new DynamicFilterItemToggleViewHolder(view, filterView, filterController);
+            return new DynamicFilterItemToggleViewHolder(view, filterView);
         } else if (viewType == R.layout.dynamic_filter_expandable_item) {
-            return new BottomSheetExpandableItemViewHolder(view, filterView, filterController);
+            return new BottomSheetExpandableItemViewHolder(view, filterView);
         } else {
             return new DynamicFilterNoViewHolder(view);
         }

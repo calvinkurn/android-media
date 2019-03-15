@@ -1,17 +1,16 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 12/03/18.
  */
 
 public interface BottomSheetListener {
-    void loadFilterItems(ArrayList<Filter> filters, HashMap<String, String> searchParameter);
+    void loadFilterItems(ArrayList<Filter> filters, Map<String, String> searchParameter);
 
     void setFilterResultCount(String formattedResultCount);
 

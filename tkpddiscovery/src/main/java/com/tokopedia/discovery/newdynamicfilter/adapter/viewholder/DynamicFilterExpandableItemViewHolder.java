@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.ExpandableItemSelectedListAdapter;
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 /**
@@ -18,23 +17,21 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHolder {
 
-    LinearLayout titleContainer;
-    TextView title;
-    RecyclerView recyclerView;
-    ExpandableItemSelectedListAdapter adapter;
-    DynamicFilterView filterView;
+    private LinearLayout titleContainer;
+    private TextView title;
+    private RecyclerView recyclerView;
 
-    public DynamicFilterExpandableItemViewHolder(View itemView, DynamicFilterView filterView, final FilterController filterController) {
-        super(itemView, filterView, filterController);
+    public DynamicFilterExpandableItemViewHolder(View itemView, final DynamicFilterView filterView) {
+        super(itemView, filterView);
 
-        titleContainer = (LinearLayout) itemView.findViewById(R.id.title_container);
-        title = (TextView) itemView.findViewById(R.id.expandable_item_title);
-        recyclerView = (RecyclerView) itemView.findViewById(R.id.expandable_item_selected_list);
+        titleContainer = itemView.findViewById(R.id.title_container);
+        title = itemView.findViewById(R.id.expandable_item_title);
+        recyclerView = itemView.findViewById(R.id.expandable_item_selected_list);
     }
 
     @Override
     public void bind(final Filter filter) {
-        adapter = new ExpandableItemSelectedListAdapter(filterView);
+        ExpandableItemSelectedListAdapter adapter = new ExpandableItemSelectedListAdapter(filterView);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);

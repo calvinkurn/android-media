@@ -13,7 +13,7 @@ import java.util.*
 
 class FilterController() : Parcelable {
 
-    private val searchParameter = mutableMapOf<String, String>()
+    private val filterParameter = mutableMapOf<String, String>()
     private val flagFilterHelper = mutableMapOf<String, Boolean>()
     private val filterList = mutableListOf<Filter>()
     private val activeFilterKeyList = mutableSetOf<String>()
@@ -25,7 +25,7 @@ class FilterController() : Parcelable {
     constructor(parcel: Parcel) : this() {
         resetStatesBeforeLoad()
 
-        parcel.readMap(searchParameter, String::class.java.classLoader)
+        parcel.readMap(filterParameter, String::class.java.classLoader)
         parcel.readMap(flagFilterHelper, Boolean::class.java.classLoader)
         parcel.readList(filterList, Filter::class.java.classLoader)
         parcel.readMap(shownInMainState, Boolean::class.java.classLoader)
@@ -35,18 +35,18 @@ class FilterController() : Parcelable {
         loadActiveFilter()
     }
 
-    fun initFilterController(searchParameter: Map<String, String> = mapOf(),
+    fun initFilterController(filterParameter: Map<String, String> = mapOf(),
                              filterList: List<Filter> = listOf()) {
         resetStatesBeforeLoad()
 
-        loadSearchParameter(searchParameter)
+        loadFilterParameter(filterParameter)
         loadFilterList(filterList)
         loadFlagFilterHelper()
         loadActiveFilter()
     }
 
     private fun resetStatesBeforeLoad() {
-        searchParameter.clear()
+        filterParameter.clear()
         flagFilterHelper.clear()
         filterList.clear()
         activeFilterKeyList.clear()
@@ -55,13 +55,13 @@ class FilterController() : Parcelable {
         pressedSliderMaxValueState = -1
     }
 
-    private fun loadSearchParameter(searchParameter: Map<String, String>) {
-        this.searchParameter.putAll(searchParameter)
+    private fun loadFilterParameter(filterParameter: Map<String, String>) {
+        this.filterParameter.putAll(filterParameter)
         removeDuplicateValues()
     }
 
     private fun removeDuplicateValues() {
-        for(entrySet in searchParameter.entries) {
+        for(entrySet in filterParameter.entries) {
             val valueSet = entrySet.value.split(Option.VALUE_SEPARATOR).toSet()
             entrySet.setValue(valueSet.joinToString(separator = Option.VALUE_SEPARATOR))
         }
@@ -162,11 +162,11 @@ class FilterController() : Parcelable {
     private fun isOptionSelected(option: Option) : Boolean {
         val key = option.key
 
-        if(searchParameter.containsKey(key)) {
+        if(filterParameter.containsKey(key)) {
             val optionValues = option.value.split(Option.VALUE_SEPARATOR)
-            val searchParameterValues = getFilterValue(key).split(Option.VALUE_SEPARATOR)
+            val filterParameterValues = getFilterValue(key).split(Option.VALUE_SEPARATOR)
 
-            return searchParameterValues.containsAll(optionValues)
+            return filterParameterValues.containsAll(optionValues)
         }
 
         return false
@@ -206,7 +206,7 @@ class FilterController() : Parcelable {
 
     private fun loadActiveFilter() {
         loopOptionsInFilterList { option ->
-            if(searchParameter.containsKey(option.key)) {
+            if(filterParameter.containsKey(option.key)) {
                 activeFilterKeyList.add(option.key)
             }
         }
@@ -228,7 +228,7 @@ class FilterController() : Parcelable {
     }
 
     fun setFilterValueFromDetailActivity(optionList: List<Option>) {
-        val tempHashMapSearchParameter = mutableMapOf<String, String>()
+        val tempHashMapFilterParameter = mutableMapOf<String, String>()
 
         for(option in optionList) {
             val isFilterApplied = isFilterApplied(option.inputState)
@@ -236,11 +236,11 @@ class FilterController() : Parcelable {
             setOrRemoveFlagFilterHelper(option.uniqueId, isFilterApplied)
 
             if(isFilterApplied) {
-                insertToTempHashMap(tempHashMapSearchParameter, option)
+                insertToTempHashMap(tempHashMapFilterParameter, option)
             }
         }
 
-        searchParameter.putAll(tempHashMapSearchParameter)
+        filterParameter.putAll(tempHashMapFilterParameter)
     }
 
     private fun insertToTempHashMap(tempHashMap: MutableMap<String, String>, option: Option) {
@@ -315,14 +315,14 @@ class FilterController() : Parcelable {
     }
 
     fun resetAllFilters() {
-        removeActiveFiltersFromSearchParameter()
+        removeActiveFiltersFromFilterParameter()
 
         flagFilterHelper.clear()
 
         resetSliderStates()
     }
 
-    private fun removeActiveFiltersFromSearchParameter() {
+    private fun removeActiveFiltersFromFilterParameter() {
         val activeFiltersForReset = mutableListOf<String>()
         activeFiltersForReset.addAll(activeFilterKeyList)
 
@@ -333,11 +333,11 @@ class FilterController() : Parcelable {
 
     private fun setOrRemoveFilterValue(isFilterApplied: Boolean, key: String, value: String) {
         if(isFilterApplied) {
-            searchParameter[key] = value
+            filterParameter[key] = value
             activeFilterKeyList.add(key)
         }
         else {
-            searchParameter.remove(key)
+            filterParameter.remove(key)
             activeFilterKeyList.remove(key)
         }
     }
@@ -348,17 +348,31 @@ class FilterController() : Parcelable {
     }
 
     fun getSelectedOptions(filter: Filter): List<Option> {
-        val selectedOptions = ArrayList<Option>()
-        val popularOptionList = getPopularOptionList(filter)
+        val selectedOptionList = ArrayList<Option>()
+        val emptyPopularList = listOf<Option>()
 
+        putSelectedOptionsToList(selectedOptionList, filter, emptyPopularList)
+
+        return selectedOptionList
+    }
+
+    fun getSelectedAndPopularOptions(filter: Filter): List<Option> {
+        val selectedOptionList = ArrayList<Option>()
+        val popularOptionList: List<Option> = getPopularOptionList(filter)
+
+        putSelectedOptionsToList(selectedOptionList, filter, popularOptionList)
+
+        return selectedOptionList
+    }
+
+    private fun putSelectedOptionsToList(selectedOptionList: MutableList<Option>, filter: Filter, popularOptionList: List<Option>) {
         if (isAddCategoryFilter(filter, popularOptionList)) {
-            selectedOptions.add(getSelectedCategoryAsOption(filter))
+            selectedOptionList.add(getSelectedCategoryAsOption(filter))
         } else {
-            selectedOptions.addAll(getCustomSelectedOptionList(filter))
+            selectedOptionList.addAll(getCustomSelectedOptionList(filter))
         }
 
-        selectedOptions.addAll(popularOptionList)
-        return selectedOptions
+        selectedOptionList.addAll(popularOptionList)
     }
 
     private fun getPopularOptionList(filter: Filter): List<Option> {
@@ -427,15 +441,15 @@ class FilterController() : Parcelable {
     }
 
     fun getFilterValue(key: String): String {
-        return searchParameter[key] ?: ""
+        return filterParameter[key] ?: ""
     }
 
     fun getFlagFilterHelperValue(key: String) : Boolean {
         return flagFilterHelper[key] ?: false
     }
 
-    fun getSearchParameter() : Map<String, String> {
-        return this.searchParameter
+    fun getFilterParameter() : Map<String, String> {
+        return this.filterParameter
     }
 
     fun getFilterList() : List<Filter> {
@@ -443,7 +457,7 @@ class FilterController() : Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeMap(searchParameter)
+        parcel.writeMap(filterParameter)
         parcel.writeMap(flagFilterHelper)
         parcel.writeList(filterList)
         parcel.writeMap(shownInMainState)

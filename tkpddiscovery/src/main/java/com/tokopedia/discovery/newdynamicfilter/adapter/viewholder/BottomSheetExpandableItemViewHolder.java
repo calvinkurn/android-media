@@ -10,7 +10,6 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.BottomSheetExpandableItemSelectedListAdapter;
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 
 public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder {
@@ -19,10 +18,9 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
     private TextView title;
     private View seeAllButton;
     private RecyclerView recyclerView;
-    private BottomSheetExpandableItemSelectedListAdapter adapter;
 
-    public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView, final FilterController filterController) {
-        super(itemView, filterView, filterController);
+    public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView) {
+        super(itemView, filterView);
 
         titleContainer = itemView.findViewById(R.id.title_container);
         seeAllButton = itemView.findViewById(R.id.see_all_button);
@@ -32,7 +30,8 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
 
     @Override
     public void bind(final Filter filter) {
-        adapter = new BottomSheetExpandableItemSelectedListAdapter(filterView, filterController, filter.getTitle());
+        BottomSheetExpandableItemSelectedListAdapter adapter =
+                new BottomSheetExpandableItemSelectedListAdapter(filterView, filter.getTitle());
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
@@ -47,7 +46,7 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
             seeAllButton.setVisibility(View.GONE);
         }
 
-        adapter.setSelectedOptionsList(filterController.getSelectedOptions(filter));
+        adapter.setSelectedOptionsList(filterView.getSelectedOptions(filter));
     }
 
     private boolean hasCustomOptions(Filter filter) {

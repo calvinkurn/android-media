@@ -25,6 +25,15 @@ public interface DynamicFilterView {
     void removeSelectedOption(Option option);
 
     void onExpandableItemClicked(Filter filter);
+
+    boolean isSliderValueHasChanged(int minValue, int maxValue);
+    void saveSliderValueStates(int minValue, int maxValue);
+
+    void setFilterValue(Option option, String value);
+    void setFilterValueExpandableItem(Option option, boolean value);
+
+    String getFilterValue(String key);
+    boolean getFlagFilterHelperValue(String key);
+
     void applyFilter();
-    void trackSearch(String filterName, String filterValue, boolean isActive);
 }

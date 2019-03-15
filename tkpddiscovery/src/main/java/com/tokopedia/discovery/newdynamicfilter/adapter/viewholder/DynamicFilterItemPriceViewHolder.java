@@ -11,7 +11,6 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 /**
@@ -25,8 +24,8 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private View wholesaleContainer;
     private PriceRangeInputView priceRangeInputView;
 
-    public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView filterView, final FilterController filterController) {
-        super(itemView, filterView, filterController);
+    public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView filterView) {
+        super(itemView, filterView);
 
         wholesaleTitle = itemView.findViewById(R.id.wholesale_title);
         wholesaleToggle = itemView.findViewById(R.id.wholesale_toggle);
@@ -47,7 +46,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         int lastMaxValue = 0;
 
         for (Option option : filter.getOptions()) {
-            String optionValue = filterController.getFilterValue(option.getKey());
+            String optionValue = filterView.getFilterValue(option.getKey());
 
             if (Option.KEY_PRICE_MIN_MAX_RANGE.equals(option.getKey())) {
                 minBound = TextUtils.isEmpty(option.getValMin()) ? 0 : Integer.parseInt(option.getValMin());
@@ -95,14 +94,14 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         return new RangeInputView.GestureListener() {
             @Override
             public void onButtonRelease(int minValue, int maxValue) {
-                if(filterController.isSliderValueHasChanged(minValue, maxValue)) {
+                if(filterView.isSliderValueHasChanged(minValue, maxValue)) {
                     filterView.applyFilter();
                 }
             }
 
             @Override
             public void onButtonPressed(int minValue, int maxValue) {
-                filterController.saveSliderValueStates(minValue, maxValue);
+                filterView.saveSliderValueStates(minValue, maxValue);
             }
 
             @Override
@@ -124,14 +123,12 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
     private void applyMinValueFilter(String minValueString) {
         Option priceMinOption = getPriceMinOption();
-        filterController.setFilterValue(priceMinOption, minValueString);
-        filterView.trackSearch(priceMinOption.getName(), minValueString, !TextUtils.isEmpty(minValueString));
+        filterView.setFilterValue(priceMinOption, minValueString);
     }
 
     private void applyMaxValueFilter(String maxValueString) {
         Option priceMaxOption = getPriceMaxOption();
-        filterController.setFilterValue(getPriceMaxOption(), maxValueString);
-        filterView.trackSearch(priceMaxOption.getName(), maxValueString, !TextUtils.isEmpty(maxValueString));
+        filterView.setFilterValue(priceMaxOption, maxValueString);
     }
 
     private Option getPriceMinOption() {
@@ -155,9 +152,9 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         wholesaleTitle.setOnClickListener(v -> wholesaleToggle.setChecked(!wholesaleToggle.isChecked()));
 
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
-                (buttonView, isChecked) -> setAndApplyFilter(option, String.valueOf(isChecked));
+                (buttonView, isChecked) -> setFilterValueAndApply(option, String.valueOf(isChecked));
 
-        String filterValueString = filterController.getFilterValue(option.getKey());
+        String filterValueString = filterView.getFilterValue(option.getKey());
         boolean filterValueBoolean = Boolean.parseBoolean(filterValueString);
 
         bindSwitch(wholesaleToggle, filterValueBoolean, onCheckedChangeListener);

@@ -29,7 +29,6 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
@@ -43,7 +42,6 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -51,7 +49,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -593,8 +590,8 @@ public class SearchActivity extends DiscoveryActivity
     private void initBottomSheetListener() {
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
-            public void onApplyFilter(Map<String, String> searchParameterWithFilter) {
-                applyFilter(searchParameterWithFilter);
+            public void onApplyFilter(Map<String, String> filterParameter) {
+                applyFilter(filterParameter);
             }
 
             @Override
@@ -663,11 +660,11 @@ public class SearchActivity extends DiscoveryActivity
         super.onDestroy();
     }
 
-    private void applyFilter(Map<String, String> searchParameterWithFilter) {
+    private void applyFilter(Map<String, String> filterParameter) {
         SearchSectionFragment selectedFragment
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
 
-        selectedFragment.applyFilterToSearchParameter(searchParameterWithFilter);
+        selectedFragment.applyFilterToSearchParameter(filterParameter);
         selectedFragment.clearDataFilterSort();
         selectedFragment.reloadData();
     }
@@ -686,7 +683,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void loadFilterItems(ArrayList<Filter> filters, HashMap<String, String> searchParameter) {
+    public void loadFilterItems(ArrayList<Filter> filters, Map<String, String> searchParameter) {
         bottomSheetFilterView.loadFilterItems(filters, searchParameter);
     }
 
