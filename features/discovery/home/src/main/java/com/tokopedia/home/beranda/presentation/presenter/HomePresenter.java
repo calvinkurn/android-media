@@ -326,6 +326,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     public HeaderViewModel getHeaderViewModel() {
+        headerViewModel.setUserLogin(userSession.isLoggedIn());
         return headerViewModel;
     }
 
@@ -377,8 +378,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onNext(List<Visitable> visitables) {
             if (homePresenter != null && homePresenter.isViewAttached()) {
-                if (homePresenter.isLogin() && homePresenter.getHeaderViewModel() != null) {
-                    visitables.add(0, homePresenter.getHeaderViewModel());
+                if (homePresenter.getHeaderViewModel() != null && visitables.size() > 1) {
+                    visitables.add(1, homePresenter.getHeaderViewModel());
                 }
                 homePresenter.getView().setItems(visitables);
                 if (visitables.size() > 0) {

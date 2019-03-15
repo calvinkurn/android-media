@@ -22,8 +22,6 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class MainToolbar extends Toolbar {
 
-    protected final static String TAG_INBOX = "inbox";
-
     protected ImageView btnNotification;
     protected ImageView btnWishlist;
     protected ImageView btnInbox;
@@ -99,11 +97,13 @@ public class MainToolbar extends Toolbar {
             editTextSearch.setTextSize(18);
         }
 
-        btnQrCode.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingSqanQr();
-            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoQrScannerPage(false));
-        });
+        if (btnQrCode != null) {
+            btnQrCode.setOnClickListener(v -> {
+                searchBarAnalytics.eventTrackingSqanQr();
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoQrScannerPage(false));
+            });
+        }
 
         btnWishlist.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
