@@ -91,7 +91,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                             if (fragment is FlightSearchFragment) {
                                 (fragment as FlightSearchFragment).flightSearchPresenter
                                         .attachView(fragment as FlightSearchFragment)
-                                (fragment as FlightSearchFragment).loadInitialData()
+                                (fragment as FlightSearchFragment).searchFlightData()
                             }
                         }
                         FlightFlowConstant.EXPIRED_JOURNEY -> {

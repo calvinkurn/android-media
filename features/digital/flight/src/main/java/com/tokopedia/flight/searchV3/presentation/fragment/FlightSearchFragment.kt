@@ -193,8 +193,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     override fun loadInitialData() {
-        flightSearchPresenter.initialize(true)
-        searchFlightData()
+
     }
 
     override fun loadData(page: Int) {
