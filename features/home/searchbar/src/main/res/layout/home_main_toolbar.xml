@@ -5,7 +5,6 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    tools:layout_height="@dimen/dp_100"
     app:contentInsetStart="0dp"
     app:contentInsetEnd="0dp"
     app:contentInsetStartWithNavigation="0dp">
@@ -17,21 +16,7 @@
         android:paddingTop="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_4"
-        tools:layout_height="@dimen/dp_100">
-
-        <ImageButton
-            android:id="@+id/btn_qrcode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
-            android:background="@null"
-            android:src="@drawable/ic_qr_bar"
-            android:visibility="gone" />
+        android:paddingBottom="@dimen/dp_8">
 
         <View
             android:id="@+id/layout_search"
@@ -62,7 +47,7 @@
         <EditText
             android:id="@+id/et_search"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:background="@null"
             android:enabled="true"
             android:focusable="false"
@@ -83,6 +68,7 @@
             android:layout_height="@dimen/icon_toolbar"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/btn_inbox"
+            android:layout_toStartOf="@+id/btn_inbox"
             android:scaleType="center"
             android:src="@drawable/ic_searchbar_wishlist_white"
             app:layout_constraintBottom_toBottomOf="@+id/layout_search"
@@ -91,7 +77,7 @@
 
         <ImageView
             android:id="@+id/btn_inbox"
-            android:layout_width="40dp"
+            android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"

@@ -39,6 +39,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:clickable="true"
         android:focusableInTouchMode="false"
         android:gravity="center_horizontal|center_vertical"

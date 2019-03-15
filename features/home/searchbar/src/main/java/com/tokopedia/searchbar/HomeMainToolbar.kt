@@ -1,17 +1,12 @@
 package com.tokopedia.searchbar
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.component.badge.BadgeView
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 

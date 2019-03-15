@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,12 +21,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -48,7 +45,6 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
-import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -65,7 +61,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
@@ -870,18 +865,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void setItems(List<Visitable> items) {
         this.serverTimeOffset = 0;
 
-        if (items.get(0) instanceof HeaderViewModel) {
-            HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
-            updateHeaderItem(dataHeader);
-        }
-        Visitable dummyTicker = new TickerViewModel();
-        ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
-        Ticker.Tickers tis = new Ticker.Tickers();
-        tis.setMessage("Ayo\u003cb\u003e mari kita berbelanja di \u003c/b\u003e\u003ci\u003eBukalapak\u0026nbsp;\u003ca href=\"https://www.tokopedia.com/\" title=\"#KeTokopedia\"\u003e#KeTokopedia\u003c/a\u003e\u003c/i\u003e");
-        tis.setColor("#0a8f08");
-        tickers.add(tis);
-        ((TickerViewModel) dummyTicker).setTickers(tickers);
-        items.add(1, dummyTicker);
+//        Visitable dummyTicker = new TickerViewModel();
+//        ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
+//        Ticker.Tickers tis = new Ticker.Tickers();
+//        tis.setMessage("Ayo\u003cb\u003e mari kita berbelanja di \u003c/b\u003e\u003ci\u003eBukalapak\u0026nbsp;\u003ca href=\"https://www.tokopedia.com/\" title=\"#KeTokopedia\"\u003e#KeTokopedia\u003c/a\u003e\u003c/i\u003e");
+//        tis.setColor("#0a8f08");
+//        tickers.add(tis);
+//        ((TickerViewModel) dummyTicker).setTickers(tickers);
+//        items.add(1, dummyTicker);
         adapter.setItems(items);
     }
 
@@ -894,9 +885,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
-            adapter.getItems().set(0, headerViewModel);
-            adapter.notifyItemChanged(0);
+        if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
+            adapter.getItems().set(1, headerViewModel);
+            adapter.notifyItemChanged(1);
         }
     }
 
