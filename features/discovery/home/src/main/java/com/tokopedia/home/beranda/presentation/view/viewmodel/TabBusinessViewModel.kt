@@ -33,13 +33,13 @@ class TabBusinessViewModel @Inject constructor(
         job.children.map { it.cancel() }
 
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default){
+            val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(
                         rawQuery,
                         HomeWidget.Response::class.java
                 )
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<HomeWidget.Response>()
+            }.getData<HomeWidget.Response>(HomeWidget.Response::class.java)
 
             if (data.errors.isEmpty()) {
                 homeWidget.value = Success(data.data.homeWidget)
