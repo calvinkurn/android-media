@@ -17,6 +17,8 @@ import java.util.Map;
 
 import rx.Subscriber;
 
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSFER_ID;
+
 public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQrSummaryContract.View> implements PaymentQrSummaryContract.Presenter {
 
     private Context mContext;
@@ -26,7 +28,6 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
     }
 
     private static final String QR_ID = "qr_id";
-    private static final String TRANSFER_ID = "transfer_id";
     private static final String AMOUNT = "amount";
     private static final String FEE = "fee";
     private static final String USE_POINT = "use_point";
@@ -56,7 +57,7 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
                     if (walletData.getWallet().getErrors() == null
                             || walletData.getWallet().getErrors().size() == 0)
                         getView().setWalletBalance(walletData.getWallet());
-                    else
+                    else if (walletData.getWallet().getErrors() != null)
                         getView().showError(walletData.getWallet().getErrors().get(0).getMessage());
                 }
             }
