@@ -17,9 +17,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_4"
-        android:text="Powered by"
-        android:textColor="#6b767e"
-        android:textSize="12sp" />
+        android:text="@string/powered_by"
+        android:textColor="@color/pin_normal"
+        android:textSize="@dimen/sp_12" />
 
     <ImageView
         android:layout_width="wrap_content"

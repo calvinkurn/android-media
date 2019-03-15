@@ -105,7 +105,7 @@
                             android:inputType="number"
                             android:minWidth="@dimen/dp_30"
                             android:textColor="@color/cash_point_color"
-                            android:textSize="24sp"
+                            android:textSize="@dimen/sp_24"
                             android:paddingRight="@dimen/dp_16"
                             android:paddingEnd="@dimen/dp_16"/>
                     </LinearLayout>
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"
                     android:text="@string/payment_method"
-                    android:textColor="#6b767e"
+                    android:textColor="@color/pin_normal"
                     android:textSize="@dimen/sp_12" />
 
                 <TextView
@@ -148,7 +148,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:lineSpacingExtra="8sp"
                     android:text="@string/ovo_cash_text"
-                    android:textColor="#2d263b"
+                    android:textColor="@color/amount_color_black"
                     android:textSize="@dimen/sp_16" />
 
                 <View

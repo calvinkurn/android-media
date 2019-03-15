@@ -28,6 +28,7 @@ import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSFER_ID;
 public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrOvoPayTxDetailContract.View {
 
     private static final String FORMAT_DD_MMM_YYYY_HH_MM = "dd MMM yyyy, HH.mm";
+    private static final String FORMAT_YYYY_MM_DD_HH_MM = "yyyy-MM-dd HH:mm";
     QrOvoPayTxDetailPresenter presenter;
     private TextView date;
     private TextView amount;
@@ -91,7 +92,7 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
             ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText(getString(R.string.copied_to_clipboard), transactionCode.getText().toString());
             clipboard.setPrimaryClip(clip);
-            Snackbar.make(getView(), getString(R.string.copied_to_clipboard),Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), getString(R.string.copied_to_clipboard), Snackbar.LENGTH_SHORT).show();
         });
         presenter.requestForThankYouPage(getActivity(), transferId);
         return view;
@@ -99,8 +100,8 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
 
     @Override
     public void setSuccessThankYouData(GoalQRThanks data) {
-        String formattedDate = DateFormatUtils.formatDate("yyyy-MM-dd HH:mm"
-                ,FORMAT_DD_MMM_YYYY_HH_MM, data.getTransactionDate()
+        String formattedDate = DateFormatUtils.formatDate(FORMAT_YYYY_MM_DD_HH_MM
+                , FORMAT_DD_MMM_YYYY_HH_MM, data.getTransactionDate()
                         .substring(0, data.getTransactionDate().lastIndexOf(":")).trim());
         date.setText(formattedDate);
         amount.setText(Utils.convertToCurrencyStringWithoutRp(data.getAmount().longValue()));
@@ -113,5 +114,15 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
     @Override
     public void setFailThankYouData(GoalQRThanks data) {
         listener.goToFailFragment();
+    }
+
+    @Override
+    public void setError(String message) {
+        Snackbar.make(getView(), getErrorMessage(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return getString(R.string.error_message);
     }
 }

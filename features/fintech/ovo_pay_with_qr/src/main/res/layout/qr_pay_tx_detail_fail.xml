@@ -31,11 +31,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:gravity="center_horizontal"
-            android:text="Saat ini transaksi Anda tidak dapat
-diproses, silakan mencoba kembali"
-            android:textColor="#2d263b"
-            android:textSize="14sp" />
+            android:text="@string/default_error_message"
+            android:textColor="@color/amount_color_black"
+            android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <LinearLayout
@@ -59,8 +60,8 @@ diproses, silakan mencoba kembali"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Butuh Bantuan?"
-            android:textColor="#06b3ba"
-            android:textSize="14sp" />
+            android:textColor="@color/aqua_color"
+            android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <TextView
@@ -72,9 +73,9 @@ diproses, silakan mencoba kembali"
         android:background="@drawable/rounded_hollow_btn_bg"
         android:gravity="center_horizontal"
         android:padding="@dimen/dp_16"
-        android:text="COBA LAGI"
-        android:textColor="#06b3ba"
-        android:textSize="14sp"
+        android:text="@string/try_again"
+        android:textColor="@color/aqua_color"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toTopOf="@+id/back_to_main" />
 
     <TextView
@@ -83,9 +84,9 @@ diproses, silakan mencoba kembali"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_24"
         android:gravity="center_horizontal"
-        android:text="KEMBALI KE TOKOPEDIA"
-        android:textColor="#06b3ba"
-        android:textSize="14sp"
+        android:text="@string/back_to_main"
+        android:textColor="@color/aqua_color"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toTopOf="@+id/bottom_section_parent" />
 
     <LinearLayout

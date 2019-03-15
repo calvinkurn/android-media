@@ -16,5 +16,7 @@ public class PaymentQrSummaryContract {
         void goToUrl(ImeiConfirmResponse response);
 
         void showError(String message);
+
+        String getErrorMessage();
     }
 }

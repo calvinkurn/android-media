@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.model.GoalQRThanks;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailContract;
@@ -70,7 +72,8 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
         backToMain = view.findViewById(R.id.back_to_main);
         tryAgain = view.findViewById(R.id.try_again);
         callSection.setOnClickListener(view1 -> {
-            startActivity(OvoWebViewActivity.createInstance(getActivity(), HELP_URL));
+            ((OvoPayWithQrRouter)getActivity().getApplication())
+                    .openTokopointWebview(getActivity(), HELP_URL,getString(R.string.contact_us));
         });
         backToMain.setOnClickListener(view1 -> {
             listener.setResult(Activity.RESULT_OK);
@@ -90,5 +93,16 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     @Override
     public void setFailThankYouData(GoalQRThanks data) {
         failDescription.setText(data.getMessage());
+    }
+
+    @Override
+    public void setError(String message) {
+        Snackbar.make(getView(), getErrorMessage(), Snackbar.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return getString(R.string.error_message);
     }
 }

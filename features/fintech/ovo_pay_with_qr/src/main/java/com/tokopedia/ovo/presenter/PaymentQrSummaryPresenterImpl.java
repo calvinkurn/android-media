@@ -102,6 +102,8 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
                     } else {
                         getView().goToUrl(response.getImeiConfirmResponse());
                     }
+                } else {
+                    getView().showError(getView().getErrorMessage());
                 }
             }
         });

@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.ovo.model.ImeiConfirmResponse;
@@ -192,7 +193,9 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             setProgressButton();
             if (response.getStatus().equalsIgnoreCase(PENDING_STATUS)) {
                 try {
-                    startActivity(OvoWebViewActivity.createInstance(getActivity(), URLDecoder.decode(response.getPinUrl(), "UTF-8")));
+                    ((OvoPayWithQrRouter)getActivity().getApplication())
+                            .openTokopointWebview(getActivity(),URLDecoder.decode(
+                                    response.getPinUrl(),"UTF-8"), getString(R.string.pin_page_title));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -210,8 +213,13 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     @Override
     public void showError(String message) {
         setProgressButton();
-        Snackbar.make(getView(), getString(R.string.error_message), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getView(), getErrorMessage(), Snackbar.LENGTH_SHORT).show();
         enableInputField(false);
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return getString(R.string.error_message);
     }
 
     public void setProgressButton() {

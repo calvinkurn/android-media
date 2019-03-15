@@ -7,4 +7,5 @@
     <color name="amount_color_black">#2d263b</color>
     <color name="aqua_color">#06b3ba</color>
     <color name="cash_point_color">#444444</color>
+    <color name="grey_solid_color">#eef0f3</color>
 </resources>

@@ -13,11 +13,6 @@
             android:label="@string/payment_summary"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.OvoWebViewActivity"
-            android:label="@string/payment_summary"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

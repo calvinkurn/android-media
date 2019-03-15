@@ -37,7 +37,7 @@ public class QrOvoPayTxDetailPresenter extends BaseDaggerPresenter<QrOvoPayTxDet
 
             @Override
             public void onError(Throwable e) {
-
+                getView().setError(e.getMessage());
             }
 
             @Override
@@ -50,7 +50,11 @@ public class QrOvoPayTxDetailPresenter extends BaseDaggerPresenter<QrOvoPayTxDet
                         else {
                             getView().setFailThankYouData(goalQRThanks.getGoalQRThanks());
                         }
+                    } else {
+                        getView().setError(getView().getErrorMessage());
                     }
+                } else {
+                    getView().setError(getView().getErrorMessage());
                 }
             }
         });

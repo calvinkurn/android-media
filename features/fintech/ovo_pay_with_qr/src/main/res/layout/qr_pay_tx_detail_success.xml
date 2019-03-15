@@ -117,7 +117,7 @@
                                 android:layout_marginBottom="@dimen/dp_4"
                                 android:textColor="@color/light_primary"
                                 android:textSize="@dimen/sp_18"
-                                tools:text="Tokopedia" />
+                                tools:text="@string/default_shop_name" />
 
                             <TextView
                                 android:id="@+id/merchant_description"
@@ -126,7 +126,7 @@
                                 android:layout_marginTop="@dimen/dp_2"
                                 android:textColor="@color/light_primary"
                                 android:textSize="@dimen/sp_14"
-                                tools:text="Marketplace" />
+                                tools:text="@string/default_shop_description" />
                         </LinearLayout>
                     </LinearLayout>
 
