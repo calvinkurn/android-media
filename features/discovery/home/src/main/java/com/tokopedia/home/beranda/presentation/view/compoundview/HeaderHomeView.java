@@ -44,7 +44,8 @@ import com.tokopedia.tokocash.tracker.WalletAnalytics;
 public class HeaderHomeView extends BaseCustomView {
 
     private static final String CDN_URL = "https://ecs7.tokopedia.net/img/android/";
-    private static final String BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/drawable-xxxhdpi/bg_product_fintech_tokopoint_normal.png";
+    private static final String BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/" +
+            "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png";
 
     private static final String TITLE_HEADER_WEBSITE = "TokoPoints";
     private static final String RP_NOL = "Rp0";
@@ -119,7 +120,7 @@ public class HeaderHomeView extends BaseCustomView {
             View container = view.findViewById(R.id.container_nonlogin);
             ImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
 
-            ImageHandler.loadImageFitCenter(getContext(), imgNonLogin, BG_CONTAINER_URL);
+            ImageHandler.loadImageWithoutPlaceholder(imgNonLogin, BG_CONTAINER_URL);
 
             container.setOnClickListener(onCheckNowListener());
             scanHolder.setOnClickListener(onScanListener());

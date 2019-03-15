@@ -101,8 +101,7 @@
         <ImageView
             android:id="@+id/bg_container_nonlogin"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"/>
+            android:layout_height="match_parent"/>
 
     </RelativeLayout>
 

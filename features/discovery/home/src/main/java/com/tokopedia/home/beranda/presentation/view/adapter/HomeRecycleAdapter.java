@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
@@ -82,8 +81,8 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     public void updateItems(List<Visitable> visitables) {
         List<Visitable> temporaryList = new ArrayList<>();
-        if (getItems().get(0) instanceof HeaderViewModel) {
-            temporaryList.add(getItems().get(0));
+        if (getItems().size() > 1 && getItems().get(1) instanceof HeaderViewModel) {
+            temporaryList.add(getItems().get(1));
         }
 
         temporaryList.addAll(visitables);
