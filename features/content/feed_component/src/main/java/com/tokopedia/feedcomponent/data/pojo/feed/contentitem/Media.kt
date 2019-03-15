@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.data.pojo.feed.contentitem
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 
 data class Media(
         @SerializedName("id")
@@ -38,5 +39,7 @@ data class Media(
         @Expose
         var ctaLink: CtaLink = CtaLink(),
         @SerializedName("tags")
-        val tags: List<Tag> = ArrayList()
+        val tags: List<Tag> = ArrayList(),
+        @SerializedName("tracking")
+        val tracking: List<Tracking> = ArrayList()
 )

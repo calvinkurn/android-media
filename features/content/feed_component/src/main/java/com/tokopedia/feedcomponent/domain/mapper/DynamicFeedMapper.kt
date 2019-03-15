@@ -10,6 +10,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.Feed
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
 import com.tokopedia.feedcomponent.data.pojo.template.Template
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
@@ -27,6 +28,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.util.ContainNullException
 import com.tokopedia.kotlin.util.isContainNull
@@ -283,13 +285,15 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     private fun mapPostImage(media: Media): ImagePostViewModel {
         return ImagePostViewModel(
                 media.thumbnail,
-                media.appLink
+                media.appLink,
+                mapTrackingData(media.tracking)
         )
     }
 
     private fun mapPostYoutube(media: Media): YoutubeViewModel {
         return YoutubeViewModel(
-                media.id
+                media.id,
+                mapTrackingData(media.tracking)
         )
     }
 
@@ -318,7 +322,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 media.text,
                 media.totalVoter,
                 media.isVoted,
-                options
+                options,
+                mapTrackingData(media.tracking)
         )
     }
 
@@ -340,7 +345,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 media.text,
                 media.appLink,
                 media.totalItems,
-                template.cardpost.body.mediaGridButton
+                template.cardpost.body.mediaGridButton,
+                mapTrackingData(media.tracking)
         )
     }
 
@@ -352,5 +358,19 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         } else {
             PollContentOptionViewModel.DEFAULT
         }
+    }
+
+    private fun mapTrackingData(trackList: List<Tracking>) : MutableList<TrackingViewModel> {
+        val trackingList: MutableList<TrackingViewModel> = ArrayList()
+
+        for (track in trackList) {
+            trackingList.add(TrackingViewModel(
+                    track.clickURL,
+                    track.viewURL,
+                    track.type,
+                    track.source
+            ))
+        }
+        return trackingList
     }
 }

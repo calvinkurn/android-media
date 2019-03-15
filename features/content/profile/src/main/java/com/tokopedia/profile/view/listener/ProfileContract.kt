@@ -50,5 +50,7 @@ interface ProfileContract {
         fun deletePost(id: Int, rowNumber: Int)
 
         fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
+
+        fun trackPostClickUrl(url:String)
     }
 }

@@ -39,6 +39,7 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -59,6 +60,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -1831,7 +1833,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-
     @Override
     public void onImageClick(int positionInFeed, int contentPosition,
                              @NotNull String redirectLink) {
@@ -1848,6 +1849,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     redirectLink
             );
         }
+    }
+
+    @Override
+    public void onAffilaiteTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+
     }
 
     @Override
