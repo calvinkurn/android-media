@@ -98,7 +98,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 adapter.clearAllElements();
                 adapter.addElement(getData());
                 presenter.getInboxData();
-                presenter.getRecomData(0);
+                presenter.getFirstRecomData();
             }
         });
 
