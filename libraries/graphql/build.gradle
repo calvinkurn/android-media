@@ -56,7 +56,7 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    implementation project(":cpm")
+    implementation project(rootProject.ext.libraries.cpm)
 }
 
 apply from: '../../publish_local.gradle'
