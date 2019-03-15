@@ -7,17 +7,9 @@ import com.google.gson.annotations.SerializedName;
  * @author by yfsx on 12/10/18.
  */
 public class ExploreData {
-
     @SerializedName("topadsExploreAffiliateProduct")
     @Expose
     private ExploreProduct exploreProduct;
-
-    @SerializedName("topadsGetExploreCategory")
-    @Expose
-    private ExploreCategory filter;
-
-    @SerializedName("topadsGetExploreSort")
-    private ExploreSort sort;
 
     public ExploreProduct getExploreProduct() {
         return exploreProduct;
@@ -26,21 +18,4 @@ public class ExploreData {
     public void setExploreProduct(ExploreProduct exploreProduct) {
         this.exploreProduct = exploreProduct;
     }
-
-    public ExploreCategory getFilter() {
-        return filter;
-    }
-
-    public void setFilter(ExploreCategory filter) {
-        this.filter = filter;
-    }
-
-    public ExploreSort getSort() {
-        return sort;
-    }
-
-    public void setSort(ExploreSort sort) {
-        this.sort = sort;
-    }
-
 }
