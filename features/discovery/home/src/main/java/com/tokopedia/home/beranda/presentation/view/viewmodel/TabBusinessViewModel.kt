@@ -30,7 +30,6 @@ class TabBusinessViewModel @Inject constructor(
         get() = baseDispatcher + job
 
     fun getTabBusinessUnit(rawQuery: String) {
-        job.children.map { it.cancel() }
 
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {

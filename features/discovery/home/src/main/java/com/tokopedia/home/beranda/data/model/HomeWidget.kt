@@ -12,25 +12,25 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.TemplateBusinessWi
 class HomeWidget(
         @SerializedName("widget_tab")
         @Expose
-        val tabBusinessList: List<TabItem> = listOf(),
+        val tabBusinessList: List<TabItem>,
         @SerializedName("widget_grid")
         @Expose
-        val contentItemTabList: List<ContentItemTab> = listOf()
+        val contentItemTabList: List<ContentItemTab>
 ) {
 
     data class Data (
             @SerializedName("home_widget")
             @Expose
-            val homeWidget: HomeWidget = HomeWidget()
+            val homeWidget: HomeWidget
     )
 
     data class Response(
             @SerializedName("data")
             @Expose
-            val data: Data = Data(),
+            val data: Data,
             @Expose
             @SerializedName("errors")
-            val errors: List<GraphqlError> = listOf()
+            val errors: List<GraphqlError>
     )
 
     data class TabItem(
