@@ -139,7 +139,7 @@ public class TopAdsGtmTracker {
                 "varian", "none/other",
                 "category", product.getCategory().getId(),
                 "list", "/inbox - topads  productlist",
-                "position", position));
+                "position", position + 1));
     }
 
     public static void eventSearchResultPromoView(Context context, CpmData cpm, int position) {
@@ -248,7 +248,7 @@ public class TopAdsGtmTracker {
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
                                             "varian", "none/other",
-                                            "position", position))))
+                                            "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
         }

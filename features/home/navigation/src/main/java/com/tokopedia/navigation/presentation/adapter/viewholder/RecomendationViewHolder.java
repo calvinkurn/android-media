@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener;
 import com.tokopedia.productcard.ProductCardView;
@@ -51,6 +52,8 @@ public class RecomendationViewHolder extends AbstractViewHolder<Recomendation> {
                         product.setPriceFormat(element.getPrice());
                         product.setCategory(new Category(element.getDepartementId()));
                         TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, getAdapterPosition());
+                    } else {
+                        InboxGtmTracker.getInstance().addInboxProductViewImpressions(element, getAdapterPosition());
                     }
                 }
             });
@@ -68,7 +71,6 @@ public class RecomendationViewHolder extends AbstractViewHolder<Recomendation> {
                     product.setCategory(new Category(element.getDepartementId()));
                     TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, getAdapterPosition());
                 }
-
             }
         });
     }

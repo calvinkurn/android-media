@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
@@ -80,6 +81,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onPause() {
         super.onPause();
         TopAdsGtmTracker.getInstance().eventInboxProductView(trackingQueue);
+        InboxGtmTracker.getInstance().eventInboxProductView(trackingQueue);
         trackingQueue.sendAll();
     }
 
@@ -161,6 +163,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                         r.getProductName(),
                         r.getPrice()
                 );
+                if(!r.isTopAds()){
+                    InboxGtmTracker.getInstance().eventInboxProductClick(trackingQueue, r, position);
+                }
             }
         }
     }
