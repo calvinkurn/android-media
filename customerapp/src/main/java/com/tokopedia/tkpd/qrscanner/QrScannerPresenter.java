@@ -58,6 +58,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private static final String ERRORS = "errors";
     private static final String MESSAGE = "message";
     private static final String QR_ID = "qr_id";
+    private static final String OVO_TEXT = "ovo";
+    private static final String GPNR_TEXT = "gpnqr";
 
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
@@ -97,7 +99,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
-        } else if (barcodeData.toLowerCase().contains("ovo") || barcodeData.toLowerCase().contains("gpnqr")) {
+        } else if (barcodeData.toLowerCase().contains(OVO_TEXT)
+                || barcodeData.toLowerCase().contains(GPNR_TEXT)) {
             checkBarCode(barcodeData);
         } else {
             getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));

@@ -105,7 +105,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     public void goToPaymentPage(String imeiNumber, JsonObject barcodeData) {
         UserSession session = new UserSession(this);
-        if(session.isLoggedIn()) {
+        if (session.isLoggedIn()) {
             SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, true);
             cacheManager.put(QR_RESPONSE, barcodeData);
             Intent intent = ((TokoCashRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
@@ -312,15 +312,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_NOMINAL && resultCode == RESULT_CODE_HOME) {
+        if ((requestCode == REQUEST_CODE_NOMINAL && resultCode == RESULT_CODE_HOME)
+                || (resultCode == RESULT_OK && requestCode == REQUEST_PAY_WITH_QR)) {
             finish();
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
             decoratedBarcodeView.pause();
             hideAnimation();
             presenter.onScanCompleteAfterLoginQrPayment();
-        } else if(resultCode == RESULT_OK && requestCode == REQUEST_PAY_WITH_QR) {
-            //TODO. let user try again
-            finish();
         }
     }
 }

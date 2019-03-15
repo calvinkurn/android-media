@@ -193,9 +193,9 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             setProgressButton();
             if (response.getStatus().equalsIgnoreCase(PENDING_STATUS)) {
                 try {
-                    ((OvoPayWithQrRouter)getActivity().getApplication())
-                            .openTokopointWebview(getActivity(),URLDecoder.decode(
-                                    response.getPinUrl(),"UTF-8"), getString(R.string.pin_page_title));
+                    ((OvoPayWithQrRouter) getActivity().getApplication())
+                            .openTokopointWebview(getActivity(), URLDecoder.decode(
+                                    response.getPinUrl(), "UTF-8"), getString(R.string.pin_page_title));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }

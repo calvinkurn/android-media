@@ -10,6 +10,7 @@ public class PaymentQRSummaryActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return PaymentQRSummaryFragment.createInstance(getIntent().getStringExtra(QR_DATA), getIntent().getStringExtra(IMEI));
+        return PaymentQRSummaryFragment.createInstance(
+                getIntent().getStringExtra(QR_DATA), getIntent().getStringExtra(IMEI));
     }
 }

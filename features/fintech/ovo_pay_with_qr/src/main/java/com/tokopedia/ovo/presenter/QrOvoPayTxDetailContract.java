@@ -9,6 +9,7 @@ import com.tokopedia.ovo.model.GoalQRThanks;
 public interface QrOvoPayTxDetailContract {
     public interface View extends CustomerView {
         void setSuccessThankYouData(GoalQRThanks data);
+
         void setFailThankYouData(GoalQRThanks data);
 
         void setError(String message);
