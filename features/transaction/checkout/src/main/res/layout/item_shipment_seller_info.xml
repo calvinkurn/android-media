@@ -4,32 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16">
+    android:paddingBottom="@dimen/dp_16">
 
     <TextView
         android:id="@+id/tv_text_sent_by"
         style="@style/TextSmallMediumBlack38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_5"
         android:text="@string/label_seller" />
+
+    <TextView
+        android:id="@+id/tv_fulfill_district"
+        style="@style/TextSmallMediumBlack38"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_text_sent_by"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        tools:text="Tangerang Selatan" />
 
     <TextView
         android:id="@+id/tv_shop_name"
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_alignBottom="@+id/tv_text_sent_by"
+        android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_10"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_toEndOf="@id/tv_text_sent_by"
-        android:layout_toRightOf="@id/tv_text_sent_by"
+        android:layout_toEndOf="@+id/tv_text_sent_by"
+        android:layout_toRightOf="@+id/tv_text_sent_by"
         android:lineSpacingExtra="5sp"
         tools:text="Adidas" />
 
@@ -37,9 +47,24 @@
         android:id="@+id/img_shop_badge"
         android:layout_width="@dimen/dp_18"
         android:layout_height="@dimen/dp_18"
-        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
+        android:layout_toEndOf="@+id/tv_shop_name"
         android:layout_toRightOf="@+id/tv_shop_name"
-        tools:src="@drawable/ic_badge_official" />
+        android:layout_alignBottom="@+id/tv_shop_name"
+        tools:visibility="visible"
+        tools:src="@drawable/ic_badge_shop_official" />
+
+    <ImageView
+        android:id="@+id/img_shop_fulfill"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_toEndOf="@+id/img_shop_badge"
+        android:layout_toRightOf="@+id/img_shop_badge"
+        android:layout_alignBottom="@+id/tv_shop_name"
+        android:scaleType="center"
+        android:src="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
 
 </RelativeLayout>

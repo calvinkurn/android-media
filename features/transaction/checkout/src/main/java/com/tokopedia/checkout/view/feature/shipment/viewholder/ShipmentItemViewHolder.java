@@ -208,6 +208,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Pattern phoneNumberRegexPattern;
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
+    private TextView tvFulfillName;
+    private ImageView imgFulfill;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -341,6 +343,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         imgYellowBulb = itemView.findViewById(R.id.img_bulb);
         tvShipmentBlackboxTickerInfo = itemView.findViewById(R.id.tv_shipment_blackbox_ticker_info);
 
+        tvFulfillName = itemView.findViewById(R.id.tv_fulfill_district);
+        imgFulfill = itemView.findViewById(R.id.img_shop_fulfill);
+
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
     }
@@ -425,6 +430,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             this.shipmentDataList = shipmentDataList;
         }
         renderShop(shipmentCartItemModel);
+        renderFulfillment(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
         renderErrorAndWarning(shipmentCartItemModel);
@@ -432,6 +438,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderDropshipper(recipientAddressModel != null && recipientAddressModel.isCornerAddress());
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
+    }
+
+    private void renderFulfillment(ShipmentCartItemModel model) {
+        if (model.isFulfillment()) {
+            imgFulfill.setVisibility(View.VISIBLE);
+            tvFulfillName.setVisibility(View.VISIBLE);
+            tvFulfillName.setText(model.getFulfillmentName());
+        } else {
+            imgFulfill.setVisibility(View.GONE);
+            tvFulfillName.setVisibility(View.GONE);
+        }
     }
 
     private void renderErrorAndWarning(ShipmentCartItemModel shipmentCartItemModel) {
