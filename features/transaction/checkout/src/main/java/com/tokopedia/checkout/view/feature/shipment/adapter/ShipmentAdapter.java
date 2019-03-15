@@ -913,8 +913,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public ShipmentCartItemModel getShipmentCartItemModelByIndex(int index) {
-        if (shipmentDataList.get(index) instanceof ShipmentCartItemModel) {
-            return (ShipmentCartItemModel) shipmentDataList.get(index);
+        if (shipmentDataList != null && !shipmentDataList.isEmpty() && index < shipmentDataList.size()) {
+            return shipmentDataList.get(index) instanceof ShipmentCartItemModel ?
+                    (ShipmentCartItemModel) shipmentDataList.get(index) : null;
         } else {
             return null;
         }
