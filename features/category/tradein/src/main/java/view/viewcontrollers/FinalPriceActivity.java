@@ -13,6 +13,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -202,6 +203,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             @Override
             public void onClick(View widget) {
                 showTnC(R.string.tradein_tnc);
+                setVisibilityGroup(View.INVISIBLE);
             }
         };
         int greenColor = getResources().getColor(R.color.green_nob);
@@ -235,5 +237,23 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_green);
         mTvButtonPayOrKtp.setText(R.string.do_ktp);
         mTvButtonPayOrKtp.setOnClickListener(v -> goToKycActivity());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTncShowing) {
+            setVisibilityGroup(View.VISIBLE);
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            if (isTncShowing) {
+                setVisibilityGroup(View.VISIBLE);
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

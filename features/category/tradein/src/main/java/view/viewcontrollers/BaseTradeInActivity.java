@@ -37,7 +37,7 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
 
     abstract boolean doNeedReattach();
 
-    private boolean isTncShowing = false;
+    protected boolean isTncShowing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
