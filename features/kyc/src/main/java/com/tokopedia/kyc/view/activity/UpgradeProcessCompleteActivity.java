@@ -85,7 +85,7 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
 
     @Override
     public ConfirmRequestDataContainer getDataContatainer() {
-        return null;
+        return new ConfirmRequestDataContainer();
     }
 
     @Override

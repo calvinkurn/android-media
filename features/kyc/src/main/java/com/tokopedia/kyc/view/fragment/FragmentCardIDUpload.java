@@ -98,9 +98,13 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
                 ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
                 imagePath = ((String) dataObj.get(keysList.get(0)));
                 toBeFlipped = ((Boolean) dataObj.get(keysList.get(1)));
-                activityListener.getDataContatainer().setFlipCardIdImg(toBeFlipped);
-                activityListener.getDataContatainer().setCardIdImage(imagePath);
-                activityListener.showHideActionbar(true);
+                if(activityListener != null){
+                    activityListener.showHideActionbar(true);
+                    if(activityListener.getDataContatainer() != null){
+                        activityListener.getDataContatainer().setFlipCardIdImg(toBeFlipped);
+                        activityListener.getDataContatainer().setCardIdImage(imagePath);
+                    }
+                }
                 KycUtil.setCameraCapturedImage(imagePath, toBeFlipped, idCardImageView);
             }
 
@@ -143,15 +147,21 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        if(activityListener != null) {
+            activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        }
         documentUploadPresenter.attachView(this);
     }
 
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        activityListener = (ActivityListener)context;
-        loaderUiListener = (LoaderUiListener) context;
+        if(context instanceof ActivityListener) {
+            activityListener = (ActivityListener) context;
+        }
+        if(context instanceof LoaderUiListener) {
+            loaderUiListener = (LoaderUiListener) context;
+        }
     }
 
     @Nullable
@@ -200,14 +210,11 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     private void goToSelfieIdIntroPage(){
-        activityListener.addReplaceFragment(FragmentSelfieIdPreviewAndUpload.newInstance(), true,
-                FragmentSelfieIdPreviewAndUpload.TAG);
+        if(activityListener != null) {
+            activityListener.addReplaceFragment(FragmentSelfieIdPreviewAndUpload.newInstance(), true,
+                    FragmentSelfieIdPreviewAndUpload.TAG);
+        }
     }
 
 
@@ -248,8 +255,10 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     }
 
     private void goToTandCPage(){
-        activityListener.addReplaceFragment(FragmentTermsAndConditions.newInstance(), true,
-                FragmentTermsAndConditions.TAG);
+        if(activityListener != null) {
+            activityListener.addReplaceFragment(FragmentTermsAndConditions.newInstance(), true,
+                    FragmentTermsAndConditions.TAG);
+        }
     }
 
     private void setNameWrapperLableHint(){
@@ -342,12 +351,14 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     }
 
     private void showErrorSnackbar(){
-        if(activityListener.isRetryValid()) {
+        if(activityListener != null && activityListener.isRetryValid()) {
             errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), this::onClick, "");
             errorSnackbar.show();
         }
         else {
-            getActivity().finish();
+            if(getActivity() != null) {
+                getActivity().finish();
+            }
         }
     }
 
@@ -355,24 +366,29 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
         if(setNumberWrapperError()) return;
         if(setNameWrapperError()) return;
 
-        kycReqId = activityListener.getDataContatainer().getKycReqId();
-        loaderUiListener.showProgressDialog();
+        if(activityListener != null && activityListener.getDataContatainer() != null) {
+            kycReqId = activityListener.getDataContatainer().getKycReqId();
+        }
+        if(loaderUiListener != null) {
+            loaderUiListener.showProgressDialog();
+        }
         documentUploadPresenter.makeDocumentUploadRequest(imagePath, docType, kycReqId);
 
     }
 
     @Override
     public void success(KYCDocumentUploadResponse data) {
-        activityListener.getDataContatainer().setDocumentNumber(edtxtNumber.getText().toString());
-        activityListener.getDataContatainer().setMothersMaidenName(edtxtName.getText().toString());
-        activityListener.getDataContatainer().setCardIdDocumentId(
-                data.getKycImageUploadDataClass().getDocumentId());
-        activityListener.getDataContatainer().setDocumentType(
-                data.getKycImageUploadDataClass().getDocumentType());
-        if(getArguments().getBoolean(Constants.Keys.FROM_RETAKE_FLOW)){
-            goToTandCPage();
+        if(activityListener != null && activityListener.getDataContatainer() != null) {
+            activityListener.getDataContatainer().setDocumentNumber(edtxtNumber.getText().toString());
+            activityListener.getDataContatainer().setMothersMaidenName(edtxtName.getText().toString());
+            activityListener.getDataContatainer().setCardIdDocumentId(
+                    data.getKycImageUploadDataClass().getDocumentId());
+            activityListener.getDataContatainer().setDocumentType(
+                    data.getKycImageUploadDataClass().getDocumentType());
         }
-        else {
+        if (getArguments().getBoolean(Constants.Keys.FROM_RETAKE_FLOW)) {
+            goToTandCPage();
+        } else {
             goToSelfieIdIntroPage();
         }
     }
@@ -384,11 +400,12 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
 
     @Override
     public void showHideProgressBar(boolean showProgressBar) {
-        if(showProgressBar){
-            loaderUiListener.showProgressDialog();
-        }
-        else {
-            loaderUiListener.hideProgressDialog();
+        if(loaderUiListener != null) {
+            if (showProgressBar) {
+                loaderUiListener.showProgressDialog();
+            } else {
+                loaderUiListener.hideProgressDialog();
+            }
         }
     }
 

@@ -50,7 +50,9 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        activityListener = (ActivityListener)context;
+        if(context instanceof ActivityListener) {
+            activityListener = (ActivityListener) context;
+        }
     }
 
     @Nullable
@@ -73,7 +75,9 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        if(activityListener != null) {
+            activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        }
     }
 
     @Override
@@ -91,19 +95,23 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
         ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
             @Override
             public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
+                Bundle bundle = new Bundle();
+                ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
+                if(activityListener != null) {
+                    if(activityListener.getDataContatainer() != null) {
+                        activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
+                        activityListener.getDataContatainer().setCardIdImage((String) dataObj.get(keysList.get(0)));
+                    }
+                    activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(bundle), true,
+                            FragmentCardIDUpload.TAG);
+                    activityListener.showHideActionbar(true);
+                }
                 AnalyticsUtil.sendEvent(getContext(),
                         AnalyticsUtil.EventName.CLICK_OVO,
                         AnalyticsUtil.EventCategory.OVO_KYC,
                         "",
                         ((KYCRouter)getContext().getApplicationContext()).getUserId(),
                         AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP2);
-                Bundle bundle = new Bundle();
-                ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
-                activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
-                activityListener.getDataContatainer().setCardIdImage((String) dataObj.get(keysList.get(0)));
-                activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(bundle), true,
-                        FragmentCardIDUpload.TAG);
-                activityListener.showHideActionbar(true);
             }
 
             @Override

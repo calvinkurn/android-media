@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
@@ -56,13 +55,17 @@ public class FragmentVerificationFailure extends BaseDaggerFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityListener.setHeaderTitle(Constants.Values.OVO);
+        if(activityListener != null) {
+            activityListener.setHeaderTitle(Constants.Values.OVO);
+        }
     }
 
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        activityListener = (ActivityListener)context;
+        if(context instanceof ActivityListener) {
+            activityListener = (ActivityListener) context;
+        }
     }
 
     @Nullable

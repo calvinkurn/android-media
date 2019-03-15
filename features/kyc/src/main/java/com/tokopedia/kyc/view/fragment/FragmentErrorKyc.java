@@ -33,7 +33,9 @@ public class FragmentErrorKyc extends BaseDaggerFragment implements
     }
 
     private void executeTryAgain(){
-        getActivity().getSupportFragmentManager().popBackStack(FragmentUpgradeToOvo.TAG, 0);
+        if(getActivity() != null) {
+            getActivity().getSupportFragmentManager().popBackStack(FragmentUpgradeToOvo.TAG, 0);
+        }
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
@@ -61,13 +63,17 @@ public class FragmentErrorKyc extends BaseDaggerFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        if(activityListener != null) {
+            activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        }
     }
 
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        activityListener = (ActivityListener)context;
+        if(context instanceof ActivityListener) {
+            activityListener = (ActivityListener) context;
+        }
     }
 
     @Nullable

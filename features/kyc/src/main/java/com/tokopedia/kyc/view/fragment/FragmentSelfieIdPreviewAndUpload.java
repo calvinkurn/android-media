@@ -128,7 +128,9 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        if(activityListener != null) {
+            activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        }
         documentUploadPresenter.attachView(this);
         checkFromTncRetakeFlow();
     }
@@ -136,8 +138,12 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        activityListener = (ActivityListener)context;
-        loaderUiListener = (LoaderUiListener)context;
+        if(context instanceof ActivityListener) {
+            activityListener = (ActivityListener) context;
+        }
+        if(context instanceof LoaderUiListener) {
+            loaderUiListener = (LoaderUiListener) context;
+        }
     }
 
     @Nullable
@@ -177,21 +183,25 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
         ActionCreator<HashMap<String, Object>, Integer> actionCreator = new ActionCreator<HashMap<String, Object>, Integer>() {
             @Override
             public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
+                ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
+                selfieIdIntroView.setVisibility(View.GONE);
+                selfieIdPreviewAndUpload.setVisibility(View.VISIBLE);
+                imagePath = (String) dataObj.get(keysList.get(0));
+                flipSelfieIdImg = (Boolean) dataObj.get(keysList.get(1));
+                if(activityListener != null) {
+                    activityListener.showHideActionbar(true);
+                    if(activityListener.getDataContatainer() != null) {
+                        activityListener.getDataContatainer().setSelfieIdImage(imagePath);
+                        activityListener.getDataContatainer().setFlipSelfieIdImg(flipSelfieIdImg);
+                    }
+                }
+                KycUtil.setCameraCapturedImage(imagePath, flipSelfieIdImg, selfieidImg);
                 AnalyticsUtil.sendEvent(getContext(),
                         AnalyticsUtil.EventName.CLICK_OVO,
                         AnalyticsUtil.EventCategory.OVO_KYC,
                         "",
                         ((KYCRouter)getContext().getApplicationContext()).getUserId(),
                         AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP3);
-                ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
-                selfieIdIntroView.setVisibility(View.GONE);
-                selfieIdPreviewAndUpload.setVisibility(View.VISIBLE);
-                activityListener.showHideActionbar(true);
-                imagePath = (String) dataObj.get(keysList.get(0));
-                flipSelfieIdImg = (Boolean) dataObj.get(keysList.get(1));
-                activityListener.getDataContatainer().setSelfieIdImage(imagePath);
-                activityListener.getDataContatainer().setFlipSelfieIdImg(flipSelfieIdImg);
-                KycUtil.setCameraCapturedImage(imagePath, flipSelfieIdImg, selfieidImg);
             }
 
             @Override
@@ -215,12 +225,14 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     }
 
     private void goToTandCPage(){
-        activityListener.addReplaceFragment(FragmentTermsAndConditions.newInstance(), true,
-                FragmentTermsAndConditions.TAG);
+        if(activityListener != null) {
+            activityListener.addReplaceFragment(FragmentTermsAndConditions.newInstance(), true,
+                    FragmentTermsAndConditions.TAG);
+        }
     }
 
     private void showErrorSnackbar(){
-        if(activityListener.isRetryValid()) {
+        if(activityListener != null && activityListener.isRetryValid()) {
             errorSnackbar = KycUtil.createErrorSnackBar(getActivity(), this::onClick, "");
             errorSnackbar.show();
         }else {
@@ -229,16 +241,22 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
     }
 
     private void makeSelfieUploadRequest(){
-        loaderUiListener.showProgressDialog();
-        kycReqId = activityListener.getDataContatainer().getKycReqId();
+        if(loaderUiListener != null) {
+            loaderUiListener.showProgressDialog();
+        }
+        if(activityListener != null && activityListener.getDataContatainer() != null) {
+            kycReqId = activityListener.getDataContatainer().getKycReqId();
+        }
         documentUploadPresenter.makeDocumentUploadRequest(imagePath, Constants.Values.SELFIE, kycReqId);
     }
 
     @Override
     public void success(KYCDocumentUploadResponse data) {
-        activityListener.getDataContatainer().setSelfieIdDocumentId(
-                data.getKycImageUploadDataClass().getDocumentId());
-        goToTandCPage();
+        if(activityListener != null && activityListener.getDataContatainer() != null) {
+            activityListener.getDataContatainer().setSelfieIdDocumentId(
+                    data.getKycImageUploadDataClass().getDocumentId());
+            goToTandCPage();
+        }
     }
 
     @Override
@@ -248,11 +266,12 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
 
     @Override
     public void showHideProgressBar(boolean showProgressBar) {
-        if(showProgressBar){
-            loaderUiListener.showProgressDialog();
-        }
-        else {
-            loaderUiListener.hideProgressDialog();
+        if(loaderUiListener != null) {
+            if (showProgressBar) {
+                loaderUiListener.showProgressDialog();
+            } else {
+                loaderUiListener.hideProgressDialog();
+            }
         }
     }
 

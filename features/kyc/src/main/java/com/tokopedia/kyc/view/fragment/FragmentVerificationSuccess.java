@@ -46,13 +46,17 @@ public class FragmentVerificationSuccess extends BaseDaggerFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityListener.setHeaderTitle(Constants.Values.OVO);
+        if(activityListener != null) {
+            activityListener.setHeaderTitle(Constants.Values.OVO);
+        }
     }
 
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        activityListener = (ActivityListener)context;
+        if(context instanceof ActivityListener) {
+            activityListener = (ActivityListener) context;
+        }
     }
 
     @Nullable

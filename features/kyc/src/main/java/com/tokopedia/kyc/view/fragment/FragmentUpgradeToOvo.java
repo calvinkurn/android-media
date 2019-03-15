@@ -22,13 +22,12 @@ import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
-import com.tokopedia.kyc.view.interfaces.UpgradeToOvoContract;
 import com.tokopedia.kyc.view.presenter.EligibilityCheckPresenter;
 
 import javax.inject.Inject;
 
 public class FragmentUpgradeToOvo extends BaseDaggerFragment
-        implements UpgradeToOvoContract.View, View.OnClickListener, GenericOperationsView<EligibilityBase> {
+        implements View.OnClickListener, GenericOperationsView<EligibilityBase> {
 
     private ActivityListener activityListener;
     private LoaderUiListener loaderUiListener;
@@ -50,16 +49,6 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
         return Constants.Values.OVOUPGRADE_STEP_1_SCR;
     }
 
-    @Override
-    public void showSnackbarErrorMessage(String message) {
-
-    }
-
-    @Override
-    public String getErrorMessage(Throwable e) {
-        return null;
-    }
-
     public static FragmentUpgradeToOvo newInstance() {
         FragmentUpgradeToOvo fragmentUpgradeToOvo = new FragmentUpgradeToOvo();
         return fragmentUpgradeToOvo;
@@ -79,7 +68,9 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityListener.setHeaderTitle(Constants.Values.OVO);
+        if(activityListener != null) {
+            activityListener.setHeaderTitle(Constants.Values.OVO);
+        }
         eligibilityCheckPresenter.attachView(this);
     }
 
@@ -87,8 +78,12 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        activityListener = (ActivityListener)context;
-        loaderUiListener = (LoaderUiListener)context;
+        if(context instanceof ActivityListener) {
+            activityListener = (ActivityListener) context;
+        }
+        if(context instanceof LoaderUiListener) {
+            loaderUiListener = (LoaderUiListener) context;
+        }
     }
 
     @Override
@@ -132,14 +127,18 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     public void success(EligibilityBase data) {
         FragmentIntroToOvoUpgradeSteps fragmentIntroToOvoUpgradeSteps =
                 FragmentIntroToOvoUpgradeSteps.newInstance();
-        activityListener.getDataContatainer().setKycReqId(data.getGoalKYCRequest().getKycRequestId());
-        activityListener.addReplaceFragment(fragmentIntroToOvoUpgradeSteps,
-                true, FragmentIntroToOvoUpgradeSteps.TAG);
+        if(activityListener != null){
+            activityListener.addReplaceFragment(fragmentIntroToOvoUpgradeSteps,
+                    true, FragmentIntroToOvoUpgradeSteps.TAG);
+            if(activityListener.getDataContatainer() != null){
+                activityListener.getDataContatainer().setKycReqId(data.getGoalKYCRequest().getKycRequestId());
+            }
+        }
     }
 
     @Override
     public void failure(EligibilityBase data) {
-        if(activityListener.isRetryValid()) {
+        if(activityListener != null && activityListener.isRetryValid()) {
             String errorMessage = data.
                     getGoalKYCRequest().getErrors().get(0).get(Constants.Keys.MESSAGE);
             if(TextUtils.isEmpty(errorMessage)){
@@ -149,17 +148,20 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
             errorSnackbar.show();
         }
         else {
-            getActivity().finish();
+            if(getActivity() != null) {
+                getActivity().finish();
+            }
         }
     }
 
     @Override
     public void showHideProgressBar(boolean showProgressBar) {
-        if(showProgressBar){
-            loaderUiListener.showProgressDialog();
-        }
-        else {
-            loaderUiListener.hideProgressDialog();
+        if(loaderUiListener != null) {
+            if (showProgressBar) {
+                loaderUiListener.showProgressDialog();
+            } else {
+                loaderUiListener.hideProgressDialog();
+            }
         }
     }
 

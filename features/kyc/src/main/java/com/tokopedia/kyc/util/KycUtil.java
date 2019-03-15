@@ -27,7 +27,6 @@ import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.model.ConfirmSubmitResponse;
 import com.tokopedia.kyc.model.EligibilityBase;
-import com.tokopedia.kyc.model.KYCDocumentUploadResponse;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
 import java.io.File;
@@ -40,11 +39,13 @@ public class KycUtil {
                                                  ActivityListener activityListener,
                                                  ActionCreator actionCreator,
                                                  int cameraType, boolean replace) {
-        activityListener.showHideActionbar(false);
-        activityListener.addReplaceFragment((
-                        (KYCRouter) context.getApplicationContext()).getKYCCameraFragment(actionCreator,
-                new CardIdDataKeyProvider(), cameraType),
-                replace, Constants.Values.TAG_CAMERA_PAGE);
+        if(activityListener != null) {
+            activityListener.showHideActionbar(false);
+            activityListener.addReplaceFragment((
+                            (KYCRouter) context.getApplicationContext()).getKYCCameraFragment(actionCreator,
+                    new CardIdDataKeyProvider(), cameraType),
+                    replace, Constants.Values.TAG_CAMERA_PAGE);
+        }
     }
 
     public static void executeEligibilityCheck(Context context, Subscriber<GraphqlResponse> subscriber) {
@@ -67,7 +68,7 @@ public class KycUtil {
     public static void setCameraCapturedImage(String imagePath, boolean toBeFlipped, ImageView imageView){
         try {
             File file = new File(imagePath);
-            if (file.exists()) {
+            if (file !=null && file.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
                 if (myBitmap != null) {

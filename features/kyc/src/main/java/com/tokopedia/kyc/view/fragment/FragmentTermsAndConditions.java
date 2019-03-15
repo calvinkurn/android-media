@@ -129,8 +129,12 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     }
 
     private void submitKycTnCConfirmForm(){
-        loaderUiListener.showProgressDialog();
-        tnCConfirmationPresenter.submitKycTnCConfirmForm(activityListener.getDataContatainer());
+        if(loaderUiListener != null) {
+            loaderUiListener.showProgressDialog();
+        }
+        if(activityListener != null && activityListener.getDataContatainer() != null) {
+            tnCConfirmationPresenter.submitKycTnCConfirmForm(activityListener.getDataContatainer());
+        }
     }
 
 
@@ -152,15 +156,21 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        if(activityListener != null) {
+            activityListener.setHeaderTitle(Constants.Values.OVOUPGRADE_STEP_2_TITLE);
+        }
         tnCConfirmationPresenter.attachView(this);
     }
 
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        activityListener = (ActivityListener) context;
-        loaderUiListener = (LoaderUiListener) context;
+        if(context instanceof ActivityListener) {
+            activityListener = (ActivityListener) context;
+        }
+        if(context instanceof LoaderUiListener) {
+            loaderUiListener = (LoaderUiListener) context;
+        }
     }
 
     @Nullable
@@ -217,22 +227,31 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
             @Override
             public void actionSuccess(int actionId, HashMap<String, Object> dataObj) {
                 Bundle bundle = new Bundle();
+                bundle.putBoolean(Constants.Keys.FROM_RETAKE_FLOW, true);
                 ArrayList<String> keysList = (new CardIdDataKeyProvider()).getData(1, null);
-                if(imageType == Constants.Keys.KYC_CARDID_CAMERA) {
-                    activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
-                    activityListener.getDataContatainer().setCardIdImage((String) dataObj.get(keysList.get(0)));
-                    bundle.putBoolean(Constants.Keys.FROM_RETAKE_FLOW, true);
-                    activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(bundle), true,
-                            FragmentCardIDUpload.TAG);
+                if(activityListener != null){
+                    activityListener.showHideActionbar(true);
+                }
+                if(imageType == Constants.Keys.KYC_CARDID_CAMERA){
+                    if(activityListener != null){
+                        if(activityListener.getDataContatainer() != null){
+                            activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
+                            activityListener.getDataContatainer().setCardIdImage((String) dataObj.get(keysList.get(0)));
+                        }
+                        activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(bundle), true,
+                                FragmentCardIDUpload.TAG);
+                    }
                 }
                 else if(imageType == Constants.Keys.KYC_SELFIEID_CAMERA){
-                    activityListener.getDataContatainer().setFlipSelfieIdImg((Boolean) dataObj.get(keysList.get(1)));
-                    activityListener.getDataContatainer().setSelfieIdImage((String) dataObj.get(keysList.get(0)));
-                    bundle.putBoolean(Constants.Keys.FROM_RETAKE_FLOW, true);
-                    activityListener.addReplaceFragment(FragmentSelfieIdPreviewAndUpload.newInstance(bundle), true,
-                            FragmentCardIDUpload.TAG);
+                    if(activityListener != null){
+                        if(activityListener.getDataContatainer() != null){
+                            activityListener.getDataContatainer().setFlipSelfieIdImg((Boolean) dataObj.get(keysList.get(1)));
+                            activityListener.getDataContatainer().setSelfieIdImage((String) dataObj.get(keysList.get(0)));
+                        }
+                        activityListener.addReplaceFragment(FragmentSelfieIdPreviewAndUpload.newInstance(bundle), true,
+                                FragmentCardIDUpload.TAG);
+                    }
                 }
-                activityListener.showHideActionbar(true);
             }
 
             @Override
@@ -259,16 +278,19 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
 
     @Override
     public void failure(ConfirmSubmitResponse data) {
-        activityListener.addReplaceFragment(ErrorKycConfirmation.newInstance(), true, ErrorKycConfirmation.TAG);
+        if(activityListener != null) {
+            activityListener.addReplaceFragment(ErrorKycConfirmation.newInstance(), true, ErrorKycConfirmation.TAG);
+        }
     }
 
     @Override
     public void showHideProgressBar(boolean showProgressBar) {
-        if(showProgressBar){
-            loaderUiListener.showProgressDialog();
-        }
-        else {
-            loaderUiListener.hideProgressDialog();
+        if(loaderUiListener != null) {
+            if (showProgressBar) {
+                loaderUiListener.showProgressDialog();
+            } else {
+                loaderUiListener.hideProgressDialog();
+            }
         }
     }
 
