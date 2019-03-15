@@ -117,6 +117,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
 
         if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
+            tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
             VoucherOrdersItemData voucherOrdersItemData = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData();
             if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().isSuccess()) {
                 String state = voucherOrdersItemData.getState();
@@ -184,7 +185,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         } else {
             cbSelectShop.setEnabled(true);
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_enabled_item));
-            llShopContainer.setBackgroundResource(0);
+            llShopContainer.setBackgroundColor(llShopContainer.getContext().getResources().getColor(R.color.white));
             layoutError.setVisibility(View.GONE);
         }
     }

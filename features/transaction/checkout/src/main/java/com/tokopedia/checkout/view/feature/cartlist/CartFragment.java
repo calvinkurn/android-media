@@ -893,6 +893,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
         }
 
+        if (cartListData.isError()) {
+            cartAdapter.addCartTickerError(
+                    new CartItemTickerErrorHolderData.Builder()
+                            .cartTickerErrorData(cartListData.getCartTickerErrorData())
+                            .build()
+            );
+        }
+
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
         if (cartListData.getAdsModel() != null) {
@@ -907,14 +915,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         if (cartListData.getCartPromoSuggestion().isVisible()) {
             cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
-        }
-
-        if (cartListData.isError()) {
-            cartAdapter.addCartTickerError(
-                    new CartItemTickerErrorHolderData.Builder()
-                            .cartTickerErrorData(cartListData.getCartTickerErrorData())
-                            .build()
-            );
         }
 
         cartAdapter.checkForShipmentForm();
