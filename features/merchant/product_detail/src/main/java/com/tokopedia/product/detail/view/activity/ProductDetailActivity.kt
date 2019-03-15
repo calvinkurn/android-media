@@ -136,15 +136,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         } else {
             isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
+        super.onCreate(savedInstanceState)
 
         remoteConfig = FirebaseRemoteConfigImpl(this)
         if (remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL)) {
             if (application is ProductDetailRouter) {
                 (application as ProductDetailRouter).goToOldProductDetailPage(this, productId, shopDomain, productKey, trackerAttribution, trackerListName)
-                finish()
             }
         }
-
-        super.onCreate(savedInstanceState)
     }
 }

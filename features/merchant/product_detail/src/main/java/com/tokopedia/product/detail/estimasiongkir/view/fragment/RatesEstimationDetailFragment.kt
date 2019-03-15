@@ -11,6 +11,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
@@ -141,9 +142,11 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
         }
         shipping_receiver_address.text = MethodChecker.fromHtml("${address.address}, ${address.districtName}, ${address.provinceName}")
         if (ratesEstimationModel.isBlackbox){
+            (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.product_detail_courier))
             if (recycler_view.itemDecorationCount > 0)
                 recycler_view.removeItemDecorationAt(recycler_view.itemDecorationCount - 1)
         } else {
+            (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.label_rates_estimation_detail))
             recycler_view.addItemDecoration(DividerItemDecoration(activity))
         }
         adapter.isBlackbox = ratesEstimationModel.isBlackbox
