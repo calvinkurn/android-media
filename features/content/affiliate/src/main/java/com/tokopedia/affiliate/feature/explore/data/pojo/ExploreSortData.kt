@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.feature.explore.data.pojo.section
+package com.tokopedia.affiliate.feature.explore.data.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
