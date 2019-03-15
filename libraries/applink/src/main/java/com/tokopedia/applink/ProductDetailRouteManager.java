@@ -37,7 +37,8 @@ public class ProductDetailRouteManager {
     }
 
     public static Intent getProductIntent(Context context, String productApplink) {
-        if (isGoToOldProductDetail(context)) {
+        boolean goToOldProductDetail = isGoToOldProductDetail(context);
+        if (goToOldProductDetail) {
             Intent intent = new Intent();
             intent.setClassName(context.getPackageName(), "com.tokopedia.tkpdpdp.ProductInfoActivity");
 
