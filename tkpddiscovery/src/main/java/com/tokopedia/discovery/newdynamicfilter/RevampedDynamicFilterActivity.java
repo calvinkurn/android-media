@@ -124,7 +124,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         buttonReset = findViewById(R.id.top_bar_button_reset);
         buttonReset.setOnClickListener(v -> resetAllFilter());
         buttonApply = findViewById(R.id.button_finish);
-        buttonApply.setOnClickListener(v -> applyFilter());
+        buttonApply.setOnClickListener(v -> applyFilterFromButton());
         mainLayout = findViewById(R.id.main_layout);
         loadingView = findViewById(R.id.loading_view);
     }
@@ -291,6 +291,10 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT);
 
         filterController.setFilterValueFromDetailActivity(optionList);
+
+        for(Option option : optionList) {
+            OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+        }
     }
 
     private void handleResultFromLocationPage() {
@@ -311,6 +315,10 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
                     @Override
                     public void onNext(List<Option> optionList) {
+                        for (Option option : optionList) {
+                            OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+                        }
+
                         filterController.setFilterValueFromDetailActivity(optionList);
                         adapter.notifyItemChanged(selectedExpandableItemPosition);
                         hideLoading();
@@ -319,9 +327,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private void handleResultFromCategoryPage(Intent data) {
-        String selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
-        String selectedCategoryName = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
-        String selectedCategoryRootId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
+        selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
+        selectedCategoryName = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
+        selectedCategoryRootId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
 
         Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
 
@@ -334,6 +342,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     @Override
     public void applyFilter() {
+    }
+
+    public void applyFilterFromButton() {
         renderFilterResult();
         finish();
     }
@@ -341,18 +352,24 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     private void renderFilterResult() {
         Intent intent = new Intent();
         HashMap<String, String> filterParameterHashMap = new HashMap<>(filterController.getFilterParameter());
+        // for SearchSectionFragment
         intent.putExtra(EXTRA_FILTER_PARAMETER, filterParameterHashMap);
 
         // for BrowseSectionFragment
         intent.putExtra(EXTRA_SELECTED_FILTERS, filterParameterHashMap);
-        intent.putExtra(EXTRA_SELECTED_FLAG_FILTER, generateFilterFlagSelectedModel());
-        //
+        intent.putExtra(EXTRA_SELECTED_FLAG_FILTER, getFilterFlagSelected());
 
         setResult(RESULT_OK, intent);
     }
 
-    private FilterFlagSelectedModel generateFilterFlagSelectedModel() {
-        return null;
+    private FilterFlagSelectedModel getFilterFlagSelected() {
+        FilterFlagSelectedModel model = new FilterFlagSelectedModel();
+        model.setSavedCheckedState(savedCheckedState);
+        model.setSavedTextInput(savedTextInput);
+        model.setCategoryId(selectedCategoryId);
+        model.setSelectedCategoryRootId(selectedCategoryRootId);
+        model.setSelectedCategoryName(selectedCategoryName);
+        return model;
     }
 
     public void resetAllFilter() {
@@ -435,11 +452,40 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     @Override
     public void setFilterValue(Option option, String value) {
         filterController.setFilterValue(option, value);
+
+        handlePriceFilter(option.getKey(), value);
+    }
+
+    private void handlePriceFilter(String key, String value) {
+        if(key.equals(Option.KEY_PRICE_MIN) || key.equals(Option.KEY_PRICE_MAX)) {
+            if(isFilterApplied(value)) {
+                saveTextInput(key, value);
+            }
+            else {
+                removeSavedTextInput(key);
+            }
+        }
+    }
+
+    private boolean isFilterApplied(String value) {
+        if(Boolean.parseBoolean(value)) return true;
+        else return isValueNotEmptyAndNotFalse(value);
+    }
+
+    private boolean isValueNotEmptyAndNotFalse(String value) {
+        return !TextUtils.isEmpty(value) && !value.equals(Boolean.FALSE.toString());
     }
 
     @Override
     public void setFilterValueExpandableItem(Option option, boolean value) {
         filterController.setFilterValueExpandableItem(option, value);
+
+        if (value) {
+            saveCheckedState(option, value);
+        }
+        else {
+            removeSelectedOption(option);
+        }
     }
 
     @Override

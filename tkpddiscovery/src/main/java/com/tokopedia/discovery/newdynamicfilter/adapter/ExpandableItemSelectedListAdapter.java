@@ -69,7 +69,7 @@ public class ExpandableItemSelectedListAdapter extends
             selectedItem.setOnDeleteListener(new DeletableItemView.OnDeleteListener() {
                 @Override
                 public void onDelete() {
-                    filterView.removeSelectedOption(option);
+                    filterView.setFilterValueExpandableItem(option, false);
                     selectedOptionsList.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, getItemCount());

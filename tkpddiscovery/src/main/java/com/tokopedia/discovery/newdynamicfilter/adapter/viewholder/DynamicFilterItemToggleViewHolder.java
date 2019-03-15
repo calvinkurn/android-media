@@ -38,7 +38,7 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
 
     private void bindSwitchForOption(Option option) {
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
-                (buttonView, isChecked) -> setFilterValueAndApply(option, String.valueOf(isChecked));
+                (buttonView, isChecked) -> setFlagFilterValueAndApply(option, isChecked);
 
         String filterValueString = filterView.getFilterValue(option.getKey());
         boolean filterValueBoolean = Boolean.parseBoolean(filterValueString);
