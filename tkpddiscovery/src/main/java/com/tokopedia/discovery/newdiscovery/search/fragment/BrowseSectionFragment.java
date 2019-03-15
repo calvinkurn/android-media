@@ -395,7 +395,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     }
 
     protected void openFilterPage() {
-        if(getSelectedFilter().isEmpty()) {
+        if(getSelectedFilter() == null) {
             setSelectedFilter(new HashMap<>());
         }
 

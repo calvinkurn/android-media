@@ -184,24 +184,42 @@ class FilterController() : Parcelable {
 
     private fun setBundledOptionsForFlagFilterHelper(optionsForFlagFilterHelper: MutableList<Option>, option: Option) {
         val iterator = optionsForFlagFilterHelper.listIterator()
-        while (iterator.hasNext()) {
+        var optionHasBeenAddedOrReplaced = false
+
+        while (iterator.hasNext()
+            && !optionHasBeenAddedOrReplaced) {
             val existingOption = iterator.next()
 
             if(existingOption.key == option.key) {
-                replaceOrAddOptionWithSameKey(iterator, existingOption, option)
+                optionHasBeenAddedOrReplaced = replaceOrAddOptionWithSameKey(iterator, existingOption, option)
             }
+        }
+
+        if(!optionHasBeenAddedOrReplaced) {
+            optionsForFlagFilterHelper.add(option)
         }
     }
 
-    private fun replaceOrAddOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) {
+    private fun replaceOrAddOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) : Boolean {
         val existingOptionValueList = existingOption.value.split(Option.VALUE_SEPARATOR).toList()
         val currentOptionValueList = currentOption.value.split(Option.VALUE_SEPARATOR).toList()
 
-        if (currentOptionValueList.containsAll(existingOptionValueList)) {
-            iterator.set(currentOption)
-        } else if (!existingOptionValueList.containsAll(currentOptionValueList)) {
-            iterator.add(currentOption)
+        return when {
+            shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList, existingOptionValueList)-> {
+                iterator.set(currentOption)
+                true
+            }
+            existingOptionAlreadyContainsCurrentOption(currentOptionValueList, existingOptionValueList) -> true
+            else -> false
         }
+    }
+
+    private fun shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList: List<String>, existingOptionValueList: List<String>) : Boolean {
+        return currentOptionValueList.containsAll(existingOptionValueList)
+    }
+
+    private fun existingOptionAlreadyContainsCurrentOption(currentOptionValueList: List<String>, existingOptionValueList: List<String>) : Boolean {
+        return existingOptionValueList.containsAll(currentOptionValueList)
     }
 
     private fun loadActiveFilter() {
@@ -425,9 +443,6 @@ class FilterController() : Parcelable {
         val checkedOptions = ArrayList<Option>()
 
         for (option in filter.options) {
-//            val isDisplayed = isCustomOptionDisplayed(option)
-
-//            if (isDisplayed && !option.isPopular) {
             if(isDisplayed(option)) {
                 checkedOptions.add(option)
             }
