@@ -1,11 +1,9 @@
 package com.tokopedia.kyc.view.fragment;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.util.AnalyticsUtil;
@@ -62,12 +61,7 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
         startUpgradeProcess = view.findViewById(R.id.start_upgrade_process);
         startUpgradeProcess.setOnClickListener(this);
         ovoTncLink = view.findViewById(R.id.ovo_tncpage_link);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            ovoTncLink.setText(Html.fromHtml(getResources().getString(R.string.ovo_tnc_text), Html.FROM_HTML_MODE_LEGACY));
-        }
-        else {
-            ovoTncLink.setText(Html.fromHtml(getResources().getString(R.string.ovo_tnc_text)));
-        }
+        ovoTncLink.setText(MethodChecker.fromHtml(getResources().getString(R.string.ovo_tnc_text)));
         ovoTncLink.setOnClickListener(this::onClick);
         return view;
     }
