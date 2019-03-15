@@ -16,6 +16,8 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
+import java.util.Set;
+
 /**
  * Created by okasurya on 1/9/18.
  */
@@ -26,13 +28,17 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     public static final String PAGE_ID = "page_id";
     public static final String SHAKE_SHAKE = "shake-shake";
     private static final String MP_FLASHSALE = "mp_flashsale";
-    private static boolean mShakeStatus = true;
+    private static boolean mAllowShake = true;
     private PermissionListener mPermissionListener;
 
     @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
-        if (bundle != null && bundle.getString(SHAKE_SHAKE) != null) {
-            mShakeStatus = Boolean.parseBoolean(bundle.getString(SHAKE_SHAKE));
+        if (bundle != null) {
+
+            String key = getKeyValueByCaseInsensitive(bundle);
+            if(key!= null){
+                mAllowShake = Boolean.parseBoolean(key);
+            }
         }
         ReactUtils.startTracing(MP_FLASHSALE);
         return ReactNativeDiscoveryActivity.createApplinkCallingIntent(
@@ -41,6 +47,15 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
                 bundle.getString(PAGE_ID),
                 bundle
         );
+    }
+
+    private static String getKeyValueByCaseInsensitive(Bundle bundle){
+        Set<String> keySet = bundle.keySet();
+        for (String key : keySet) {
+            if (key.toLowerCase().equals(SHAKE_SHAKE))
+                return bundle.getString(key);
+        }
+        return null;
     }
 
     @Override
@@ -104,7 +119,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
 
     @Override
     protected void registerShake() {
-        if(mShakeStatus) {
+        if(mAllowShake) {
             super.registerShake();
         }
     }
