@@ -86,7 +86,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun isOwner(): Boolean {
-        return true
+        return false
     }
 
     override fun onMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {

@@ -61,7 +61,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
         mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
-        btnUseVoucher.visibility = View.GONE
+        //btnUseVoucher.visibility = View.GONE
         //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
         btnUseVoucher.text = context.getString(R.string.use_voucher)
         //TOGGLE_MVC_OFF
@@ -89,6 +89,13 @@ class MerchantVoucherViewUsed : CustomVoucherView {
     }
 
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
+        if (merchantVoucherViewModel?.enableButtonUse == true) {
+            btnUseVoucher.visibility = View.VISIBLE
+            tvCode.visibility = View.GONE
+        } else {
+            btnUseVoucher.visibility = View.GONE
+            tvCode.visibility = View.VISIBLE
+        }
         this.merchantVoucherViewModel = merchantVoucherViewModel
         merchantVoucherViewModel?.run {
             ivVoucherLogo.setImageResource(when (merchantVoucherViewModel.ownerId) {

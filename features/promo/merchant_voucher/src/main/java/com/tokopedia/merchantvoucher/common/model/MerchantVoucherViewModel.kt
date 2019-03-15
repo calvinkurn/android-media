@@ -36,6 +36,7 @@ class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, P
     var status: Int? = MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
     @MerchantVoucherOwnerTypeDef
     var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT
+    var enableButtonUse = false
 
     fun isAvailable() = status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
 
