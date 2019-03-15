@@ -16,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
@@ -87,6 +88,10 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
             return intent
         }
+    }
+
+    override fun getScreenName(): String {
+        return ProductDetailTracking.PRODUCT_DETAIL_SCREEN_NAME
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment

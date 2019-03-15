@@ -167,7 +167,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var userInputVariant: String? = null
 
     private val productDetailTracking: ProductDetailTracking by lazy {
-        ProductDetailTracking((context?.applicationContext as? AbstractionRouter)?.analyticTracker)
+        ProductDetailTracking()
     }
 
     var productInfo: ProductInfo? = null

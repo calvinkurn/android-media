@@ -1069,6 +1069,11 @@ public abstract class SellerRouterApplication extends MainApplication
         return new UserSession(this);
     }
 
+    /**
+     * use TrackApp.getGtm() instead
+     * @return
+     */
+    @Deprecated
     @Override
     public AnalyticTracker getAnalyticTracker() {
         initAnalyticTracker();

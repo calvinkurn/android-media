@@ -40,6 +40,11 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
 
+    private static final String KEY_EVENT = "event";
+    private static final String KEY_CATEGORY = "eventCategory";
+    private static final String KEY_ACTION = "eventAction";
+    private static final String KEY_LABEL = "eventLabel";
+
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
@@ -49,6 +54,16 @@ public class GTMAnalytics extends ContextAnalytics {
     @Override
     public void sendGeneralEvent(Map<String, Object> value) {
         pushGeneral(value);
+    }
+
+    @Override
+    public void sendGeneralEvent(String event, String category, String action, String label) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(KEY_EVENT, event);
+        map.put(KEY_CATEGORY, category);
+        map.put(KEY_ACTION, action);
+        map.put(KEY_LABEL, label);
+        pushGeneral(map);
     }
 
     @Override
