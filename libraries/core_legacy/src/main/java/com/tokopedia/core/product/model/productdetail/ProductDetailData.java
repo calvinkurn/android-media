@@ -48,6 +48,8 @@ public class ProductDetailData implements Parcelable {
     @SerializedName("product_images")
     @Expose
     private List<ProductImage> productImages = new ArrayList<ProductImage>();
+    @SerializedName("campaign")
+    private Campaign campaign2;
 
     public long getServerTimeUnix() {
         return serverTimeUnix;
@@ -178,6 +180,14 @@ public class ProductDetailData implements Parcelable {
 
     public void setCampaign(Campaign campaign) {
         this.campaign = campaign;
+    }
+
+    public Campaign getCampaign2() {
+        return campaign2;
+    }
+
+    public void setCampaign2(Campaign campaign2) {
+        this.campaign2 = campaign2;
     }
 
     public boolean isBigPromo() {

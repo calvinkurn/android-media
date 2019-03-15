@@ -8,6 +8,7 @@ import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.domain.pojo.RegisterIdentificationPojo;
 import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
 import com.tokopedia.useridentification.domain.usecase.RegisterIdentificationUseCase;
@@ -16,7 +17,7 @@ import com.tokopedia.useridentification.view.listener.UserIdentificationUploadIm
 import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.useridentification.view.viewmodel.ImageUploadModel;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
-import com.tokopedia.useridentification.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +73,7 @@ public class UserIdentificationUploadImagePresenter extends
     }
 
     @Override
-    public void uploadImage(UserIdentificationStepperModel model,int projectId) {
+    public void uploadImage(UserIdentificationStepperModel model, int projectId) {
         List<ImageUploadModel> attachments = parseToModel(model);
         compositeSubscription.add(Observable.from(attachments)
                 .flatMap(new Func1<ImageUploadModel, Observable<ImageUploadModel>>() {
@@ -110,11 +111,13 @@ public class UserIdentificationUploadImagePresenter extends
                                         return Observable.zip(Observable.just
                                                         (imageUploadModel),
                                                 uploadIdentificationUseCase.createObservable(
-                                                                UploadIdentificationUseCase.getRequestParam(
-                                                                        imageUploadModel.getKycType(),
-                                                                        imageUploadModel.getPicObjKyc()
-                                                                )
-                                                        ), new Func2<ImageUploadModel,
+                                                        UploadIdentificationUseCase.getRequestParam(
+                                                                imageUploadModel.getKycType(),
+                                                                imageUploadModel.getPicObjKyc(),
+                                                                imageUploadModel.getFilePath(),
+                                                                projectId
+                                                        )
+                                                ), new Func2<ImageUploadModel,
                                                         GraphqlResponse, ImageUploadModel>() {
                                                     @Override
                                                     public ImageUploadModel call(ImageUploadModel imageUploadModel,
@@ -187,8 +190,7 @@ public class UserIdentificationUploadImagePresenter extends
     private List<ImageUploadModel> parseToModel(UserIdentificationStepperModel model) {
         List<ImageUploadModel> list = new ArrayList<>();
         list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_KTP, model.getKtpFile()));
-        list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_SELFIE, model.getFaceFile
-                ()));
+        list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_SELFIE, model.getFaceFile()));
         return list;
     }
 

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -75,8 +74,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
-import com.tokopedia.tkpdpdp.BuildConfig;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.tkpdpdp.BuildConfig;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
@@ -573,7 +572,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                 tradeInParams.setProductId(productDetailData.getInfo().getProductId());
                                 tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
                                 tradeInParams.setProductName(productDetailData.getInfo().getProductName());
-
+                                tradeInParams.setPreorder(Integer.parseInt(productDetailData.getPreOrder().getPreorderStatus()) == 1);
+                                tradeInParams.setOnCampaign(productDetailData.getCampaign2().getActive());
                                 viewListener.checkTradeIn(tradeInParams);
                             }
 
@@ -1174,6 +1174,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             tradeInParams.setProductId(data.getInfo().getProductId());
                             tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
                             tradeInParams.setProductName(data.getInfo().getProductName());
+                            tradeInParams.setPreorder(Integer.parseInt(data.getPreOrder().getPreorderStatus()) == 1);
+                            tradeInParams.setOnCampaign(data.getCampaign2().getActive());
 
                             viewListener.checkTradeIn(tradeInParams);
                         }

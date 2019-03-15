@@ -49,7 +49,7 @@ public class RegisterIdentificationUseCase {
 
     public static RequestParams getRequestParam(int projectid) {
         RequestParams param = RequestParams.create();
-        if (projectid != -1)
+        if (projectid > 0)
             param.putInt(PROJECT_ID, projectid);
         else
             param.putInt(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
