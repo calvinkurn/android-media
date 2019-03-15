@@ -82,7 +82,6 @@ public interface FlightApi {
                                                            @Header("Idempotency-Key") String idemPotencyKeyHeader,
                                                            @Header("x-tkpd-userid") String userId);
 
-    @Headers({"Content-Type: application/json"})
     @GET(FlightUrl.FLIGHT_CART_PATH_WITH_ID)
     Observable<Response<String>> getCart(@Path("id") String cartId, @Header("x-tkpd-userid") String userId);
 
