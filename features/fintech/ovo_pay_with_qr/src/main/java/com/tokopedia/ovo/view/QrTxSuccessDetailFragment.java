@@ -75,7 +75,7 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.qr_pay_tx_detail_success, container, false);
+        View view = inflater.inflate(R.layout.oqr_qr_pay_tx_detail_success, container, false);
         date = view.findViewById(R.id.tx_date);
         amount = view.findViewById(R.id.transaction_amount);
         merchantName = view.findViewById(R.id.merchant_name);
@@ -90,9 +90,9 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
         });
         pasteToClipboard.setOnClickListener(view1 -> {
             ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(getString(R.string.copied_to_clipboard), transactionCode.getText().toString());
+            ClipData clip = ClipData.newPlainText(getString(R.string.oqr_copied_to_clipboard), transactionCode.getText().toString());
             clipboard.setPrimaryClip(clip);
-            Snackbar.make(getView(), getString(R.string.copied_to_clipboard), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), getString(R.string.oqr_copied_to_clipboard), Snackbar.LENGTH_SHORT).show();
         });
         presenter.requestForThankYouPage(getActivity(), transferId);
         return view;
@@ -123,6 +123,6 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
 
     @Override
     public String getErrorMessage() {
-        return getString(R.string.error_message);
+        return getString(R.string.oqr_error_message);
     }
 }

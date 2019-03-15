@@ -5,12 +5,12 @@
     <application>
         <activity
             android:name=".view.PaymentQRSummaryActivity"
-            android:label="@string/payment_summary"
+            android:label="@string/oqr_payment_summary"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.QrOvoPayTxDetailActivity"
-            android:label="@string/payment_summary"
+            android:label="@string/oqr_payment_summary"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

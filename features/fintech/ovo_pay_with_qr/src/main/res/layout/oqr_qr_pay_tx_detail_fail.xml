@@ -34,8 +34,8 @@
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginRight="@dimen/dp_16"
             android:gravity="center_horizontal"
-            android:text="@string/default_error_message"
-            android:textColor="@color/amount_color_black"
+            android:text="@string/oqr_default_error_message"
+            android:textColor="@color/oqr_amount_color_black"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Butuh Bantuan?"
-            android:textColor="@color/aqua_color"
+            android:textColor="@color/oqr_aqua_color"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
@@ -73,8 +73,8 @@
         android:background="@drawable/rounded_hollow_btn_bg"
         android:gravity="center_horizontal"
         android:padding="@dimen/dp_16"
-        android:text="@string/try_again"
-        android:textColor="@color/aqua_color"
+        android:text="@string/oqr_try_again"
+        android:textColor="@color/oqr_aqua_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toTopOf="@+id/back_to_main" />
 
@@ -84,8 +84,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_24"
         android:gravity="center_horizontal"
-        android:text="@string/back_to_main"
-        android:textColor="@color/aqua_color"
+        android:text="@string/oqr_back_to_main"
+        android:textColor="@color/oqr_aqua_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toTopOf="@+id/bottom_section_parent" />
 
@@ -95,6 +95,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <include layout="@layout/bottom_section" />
+        <include layout="@layout/oqr_bottom_section" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

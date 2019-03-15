@@ -41,9 +41,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_16"
                         android:gravity="center_horizontal"
-                        android:textColor="@color/amount_color_black"
+                        android:textColor="@color/oqr_amount_color_black"
                         android:textSize="@dimen/sp_16"
-                        tools:text="@string/fake_date" />
+                        tools:text="@string/oqr_fake_date" />
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="wrap_content"
@@ -56,8 +56,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_8"
-                            android:text="@string/rp_string"
-                            android:textColor="@color/amount_color_black"
+                            android:text="@string/oqr_rp_string"
+                            android:textColor="@color/oqr_amount_color_black"
                             android:textSize="@dimen/sp_14"
                             android:textStyle="bold"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -68,10 +68,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/dp_4"
                             android:layout_marginLeft="@dimen/dp_4"
-                            android:textColor="@color/amount_color_black"
+                            android:textColor="@color/oqr_amount_color_black"
                             android:textSize="@dimen/sp_34"
                             app:layout_constraintLeft_toRightOf="@+id/rp_string_id"
-                            tools:text="@string/fake_number" />
+                            tools:text="@string/oqr_fake_number" />
                     </android.support.constraint.ConstraintLayout>
                 </LinearLayout>
 
@@ -87,7 +87,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/merchant"
+                        android:text="@string/oqr_merchant"
                         android:textColor="@color/pin_normal"
                         android:textSize="@dimen/sp_12" />
 
@@ -117,7 +117,7 @@
                                 android:layout_marginBottom="@dimen/dp_4"
                                 android:textColor="@color/light_primary"
                                 android:textSize="@dimen/sp_18"
-                                tools:text="@string/default_shop_name" />
+                                tools:text="@string/oqr_default_shop_name" />
 
                             <TextView
                                 android:id="@+id/merchant_description"
@@ -126,7 +126,7 @@
                                 android:layout_marginTop="@dimen/dp_2"
                                 android:textColor="@color/light_primary"
                                 android:textSize="@dimen/sp_14"
-                                tools:text="@string/default_shop_description" />
+                                tools:text="@string/oqr_default_shop_description" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -140,7 +140,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/transaction_id_text"
+                            android:text="@string/oqr_transaction_id_text"
                             android:textColor="@color/pin_normal"
                             android:textSize="@dimen/sp_12" />
 
@@ -154,8 +154,8 @@
                                 android:id="@+id/transaction_code"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/fake_number"
-                                android:textColor="@color/amount_color_black"
+                                android:text="@string/oqr_fake_number"
+                                android:textColor="@color/oqr_amount_color_black"
                                 android:textSize="@dimen/sp_16" />
 
                             <ImageView
@@ -181,8 +181,8 @@
                         android:gravity="center_horizontal"
                         android:paddingTop="@dimen/dp_16"
                         android:paddingBottom="@dimen/dp_16"
-                        android:text="@string/go_to_tokopedia"
-                        android:textColor="@color/aqua_color"
+                        android:text="@string/oqr_go_to_tokopedia"
+                        android:textColor="@color/oqr_aqua_color"
                         android:textSize="@dimen/sp_14" />
                 </LinearLayout>
             </LinearLayout>
@@ -193,7 +193,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <include layout="@layout/bottom_section" />
+            <include layout="@layout/oqr_bottom_section" />
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 

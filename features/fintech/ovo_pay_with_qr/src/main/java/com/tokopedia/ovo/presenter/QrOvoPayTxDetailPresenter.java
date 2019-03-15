@@ -26,7 +26,7 @@ public class QrOvoPayTxDetailPresenter extends BaseDaggerPresenter<QrOvoPayTxDet
 
         variables.put(TRANSFER_ID, transferId);
         GraphqlUseCase useCase = new GraphqlUseCase();
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.qr_thanks),
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.oqr_qr_thanks),
                 ThanksData.class, variables);
         useCase.addRequest(request);
         useCase.execute(new Subscriber<GraphqlResponse>() {

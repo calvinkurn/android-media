@@ -50,12 +50,12 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     @Override
     protected Fragment getNewFragment() {
         if (getIntent().getIntExtra(CODE, -1) == SUCCESS) {
-            updateTitle(getString(R.string.success_transaction));
+            updateTitle(getString(R.string.oqr_success_transaction));
             return QrTxSuccessDetailFragment.createInstance(
                     getIntent().getIntExtra(TRANSFER_ID, -1),
                     getIntent().getIntExtra(TRANSACTION_ID, -1));
         } else {
-            updateTitle(getString(R.string.fail_transaction));
+            updateTitle(getString(R.string.oqr_fail_transaction));
             return QrPayTxFailFragment.createInstance(
                     getIntent().getIntExtra(TRANSFER_ID, -1),
                     getIntent().getIntExtra(TRANSACTION_ID, -1));

@@ -66,14 +66,14 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.qr_pay_tx_detail_fail, container, false);
+        View view = inflater.inflate(R.layout.oqr_qr_pay_tx_detail_fail, container, false);
         failDescription = view.findViewById(R.id.fail_description);
         callSection = view.findViewById(R.id.call_section);
         backToMain = view.findViewById(R.id.back_to_main);
         tryAgain = view.findViewById(R.id.try_again);
         callSection.setOnClickListener(view1 -> {
             ((OvoPayWithQrRouter) getActivity().getApplication())
-                    .openTokopointWebview(getActivity(), HELP_URL, getString(R.string.contact_us));
+                    .openTokopointWebview(getActivity(), HELP_URL, getString(R.string.oqr_contact_us));
         });
         backToMain.setOnClickListener(view1 -> {
             listener.setResult(Activity.RESULT_OK);
@@ -103,6 +103,6 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
 
     @Override
     public String getErrorMessage() {
-        return getString(R.string.error_message);
+        return getString(R.string.oqr_error_message);
     }
 }

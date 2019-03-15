@@ -116,7 +116,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.payment_qr_summary_fragment, container, false);
+        View view = inflater.inflate(R.layout.oqr_payment_qr_summary_fragment, container, false);
         initViews(view);
         setDataAndListeners();
         return view;
@@ -182,7 +182,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     @Override
     public void setWalletBalance(Wallet walletData) {
         wallet = walletData;
-        pointCash.setText(String.format(getString(R.string.cash_point), walletData.getCashBalance(),
+        pointCash.setText(String.format(getString(R.string.oqr_cash_point), walletData.getCashBalance(),
                 walletData.getPointBalance()));
         bayarBtn.setOnClickListener(this);
     }
@@ -195,7 +195,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                 try {
                     ((OvoPayWithQrRouter) getActivity().getApplication())
                             .openTokopointWebview(getActivity(), URLDecoder.decode(
-                                    response.getPinUrl(), "UTF-8"), getString(R.string.pin_page_title));
+                                    response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -219,7 +219,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     @Override
     public String getErrorMessage() {
-        return getString(R.string.error_message);
+        return getString(R.string.oqr_error_message);
     }
 
     public void setProgressButton() {
@@ -251,8 +251,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        inputError.setTextColor(getResources().getColor(R.color.grey_error));
-        inputError.setText(getString(R.string.min_input_hint));
+        inputError.setTextColor(getResources().getColor(R.color.oqr_grey_error));
+        inputError.setText(getString(R.string.oqr_min_input_hint));
     }
 
     @Override
@@ -267,12 +267,12 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
             if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
                 long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
-                ovoPoints.setText(String.format(getString(R.string.ovo_cash_point_amnt),
+                ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
                         wallet.getPointBalance()));
-                ovoCash.setText(String.format(getString(R.string.ovo_cash_point_amnt),
+                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
                         String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
             } else {
-                ovoCash.setText(String.format(getString(R.string.ovo_cash_point_amnt), String.valueOf(0)));
+                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
                 ovoPoints.setText(formattedString);
             }
         }
@@ -284,13 +284,13 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             hideKeyboard(getView(), getActivity());
             if (TextUtils.isEmpty(inputAmount.getText()) || (inputAmount.getText() != null
                     && Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) < MIN_AMOUNT)) {
-                setErrorMessage(getString(R.string.min_input_hint));
+                setErrorMessage(getString(R.string.oqr_min_input_hint));
             } else if (!TextUtils.isEmpty(inputAmount.getText()) && Utils.convertToCurrencyLongFromString(
                     inputAmount.getText().toString()) > MAX_AMOUNT) {
-                setErrorMessage(getString(R.string.max_input_hint));
+                setErrorMessage(getString(R.string.oqr_max_input_hint));
             } else if (inputAmount.getText() != null && Utils.convertToCurrencyLongFromString(
                     inputAmount.getText().toString()) > wallet.getRawBalance()) {
-                setErrorMessage(getString(R.string.balance_exceed_error));
+                setErrorMessage(getString(R.string.oqr_balance_exceed_error));
             } else {
                 confirmQrRequest();
             }
@@ -311,6 +311,6 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     public void setErrorMessage(String message) {
         inputError.setText(message);
-        inputError.setTextColor(getResources().getColor(R.color.error_color));
+        inputError.setTextColor(getResources().getColor(R.color.oqr_error_color));
     }
 }

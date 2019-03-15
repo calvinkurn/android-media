@@ -35,7 +35,7 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
     public void fetchWalletDetails() {
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(mContext.getResources(), R.raw.wallet_detail),
+                GraphqlHelper.loadRawString(mContext.getResources(), R.raw.oqr_wallet_detail),
                 WalletData.class);
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -75,7 +75,7 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
         variables.put(FEE, fees);
         variables.put(USE_POINT, showUsePointToggle);
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(mContext.getResources(), R.raw.confirm_imei),
+                GraphqlHelper.loadRawString(mContext.getResources(), R.raw.oqr_confirm_imei),
                 ConfirmData.class,
                 variables);
         graphqlUseCase.addRequest(graphqlRequest);
