@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.applink.internal.ApplinkConstInternal;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-
 import static com.tokopedia.applink.ProductDetailRouteManager.getProductIntent;
 
 /**
