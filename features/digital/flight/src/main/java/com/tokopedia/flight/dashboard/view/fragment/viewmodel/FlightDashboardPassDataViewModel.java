@@ -7,6 +7,10 @@ package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
 public class FlightDashboardPassDataViewModel {
     private String departureAirportId;
     private String arrivalAirportId;
+    private String departureCityCode;
+    private String arrivalCityCode;
+    private String departureCityName;
+    private String arrivalCityName;
     private String departureDate;
     private String returnDate;
     private int adultPassengerCount;
@@ -85,5 +89,37 @@ public class FlightDashboardPassDataViewModel {
 
     public void setRoundTrip(boolean roundTrip) {
         isRoundTrip = roundTrip;
+    }
+
+    public String getDepartureCityCode() {
+        return departureCityCode;
+    }
+
+    public void setDepartureCityCode(String departureCityCode) {
+        this.departureCityCode = departureCityCode;
+    }
+
+    public String getArrivalCityCode() {
+        return arrivalCityCode;
+    }
+
+    public void setArrivalCityCode(String arrivalCityCode) {
+        this.arrivalCityCode = arrivalCityCode;
+    }
+
+    public String getDepartureCityName() {
+        return departureCityName;
+    }
+
+    public void setDepartureCityName(String departureCityName) {
+        this.departureCityName = departureCityName;
+    }
+
+    public String getArrivalCityName() {
+        return arrivalCityName;
+    }
+
+    public void setArrivalCityName(String arrivalCityName) {
+        this.arrivalCityName = arrivalCityName;
     }
 }
