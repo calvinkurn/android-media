@@ -106,7 +106,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
                 else NO_DESCRIPTION
 
             txt_product_descr.text = if (descFormatted.length > MAX_CHAR){
-                val subDescr = MethodChecker.fromHtml(descFormatted).toString().substring(MAX_CHAR)
+                val subDescr = MethodChecker.fromHtml(descFormatted).toString().substring(0,MAX_CHAR)
                 MethodChecker.fromHtml(subDescr.replace("(\r\n|\n)".toRegex(), "<br />") + "....")
             } else MethodChecker.fromHtml(descFormatted)
 
