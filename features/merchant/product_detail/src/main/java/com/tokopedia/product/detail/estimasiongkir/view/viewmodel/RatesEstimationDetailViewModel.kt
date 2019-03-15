@@ -32,10 +32,10 @@ class RatesEstimationDetailViewModel @Inject constructor(
         val params = mapOf(PARAM_PRODUCT_WEIGHT to productWeight,
                 PARAM_SHOP_DOMAIN to shopDomain)
         val request = GraphqlRequest(rawQuery, RatesEstimationModel.Response::class.java, params)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+
         launchCatchError(block = {
             val result = withContext(Dispatchers.IO){
-                val resp = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+                val resp = graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<RatesEstimationModel.Response>().data?.data ?: throw NullPointerException()
 
                 val filteredService = resp.rates.services.asSequence()

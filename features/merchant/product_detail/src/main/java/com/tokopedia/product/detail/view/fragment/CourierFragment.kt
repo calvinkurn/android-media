@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
@@ -45,11 +46,13 @@ class CourierFragment: BaseListFragment<BlackBoxShipmentHolder, CourierTypeFacto
             val bbInfos: List<BBInfo> = it.getParcelableArrayList(ARGS_BBINFO_LIST) ?: listOf()
             val rv = getRecyclerView(view)
             if (bbInfos.isNotEmpty()){
+                (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.product_detail_courier))
                 super.renderList(bbInfos, false)
                 view.title_bbinfo.visible()
                 if (rv.itemDecorationCount > 0)
                     rv.removeItemDecorationAt(rv.itemDecorationCount - 1)
             } else {
+                (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.courier_title))
                 super.renderList(shipments, false)
                 view.title_bbinfo.gone()
                 rv.addItemDecoration(DividerItemDecoration(activity))
