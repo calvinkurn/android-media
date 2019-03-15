@@ -29,7 +29,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
@@ -415,8 +415,7 @@ public class ReputationViewShop extends TActivity {
     }
 
     private Intent getProductIntent(String productId){
-        return RouteManager.getIntentInternal(this,
-                UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+        return RouteManager.getIntent(this,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     private View.OnClickListener OnUserNameClickListener() {

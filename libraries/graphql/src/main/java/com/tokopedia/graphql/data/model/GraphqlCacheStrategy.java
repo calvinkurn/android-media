@@ -40,7 +40,7 @@ public class GraphqlCacheStrategy {
 
         //optional parameters
         private long expiryTime;
-        private boolean isSessionIncluded;
+        private boolean isSessionIncluded = true;
 
         public Builder(CacheType type) {
             this.type = type;

@@ -4,48 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import static com.tokopedia.applink.ProductDetailRouteManager.getProductIntent;
 
 /**
  * @author ricoharisin .
  * Central class for routing to activity
+ * <p>
+ * This will check the deeplink in the manifest
+ * If the activity exists, it will route to that activity
+ * Else, it will route to ApplinkRouter intent.
+ * If still not supported will return null
  */
 
 public class RouteManager {
 
-    /**
-     * This will check the deeplink in the manifest
-     * If the activity exists, it will route to that activity
-     * Else, it will route to ApplinkRouter intent.
-     * If still not supported will return null
-     */
-    public static @Nullable
-    Intent getIntentInternal(@NonNull Context context, @NonNull String deeplink) {
-        Intent intent = buildInternalUri(context, deeplink);
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            return intent;
-        } else {
-            return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, deeplink);
-        }
-    }
-
-    public static boolean isSupportApplinkInternal(@NonNull Context context, @NonNull String applink) {
-        return buildInternalUri(context, applink).resolveActivity(context.getPackageManager()) != null;
-    }
-
-    /**
-     * route deeplink based on the registered pattern in the manifest
-     */
-    public static void routeInternal(Context context, String deeplink) {
-        Intent intent = RouteManager.getIntentInternal(context, deeplink);
-        if (intent != null) {
-            context.startActivity(intent);
-        } else {
-            route(context, deeplink);
-        }
-    }
-
-    private static Intent buildInternalUri(@NonNull Context context, @NonNull String deeplink) {
+    static Intent buildInternalUri(@NonNull Context context, @NonNull String deeplink) {
         Uri uri = Uri.parse(deeplink);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(uri);
@@ -55,28 +29,35 @@ public class RouteManager {
         return intent;
     }
 
-    /**
-     * use routeInternal instead (only if the applink already defined in manifest)
-     */
-    @Deprecated
-    public static void route(Context context, String applink) {
-        ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, applink);
+    public static void route(Context context, String applinkPattern, String... parameter) {
+        String uriString = UriUtil.buildUri(applinkPattern, parameter);
+        Intent intent = getIntent(context, uriString);
+        if (intent != null) {
+            context.startActivity(intent);
+        } else {
+            ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
+        }
     }
 
-    /**
-     * use getIntentInternal instead (only if the applink already defined in manifest)
-     */
-    @Deprecated
-    public static Intent getIntent(Context context, String applink) {
-        return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
+    public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
+        String applink = UriUtil.buildUri(applinkPattern, parameter);
+        // TEMPORARY SOLUTION TO route product to old PDP by remote config
+        Intent intent;
+        if (ProductDetailRouteManager.isProductApplink(applink)) {
+            intent = getProductIntent(context, applink);
+        } else {
+            intent = buildInternalUri(context, applink);
+        }
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            return intent;
+        } else {
+            return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
+        }
     }
 
-    /**
-     * use isSupportApplinkInternal instead (only if the applink already defined in manifest)
-     */
-    @Deprecated
     public static boolean isSupportApplink(Context context, String applink) {
-        return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
+        return buildInternalUri(context, applink).resolveActivity(context.getPackageManager()) != null ||
+                ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
     }
 
     public static String routeWithAttribution(Context context, String applink,

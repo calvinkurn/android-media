@@ -14,7 +14,7 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
@@ -118,16 +118,15 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
         if (pathSegmentList.size() > 1) {
             String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
             String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
-            Intent intent = RouteManager.getIntentInternal(this,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_DOMAIN,
-                            shopDomain, productKey));
+            Intent intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                    shopDomain, productKey);
             if (intent != null) {
                 startActivity(intent);
             } else {
-                RouteManager.routeInternal(this, productUrl);
+                RouteManager.route(this, productUrl);
             }
         } else {
-            RouteManager.routeInternal(this, productUrl);
+            RouteManager.route(this, productUrl);
         }
     }
 

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.webkit.URLUtil;
 
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -102,23 +103,19 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-
-        CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
-
         if (deepLinkUri != null) {
-
-            if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {
+            CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
+            if (URLUtil.isNetworkUrl(deepLinkUri.toString())) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
+            } else if (Constants.Schemes.APPLINKS_SELLER.equals(deepLinkUri.getScheme())) {
                 Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
-
             } else {
                 CommonUtils.dumper("FCM entered no one");
             }
@@ -290,4 +287,5 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getInboxTicketCallingIntent(Context context) {
         return null;
     }
+
 }

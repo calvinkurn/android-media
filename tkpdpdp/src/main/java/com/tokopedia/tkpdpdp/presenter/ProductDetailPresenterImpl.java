@@ -28,7 +28,7 @@ import com.tokopedia.abstraction.common.network.exception.ResponseDataNullExcept
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -453,8 +453,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle) {
-        viewListener.navigateToActivity(RouteManager.getIntentInternal(context,
-                UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))));
+        viewListener.navigateToActivity(RouteManager.getIntent(context,
+                ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                bundle.getString(BrowseProductRouter.DEPARTMENT_ID)));
     }
 
     @Override

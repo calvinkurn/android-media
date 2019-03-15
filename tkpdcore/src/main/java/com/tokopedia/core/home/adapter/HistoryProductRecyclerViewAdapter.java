@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -101,8 +101,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             public void onClick(View view) {
                 if(position < data.size()) {
                     UnifyTracking.eventFeedRecent(view.getContext(), data.get(position).getName());
-                    RouteManager.routeInternal(getContext(),
-                            UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, data.get(position).getId()));
+                    RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, data.get(position).getId());
                 }
             }
         };

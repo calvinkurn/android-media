@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
@@ -328,9 +328,8 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
         } else {
             Context context = getActivity();
             if (context != null) {
-                RouteManager.routeInternal(context,
-                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,
-                                urlParser.getDepIDfromURI(context)));
+                RouteManager.route(context,ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                                urlParser.getDepIDfromURI(context));
             }
 
         }

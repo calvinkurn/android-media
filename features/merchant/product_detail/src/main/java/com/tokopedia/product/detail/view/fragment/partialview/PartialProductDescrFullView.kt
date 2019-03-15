@@ -11,7 +11,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.gone
@@ -106,7 +106,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
                 else NO_DESCRIPTION
 
             txt_product_descr.text = if (descFormatted.length > MAX_CHAR){
-                val subDescr = MethodChecker.fromHtml(descFormatted).toString().substring(MAX_CHAR)
+                val subDescr = MethodChecker.fromHtml(descFormatted).toString().substring(0,MAX_CHAR)
                 MethodChecker.fromHtml(subDescr.replace("(\r\n|\n)".toRegex(), "<br />") + "....")
             } else MethodChecker.fromHtml(descFormatted)
 
@@ -127,9 +127,9 @@ class PartialProductDescrFullView private constructor(private val view: View,
 
     private fun openCategory(category: Category.Detail) {
         if (GlobalConfig.isCustomerApp()) {
-            RouteManager.routeInternal(view.context,
-                UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,
-                category.id))
+            RouteManager.route(view.context,
+                ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                category.id)
         }
     }
 
