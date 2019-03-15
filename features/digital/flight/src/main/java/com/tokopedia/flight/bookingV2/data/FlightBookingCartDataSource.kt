@@ -28,7 +28,7 @@ class FlightBookingCartDataSource @Inject constructor(private val flightApi: Fli
                     }
 
     fun getCart(cartId: String): Observable<GetCartEntity> =
-            flightApi.getCart(cartId)
+            flightApi.getCart(cartId, userSession.userId)
                     .map {
                         gsonWithDeserializer.fromJson(it.body(), GetCartEntity::class.java)
                     }

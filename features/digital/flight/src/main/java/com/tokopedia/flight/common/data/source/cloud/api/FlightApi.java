@@ -84,7 +84,8 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @GET(FlightUrl.FLIGHT_CART_PATH_WITH_ID)
-    Observable<Response<String>> getCart(@Path("id") String cartId);
+    Observable<Response<String>> getCart(@Path("id") String cartId,
+                                         @Header("x-tkpd-userid") String userId);
 
     @GET(FlightUrl.FLIGHT_CHECK_VOUCHER_CODE)
     Observable<Response<DataResponse<AttributesVoucher>>> checkVoucherCode(@QueryMap HashMap<String, String> paramsAllValueInString);
