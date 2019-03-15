@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ovo</string>
+    <string name="oqr_app_name">Ovo</string>
     <string name="oqr_payment_summary">Pembayaran</string>
     <string name="oqr_ovo_cash_point_amnt">%s</string>
     <string name="oqr_balance_exceed_error">Saldo Anda tidak mencukupi</string>
