@@ -588,21 +588,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartPromoUseVoucherMerchantPromoClickedTest() {
-        if (getFragmentManager() != null) {
+        dPresenter.processCheckPromoStackingCode();
+        /*if (getFragmentManager() != null) {
             checkoutModuleRouter.showBottomSheetPromoMerchantList(getFragmentManager());
 
             // test hit first_step
-            /*CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase = new CheckPromoStackingCodeUseCase();
-            CheckPromoStackingCodeUseCase::execute(RequestParams.create(), );*/
+            *//*CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase = new CheckPromoStackingCodeUseCase();
+            CheckPromoStackingCodeUseCase::execute(RequestParams.create(), );*//*
 
             // test clash bottomsheet
-            /*ClashBottomSheetFragment bottomSheet = ClashBottomSheetFragment.newInstance();
-            bottomSheet.show(getFragmentManager(), null);*/
+            *//*ClashBottomSheetFragment bottomSheet = ClashBottomSheetFragment.newInstance();
+            bottomSheet.show(getFragmentManager(), null);*//*
 
             // test totalbenefit bottomsheet
-            /*TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
-            bottomSheet.show(getFragmentManager(), null);*/
-        }
+            *//*TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
+            bottomSheet.show(getFragmentManager(), null);*//*
+        }*/
     }
 
     /*@Override

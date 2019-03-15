@@ -1,19 +1,19 @@
 package com.tokopedia.promocheckout.common.view.uimodel
 
 data class DataUiModel(
-		val globalSuccess: Boolean? = null,
-		val success: Boolean? = null,
-		val message: MessageUiModel? = null,
-		val promoCodeId: Int? = null,
-		val codes: List<String?>? = null,
-		val titleDescription: String? = null,
-		val discountAmount: Int? = null,
-		val cashbackWalletAmount: Int? = null,
-		val cashbackAdvocateReferralAmount: Int? = null,
-		val cashbackVoucherDescription: String? = null,
-		val invoiceDescription: String? = null,
-		val gatewayId: String? = null,
-		val isCoupon: Int? = null,
-		val couponDescription: String? = null,
-		val voucherOrders: List<VoucherOrdersItemUiModel>? = null
+		var globalSuccess: Boolean = false,
+		var success: Boolean = false,
+		var message: MessageUiModel = MessageUiModel(),
+		var promoCodeId: Int = -1,
+		var codes: List<String> = emptyList(),
+		var titleDescription: String = "",
+		var discountAmount: Int = -1,
+		var cashbackWalletAmount: Int = -1,
+		var cashbackAdvocateReferralAmount: Int = -1,
+		var cashbackVoucherDescription: String = "",
+		var invoiceDescription: String = "",
+		var gatewayId: String = "",
+		var isCoupon: Int = -1,
+		var couponDescription: String = "",
+		var voucherOrders: List<VoucherOrdersItemUiModel> = emptyList()
 )

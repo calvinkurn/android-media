@@ -158,7 +158,7 @@ public class VoucherOrdersItemData implements Parcelable {
         dest.writeString(uniqueId);
         dest.writeInt(cartId);
         dest.writeInt(shopId);
-        dest.writeInt(isPO);
+        dest.writeInt((isPO));
         dest.writeInt(addressId);
         dest.writeString(type);
         dest.writeInt(cashbackWalletAmount);

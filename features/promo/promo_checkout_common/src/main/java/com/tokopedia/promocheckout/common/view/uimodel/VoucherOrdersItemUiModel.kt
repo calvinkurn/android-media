@@ -1,13 +1,13 @@
 package com.tokopedia.promocheckout.common.view.uimodel
 
 data class VoucherOrdersItemUiModel(
-		val success: Boolean? = null,
-		val code: String? = null,
-		val uniqueId: String? = null,
-		val cartId: Int? = null,
-		val type: String? = null,
-		val cashbackWalletAmount: Int? = null,
-		val discountAmount: Int? = null,
-		val invoiceDescription: String? = null,
-		val message: MessageUiModel? = null
+		var success: Boolean = false,
+		var code: String = "",
+		var uniqueId: String = "",
+		var cartId: Int = -1,
+		var type: String = "",
+		var cashbackWalletAmount: Int = -1,
+		var discountAmount: Int = -1,
+		var invoiceDescription: String = "",
+		var message: MessageUiModel = MessageUiModel()
 )

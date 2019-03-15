@@ -19,10 +19,8 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartList
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoStackingCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
@@ -32,6 +30,7 @@ import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
+import com.tokopedia.checkout.view.feature.promostacking.subscriber.CheckPromoStackingSubscriber;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
@@ -39,8 +38,10 @@ import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.Response;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseUiModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
@@ -104,8 +105,8 @@ public class CartListPresenter implements ICartListPresenter {
     private final DeleteCartGetCartListUseCase deleteCartGetCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
-    // private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
-    private CheckPromoStackingCodeCartListUseCase checkPromoStackingCodeCartListUseCase = null;
+    private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
+    // private CheckPromoStackingCodeCartListUseCase checkPromoStackingCodeCartListUseCase = null;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final AddWishListUseCase addWishListUseCase;
@@ -159,6 +160,7 @@ public class CartListPresenter implements ICartListPresenter {
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
+                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
@@ -175,6 +177,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.updateCartUseCase = updateCartUseCase;
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
+        this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.addWishListUseCase = addWishListUseCase;
@@ -760,15 +763,15 @@ public class CartListPresenter implements ICartListPresenter {
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
                 view.getGeneratedAuthParamNetwork(param));
 
-        /*compositeSubscription.add(
+        compositeSubscription.add(
                 checkPromoCodeCartListUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
-        );*/
+        );
 
-        compositeSubscription.add(
+        /*compositeSubscription.add(
                 checkPromoStackingCodeCartListUseCase.createObservable(requestParams.EMPTY)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -815,7 +818,7 @@ public class CartListPresenter implements ICartListPresenter {
                                 // view.renderCheckPromoStackingCodeFromSuggestedPromoSuccess(responseFirstStep);
                             }
 
-                        });
+                        });*/
 
 
     }
@@ -1496,6 +1499,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processCheckPromoStackingCode() {
-        // checkPromoStackingCodeUseCase.createObservable()
+        checkPromoStackingCodeUseCase.setParams();
+        checkPromoStackingCodeUseCase.execute(RequestParams.create(), new CheckPromoStackingSubscriber(this));
     }
 }
