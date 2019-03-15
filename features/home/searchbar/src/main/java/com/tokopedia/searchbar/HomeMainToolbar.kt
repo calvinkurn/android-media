@@ -64,7 +64,7 @@ class HomeMainToolbar : MainToolbar {
             val pB = toolbar.paddingBottom
 
             toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+//            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
 
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
