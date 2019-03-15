@@ -1,4 +1,4 @@
-package com.tokopedia.merchantvoucher.voucherList.bottomsheet
+package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.item_merchant_voucher_used.view.*
 /**
  * Created by fwidjaja on 10/03/19.
  */
-class MerchantBottomSheetViewHolder(itemView: View,
-                                    onMerchantVoucherViewListener: MerchantVoucherViewUsed.OnMerchantVoucherViewListener?)
+class MerchantVoucherListBottomSheetViewHolder(itemView: View,
+                                               onMerchantVoucherViewListener: MerchantVoucherViewUsed.OnMerchantVoucherViewListener?)
     : AbstractViewHolder<MerchantVoucherViewModel>(itemView) {
 
     companion object {
