@@ -118,6 +118,7 @@ class TabBusinessFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetTabBusinessWidget(throwable: Throwable) {
+        throwable.printStackTrace()
         errorView.visibility = View.VISIBLE
         container.visibility = View.GONE
         temporayPlaceHolders.visibility = View.GONE

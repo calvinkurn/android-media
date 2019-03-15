@@ -35,19 +35,22 @@ class TabBusinessViewModel @Inject constructor(
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(
                         rawQuery,
-                        HomeWidget.Response::class.java
+                        HomeWidget.Data::class.java
                 )
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getData<HomeWidget.Response>(HomeWidget.Response::class.java)
+            }
 
-            if (data.errors.isEmpty()) {
-                homeWidget.value = Success(data.data.homeWidget)
+            if (data.getError(HomeWidget.Data::class.java).isEmpty()) {
+                if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
+                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+                } else {
+                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
+                }
             } else {
-                val listMessage = arrayListOf<String>()
-                data.errors.forEach { listMessage.add(it.message) }
-                val message = TextUtils.join("\n", listMessage)
+                val message = data.getError(HomeWidget.Data::class.java)[0].message
                 homeWidget.value = Fail(ResponseErrorException(message))
             }
+
         }){
             it.printStackTrace()
             homeWidget.value = Fail(it)
