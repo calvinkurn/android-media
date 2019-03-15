@@ -10,36 +10,36 @@ public class ExploreData {
 
     @SerializedName("topadsExploreAffiliateProduct")
     @Expose
-    private ExploreQuery exploreProduct;
+    private ExploreProduct exploreProduct;
 
     @SerializedName("topadsGetExploreCategory")
     @Expose
-    private FilterQuery filter;
+    private ExploreCategory filter;
 
     @SerializedName("topadsGetExploreSort")
-    private SortQuery sort;
+    private ExploreSort sort;
 
-    public ExploreQuery getExploreProduct() {
+    public ExploreProduct getExploreProduct() {
         return exploreProduct;
     }
 
-    public void setExploreProduct(ExploreQuery exploreProduct) {
+    public void setExploreProduct(ExploreProduct exploreProduct) {
         this.exploreProduct = exploreProduct;
     }
 
-    public FilterQuery getFilter() {
+    public ExploreCategory getFilter() {
         return filter;
     }
 
-    public void setFilter(FilterQuery filter) {
+    public void setFilter(ExploreCategory filter) {
         this.filter = filter;
     }
 
-    public SortQuery getSort() {
+    public ExploreSort getSort() {
         return sort;
     }
 
-    public void setSort(SortQuery sort) {
+    public void setSort(ExploreSort sort) {
         this.sort = sort;
     }
 

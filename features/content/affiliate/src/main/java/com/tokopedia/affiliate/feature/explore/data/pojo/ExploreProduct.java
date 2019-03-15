@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author by yfsx on 08/10/18.
  */
-public class ExploreQuery {
+public class ExploreProduct {
 
     @SerializedName("pagination")
     @Expose

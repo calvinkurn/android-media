@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author by yfsx on 15/01/19.
  */
-public class SortQuery {
+public class ExploreSort {
     @SerializedName("sort")
     private List<SortData> sorts;
 

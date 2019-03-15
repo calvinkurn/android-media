@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
 import com.tokopedia.affiliate.feature.explore.domain.usecase.AutoCompleteUseCase;
-import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreSectionUseCase;
+import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreFirstPageUseCase;
 import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreUseCase;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.AutoCompleteSubscriber;
@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckQuotaSubscri
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreFirstSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreLoadMoreSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -27,19 +28,19 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     private CheckQuotaUseCase checkQuotaUseCase;
     private CheckAffiliateUseCase checkAffiliateUseCase;
     private AutoCompleteUseCase autoCompleteUseCase;
-    private ExploreSectionUseCase exploreSectionUseCase;
+    private ExploreFirstPageUseCase exploreFirstPageUseCase;
 
     @Inject
     ExplorePresenter(ExploreUseCase exploreUseCase,
                      CheckQuotaUseCase checkQuotaUseCase,
                      CheckAffiliateUseCase checkAffiliateUseCase,
                      AutoCompleteUseCase autoCompleteUseCase,
-                     ExploreSectionUseCase exploreSectionUseCase) {
+                     ExploreFirstPageUseCase exploreFirstPageUseCase) {
         this.exploreUseCase = exploreUseCase;
         this.checkQuotaUseCase = checkQuotaUseCase;
         this.checkAffiliateUseCase = checkAffiliateUseCase;
         this.autoCompleteUseCase = autoCompleteUseCase;
-        this.exploreSectionUseCase = exploreSectionUseCase;
+        this.exploreFirstPageUseCase = exploreFirstPageUseCase;
     }
 
     @Override
@@ -49,29 +50,37 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         checkQuotaUseCase.unsubscribe();
         checkAffiliateUseCase.unsubscribe();
         autoCompleteUseCase.unsubscribe();
-        exploreSectionUseCase.unsubscribe();
+        exploreFirstPageUseCase.unsubscribe();
     }
 
     @Override
     public void getFirstData(ExploreParams exploreParams, boolean isPullToRefresh) {
         unsubscribeAutoComplete();
-        if (!isPullToRefresh) getView().showLoading();
-        exploreUseCase.clearRequest();
-        exploreUseCase.addRequest(exploreUseCase.getRequest(exploreParams));
-        exploreUseCase.execute(
-                new GetExploreFirstSubscriber(
-                        getView(),
-                        !TextUtils.isEmpty(exploreParams.getKeyword()),
-                        isPullToRefresh,
-                        exploreParams)
-        );
+
+        if (!isPullToRefresh) {
+            getView().showLoading();
+        }
+
+        exploreFirstPageUseCase.createObservable(RequestParams.EMPTY);
+//        exploreUseCase.clearRequest();
+//        exploreUseCase.addRequest(exploreUseCase.getRequest(exploreParams));
+//        exploreUseCase.execute(
+//                new GetExploreFirstSubscriber(
+//                        getView(),
+//                        !TextUtils.isEmpty(exploreParams.getKeyword()),
+//                        isPullToRefresh,
+//                        exploreParams)
+//        );
     }
 
     @Override
     public void loadMoreData(ExploreParams exploreParams) {
         unsubscribeAutoComplete();
         exploreUseCase.clearRequest();
-        exploreUseCase.addRequest(exploreUseCase.getRequestLoadMore(exploreParams));
+        exploreUseCase.addRequest(ExploreUseCase.Companion.getRequestLoadMore(
+                getView().getContext(),
+                exploreParams
+        ));
         exploreUseCase.execute(new GetExploreLoadMoreSubscriber(getView()));
     }
 

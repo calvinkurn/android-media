@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author by yfsx on 27/12/18.
  */
-public class FilterQuery {
+public class ExploreCategory {
 
     @SerializedName("category")
     @Expose
