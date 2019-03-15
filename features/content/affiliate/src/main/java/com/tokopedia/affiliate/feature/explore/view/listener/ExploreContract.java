@@ -8,8 +8,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public interface ExploreContract {
                                    String cursor,
                                    boolean isSearch,
                                    boolean isPullToRefresh,
-                                   SortFilterModel sortFilterModel);
+                                   List<SortViewModel> sortViewModel);
 
         void onSuccessGetFilteredSortedFirstData(List<Visitable> itemList,
                                    String cursor,
@@ -40,13 +40,13 @@ public interface ExploreContract {
 
         void onErrorGetFirstData(String error);
 
-        void onSuccessGetMoreData(List<Visitable> itemList, String cursor);
+        void onSuccessGetMoreData(List<Visitable<?>> itemList, String cursor);
 
         void onErrorGetMoreData(String error);
 
-        void onBymeClicked(ExploreViewModel model);
+        void onBymeClicked(ExploreProductViewModel model);
 
-        void onProductClicked(ExploreViewModel model);
+        void onProductClicked(ExploreProductViewModel model);
 
         void dropKeyboard();
 

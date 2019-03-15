@@ -13,7 +13,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.Recommend
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel;
@@ -30,7 +30,7 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
     }
 
     @Override
-    public int type(ExploreViewModel exploreViewModel) {
+    public int type(ExploreProductViewModel exploreProductViewModel) {
         return ExploreViewHolder.LAYOUT;
     }
 

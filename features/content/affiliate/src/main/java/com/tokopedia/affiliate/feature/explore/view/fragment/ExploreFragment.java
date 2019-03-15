@@ -51,11 +51,10 @@ import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChildViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.affiliate.util.AffiliateHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -113,7 +112,7 @@ public class ExploreFragment
     private EmptyModel emptyResultModel;
     private String firstCursor = "";
     private List<Visitable> tempFirstData = new ArrayList<>();
-    private SortFilterModel tempLocalSortFilterData = new SortFilterModel();
+    private List<SortViewModel> tempLocalSortData = new ArrayList<>();
     private RemoteConfig remoteConfig;
     private PerformanceMonitoring performanceMonitoring;
 
@@ -224,7 +223,7 @@ public class ExploreFragment
                     return 0;
                 }
 
-                if (adapter.getData().get(position) instanceof ExploreViewModel) {
+                if (adapter.getData().get(position) instanceof ExploreProductViewModel) {
                     return SINGLE_SPAN_COUNT;
                 }
                 return FULL_SPAN_COUNT;
@@ -401,7 +400,8 @@ public class ExploreFragment
         if (filterAdapter != null) {
             filterAdapter.clearAllData();
             filterAdapter.resetAllFilters();
-            filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
+            //TODO milhamj remove?
+//            filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
         }
     }
 
@@ -427,7 +427,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onBymeClicked(ExploreViewModel model) {
+    public void onBymeClicked(ExploreProductViewModel model) {
         ExploreCardViewModel cardViewModel = model.getExploreCardViewModel();
         affiliateAnalytics.onByMeButtonClicked(cardViewModel.getProductId());
         if (isCanDoAction) {
@@ -441,7 +441,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onProductClicked(ExploreViewModel model) {
+    public void onProductClicked(ExploreProductViewModel model) {
         ExploreCardViewModel cardViewModel = model.getExploreCardViewModel();
         affiliateAnalytics.onProductClicked(cardViewModel.getProductId());
         if (getContext() != null &&  isCanDoAction) {
@@ -459,12 +459,11 @@ public class ExploreFragment
                                       String cursor,
                                       boolean isSearch,
                                       boolean isPullToRefresh,
-                                      SortFilterModel sortFilterModel) {
+                                      List<SortViewModel> sortViewModels) {
         populateFirstData(itemList, cursor);
         if (!isPullToRefresh) {
-            populateFilter(sortFilterModel.getFilterList());
-            populateSort(sortFilterModel.getSortList());
-            if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortFilterModel);
+            populateSort(sortViewModels);
+            if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortViewModels);
         }
     }
 
@@ -508,10 +507,10 @@ public class ExploreFragment
         return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling berjasa", "Dimulai dari Tokopedia"));
     }
 
-    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, SortFilterModel sortFilterModel) {
+    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, List<SortViewModel> sortViewModels) {
         tempFirstData = itemList;
         this.firstCursor = firstCursor;
-        this.tempLocalSortFilterData = sortFilterModel;
+        this.tempLocalSortData = sortViewModels;
     }
 
     private List<Visitable> getLocalFirstData() {
@@ -612,7 +611,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetMoreData(List<Visitable> itemList, String cursor) {
+    public void onSuccessGetMoreData(List<Visitable<?>> itemList, String cursor) {
         adapter.hideLoading();
         adapter.addElement(itemList);
         if (TextUtils.isEmpty(cursor)) {

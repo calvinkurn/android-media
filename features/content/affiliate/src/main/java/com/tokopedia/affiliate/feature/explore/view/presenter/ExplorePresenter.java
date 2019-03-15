@@ -1,7 +1,5 @@
 package com.tokopedia.affiliate.feature.explore.view.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
@@ -12,7 +10,6 @@ import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.AutoCompleteSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckAffiliateSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckQuotaSubscriber;
-import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreFirstSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreLoadMoreSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.usecase.RequestParams;
@@ -76,11 +73,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     @Override
     public void loadMoreData(ExploreParams exploreParams) {
         unsubscribeAutoComplete();
-        exploreUseCase.clearRequest();
-        exploreUseCase.addRequest(ExploreUseCase.Companion.getRequestLoadMore(
-                getView().getContext(),
-                exploreParams
-        ));
+        exploreUseCase.setExploreParams(exploreParams);
         exploreUseCase.execute(new GetExploreLoadMoreSubscriber(getView()));
     }
 

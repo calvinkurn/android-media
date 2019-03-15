@@ -11,10 +11,7 @@ import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreProduct
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.*
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -32,7 +29,9 @@ import javax.inject.Inject
 class ExploreUseCase @Inject constructor(
         @ApplicationContext private val context: Context,
         private val graphqlUseCase: GraphqlUseCase
-) : UseCase<List<Visitable<*>>>() {
+) : UseCase<ExploreViewModel>() {
+
+    var exploreParams: ExploreParams = ExploreParams()
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
@@ -42,14 +41,7 @@ class ExploreUseCase @Inject constructor(
         )
     }
 
-    override fun createObservable(requestParams: RequestParams?): Observable<List<Visitable<*>>> {
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            val data: ExploreData = it.getData(ExploreData::class.java)
-            mapExploreProducts(data.exploreProduct)
-        }
-    }
-
-    fun createObservable(exploreParams: ExploreParams): Observable<List<Visitable<*>>> {
+    override fun createObservable(requestParams: RequestParams?): Observable<ExploreViewModel> {
         val query = GraphqlHelper.loadRawString(
                 context.resources,
                 R.raw.query_explore
@@ -61,14 +53,20 @@ class ExploreUseCase @Inject constructor(
         )
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        return createObservable(RequestParams.EMPTY)
+        return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
+            val data: ExploreData = it.getData(ExploreData::class.java)
+            ExploreViewModel(
+                    mapExploreProducts(data.exploreProduct),
+                    data.exploreProduct.pagination.nextCursor
+            )
+        }
     }
 
     private fun mapExploreProducts(exploreProduct: ExploreProduct): List<Visitable<*>> {
         val itemList = ArrayList<Visitable<*>>()
         exploreProduct.products.forEach {
             itemList.add(
-                    ExploreViewModel(ExploreCardViewModel(
+                    ExploreProductViewModel(ExploreCardViewModel(
                             it.name,
                             context.getString(R.string.af_get_commission),
                             it.commission,

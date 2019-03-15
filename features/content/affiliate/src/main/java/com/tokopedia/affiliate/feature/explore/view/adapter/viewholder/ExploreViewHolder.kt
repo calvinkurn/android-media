@@ -6,7 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel
 import kotlinx.android.synthetic.main.item_af_explore.view.*
 
 /**
@@ -14,14 +14,14 @@ import kotlinx.android.synthetic.main.item_af_explore.view.*
  */
 class ExploreViewHolder(itemView: View,
                         private val mainView: ExploreContract.View)
-    : AbstractViewHolder<ExploreViewModel>(itemView) {
+    : AbstractViewHolder<ExploreProductViewModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
         val LAYOUT = R.layout.item_af_explore
     }
 
-    override fun bind(element: ExploreViewModel) {
+    override fun bind(element: ExploreProductViewModel) {
         itemView.card.bind(element.exploreCardViewModel)
     }
 
