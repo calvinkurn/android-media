@@ -120,7 +120,7 @@ public class HeaderHomeView extends BaseCustomView {
             View container = view.findViewById(R.id.container_nonlogin);
             ImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
 
-            ImageHandler.loadImageWithoutPlaceholder(imgNonLogin, BG_CONTAINER_URL);
+            ImageHandler.LoadImage(imgNonLogin, BG_CONTAINER_URL);
 
             container.setOnClickListener(onCheckNowListener());
             scanHolder.setOnClickListener(onScanListener());

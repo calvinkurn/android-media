@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -65,6 +66,7 @@ import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -73,7 +75,6 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -315,6 +316,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
+        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        }
+
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
