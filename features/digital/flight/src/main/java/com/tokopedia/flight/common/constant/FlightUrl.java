@@ -15,6 +15,7 @@ public class FlightUrl {
     public static final String FLIGHT_SEARCH_COMBINED = FLIGHT_PATH + "search/combined";
     public static final String FLIGHT_CLASS_PATH = FLIGHT_PATH + "dropdown/class";
     public static final String FLIGHT_CART_PATH = FLIGHT_PATH + "cart";
+    public static final String FLIGHT_CART_PATH_WITH_ID = FLIGHT_PATH + "cart/{id}";
     public static final String FLIGHT_CART_PATH_V11 = FLIGHT_PATH_V11 + "cart";
     public static final String FLIGHT_CHECK_VOUCHER_CODE = FLIGHT_PATH + "voucher/check";
     public static final String FLIGHT_CANCEL_VOUCHER_CODE = FLIGHT_PATH + "voucher/cancel";
