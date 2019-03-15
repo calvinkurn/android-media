@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.customview;
+package com.tokopedia.collapsing.tab.layout;
 
 import android.graphics.Typeface;
 import android.animation.Animator;
@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.home.R;
+import com.tokopedia.collapsing.tab.layout.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +31,6 @@ public class CollapsingTabLayout extends TabLayout {
     private static final int NONE = -1;
     private static final int MAX_TAB_COLLAPSE_SCROLL_RANGE = 200;
     private static final int SCROLL_UP_THRESHOLD_BEFORE_EXPAND = 500;
-
-    private String tabTitles[] = new String[] { "For You", "Promo Akhir Tahun", "Populer Minggu Ini" };
-    private int[] imageResId = { R.drawable.background_tab_feed_1, R.drawable.background_tab_feed_2, R.drawable.background_tab_feed_3 };
 
     private List<TabItemData> tabItemDataList = new ArrayList<>();
 

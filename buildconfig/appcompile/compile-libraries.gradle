@@ -45,3 +45,4 @@ include "libraries:graph_view"
 
 include "libraries:linker"
 include "libraries:webview"
+include "libraries:collapsing_tab_layout"
