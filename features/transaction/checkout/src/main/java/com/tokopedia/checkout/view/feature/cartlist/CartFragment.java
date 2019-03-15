@@ -58,6 +58,8 @@ import com.tokopedia.checkout.view.feature.promostacking.ClashBottomSheetFragmen
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
+import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomsheetParamData;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -586,7 +588,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartPromoUseVoucherMerchantPromoClickedTest() {
         if (getFragmentManager() != null) {
-            checkoutModuleRouter.showBottomSheetPromoMerchantList(getFragmentManager());
+            MerchantVoucherListBottomsheetParamData data = new MerchantVoucherListBottomsheetParamData.BundleBuilder()
+                    .shopId("1767940")
+                    .checkoutType("ocs")
+                    .build();
+            MerchantVoucherListBottomSheetFragment.newInstance(data)
+                    .show(getFragmentManager(), null);
 
             // test clash bottomsheet
             /*ClashBottomSheetFragment bottomSheet = ClashBottomSheetFragment.newInstance();

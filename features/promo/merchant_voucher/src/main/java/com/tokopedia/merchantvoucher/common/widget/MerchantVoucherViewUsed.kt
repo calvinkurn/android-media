@@ -30,6 +30,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
     interface OnMerchantVoucherViewListener {
         fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel)
         fun isOwner(): Boolean
+        fun onMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel)
     }
 
     var merchantVoucherViewModel: MerchantVoucherViewModel? = null
@@ -78,6 +79,13 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                 onMerchantVoucherViewListener?.onMerchantUseVoucherClicked(this)*/
             }
         }
+
+        vgVoucherView.setOnClickListener {
+            merchantVoucherViewModel?.run {
+                onMerchantVoucherViewListener?.onMerchantVoucherClicked(this)
+            }
+        }
+
     }
 
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {

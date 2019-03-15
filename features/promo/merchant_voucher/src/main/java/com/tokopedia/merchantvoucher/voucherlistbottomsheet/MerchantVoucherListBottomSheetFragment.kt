@@ -2,14 +2,12 @@ package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.Color
-import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.BottomSheets
@@ -21,13 +19,12 @@ import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
-import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.ShopCommonModule
-import kotlinx.android.synthetic.main.bottomsheet_merchant_voucher.*
 import javax.inject.Inject
 
 /**
@@ -36,29 +33,29 @@ import javax.inject.Inject
 
 open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVoucherListView, MerchantVoucherViewUsed.OnMerchantVoucherViewListener {
 
-    lateinit var voucherShopId: String
     @Suppress("DEPRECATION")
     private var loadingUseMerchantVoucher: ProgressDialog? = null
     private var progressDialog: ProgressDialog? = null
     private lateinit var merchantVoucherListBottomSheetAdapter: MerchantVoucherListBottomSheetAdapter
     private lateinit var rvVoucherList: RecyclerView
 
+    lateinit var shopId: String
+    lateinit var checkoutType: String
+
     @Inject
     lateinit var presenter: MerchantVoucherListPresenter
 
     companion object {
         @JvmStatic
-        fun newInstance(shopId: String): MerchantVoucherListBottomSheetFragment {
+        fun newInstance(merchantVoucherListBottomsheetParamData: MerchantVoucherListBottomsheetParamData): MerchantVoucherListBottomSheetFragment {
             return MerchantVoucherListBottomSheetFragment().apply {
-                arguments = Bundle().apply {
-                    putString(MerchantVoucherListFragment.EXTRA_SHOP_ID, shopId)
-                }
+                arguments = merchantVoucherListBottomsheetParamData.getBundle()
             }
         }
     }
 
     override fun initView(view: View) {
-        voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
+        getArgumentsValue()
         merchantVoucherListBottomSheetAdapter = MerchantVoucherListBottomSheetAdapter(this)
         if (activity != null) {
             initInjector()
@@ -71,7 +68,12 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         // merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget)
         rvVoucherList = view.findViewById(R.id.rvVoucherList)
         presenter.clearCache()
-        presenter.getVoucherList(voucherShopId)
+        presenter.getVoucherList(shopId)
+    }
+
+    fun getArgumentsValue() {
+        shopId = arguments?.getString(MerchantVoucherListBottomsheetParamData.EXTRA_SHOP_ID) ?: MerchantVoucherListBottomsheetParamData.EXTRA_SHOP_ID_DEFAULT_VALUE
+        checkoutType = arguments?.getString(MerchantVoucherListBottomsheetParamData.EXTRA_CHECKOUT_TYPE) ?: MerchantVoucherListBottomsheetParamData.EXTRA_CHECKOUT_TYPE_DEFAULT_VALUE
     }
 
     override fun getLayoutResourceId(): Int {
@@ -86,6 +88,20 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         return true
     }
 
+    override fun onMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+        context?.let {
+            merchantVoucherViewModel.run {
+                val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
+                        this, shopId)
+                startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
         if (context == null) {
             return
@@ -95,12 +111,12 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         /*if (presenter.isLogin() == false) {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
-        } else if (!presenter.isMyShop(voucherShopId)) {
+        } else if (!presenter.isMyShop(shopId)) {
             showUseMerchantVoucherLoading();
             presenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode, merchantVoucherViewModel.voucherId)
         }*/
         //TOGGLE_MVC_OFF
-        activity?.run{
+        activity?.run {
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
             snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
@@ -195,7 +211,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             errorMessage = ErrorHandler.getErrorMessage(context, e)
             onRetryListener = ErrorNetworkModel.OnRetryListener {
                 presenter.clearCache()
-                presenter.getVoucherList(voucherShopId)
+                presenter.getVoucherList(shopId)
             }
         }
         super.showGetListError(e)*/
@@ -209,7 +225,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     /*override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
         val intent = MerchantVoucherDetailActivity.createIntent(context!!, merchantVoucherViewModel.voucherId,
-                merchantVoucherViewModel, voucherShopId)
+                merchantVoucherViewModel, shopId)
         startActivity(intent)
     }*/
 

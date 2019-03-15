@@ -73,5 +73,4 @@ public interface ICheckoutModuleRouter {
 
     Intent getCodPageIntent(Context context, Data data);
 
-    void showBottomSheetPromoMerchantList(FragmentManager fragmentManager);
 }

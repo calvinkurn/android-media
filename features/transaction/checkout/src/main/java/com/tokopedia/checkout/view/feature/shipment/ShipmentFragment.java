@@ -64,6 +64,8 @@ import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
+import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomsheetParamData;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
@@ -1545,7 +1547,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             /*MerchantBottomSheetFragment bottomSheet = MerchantBottomSheetFragment.newInstance("1767940");
             bottomSheet.show(getFragmentManager(), null);*/
 
-            checkoutModuleRouter.showBottomSheetPromoMerchantList(getFragmentManager());
+            MerchantVoucherListBottomsheetParamData data = new MerchantVoucherListBottomsheetParamData.BundleBuilder()
+                    .shopId("1767940")
+                    .checkoutType("ocs")
+                    .build();
+            MerchantVoucherListBottomSheetFragment.newInstance(data)
+                    .show(getFragmentManager(), null);
+
         }
     }
 

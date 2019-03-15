@@ -3845,9 +3845,4 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return CheckLoginPhoneNumberActivity.getCallingIntent(context);
     }
 
-    @Override
-    public void showBottomSheetPromoMerchantList(FragmentManager fragmentManager) {
-        MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance("1767940");
-        merchantVoucherListBottomSheetFragment.show(fragmentManager, null);
-    }
 }
