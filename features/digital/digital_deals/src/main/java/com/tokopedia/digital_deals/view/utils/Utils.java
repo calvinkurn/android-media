@@ -131,6 +131,7 @@ public class Utils {
                 category.setCategoryUrl(categoryItem.getCategoryUrl());
                 category.setUrl(categoryItem.getUrl());
                 category.setItems(categoryItem.getItems());
+                category.setIsCard(categoryItem.getIsCard());
 
                 switch (categoryItem.getName().toLowerCase()) {
                     case "top":

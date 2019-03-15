@@ -341,27 +341,29 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             TextView textViewCatItem;
 
             for (int position = 0; position < 4; position++) {
-                LayoutInflater inflater = getLayoutInflater();
-                view = inflater.inflate(R.layout.category_item, mainContent, false);
-                imageViewCatItem = view.findViewById(R.id.iv_category);
-                textViewCatItem = view.findViewById(R.id.tv_category);
-                textViewCatItem.setText(categoryList.get(position).getTitle());
-                ImageHandler.loadImage(getActivity(), imageViewCatItem, categoryList.get(position).getMediaUrl(), R.color.grey_1100, R.color.grey_1100);
-                final int position1 = position;
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CategoriesModel categoriesModel = new CategoriesModel();
-                        categoriesModel.setName(categoryList.get(position1).getName());
-                        categoriesModel.setTitle(categoryList.get(position1).getTitle());
-                        categoriesModel.setCategoryUrl(categoryList.get(position1).getCategoryUrl());
-                        categoriesModel.setCategoryId(categoryList.get(position1).getCategoryId());
-                        categoriesModel.setPosition(position1);
-                        categorySelected(categoriesModel);
-                    }
-                });
-                view.setLayoutParams(params);
-                catItems.addView(view);
+                if (categoryList.get(position).getIsCard() != 1) {
+                    LayoutInflater inflater = getLayoutInflater();
+                    view = inflater.inflate(R.layout.category_item, mainContent, false);
+                    imageViewCatItem = view.findViewById(R.id.iv_category);
+                    textViewCatItem = view.findViewById(R.id.tv_category);
+                    textViewCatItem.setText(categoryList.get(position).getTitle());
+                    ImageHandler.loadImage(getActivity(), imageViewCatItem, categoryList.get(position).getMediaUrl(), R.color.grey_1100, R.color.grey_1100);
+                    final int position1 = position;
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CategoriesModel categoriesModel = new CategoriesModel();
+                            categoriesModel.setName(categoryList.get(position1).getName());
+                            categoriesModel.setTitle(categoryList.get(position1).getTitle());
+                            categoriesModel.setCategoryUrl(categoryList.get(position1).getCategoryUrl());
+                            categoriesModel.setCategoryId(categoryList.get(position1).getCategoryId());
+                            categoriesModel.setPosition(position1);
+                            categorySelected(categoriesModel);
+                        }
+                    });
+                    view.setLayoutParams(params);
+                    catItems.addView(view);
+                }
             }
             LayoutInflater inflater = getLayoutInflater();
             view = inflater.inflate(R.layout.category_item, mainContent, false);
@@ -386,9 +388,13 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void renderBrandList(List<Brand> brandList) {
+        int spanCount = 2;
         if (brandList != null) {
+            if (brandList.size() == 1) {
+                spanCount = 1;
+            }
             clBrands.setVisibility(View.VISIBLE);
-            rvBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), 2,
+            rvBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), spanCount,
                     GridLayoutManager.HORIZONTAL, false));
             DealsBrandAdapter dealsBrandAdapter = new DealsBrandAdapter(brandList, DealsBrandAdapter.ITEM_BRAND_HOME);
             dealsBrandAdapter.setPopularBrands(true);
@@ -402,7 +408,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void renderCuratedDealsList(List<CategoryItem> categoryItems) {
         if (categoryItems != null && categoryItems.size() >0) {
-//            curatedDealsLayout.setVisibility(View.VISIBLE);
+            curatedDealsLayout.setVisibility(View.VISIBLE);
             curatedDealsLayout.removeAllViews();
             noContent.setVisibility(View.GONE);
             for (CategoryItem categoryItem: categoryItems) {
