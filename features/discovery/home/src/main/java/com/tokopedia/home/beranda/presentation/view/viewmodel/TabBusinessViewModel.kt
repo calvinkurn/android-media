@@ -40,13 +40,13 @@ class TabBusinessViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getData<HomeWidget.Response>(HomeWidget.Response::class.java)
 
-            if (data.errors.isNotEmpty()) {
+            if (data.errors.isEmpty()) {
+                homeWidget.value = Success(data.data.homeWidget)
+            } else {
                 val listMessage = arrayListOf<String>()
                 data.errors.forEach { listMessage.add(it.message) }
                 val message = TextUtils.join("\n", listMessage)
                 homeWidget.value = Fail(ResponseErrorException(message))
-            } else {
-                homeWidget.value = Success(data.data.homeWidget)
             }
         }){
             it.printStackTrace()
