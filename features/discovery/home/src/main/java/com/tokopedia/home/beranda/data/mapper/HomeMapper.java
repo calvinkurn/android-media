@@ -119,7 +119,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
                                         channel.getEnhanceImpressionDynamicSprintLegoHomePage(position)
                                 );
-                            } else {
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
                                 legoAndCuratedAndSprintSaleBannerList.addAll(
@@ -134,7 +139,14 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             list.add(mappingDynamicTopAds(channel));
                         } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
                             list.add(mappingSpotlight(homeData.getSpotlight()));
-                        } else {
+                        } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)) {
                             list.add(mappingDynamicChannel(channel));
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size(),channel);
