@@ -48,7 +48,7 @@ public class HeaderHomeView extends BaseCustomView {
             "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png";
 
     private static final String TITLE_HEADER_WEBSITE = "TokoPoints";
-    private static final String RP_NOL = "Rp0";
+    private static final String TITLE = "OVO";
     private static final String WALLET_TYPE = "OVO";
 
     private HomeCategoryListener listener;
@@ -327,7 +327,7 @@ public class HeaderHomeView extends BaseCustomView {
             tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
             tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
         } else {
-            tvTitleTokocash.setText(RP_NOL);
+            tvTitleTokocash.setText(TITLE);
             tvActionTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setVisibility(GONE);
             if (headerViewModel.isPendingTokocashChecked() && headerViewModel.getCashBackData() != null) {
