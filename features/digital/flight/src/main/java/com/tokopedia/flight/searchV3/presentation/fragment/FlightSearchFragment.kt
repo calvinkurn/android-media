@@ -193,7 +193,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     override fun loadInitialData() {
-
+        flightSearchPresenter.initialize(true)
+        searchFlightData()
     }
 
     override fun loadData(page: Int) {
@@ -536,11 +537,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     fun searchFlightData() {
         fetchFlightSearchData()
-    }
-
-    fun refreshData() {
-        flightSearchPresenter.initialize(true)
-        searchFlightData()
     }
 
     private fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
