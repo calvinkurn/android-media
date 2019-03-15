@@ -57,6 +57,14 @@ class FilterController() : Parcelable {
 
     private fun loadSearchParameter(searchParameter: Map<String, String>) {
         this.searchParameter.putAll(searchParameter)
+        removeDuplicateValues()
+    }
+
+    private fun removeDuplicateValues() {
+        for(entrySet in searchParameter.entries) {
+            val valueSet = entrySet.value.split(Option.VALUE_SEPARATOR).toSet()
+            entrySet.setValue(valueSet.joinToString(separator = Option.VALUE_SEPARATOR))
+        }
     }
 
     private fun loadFilterList(filterList: List<Filter>) {
@@ -165,32 +173,34 @@ class FilterController() : Parcelable {
     }
 
     private fun addOrCombineOptions(optionsForFlagFilterHelper: MutableList<Option>, option: Option) {
-        val optionsWithSameKey = optionsForFlagFilterHelper.filter { it.key == option.key }.toMutableList()
+        val optionsWithSameKey = optionsForFlagFilterHelper.filter { it.key == option.key }
 
         if (optionsWithSameKey.isEmpty()) {
             optionsForFlagFilterHelper.add(option)
         } else {
-            combineOptionsToFlagFilterHelper(optionsForFlagFilterHelper, option)
+            setBundledOptionsForFlagFilterHelper(optionsForFlagFilterHelper, option)
         }
     }
 
-    private fun combineOptionsToFlagFilterHelper(optionsForFlagFilterHelper: MutableList<Option>, option: Option) {
+    private fun setBundledOptionsForFlagFilterHelper(optionsForFlagFilterHelper: MutableList<Option>, option: Option) {
         val iterator = optionsForFlagFilterHelper.listIterator()
         while (iterator.hasNext()) {
             val existingOption = iterator.next()
 
             if(existingOption.key == option.key) {
-                val existingOptionValueList = existingOption.value.split(Option.VALUE_SEPARATOR).toList()
-                val currentOptionValueList = option.value.split(Option.VALUE_SEPARATOR).toList()
-
-                if (currentOptionValueList.containsAll(existingOptionValueList)) {
-                    iterator.set(option)
-                } else if (!existingOptionValueList.containsAll(currentOptionValueList)
-                    && existingOptionValueList != currentOptionValueList
-                ) {
-                    iterator.add(option)
-                }
+                replaceOrAddOptionWithSameKey(iterator, existingOption, option)
             }
+        }
+    }
+
+    private fun replaceOrAddOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) {
+        val existingOptionValueList = existingOption.value.split(Option.VALUE_SEPARATOR).toList()
+        val currentOptionValueList = currentOption.value.split(Option.VALUE_SEPARATOR).toList()
+
+        if (currentOptionValueList.containsAll(existingOptionValueList)) {
+            iterator.set(currentOption)
+        } else if (!existingOptionValueList.containsAll(currentOptionValueList)) {
+            iterator.add(currentOption)
         }
     }
 
