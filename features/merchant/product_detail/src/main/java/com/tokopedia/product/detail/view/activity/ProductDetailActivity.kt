@@ -63,16 +63,19 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         @DeepLink(ApplinkConst.PRODUCT_INFO)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build()
-            return Intent(context, ProductDetailActivity::class.java).setData(uri).putExtras(extras)
+            val uri = Uri.parse(extras.getString(DeepLink.URI))
+            return Intent(context, ProductDetailActivity::class.java)
+                .setData(uri)
+                .putExtras(extras)
         }
 
         @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
         @JvmStatic
         fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            val uri = Uri.parse(extras.getString(DeepLink.URI))
             extras.putBoolean(IS_FROM_EXPLORE_AFFILIATE, true)
             return Intent(context, ProductDetailActivity::class.java)
+                .setData(uri)
                 .putExtras(extras)
         }
     }
