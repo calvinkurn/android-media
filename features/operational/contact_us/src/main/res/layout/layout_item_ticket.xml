@@ -106,7 +106,7 @@
             android:textSize="@dimen/sp_10"
             android:textStyle="normal"
             android:text="Prioritas"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:gravity="center"
