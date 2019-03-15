@@ -37,9 +37,10 @@ import com.tokopedia.ovo.presenter.PaymentQrSummaryPresenterImpl;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import static com.tokopedia.ovo.view.PaymentQRSummaryActivity.IMEI;
+import static com.tokopedia.ovo.view.PaymentQRSummaryActivity.QR_DATA;
+
 public class PaymentQRSummaryFragment extends BaseDaggerFragment implements PaymentQrSummaryContract.View {
-    private static final String QR_DATA = "QR_DATA";
-    private static final String IMEI = "IMEI";
     private static final String QR_RESPONSE = "QR_RESPONSE";
     private static final int SUCCESS = 0;
     private static final int FAIL = 1;
