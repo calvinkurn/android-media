@@ -369,7 +369,10 @@ class FilterController() : Parcelable {
         if (isAddCategoryFilter(filter, popularOptionList)) {
             selectedOptionList.add(getSelectedCategoryAsOption(filter))
         } else {
-            selectedOptionList.addAll(getCustomSelectedOptionList(filter))
+            selectedOptionList.addAll(
+                getCustomSelectedOptionList(filter) { option ->
+                isCustomOptionDisplayed(option) && (popularOptionList.isEmpty() || !option.isPopular)
+            })
         }
 
         selectedOptionList.addAll(popularOptionList)
@@ -418,13 +421,14 @@ class FilterController() : Parcelable {
         return OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName)
     }
 
-    private fun getCustomSelectedOptionList(filter: Filter): List<Option> {
+    private fun getCustomSelectedOptionList(filter: Filter, isDisplayed:(Option) -> Boolean): List<Option> {
         val checkedOptions = ArrayList<Option>()
 
         for (option in filter.options) {
-            val isDisplayed = isCustomOptionDisplayed(option)
+//            val isDisplayed = isCustomOptionDisplayed(option)
 
-            if (isDisplayed && !option.isPopular) {
+//            if (isDisplayed && !option.isPopular) {
+            if(isDisplayed(option)) {
                 checkedOptions.add(option)
             }
         }
