@@ -39,7 +39,7 @@ class HomeWidget(
             val id: Int,
             @SerializedName("name")
             @Expose
-            val name: String = ""
+            val name: String
     ): Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),
@@ -72,43 +72,43 @@ class HomeWidget(
             val id: Int,
             @SerializedName("name")
             @Expose
-            val name: String = "",
+            val name: String,
             @SerializedName("image_url")
             @Expose
-            val imageUrl: String = "",
+            val imageUrl: String,
             @SerializedName("url")
             @Expose
-            val url: String = "",
+            val url: String,
             @SerializedName("applink")
             @Expose
-            val applink: String = "",
+            val applink: String,
             @SerializedName("title_1")
             @Expose
-            val title1st: String = "",
+            val title1st: String,
             @SerializedName("desc_1")
             @Expose
-            val desc1st: String = "",
+            val desc1st: String,
             @SerializedName("title_2")
             @Expose
-            val title2nd: String = "",
+            val title2nd: String,
             @SerializedName("desc_2")
             @Expose
-            val desc2nd: String = "",
+            val desc2nd: String,
             @SerializedName("tag_name")
             @Expose
-            val tagName: String = "",
+            val tagName: String,
             @SerializedName("tag_type")
             @Expose
             val tagType: Int,
             @SerializedName("price")
             @Expose
-            val price: String = "",
+            val price: String,
             @SerializedName("original_price")
             @Expose
-            val originalPrice: String = "",
+            val originalPrice: String,
             @SerializedName("price_prefix")
             @Expose
-            val pricePrefix: String = "",
+            val pricePrefix: String,
             @SerializedName("template_id")
             @Expose
             val templateId: Int
