@@ -258,7 +258,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         promotionList.add(ProfileEnhancedTracking.Promotion(
                 postId,
                 String.format(FORMAT_PROMOTION_NAME,
-                        category,
+                        name,
                         activityName,
                         tagsType,
                         singleOrMultiple(totalContent)),
@@ -271,7 +271,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         analyticTracker.sendEnhancedEcommerce(
                 getEventEcommerceClick(
                         screen,
-                        name,
+                        category,
                         ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType + DASH + element,
                         mediaType,
@@ -293,7 +293,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         promotionList.add(ProfileEnhancedTracking.Promotion(
                 postId,
                 String.format(FORMAT_PROMOTION_NAME,
-                        category,
+                        name,
                         activityName,
                         tagsType,
                         singleOrMultiple(totalContent)),
@@ -306,7 +306,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         analyticTracker.sendEnhancedEcommerce(
                 getEventEcommerceView(
                         screen,
-                        name,
+                        category,
                         ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType,
                         mediaType,
