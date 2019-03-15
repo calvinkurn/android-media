@@ -246,29 +246,11 @@ class FilterController() : Parcelable {
     }
 
     fun setFilterValueFromDetailActivity(optionList: List<Option>) {
-        val tempHashMapFilterParameter = mutableMapOf<String, String>()
-
         for(option in optionList) {
             val isFilterApplied = isFilterApplied(option.inputState)
             setOrRemoveShownInMainState(option.uniqueId, isFilterApplied)
-            setOrRemoveFlagFilterHelper(option.uniqueId, isFilterApplied)
-
-            if(isFilterApplied) {
-                insertToTempHashMap(tempHashMapFilterParameter, option)
-            }
+            setFilterValueExpandableItem(option, isFilterApplied)
         }
-
-        filterParameter.putAll(tempHashMapFilterParameter)
-    }
-
-    private fun insertToTempHashMap(tempHashMap: MutableMap<String, String>, option: Option) {
-        val currentValueInHashMap = tempHashMap[option.key] ?: ""
-
-        tempHashMap[option.key] =
-            if(!TextUtils.isEmpty(currentValueInHashMap))
-                currentValueInHashMap + Option.VALUE_SEPARATOR + option.value
-            else
-                option.value
     }
 
     fun setFilterValueExpandableItem(option: Option, value: Boolean) {
