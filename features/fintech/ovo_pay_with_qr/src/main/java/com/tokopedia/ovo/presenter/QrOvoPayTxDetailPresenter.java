@@ -16,12 +16,15 @@ import java.util.Map;
 
 import rx.Subscriber;
 
+import static com.tokopedia.ovo.view.PaymentQRSummaryFragment.SUCCESS_STATUS;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSFER_ID;
+
 public class QrOvoPayTxDetailPresenter extends BaseDaggerPresenter<QrOvoPayTxDetailContract.View> implements QrOvoPayTxDetailContract.Presenter {
     @Override
     public void requestForThankYouPage(Context context, int transferId) {
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put("transfer_id", transferId);
+        variables.put(TRANSFER_ID, transferId);
         GraphqlUseCase useCase = new GraphqlUseCase();
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.qr_thanks),
                 ThanksData.class, variables);
@@ -42,7 +45,7 @@ public class QrOvoPayTxDetailPresenter extends BaseDaggerPresenter<QrOvoPayTxDet
                 ThanksData goalQRThanks = graphqlResponse.getData(ThanksData.class);
                 if (goalQRThanks != null && goalQRThanks.getGoalQRThanks() != null) {
                     if (!TextUtils.isEmpty(goalQRThanks.getGoalQRThanks().getStatus())) {
-                        if (goalQRThanks.getGoalQRThanks().getStatus().equalsIgnoreCase("success"))
+                        if (goalQRThanks.getGoalQRThanks().getStatus().equalsIgnoreCase(SUCCESS_STATUS))
                             getView().setSuccessThankYouData(goalQRThanks.getGoalQRThanks());
                         else {
                             getView().setFailThankYouData(goalQRThanks.getGoalQRThanks());

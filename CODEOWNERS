@@ -130,6 +130,7 @@
 /libraries/oms                          @tokopedia/minion-darth
 
 /features/fintech/instant_loan          @tokopedia/minion-solo
+/features/fintech/ovo_pay_with_qr       @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
 /features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo

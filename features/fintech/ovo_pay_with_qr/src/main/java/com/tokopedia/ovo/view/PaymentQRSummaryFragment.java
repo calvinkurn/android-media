@@ -27,7 +27,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.ovo.model.ImeiConfirmResponse;
@@ -45,8 +44,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
     private static final int SUCCESS = 0;
     private static final int FAIL = 1;
     private static final int REQUEST_CODE = 0;
-    private static final String PENDING_STATUS = "pending";
-    private static final String SUCEESS_STATUS = "success";
+    public static final String PENDING_STATUS = "pending";
+    public static final String SUCCESS_STATUS = "success";
     String id;
     String imeiNumber;
     BarcodeResponseData responseData;
@@ -248,16 +247,13 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements Paym
             setProgressButton();
             if (response.getStatus().equalsIgnoreCase(PENDING_STATUS)) {
                 try {
-                    ((OvoPayWithQrRouter)getActivity().getApplication()).openTokopointWebview(getActivity(),URLDecoder.decode(response.getPinUrl(),"UTF-8"),"Verifikasi PIN OVO");
+                    startActivity(OvoWebViewActivity.createInstance(getActivity(), URLDecoder.decode(response.getPinUrl(),"UTF-8")));
+                    //((OvoPayWithQrRouter)getActivity().getApplication()).openTokopointWebview(getActivity(),URLDecoder.decode(response.getPinUrl(),"UTF-8"),"Verifikasi PIN OVO");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-//            startActivity(OvoWebViewActivity.createInstance(getActivity(), response.getPinUrl()));
-//                RouteManager.route(getContext(), String.format("%s?url=%s",
-//                        ApplinkConst.WEBVIEW,
-//                        response.getPinUrl()));
 
-            } else if (response.getStatus().equalsIgnoreCase(SUCEESS_STATUS)) {
+            } else if (response.getStatus().equalsIgnoreCase(SUCCESS_STATUS)) {
                 startActivityForResult(QrOvoPayTxDetailActivity.createInstance(
                         getActivity(), transferId, response.getTransactionId(), SUCCESS), REQUEST_CODE);
             } else {

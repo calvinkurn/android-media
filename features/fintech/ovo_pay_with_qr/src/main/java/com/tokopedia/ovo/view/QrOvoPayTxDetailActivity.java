@@ -15,8 +15,8 @@ import static com.tokopedia.ovo.Constants.OVO_THANKS_TRANSACTION_URL;
 import static com.tokopedia.ovo.Constants.OVO_THANKS_URL;
 
 public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements TransactionResultListener {
-    private static final int SUCCESS = 0;
-    private static final int FAIL = 1;
+    public static final int SUCCESS = 0;
+    public static final int FAIL = 1;
     public static final String TRANSFER_ID = "transfer_id";
     public static final String TRANSACTION_ID = "transaction_id";
     private static final String CODE = "code";
