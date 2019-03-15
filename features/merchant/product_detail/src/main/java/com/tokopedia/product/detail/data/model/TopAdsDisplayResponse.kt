@@ -7,5 +7,5 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 data class TopAdsDisplayResponse(
         @SerializedName("displayAdsV3")
         @Expose
-        val result: TopAdsModel
+        val result: TopAdsModel = TopAdsModel()
 )
