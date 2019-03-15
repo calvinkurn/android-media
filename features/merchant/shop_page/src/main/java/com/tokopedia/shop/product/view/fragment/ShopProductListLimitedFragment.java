@@ -31,7 +31,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.design.button.BottomActionView;
@@ -871,8 +871,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             Bundle bundle = new Bundle();
             bundle.putString("tracker_attribution", attribution);
             bundle.putString("tracker_list_name", listNameOfProduct);
-            Intent intent = RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+            Intent intent = RouteManager.getIntent(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
             return intent;
         } else {
             return null;

@@ -20,7 +20,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -241,8 +241,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
         if (getApplication() instanceof PdpRouter) {
-            RouteManager.routeInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productPass.getProductId()));
+            RouteManager.route(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId()));
         }
     }
 

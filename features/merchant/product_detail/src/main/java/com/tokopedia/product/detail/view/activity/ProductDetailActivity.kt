@@ -10,9 +10,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
@@ -20,6 +24,11 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
+/**
+ * For navigating to this class
+ * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
+ * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
+ */
 class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
     private var isFromDeeplink = false
     private var isFromAffiliate = false
@@ -63,18 +72,26 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         @DeepLink(ApplinkConst.PRODUCT_INFO)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build()
-            return Intent(context, ProductDetailActivity::class.java).setData(uri).putExtras(extras)
+            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
+            return RouteManager.getIntent(context,
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                uri.lastPathSegment)) ?: Intent()
         }
 
         @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
         @JvmStatic
         fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            extras.putBoolean(IS_FROM_EXPLORE_AFFILIATE, true)
-            return Intent(context, ProductDetailActivity::class.java)
-                .putExtras(extras)
+            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
+            val intent = RouteManager.getIntent(context,
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    uri.lastPathSegment)) ?: Intent()
+            intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
+            return intent
         }
+    }
+
+    override fun getScreenName(): String {
+        return ProductDetailTracking.PRODUCT_DETAIL_SCREEN_NAME
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
@@ -133,6 +150,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         } else {
             isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
+        super.onCreate(savedInstanceState)
 
         remoteConfig = FirebaseRemoteConfigImpl(this)
         if (remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL)) {
@@ -140,7 +158,5 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
                 (application as ProductDetailRouter).goToOldProductDetailPage(this, productId, shopDomain, productKey, trackerAttribution, trackerListName)
             }
         }
-
-        super.onCreate(savedInstanceState)
     }
 }

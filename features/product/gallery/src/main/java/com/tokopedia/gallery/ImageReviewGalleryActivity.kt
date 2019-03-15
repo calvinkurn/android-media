@@ -34,6 +34,9 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 
 import java.util.ArrayList
 
+/**
+ * For navigate: use ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY
+ */
 class ImageReviewGalleryActivity : BaseSimpleActivity() {
 
     var bottomSheetImageReviewSlider: BottomSheetImageReviewSlider? = null

@@ -36,7 +36,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -728,8 +728,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     private Intent getProductIntent(String productId){
         if (getActivity() != null) {
-            return RouteManager.getIntentInternal(getActivity(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+            return RouteManager.getIntent(getActivity(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
         } else {
             return null;
         }

@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -191,17 +193,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
         if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
             activity?.run {
-
-                var routingAppLink: String = ApplinkConst.PRODUCT_INFO
-                val uriBuilder = Uri.Builder()
-                uriBuilder.appendQueryParameter(ApplinkConst.Query.PDP_ID, element.productId.toString())
-                        .appendQueryParameter(ApplinkConst.Query.PDP_PRICE, element.productPrice)
-                        .appendQueryParameter(ApplinkConst.Query.PDP_NAME, element.productName)
-                        .appendQueryParameter(ApplinkConst.Query.PDP_DATE, element.dateTimeInMilis.toString())
-                        .appendQueryParameter(ApplinkConst.Query.PDP_IMAGE, element.productImage.toString())
-
-                routingAppLink += uriBuilder.toString()
-                RouteManager.route(context, routingAppLink)
+                RouteManager.route(this,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                        element.productId.toString()))
             }
 
         } else {

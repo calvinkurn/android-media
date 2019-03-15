@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -226,8 +226,8 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     private Intent getProductIntent(String productId){
         if (getContext() != null) {
-            return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+            return RouteManager.getIntent(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
         } else {
             return null;
         }

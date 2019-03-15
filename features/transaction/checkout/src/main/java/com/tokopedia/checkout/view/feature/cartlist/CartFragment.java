@@ -32,7 +32,7 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -510,8 +510,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private Intent getProductIntent(String productId){
         if (getContext() != null) {
-            return RouteManager.getIntentInternal(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+            return RouteManager.getIntent(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
         } else {
             return null;
         }

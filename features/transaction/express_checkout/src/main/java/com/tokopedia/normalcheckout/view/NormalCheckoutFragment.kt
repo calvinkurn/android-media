@@ -88,6 +88,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var selectedProductInfo: ProductInfo? = null
     var originalProduct: ProductInfoAndVariant? = null
 
+    var trackerAttribution: String? = null
+    var trackerListName: String? = null
+
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
         const val EXTRA_PRODUCT_ID = "product_id"
@@ -96,6 +99,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
         const val EXTRA_ACTION = "action"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
+        private const val TRACKER_ATTRIBUTION = "tracker_attribution"
+        private const val TRACKER_LIST_NAME = "tracker_list_name"
 
         const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
         const val RESULT_PRODUCT_DATA = "product_data"
@@ -107,7 +112,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            notes: String? = "", quantity: Int? = 0,
                            selectedVariantId: String? = null,
                            @ProductAction action: Int = ATC_AND_BUY,
-                           placeholderProductImage: String?): NormalCheckoutFragment {
+                           placeholderProductImage: String?,
+                           trackerAttribution: String? = "",
+                           trackerListName: String? = ""): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_SHOP_ID, shopId)
@@ -117,6 +124,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putInt(EXTRA_ACTION, action)
                     putString(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
                     putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId ?: "")
+                    putString(TRACKER_ATTRIBUTION, trackerAttribution ?: "")
+                    putString(TRACKER_LIST_NAME, trackerListName ?: "")
                 }
             }
 
@@ -325,6 +334,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             quantity = argument.getInt(EXTRA_QUANTITY)
             placeholderProductImage = argument.getString(EXTRA_PRODUCT_IMAGE)
             action = argument.getInt(EXTRA_ACTION, ATC_AND_BUY)
+            trackerAttribution = argument.getString(TRACKER_ATTRIBUTION)
+            trackerListName = argument.getString(TRACKER_LIST_NAME)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -456,6 +467,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             .notes(notes)
             .quantity(quantity)
             .shopId(shopId?.toInt() ?: 0)
+            .trackerAttribution(trackerAttribution)
+            .trackerListName(trackerListName)
             .build(), oneClickShipment)
             .subscribeOn(Schedulers.io())
             .unsubscribeOn(Schedulers.io())

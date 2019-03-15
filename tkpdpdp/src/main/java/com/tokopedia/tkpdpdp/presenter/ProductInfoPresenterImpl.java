@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -64,8 +64,8 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
             for (int i = 2; i < uriSegments.size(); i++) {
                 iden = iden + "_" + uriSegments.get(i);
             }
-            Intent moveIntent = RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL,iden));
+            Intent moveIntent = RouteManager.getIntent(context,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,iden));
             viewListener.navigateToActivity(moveIntent);
         }
     }

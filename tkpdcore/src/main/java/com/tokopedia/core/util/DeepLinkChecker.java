@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.app.MainApplication;
@@ -323,8 +323,8 @@ public class DeepLinkChecker {
             intent = BrowseProductRouter.getSearchProductIntent(context);
             intent.putExtras(bundle);
         } else {
-            intent = RouteManager.getIntentInternal(context,
-                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
+            intent = RouteManager.getIntent(context,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
         }
         context.startActivity(intent);
     }
@@ -353,8 +353,8 @@ public class DeepLinkChecker {
 
     public static void openCategory(String url, Context context) {
         String departmentId = getLinkSegment(url).get(1);
-        RouteManager.routeInternal(context,
-                UriUtil.buildUri(ApplinkConstInternal.Marketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
+        RouteManager.route(context,
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId));
     }
 
     public static void openProduct(String url, Context context) {
@@ -364,13 +364,13 @@ public class DeepLinkChecker {
             if (pathSegmentList.size() > 1) {
                 String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
                 String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
-                RouteManager.routeInternal(context,
-                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_DOMAIN,
+                RouteManager.route(context,
+                        UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
                                 shopDomain, productKey));
             } else {
                 String productId = uri.getLastPathSegment();
-                RouteManager.routeInternal(context,
-                        UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId));
+                RouteManager.route(context,
+                        UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
             }
         }
     }
