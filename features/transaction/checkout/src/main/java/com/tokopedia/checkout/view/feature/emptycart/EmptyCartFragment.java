@@ -443,13 +443,18 @@ public class EmptyCartFragment extends BaseCheckoutFragment
                 }
 
                 @Override
-                public void onDisablePromoDiscount() {
+                public void onResetPromoDiscount() {
                     presenter.processCancelAutoApply();
                 }
 
                 @Override
                 public void onClickDetailPromo() {
                     //do nothing
+                }
+
+                @Override
+                public void onDisablePromoDiscount() {
+
                 }
             });
         } else {

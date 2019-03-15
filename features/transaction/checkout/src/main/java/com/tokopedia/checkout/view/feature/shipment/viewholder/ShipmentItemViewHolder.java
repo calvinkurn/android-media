@@ -532,7 +532,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
 
             @Override
-            public void onDisablePromoDiscount() {
+            public void onResetPromoDiscount() {
                 // actionListener.onCartPromoCancelVoucherPromoMerchantClicked(promoDataMerchant, position);
                 // actionListener.onCartPromoMerchantTrackingCancelled(promoDataMerchant, position);
             }
@@ -540,6 +540,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             @Override
             public void onClickDetailPromo() {
                 // actionListener.onClickDetailPromoMerchant(promoDataMerchant, position);
+            }
+
+            @Override
+            public void onDisablePromoDiscount() {
+
             }
         });
         /*if(promoDataMerchant.getState() != TickerMerchantPromoCheckoutView.State.FAILED){

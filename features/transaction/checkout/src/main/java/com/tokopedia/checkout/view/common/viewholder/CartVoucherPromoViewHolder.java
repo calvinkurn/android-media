@@ -30,7 +30,7 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
             }
 
             @Override
-            public void onDisablePromoDiscount() {
+            public void onResetPromoDiscount() {
                 actionListener.onCartPromoCancelVoucherPromoGlobalClicked(data, position);
                 actionListener.onCartPromoGlobalTrackingCancelled(data, position);
             }
@@ -38,6 +38,11 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClickDetailPromo() {
                 actionListener.onClickDetailPromoGlobal(data, position);
+            }
+
+            @Override
+            public void onDisablePromoDiscount() {
+
             }
         });
         if(data.getState() != TickerPromoStackingCheckoutView.State.FAILED){

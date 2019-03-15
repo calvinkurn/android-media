@@ -1,6 +1,8 @@
 package com.tokopedia.promocheckout.common.view.widget
 
 import android.content.Context
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
 import android.os.Parcelable
@@ -15,6 +17,9 @@ import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.
 class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         context: Context, val attrs: AttributeSet? = null, val defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
+
+    private val IMAGE_ALPHA_DISABLED = 128
+    private val IMAGE_ALPHA_ENABLED = 255
 
     var state: State = State.EMPTY
         set(value) {
@@ -36,7 +41,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             field = value
             initView()
         }
-    var actionListener : ActionListener? = null
+    var actionListener: ActionListener? = null
 
     init {
         inflate(context, getLayout(), this)
@@ -52,14 +57,15 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     }
 
     private fun initView() {
-        when(state){
+        when (state) {
             State.INACTIVE -> setViewInactive()
             State.ACTIVE -> setViewActive()
             State.FAILED -> setViewFailed()
             State.EMPTY -> setViewEmpty()
+            State.DISABLED -> setViewDisabled()
         }
 
-        when(variant) {
+        when (variant) {
             Variant.GLOBAL -> setViewGlobal()
             Variant.MERCHANT -> setViewMerchant()
         }
@@ -70,22 +76,41 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             descCouponGlobal.visibility = View.VISIBLE
         }
 
-        imageCloseGlobal?.setOnClickListener {
-            resetView()
-            actionListener?.onDisablePromoDiscount()
-        }
-        layoutUsePromoGlobal?.setOnClickListener {
-            actionListener?.onClickUsePromo()
-        }
-        layoutTickerFrameGlobal?.setOnClickListener {
-            actionListener?.onClickDetailPromo()
-        }
+        setActionListener()
         invalidate()
         requestLayout()
     }
 
-    fun resetView(){
+    private fun setActionListener() {
+        imageCloseGlobal?.setOnClickListener {
+            resetView()
+            actionListener?.onResetPromoDiscount()
+        }
+        layoutUsePromoGlobal?.setOnClickListener {
+            if (state != State.DISABLED) actionListener?.onClickUsePromo()
+        }
+        layoutTickerFrameGlobal?.setOnClickListener {
+            if (state != State.DISABLED) actionListener?.onClickDetailPromo()
+        }
+    }
+
+    fun resetView() {
         state = State.EMPTY
+    }
+
+    fun disableView() {
+        state = State.DISABLED
+        resetView()
+        setViewEmpty()
+        setViewDisabled()
+        setActionListener()
+    }
+
+    fun enableView() {
+        resetView()
+        setViewEnabled()
+        state = State.INACTIVE
+        setActionListener()
     }
 
     private fun setViewEmpty() {
@@ -93,7 +118,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         layoutTickerFrameGlobal?.visibility = View.GONE
     }
 
-    private fun setViewCouponShow(){
+    private fun setViewCouponShow() {
         layoutUsePromoGlobal?.visibility = View.GONE
         layoutTickerFrameGlobal?.visibility = View.VISIBLE
     }
@@ -135,6 +160,36 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         title_button_coupon.setText(R.string.promo_merchant_title)
     }
 
+    public fun setViewDisabled() {
+        val nonActiveTextColor = ContextCompat.getColor(context, R.color.promo_checkout_grey_nonactive_text)
+        title_button_coupon.setTextColor(nonActiveTextColor)
+        title_action_coupon.setTextColor(nonActiveTextColor)
+        setImageFilterGrayScale()
+    }
+
+    public fun setViewEnabled() {
+        title_button_coupon.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green))
+        title_action_coupon.setTextColor(ContextCompat.getColor(context, R.color.black_70))
+        setImageFilterNormal()
+    }
+
+    private fun setImageFilterGrayScale() {
+        val matrix = ColorMatrix()
+        matrix.setSaturation(0f)
+        val disabledColorFilter = ColorMatrixColorFilter(matrix)
+        ic_button_coupon.colorFilter = disabledColorFilter
+        ic_button_coupon.imageAlpha = IMAGE_ALPHA_DISABLED
+        bg_button_coupon.colorFilter = disabledColorFilter
+        bg_button_coupon.imageAlpha = IMAGE_ALPHA_DISABLED
+    }
+
+    private fun setImageFilterNormal() {
+        ic_button_coupon.colorFilter = null
+        ic_button_coupon.imageAlpha = IMAGE_ALPHA_ENABLED
+        bg_button_coupon.colorFilter = null
+        bg_button_coupon.imageAlpha = IMAGE_ALPHA_ENABLED
+    }
+
     override fun onFinishInflate() {
         super.onFinishInflate()
         initView()
@@ -174,7 +229,8 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         INACTIVE(0),
         ACTIVE(1),
         FAILED(2),
-        EMPTY(3);
+        EMPTY(3),
+        DISABLED(4);
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeInt(id)
@@ -194,6 +250,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
                 }
                 return EMPTY
             }
+
             override fun createFromParcel(parcel: Parcel): State {
                 return State.values()[parcel.readInt()]
             }
@@ -206,7 +263,8 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
 
     interface ActionListener {
         fun onClickUsePromo()
-        fun onDisablePromoDiscount()
+        fun onResetPromoDiscount()
         fun onClickDetailPromo()
+        fun onDisablePromoDiscount()
     }
 }
