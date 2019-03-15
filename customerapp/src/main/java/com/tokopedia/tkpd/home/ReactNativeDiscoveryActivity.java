@@ -35,7 +35,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
         if (bundle != null) {
             String key = getKeyValueByCaseInsensitive(bundle);
-            if(key!= null){
+            if(key!= null && !key.isEmpty()){
                 mAllowShake = Boolean.parseBoolean(key);
             }
         }
