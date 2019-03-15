@@ -81,11 +81,10 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     public void updateItems(List<Visitable> visitables) {
         List<Visitable> temporaryList = new ArrayList<>();
-        if (getItems().size() > 1 && getItems().get(1) instanceof HeaderViewModel) {
-            temporaryList.add(getItems().get(1));
-        }
-
         temporaryList.addAll(visitables);
+        if (getItems().size() > 1 && getItems().get(1) instanceof HeaderViewModel) {
+            temporaryList.add(1, getItems().get(1));
+        }
 
         int firstInspirationPos = findFirstInspirationPosition();
         if (firstInspirationPos < getItemCount()) {
