@@ -486,7 +486,7 @@ public class ProductListFragment extends SearchSectionFragment
             product.setName(item.getProductName());
             product.setPriceFormat(item.getPrice());
             product.setCategory(new Category(item.getCategoryID()));
-            TopAdsGtmTracker.getInstance().addDataLayerImpressions(product, adapterPosition);
+            TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
         }
     }
 

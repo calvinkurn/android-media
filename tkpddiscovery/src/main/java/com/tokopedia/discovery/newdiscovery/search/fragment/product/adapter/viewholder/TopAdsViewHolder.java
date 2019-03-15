@@ -45,7 +45,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         adsWidgetView.setImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.getInstance().addDataLayerImpressions(product, position);
+                TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, position);
             }
         });
         adsWidgetView.setDisplayMode(DisplayMode.GRID);

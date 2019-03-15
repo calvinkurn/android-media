@@ -34,10 +34,6 @@ public class TopAdsGtmTracker {
         dataLayerList.clear();
     }
 
-    public void addDataLayerImpressions(Product product, int position) {
-        this.dataLayerList.add(getSearchResultProductViewImpressions(product, position));
-    }
-
     public static AnalyticTracker getTracker(Context context) {
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return null;
@@ -107,15 +103,43 @@ public class TopAdsGtmTracker {
         }
     }
 
-    private Object getSearchResultProductViewImpressions(Product product, int position) {
-        return DataLayer.mapOf("name", product.getName(),
+    public void addSearchResultProductViewImpressions(Product product, int position) {
+        this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
                 "id", product.getId(),
                 "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "varian", "none/other",
                 "category", product.getCategory().getId(),
                 "list", "/searchproduct - topads  productlist",
-                "position", position);
+                "position", position));
+    }
+
+    public void eventInboxProductView(TrackingQueue trackingQueue) {
+        if (!dataLayerList.isEmpty()) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "inbox",
+                    "eventAction", "impression - product - topads",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    dataLayerList.toArray(new Object[dataLayerList.size()])
+                            )
+                    ));
+            trackingQueue.putEETracking((HashMap<String, Object>) map);
+            clearDataLayerList();
+        }
+    }
+
+    public void  addInboxProductViewImpressions(Product product, int position) {
+        this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
+                "id", product.getId(),
+                "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
+                "brand", "none/other",
+                "varian", "none/other",
+                "category", product.getCategory().getId(),
+                "list", "/inbox - topads  productlist",
+                "position", position));
     }
 
     public static void eventSearchResultPromoView(Context context, CpmData cpm, int position) {
@@ -202,6 +226,29 @@ public class TopAdsGtmTracker {
                                             "category", product.getCategory().getId(),
                                             "varian", "none/other",
                                             "position", position + 1))))
+            );
+            tracker.sendEnhancedEcommerce(map);
+        }
+    }
+
+    public void eventInboxProductClick(Context context, Product product, int position) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productClick",
+                    "eventCategory", "inbox",
+                    "eventAction", "click - product - topads",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/inbox - topads  productlist"),
+                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                            "name", product.getName(),
+                                            "id", product.getId(),
+                                            "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
+                                            "brand", "none/other",
+                                            "category", product.getCategory().getId(),
+                                            "varian", "none/other",
+                                            "position", position))))
             );
             tracker.sendEnhancedEcommerce(map);
         }

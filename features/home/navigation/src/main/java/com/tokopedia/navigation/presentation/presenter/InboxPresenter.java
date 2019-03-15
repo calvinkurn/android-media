@@ -122,6 +122,7 @@ public class InboxPresenter extends BaseDaggerPresenter {
             recomendation.setPrice(r.getPrice());
             recomendation.setPriceNumber(r.getPriceInt());
             recomendation.setProductId(r.getId());
+            recomendation.setDepartementId(r.getDepartmentId());
             recomendation.setProductName(r.getName());
             recomendation.setRecommendationType(r.getRecommendationType());
             recomendation.setTopAds(r.isIsTopads());

@@ -1,6 +1,8 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +32,8 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +64,23 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private View emptyLayout;
     private GridLayoutManager layoutManager;
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+    private TrackingQueue trackingQueue;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        trackingQueue = new TrackingQueue(getContext());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        TopAdsGtmTracker.getInstance().eventInboxProductView(trackingQueue);
+        trackingQueue.sendAll();
     }
 
     @Override

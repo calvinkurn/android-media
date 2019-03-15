@@ -251,7 +251,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.getInstance().addDataLayerImpressions(product, position);
+                TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, position);
             }
         });
     }
