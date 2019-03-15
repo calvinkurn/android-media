@@ -119,8 +119,7 @@ public class CatalogDetailListPresenter implements ICatalogDetailListPresenter {
 
     private Intent getProductIntent(String productId){
         if (view.getActivity() != null) {
-            return RouteManager.getIntent(view.getActivity(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            return RouteManager.getIntent(view.getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }

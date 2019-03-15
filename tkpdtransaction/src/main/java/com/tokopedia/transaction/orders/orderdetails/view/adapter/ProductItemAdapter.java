@@ -124,8 +124,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String applink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
-                    RouteManager.route(context, applink);
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
                 }
             });
 

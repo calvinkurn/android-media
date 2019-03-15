@@ -128,8 +128,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     private Intent getProductIntent(String productId){
         if (getActivity() != null) {
-            return RouteManager.getIntent(getActivity(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }

@@ -120,8 +120,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
 
     private Intent getProductIntent(String productId){
         if (context != null) {
-            return RouteManager.getIntent(context,
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            return RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }

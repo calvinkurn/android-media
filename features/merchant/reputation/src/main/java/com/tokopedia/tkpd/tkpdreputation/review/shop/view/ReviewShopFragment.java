@@ -259,8 +259,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     public void onGoToDetailProduct(String productId, int adapterPosition) {
         onGoToDetailProductTracking(productId, adapterPosition);
         if (getContext()!= null) {
-            RouteManager.route(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }
 

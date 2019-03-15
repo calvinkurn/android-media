@@ -573,8 +573,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
         }
         context?.let {
-            RouteManager.route(it,
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId.toString()))
+            RouteManager.route(it, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId.toString())
         }
     }
 
@@ -597,7 +596,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             val shopId = productInfo?.basic?.shopID?.toString() ?: return
             startActivityForResult(RouteManager.getIntent(it,
-                UriUtil.buildUri(ApplinkConst.SHOP, shopId)),
+                ApplinkConst.SHOP, shopId),
                 REQUEST_CODE_SHOP_INFO)
         }
     }
@@ -955,9 +954,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 pdpAffiliate.productId.toString(), isRegularPdp)
             if (productInfoViewModel.isUserSessionActive()) {
                 RouteManager.route(it,
-                    UriUtil.buildUri(ApplinkConst.AFFILIATE_CREATE_POST,
+                    ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
-                        pdpAffiliate.adId.toString()))
+                        pdpAffiliate.adId.toString())
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
@@ -1079,8 +1078,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val fullUrl = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_EDIT, id)
-            val intent = RouteManager.getIntent(it, fullUrl)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT, id)
             intent?.run {
                 startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
             }
@@ -1259,7 +1257,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                UriUtil.buildUri(ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString()))
+                ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString())
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
         if (productInfo != null) {
@@ -1272,8 +1270,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (productInfo != null) {
             //TODO SENT MOENGAGE
             context?.let {
-                val fullUrl = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
-                val intent = RouteManager.getIntent(it, fullUrl)
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
                 intent?.run {
                     intent.putExtra("x_prd_nm", productInfo!!.basic.name)
                     startActivity(intent)
@@ -1288,9 +1285,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
-                    UriUtil.buildUri(ApplinkConst.TOPCHAT_ASKSELLER,
+                    ApplinkConst.TOPCHAT_ASKSELLER,
                         shop.shopCore.shopID, product.basic.url,
-                        "product", shop.shopCore.name, shop.shopAssets.avatar))
+                        "product", shop.shopCore.name, shop.shopAssets.avatar)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),

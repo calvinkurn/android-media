@@ -74,8 +74,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             return RouteManager.getIntent(context,
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                uri.lastPathSegment)) ?: Intent()
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                uri.lastPathSegment) ?: Intent()
         }
 
         @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
@@ -83,8 +83,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             val intent = RouteManager.getIntent(context,
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment)) ?: Intent()
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    uri.lastPathSegment) ?: Intent()
             intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
             return intent
         }

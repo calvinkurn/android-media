@@ -573,8 +573,7 @@ public class ProductFragment extends BrowseSectionFragment
             Bundle bundle = new Bundle();
             bundle.putString("tracker_attribution", trackerAttribution);
             bundle.putString("tracker_list_name", trackerListName);
-            Intent intent = RouteManager.getIntent(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            Intent intent = RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
             return intent;
         } else {
             return null;

@@ -128,8 +128,8 @@ class PartialProductDescrFullView private constructor(private val view: View,
     private fun openCategory(category: Category.Detail) {
         if (GlobalConfig.isCustomerApp()) {
             RouteManager.route(view.context,
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
-                category.id))
+                ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                category.id)
         }
     }
 

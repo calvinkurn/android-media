@@ -564,10 +564,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         getProductUseCase.execute(response -> {
             viewListener.finishLoading();
             if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0) {
-                String productApplink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                        String.valueOf(response.getData().getBasic().getId()));
                 try {
-                    context.startActivity(RouteManager.getIntent(context, productApplink));
+                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                            String.valueOf(response.getData().getBasic().getId())));
                 } catch (Exception e) {
                     prepareOpenWebView(uriData);
                 }
@@ -634,9 +633,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     uriData
             );
         } else {
-            RouteManager.route(context,
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
-                            urlParser.getDepIDfromURI(context)));
+            RouteManager.route(context,ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                            urlParser.getDepIDfromURI(context));
         }
         context.finish();
     }

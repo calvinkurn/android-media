@@ -431,8 +431,7 @@ public class ExploreFragment
             isCanDoAction = false;
             if (getContext()!= null) {
                 RouteManager.route(
-                        getContext(),
-                        UriUtil.buildUri(ApplinkConst.AFFILIATE_PRODUCT, model.getProductId())
+                        getContext(),ApplinkConst.AFFILIATE_PRODUCT, model.getProductId()
                 );
             }
         }
