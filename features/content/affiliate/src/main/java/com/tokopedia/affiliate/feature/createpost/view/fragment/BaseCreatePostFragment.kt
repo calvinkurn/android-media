@@ -204,13 +204,18 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel.productIdList.firstOrNull()
             val onboardingIntent = RouteManager.getIntent(it, onboardingApplink)
-            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            taskStackBuilder.addNextIntent(onboardingIntent)
+            onboardingIntent?.apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }?.let {
+                taskStackBuilder.addNextIntent(it)
+            }
 
             val educationIntent = RouteManager.getIntent(
                     it,
                     ApplinkConst.AFFILIATE_EDUCATION)
-            taskStackBuilder.addNextIntent(educationIntent)
+            educationIntent?.let {
+                taskStackBuilder.addNextIntent(it)
+            }
 
             taskStackBuilder.startActivities()
             it.finish()
@@ -379,7 +384,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     it,
                     profileApplink
             )
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
     }
