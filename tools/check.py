@@ -52,17 +52,17 @@ def detectAffectedModule(token, config, head, user, gradle, adb, deviceId):
     doCommand("git checkout " + head)
     doCommand("git pull " + configuration["remote_name"] + " " + head)
     doCommand("git diff --name-only " + head + ".." + configuration["master"] + " > file_changes.log")
-    f = open("./file_changes.log", "r")
     modulesAffected = []
     pathAffected = []
     doCommand("rm -rf coverageResults")
     doCommand("mkdir coverageResults")
-
-    for path in configuration["modules"]:
-        for x in f:
-            if x.startswith(path["path"]) and path["module_name"] not in modulesAffected:
-                modulesAffected.append(path["module_name"])
-                pathAffected.append([path["path"], path["name"]])
+    
+    with open("./file_changes.log", "r") as f:
+        for path in configuration["modules"]:
+            for x in f:
+                if x.startswith(path["path"]) and path["module_name"] not in modulesAffected:
+                    modulesAffected.append(path["module_name"])
+                    pathAffected.append([path["path"], path["name"]])
 
     doCommand(adb + " connect " + deviceId)
     for module in modulesAffected:
