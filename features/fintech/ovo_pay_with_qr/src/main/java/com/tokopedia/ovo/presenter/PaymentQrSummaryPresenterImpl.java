@@ -45,6 +45,7 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
 
             @Override
             public void onError(Throwable e) {
+                getView().showError(e.getMessage());
 
             }
 
@@ -85,6 +86,7 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
 
             @Override
             public void onError(Throwable e) {
+                getView().showError(e.getMessage());
 
             }
 
