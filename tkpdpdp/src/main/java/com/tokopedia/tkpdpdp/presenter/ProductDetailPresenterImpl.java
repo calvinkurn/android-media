@@ -573,7 +573,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                 tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
                                 tradeInParams.setProductName(productDetailData.getInfo().getProductName());
                                 tradeInParams.setPreorder(Integer.parseInt(productDetailData.getPreOrder().getPreorderStatus()) == 1);
-                                tradeInParams.setOnCampaign(productDetailData.getCampaign2().getActive());
+                                tradeInParams.setOnCampaign(productDetailData.getCampaign().getActive());
                                 viewListener.checkTradeIn(tradeInParams);
                             }
 
@@ -1175,7 +1175,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
                             tradeInParams.setProductName(data.getInfo().getProductName());
                             tradeInParams.setPreorder(Integer.parseInt(data.getPreOrder().getPreorderStatus()) == 1);
-                            tradeInParams.setOnCampaign(data.getCampaign2().getActive());
+                            tradeInParams.setOnCampaign(data.getCampaign().getActive());
 
                             viewListener.checkTradeIn(tradeInParams);
                         }
