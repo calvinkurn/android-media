@@ -60,6 +60,10 @@ class TabBusinessFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        errorView.visibility = View.GONE
+        container.visibility = View.GONE
+        temporayPlaceHolders.visibility = View.VISIBLE
+
         getTabBusinessUnit()
         buttonTryAgain.setOnClickListener {
             errorView.visibility = View.GONE
