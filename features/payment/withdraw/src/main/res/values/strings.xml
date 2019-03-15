@@ -59,7 +59,7 @@
     <string name="saldo_seller">Saldo Penghasilan</string>
     <string name="nominal_withdrawal">Nominal Penarikan</string>
     <string name="saldo_withdrawal_all">Tarik Semua</string>
-    <string name="saldo_withdraw_hint">Minimum penarikan Rp10.000</string>
+    <string name="saldo_withdraw_hint">Minimum penarikan %s</string>
     <string name="saldo_retrieve_balance">Tarik Saldo dari:</string>
     <string name="refund">Refund</string>
     <string name="saldo_return">Penghasilan</string>
