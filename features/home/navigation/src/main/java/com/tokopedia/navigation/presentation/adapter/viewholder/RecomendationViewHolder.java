@@ -1,4 +1,4 @@
-package com.tokopedia.navigation.presentation.adapter;
+package com.tokopedia.navigation.presentation.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Recomendation;
+import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener;
 import com.tokopedia.productcard.ProductCardView;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;

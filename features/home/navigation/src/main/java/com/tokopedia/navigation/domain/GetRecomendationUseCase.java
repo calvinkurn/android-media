@@ -24,7 +24,7 @@ import rx.functions.Func1;
 /**
  * Author errysuprayogi on 14,March,2019
  */
-public class GetRecomendationUseCase extends UseCase<List<Recomendation>> {
+public class GetRecomendationUseCase extends UseCase<RecomendationEntity.RecomendationData> {
 
     public static final String USER_ID = "userID";
     public static final String X_SOURCE = "xSource";
@@ -46,33 +46,17 @@ public class GetRecomendationUseCase extends UseCase<List<Recomendation>> {
     }
 
     @Override
-    public Observable<List<Recomendation>> createObservable(RequestParams requestParams) {
+    public Observable<RecomendationEntity.RecomendationData> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_inbox_recomendation), RecomendationEntity.class, requestParams.getParameters());
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map(new Func1<GraphqlResponse, List<Recomendation>>() {
+                .map(new Func1<GraphqlResponse, RecomendationEntity.RecomendationData>() {
                     @Override
-                    public List<Recomendation> call(GraphqlResponse graphqlResponse) {
+                    public RecomendationEntity.RecomendationData call(GraphqlResponse graphqlResponse) {
                         RecomendationEntity entity = graphqlResponse.getData(RecomendationEntity.class);
-                        List<Recomendation> recomendationList = new ArrayList<>();
-                        for (RecomendationEntity.Recommendation r : entity.getProductRecommendationWidget()
-                                .getData().get(0).getRecommendation()) {
-                            Recomendation recomendation = new Recomendation();
-                            recomendation.setImageUrl(r.getImageUrl());
-                            recomendation.setCategoryBreadcrumbs(r.getCategoryBreadcrumbs());
-                            recomendation.setClickUrl(r.getClickUrl());
-                            recomendation.setPrice(r.getPrice());
-                            recomendation.setPriceNumber(r.getPriceInt());
-                            recomendation.setProductId(r.getId());
-                            recomendation.setProductName(r.getName());
-                            recomendation.setRecommendationType(r.getRecommendationType());
-                            recomendation.setTopAds(r.isIsTopads());
-                            recomendation.setTrackerImageUrl(r.getTrackerImageUrl());
-                            recomendationList.add(recomendation);
-                        }
-                        return recomendationList;
+                        return entity.getProductRecommendationWidget().getData().get(0);
                     }
                 });
     }

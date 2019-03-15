@@ -22,7 +22,7 @@ import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
-import com.tokopedia.navigation.presentation.adapter.RecomendationViewHolder;
+import com.tokopedia.navigation.presentation.adapter.viewholder.RecomendationViewHolder;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -113,7 +113,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 return DEFAULT_SPAN_COUNT;
             }
         });
-        presenter.getRecomData(0);
+        presenter.getFirstRecomData();
     }
 
     @NonNull
@@ -255,9 +255,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         adapter.showLoading();
     }
 
+
     @Override
-    public void onRenderRecomInbox(List<Recomendation> recomendationList) {
-        adapter.addElement(recomendationList);
+    public void onRenderRecomInbox(List<Visitable> list) {
+        adapter.addElement(list);
     }
 
     @Override

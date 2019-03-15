@@ -1,4 +1,4 @@
-package com.tokopedia.navigation.presentation.adapter;
+package com.tokopedia.navigation.presentation.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Inbox;
+import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener;
 
 /**
  * Author errysuprayogi on 13,March,2019
@@ -22,7 +23,7 @@ public class InboxViewHolder extends AbstractViewHolder<Inbox> {
     private Context context;
     private InboxAdapterListener listener;
 
-    InboxViewHolder(View itemView, InboxAdapterListener listener) {
+    public InboxViewHolder(View itemView, InboxAdapterListener listener) {
         super(itemView);
         labelView = itemView.findViewById(R.id.labelview);
         container = itemView.findViewById(R.id.container);
