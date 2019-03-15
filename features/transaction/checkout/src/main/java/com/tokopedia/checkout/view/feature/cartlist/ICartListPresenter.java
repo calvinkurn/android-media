@@ -66,4 +66,6 @@ public interface ICartListPresenter {
 
     Map<Integer, Boolean> getCheckedCartItemState();
 
+    void processCheckPromoStackingCode();
+
 }

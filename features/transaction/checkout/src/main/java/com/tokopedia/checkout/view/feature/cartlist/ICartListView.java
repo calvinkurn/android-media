@@ -7,6 +7,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.view.common.base.IBaseView;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -65,6 +66,8 @@ public interface ICartListView extends IBaseView {
     void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message);
 
     void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
+
+    void renderCheckPromoStackingCodeFromSuggestedPromoSuccess(ResponseFirstStep responseFirstStep);
 
     void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 

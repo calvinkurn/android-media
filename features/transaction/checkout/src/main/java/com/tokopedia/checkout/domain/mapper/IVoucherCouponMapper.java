@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.mapper;
 import com.tokopedia.checkout.domain.datamodel.voucher.CouponListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
+import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.Data;
+import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
 import com.tokopedia.transaction.common.sharedata.CouponListResult;
 import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
@@ -19,6 +21,10 @@ public interface IVoucherCouponMapper {
 
     PromoCodeCartListData convertPromoCodeCartListData(
             DataVoucher dataVoucher
+    );
+
+    ResponseFirstStep convertPromoStackingCodeCartListData(
+            Data data
     );
 
     PromoCodeCartShipmentData convertPromoCodeCartShipmentData(

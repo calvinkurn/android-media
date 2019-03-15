@@ -39,6 +39,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
@@ -66,6 +67,7 @@ import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
@@ -81,6 +83,7 @@ import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -1197,6 +1200,19 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 .amount(promoCodeCartListData.getDataVoucher().getCashbackAmount())
                 .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(promoCodeCartListData.getDataVoucher().getState()))
                 .title(promoCodeCartListData.getDataVoucher().getTitleDescription())
+                .build();
+        cartAdapter.updateItemPromoStackVoucher(promoStackingData);
+    }
+
+    @Override
+    public void renderCheckPromoStackingCodeFromSuggestedPromoSuccess(ResponseFirstStep responseFirstStep) {
+        PromoStackingData promoStackingData = new PromoStackingData.Builder()
+                .typePromo(PromoStackingData.CREATOR.getTYPE_VOUCHER())
+                .promoCode(responseFirstStep.getData().getInvoiceDescription())
+                .description(responseFirstStep.getData().getMessage().getText())
+                .amount(responseFirstStep.getData().getCashbackWalletAmount())
+                .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseFirstStep.getData().getMessage().getState()))
+                .title(responseFirstStep.getData().getTitleDescription())
                 .build();
         cartAdapter.updateItemPromoStackVoucher(promoStackingData);
     }

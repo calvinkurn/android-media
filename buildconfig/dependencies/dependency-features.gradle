@@ -193,9 +193,9 @@ ext {
             commonDigital               : ":features:digital:common_digital",
             digitalproduct              : ":features:digital:digitalproduct",
             event                       : ":features:digital:event",
-            flight                      : ":features:digital:flight",
+//            flight                      : ":features:digital:flight",
             flightDbFlow                : ":features:digital:flight_dbflow",
-//            flight                          : ":features:digital:flight_no_op",
+            flight                          : ":features:digital:flight_no_op",
             train                         : ":features:digital:train",
 //            train                         : ":features:digital:train_no_op",
 

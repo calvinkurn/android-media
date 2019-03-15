@@ -25,6 +25,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
@@ -91,6 +92,7 @@ public class CartListModule {
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                                                  UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
+                                                 CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -102,10 +104,10 @@ public class CartListModule {
                                                  TopAdsGqlUseCase topAdsGqlUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
-                updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
-                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
-                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                userSessionInterface, topAdsGqlUseCase);
+                updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
+                checkPromoCodeCartListUseCase, compositeSubscription,
+                cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase, addWishListUseCase,
+                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase);
     }
 
     @Provides
