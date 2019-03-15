@@ -24,18 +24,20 @@ public class RecomItemDecoration extends RecyclerView.ItemDecoration {
 
         final int absolutePos = parent.getChildAdapterPosition(view);
 
-        int position = parent.getChildAdapterPosition(view);
-        int totalSpanCount = getTotalSpanCount(parent);
-        int column = position % totalSpanCount;
-
-
         if (isRecomItem(parent, absolutePos)) {
-            outRect.left = spacing - column * spacing / totalSpanCount;
-            outRect.right = (column + 1) * spacing / totalSpanCount;
-            if (position < totalSpanCount) {
-                outRect.top = spacing;
+            int firstProductItemPos = absolutePos;
+            while (isRecomItem(parent, firstProductItemPos - 1)) firstProductItemPos--;
+            int relativePos = absolutePos - firstProductItemPos;
+
+            final int totalSpanCount = getTotalSpanCount(parent);
+            outRect.top = isTopRecomItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+            outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+            if (parent.getLayoutManager() instanceof GridLayoutManager) {
+                outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+            } else {
+                outRect.right = 0;
             }
-            outRect.bottom = spacing;
+            outRect.bottom = isBottomRecomItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
         }
     }
 
@@ -46,6 +48,22 @@ public class RecomItemDecoration extends RecyclerView.ItemDecoration {
         }
         final int viewType = adapter.getItemViewType(viewPosition);
         return viewType == R.layout.item_recomendation;
+    }
+
+    private boolean isTopRecomItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
+        return !isRecomItem(parent, absolutePos - relativePos % totalSpanCount - 1);
+    }
+
+    private boolean isBottomRecomItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
+        return !isRecomItem(parent, absolutePos + totalSpanCount - relativePos % totalSpanCount);
+    }
+
+    private boolean isFirstInRow(int relativePos, int spanCount) {
+        return relativePos % spanCount == 0;
+    }
+
+    private boolean isLastInRow(int relativePos, int spanCount) {
+        return isFirstInRow(relativePos + 1, spanCount);
     }
 
     private int getTotalSpanCount(RecyclerView parent) {
