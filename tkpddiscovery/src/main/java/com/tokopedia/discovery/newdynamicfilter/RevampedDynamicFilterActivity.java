@@ -60,6 +60,12 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     public static final String EXTRA_SELECTED_FLAG_FILTER = "EXTRA_SELECTED_FLAG_FILTER";
     public static final String EXTRA_FILTER_PARAMETER = "EXTRA_FILTER_PARAMETER";
 
+    public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
+    public static final String FILTER_TEXT_PREF = "filter_text";
+    public static final String FILTER_SELECTED_CATEGORY_ROOT_ID_PREF = "filter_selected_category_root_id";
+    public static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
+    public static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
+
     public static final String FILTER_CONTROLLER = "filter_controller";
 
     public static Intent createInstance(Context context, String filterID, HashMap<String, String> searchParameter, @Nullable FilterFlagSelectedModel flagFilterHelper) {
@@ -102,6 +108,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         bindView();
         initKeyboardVisibilityListener();
         initRecyclerView();
+        loadLastFilterState(savedInstanceState);
         loadFilterItems();
     }
 
@@ -109,12 +116,12 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(FILTER_CONTROLLER, filterController);
-    }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle inState) {
-        super.onRestoreInstanceState(inState);
-        loadLastFilterState(inState);
+        outState.putSerializable(FILTER_CHECKED_STATE_PREF, savedCheckedState);
+        outState.putSerializable(FILTER_TEXT_PREF, savedTextInput);
+        outState.putString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        outState.putString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF, selectedCategoryRootId);
+        outState.putString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
     }
 
     private void bindView() {
@@ -165,7 +172,31 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private void loadLastFilterState(Bundle savedInstanceState) {
-        filterController = savedInstanceState.getParcelable(FILTER_CONTROLLER);
+        if (savedInstanceState != null) {
+            recoverLastFilterState(savedInstanceState);
+        } else {
+            loadLastFilterStateFromPreference();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void recoverLastFilterState(Bundle savedInstanceState) {
+        savedCheckedState = (HashMap<String, Boolean>) savedInstanceState.getSerializable(FILTER_CHECKED_STATE_PREF);
+        savedTextInput = (HashMap<String, String>) savedInstanceState.getSerializable(FILTER_TEXT_PREF);
+        selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
+        selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
+        selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
+    }
+
+    private void loadLastFilterStateFromPreference() {
+        FilterFlagSelectedModel model = getIntent().getParcelableExtra(EXTRA_SELECTED_FLAG_FILTER);
+        if (model != null) {
+            savedCheckedState = model.getSavedCheckedState();
+            savedTextInput = model.getSavedTextInput();
+            selectedCategoryId = model.getCategoryId();
+            selectedCategoryName = model.getSelectedCategoryName();
+            selectedCategoryRootId = model.getSelectedCategoryRootId();
+        }
     }
 
     @SuppressWarnings("unchecked")
