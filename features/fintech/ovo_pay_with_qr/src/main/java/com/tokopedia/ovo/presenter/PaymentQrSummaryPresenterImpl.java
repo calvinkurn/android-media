@@ -94,13 +94,16 @@ public class PaymentQrSummaryPresenterImpl extends BaseDaggerPresenter<PaymentQr
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 ConfirmData response = graphqlResponse.getData(ConfirmData.class);
-                if (response != null
-                        && response.getImeiConfirmResponse() != null) {
-                    if (response.getImeiConfirmResponse().getErrors().size() > 0
-                            && !TextUtils.isEmpty(response.getImeiConfirmResponse().getErrors().get(0).getMessage())) {
-                        getView().showError(response.getImeiConfirmResponse().getErrors().get(0).getMessage());
+                if (response != null && response.getImeiConfirmResponse() != null) {
+                    if (response.getImeiConfirmResponse().getErrors() != null) {
+                        if (response.getImeiConfirmResponse().getErrors().size() > 0
+                                && !TextUtils.isEmpty(response.getImeiConfirmResponse().getErrors().get(0).getMessage())) {
+                            getView().showError(response.getImeiConfirmResponse().getErrors().get(0).getMessage());
+                        } else {
+                            getView().goToUrl(response.getImeiConfirmResponse());
+                        }
                     } else {
-                        getView().goToUrl(response.getImeiConfirmResponse());
+                        getView().showError(getView().getErrorMessage());
                     }
                 } else {
                     getView().showError(getView().getErrorMessage());
