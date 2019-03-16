@@ -201,8 +201,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             else
                 checkboxDelete.setVisibility(View.GONE);
 
-            if (!TextUtils.isEmpty(item.getIsOfficialStore())) {
-                isOfficialStore = true;
+            if (!TextUtils.isEmpty(item.getIsOfficialStore()) && item.getIsOfficialStore().equalsIgnoreCase("yes")) {
                 tvPrioritylabel.setVisibility(View.VISIBLE);
                 tvPrioritylabel.setOnClickListener(new View.OnClickListener() {
                     @Override
