@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
-            android:src="@drawable/ic_three_dots_more_menu"
+            android:src="@drawable/ic_kebab"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -133,7 +133,7 @@
         android:id="@+id/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_8"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="5sp"
         android:paddingLeft="@dimen/dp_16"
@@ -149,7 +149,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
-        app:cardCornerRadius="@dimen/dp_8">F
+        app:cardCornerRadius="@dimen/dp_8">
 
         <LinearLayout
             android:layout_width="wrap_content"
