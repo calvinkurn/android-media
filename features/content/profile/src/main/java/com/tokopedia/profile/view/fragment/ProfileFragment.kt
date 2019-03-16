@@ -509,7 +509,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
 
                 override fun onEditClick() {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    
                 }
             })
             menus.show()
