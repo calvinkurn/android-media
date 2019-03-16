@@ -107,6 +107,7 @@ class TabBusinessFragment : BaseDaggerFragment() {
         adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList)
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = homeWidget.tabBusinessList.size
+        addTabLayoutListener(adapter)
     }
 
     private fun addChildTabLayout(list: List<HomeWidget.TabItem>) {
@@ -124,4 +125,18 @@ class TabBusinessFragment : BaseDaggerFragment() {
         temporayPlaceHolders.visibility = View.GONE
     }
 
+    private fun addTabLayoutListener(adapter: TabBusinessViewPagerAdapter) {
+        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                viewPager.setCurrentItem(tab.position, false)
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
+    }
 }
