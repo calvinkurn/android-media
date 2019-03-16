@@ -32,8 +32,6 @@ public class FlightRouteTable {
     private int stops;
     private String stopDetail;
 
-    public FlightRouteTable() {}
-
     public FlightRouteTable(String journeyId, String airline, String airlineName, String airlineShortName,
                             String airlineLogo, String departureAirport, String departureAirportName,
                             String departureAirportCity, String arrivalAirport, String arrivalAirportName,
