@@ -1,21 +1,40 @@
 package com.tokopedia.searchbar
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
+import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.component.badge.BadgeContainer
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
+import android.support.v4.graphics.drawable.DrawableCompat
+
 
 class HomeMainToolbar : MainToolbar {
 
     var toolbarType: Int = 0
 
     var shadowApplied: Boolean = false
+
+    lateinit var wishlistBitmapWhite: BitmapDrawable
+
+    lateinit var notifBitmapWhite: BitmapDrawable
+
+    lateinit var inboxBitmapWhite: BitmapDrawable
+
+    lateinit var wishlistBitmapGrey: BitmapDrawable
+
+    lateinit var notifBitmapGrey: BitmapDrawable
+
+    lateinit var inboxBitmapGrey: BitmapDrawable
 
     constructor(context: Context) : super(context) {}
 
@@ -29,7 +48,11 @@ class HomeMainToolbar : MainToolbar {
         showShadow()
 
         setBackgroundAlpha(0f)
+
         toolbarType = TOOLBAR_LIGHT_TYPE
+
+        initToolbarIcon()
+
         switchToLightToolbar()
 
         btnInbox.setOnClickListener { v ->
@@ -41,6 +64,38 @@ class HomeMainToolbar : MainToolbar {
                 RouteManager.route(context, ApplinkConst.LOGIN)
             }
         }
+    }
+
+    private lateinit var toolbarShadowBitmap: BitmapDrawable
+
+    private lateinit var toolbarWhiteBitmap: BitmapDrawable
+
+    private lateinit var wishlistCrossfader: TransitionDrawable
+
+    private lateinit var notifCrossfader: TransitionDrawable
+
+    private lateinit var inboxCrossfader: TransitionDrawable
+
+    private fun initToolbarIcon() {
+        wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
+        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_white)
+        inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
+
+        wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
+        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_grey)
+        inboxBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_grey)
+
+        wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
+        notifCrossfader = TransitionDrawable(arrayOf<Drawable>(notifBitmapGrey, notifBitmapWhite))
+        inboxCrossfader = TransitionDrawable(arrayOf<Drawable>(inboxBitmapGrey, inboxBitmapWhite))
+
+        btnWishlist.setImageDrawable(wishlistCrossfader)
+        btnNotification.setImageDrawable(notifCrossfader)
+        btnInbox.setImageDrawable(inboxCrossfader)
+
+        wishlistCrossfader.startTransition(0)
+        notifCrossfader.startTransition(0)
+        inboxCrossfader.startTransition(0)
     }
 
     fun hideShadow() {
@@ -78,52 +133,41 @@ class HomeMainToolbar : MainToolbar {
 
     fun switchToDarkToolbar() {
         if (toolbarType != TOOLBAR_DARK_TYPE) {
-            if (btnWishlist is BadgeContainer) {
-                val badgeInbox = btn_wishlist as BadgeContainer
-                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_wishlist_grey)
-            } else {
-                btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_grey)
-            }
+            wishlistCrossfader.reverseTransition(200)
+            notifCrossfader.reverseTransition(200)
+            inboxCrossfader.reverseTransition(200)
 
-            if (btnNotification is BadgeContainer) {
-                val badgeInbox = btn_inbox as BadgeContainer
-                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_notif_grey)
-            } else {
-                btnNotification.setImageResource(R.drawable.ic_searchbar_notif_grey)
-            }
-
-            if (btnInbox is BadgeContainer) {
-                val badgeInbox = btn_inbox as BadgeContainer
-                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_inbox_grey)
-            } else {
-                btnInbox.setImageResource(R.drawable.ic_searchbar_inbox_grey)
-            }
             toolbarType = TOOLBAR_DARK_TYPE
         }
     }
 
+    fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): BitmapDrawable {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            ContextCompat.getDrawable(context, drawableId) as BitmapDrawable
+        } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
+    }
+
+    fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
+        var drawable = ContextCompat.getDrawable(context, drawableId)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = DrawableCompat.wrap(drawable!!).mutate()
+        }
+
+        val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
+                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+        drawable.draw(canvas)
+
+        return bitmap
+    }
+
     fun switchToLightToolbar() {
         if (toolbarType != TOOLBAR_LIGHT_TYPE) {
-            if (btnWishlist is BadgeContainer) {
-                val badgeInbox = btn_wishlist as BadgeContainer
-                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_wishlist_white)
-            } else {
-                btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_white)
-            }
+            wishlistCrossfader.reverseTransition(200)
+            notifCrossfader.reverseTransition(200)
+            inboxCrossfader.reverseTransition(200)
 
-            if (btnNotification is BadgeContainer) {
-                val badgeInbox = btn_inbox as BadgeContainer
-                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_notif_white)
-            } else {
-                btnNotification.setImageResource(R.drawable.ic_searchbar_notif_white)
-            }
-
-            if (btnInbox is BadgeContainer) {
-                val badgeInbox = btn_inbox as BadgeContainer
-                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_inbox_white)
-            } else {
-                btnInbox.setImageResource(R.drawable.ic_searchbar_inbox_white)
-            }
             toolbarType = TOOLBAR_LIGHT_TYPE
         }
     }
