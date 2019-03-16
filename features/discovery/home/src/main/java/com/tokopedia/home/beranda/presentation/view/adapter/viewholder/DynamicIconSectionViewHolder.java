@@ -49,7 +49,7 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
         int width = size.x;
 
         recyclerView.addItemDecoration(new DynamicIconDecoration(
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_10),
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
                 width,
                 5,
                 itemView.getContext().getResources().getDimensionPixelOffset(

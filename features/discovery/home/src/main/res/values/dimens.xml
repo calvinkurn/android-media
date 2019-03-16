@@ -42,5 +42,6 @@
     <dimen name="banner_background_offset">85dp</dimen>
     <dimen name="banner_margin_top">41dp</dimen>
     <dimen name="banner_background_height">150dp</dimen>
-    <dimen name="use_case_and_dynamic_icon_size">44dp</dimen>
+    <dimen name="use_case_and_dynamic_image_size">48dp</dimen>
+    <dimen name="use_case_and_dynamic_icon_size">56dp</dimen>
 </resources>

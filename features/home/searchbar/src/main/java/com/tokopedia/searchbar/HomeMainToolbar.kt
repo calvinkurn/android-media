@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.component.badge.BadgeContainer
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 
@@ -27,12 +28,11 @@ class HomeMainToolbar : MainToolbar {
 
         showShadow()
 
-        icon_search.setImageResource(R.drawable.ic_searchbar_search_grey)
         setBackgroundAlpha(0f)
         toolbarType = TOOLBAR_LIGHT_TYPE
         switchToLightToolbar()
 
-        btn_inbox.setOnClickListener { v ->
+        btnInbox.setOnClickListener { v ->
             if (userSession.isLoggedIn) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
                 getContext().startActivity((this.context.applicationContext as SearchBarRouter)
@@ -78,18 +78,52 @@ class HomeMainToolbar : MainToolbar {
 
     fun switchToDarkToolbar() {
         if (toolbarType != TOOLBAR_DARK_TYPE) {
-            btnWishlist.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_wishlist_grey)
-            btnNotification.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_notif_grey)
-            btn_inbox.setImageResource(R.drawable.ic_searchbar_inbox_grey);
+            if (btnWishlist is BadgeContainer) {
+                val badgeInbox = btn_wishlist as BadgeContainer
+                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_wishlist_grey)
+            } else {
+                btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_grey)
+            }
+
+            if (btnNotification is BadgeContainer) {
+                val badgeInbox = btn_inbox as BadgeContainer
+                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_notif_grey)
+            } else {
+                btnNotification.setImageResource(R.drawable.ic_searchbar_notif_grey)
+            }
+
+            if (btnInbox is BadgeContainer) {
+                val badgeInbox = btn_inbox as BadgeContainer
+                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_inbox_grey)
+            } else {
+                btnInbox.setImageResource(R.drawable.ic_searchbar_inbox_grey)
+            }
             toolbarType = TOOLBAR_DARK_TYPE
         }
     }
 
     fun switchToLightToolbar() {
         if (toolbarType != TOOLBAR_LIGHT_TYPE) {
-            btnWishlist.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_wishlist_white)
-            btnNotification.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_notif_white)
-            btn_inbox.setImageResource(R.drawable.ic_searchbar_inbox_white)
+            if (btnWishlist is BadgeContainer) {
+                val badgeInbox = btn_wishlist as BadgeContainer
+                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_wishlist_white)
+            } else {
+                btnWishlist.setImageResource(R.drawable.ic_searchbar_wishlist_white)
+            }
+
+            if (btnNotification is BadgeContainer) {
+                val badgeInbox = btn_inbox as BadgeContainer
+                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_notif_white)
+            } else {
+                btnNotification.setImageResource(R.drawable.ic_searchbar_notif_white)
+            }
+
+            if (btnInbox is BadgeContainer) {
+                val badgeInbox = btn_inbox as BadgeContainer
+                badgeInbox.imageViewFromContainer.setImageResource(R.drawable.ic_searchbar_inbox_white)
+            } else {
+                btnInbox.setImageResource(R.drawable.ic_searchbar_inbox_white)
+            }
             toolbarType = TOOLBAR_LIGHT_TYPE
         }
     }
