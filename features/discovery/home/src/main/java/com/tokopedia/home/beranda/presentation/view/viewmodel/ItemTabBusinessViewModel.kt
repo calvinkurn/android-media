@@ -39,24 +39,29 @@ class ItemTabBusinessViewModel @Inject constructor(
     fun getList(rawQuery: String, tabId: Int) {
         job.children.map { it.cancel() }
         val params = mapOf(PARAM_TAB_ID to tabId)
+
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(
                         rawQuery,
-                        HomeWidget.Response::class.java,
+                        HomeWidget.Data::class.java,
                         params
                 )
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<HomeWidget.Response>()
+            }
 
-            if (data.errors.isEmpty()) {
-                homeWidget.value = Success(data.data.homeWidget)
+            if (data.getError(HomeWidget.Data::class.java) == null ||
+                    data.getError(HomeWidget.Data::class.java).isEmpty()) {
+                if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
+                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+                } else {
+                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
+                }
             } else {
-                val listMessage = arrayListOf<String>()
-                data.errors.forEach { listMessage.add(it.message) }
-                val message = TextUtils.join("\n", listMessage)
+                val message = data.getError(HomeWidget.Data::class.java)[0].message
                 homeWidget.value = Fail(ResponseErrorException(message))
             }
+
         }){
             homeWidget.value = Fail(it)
         }

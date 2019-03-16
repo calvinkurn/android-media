@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,10 +25,14 @@ class TabBusinessViewModel @Inject constructor(
     private val job = Job()
     val homeWidget = MutableLiveData<Result<HomeWidget>>()
 
+    companion object {
+        private const val PARAM_TAB_ID = "tabId"
+    }
+
     override val coroutineContext: CoroutineContext
         get() = baseDispatcher + job
 
-    fun getTabBusinessUnit(rawQuery: String) {
+    fun getTabList(rawQuery: String) {
 
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
@@ -38,23 +43,51 @@ class TabBusinessViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }
 
-            if (data.getError(HomeWidget.Data::class.java) == null ||
-                    data.getError(HomeWidget.Data::class.java).isEmpty()) {
-                if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
-                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
-                } else {
-                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
-                }
-            } else {
-                val message = data.getError(HomeWidget.Data::class.java)[0].message
-                homeWidget.value = Fail(ResponseErrorException(message))
-            }
+            handleResponseData(data)
 
         }){
             it.printStackTrace()
             homeWidget.value = Fail(it)
         }
 
+    }
+
+    fun getContentEachTabList(rawQuery: String, tabId: Int) {
+
+        job.children.map { it.cancel() }
+
+        val params = mapOf(PARAM_TAB_ID to tabId)
+
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default){
+                val graphqlRequest = GraphqlRequest(
+                        rawQuery,
+                        HomeWidget.Data::class.java,
+                        params
+                )
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }
+
+            handleResponseData(data)
+
+        }){
+            it.printStackTrace()
+            homeWidget.value = Fail(it)
+        }
+    }
+
+    private fun handleResponseData(data: GraphqlResponse) {
+        if (data.getError(HomeWidget.Data::class.java) == null ||
+                data.getError(HomeWidget.Data::class.java).isEmpty()) {
+            if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
+                homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+            } else {
+                homeWidget.value = Fail(ResponseErrorException("local handling error"))
+            }
+        } else {
+            val message = data.getError(HomeWidget.Data::class.java)[0].message
+            homeWidget.value = Fail(ResponseErrorException(message))
+        }
     }
 
     fun clearJob() {
