@@ -336,7 +336,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     item.text,
                     item.price,
                     item.applink,
-                    item.thumbnail
+                    item.thumbnail,
+                    mapTrackingData(item.tracking)
             ))
         }
 

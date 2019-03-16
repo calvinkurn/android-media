@@ -1852,8 +1852,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAffilaiteTrackClicked(@NotNull List<TrackingViewModel> trackList) {
-
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+        for (TrackingViewModel track : trackList) {
+            presenter.trackAffiliate(track.getClickURL());
+        }
     }
 
     @Override

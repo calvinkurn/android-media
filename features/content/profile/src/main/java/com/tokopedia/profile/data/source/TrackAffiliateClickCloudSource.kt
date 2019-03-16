@@ -16,26 +16,6 @@ class TrackAffiliateClickCloudSource @Inject constructor(
         private val topAdsApi: TopAdsApi,
         private val gson: Gson) {
 
-    fun doTracking(requestParams: RequestParams): Observable<Boolean> {
-        return topAdsApi.track(requestParams.parameters).map {
-            if (it.isSuccessful) {
-                if (it.body() != null && it.body() != null) {
-                    try {
-                        val type = object : TypeToken<TrackAffiliatePojo>() {}.type
-                        gson.fromJson<TrackAffiliatePojo>(it.body(), type).success
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                        false
-                    }
-                } else {
-                    throw RuntimeException(EMPTY_BODY)
-                }
-            } else {
-                throw RuntimeException(NETWORK_ERROR)
-            }
-        }
-    }
-
     fun doTrackingWithUrl(requestParams: RequestParams): Observable<Boolean> {
         return topAdsApi.trackWithUrl(requestParams.getString(PARAM_URL, ""), requestParams.parameters).map {
             if (it.isSuccessful) {

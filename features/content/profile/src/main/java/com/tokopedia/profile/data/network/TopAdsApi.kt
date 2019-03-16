@@ -10,10 +10,7 @@ import rx.Observable
  * @author by milhamj on 10/17/18.
  */
 interface TopAdsApi {
-    @GET(AFFILIATE_TRACKER)
-    fun track(@QueryMap params: HashMap<String, Any>): Observable<Response<String>>
 
-
-    @GET(AFFILIATE_TRACKER)
+    @GET()
     fun trackWithUrl(@Url url:String, @QueryMap params: HashMap<String, Any>): Observable<Response<String>>
 }

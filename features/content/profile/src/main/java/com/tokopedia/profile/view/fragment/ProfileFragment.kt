@@ -762,7 +762,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onAffilaiteTrackClicked(trackList: MutableList<TrackingViewModel>) {
+    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
         for (tracking in trackList) {
             presenter.trackPostClickUrl(tracking.clickURL)
         }

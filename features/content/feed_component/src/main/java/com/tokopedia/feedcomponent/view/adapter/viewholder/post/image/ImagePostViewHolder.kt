@@ -20,7 +20,7 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
         itemView.image.setOnClickListener {
             listener.onImageClick(element.positionInFeed, pagerPosition, element.redirectLink)
             if (!element.trackingList.isEmpty()) {
-                listener.onAffilaiteTrackClicked(element.trackingList)
+                listener.onAffiliateTrackClicked(element.trackingList)
             }
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
@@ -45,6 +45,6 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
     interface ImagePostListener {
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
 
-        fun onAffilaiteTrackClicked(trackList : MutableList<TrackingViewModel>)
+        fun onAffiliateTrackClicked(trackList : MutableList<TrackingViewModel>)
     }
 }
