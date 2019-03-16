@@ -1618,7 +1618,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
 
         } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
-            presenter.toggleFavoriteShop(positionInFeed, id);
+            presenter.toggleFavoriteShop(positionInFeed, adapterPosition, id);
         }
 
         if (adapter.getlist().get(positionInFeed) instanceof FeedRecommendationViewModel) {
