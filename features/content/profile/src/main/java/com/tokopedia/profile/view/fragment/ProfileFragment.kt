@@ -689,15 +689,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     description
             )
         }
-//        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
-//            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    model.trackingPostModel,
-//                    ProfileAnalytics.Element.SHARE,
-//                    url
-//            )
-//        }
         profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
 
