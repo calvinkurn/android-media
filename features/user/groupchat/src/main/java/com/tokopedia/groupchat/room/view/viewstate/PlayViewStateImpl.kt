@@ -943,12 +943,12 @@ open class PlayViewStateImpl(
                 if(!userSession.isLoggedIn) {
                     listener.onLoginClicked(it.channelId)
                 } else {
-                    var applink = RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
+                    val applink = RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
                             GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
                             it.channelUrl,
                             it.title
                     ))
-                    listener.openRedirectUrl(applink)
+                    listener.onFloatingIconClicked(floatingButton, applink)
                 }
             }
         }
