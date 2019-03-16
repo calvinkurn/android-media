@@ -2,8 +2,6 @@ package com.tokopedia.tkpd.tkpdreputation.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -14,7 +12,6 @@ import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
@@ -68,6 +65,8 @@ import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUpload
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadImageUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -567,19 +566,15 @@ public class ReputationModule {
                                                          LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                                          DeleteReviewResponseUseCase deleteReviewResponseUseCase,
                                                          ReviewProductListMapper productReviewListMapper,
-                                                         UserSession userSession){
+                                                         UserSessionInterface userSession){
         return new ReviewProductPresenter(productReviewGetListUseCase, productReviewGetHelpfulUseCase, productReviewGetRatingUseCase,
                 likeDislikeReviewUseCase, deleteReviewResponseUseCase, productReviewListMapper, userSession);
     }
 
     @ReputationScope
     @Provides
-    UserSession userSession(@ApplicationContext Context context){
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context).getSession();
-        }else{
-            return null;
-        }
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @ReputationScope

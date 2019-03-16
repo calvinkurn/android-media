@@ -103,6 +103,9 @@ buildscript {
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
+        flatDir {
+            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
+        }
     }
     dependencies {
         classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
@@ -320,7 +323,6 @@ dependencies {
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
-    implementation project(rootProject.ext.features.flightDbFlow)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
@@ -394,6 +396,7 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
+    implementation project(rootProject.ext.features.officialStore)
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)

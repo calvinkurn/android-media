@@ -83,7 +83,7 @@ class ChatModule {
             @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
             @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
             @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier userSession: com.tokopedia.abstraction.common.data.model.session.UserSession,
+            @ImageUploaderQualifier userSession: UserSessionInterface,
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<TopChatImageUploadPojo> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, TopChatImageUploadPojo::class.java, imageUploaderUtils)
     }
