@@ -43,7 +43,17 @@ class TabBusinessViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }
 
-            handleResponseData(data)
+            if (data.getError(HomeWidget.Data::class.java) == null ||
+                    data.getError(HomeWidget.Data::class.java).isEmpty()) {
+                if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
+                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+                } else {
+                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
+                }
+            } else {
+                val message = data.getError(HomeWidget.Data::class.java)[0].message
+                homeWidget.value = Fail(ResponseErrorException(message))
+            }
 
         }){
             it.printStackTrace()
@@ -68,25 +78,21 @@ class TabBusinessViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }
 
-            handleResponseData(data)
+            if (data.getError(HomeWidget.Data::class.java) == null ||
+                    data.getError(HomeWidget.Data::class.java).isEmpty()) {
+                if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
+                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+                } else {
+                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
+                }
+            } else {
+                val message = data.getError(HomeWidget.Data::class.java)[0].message
+                homeWidget.value = Fail(ResponseErrorException(message))
+            }
 
         }){
             it.printStackTrace()
             homeWidget.value = Fail(it)
-        }
-    }
-
-    private fun handleResponseData(data: GraphqlResponse) {
-        if (data.getError(HomeWidget.Data::class.java) == null ||
-                data.getError(HomeWidget.Data::class.java).isEmpty()) {
-            if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
-                homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
-            } else {
-                homeWidget.value = Fail(ResponseErrorException("local handling error"))
-            }
-        } else {
-            val message = data.getError(HomeWidget.Data::class.java)[0].message
-            homeWidget.value = Fail(ResponseErrorException(message))
         }
     }
 
