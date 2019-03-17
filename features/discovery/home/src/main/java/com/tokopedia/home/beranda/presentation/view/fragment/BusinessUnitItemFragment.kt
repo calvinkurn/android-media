@@ -3,10 +3,12 @@ package com.tokopedia.home.beranda.presentation.view.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +19,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -63,7 +66,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.layout_recyclerview_business_widget, container, false);
+        return inflater.inflate(R.layout.layout_recyclerview_business_widget, container, false)
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -106,6 +109,16 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getRecyclerView(view).addItemDecoration(
+                SpacingItemDecoration(
+                        convertDpToPixel(16.toFloat(), activity),
+                        SpacingItemDecoration.HORIZONTAL)
+        )
+    }
+
+    private fun convertDpToPixel(i: Float, context: Context?): Int {
+        val r = context?.resources
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, i, r?.displayMetrics).toInt()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
