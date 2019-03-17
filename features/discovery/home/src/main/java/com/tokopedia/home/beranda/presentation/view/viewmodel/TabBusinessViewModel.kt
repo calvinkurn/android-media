@@ -63,40 +63,6 @@ class TabBusinessViewModel @Inject constructor(
 
     }
 
-    fun getContentEachTabList(rawQuery: String, tabId: Int) {
-
-        job.children.map { it.cancel() }
-
-        val params = mapOf(PARAM_TAB_ID to tabId)
-
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.Default){
-                val graphqlRequest = GraphqlRequest(
-                        rawQuery,
-                        HomeWidget.Data::class.java,
-                        params
-                )
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }
-
-            if (data.getError(HomeWidget.Data::class.java) == null ||
-                    data.getError(HomeWidget.Data::class.java).isEmpty()) {
-                if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
-                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
-                } else {
-                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
-                }
-            } else {
-                val message = data.getError(HomeWidget.Data::class.java)[0].message
-                homeWidget.value = Fail(ResponseErrorException(message))
-            }
-
-        }){
-            it.printStackTrace()
-            homeWidget.value = Fail(it)
-        }
-    }
-
     fun clearJob() {
 //        if (isActive) job.cancel()
     }
