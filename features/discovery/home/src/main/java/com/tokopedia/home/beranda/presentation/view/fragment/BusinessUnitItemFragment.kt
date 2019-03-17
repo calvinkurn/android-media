@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.home.IHomeRouter
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
@@ -97,7 +98,8 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     override fun onItemClicked(t: HomeWidget.ContentItemTab?) {
-
+        (activity?.applicationContext as IHomeRouter)
+                .goToApplinkActivity(activity, t?.applink ?: t?.url)
     }
 
     override fun loadData(page: Int) {
@@ -135,6 +137,6 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     private fun onErrorGetList(throwable: Throwable) {
-
+        onGetListErrorWithEmptyData(throwable)
     }
 }

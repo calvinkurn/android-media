@@ -119,11 +119,11 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
                 itemView.strikeThroughPrice.visibility = View.GONE
             } else {
                 itemView.strikeThroughPrice.visibility = View.VISIBLE
-                itemView.strikeThroughPrice.text = element?.pricePrefix
+                itemView.strikeThroughPrice.text = element?.originalPrice
                 itemView.strikeThroughPrice.paintFlags = itemView.strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
 
-            if (element?.originalPrice.isNullOrEmpty()) {
+            if (element?.price.isNullOrEmpty()) {
                 itemView.price.visibility = View.GONE
             } else {
                 itemView.price.visibility = View.VISIBLE
