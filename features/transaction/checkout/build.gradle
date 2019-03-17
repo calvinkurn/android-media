@@ -55,7 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.shippingRecommendation)
     implementation project(rootProject.ext.features.merchantVoucher)
 
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.performance
     implementation project(rootProject.ext.features.promoCheckoutCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
