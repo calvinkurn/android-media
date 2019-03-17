@@ -14,4 +14,9 @@ interface ProfileModuleRouter {
     fun openRedirectUrl(activity: Activity, url: String)
 
     fun getFavoritedShopFragment(userId: String): Fragment
+
+    fun shareFeed(activity: Activity, detailId: String, url: String, title: String, imageUrl: String,
+                           description: String)
+
+    fun getShopPageIntent(context: Context, shopId: String): Intent
 }
