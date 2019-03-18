@@ -276,7 +276,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.showAndRenderReturnTripCardDetail(view.getCurrentBookingParamViewModel().searchParam,
                         flightBookingCartData.returnTrip)
             }
-            if (view.getCurrentBookingParamViewModel().passengerViewModels != null) {
+            if (view.getCurrentBookingParamViewModel().passengerViewModels.size == 0) {
                 val passengerViewModels = buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
                 view.getCurrentBookingParamViewModel().passengerViewModels = passengerViewModels
                 view.renderPassengersList(passengerViewModels)
@@ -476,6 +476,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                 override fun onNext(t: AddToCartEntity?) {
                                     if (isViewAttached && t != null) {
                                         view.setCartId(t.id)
+                                        view.getCurrentBookingParamViewModel().passengerViewModels =
+                                                buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
                                         onGetCart(true, view.getCurrentCartPassData())
                                     }
                                 }
