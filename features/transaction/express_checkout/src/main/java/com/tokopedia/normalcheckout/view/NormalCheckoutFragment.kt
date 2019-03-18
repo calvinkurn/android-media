@@ -366,6 +366,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (!viewModel.isUserSessionActive()) {
                 //TODO LOGIN
                 context?.run {
+                    TrackApp.getInstance()?.gtm?.sendGeneralEvent.sendEventTracking(
+                        CLICK_PDP,
+                        PRODUCT_DETAIL_PAGE,
+                        "click - beli on variants page - before login",
+                        productId
+                    )
                     startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
                 }

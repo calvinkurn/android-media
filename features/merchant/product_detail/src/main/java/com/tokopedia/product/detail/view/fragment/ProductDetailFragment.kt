@@ -363,7 +363,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfo?.basic?.let { productDetailTracking.eventPDPAddToWishlist(it.name) }
                         }
                     }
-                    // TODO tracking for affiliate
+                    if (isAffiliate && productId?.isNotEmpty() == true) {
+                        productDetailTracking.eventClickWishlistOnAffiliate(
+                            productInfoViewModel.userId,
+                            productId!!
+                        )
+                    }
                 }
             } else {
                 context?.run {

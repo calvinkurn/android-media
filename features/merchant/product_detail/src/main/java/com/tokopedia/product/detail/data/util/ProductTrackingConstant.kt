@@ -35,6 +35,7 @@ object ProductTrackingConstant {
         const val EVENT = "clickAffiliate"
         const val CATEGORY = "product detail page tokopedia by.me"
         const val ACTION = "click tambah ke by.me"
+        const val ACTION_CLICK_WISHLIST = "click wishlist"
     }
 
     object ProductTalk {
