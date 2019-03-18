@@ -26,6 +26,8 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.playServicesDependencies.analytics;
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

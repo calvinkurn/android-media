@@ -24,6 +24,6 @@ class CodModule{
 
     @CodScope
     @Provides
-    fun provideCodAnalytics(tracker: AnalyticTracker): CodAnalytics = CodAnalytics(tracker)
+    fun provideCodAnalytics(): CodAnalytics = CodAnalytics()
 
 }

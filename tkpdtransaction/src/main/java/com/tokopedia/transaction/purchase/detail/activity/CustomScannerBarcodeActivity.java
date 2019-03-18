@@ -22,9 +22,7 @@ public class CustomScannerBarcodeActivity extends CaptureActivity implements IBa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getApplicationContext() instanceof AbstractionRouter) {
-            salesShippingAnalytics = new SalesShippingAnalytics(
-                    ((AbstractionRouter) getApplicationContext()).getAnalyticTracker()
-            );
+            salesShippingAnalytics = new SalesShippingAnalytics();
         }
         sendAnalyticsOnImpressionBarcodeScanner();
 

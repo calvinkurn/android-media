@@ -56,8 +56,8 @@ public class TrackingAnalyticsModule {
     }
 
     @Provides
-    CodAnalytics provideCodAnalytics(AbstractionRouter abstractionRouter) {
-        return new CodAnalytics(abstractionRouter.getAnalyticTracker());
+    CodAnalytics provideCodAnalytics() {
+        return new CodAnalytics();
     }
 
     @Provides

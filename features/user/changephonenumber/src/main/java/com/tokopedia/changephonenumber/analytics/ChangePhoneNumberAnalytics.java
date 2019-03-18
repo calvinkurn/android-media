@@ -6,6 +6,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import javax.inject.Inject;
 
@@ -15,19 +17,9 @@ import javax.inject.Inject;
 
 public class ChangePhoneNumberAnalytics {
 
-    private AnalyticTracker analyticTracker;
-    private Context context;
 
     @Inject
-    public ChangePhoneNumberAnalytics(@ApplicationContext Context context) {
-        if (context == null)
-            return;
-
-        this.context = context;
-        if (context.getApplicationContext() instanceof AbstractionRouter) {
-            analyticTracker = ((AbstractionRouter) context.getApplicationContext())
-                    .getAnalyticTracker();
-        }
+    public ChangePhoneNumberAnalytics() {
     }
 
     public static class Event {
@@ -54,59 +46,56 @@ public class ChangePhoneNumberAnalytics {
     }
 
     public void getEventViewWarningMessageTokocash() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_PROFILE,
                 Category.WARNING_PAGE,
                 Action.VIEW_WARNING_MESSAGE,
                 Label.WARNING_1
-        );
+        ));
     }
 
     public void getEventViewWarningMessageSaldo() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_PROFILE,
                 Category.WARNING_PAGE,
                 Action.VIEW_WARNING_MESSAGE,
                 Label.WARNING_2
-        );
+        ));
     }
 
     public void getEventViewWarningMessageBoth() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_PROFILE,
                 Category.WARNING_PAGE,
                 Action.VIEW_WARNING_MESSAGE,
                 Label.WARNING_3
-        );
+        ));
     }
 
     public void getEventWarningPageClickOnWithdraw() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_PROFILE,
                 Category.WARNING_PAGE,
                 Action.CLICK_ON_SALDO,
                 Label.EMPTY
-        );
+        ));
     }
 
     public void getEventChangePhoneNumberClickOnNext() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_PROFILE,
                 Category.CHANGE_PHONE_NUMBER_PAGE,
                 Action.CLICK_ON_NEXT,
                 Label.EMPTY
-        );
+        ));
     }
 
     public void getEventChangePhoneNumberClickOnInfo() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_PROFILE,
                 Category.CHANGE_PHONE_NUMBER_PAGE,
                 Action.CLICK_ON_INFORMATION,
                 Label.EMPTY
-        );
+        ));
     }
 }

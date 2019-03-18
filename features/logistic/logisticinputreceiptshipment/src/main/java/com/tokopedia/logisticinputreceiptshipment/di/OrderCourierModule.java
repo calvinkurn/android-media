@@ -79,7 +79,7 @@ public class OrderCourierModule {
     @OrderCourierScope
     SalesShippingAnalytics provideSalesShippingAnalytics(@ApplicationContext Context context) {
         if (context instanceof AbstractionRouter) {
-            return new SalesShippingAnalytics(((AbstractionRouter) context).getAnalyticTracker());
+            return new SalesShippingAnalytics();
         }
         return null;
     }
