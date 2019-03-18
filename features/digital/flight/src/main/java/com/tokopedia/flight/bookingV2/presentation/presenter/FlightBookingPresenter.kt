@@ -443,19 +443,19 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     Observable.just(flightBookingCartData)
                             .flatMap(getRoundTripDataObservable())
                             .flatMap(object : Func1<FlightBookingCartData, Observable<AddToCartEntity>> {
-                                override fun call(t: FlightBookingCartData?): Observable<AddToCartEntity> {
+                                override fun call(t: FlightBookingCartData): Observable<AddToCartEntity> {
                                     val fares = arrayListOf<Fare>()
                                     val departureFare = Fare("", "", "",
-                                            flightBookingCartData.departureTrip.adultNumericPrice,
-                                            flightBookingCartData.departureTrip.childNumericPrice,
-                                            flightBookingCartData.departureTrip.infantNumericPrice)
+                                            t.departureTrip.adultNumericPrice,
+                                            t.departureTrip.childNumericPrice,
+                                            t.departureTrip.infantNumericPrice)
                                     fares.add(departureFare)
 
-                                    if (flightBookingCartData.returnTrip != null) {
+                                    if (t.returnTrip != null) {
                                         val returnFare = Fare("", "", "",
-                                                flightBookingCartData.returnTrip.adultNumericPrice,
-                                                flightBookingCartData.returnTrip.childNumericPrice,
-                                                flightBookingCartData.returnTrip.infantNumericPrice)
+                                                t.returnTrip.adultNumericPrice,
+                                                t.returnTrip.childNumericPrice,
+                                                t.returnTrip.infantNumericPrice)
                                         fares.add(returnFare)
                                     }
 
@@ -466,16 +466,29 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                             searchPassDataViewModel.flightPassengerViewModel.children,
                                             searchPassDataViewModel.flightPassengerViewModel.infant
                                     )
+
+                                    view.setCartData(t)
+
                                     return flightAddToCartUseCase.createObservable(getRequestParams(price))
                                 }
-                            }).onBackpressureDrop()
+                            })
+                            .zipWith(getDefaultPhoneDataObservable(),
+                                    object : Func2<AddToCartEntity, FlightBookingPhoneCodeViewModel, AddToCartEntity> {
+                                        override fun call(t1: AddToCartEntity, t2: FlightBookingPhoneCodeViewModel?): AddToCartEntity {
+                                            view.setCartId(t1.id)
+                                            view.getCurrentCartPassData().id = t1.id
+                                            view.getCurrentCartPassData().defaultPhoneCode = t2
+                                            return t1
+                                        }
+
+                                    })
+                            .onBackpressureDrop()
                             .subscribeOn(Schedulers.io())
                             .unsubscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(object : Subscriber<AddToCartEntity>() {
                                 override fun onNext(t: AddToCartEntity?) {
                                     if (isViewAttached && t != null) {
-                                        view.setCartId(t.id)
                                         view.getCurrentBookingParamViewModel().passengerViewModels =
                                                 buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
                                         onGetCart(true, view.getCurrentCartPassData())
@@ -541,6 +554,13 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     }
                 }
             }
+
+    private fun getDefaultPhoneDataObservable(): Observable<FlightBookingPhoneCodeViewModel> =
+            flightBookingGetPhoneCodeUseCase.createObservable(flightBookingGetPhoneCodeUseCase.createRequest("Indonesia"))
+                    .flatMap {
+                        Observable.from(it)
+                    }
+                    .first()
 
     private fun transform(phoneRawString: String): String {
         var phoneString: String = checkStart(phoneRawString)
