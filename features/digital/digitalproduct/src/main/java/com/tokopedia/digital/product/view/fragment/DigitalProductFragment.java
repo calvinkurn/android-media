@@ -854,12 +854,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     );
                 break;
             case REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
-                if (digitalProductView != null) {
-                    if (resultCode == Activity.RESULT_OK && data != null)
-                        handleCallBackProductChooser(
-                                data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA)
-                        );
-                }
+                if (resultCode == Activity.RESULT_OK && data != null)
+                    handleCallBackProductChooser(
+                            data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA)
+                    );
                 break;
             case REQUEST_CODE_CART_DIGITAL:
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -1119,7 +1117,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     private void handleCallBackProductChooser(Product product) {
-        digitalProductView.renderUpdateProductSelected(product);
+        if (digitalProductView != null) digitalProductView.renderUpdateProductSelected(product);
     }
 
     private void handleCallBackOperatorChooser(Operator operator) {
