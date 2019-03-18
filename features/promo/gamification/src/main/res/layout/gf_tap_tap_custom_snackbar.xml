@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_red_error_toast"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_msg"
+        style="@style/TextView.Micro.Black40"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_32"
+        android:layout_toLeftOf="@+id/snack_ok"
+        android:maxLines="2"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_12"
+        tools:text="@string/points_not_available" />
+
+
+    <TextView
+        android:id="@+id/snack_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_24"
+        android:padding="@dimen/dp_8"
+        android:text="@string/title_ok"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_12" />
+</RelativeLayout>

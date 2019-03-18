@@ -15,6 +15,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Green"
             android:launchMode="singleTask"/>
+        <activity android:name=".taptap.activity.TapTapTokenActivity" />
 
     </application>
 

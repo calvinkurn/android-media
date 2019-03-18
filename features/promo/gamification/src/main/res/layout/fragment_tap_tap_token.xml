@@ -46,33 +46,26 @@
         android:layout_height="match_parent" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/text_info_page"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_64"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/text_info_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_36"
-            android:layout_marginRight="@dimen/dp_36"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:background="@drawable/bg_info_crack_egg"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:paddingLeft="@dimen/dp_32"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_32"
-            android:paddingBottom="@dimen/dp_8"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/text_size_info_crack_egg"
-            android:textStyle="bold"
-            android:visibility="gone"
-            tools:text="@string/default_info_token_text_crack"
-            tools:visibility="visible" />
-    </LinearLayout>
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/dp_36"
+        android:layout_marginRight="@dimen/dp_36"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@drawable/bg_info_crack_egg"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_32"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_32"
+        android:paddingBottom="@dimen/dp_16"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_info_crack_egg"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="@string/default_info_token_text_crack"
+        tools:visibility="visible" />
 
 
     <android.support.v7.widget.Toolbar
@@ -138,6 +131,49 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_cta"
+            style="@style/Button.Submit.Green.Rounded"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:textSize="@dimen/sp_16"
+            tools:visibility="visible"
+            android:visibility="gone"
+            tools:text="Cek dan Gunakan Hadiah Anda" />
+
+        <Button
+            android:id="@+id/button_return"
+            style="@style/Button.Submit.GreyRounded"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="gone"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="center"
+            tools:visibility="visible"
+            android:textColor="@color/black_40"
+            android:textSize="@dimen/sp_16"
+            tools:text="Cek dan Gunakan Hadiah Anda" />
+    </LinearLayout>
 
 
 </FrameLayout>

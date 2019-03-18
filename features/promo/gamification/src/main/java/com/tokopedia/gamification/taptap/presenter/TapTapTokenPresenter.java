@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.taptap.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -13,20 +14,16 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
-import com.tokopedia.gamification.cracktoken.model.ExpiredCrackResult;
-import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
-import com.tokopedia.gamification.data.entity.GamificationSumCouponOuter;
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity;
-import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
 import com.tokopedia.gamification.data.entity.ResultStatusEntity;
-import com.tokopedia.gamification.data.entity.TokenAssetEntity;
-import com.tokopedia.gamification.data.entity.TokenBackgroundAssetEntity;
-import com.tokopedia.gamification.data.entity.TokenDataEntity;
-import com.tokopedia.gamification.data.entity.TokenUserEntity;
-import com.tokopedia.gamification.data.entity.TokoPointDetailEntity;
 import com.tokopedia.gamification.taptap.contract.TapTapTokenContract;
+import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
+import com.tokopedia.gamification.taptap.data.entiity.PlayWithPointsEntity;
+import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity;
+import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
+import com.tokopedia.gamification.taptap.model.ExpiredCrackResult;
+import com.tokopedia.gamification.taptap.model.GeneralErrorCrackResult;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -38,27 +35,31 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import rx.Subscriber;
 
 public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContract.View>
         implements TapTapTokenContract.Presenter {
     private GraphqlUseCase getTokenTokopointsUseCase;
     private GraphqlUseCase getCrackResultEggUseCase;
+    Lazy<GraphqlUseCase> getCrackResultEggUseCaseProvider;
     private UserSession userSession;
 
     @Inject
     public TapTapTokenPresenter(GraphqlUseCase getTokenTokopointsUseCase,
                                 GraphqlUseCase getCrackResultEggUseCase,
+                                Lazy<GraphqlUseCase> getCrackResultEggUseCaseProvider,
                                 UserSession userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
+        this.getCrackResultEggUseCaseProvider = getCrackResultEggUseCaseProvider;
         this.userSession = userSession;
     }
 
     @Override
     public void initializePage() {
         if (userSession.isLoggedIn()) {
-            getGetTokenTokopoints();
+            getGetTokenTokopoints(true, false);
         } else {
             getView().navigateToLoginPage();
         }
@@ -67,14 +68,14 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
     @Override
     public void onLoginDataReceived() {
         if (userSession.isLoggedIn()) {
-            getGetTokenTokopoints();
+            getGetTokenTokopoints(true, false);
         } else {
             getView().closePage();
         }
     }
 
     @Override
-    public void crackToken(int tokenUserId, int campaignId) {
+    public void crackToken(long tokenUserId, long campaignId) {
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID, tokenUserId);
         queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);
@@ -130,11 +131,12 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
     }
 
     @Override
-    public void getGetTokenTokopoints() {
-        getView().showLoading();
+    public void getGetTokenTokopoints(boolean showLoading, boolean isRefetchEgg) {
+        if (showLoading)
+            getView().showLoading();
         getTokenTokopointsUseCase.clearRequest();
-        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.token_tokopoint_query),
-                ResponseTokenTokopointEntity.class, false);
+        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_token_tap_tap),
+                TapTapBaseEntity.class, false);
         getTokenTokopointsUseCase.addRequest(tokenTokopointsRequest);
         getTokenTokopointsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -155,24 +157,21 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                ResponseTokenTokopointEntity responseTokenTokopointEntity = graphqlResponse.getData(ResponseTokenTokopointEntity.class);
+                TapTapBaseEntity responseTokenTokopointEntity = graphqlResponse.getData(TapTapBaseEntity.class);
                 getView().hideLoading();
-                if (responseTokenTokopointEntity != null && responseTokenTokopointEntity.getTokopointsToken() != null)
-                    getView().onSuccessGetToken(responseTokenTokopointEntity.getTokopointsToken());
+                if (responseTokenTokopointEntity != null && responseTokenTokopointEntity.getGamiTapEggHome() != null)
+                    getView().onSuccessGetToken(responseTokenTokopointEntity.getGamiTapEggHome(), isRefetchEgg);
             }
         });
     }
 
     @Override
-    public void downloadAllAsset(Context context, TokenDataEntity tokenData) {
+    public void downloadAllAsset(Context context, GamiTapEggHome tokenData) {
         getView().showLoading();
 
-        TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
-        TokenBackgroundAssetEntity tokenBackgroundAsset = tokenUser.getBackgroundAsset();
+        TokenAsset tokenAsset = tokenData.getTokenAsset();
 
-        TokenAssetEntity tokenAsset = tokenUser.getTokenAsset();
-
-        List<String> tokenAssetImageUrls = tokenAsset.getImagev2Urls();
+        List<String> tokenAssetImageUrls = tokenAsset.getImageV2URLs();
         String full = tokenAssetImageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_FULL);
         String cracked = tokenAssetImageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_CRACKED);
         String imageLeftUrl = tokenAssetImageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_LEFT);
@@ -180,14 +179,14 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
         final List<Pair<String, String>> assetUrls = new ArrayList<>();
 
-        assetUrls.add(new Pair<>(tokenBackgroundAsset.getBackgroundImgUrl(), tokenBackgroundAsset.getVersion()));
+        assetUrls.add(new Pair<>(tokenAsset.getBackgroundImgURL(), tokenAsset.getVersion()));
+        assetUrls.add(new Pair<>(tokenAsset.getGlowShadowImgURL(), tokenAsset.getVersion()));
 
-        String tokenAssetVersion = String.valueOf(tokenAsset.getVersion());
+        String tokenAssetVersion = tokenAsset.getVersion();
         assetUrls.add(new Pair<>(full, tokenAssetVersion));
         assetUrls.add(new Pair<>(cracked, tokenAssetVersion));
         assetUrls.add(new Pair<>(imageLeftUrl, tokenAssetVersion));
         assetUrls.add(new Pair<>(imageRightUrl, tokenAssetVersion));
-        assetUrls.add(new Pair<>(tokenAsset.getSmallImgv2Url(), tokenAssetVersion));
 
         RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
         for (Pair<String, String> assetUrlPair : assetUrls) {
@@ -195,6 +194,73 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     context, assetUrlPair.first, new StringSignature(assetUrlPair.second),
                     tokenAssetRequestListener);
         }
+    }
+
+    public void downloadEmptyAssets(Context context, GamiTapEggHome tokenData) {
+
+        getView().showLoading();
+
+        TokenAsset tokenAsset = tokenData.getTokenAsset();
+
+        List<String> tokenAssetImageUrls = tokenAsset.getImageV2URLs();
+        String empty = tokenAssetImageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_EMPTY);
+
+        final List<Pair<String, String>> assetUrls = new ArrayList<>();
+
+
+        String tokenAssetVersion = String.valueOf(1);
+        assetUrls.add(new Pair<>(empty, tokenAssetVersion));
+
+        RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
+        for (Pair<String, String> assetUrlPair : assetUrls) {
+            ImageHandler.downloadOriginalSizeImageWithSignature(
+                    context, assetUrlPair.first, new StringSignature(assetUrlPair.second),
+                    tokenAssetRequestListener);
+        }
+
+    }
+
+    @Override
+    public void playWithPoints() {
+        if (getCrackResultEggUseCaseProvider != null) {
+            getView().showLoading();
+            GraphqlUseCase getCrackResultEggUseCase = getCrackResultEggUseCaseProvider.get();
+            getCrackResultEggUseCase.clearRequest();
+            GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_play_with_tokopoints),
+                    PlayWithPointsEntity.class, false);
+            getCrackResultEggUseCase.addRequest(tokenTokopointsRequest);
+            getCrackResultEggUseCase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(GraphqlResponse graphqlResponse) {
+                    if (graphqlResponse != null) {
+                        PlayWithPointsEntity playWithPointsEntity = graphqlResponse.getData(PlayWithPointsEntity.class);
+                        if (playWithPointsEntity != null && playWithPointsEntity.getGamiPlayWithPoints() != null) {
+                            if (playWithPointsEntity.getGamiPlayWithPoints().getCode().equals("200")) {
+                                getGetTokenTokopoints(true, false);
+                                return;
+                            } else if (playWithPointsEntity.getGamiPlayWithPoints().getMessage() != null) {
+                                getView().showErrorSnackBar(TextUtils.join(",", playWithPointsEntity.getGamiPlayWithPoints().getMessage()));
+                            }
+
+
+                        }
+                    }
+                    getView().showErrorSnackBar();
+
+                }
+            });
+        }
+
     }
 
     public class ImageRequestListener implements RequestListener<String, GlideDrawable> {

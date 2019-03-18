@@ -370,7 +370,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), "tokopedia://gamification2", pageUrl, CrackTokenActivity.class);
                 trackingEggClick(String.valueOf(tokenData.getFloating().getTokenId()));
             }
         });

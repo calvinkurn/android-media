@@ -2,30 +2,22 @@ package com.tokopedia.gamification.taptap.compoundview;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.text.Spannable;
-import android.text.SpannableString;
+import android.os.Build;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,12 +29,11 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
-import com.tokopedia.gamification.cracktoken.util.BounceBackExponentialInterpolator;
+import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.util.HexValidator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,34 +56,15 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     private static final long COUNTER_ANIMATION_START_DELAY = 200;
     private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET = 500;
 
-    private ImageView imageViewBgCrackResult;
     private ImageView imageViewCrackResult;
-    private View backgroundViewCrackResult;
-    private LinearLayout containerTextCrackResult;
-    private TextView textCrackResultLabel;
 
     private LinearLayout listCrackResultText;
-    private Button buttonReturn;
-    private Button buttonCta;
     private CrackResultEntity crackResult;
 
     private WidgetCrackResultListener listener;
-    private FrameLayout listCrackResultParent;
-    private AnimatorSet counterAnimatorSet;
-    private ArrayList<Animator> animationList;
-    private List<TextView> tvTierInfoList;
+    private AnimatorSet rewardTranslateAnimatorSet;
 
     public interface WidgetCrackResultListener {
-        void onClickCtaButton(CrackResultEntity crackResult, String titleBtn);
-
-        void onTrackingCloseRewardButton(CrackResultEntity crackResult);
-
-        void onClickReturnButton(CrackResultEntity crackResult, String titleBtn);
-
-        void onClickCloseButton();
-
-        void onClickCloseButtonWhenError();
-
         void onCrackResultCleared();
     }
 
@@ -112,51 +84,73 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_crack_result_tap_tap, this, true);
-        imageViewBgCrackResult = view.findViewById(R.id.image_bg_reward);
-        imageViewCrackResult = view.findViewById(R.id.image_reward);
-        backgroundViewCrackResult = view.findViewById(R.id.background_view_reward);
-        containerTextCrackResult = view.findViewById(R.id.container_text_reward);
-        listCrackResultText = view.findViewById(R.id.view_list_reward_text);
-        buttonReturn = view.findViewById(R.id.button_return);
-        buttonCta = view.findViewById(R.id.button_cta);
-        textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
-        listCrackResultParent = view.findViewById(R.id.view_list_reward_parent);
+        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_crack_result_tap_tap, this, true);
+        imageViewCrackResult = rootView.findViewById(R.id.image_reward);
+        listCrackResultText = rootView.findViewById(R.id.view_list_reward_text);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                initImageBound(rootView);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    rootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+    }
+
+    private void initImageBound(View rootView) {
+        int rootWidth = rootView.getWidth();
+        int rootHeight = rootView.getHeight();
+        int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
+        int imageMarginBottom = rootView.getHeight() - TokenMarginUtil.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_32);
+//        RelativeLayout.LayoutParams ivFullLp = (RelativeLayout.LayoutParams) imageViewCrackResult.getLayoutParams();
+//        ivFullLp.width = imageWidth;
+//        ivFullLp.height = imageHeight;
+//        imageViewCrackResult.requestLayout();
+
+        RelativeLayout.LayoutParams tvFullLp = (RelativeLayout.LayoutParams) listCrackResultText.getLayoutParams();
+        tvFullLp.bottomMargin = imageMarginBottom;
+        listCrackResultText.requestLayout();
+
     }
 
     public void showCrackResult(CrackResultEntity crackResult) {
         this.crackResult = crackResult;
-        showCrackResultImageAnimation(crackResult);
-        showCrackResultBackgroundAnimation();
         showListCrackResultText(crackResult.getBenefits(), crackResult.getBenefitLabel());
-        renderCtaButton(crackResult);
-        renderReturnButton(crackResult);
+        showCrackResultImageAnimation(crackResult);
     }
 
     private void showCrackResultImageAnimation(CrackResultEntity crackResult) {
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-        float screenHeightQuarter = metrics.heightPixels / 4;
-        screenHeightQuarter = screenHeightQuarter - actionBarHeight;
-
-        final AnimationSet animationCrackResult = new AnimationSet(true);
-        Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
-        animationCrackResult.addAnimation(scaleAnimationCrackResult);
-        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
-        animationCrackResult.addAnimation(translateAnimationCrackResult);
-        animationCrackResult.setFillAfter(true);
-        animationCrackResult.setDuration(1000);
-        animationCrackResult.setInterpolator(new BounceBackExponentialInterpolator(0.1, 15));
+//        int actionBarHeight = 0;
+//        TypedValue tv = new TypedValue();
+//        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+//            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+//        }
+//
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+//        float screenHeightQuarter = metrics.heightPixels / 4;
+//        screenHeightQuarter = screenHeightQuarter - actionBarHeight;
+//
+//        final AnimationSet animationCrackResult = new AnimationSet(true);
+//        Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
+//        animationCrackResult.addAnimation(scaleAnimationCrackResult);
+//        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
+//        animationCrackResult.addAnimation(translateAnimationCrackResult);
+//        animationCrackResult.setFillAfter(true);
+//        animationCrackResult.setDuration(1000);
+//        animationCrackResult.setInterpolator(new BounceBackExponentialInterpolator(0.1, 15));
+        initRewardsTranslateAnimator();
 
         if (crackResult.getImageBitmap() != null && !crackResult.getImageBitmap().isRecycled()) {
             imageViewCrackResult.setImageBitmap(crackResult.getImageBitmap());
-            startImageResultAnimation(imageViewCrackResult, animationCrackResult);
+            rewardTranslateAnimatorSet.start();
+            imageViewCrackResult.setVisibility(View.VISIBLE);
+            listCrackResultText.setVisibility(View.VISIBLE);
+//            startImageResultAnimation(imageViewCrackResult, animationCrackResult);
         } else {
             if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
                 Glide.with(getContext())
@@ -166,373 +160,137 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                 imageViewCrackResult.setImageBitmap(resource);
-                                imageViewCrackResult.startAnimation(animationCrackResult);
+                                rewardTranslateAnimatorSet.start();
                                 imageViewCrackResult.setVisibility(View.VISIBLE);
                             }
                         });
             }
         }
 
-        AnimationSet animationBgCrackResult = new AnimationSet(true);
-
-        Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
-        rotateAnimationCrackResult.setDuration(DURATION_ROTATION_CRACK_RESULT);
-        animationBgCrackResult.addAnimation(rotateAnimationCrackResult);
-
-        Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_bg_crack_result);
-        animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
-
-        TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
-        animationBgCrackResult.addAnimation(translateAnimationBgCrackResult);
-
-        startImageResultAnimation(imageViewBgCrackResult, animationBgCrackResult);
     }
 
-    private void startImageResultAnimation(ImageView imageViewCrack, AnimationSet animationCrackResult) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (getContext() != null) {
-                    imageViewCrack.startAnimation(animationCrackResult);
-                    imageViewCrack.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+    void initRewardsTranslateAnimator() {
+        if (rewardTranslateAnimatorSet == null) {
+            rewardTranslateAnimatorSet = new AnimatorSet();
+            AnimatorSet animatorSetTranslate2 = new AnimatorSet();
+
+            PropertyValuesHolder pvhAlpha =
+                    PropertyValuesHolder.ofFloat(View.ALPHA, 0.0f, 1.0f);
+            ObjectAnimator fadeInAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhAlpha);
+
+
+            PropertyValuesHolder pvhTranslateImageResult =
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, -240);
+            ObjectAnimator translate1 = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhTranslateImageResult);
+
+
+            AnimatorSet animatorSetTranslate1 = new AnimatorSet();
+            animatorSetTranslate1.setDuration(1000);
+            animatorSetTranslate1.playTogether(fadeInAnimator, translate1);
+
+
+            PropertyValuesHolder pvhTranslate2 =
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, -240, -480);
+            ObjectAnimator translate2 = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhTranslate2);
+
+
+            PropertyValuesHolder pvhAlpha2 =
+                    PropertyValuesHolder.ofFloat(View.ALPHA, 1.0f, 0.0f);
+
+            ObjectAnimator fadeOut = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhAlpha2);
+
+            animatorSetTranslate2.setStartDelay(1000);
+            animatorSetTranslate2.setDuration(1000);
+            animatorSetTranslate2.playTogether(translate2, fadeOut);
+
+            ObjectAnimator translateRewardsText = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhTranslateImageResult);
+
+            ObjectAnimator fadeInAnimatorReward = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhAlpha);
+
+            ObjectAnimator fadeOutAnimatorReward = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhAlpha2);
+
+            AnimatorSet animatorSetTranslateRewards = new AnimatorSet();
+            animatorSetTranslateRewards.playTogether(fadeInAnimatorReward, translateRewardsText);
+            animatorSetTranslateRewards.setDuration(500);
+
+            AnimatorSet rewardsAnimatorSet = new AnimatorSet();
+            rewardsAnimatorSet.playSequentially(animatorSetTranslateRewards, fadeOutAnimatorReward);
+            rewardsAnimatorSet.setDuration(1000);
+            rewardsAnimatorSet.setStartDelay(400);
+
+
+            AnimatorSet imageTranslateAnimatorSet = new AnimatorSet();
+            imageTranslateAnimatorSet.playSequentially(animatorSetTranslate1, animatorSetTranslate2);
+            rewardTranslateAnimatorSet.playTogether(rewardsAnimatorSet, imageTranslateAnimatorSet);
+            rewardTranslateAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        }
+        rewardTranslateAnimatorSet.addListener(rewardTranslateListener);
     }
 
-    private void showCrackResultBackgroundAnimation() {
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
-        alphaAnimation.setFillAfter(true);
-        alphaAnimation.setDuration(DURATION_ALPHA_ANIM);
+    AnimatorSet.AnimatorListener rewardTranslateListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
 
-        backgroundViewCrackResult.setAnimation(alphaAnimation);
-        backgroundViewCrackResult.setBackgroundColor(getResources().getColor(R.color.font_black_primary_70));
-        backgroundViewCrackResult.setVisibility(View.VISIBLE);
-    }
+        }
 
-    public void showListCrackResultText(List<CrackBenefitEntity> rewardTexts, String labelCrackResult) {
-        textCrackResultLabel.setText(labelCrackResult);
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
-        alphaAnimation.setDuration(DURATION_ALPHA_ANIM_TEXT);
-        containerTextCrackResult.setAnimation(alphaAnimation);
-        containerTextCrackResult.setVisibility(View.VISIBLE);
-        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            clearCrackResult();
+        }
 
-            }
+        @Override
+        public void onAnimationCancel(Animator animation) {
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                int childPosition = 0;
-                for (CrackBenefitEntity rewardText : rewardTexts) {
+        }
 
-                    if (!TextUtils.isEmpty(rewardText.getAnimationType())) {
-                        String rewardStr = "";
-                        if (!TextUtils.isEmpty(rewardText.getTemplateText())) {
-                            int index = rewardText.getTemplateText().indexOf(' ');
-                            if (index != -1 && index < rewardText.getTemplateText().length()) {
-                                rewardStr = rewardText.getTemplateText().substring(index + 1);
-                            }
-                        }
-                        View view = listCrackResultText.getChildAt(childPosition);
-                        if (view instanceof TextView) {
-                            TextView textView = (TextView) view;
-                            textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
+        @Override
+        public void onAnimationRepeat(Animator animation) {
 
-                            String finalRewardStr = rewardStr;
-                            post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (getContext() != null) {
-                                        float frontWidth = measureFrontTextWidth(textView.getTextSize(),
-                                                String.format(getContext().getString(R.string.rewards_increased_points_front_text), String.valueOf(rewardText.getValueBefore())));
-                                        slideAnimationLeftToRight(textView, rewardText, frontWidth);
-                                        initCountAnimation(textView, rewardText.getValueBefore(), rewardText.getValueAfter(), finalRewardStr);
-                                    }
-                                }
-                            });
-                        }
-                        childPosition++;
+        }
+    };
 
-                    }
-                }
-                startCounterAnimation(rewardTexts != null ? rewardTexts.size() : 0);
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+    public void showListCrackResultText(List<CrackBenefitEntity> rewardTexts, String
+            labelCrackResult) {
         for (CrackBenefitEntity rewardText : rewardTexts) {
             TextView textView = new TextView(getContext());
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.gravity = Gravity.CENTER;
             textView.setGravity(Gravity.CENTER);
             textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
-            if (!TextUtils.isEmpty(rewardText.getAnimationType())) {
-                String rewardStr = "";
-                if (!TextUtils.isEmpty(rewardText.getTemplateText())) {
-                    int index = rewardText.getTemplateText().indexOf(' ');
-                    if (index != -1 && index < rewardText.getTemplateText().length()) {
-                        rewardStr = rewardText.getTemplateText().substring(index + 1);
-                    }
-                }
-                textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
-            } else {
-                textView.setText(rewardText.getText());
-            }
+            textView.setText(rewardText.getText());
             textView.setLayoutParams(layoutParams);
             if (HexValidator.validate(rewardText.getColor())) {
                 textView.setTextColor(Color.parseColor(rewardText.getColor()));
             } else {
                 textView.setTextColor(getContext().getResources().getColor(R.color.default_text_reward_color));
             }
-            int dimenTextSize = convertSize(rewardText.getSize());
-            float textSizeInPx = getContext().getResources().getDimension(dimenTextSize);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_16));
             listCrackResultText.addView(textView);
         }
 
     }
 
-    private void startCounterAnimation(int rewardsCount) {
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (getContext() != null) {
-                    if (animationList != null && animationList.size() > 0) {
-                        counterAnimatorSet = new AnimatorSet();
-                        counterAnimatorSet.playTogether(animationList);
-                        counterAnimatorSet.start();
-                    }
-                }
-            }
-        }, rewardsCount * 150);
-    }
-
-    private float measureFrontTextWidth(float textSize, String textToMeasure) {
-        if (TextUtils.isEmpty(textToMeasure))
-            return 0.0f;
-        Paint textPaint = new Paint();
-        textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setTextSize(textSize);
-        return textPaint.measureText(textToMeasure);
-    }
-
-
-    /**
-     * Slide the view from left to right
-     *
-     * @param textView   relative textview for original position of shift
-     * @param rewardText
-     * @param textShift
-     */
-    private void slideAnimationLeftToRight(TextView textView, CrackBenefitEntity rewardText, float textShift) {
-        int multiplierColor;
-        if (HexValidator.validate(rewardText.getColor())) {
-            multiplierColor = Color.parseColor(rewardText.getColor());
-        } else {
-            multiplierColor = getContext().getResources().getColor(R.color.default_text_reward_color);
-        }
-        String infoString = rewardText.getTierInformation() + " " + rewardText.getMultiplier() + "X";
-        Spannable wordtoSpan = new SpannableString(infoString);
-
-        wordtoSpan.setSpan(new ForegroundColorSpan(multiplierColor), infoString.indexOf(rewardText.getMultiplier()), infoString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        TextView textViewTierInfo = new TextView(getContext());
-        textViewTierInfo.setTypeface(textViewTierInfo.getTypeface(), Typeface.BOLD);
-        textViewTierInfo.setText(wordtoSpan);
-        textViewTierInfo.setBackgroundResource(R.drawable.ic_multiplier);
-        int topBottomPadding = getResources().getDimensionPixelOffset(R.dimen.dp_8);
-        int rightPadding = getResources().getDimensionPixelOffset(R.dimen.dp_12);
-        int leftPadding = getResources().getDimensionPixelOffset(R.dimen.dp_16);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, textView.getHeight() - topBottomPadding);
-        layoutParams.topMargin = topBottomPadding / 2;
-        layoutParams.bottomMargin = topBottomPadding / 2;
-        textViewTierInfo.setGravity(Gravity.CENTER);
-        textViewTierInfo.setLayoutParams(layoutParams);
-        textViewTierInfo.setX(textView.getX());
-        textViewTierInfo.setY(textView.getY());
-        textViewTierInfo.setPadding(leftPadding, topBottomPadding, rightPadding, topBottomPadding);
-
-        if (tvTierInfoList == null) {
-            tvTierInfoList = new ArrayList<TextView>();
-        }
-        tvTierInfoList.add(textViewTierInfo);
-        listCrackResultParent.addView(textViewTierInfo);
-        slideLeftToRightInfoText(textViewTierInfo, textShift);
-
-    }
-
-
-    /**
-     * Translate the textview from left right
-     *
-     * @param textViewTierInfo textview to be shifted
-     * @param textShift        amount of shift
-     */
-    private void slideLeftToRightInfoText(TextView textViewTierInfo, float textShift) {
-        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, textShift - getResources().getDimension(R.dimen.dp_2), 0f, 0f);
-        translateAnimationCrackResult.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_DURATION);
-        translateAnimationCrackResult.setStartTime(SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY);
-        translateAnimationCrackResult.setFillAfter(true);
-        translateAnimationCrackResult.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                textViewTierInfo.setX(textViewTierInfo.getX() + textShift - getResources().getDimension(R.dimen.dp_2));
-                slideAndFadeOutText(textViewTierInfo, textShift);
-                translateAnimationCrackResult.setAnimationListener(null);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        textViewTierInfo.startAnimation(translateAnimationCrackResult);
-    }
-
-    private void slideAndFadeOutText(TextView textViewTierInfo, float textShift) {
-        AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
-        alphaAnimation.setFillAfter(true);
-        alphaAnimation.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION);
-        alphaAnimation.setStartOffset(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET);
-        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, textShift + 300, 0f, 0f);
-        translateAnimationCrackResult.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_DURATION);
-        translateAnimationCrackResult.setStartOffset(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET);
-        translateAnimationCrackResult.setFillAfter(true);
-        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (listCrackResultParent != null && textViewTierInfo != null) {
-                    listCrackResultParent.removeView(textViewTierInfo);
-                    tvTierInfoList.remove(textViewTierInfo);
-                }
-                alphaAnimation.setAnimationListener(null);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        textViewTierInfo.startAnimation(translateAnimationCrackResult);
-        textViewTierInfo.startAnimation(alphaAnimation);
-
-    }
-
-    private void initCountAnimation(TextView textView, int valueBefore, int valueAfter, String text) {
-        ValueAnimator animator = ValueAnimator.ofInt(valueBefore, valueAfter);
-        animator.setDuration(COUNTER_ANIMATION_DURATION);
-
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), animation.getAnimatedValue().toString(), text));
-            }
-        });
-        if (animationList == null) {
-            animationList = new ArrayList<>();
-        } else {
-            animationList.clear();
-            animationList.add(animator);
-        }
-    }
-
-
-    private int convertSize(String size) {
-        switch (size) {
-            case TEXT_SIZE_REWARD_LARGE:
-                return R.dimen.text_size_reward_large;
-            case TEXT_SIZE_REWARD_MEDIUM:
-                return R.dimen.text_size_reward_medium;
-            case TEXT_SIZE_REWARD_SMALL:
-                return R.dimen.text_size_reward_small;
-            default:
-                return R.dimen.text_size_reward_medium;
-        }
-    }
-
-    public void renderReturnButton(final CrackResultEntity crackResult) {
-        if (crackResult.getReturnButton() != null) {
-            if (crackResult.isCrackButtonVisible(crackResult.getReturnButton())) {
-                buttonReturn.setVisibility(VISIBLE);
-                buttonReturn.setText(crackResult.getReturnButton().getTitle());
-                buttonReturn.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        listener.onClickReturnButton(crackResult, buttonReturn.getText().toString());
-                    }
-                });
-            } else {
-                buttonReturn.setVisibility(GONE);
-            }
-        } else {
-            buttonReturn.setVisibility(GONE);
-        }
-    }
-
-    public void renderCtaButton(final CrackResultEntity crackResult) {
-        if (crackResult.getCtaButton() != null) {
-            if (crackResult.isCrackButtonVisible(crackResult.getCtaButton())) {
-                buttonCta.setVisibility(VISIBLE);
-                buttonCta.setText(crackResult.getCtaButton().getTitle());
-                buttonCta.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        listener.onClickCtaButton(crackResult, buttonCta.getText().toString());
-                    }
-                });
-            } else {
-                buttonCta.setVisibility(GONE);
-            }
-        } else {
-            buttonCta.setVisibility(GONE);
-        }
-    }
 
     public void setListener(WidgetCrackResultListener listener) {
         this.listener = listener;
     }
 
     public void clearCrackResult() {
-        backgroundViewCrackResult.clearAnimation();
-        backgroundViewCrackResult.setVisibility(View.GONE);
+        if (rewardTranslateAnimatorSet != null) {
+            rewardTranslateAnimatorSet.removeListener(rewardTranslateListener);
+            rewardTranslateAnimatorSet.cancel();
+        }
         imageViewCrackResult.clearAnimation();
         imageViewCrackResult.setVisibility(View.GONE);
-        imageViewBgCrackResult.clearAnimation();
-        imageViewBgCrackResult.setVisibility(View.GONE);
+        listCrackResultText.clearAnimation();
         listCrackResultText.removeAllViews();
-        containerTextCrackResult.setVisibility(GONE);
+        listCrackResultText.setVisibility(View.GONE);
         listener.onCrackResultCleared();
-        if (tvTierInfoList != null) {
-            for (TextView tvTierInfoList : tvTierInfoList) {
-                listCrackResultParent.removeView(tvTierInfoList);
-            }
-            tvTierInfoList.clear();
-        }
-        if(counterAnimatorSet!=null){
-            counterAnimatorSet.cancel();
-        }
-        if (animationList != null) {
-            animationList.clear();
-        }
     }
 
     public boolean isShowReward() {
-        return imageViewBgCrackResult.isShown() && !isShowCrackError();
+        return imageViewCrackResult.isShown() && !isShowCrackError();
     }
 
     /**
@@ -540,10 +298,6 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
      */
     private boolean isShowCrackError() {
         return crackResult != null && crackResult instanceof GeneralErrorCrackResult;
-    }
-
-    public void dismissReward() {
-        listener.onClickCloseButton();
     }
 
 }

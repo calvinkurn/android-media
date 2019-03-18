@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.taptap.compoundview;
 
 import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -17,8 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -33,7 +32,9 @@ import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
-import com.tokopedia.gamification.data.entity.TokenAssetEntity;
+import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
+import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
+import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 
 import java.util.List;
 
@@ -64,6 +65,9 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     private static final long INFINITE_BOUNCE_DURATION = 180;
     private static final long CRACK_BOUNCE_DURATION = 250;
     private static final long CRACK_BOUNCE_BACK_DURATION = 200;
+    private static final long GLOW_IN_OUT_DURATION = 1000;
+
+    private static final float LOBBY_IMAGE_SCALE = 1.16976127321f;
 
     private volatile ImageView imageViewFull;
     private volatile MaskedHeightImageView imageViewCracked;
@@ -79,20 +83,23 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     private AnimatorSet crackingAnimationSet1;
     private AnimatorSet crackingAnimationSet2;
     private AnimatorSet crackingAnimationSet3;
-    private AnimatorSet initialBounceAnimatorSet;
+    private AnimatorSet initialGlowAnimatorSet;
 
     private MediaPlayer crackMediaPlayer;
-    private volatile boolean isAnimatedFirstTime = true;
-    private volatile long animationStartTime;
     private AnimatorSet bounceAnimatorSet;
-    private Animation rotateRightAnimation;
-    private Animation rotateLeftAnimation;
-    private AnimatorSet quickBounceAnimatorSet;
+    private ImageView imageFullWhiteEgg;
+    private ImageView imageSemiWhiteEgg;
+    private AnimatorSet animatorSetFadeOut;
+    private AnimatorSet animatorSetRotateEggs;
+    private CrackResultEntity crackResult;
+    private AnimatorSet animatorSetRotateBackEggs;
 
     public interface WidgetTokenListener {
         void onClick();
 
         void showCrackResult(CrackResultEntity crackResult);
+
+        void reShowEgg();
     }
 
     public WidgetTokenViewTapTap(@NonNull Context context) {
@@ -120,11 +127,13 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         imageViewCracked = rootView.findViewById(R.id.imagecracked);
         imageViewLeft = rootView.findViewById(R.id.imageleft);
         imageViewRight = rootView.findViewById(R.id.imageright);
+        imageFullWhiteEgg = rootView.findViewById(R.id.image_full_white_egg);
+        imageSemiWhiteEgg = rootView.findViewById(R.id.image_semi_white_egg);
 
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isBounceAnimationFirstTimeAndBeforeBound())
+                if (!isTokenClicked)
                     clearTokenAnimationAndCrack();
                 isTokenClicked = true;
 
@@ -148,13 +157,6 @@ public class WidgetTokenViewTapTap extends FrameLayout {
 
     }
 
-    private boolean isBounceAnimationFirstTimeAndBeforeBound() {
-        if (!isAnimatedFirstTime) {
-            return System.currentTimeMillis() - animationStartTime < 2000;
-        }
-        return false;
-    }
-
     @SuppressWarnings("SuspiciousNameCombination")
     private void initImageBound() {
         int rootWidth = rootView.getWidth();
@@ -163,6 +165,8 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         int imageHeight = imageWidth;
         int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
         int imageMarginTop = imageMarginBottom - imageHeight;
+        int marginDiff = (int) (((imageHeight * LOBBY_IMAGE_SCALE) - imageHeight) / 2.0f);
+        int imageLobbyMarginTop = imageMarginBottom - imageHeight - marginDiff;
 
         LayoutParams ivFullLp = (LayoutParams) imageViewFull.getLayoutParams();
         ivFullLp.width = imageWidth;
@@ -177,6 +181,20 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         ivCrackedLp.gravity = CENTER_HORIZONTAL;
         ivCrackedLp.topMargin = imageMarginTop;
         imageViewCracked.requestLayout();
+
+        LayoutParams ivFullWhiteLp = (LayoutParams) imageFullWhiteEgg.getLayoutParams();
+        ivFullWhiteLp.width = (int) (imageWidth * LOBBY_IMAGE_SCALE);
+        ivFullWhiteLp.height = (int) (imageHeight * LOBBY_IMAGE_SCALE);
+        ivFullWhiteLp.gravity = CENTER_HORIZONTAL;
+        ivFullWhiteLp.topMargin = imageLobbyMarginTop;
+        imageFullWhiteEgg.requestLayout();
+
+        LayoutParams ivSemiWhiteLp = (LayoutParams) imageSemiWhiteEgg.getLayoutParams();
+        ivSemiWhiteLp.width = (int) (imageWidth * LOBBY_IMAGE_SCALE);
+        ivSemiWhiteLp.height = (int) (imageHeight * LOBBY_IMAGE_SCALE);
+        ivSemiWhiteLp.gravity = CENTER_HORIZONTAL;
+        ivSemiWhiteLp.topMargin = imageLobbyMarginTop;
+        imageSemiWhiteEgg.requestLayout();
 
         LayoutParams ivLeftLp = (LayoutParams) imageViewLeft.getLayoutParams();
         ivLeftLp.width = imageWidth;
@@ -195,12 +213,14 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         setVisibility(View.VISIBLE);
     }
 
-    public void setToken(TokenAssetEntity tokenAsset) {
-        List<String> imageUrls = tokenAsset.getImagev2Urls();
+    public void setToken(TokenAsset tokenAsset, TokensUser tokenUser) {
+        List<String> imageUrls = tokenAsset.getImageV2URLs();
         String full = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_FULL);
         String cracked = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_CRACKED);
         String imageLeftUrl = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_LEFT);
         String imageRightUrl = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_RIGHT);
+        String imageFullWhitetUrl = tokenAsset.getGlowImgURL();
+        String imageSemiWhiteUrl = tokenAsset.getGlowShadowImgURL();
 
         StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
 
@@ -218,9 +238,21 @@ public class WidgetTokenViewTapTap extends FrameLayout {
                 });
         ImageHandler.loadImageWithSignature(imageViewRight, imageRightUrl, stringSignature);
         ImageHandler.loadImageWithSignature(imageViewLeft, imageLeftUrl, stringSignature);
+        ImageHandler.loadImageWithSignature(imageFullWhiteEgg, imageFullWhitetUrl, stringSignature);
+        ImageHandler.loadImageWithSignature(imageSemiWhiteEgg, imageSemiWhiteUrl, stringSignature);
 
-        reset();
         show();
+        reset(tokenUser);
+    }
+
+    public void setEmptyToken(TokenAsset tokenAsset, TokensUser tokenUser) {
+        List<String> imageUrls = tokenAsset.getImageV2URLs();
+        String empty = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_EMPTY);
+        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
+        ImageHandler.loadImageWithSignature(imageViewFull, empty, stringSignature);
+        reset(tokenUser);
+        this.setVisibility(View.VISIBLE);
+
     }
 
     public void hide() {
@@ -233,47 +265,36 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         imageViewFull.setEnabled(true);
     }
 
-    private void shake() {
-        imageViewFull.setPivotY(imageViewFull.getHeight());
-        imageViewFull.setPivotX(imageViewFull.getWidth() * 0.5f);
-
-        if (initialBounceAnimatorSet == null) {
-            initialBounceAnimatorSet = new AnimatorSet();
-
-            PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f);
-            PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f);
-            ObjectAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, scalex, scaley);
-            bounceAnim.setRepeatCount(2);
-            bounceAnim.setRepeatMode(ValueAnimator.REVERSE);
-            bounceAnim.setDuration(INFINITE_BOUNCE_DURATION);
-
-            PropertyValuesHolder scalex1 = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f);
-            PropertyValuesHolder scaley1 = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f);
-            ObjectAnimator bounceBackAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, scalex1, scaley1);
-            bounceBackAnim.setDuration(INFINITE_BOUNCE_DURATION);
-            initialBounceAnimatorSet.playSequentially(bounceAnim, bounceBackAnim);
+    private void glow() {
+        if (initialGlowAnimatorSet == null) {
+            final PropertyValuesHolder pvhAlpha1 =
+                    PropertyValuesHolder.ofFloat(View.ALPHA, 1.0f, 0.0f);
+            initialGlowAnimatorSet = new AnimatorSet();
+            ObjectAnimator alphaAnimator = ObjectAnimator.ofPropertyValuesHolder(imageFullWhiteEgg, pvhAlpha1);
+            alphaAnimator.setDuration(GLOW_IN_OUT_DURATION);
+            alphaAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            alphaAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            initialGlowAnimatorSet.play(alphaAnimator);
         }
-        initialBounceAnimatorSet.addListener(bounceListener);
-        initialBounceAnimatorSet.start();
+        imageFullWhiteEgg.setVisibility(View.VISIBLE);
+        imageSemiWhiteEgg.setVisibility(View.VISIBLE);
+        initialGlowAnimatorSet.start();
+        imageViewFull.setEnabled(false);
     }
 
-    Animator.AnimatorListener bounceListener = new Animator.AnimatorListener() {
+    AnimatorSet.AnimatorListener glowFadeOutListener = new Animator.AnimatorListener() {
         @Override
         public void onAnimationStart(Animator animation) {
-            animationStartTime = System.currentTimeMillis();
+
         }
 
         @Override
         public void onAnimationEnd(Animator animation) {
-            isAnimatedFirstTime = false;
-            if (isTokenClicked) {
-                clearTokenAnimationAndCrack();
-            } else {
-                if (initialBounceAnimatorSet != null) {
-                    initialBounceAnimatorSet.setStartDelay(2000);
-                    initialBounceAnimatorSet.start();
-                }
-            }
+            imageFullWhiteEgg.setVisibility(View.INVISIBLE);
+            imageSemiWhiteEgg.setVisibility(View.INVISIBLE);
+            imageFullWhiteEgg.clearAnimation();
+            imageSemiWhiteEgg.clearAnimation();
+            imageViewFull.setEnabled(true);
         }
 
         @Override
@@ -286,6 +307,28 @@ public class WidgetTokenViewTapTap extends FrameLayout {
 
         }
     };
+
+    public void fadeOutEggs() {
+        if (initialGlowAnimatorSet != null) {
+            initialGlowAnimatorSet.cancel();
+        }
+        final PropertyValuesHolder pvhAlpha1 =
+                PropertyValuesHolder.ofFloat(View.ALPHA, imageFullWhiteEgg.getAlpha(), 0.0f);
+        final PropertyValuesHolder pvhAlpha2 =
+                PropertyValuesHolder.ofFloat(View.ALPHA, 1.0f, 0.0f);
+        if (animatorSetFadeOut == null) {
+            animatorSetFadeOut = new AnimatorSet();
+        }
+        ObjectAnimator alphaAnimator1 = ObjectAnimator.ofPropertyValuesHolder(imageFullWhiteEgg, pvhAlpha1);
+        alphaAnimator1.setDuration((long) (GLOW_IN_OUT_DURATION * imageFullWhiteEgg.getAlpha()));
+
+        ObjectAnimator alphaAnimator2 = ObjectAnimator.ofPropertyValuesHolder(imageSemiWhiteEgg, pvhAlpha2);
+        alphaAnimator2.setDuration(GLOW_IN_OUT_DURATION);
+        animatorSetFadeOut.playSequentially(alphaAnimator1, alphaAnimator2);
+        animatorSetFadeOut.addListener(glowFadeOutListener);
+        animatorSetFadeOut.start();
+
+    }
 
     private void shakeHardAndCrackAnimation() {
         imageViewFull.setPivotY(Y_PIVOT_PERCENT * imageViewFull.getHeight());
@@ -414,9 +457,8 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     public void stopShaking() {
         imageViewFull.setRotation(0);
         imageViewCracked.setRotation(0);
-        if (initialBounceAnimatorSet != null) {
-            initialBounceAnimatorSet.removeListener(bounceListener);
-            initialBounceAnimatorSet.cancel();
+        if (initialGlowAnimatorSet != null) {
+            initialGlowAnimatorSet.cancel();
         }
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
@@ -424,21 +466,25 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     }
 
     public void split(CrackResultEntity crackResult) {
+        this.crackResult = crackResult;
 
         bounceAnimatorSet = new AnimatorSet();
-        imageViewFull.setVisibility(View.GONE);
+        imageViewFull.setVisibility(View.INVISIBLE);
+        imageViewFull.clearAnimation();
         imageViewCracked.setPivotY(imageViewFull.getHeight());
         imageViewCracked.setPivotX(imageViewFull.getWidth() * 0.5f);
 
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
         }
-        if (initialBounceAnimatorSet != null) {
-            initialBounceAnimatorSet.removeListener(bounceListener);
-            initialBounceAnimatorSet.cancel();
+        if (initialGlowAnimatorSet != null) {
+            initialGlowAnimatorSet.cancel();
+        }
+        if (animatorSetFadeOut != null) {
+            animatorSetFadeOut.removeListener(glowFadeOutListener);
+            animatorSetFadeOut.cancel();
         }
 
-        quickBounce();
 
         PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.25f);
         PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.7f);
@@ -454,7 +500,6 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         ObjectAnimator animCrackBounceBack = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex1, scaley1);
         animCrackBounceBack.setDuration(CRACK_BOUNCE_BACK_DURATION);
         bounceAnimatorSet.playSequentially(animCrackBounce, animCrackBounceBack);
-        bounceAnimatorSet.setStartDelay(4 * INFINITE_BOUNCE_DURATION);
         bounceAnimatorSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -463,30 +508,17 @@ public class WidgetTokenViewTapTap extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                rotateRightAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_right_and_translate);
-                rotateLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_left_and_translate);
-                imageViewRight.startAnimation(rotateRightAnimation);
-                imageViewLeft.startAnimation(rotateLeftAnimation);
-                imageViewCracked.setVisibility(View.GONE);
+
+                imageViewCracked.clearAnimation();
+                imageViewCracked.setVisibility(View.INVISIBLE);
                 imageViewLeft.setVisibility(View.VISIBLE);
                 imageViewRight.setVisibility(View.VISIBLE);
-                rotateLeftAnimation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        playRewardSound();
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        listener.showCrackResult(crackResult);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
+                imageViewLeft.setPivotX((float) (0.5 * imageViewLeft.getWidth()));
+                imageViewLeft.setPivotY(imageViewLeft.getHeight());
+                imageViewRight.setPivotX((float) (0.5 * imageViewLeft.getWidth()));
+                imageViewRight.setPivotY(imageViewRight.getHeight());
+                initRotateAnimation();
+                animatorSetRotateEggs.start();
             }
 
             @Override
@@ -504,43 +536,143 @@ public class WidgetTokenViewTapTap extends FrameLayout {
 
     }
 
-    private void quickBounce() {
-        quickBounceAnimatorSet = new AnimatorSet();
-        PropertyValuesHolder scalex = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f);
-        PropertyValuesHolder scaley = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f);
-        ObjectAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex, scaley);
-        bounceAnim.setRepeatCount(2);
-        bounceAnim.setRepeatMode(ValueAnimator.REVERSE);
-        bounceAnim.setDuration(INFINITE_BOUNCE_DURATION);
-
-        PropertyValuesHolder scalex1 = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f);
-        PropertyValuesHolder scaley1 = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f);
-        ObjectAnimator bounceBackAnim = ObjectAnimator.ofPropertyValuesHolder(imageViewCracked, scalex1, scaley1);
-        bounceBackAnim.setDuration(INFINITE_BOUNCE_DURATION);
-        quickBounceAnimatorSet.playSequentially(bounceAnim, bounceBackAnim);
-        quickBounceAnimatorSet.start();
+    private void initRotateAnimation() {
+        if (animatorSetRotateEggs == null) {
+            animatorSetRotateEggs = new AnimatorSet();
+            AnimatorSet rotateLeft = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), R.animator.rotate_left);
+            AnimatorSet rotateRight = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), R.animator.rotate_right);
+            rotateLeft.setTarget(imageViewLeft);
+            rotateRight.setTarget(imageViewRight);
+            animatorSetRotateEggs.playTogether(rotateLeft, rotateRight);
+        }
+        animatorSetRotateEggs.addListener(rotateEggListener);
     }
 
-    private void reset() {
+    public void startRotateBackAnimation() {
+        imageViewLeft.setPivotX((float) (0.5 * imageViewLeft.getWidth()));
+        imageViewLeft.setPivotY(imageViewLeft.getHeight());
+        imageViewRight.setPivotX((float) (0.5 * imageViewLeft.getWidth()));
+        imageViewRight.setPivotY(imageViewRight.getHeight());
+        if (animatorSetRotateBackEggs == null) {
+            animatorSetRotateBackEggs = new AnimatorSet();
+            AnimatorSet rotateLeftBack = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), R.animator.rotate_left_back);
+            AnimatorSet rotateRightBack = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), R.animator.rotate_right_back);
+            rotateLeftBack.setTarget(imageViewRight);
+            rotateRightBack.setTarget(imageViewLeft);
+            animatorSetRotateBackEggs.playTogether(rotateLeftBack, rotateRightBack);
+        }
+        animatorSetRotateBackEggs.addListener(rotateBackListener);
+        animatorSetRotateBackEggs.start();
+
+    }
+
+    AnimatorSet.AnimatorListener rotateEggListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            listener.showCrackResult(crackResult);
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+    };
+
+    AnimatorSet.AnimatorListener rotateBackListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            imageFullWhiteEgg.setVisibility(View.VISIBLE);
+            imageViewLeft.setVisibility(View.INVISIBLE);
+            imageViewLeft.clearAnimation();
+            imageViewRight.setVisibility(View.INVISIBLE);
+            imageViewRight.clearAnimation();
+            imageViewFull.setVisibility(View.VISIBLE);
+            final PropertyValuesHolder pvhAlpha1 =
+                    PropertyValuesHolder.ofFloat(View.ALPHA, 1.0f, 0.0f);
+
+
+            ObjectAnimator alphaAnimator2 = ObjectAnimator.ofPropertyValuesHolder(imageFullWhiteEgg, pvhAlpha1);
+            alphaAnimator2.setDuration(1000);
+            alphaAnimator2.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    imageFullWhiteEgg.setVisibility(View.INVISIBLE);
+                    imageFullWhiteEgg.clearAnimation();
+                    listener.reShowEgg();
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+
+            alphaAnimator2.start();
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+    };
+
+    private void reset(TokensUser tokenUser) {
         isTokenClicked = false;
 
         imageViewRight.clearAnimation();
-        imageViewRight.setVisibility(View.GONE);
+        imageViewRight.setVisibility(View.INVISIBLE);
 
         imageViewLeft.clearAnimation();
-        imageViewLeft.setVisibility(View.GONE);
+        imageViewLeft.setVisibility(View.INVISIBLE);
+
+        imageFullWhiteEgg.clearAnimation();
+        imageFullWhiteEgg.setVisibility(View.INVISIBLE);
+
+        imageSemiWhiteEgg.clearAnimation();
+        imageSemiWhiteEgg.setVisibility(View.INVISIBLE);
 
         imageViewFull.setVisibility(View.VISIBLE);
         imageViewCracked.reset();
 
-        shake();
+        if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenUser.getState()))
+            glow();
     }
 
     public void clearTokenAnimation() {
-        if (initialBounceAnimatorSet != null) {
-            initialBounceAnimatorSet.removeListener(bounceListener);
-            initialBounceAnimatorSet.cancel();
-
+        if (initialGlowAnimatorSet != null) {
+            initialGlowAnimatorSet.cancel();
         }
         if (crackingAnimationSet != null) {
             crackingAnimationSet.cancel();
@@ -548,14 +680,19 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         if (bounceAnimatorSet != null) {
             bounceAnimatorSet.cancel();
         }
-        if (rotateLeftAnimation != null) {
-            rotateLeftAnimation.cancel();
+        if (animatorSetRotateEggs != null) {
+            animatorSetRotateEggs.removeListener(rotateEggListener);
+            animatorSetRotateEggs.cancel();
         }
-        if (rotateRightAnimation != null) {
-            rotateRightAnimation.cancel();
+
+        if (animatorSetRotateBackEggs != null) {
+            animatorSetRotateBackEggs.removeListener(rotateBackListener);
+            animatorSetRotateBackEggs.cancel();
         }
-        if (quickBounceAnimatorSet != null) {
-            quickBounceAnimatorSet.cancel();
+
+        if (animatorSetFadeOut != null) {
+            animatorSetFadeOut.removeListener(glowFadeOutListener);
+            animatorSetFadeOut.cancel();
         }
     }
 

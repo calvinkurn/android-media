@@ -12,15 +12,15 @@ import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
-import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
+import com.tokopedia.gamification.taptap.fragment.TapTapTokenFragment;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
+import com.tokopedia.gamification.taptap.fragment.TapTapTokenFragment;
 
-public class TapTapTokenActivity extends BaseSimpleActivity implements CrackTokenFragment.ActionListener {
-
+public class TapTapTokenActivity extends BaseSimpleActivity implements TapTapTokenFragment.ActionListener {
 
 
     @SuppressWarnings("unused")
-    @DeepLink(ApplinkConstant.GAMIFICATION)
+    @DeepLink(ApplinkConstant.GAMIFICATION2)
     public static Intent getcallingIntent(Context context, Bundle extras) {
         return TapTapTokenActivity.newInstance(context);
     }
@@ -46,7 +46,7 @@ public class TapTapTokenActivity extends BaseSimpleActivity implements CrackToke
 
     @Override
     protected Fragment getNewFragment() {
-        return CrackTokenFragment.newInstance();
+        return TapTapTokenFragment.newInstance();
     }
 
     @Override
@@ -57,19 +57,25 @@ public class TapTapTokenActivity extends BaseSimpleActivity implements CrackToke
                     CrackEmptyTokenFragment.newInstance(tokenData)).commit();
     }
 
-    private CrackTokenFragment getCrackFragment() {
+    private TapTapTokenFragment getCrackFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
-        if (fragment != null && fragment instanceof CrackTokenFragment) {
-            return (CrackTokenFragment) fragment;
+        if (fragment != null && fragment instanceof TapTapTokenFragment) {
+            return (TapTapTokenFragment) fragment;
         }
         return null;
     }
 
     @Override
     public void onBackPressed() {
-        CrackTokenFragment crackTokenFragment = getCrackFragment();
-        if (crackTokenFragment != null && crackTokenFragment.isShowReward()) {
-            crackTokenFragment.dismissReward();
+        TapTapTokenFragment crackTokenFragment = getCrackFragment();
+//        if (crackTokenFragment != null && crackTokenFragment.isShowReward()) {
+//            crackTokenFragment.dismissReward();
+//        }
+//
+//        else
+        if (crackTokenFragment!=null && crackTokenFragment.isShowBackPopup()) {
+            crackTokenFragment.showBackPopup();
+
         } else {
             onBackPressedRoot();
         }

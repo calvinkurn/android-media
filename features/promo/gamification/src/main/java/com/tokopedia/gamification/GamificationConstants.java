@@ -8,6 +8,7 @@ public interface GamificationConstants {
     }
 
     interface EggImageUrlIndex{
+        int INDEX_TOKEN_EMPTY = 0;
         int INDEX_TOKEN_FULL = 0;
         int INDEX_TOKEN_CRACKED = 9;
         int INDEX_TOKEN_LEFT = 10;

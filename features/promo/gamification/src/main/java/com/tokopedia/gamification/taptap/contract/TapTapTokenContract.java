@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
+import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 
 /**
  * Created by nabillasabbaha on 4/2/18.
@@ -16,6 +17,8 @@ public interface TapTapTokenContract {
 
     interface View extends CustomerView {
         void onSuccessGetToken(TokenDataEntity tokenData);
+
+        void onSuccessGetToken(GamiTapEggHome gamiTapEggHome, boolean isRefetchEgg);
 
         void onSuccessDownloadAllAsset();
 
@@ -40,17 +43,23 @@ public interface TapTapTokenContract {
         void closePage();
 
         String getSuccessRewardLabel();
+
+        void showErrorSnackBar(String errormessage);
+
+        void showErrorSnackBar();
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void crackToken(int tokenUserId, int campaignId);
+        void crackToken(long tokenUserId, long campaignId);
 
-        void getGetTokenTokopoints();
+        void getGetTokenTokopoints(boolean showLoading, boolean isRefetchEgg);
 
-        void downloadAllAsset(Context context, TokenDataEntity tokenData);
+        void downloadAllAsset(Context context, GamiTapEggHome tokenData);
 
         void onLoginDataReceived();
 
         void initializePage();
+
+        void playWithPoints();
     }
 }

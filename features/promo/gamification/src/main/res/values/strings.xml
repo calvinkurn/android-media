@@ -22,5 +22,6 @@
     <string name="rewards_increased_points">+%1$s %2$s</string>
     <string name="rewards_increased_points_front_text">+%1$s\u0020</string>
     <string name="egg_source">%1$s %2$s</string>
+    <string name="points_not_available">Maaf, Points kamu tidak mencukupi untuk main lagi.</string>
 
 </resources>

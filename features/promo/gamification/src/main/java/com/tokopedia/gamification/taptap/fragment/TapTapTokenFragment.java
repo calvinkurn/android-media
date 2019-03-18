@@ -1,10 +1,13 @@
 package com.tokopedia.gamification.taptap.fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -13,6 +16,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -40,17 +45,24 @@ import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
+import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
-import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.compoundview.WidgetCrackResultTapTap;
-import com.tokopedia.gamification.taptap.compoundview.WidgetEggSourceTapTap;
 import com.tokopedia.gamification.taptap.compoundview.WidgetTokenViewTapTap;
 import com.tokopedia.gamification.taptap.contract.TapTapTokenContract;
+import com.tokopedia.gamification.taptap.data.entiity.ActionButton;
+import com.tokopedia.gamification.taptap.data.entiity.BackButton;
+import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
+import com.tokopedia.gamification.taptap.data.entiity.TimeRemaining;
+import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
+import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
 import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
+import com.tokopedia.gamification.taptap.utils.TapTapConstants;
+import com.tokopedia.gamification.util.HexValidator;
 
 import javax.inject.Inject;
 
@@ -80,7 +92,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private ImageView imageRemainingToken;
     private TextView tvCounter;
     private FrameLayout flRemainingToken;
-    private TokenDataEntity tokenData;
+    private GamiTapEggHome tokenData;
     private ImageView ivContainer;
     private long prevTimeStamp;
     private ActionListener listener;
@@ -88,9 +100,10 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private Handler crackTokenSuccessHandler;
     private Toolbar toolbar;
     private TextView toolbarTitle;
-
+    private Button buttonUp, buttonDown;
     private PerformanceMonitoring fpmRender;
     private PerformanceMonitoring fpmCrack;
+    private View rootContainer;
 
     public static Fragment newInstance() {
         return new TapTapTokenFragment();
@@ -113,12 +126,15 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         rootView = inflater.inflate(R.layout.fragment_tap_tap_token, container, false);
 
         ivContainer = rootView.findViewById(R.id.iv_container);
+        rootContainer = rootView.findViewById(R.id.root_container);
         textCountdownTimer = rootView.findViewById(R.id.text_countdown_timer);
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
         widgetCrackResult = rootView.findViewById(R.id.widget_reward);
         progressBar = rootView.findViewById(R.id.progress_bar);
         infoTitlePage = rootView.findViewById(R.id.text_info_page);
         toolbar = rootView.findViewById(R.id.toolbar);
+        buttonUp = rootView.findViewById(R.id.button_cta);
+        buttonDown = rootView.findViewById(R.id.button_return);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.tap_tap_title));
         imageRemainingToken = toolbar.findViewById(R.id.image_remaining_token);
@@ -129,63 +145,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
         widgetCrackResult.setListener(new WidgetCrackResultTapTap.WidgetCrackResultListener() {
             @Override
-            public void onClickCtaButton(CrackResultEntity crackResult, String titleBtn) {
-                if (crackResult.isCrackButtonDismiss(crackResult.getCtaButton())) {
-                    widgetCrackResult.clearCrackResult();
-
-                    crackTokenPresenter.getGetTokenTokopoints();
-                } else if (crackResult.isCrackButtonRedirect(crackResult.getCtaButton())) {
-//                    trackingButtonClick(crackResult.getBenefitType(), titleBtn);
-
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(), crackResult.getCtaButton().getApplink(),
-                            crackResult.getCtaButton().getUrl(),
-                            TapTapTokenActivity.class);
-                }
-            }
-
-            @Override
-            public void onClickReturnButton(CrackResultEntity crackResult, String titleBtn) {
-                if (crackResult.isCrackButtonDismiss(crackResult.getReturnButton())) {
-                    widgetCrackResult.clearCrackResult();
-
-//                    if (crackResult.isCrackTokenSuccess()) {
-//                        trackingButtonClick(crackResult.getBenefitType(), titleBtn);
-//                    } else if (crackResult.isCrackTokenExpired()) {
-//                        trackingExpiredBtnClick();
-//                    } else if (crackResult.isTryAgainBtn()) {
-//                        trackingTryAgainBtnClick();
-//                    }
-
-                    crackTokenPresenter.getGetTokenTokopoints();
-                } else if (crackResult.isCrackButtonRedirect(crackResult.getReturnButton())) {
-//                    trackingButtonClick(crackResult.getBenefitType(), titleBtn);
-
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(),
-                            crackResult.getReturnButton().getApplink(),
-                            crackResult.getReturnButton().getUrl(),
-                            TapTapTokenActivity.class);
-                }
-            }
-
-            @Override
-            public void onClickCloseButton() {
-                widgetCrackResult.clearCrackResult();
-                crackTokenPresenter.getGetTokenTokopoints();
-            }
-
-            @Override
-            public void onClickCloseButtonWhenError() {
-                getActivity().onBackPressed();
-            }
-
-            @Override
             public void onCrackResultCleared() {
-                setToolbarColor(getResources().getColor(R.color.black), getResources().getColor(R.color.toolbar_color));
-            }
+//                crackTokenPresenter.getGetTokenTokopoints();
+                if (tokenData != null
+                        && tokenData.getTokensUser() != null
+                        && TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+                    widgetTokenView.startRotateBackAnimation();
+                } else {
+                    crackTokenPresenter.getGetTokenTokopoints(false, true);
+                }
 
-            @Override
-            public void onTrackingCloseRewardButton(CrackResultEntity crackResult) {
-//                trackingCloseRewardButtonClick(crackResult);
             }
         });
 
@@ -195,15 +164,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private void setUpToolBar() {
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.black));
-    }
-
-    private void setToolbarColor(int titleColor, int toolbarBackgroundColor) {
-        if (toolbar.getNavigationIcon() != null) {
-            toolbar.getNavigationIcon().setColorFilter(titleColor, PorterDuff.Mode.SRC_ATOP);
-        }
-        toolbar.setBackgroundColor(toolbarBackgroundColor);
-        toolbarTitle.setTextColor(titleColor);
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
+        toolbarTitle.setTextColor(getResources().getColor(R.color.white));
     }
 
     private void setDrawableColorFilter(Drawable drawable, int color) {
@@ -239,10 +201,10 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         if (tokenData != null) {
             if (prevTimeStamp > 0) {
                 long currentTimeStamp = System.currentTimeMillis();
-                int diffSeconds = (int) ((currentTimeStamp - prevTimeStamp) / 1000L);
-                TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
-                int prevTimeRemainingSecond = tokenUser.getTimeRemainingSeconds();
-                tokenUser.setTimeRemainingSeconds(prevTimeRemainingSecond - diffSeconds);
+                long diffSeconds = (long) ((currentTimeStamp - prevTimeStamp) / 1000L);
+
+                long prevTimeRemainingSecond = tokenData.getTimeRemaining().getSeconds();
+                tokenData.getTimeRemaining().setSeconds(prevTimeRemainingSecond - diffSeconds);
 
                 showRewards(tokenData);
 
@@ -256,7 +218,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         super.onPause();
         // save the previous time to enable the timer in onResume.
         if (tokenData != null) {
-            if (tokenData.isShowCountDown() && countDownTimer != null) {
+            if (tokenData.getTimeRemaining().getIsShow() && countDownTimer != null) {
                 prevTimeStamp = System.currentTimeMillis();
             } else {
                 prevTimeStamp = 0;
@@ -272,37 +234,121 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     private void renderViewCrackEgg() {
-        TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
+        TokenAsset tokenAsset = tokenData.getTokenAsset();
+        TokensUser tokenUser = tokenData.getTokensUser();
+        TimeRemaining timeRemaining = tokenData.getTimeRemaining();
 
-        infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
 
-        ImageHandler.loadImageWithSignature(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl(),
-                new StringSignature(tokenUser.getBackgroundAsset().getVersion()));
+        if (!TextUtils.isEmpty(tokenUser.getTitle())) {
+            infoTitlePage.setText(tokenUser.getTitle());
+            showInfoTitle();
+        } else {
+            hideInfoTitle();
+        }
+        if (timeRemaining.getIsShow()) {
+            Drawable counterBackground = textCountdownTimer.getBackground();
+            if (counterBackground instanceof GradientDrawable) {
+                GradientDrawable drawable = ((GradientDrawable) counterBackground);
 
-        widgetTokenView.setToken(tokenUser.getTokenAsset());
-        widgetTokenView.setListener(new WidgetTokenViewTapTap.WidgetTokenListener() {
-            @Override
-            public void onClick() {
-                fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
-                stopTimer();
-                hideInfoTitle();
-                vibrate();
-                TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
-                crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
+
+                drawable.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_4), Color.parseColor(timeRemaining.getFontColor()));
+
+                if (HexValidator.validate(timeRemaining.getBackgroundColor())) {
+                    drawable.setColor(Color.parseColor(timeRemaining.getBackgroundColor()));
+                }
+            }
+            if (HexValidator.validate(timeRemaining.getFontColor())) {
+                textCountdownTimer.setTextColor(Color.parseColor(timeRemaining.getFontColor()));
+            }
+        }
+        setActionButtons();
+        ImageHandler.loadImageWithSignature(ivContainer, tokenAsset.getBackgroundImgURL(),
+                new StringSignature(tokenAsset.getVersion()));
+
+        if (tokenUser.isEmptyState()) {
+            widgetTokenView.setEmptyToken(tokenAsset, tokenUser);
+        } else {
+            widgetTokenView.setToken(tokenAsset, tokenUser);
+            widgetTokenView.setListener(new WidgetTokenViewTapTap.WidgetTokenListener() {
+                @Override
+                public void onClick() {
+                    fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
+//                    stopTimer();
+                    hideInfoTitle();
+                    vibrate();
+                    TokensUser tokenUser = tokenData.getTokensUser();
+                    crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
 
 //                trackingLuckyEggClick();
+                }
+
+                @Override
+                public void showCrackResult(CrackResultEntity crackResult) {
+                    widgetCrackResult.showCrackResult(crackResult);
+
+                }
+
+                @Override
+                public void reShowEgg() {
+                    downloadAssets();
+                }
+            });
+        }
+//        showRemainingToken(tokenAsset.getTokenAsset().getSmallImgv2Url(), tokenData.getSumTokenStr());
+        showRewards(tokenData);
+    }
+
+    private void setActionButtons() {
+        if (tokenData.getActionButton() != null) {
+            for (int i = 0; i < tokenData.getActionButton().size(); i++) {
+                ActionButton actionButton = tokenData.getActionButton().get(i);
+                if (!actionButton.getIsDisable() && buttonUp.getVisibility() == View.GONE) {
+                    setActionButton(buttonUp, actionButton);
+                }else if (!actionButton.getIsDisable() && buttonDown.getVisibility() == View.GONE) {
+                    setActionButton(buttonDown, actionButton);
+                }
             }
+        }
+    }
 
+    private void setActionButton(Button actionBtn, ActionButton actionButton) {
+        actionBtn.setText(actionButton.getText());
+        int resId = getButtonBackgroundId(actionButton.getBackgroundColor());
+        actionBtn.setBackgroundResource(resId);
+        actionBtn.setVisibility(View.VISIBLE);
+        actionBtn.setTextColor(getButtonTextColor(actionButton.getBackgroundColor()));
+        actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void showCrackResult(CrackResultEntity crackResult){
-                setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
-                widgetCrackResult.showCrackResult(crackResult);
-
+            public void onClick(View v) {
+                if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
+                    crackTokenPresenter.playWithPoints();
+                } else {
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(),
+                            actionButton.getUrl(),
+                            TapTapTokenActivity.class);
+                }
             }
         });
-        showRemainingToken(tokenUser.getTokenAsset().getSmallImgv2Url(), tokenData.getSumTokenStr());
-        showRewards(tokenData);
-        showInfoTitle();
+    }
+
+    private int getButtonBackgroundId(String backgroundColor) {
+        if (TapTapConstants.ButtonColor.GREEN.equalsIgnoreCase(backgroundColor)) {
+            return R.drawable.gf_rounded_btn_green_taptap;
+        } else if (TapTapConstants.ButtonColor.WHITE.equalsIgnoreCase(backgroundColor)) {
+            return R.drawable.gf_rounded_btn_white_taptap;
+        } else {
+            return R.drawable.gf_rounded_btn_white_corners_taptap;
+        }
+    }
+
+    private int getButtonTextColor(String backgroundColor) {
+        if (TapTapConstants.ButtonColor.GREEN.equalsIgnoreCase(backgroundColor)) {
+            return R.color.white;
+        } else if (TapTapConstants.ButtonColor.WHITE.equalsIgnoreCase(backgroundColor)) {
+            return R.color.black_70;
+        } else {
+            return R.color.white;
+        }
     }
 
     private void showRemainingToken(String smallImageUrl, String remainingTokenString) {
@@ -355,12 +401,27 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         textCountdownTimer.requestLayout();
     }
 
-    private void showRewards(@NonNull TokenDataEntity tokenData) {
+    private void initInfoViewLayout() {
+
+        int rootWidth = rootView.getWidth();
+        int rootHeight = rootView.getHeight();
+        int imageHeight = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
+        int marginTop = TokenMarginUtil.getEggMarginBottom(rootHeight) - imageHeight
+                - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
+
+        FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) infoTitlePage.getLayoutParams();
+        ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
+        ivFullLp.topMargin = marginTop;
+        infoTitlePage.requestLayout();
+
+    }
+
+    private void showRewards(@NonNull GamiTapEggHome tokenData) {
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                infoTitlePage.setVisibility(View.VISIBLE);
                 initTimerBound();
+                initInfoViewLayout();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -370,17 +431,17 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             }
         });
 
-        TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
-        if (tokenUser.getShowTime()) {
+        TimeRemaining tokenRemaining = tokenData.getTimeRemaining();
+        if (tokenRemaining.getIsShow()) {
             textCountdownTimer.setVisibility(View.VISIBLE);
-            showCountdownTimer(tokenUser.getTimeRemainingSeconds());
+            showCountdownTimer(tokenRemaining.getSeconds());
         } else {
             textCountdownTimer.setVisibility(View.GONE);
         }
     }
 
 
-    private void showCountdownTimer(final int timeRemainingSeconds) {
+    private void showCountdownTimer(final long timeRemainingSeconds) {
         if (timeRemainingSeconds > 0) {
             stopTimer();
             countDownTimer = new CountDownTimer(timeRemainingSeconds * COUNTDOWN_INTERVAL_SECOND,
@@ -392,7 +453,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
                 @Override
                 public void onFinish() {
+                    stopTimer();
+                    if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+                        if (crackTokenPresenter != null) {
+                            crackTokenPresenter.getGetTokenTokopoints(false, true);
+                        }
+                    } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
 
+                    } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+
+                    }
                 }
             }.start();
             textCountdownTimer.setVisibility(View.VISIBLE);
@@ -407,14 +477,14 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         }
         int timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
         timeRemainingSeconds--;
-        tokenData.getHome().getTokensUser().setTimeRemainingSeconds(timeRemainingSeconds);
-        if (timeRemainingSeconds <= 0) {
-            stopTimer();
-            widgetTokenView.hide();
-            crackTokenPresenter.getGetTokenTokopoints();
-        } else {
-            setUIFloatingTimer(timeRemainingSeconds);
-        }
+        tokenData.getTimeRemaining().setSeconds(timeRemainingSeconds);
+//        if (timeRemainingSeconds <= 0) {
+//            stopTimer();
+//            widgetTokenView.hide();
+//            crackTokenPresenter.getGetTokenTokopoints();
+//        } else {
+        setUIFloatingTimer(timeRemainingSeconds);
+//        }
     }
 
     private void setUIFloatingTimer(long timeRemainingSeconds) {
@@ -461,15 +531,65 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         return getString(R.string.success_reward_label);
     }
 
+    @Override
+    public void showErrorSnackBar(String errormessage) {
+        if (getContext() != null) {
+            showErrorSnackBar(errormessage, getContext(), rootView, true);
+        }
+    }
+
+    @Override
+    public void showErrorSnackBar() {
+        if (getContext() != null) {
+            showErrorSnackBar(getContext().getResources().getString(R.string.points_not_available), getContext(), rootView, true);
+        }
+    }
+
 
     @Override
     public void onSuccessGetToken(TokenDataEntity tokenData) {
-        setToolbarColor(getResources().getColor(R.color.black), getResources().getColor(R.color.toolbar_color));
-        if (tokenData.getSumToken() == 0) {
-            listener.directPageToCrackEmpty(tokenData);
-        } else {
-            this.tokenData = tokenData;
-            crackTokenPresenter.downloadAllAsset(getContext(), this.tokenData);
+//        if (tokenData.getSumToken() == 0) {
+//            listener.directPageToCrackEmpty(tokenData);
+//        } else {
+//            this.tokenData = tokenData;
+//            crackTokenPresenter.downloadAllAsset(getContext(), this.tokenData);
+//        }
+    }
+
+    @Override
+    public void onSuccessGetToken(GamiTapEggHome gamiTapEggHome, boolean isRefetchEgg) {
+        if (tokenData != null
+                && tokenData.getTokensUser() != null
+                && gamiTapEggHome.getTokensUser() != null) {
+            if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())
+                    && (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())
+                    || TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState()))) {
+                widgetTokenView.fadeOutEggs();
+            } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
+                    && TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
+                this.tokenData = gamiTapEggHome;
+
+                widgetTokenView.startRotateBackAnimation();
+                return;
+            } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
+                    && TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
+            }
+        }
+        this.tokenData = gamiTapEggHome;
+        downloadAssets();
+
+
+    }
+
+    private void downloadAssets() {
+        if (tokenData.getTokensUser() != null) {
+            if (tokenData.getTokensUser().isEmptyState()) {
+                //            listener.directPageToCrackEmpty(tokenData);
+                crackTokenPresenter.downloadEmptyAssets(getContext(), this.tokenData);
+            } else {
+
+                crackTokenPresenter.downloadAllAsset(getContext(), this.tokenData);
+            }
         }
     }
 
@@ -483,7 +603,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onErrorGetToken(CrackResultEntity crackResult) {
-        setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
         widgetCrackResult.showCrackResult(crackResult);
     }
 
@@ -520,17 +639,17 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
-                if (getContext()!=null) {
-                    if(widgetTokenView.isCrackPercentageFull()) {
+                if (getContext() != null) {
+                    if (widgetTokenView.isCrackPercentageFull()) {
                         widgetTokenView.clearTokenAnimation();
                         widgetTokenView.split(crackResult);
 //                        trackingRewardLuckyEggView(crackResult.getBenefitType());
-                    }else{
+                    } else {
                         crackTokenSuccessHandler.postDelayed(this, 100);
                     }
                 }
             }
-        });     //1250ms as egg crack animation takes 1230ms
+        });
     }
 
     private void initCrackTokenSuccessHandler() {
@@ -546,9 +665,10 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         return widgetCrackResult.isShowReward();
     }
 
-    public void dismissReward() {
-        widgetCrackResult.dismissReward();
+    public boolean isShowBackPopup() {
+        return tokenData != null && tokenData.getBackButton().getIsShow();
     }
+
 
     @Override
     public void onErrorCrackToken(final CrackResultEntity crackResult) {
@@ -557,9 +677,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
-                if(getContext()!=null) {
+                if (getContext() != null) {
                     widgetTokenView.stopShaking();
-                    setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
                     widgetCrackResult.showCrackResult(crackResult);
                 }
             }
@@ -705,4 +824,74 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     public interface ActionListener {
         void directPageToCrackEmpty(TokenDataEntity tokenData);
     }
+
+    public void showBackPopup() {
+        // custom dialog
+
+        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null) {
+            BackPopupDialogFragment.createDialog(tokenData.getBackButton());
+        }
+        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null) {
+            BackButton backButton = tokenData.getBackButton();
+            final Dialog dialog = new Dialog(getContext());
+            dialog.setContentView(R.layout.gf_popup_exit_game);
+
+            TextView textHeader = dialog.findViewById(R.id.tv_header);
+            TextView textSubHeader = dialog.findViewById(R.id.tv_subheader);
+            Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+            Button btnOkay = dialog.findViewById(R.id.btn_ok);
+            ImageView imagePopupHeader = dialog.findViewById(R.id.image_popup_header);
+            textHeader.setText(backButton.getTitle());
+            textSubHeader.setText(backButton.getText());
+            btnOkay.setText(backButton.getYesText());
+            btnCancel.setText(backButton.getCancelText());
+            ImageHandler.loadImage(getContext(), imagePopupHeader, backButton.getImageURL(), R.color.grey_1100, R.color.grey_1100);
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            btnOkay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getContext() != null) {
+                        ((GamificationRouter) getContext().getApplicationContext()).goToHome(getContext());
+                    }
+                }
+            });
+
+            dialog.show();
+
+        }
+    }
+
+    public void showErrorSnackBar(String text, Context context, View coordinatorLayout, boolean homeToast) {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+
+        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setVisibility(View.INVISIBLE);
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View snackView = inflater.inflate(R.layout.gf_tap_tap_custom_snackbar, null);
+        TextView tvmsg = snackView.findViewById(R.id.tv_msg);
+        if (homeToast) {
+            snackView.findViewById(R.id.main_content).setBackgroundColor(context.getResources().getColor(R.color.red_toast_bg_color));
+        }
+        tvmsg.setText(text);
+
+        TextView okbtn = snackView.findViewById(R.id.snack_ok);
+        okbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+            }
+        });
+        layout.addView(snackView, 0);
+        layout.setPadding(0, 0, 0, 0);
+        snackbar.show();
+    }
+
 }
