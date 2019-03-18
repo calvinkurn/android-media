@@ -17,7 +17,7 @@ import com.tokopedia.groupchat.R;
  * @author by nisie on 2/23/18.
  */
 
-public class CloseableBottomSheetDialog extends BottomSheetDialog {
+public class ChannelCloseableBottomSheetDialog extends BottomSheetDialog {
 
     Context context;
     private CloseClickedListener closeListener;
@@ -31,37 +31,37 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
     }
 
 
-    private CloseableBottomSheetDialog(@NonNull Context context) {
+    private ChannelCloseableBottomSheetDialog(@NonNull Context context) {
         super(context);
         init(context);
     }
 
-    private CloseableBottomSheetDialog(@NonNull Context context, int theme) {
+    private ChannelCloseableBottomSheetDialog(@NonNull Context context, int theme) {
         super(context, theme);
         init(context);
     }
 
-    protected CloseableBottomSheetDialog(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
+    protected ChannelCloseableBottomSheetDialog(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         init(context);
     }
 
-    public static CloseableBottomSheetDialog createInstance(Context context) {
-        final CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
+    public static ChannelCloseableBottomSheetDialog createInstance(Context context) {
+        final ChannelCloseableBottomSheetDialog channelCloseableBottomSheetDialog = new ChannelCloseableBottomSheetDialog
                 (context);
-        closeableBottomSheetDialog.setListener(new CloseClickedListener() {
+        channelCloseableBottomSheetDialog.setListener(new CloseClickedListener() {
             @Override
             public void onCloseDialog() {
-                closeableBottomSheetDialog.dismiss();
+                channelCloseableBottomSheetDialog.dismiss();
             }
         });
-        return closeableBottomSheetDialog;
+        return channelCloseableBottomSheetDialog;
     }
 
-    public static CloseableBottomSheetDialog createInstance(Context context,
-                                                            CloseClickedListener closeListener,
-                                                            BackHardwareClickedListener backHardwareClickedListener) {
-        CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
+    public static ChannelCloseableBottomSheetDialog createInstance(Context context,
+                                                                   CloseClickedListener closeListener,
+                                                                   BackHardwareClickedListener backHardwareClickedListener) {
+        ChannelCloseableBottomSheetDialog channelCloseableBottomSheetDialog = new ChannelCloseableBottomSheetDialog
                 (context){
             @Override
             public void onBackPressed() {
@@ -71,8 +71,8 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
                 }
             }
         };
-        closeableBottomSheetDialog.setListener(closeListener);
-        return closeableBottomSheetDialog;
+        channelCloseableBottomSheetDialog.setListener(closeListener);
+        return channelCloseableBottomSheetDialog;
     }
 
     private void setListener(CloseClickedListener closeListener) {
@@ -121,7 +121,7 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     private View inflateBasicView(View view, String title) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
-                .closeable_bottom_sheet_dialog, null);
+                .channel_closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
         view.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +145,7 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
-                    .closeable_bottom_sheet_dialog, null);
+                    .channel_closeable_bottom_sheet_dialog, null);
             FrameLayout frameLayout = contentView.findViewById(R.id.container);
             View view = inflater.inflate(layoutResId, null);
             frameLayout.addView(view);
