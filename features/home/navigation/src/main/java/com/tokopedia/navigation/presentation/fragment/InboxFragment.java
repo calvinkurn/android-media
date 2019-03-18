@@ -127,7 +127,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (adapter.getItemViewType(position) == RecomendationViewHolder.LAYOUT) {
+                if (adapter.getItemViewType(position) == RecomendationViewHolder.Companion.getLAYOUT()) {
                     return SINGLE_SPAN_COUNT;
                 }
                 return DEFAULT_SPAN_COUNT;

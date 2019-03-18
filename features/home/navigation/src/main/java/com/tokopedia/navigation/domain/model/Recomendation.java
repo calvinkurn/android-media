@@ -1,8 +1,8 @@
 package com.tokopedia.navigation.domain.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.navigation.presentation.adapter.InboxTypeFactory;
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
 /**
  * Author errysuprayogi on 13,March,2019

@@ -29,7 +29,7 @@ public class InboxAdapterTypeFactory extends BaseAdapterTypeFactory implements I
 
     @Override
     public int type(Recomendation recomendation) {
-        return RecomendationViewHolder.LAYOUT;
+        return RecomendationViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class InboxAdapterTypeFactory extends BaseAdapterTypeFactory implements I
         AbstractViewHolder viewHolder;
         if (type == InboxViewHolder.LAYOUT)
             viewHolder = new InboxViewHolder(view, listener);
-        else if (type == RecomendationViewHolder.LAYOUT)
+        else if (type == RecomendationViewHolder.Companion.getLAYOUT())
             viewHolder = new RecomendationViewHolder(view, listener);
         else if (type == RecomTitleViewHolder.LAYOUT)
             viewHolder = new RecomTitleViewHolder(view);

@@ -128,7 +128,7 @@ fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
 }
 
-fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
+fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     impressHolder = holder;
     hintListener = listener;
     this.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener{
