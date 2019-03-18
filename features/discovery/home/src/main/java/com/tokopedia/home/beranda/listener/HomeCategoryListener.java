@@ -46,10 +46,6 @@ public interface HomeCategoryListener {
 
     void onPromoAllClick();
 
-    void onServerTimeReceived(long serverTimeUnix);
-
-    long getServerTimeOffset();
-
     boolean isHomeFragment();
 
     void onPromoDragStart();

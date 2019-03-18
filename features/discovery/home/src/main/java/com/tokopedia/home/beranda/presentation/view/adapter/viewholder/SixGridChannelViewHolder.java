@@ -76,7 +76,6 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
             String titleText = element.getChannel().getHeader().getName();
-            listener.onServerTimeReceived(channel.getHeader().getServerTimeUnix());
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
                 channelTitle.setText(titleText);
@@ -90,7 +89,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
             }
             if (isSprintSale(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
             } else {
                 countDownView.setVisibility(View.GONE);
