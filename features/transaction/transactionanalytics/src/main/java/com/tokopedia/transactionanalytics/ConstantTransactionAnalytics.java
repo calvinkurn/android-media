@@ -231,6 +231,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_X = "click x";
         String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
 
+        String CLICK_PLUS_FROM_MULTIPLE = "click + from multiple";
+        String CLICK_BUTTON_SIMPAN = "click button simpan";
+        String CLICK_BUTTON_SIMPAN_FROM_EDIT = "click button simpan from edit";
     }
 
     interface EventLabel {

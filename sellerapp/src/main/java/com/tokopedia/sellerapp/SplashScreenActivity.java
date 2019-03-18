@@ -60,9 +60,4 @@ public class SplashScreenActivity extends SplashScreen {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }
-
-    @Override
-    protected void handlingInitBranchSession(JSONObject referringParams) {
-        moveToHome();
-    }
 }

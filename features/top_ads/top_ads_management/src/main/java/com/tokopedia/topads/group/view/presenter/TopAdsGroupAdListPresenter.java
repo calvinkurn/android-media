@@ -1,7 +1,7 @@
 package com.tokopedia.topads.group.view.presenter;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -10,11 +10,11 @@ import com.tokopedia.topads.dashboard.data.model.data.GroupAdAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.group.domain.usecase.TopAdsGetGroupAdUseCase;
 import com.tokopedia.topads.group.domain.usecase.TopAdsToggleStatusUseCase;
 import com.tokopedia.topads.group.view.listener.TopAdsGroupAdListView;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +37,7 @@ public class TopAdsGroupAdListPresenter extends TopAdsBaseListPresenter<TopAdsGr
                                       TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                       TopAdsGetGroupAdUseCase topAdsGetGroupAdUseCase,
                                       TopAdsToggleStatusUseCase topAdsToggleStatusUseCase,
-                                      UserSession userSession) {
+                                      UserSessionInterface userSession) {
         super(topAdsDatePickerInteractor, topAdsAddSourceTaggingUseCase, userSession);
         this.topAdsGetGroupAdUseCase = topAdsGetGroupAdUseCase;
         this.topAdsToggleStatusUseCase = topAdsToggleStatusUseCase;
