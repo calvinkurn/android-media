@@ -854,10 +854,12 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     );
                 break;
             case REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
-                if (resultCode == Activity.RESULT_OK && data != null)
-                    handleCallBackProductChooser(
-                            data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA)
-                    );
+                if (digitalProductView != null) {
+                    if (resultCode == Activity.RESULT_OK && data != null)
+                        handleCallBackProductChooser(
+                                data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA)
+                        );
+                }
                 break;
             case REQUEST_CODE_CART_DIGITAL:
                 if (resultCode == Activity.RESULT_OK && data != null) {
