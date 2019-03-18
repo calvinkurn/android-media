@@ -23,6 +23,10 @@ import com.tokopedia.user.session.UserSession;
 import dagger.Module;
 import dagger.Provides;
 import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by kris on 1/3/18. Tokopedia
@@ -77,11 +81,8 @@ public class OrderCourierModule {
 
     @Provides
     @OrderCourierScope
-    SalesShippingAnalytics provideSalesShippingAnalytics(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return new SalesShippingAnalytics();
-        }
-        return null;
+    SalesShippingAnalytics provideSalesShippingAnalytics() {
+        return new SalesShippingAnalytics();
     }
 
 }

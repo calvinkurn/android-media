@@ -26,7 +26,8 @@ public abstract class TransactionAnalytics {
     void sendEventCategoryActionLabel(String event, String eventCategory,
                                       String eventAction, String eventLabel) {
 
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel));
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                event, eventCategory, eventAction, eventLabel));
     }
 
 

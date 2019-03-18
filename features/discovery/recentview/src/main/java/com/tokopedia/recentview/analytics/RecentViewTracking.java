@@ -5,9 +5,12 @@ import android.content.SharedPreferences;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import java.util.List;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 public class RecentViewTracking {
 
@@ -16,12 +19,7 @@ public class RecentViewTracking {
 
     public static void trackEventClickOnProductRecentView(Context context,
                                                           Object dataItem) {
-        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        tracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf("event", "productClick",
                         "eventCategory", "recent view",
                         "eventAction", "click on product",
@@ -40,12 +38,7 @@ public class RecentViewTracking {
 
     public static void trackEventImpressionOnProductRecentView(Context context,
                                                          List<Object> dataItemList) {
-        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        tracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf("event", "productView",
                         "eventCategory", "recent view",
                         "eventAction", "impression on product",

@@ -7,7 +7,6 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
@@ -98,21 +97,16 @@ public class ProductPageTracking {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEnhancedEcommerce(maps);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(maps);
     }
 
     public static void eventClickAtcNotLogin(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - tambah ke keranjang - before login",
                 productId
-        );
+        ));
     }
 
     public static void eventClickBuyNotLogin(Context context, String productId) {
@@ -129,66 +123,46 @@ public class ProductPageTracking {
     }
 
     public static void eventClickBuyInVariantNotLogin(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - beli on variants page - before login",
                 productId
-        );
+        ));
     }
 
     public static void eventClickAtcInVariantNotLogin(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - tambah ke keranjang on variants page - before login",
                 productId
-        );
+        ));
     }
 
     public static void eventClickBuyTriggerVariant(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - beli - redirect to variants page",
                 productId
-        );
+        ));
     }
 
     public static void eventClickAtcTriggerVariant(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - tambah ke keranjang - redirect to variants page",
                 productId
-        );
+        ));
     }
 
     public static void eventImpressionWidgetPromo(Context context,
                                                   String creative,
                                                   String promoId,
                                                   String promoCode) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf("event", "promoView",
                         "eventCategory", EVENT_CATEGORY_PROMO_PDP,
                         "eventAction", PDP_PROMO_IMPRESSION_EVENT_ACTION,
@@ -215,11 +189,7 @@ public class ProductPageTracking {
                                              String creative,
                                              String promoId,
                                              String promoCode) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf("event", "promoClick",
                         "eventCategory", EVENT_CATEGORY_PROMO_PDP,
                         "eventAction", PDP_PROMO_CLICK_ON_PROMO_SHORT_DESC,
@@ -244,16 +214,12 @@ public class ProductPageTracking {
 
     public static void eventClickCopyWidgetPromo(Context context,
                                                  String promoCode) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_OS_PROMO,
                 PDP_PROMO_WIDGET_PROMO,
                 USER_CLICK_ON_COPY_CODE,
                 promoCode
-        );
+        ));
     }
 
     public static void eventAppsFlyer(String productId, String priceItem, int quantity, String productName, String category) {
@@ -271,43 +237,30 @@ public class ProductPageTracking {
     }
 
     public static void eventPdpOrientationChanged(Context context, String productId) {
-        if (context != null
-                && context.getApplicationContext() != null
-                && context.getApplicationContext() instanceof AbstractionRouter) {
-            AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-            tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     VIEW_PDP,
                     PRODUCT_DETAIL_PAGE,
                     LANDSCAPE_VIEW,
                     String.format("product_id : %s", productId)
-            );
-        }
+            ));
     }
 
     public static void eventClickMerchantVoucherSeeAll(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 joinDash(CLICK, MERCHANT_VOUCHER, SEE_ALL),
                 productId
-        );
+        ));
     }
 
     public static void eventClickMerchantVoucherSeeDetail(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 joinDash(CLICK, MERCHANT_VOUCHER, MVC_DETAIL),
                 productId
-        );
+        ));
     }
 
     private static HashMap<String, Object> createMap(String event, String category, String action, String label) {
@@ -367,11 +320,7 @@ public class ProductPageTracking {
     }
 
     public static void eventClickMerchantVoucherUse(Context context, MerchantVoucherViewModel viewModel, int positionIndex) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 createMvcClickMap(PROMO_CLICK,
                         PRODUCT_DETAIL_PAGE,
                         joinSpace(PROMO_BANNER, CLICK),
@@ -380,17 +329,13 @@ public class ProductPageTracking {
     }
 
     public static void eventImpressionMerchantVoucherUse(Context context, List<MerchantVoucherViewModel> merchantVoucherViewModelList) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         HashMap<String, Object> map = createMvcImpressionMap(PROMO_VIEW,
                 PRODUCT_DETAIL_PAGE,
                 joinSpace(PROMO_BANNER, IMPRESSION),
                 USE_VOUCHER,
                 merchantVoucherViewModelList);
         if (map != null) {
-            tracker.sendEventTracking(map);
+            TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(map);
         }
     }
 
@@ -398,9 +343,6 @@ public class ProductPageTracking {
                                            String userId,
                                            String shopId,
                                            String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
         Map<String,Object> eventTracking = new HashMap<>();
         eventTracking.put("event", CLICK_PDP);
         eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE);
@@ -408,16 +350,12 @@ public class ProductPageTracking {
         eventTracking.put("eventLabel", String.format(LABEL_CLICK_BY_ME, shopId, productId));
         eventTracking.put(USER_ID, userId);
 
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
     }
 
     public static void eventClickAffiliate(Context context,
                                            String userId,
                                            String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
         Map<String,Object> eventTracking = new HashMap<>();
         eventTracking.put("event", EVENT_CLICK_AFFILIATE);
         eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
@@ -425,16 +363,12 @@ public class ProductPageTracking {
         eventTracking.put("eventLabel", productId);
         eventTracking.put(USER_ID, userId);
 
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
     }
 
     public static void eventClickWishlistOnAffiliate(Context context,
                                                      String userId,
                                                      String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
         Map<String,Object> eventTracking = new HashMap<>();
         eventTracking.put("event", EVENT_CLICK_AFFILIATE);
         eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
@@ -442,19 +376,13 @@ public class ProductPageTracking {
         eventTracking.put("eventLabel", productId);
         eventTracking.put(USER_ID, userId);
 
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
     }
 
     public static void eventClickReviewOnBuyersImage(Context context,
                                                      String productId,
                                                      String reviewId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker =
-                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 EVENT_ACTION_CLICK_REVIEW_ON_BUYERS_IMAGE,
@@ -467,12 +395,7 @@ public class ProductPageTracking {
     }
 
     public static void eventClickReviewOnSeeAllImage(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker =
-                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 EVENT_ACTION_CLICK_REVIEW_ON_SEE_ALL_IMAGE,
@@ -483,12 +406,7 @@ public class ProductPageTracking {
     public static void eventClickReviewOnMostHelpfulReview(Context context,
                                                            String productId,
                                                            String reviewId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker =
-                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 EVENT_ACTION_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW,
@@ -503,12 +421,7 @@ public class ProductPageTracking {
     public static void eventClickFilterReview(Context context,
                                               String filterName,
                                               String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker =
-                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 String.format(
@@ -522,12 +435,7 @@ public class ProductPageTracking {
     public static void eventClickImageOnReviewList(Context context,
                                                      String productId,
                                                      String reviewId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker =
-                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 EVENT_ACTION_CLICK_IMAGE_ON_REVIEW_LIST,

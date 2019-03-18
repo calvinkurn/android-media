@@ -1,10 +1,7 @@
 package com.tokopedia.otp.common;
 
-import android.app.Activity;
-import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import android.app.Activity;
 
 import javax.inject.Inject;
 
@@ -13,8 +10,6 @@ import javax.inject.Inject;
  */
 
 public class OTPAnalytics {
-
-    private final AnalyticTracker analyticTracker;
 
     public static class Screen {
         public static final String SCREEN_COTP_SMS = "Input OTP sms";
@@ -47,64 +42,59 @@ public class OTPAnalytics {
     }
 
     @Inject
-    public OTPAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
-    }
+    public OTPAnalytics() {
 
-    public static OTPAnalytics createInstance(Context context) {
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        return new OTPAnalytics(tracker);
     }
 
     public void sendScreen(Activity activity, String screenName) {
-        analyticTracker.sendScreen(activity, screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     public void eventClickBackOTPPage(int otpType) {
-        analyticTracker.sendEventTracking(
+        analyticTrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_BACK,
                 Action.INPUT_OTP_PAGE,
                 "click back button",
                 String.valueOf(otpType)
-        );
+        ));
     }
 
     public void eventClickVerifyButton(int otpType) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_CONFIRM,
                 Action.INPUT_OTP_PAGE,
                 "click on verifikasi",
                 String.valueOf(otpType)
 
-        );
+        ));
     }
 
     public void eventClickResendOtp(int otpType) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_OTP,
                 Action.INPUT_OTP_PAGE,
                 "click on kirim ulang",
                 String.valueOf(otpType)
 
-        );
+        ));
     }
 
     public void eventClickUseOtherMethod(int otpType) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_OTP,
                 Action.INPUT_OTP_PAGE,
                 "click on gunakan metode verifikasi lain",
                 String.valueOf(otpType)
-        );
+        ));
     }
 
 
     public void eventClickMethodOtp(int otpType, String modeName) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_OTP,
                 Action.CHOOSE_OTP_PAGE,
                 "click on otp method ",
                 String.format("%s - %s", String.valueOf(otpType), modeName)
-        );
+        ));
     }
 }

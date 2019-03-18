@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -36,6 +35,10 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.HashMap;
 
 import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author ricoharisin .
@@ -199,15 +202,13 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
-        TrackingUtils.eventTrackingEnhancedEcommerce(appContext, maps);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(maps);
+
     }
 
     @ReactMethod
     public void trackScreenName(String name) {
-        if(context.getApplicationContext() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-            analyticTracker.sendScreen(getCurrentActivity(), name);
-        }
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(name);
     }
 
     @ReactMethod

@@ -46,7 +46,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
 import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -747,7 +746,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialVar() {
-        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart();
         appIndexHandler = new AppIndexHandler(getActivity());
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         loading = new ProgressDialog(getActivity());
@@ -758,13 +757,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         else
             initialPresenter();
 
-    }
-
-    private AnalyticTracker getAnalyticTracker() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            return ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-        }
-        return null;
     }
 
     @Override
