@@ -15,10 +15,11 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.SpinnerWithImage;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core2.R;
 
@@ -160,9 +161,7 @@ public class ReviewForm extends TActivity {
 		mProductLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//                Intent intent = ProductDetailRouter
-//                        .createInstanceProductDetailInfoActivity(ReviewForm.this, mProdID);
-//                startActivity(intent);
+				RouteManager.route(ReviewForm.this, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, mProdID);
 			}
 		});
 
