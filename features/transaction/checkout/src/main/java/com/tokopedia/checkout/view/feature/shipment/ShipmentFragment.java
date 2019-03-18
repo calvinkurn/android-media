@@ -926,7 +926,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentAdapter.RequestData requestData =
                     shipmentAdapter.getRequestData(null, null);
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
-            shipmentPresenter.checkPromoShipment(cartPromo.getPromoCodeSafe(), isOneClickShipment());
+            if (!cartPromo.getPromoCodeSafe().equals("")) {
+                shipmentPresenter.checkPromoShipment(cartPromo.getPromoCodeSafe(), isOneClickShipment());
+            }
 
             shipmentAdapter.notifyDataSetChanged();
         }
@@ -1337,7 +1339,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData) {
         shipmentPresenter.setPromoCodeCartShipmentRequestData(promoRequestData);
         if (shipmentAdapter.getPromoData() != null &&
-                shipmentAdapter.hasAppliedPromoCode()) {
+                shipmentAdapter.hasAppliedPromoCode() && !shipmentAdapter.getPromoData().getPromoCodeSafe().equals("")) {
             shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
         }
     }
