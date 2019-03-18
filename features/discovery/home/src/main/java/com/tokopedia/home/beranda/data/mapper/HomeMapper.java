@@ -68,11 +68,11 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 list.add(mappingTicker(homeData.getTicker().getTickers()));
             }
 
-            if (homeData.getDynamicHomeIcon() != null
-                    && homeData.getDynamicHomeIcon().getUseCaseIcon() != null
-                    && !homeData.getDynamicHomeIcon().getUseCaseIcon().isEmpty()) {
-                list.add(mappingUseCaseIcon(homeData.getDynamicHomeIcon().getUseCaseIcon()));
-            }
+//            if (homeData.getDynamicHomeIcon() != null
+//                    && homeData.getDynamicHomeIcon().getUseCaseIcon() != null
+//                    && !homeData.getDynamicHomeIcon().getUseCaseIcon().isEmpty()) {
+//                list.add(mappingUseCaseIcon(homeData.getDynamicHomeIcon().getUseCaseIcon()));
+//            }
 
             if (homeData.getDynamicHomeIcon() != null
                     && homeData.getDynamicHomeIcon().getDynamicIcon() != null
@@ -214,11 +214,11 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     }
 
     private Visitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList) {
-        DynamicIconSectionViewModel viewModel = new DynamicIconSectionViewModel();
+        DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
-            viewModel.addItem(new HomeIconItem(icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModelDynamicIcon.addItem(new HomeIconItem(icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
-        return viewModel;
+        return viewModelDynamicIcon;
     }
 
     private Visitable mappingDynamicChannel(DynamicHomeChannel.Channels channel) {

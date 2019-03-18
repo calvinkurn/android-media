@@ -19,10 +19,9 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.AccountHomeRouter;
 
 /**
  * @author okasurya on 7/18/18.
@@ -153,4 +152,5 @@ public class TokopediaPayCardView extends BaseCustomView {
     public void setRightItemClickListener(View.OnClickListener listener) {
         layoutRight.setOnClickListener(listener);
     }
+
 }

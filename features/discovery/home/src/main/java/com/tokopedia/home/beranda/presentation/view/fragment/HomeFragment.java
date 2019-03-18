@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -238,6 +241,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        statusBarBackground.setBackground(new ColorDrawable(
+                ContextCompat.getColor(getActivity(), R.color.green_600)
+        ));
+        setStatusBarAlpha(0f);
+
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
@@ -506,7 +514,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
 
                 if (offsetAlpha >= 0 && offsetAlpha <= 2.55) {
-                    homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
+                    float alpha = offsetAlpha*100;
+                    homeMainToolbar.setBackgroundAlpha(alpha);
+                    setStatusBarAlpha(alpha);
                 }
 
                 if (isAppBarFullyCollapsed(offset) &&
@@ -541,6 +551,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 lastOffset = offset;
             }
         });
+    }
+
+    private void setStatusBarAlpha(float alpha) {
+        Drawable drawable = statusBarBackground.getBackground();
+        drawable.setAlpha((int)alpha);
+        statusBarBackground.setBackground(drawable);
     }
 
     private boolean isAppBarScrollUp(int offset) {

@@ -76,6 +76,8 @@ public interface UserSessionInterface {
 
     void setTempUserId(String userId);
 
+    void setIsAffiliateStatus(boolean isAffiliate);
+
     void setTempPhoneNumber(String userPhone);
 
     void setTempLoginEmail(String email);
@@ -103,6 +105,8 @@ public interface UserSessionInterface {
     void setProfilePicture(String profilePicture);
 
     void setSaldoWithdrawalWaring(boolean value);
+
+    void setSaldoIntroPageStatus(boolean value);
 
     void setGCToken(String gcToken);
 
