@@ -112,13 +112,7 @@ class ExploreUseCase @Inject constructor(
     private fun appendIdValue(filterList: List<FilterViewModel>): String {
         val value = StringBuilder()
         for (j in filterList.indices) {
-            val idList = filterList[j].ids
-            for (i in idList.indices) {
-                value.append(idList[i])
-                if (i != idList.size - 1) {
-                    value.append(",")
-                }
-            }
+            value.append(filterList[j].id)
             if (j != filterList.size - 1) {
                 value.append(",")
             }

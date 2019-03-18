@@ -4,12 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
 import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel
 import com.tokopedia.affiliate.feature.explore.SECTION_ANNOUNCEMENT
+import com.tokopedia.affiliate.feature.explore.SECTION_FILTER
 import com.tokopedia.affiliate.feature.explore.SECTION_RECOMMENDATION
 import com.tokopedia.affiliate.feature.explore.data.pojo.section.ExplorePageSection
 import com.tokopedia.affiliate.feature.explore.data.pojo.section.ExploreSectionResponse
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerChildViewModel
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerViewModel
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.*
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.functions.Func1
 import javax.inject.Inject
@@ -25,6 +24,7 @@ class ExploreSectionMapper @Inject constructor() : Func1<GraphqlResponse, List<V
         response.exploreSections.explorePageSection.forEach {
             when (it.type) {
                 SECTION_ANNOUNCEMENT -> sections.add(mapAnnouncement(it))
+                SECTION_FILTER -> sections.add(mapFilter(it))
                 SECTION_RECOMMENDATION -> sections.add(mapRecommendation(it))
             }
         }
@@ -37,6 +37,14 @@ class ExploreSectionMapper @Inject constructor() : Func1<GraphqlResponse, List<V
             banners.add(ExploreBannerChildViewModel(it.image, it.appLink))
         }
         return ExploreBannerViewModel(banners)
+    }
+
+    private fun mapFilter(section: ExplorePageSection): FilterListViewModel {
+        val filters: MutableList<FilterViewModel> = arrayListOf()
+        section.items.forEach {
+            filters.add(FilterViewModel(it.title, it.favIcon, it.categoryId))
+        }
+        return FilterListViewModel(filters)
     }
 
     private fun mapRecommendation(section: ExplorePageSection): RecommendationViewModel {
