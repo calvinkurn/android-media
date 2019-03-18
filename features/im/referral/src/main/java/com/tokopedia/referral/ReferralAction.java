@@ -4,10 +4,10 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
-import com.tokopedia.abstraction.ActionInterfaces.ActionDataProvider;
-import com.tokopedia.abstraction.ActionInterfaces.ActionExecutor;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
+import com.tokopedia.abstraction.Actions.interfaces.ActionExecutor;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common.network.data.model.RestResponse;

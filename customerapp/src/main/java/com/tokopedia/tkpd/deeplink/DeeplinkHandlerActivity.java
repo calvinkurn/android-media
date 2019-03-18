@@ -74,6 +74,8 @@ import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
+import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
+import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModuleLoader;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
@@ -163,6 +165,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
+        OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
@@ -215,6 +218,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new InboxDeeplinkModuleLoader(),
                     new ReferralDeeplinkModuleLoader(),
                     new ShopOpenApplinkModuleLoader(),
+                    new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new DigitalApplinkModuleLoader(),

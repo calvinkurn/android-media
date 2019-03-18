@@ -171,7 +171,6 @@
     <string name="label_delete_cart_item">Hapus</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
-    <string name="label_hardcoded_courier_blackbox_info">Kurir dipilih secara otomatis sesuai dengan layanan pengiriman ini.</string>
     <string name="cart_error_message" formatted="false">Terdapat %d Produk Bermasalah</string>
     <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
