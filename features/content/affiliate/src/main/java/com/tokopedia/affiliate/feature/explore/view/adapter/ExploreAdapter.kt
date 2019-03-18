@@ -19,7 +19,7 @@ class ExploreAdapter(adapterTypeFactory: ExploreTypeFactory, visitables: List<Vi
         holder.onViewRecycled()
     }
 
-    fun clearNonProductElements() {
+    fun clearProductElements() {
         visitables.removeAll {
             it is ExploreProductViewModel
         }

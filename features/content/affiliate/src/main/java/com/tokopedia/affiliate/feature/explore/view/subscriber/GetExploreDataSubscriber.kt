@@ -16,6 +16,8 @@ class GetExploreDataSubscriber(private val mainView: ExploreContract.View?,
     : Subscriber<ExploreViewModel>() {
 
     override fun onNext(exploreViewModel: ExploreViewModel) {
+        mainView?.hideLoading()
+
         if (isSearch && exploreViewModel.exploreProducts.isEmpty()) {
             mainView?.affiliateAnalytics?.onSearchNotFound(exploreParams.keyword)
             mainView?.onEmptySearchResult()

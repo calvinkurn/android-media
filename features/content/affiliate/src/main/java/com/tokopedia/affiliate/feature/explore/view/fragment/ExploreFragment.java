@@ -360,8 +360,10 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
         }
-        adapter.clearNonProductElements();
         exploreParams.setSearchParam(text);
+        adapter.clearProductElements();
+        adapter.showLoading();
+        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
         presenter.getData(exploreParams);
     }
 
@@ -587,6 +589,9 @@ public class ExploreFragment
         exploreParams.setFilters(filters);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
+        adapter.clearProductElements();
+        adapter.showLoading();
+        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
         presenter.getData(exploreParams);
     }
 
@@ -594,12 +599,28 @@ public class ExploreFragment
         exploreParams.setSort(sort);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
+        adapter.clearProductElements();
+        adapter.showLoading();
+        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
         presenter.getData(exploreParams);
     }
 
     @Override
     public void onSuccessGetData(List<Visitable<?>> products, String cursor, boolean isSearch) {
-
+        exploreParams.setLoading(false);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        adapter.addElement(products);
+        if (TextUtils.isEmpty(cursor)) {
+            exploreParams.disableLoadMore();
+        } else {
+            exploreParams.setCursorForLoadMore(cursor);
+        }
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
+            autoCompleteLayout.setVisibility(View.GONE);
+        }
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override
@@ -612,7 +633,9 @@ public class ExploreFragment
         sortButton.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
-        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         NetworkErrorHelper.showEmptyState(getActivity(),
                 layoutEmpty,
                 error,
@@ -633,8 +656,9 @@ public class ExploreFragment
         } else {
             exploreParams.setCursorForLoadMore(cursor);
         }
-        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
+        }
         presenter.unsubscribeAutoComplete();
     }
 
@@ -646,19 +670,24 @@ public class ExploreFragment
     @Override
     public void onButtonEmptySearchClicked() {
         presenter.unsubscribeAutoComplete();
-        adapter.clearNonProductElements();
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
+        adapter.clearProductElements();
+        adapter.showLoading();
+        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
         presenter.getData(exploreParams);
     }
 
     @Override
     public void onEmptySearchResult() {
-        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
-        adapter.clearNonProductElements();
-        adapter.addElement(new ExploreEmptySearchViewModel());
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         exploreParams.disableLoadMore();
+        adapter.clearProductElements();
+        adapter.addElement(new ExploreEmptySearchViewModel());
+        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
         presenter.unsubscribeAutoComplete();
     }
 
