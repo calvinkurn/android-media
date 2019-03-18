@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewmodel;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import java.util.Map;
 
 public class SpotlightItemViewModel {
     private int id;
