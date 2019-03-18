@@ -102,6 +102,13 @@ class ProfilePresenter @Inject constructor(
         )
     }
 
+    override fun trackPostClickUrl(url: String) {
+        trackAffiliateClickUseCase.execute(
+                TrackAffiliateClickUseCase.createRequestParams(url),
+                TrackPostClickSubscriber()
+        )
+    }
+
     private fun getUserId(): String {
         var userId: String = "0"
         if (!view.getUserSession().userId.isEmpty()) {
