@@ -53,13 +53,11 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     var nextPage : Int = 1
 
-    override fun onResume() {
-        super.onResume()
-        onSwipeRefresh()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        if (savedInstanceState == null) {
+            onSwipeRefresh()
+        }
         if (userVisibleHint) {
             searchNavigationListener.hideBottomNavigation()
         }

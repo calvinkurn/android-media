@@ -34,6 +34,9 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 
 import java.util.ArrayList
 
+/**
+ * For navigate: use ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY
+ */
 class ImageReviewGalleryActivity : BaseSimpleActivity() {
 
     var bottomSheetImageReviewSlider: BottomSheetImageReviewSlider? = null
@@ -55,7 +58,13 @@ class ImageReviewGalleryActivity : BaseSimpleActivity() {
     }
 
     private fun getDataFromIntent() {
-        productId = intent.getIntExtra(EXTRA_PRODUCT_ID, 0)
+        val uri = intent.data
+        if (uri != null) {
+            val segments = uri.pathSegments
+            productId = segments[1].toInt()
+        } else {
+            productId = intent.getIntExtra(EXTRA_PRODUCT_ID, 0)
+        }
         defaultPosition = intent.getIntExtra(EXTRA_DEFAULT_POSITION, 0)
         imageUrlList = intent.getStringArrayListExtra(EXTRA_IMAGE_URL_LIST)
     }

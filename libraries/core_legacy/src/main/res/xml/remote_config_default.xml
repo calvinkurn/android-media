@@ -221,4 +221,8 @@
         <key>sellerapp_enable_feed_shop_page</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>main_app_disable_new_product_detail</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
