@@ -22,7 +22,7 @@ object ProductTrackingConstant {
     }
 
     object PDP {
-        const val EVENT = "clickPDP"
+        const val EVENT_CLICK_PDP = "clickPDP"
     }
 
     object Wishlist{

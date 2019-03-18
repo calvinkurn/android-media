@@ -9,4 +9,5 @@ public interface Analytics {
     void sendScreenAuthenticated(String screenName);
     void sendScreenAuthenticated(String screenName, Map<String, String> customDimension);
     void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId);
+    void sendTrackEvent(String eventName, Map<String, Object> eventValue);
 }

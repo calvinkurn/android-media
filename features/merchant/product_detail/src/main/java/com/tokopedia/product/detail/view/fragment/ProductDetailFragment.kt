@@ -36,12 +36,8 @@ import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -95,11 +91,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.transaction.common.TransactionRouter
-import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
-import com.tokopedia.transactiondata.usecase.GetProfileListUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_detail.*
@@ -115,7 +108,6 @@ import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import rx.Subscriber
 import javax.inject.Inject
 
 class ProductDetailFragment : BaseDaggerFragment() {
@@ -307,6 +299,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
             override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
                 activity?.let {
+                    //TOGGLE_MVC_OFF
                     productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, position)
                     showSnackbarClose(getString(R.string.title_voucher_code_copied))
                 }
@@ -358,7 +351,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfoViewModel.addWishList(it,
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
                                 onErrorAddWishList = this::onErrorAddWishList)
-                            productDetailTracking.eventPDPWishlit()
+                            productDetailTracking.eventPDPWishlist()
                             // TODO APPFLYER IMPL 943
                             productInfo?.basic?.let { productDetailTracking.eventPDPAddToWishlist(it.name) }
                         }
@@ -464,34 +457,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun goToAtcExpress() {
-        actionButtonView.showLoadingBuy()
-        activity?.run {
-            val useCase = GetProfileListUseCase(this)
-            useCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    actionButtonView.hideLoadingBuy()
-                    goToNormalCheckout()
-                }
-
-                override fun onNext(graphqlResponse: GraphqlResponse) {
-                    actionButtonView.hideLoadingBuy()
-                    val profileResponse = graphqlResponse.getData<ProfileListGqlResponse>(ProfileListGqlResponse::class.java)
-                    if (profileResponse?.data != null && profileResponse.data.status.equals("OK")
-                        && profileResponse.data.data.defaultProfileId != 0) {
-                        navigateToExpressCheckout()
-                    } else {
-                        goToNormalCheckout()
-                    }
-                }
-            })
-        }
-    }
-
-    fun navigateToExpressCheckout() {
         activity?.let {
             try {
                 val productInfo = (productInfoViewModel.productInfoP1Resp.value as Success).data
@@ -803,8 +768,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             REQUEST_CODE_MERCHANT_VOUCHER_DETAIL,
             REQUEST_CODE_MERCHANT_VOUCHER -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    //TODO reload merchant voucher data;
-                    //presenter.loadMerchantVoucher
+                    // no op //TOGGLE_MVC_OFF
                 }
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
@@ -958,8 +922,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 RouteManager.route(it,
                     ApplinkConst.AFFILIATE_CREATE_POST,
-                        pdpAffiliate.productId.toString(),
-                        pdpAffiliate.adId.toString())
+                    pdpAffiliate.productId.toString(),
+                    pdpAffiliate.adId.toString())
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
@@ -976,7 +940,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
-        productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, productInfoP2.shopInfo, trackerAttribution)
         productInfoP2.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo
@@ -998,6 +961,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoP2.vouchers.isNotEmpty()) {
                 merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
                 merchantVoucherListWidget.visible()
+                if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID ?: 0)) {
+                    productDetailTracking.eventImpressionMerchantVoucherUse (productInfoP2.vouchers)
+                }
             } else {
                 merchantVoucherListWidget.gone()
             }
@@ -1040,6 +1006,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
         otherProductView.renderData(productInfoP2.productOthers)
+
+        productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, productInfoP2.shopInfo, trackerAttribution)
+
     }
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
@@ -1289,8 +1258,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
                     ApplinkConst.TOPCHAT_ASKSELLER,
-                        shop.shopCore.shopID, product.basic.url,
-                        "product", shop.shopCore.name, shop.shopAssets.avatar)
+                    shop.shopCore.shopID, product.basic.url,
+                    "product", shop.shopCore.name, shop.shopAssets.avatar)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1317,7 +1286,17 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onVariantClicked() {
+        productDetailTracking.eventClickVariant(generateVariantString())
         goToNormalCheckout(ATC_AND_BUY)
+    }
+
+    private fun generateVariantString(): String {
+        return try {
+            val productVariant = (productInfoViewModel.productVariantResp.value as Success).data
+            productVariant.variant.map { it.name }.joinToString(separator = ", ")
+        } catch (e: Throwable) {
+            ""
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -1469,9 +1448,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
             }
-            if (hasVariant())
-            //TODO tracking
-                productDetailTracking.eventCartMenuClicked(""/*generated variant */)
+            if (hasVariant()) {
+                productDetailTracking.eventCartMenuClicked(generateVariantString())
+            }
         }
     }
 

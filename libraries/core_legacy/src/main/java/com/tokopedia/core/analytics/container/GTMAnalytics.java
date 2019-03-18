@@ -215,6 +215,11 @@ public class GTMAnalytics extends ContextAnalytics {
         sendScreen(screenName, customDimension);
     }
 
+    @Override
+    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
+        //no op, only for appsfyler
+    }
+
     public void eventAuthenticate() {
         eventAuthenticate(null);
     }
