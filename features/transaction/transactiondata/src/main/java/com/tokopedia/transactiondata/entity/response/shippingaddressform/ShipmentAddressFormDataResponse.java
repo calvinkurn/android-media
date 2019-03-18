@@ -3,6 +3,7 @@ package com.tokopedia.transactiondata.entity.response.shippingaddressform;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply;
+import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyV2;
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion;
 
@@ -59,6 +60,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("autoapply_v2")
     @Expose
     private AutoapplyV2 autoapplyV2;
+    @SerializedName("autoapply_stack")
+    @Expose
+    private AutoapplyStack autoapplyStack;
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -116,8 +120,7 @@ public class ShipmentAddressFormDataResponse {
         return promoSuggestion;
     }
 
-    public AutoApply getAutoApply() {
-        return autoApply;
-    }
+    public AutoApply getAutoApply() { return autoApply; }
 
+    public AutoapplyStack getAutoapplyStack() { return autoapplyStack; }
 }

@@ -3,7 +3,9 @@ package com.tokopedia.checkout.domain.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
@@ -18,6 +20,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductChe
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 
@@ -83,6 +86,39 @@ public class ShipmentMapper implements IShipmentMapper {
             autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoapplyV2().getTitleDescription());
             autoApplyData.setState(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getState());
             dataResult.setAutoApplyData(autoApplyData);
+        }
+
+        if (shipmentAddressFormDataResponse.getAutoapplyStack() != null) {
+            AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
+            autoApplyStackData.setCode(shipmentAddressFormDataResponse.getAutoapplyStack().getCodes().get(0));
+            autoApplyStackData.setDiscountAmount(shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount());
+            autoApplyStackData.setIsCoupon(shipmentAddressFormDataResponse.getAutoapplyStack().getIsCoupon());
+            autoApplyStackData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoapplyStack().getMessage().getText());
+            autoApplyStackData.setPromoCodeId(shipmentAddressFormDataResponse.getAutoapplyStack().getPromoCodeId());
+            autoApplyStackData.setSuccess(shipmentAddressFormDataResponse.getAutoapplyStack().isSuccess());
+            autoApplyStackData.setTitleDescription(shipmentAddressFormDataResponse.getAutoapplyStack().getTitleDescription());
+            autoApplyStackData.setState(shipmentAddressFormDataResponse.getAutoapplyStack().getMessage().getState());
+
+            List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
+            for (VoucherOrdersItem voucherOrdersItem : shipmentAddressFormDataResponse.getAutoapplyStack().getVoucherOrders()) {
+                VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
+                voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
+                voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
+                voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
+                voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
+                voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
+                voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
+                voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
+                voucherOrdersItemData.setType(voucherOrdersItem.getType());
+                voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
+                voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
+                voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
+                voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
+                voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+                voucherOrdersItemDataList.add(voucherOrdersItemData);
+            }
+            autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
+            dataResult.setAutoApplyStackData(autoApplyStackData);
         }
 
         if (shipmentAddressFormDataResponse.getDonation() != null) {

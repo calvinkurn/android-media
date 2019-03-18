@@ -4,10 +4,11 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.cancelpromo.ResponseCancelPromo
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -16,9 +17,10 @@ import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.lang.reflect.Type
 
-class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                   val checkPromoUseCase: CheckPromoCodeUseCase,
-                                   val cancelPromoUseCase: CancelPromoUseCase) :
+class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
+                                   private val checkPromoStackingUseCase: CheckPromoStackingCodeUseCase,
+                                   val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
+                                   private val cancelPromoUseCase: CancelPromoUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
 
     override fun cancelPromo() {
@@ -42,16 +44,48 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
                 var resultSuccess = responseCancelPromo?.data?.isSuccess ?: false
 
                 if (resultSuccess) {
-                    view.onSuccessCancelPromo();
+                   // view.onSuccessCancelPromo();
+                    view.onSuccessCancelPromoStacking()
                 } else {
                     view.onErrorCancelPromo(RuntimeException())
                 }
             }
         })
+
     }
 
-    override fun validatePromoUse(codeCoupon: String, oneClickShipment: Boolean, resources: Resources) {
+    override fun validatePromoStackingUse() {
         view.showProgressLoading()
+        checkPromoStackingUseCase.setParams(123, 1, "VOUCHERTOKO10",
+                "JNE100", 1, "", "CASHBACK50",
+                0, 1)
+        checkPromoStackingUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onNext(t: GraphqlResponse?) {
+                view.hideProgressLoading()
+
+                val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
+                if (responseGetPromoStack.data.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED) {
+                    view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message?.text))
+                } else {
+                    view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                }
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.hideProgressLoading()
+                    view.onErrorValidatePromo(e)
+                }
+            }
+
+        })
+    }
+
+    /*override fun validatePromoUse(codeCoupon: String, oneClickShipment: Boolean, resources: Resources) {
         checkPromoUseCase.execute(checkPromoUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment), object : Subscriber<DataVoucher>() {
             override fun onCompleted() {
 
@@ -73,7 +107,7 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
                 }
             }
         })
-    }
+    }*/
 
     override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean) {
         view.showLoading()
@@ -105,7 +139,8 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
 
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
-        checkPromoUseCase.unsubscribe()
+        // checkPromoUseCase.unsubscribe()
+        checkPromoStackingUseCase.unsubscribe()
         super.detachView()
     }
 }

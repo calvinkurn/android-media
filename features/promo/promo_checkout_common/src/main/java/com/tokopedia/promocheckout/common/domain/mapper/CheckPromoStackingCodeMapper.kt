@@ -1,46 +1,39 @@
 package com.tokopedia.promocheckout.common.domain.mapper
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.Data
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.Message
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.Response
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem
-import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.ResponseUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.*
+import com.tokopedia.promocheckout.common.view.uimodel.*
 import rx.functions.Func1
 import javax.inject.Inject
 
-class CheckPromoStackingCodeMapper@Inject constructor() : Func1<GraphqlResponse, ResponseUiModel> {
+class CheckPromoStackingCodeMapper@Inject constructor() : Func1<GraphqlResponse, ResponseGetPromoStackFirstUiModel> {
+    private val STATUS_OK = "OK"
 
-    companion object {
-        private const val STATUS_OK = "OK"
-    }
-
-    override fun call(t: GraphqlResponse?): ResponseUiModel {
+    override fun call(t: GraphqlResponse?): ResponseGetPromoStackFirstUiModel {
         var status = ""
         var data = DataUiModel()
-        val response = t?.getData<Response?>(Response::class.java)
-        response?.let {
-            when (it.status) {
-                STATUS_OK -> {
-                    status = it.status
-                    data = mapData(it.data)
+        val response = t?.getData<ResponseGetPromoStackFirst?>(ResponseGetPromoStackFirst::class.java)
+        response?.let { responseGetPromoStackFirst ->
+            responseGetPromoStackFirst.getPromoStackFirst.let {
+                when (it?.status) {
+                    STATUS_OK -> {
+                        status = it.status
+                        data = mapData(it.data)
+                    }
+                    else -> println("not succeed")
                 }
-                else -> println("not succeed")
             }
         }
 
-        return ResponseUiModel(
+        return ResponseGetPromoStackFirstUiModel(
                 status,
                 data
         )
     }
 
-     fun mapData(data: Data?): DataUiModel {
-         val listCodes = ArrayList<String>()
-         var dataUiModel = DataUiModel()
+    fun mapData(data: Data?): DataUiModel {
+        val listCodes = ArrayList<String>()
+        var dataUiModel = DataUiModel()
         data?.globalSuccess?.let { globalSuccess ->
             data.success?.let { success ->
                 data.message?.let { message ->
@@ -57,29 +50,32 @@ class CheckPromoStackingCodeMapper@Inject constructor() : Func1<GraphqlResponse,
                                         data.cashbackAdvocateReferralAmount?.let { cashbackAdvocateReferralAmount ->
                                             data.cashbackVoucherDescription?.let { cashbackVoucherDesc ->
                                                 data.invoiceDescription?.let { invoiceDesc ->
-                                                    data.couponDescription?.let { couponDesc ->
-                                                        data.gatewayId?.let { gatewayId ->
-                                                            data.isCoupon?.let { isCoupon ->
-                                                                data.voucherOrders?.let { voucherOrders ->
-                                                                    dataUiModel = DataUiModel(
-                                                                            globalSuccess = globalSuccess,
-                                                                            success = success,
-                                                                            message = mapMessage(message),
-                                                                            codes = listCodes,
-                                                                            promoCodeId = promoCodeId,
-                                                                            titleDescription = titleDesc,
-                                                                            discountAmount = discountAmount,
-                                                                            cashbackWalletAmount = cashbackWalletAmount,
-                                                                            invoiceDescription = invoiceDesc,
-                                                                            voucherOrders = voucherOrders.map {
-                                                                                mapVoucherOrders(it)
-                                                                            } as List<VoucherOrdersItemUiModel>,
-                                                                            cashbackAdvocateReferralAmount = cashbackAdvocateReferralAmount,
-                                                                            cashbackVoucherDescription = cashbackVoucherDesc,
-                                                                            couponDescription = couponDesc,
-                                                                            gatewayId = gatewayId,
-                                                                            isCoupon = isCoupon
-                                                                    )
+                                                    data.clashingInfoDetail?.let { clashingDetails ->
+                                                        data.couponDescription?.let { couponDesc ->
+                                                            data.gatewayId?.let { gatewayId ->
+                                                                data.isCoupon?.let { isCoupon ->
+                                                                    data.voucherOrders?.let { voucherOrders ->
+                                                                        dataUiModel = DataUiModel(
+                                                                                globalSuccess = globalSuccess,
+                                                                                success = success,
+                                                                                message = mapMessage(message),
+                                                                                codes = listCodes,
+                                                                                promoCodeId = promoCodeId,
+                                                                                titleDescription = titleDesc,
+                                                                                discountAmount = discountAmount,
+                                                                                cashbackWalletAmount = cashbackWalletAmount,
+                                                                                invoiceDescription = invoiceDesc,
+                                                                                voucherOrders = voucherOrders.map {
+                                                                                    mapVoucherOrders(it)
+                                                                                },
+                                                                                cashbackAdvocateReferralAmount = cashbackAdvocateReferralAmount,
+                                                                                cashbackVoucherDescription = cashbackVoucherDesc,
+                                                                                couponDescription = couponDesc,
+                                                                                clashings = mapClashing(clashingDetails),
+                                                                                gatewayId = gatewayId,
+                                                                                isCoupon = isCoupon
+                                                                        )
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -95,7 +91,7 @@ class CheckPromoStackingCodeMapper@Inject constructor() : Func1<GraphqlResponse,
                 }
             }
         }
-         return dataUiModel
+        return dataUiModel
     }
 
     fun mapVoucherOrders(voucherOrdersItem: VoucherOrdersItem?): VoucherOrdersItemUiModel {
@@ -146,5 +142,31 @@ class CheckPromoStackingCodeMapper@Inject constructor() : Func1<GraphqlResponse,
             }
         }
         return messageUiModel
+    }
+
+    fun mapClashing(clash: ClashingInfoDetail): ClashingInfoDetailUiModel {
+        val listOptions = ArrayList<Any>()
+        var clashingInfoDetailUiModel = ClashingInfoDetailUiModel()
+        clash.isClashedPromos?.let { isClashed ->
+            clash.clashMessage?.let { clashMessage ->
+                clash.clashReason?.let { clashReason ->
+                    clash.option.let { options ->
+                        options?.forEach {
+                            if (it != null) {
+                                listOptions.add(it)
+                            }
+                        }
+                        clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
+                                isClashedPromos = isClashed,
+                                clashMessage = clashMessage,
+                                clashReason = clashReason,
+                                option = listOptions
+                        )
+                    }
+                }
+            }
+        }
+
+        return clashingInfoDetailUiModel
     }
 }

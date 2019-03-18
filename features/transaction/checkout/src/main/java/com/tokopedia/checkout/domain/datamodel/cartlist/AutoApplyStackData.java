@@ -6,10 +6,6 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Irfan Khoirul on 17/05/18.
- */
-
 public class AutoApplyStackData implements Parcelable {
 
     private int promoCodeId;

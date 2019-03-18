@@ -18,8 +18,12 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
 import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailException
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
@@ -131,7 +135,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
     }
 
-    override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
+    /*override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
         val intent = Intent()
         val typePromo = if (dataVoucher.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
         val promoData = PromoData(typePromo, dataVoucher.code ?: "",
@@ -141,18 +145,39 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }*/
+
+    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
+        val intent = Intent()
+        val typePromo = if (data.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
+        val promoStackingData = PromoStackingData(typePromo, data.codes[0],
+                data.message.text, data.titleDescription,
+                data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
+        intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun onErrorCancelPromo(e: Throwable) {
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
-    override fun onSuccessCancelPromo() {
+    /*override fun onSuccessCancelPromo() {
         isUse = false
         validateButton()
         val intent = Intent()
         val promoData = PromoData(PromoData.TYPE_COUPON,state =TickerCheckoutView.State.EMPTY)
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }*/
+
+    override fun onSuccessCancelPromoStacking() {
+        isUse = false
+        validateButton()
+        val intent = Intent()
+        val promoStackingData = PromoStackingData(PromoData.TYPE_COUPON,state =TickerPromoStackingCheckoutView.State.EMPTY)
+        intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

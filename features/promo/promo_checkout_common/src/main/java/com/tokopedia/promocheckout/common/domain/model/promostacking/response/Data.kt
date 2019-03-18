@@ -18,6 +18,9 @@ data class Data(
 	@field:SerializedName("cashback_advocate_referral_amount")
 	val cashbackAdvocateReferralAmount: Int? = null,
 
+	@field:SerializedName("clashing_info_detail")
+	val clashingInfoDetail: ClashingInfoDetail? = null,
+
 	@field:SerializedName("cashback_wallet_amount")
 	val cashbackWalletAmount: Int? = null,
 

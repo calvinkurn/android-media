@@ -1,0 +1,64 @@
+{
+    "data": {
+      "get_promo_stack_first": {
+        "status": "OK",
+        "data": {
+          "global_success": true,
+          "success": true,
+          "message": {
+            "state": "green",
+            "color": "#ade3af",
+            "text": "Cashback potensial sebesar Rp50.000"
+          },
+          "promo_code_id": 747986,
+          "title_description": "Cashback hingga Rp50.000",
+          "discount_amount": 0,
+          "cashback_wallet_amount": 50000,
+          "cashback_advocate_referral_amount": 0,
+          "cashback_voucher_description": "",
+          "invoice_description": "CASHBACK50",
+          "gateway_id": "",
+          "is_coupon": 0,
+          "coupon_description": "",
+          "clashing_info_detail": {
+            "clash_message": "",
+            "clash_reason": "",
+            "is_clashed_promos": false,
+            "option": []
+          },
+          "voucher_orders": [
+            {
+              "code": "VOUCHERTOKO10",
+              "success": true,
+              "unique_id": "12345-12345-12345-12",
+              "cart_id": 12345,
+              "type": "merchant_voucher",
+              "cashback_wallet_amount": 10000,
+              "discount_amount": 0,
+              "invoice_description": "VOUCHERTOKO10",
+              "message": {
+                "state": "green",
+                "color": "#ade3af",
+                "text": "Cashback potensial sebesar Rp10.000"
+              }
+            },
+            {
+              "code": "JNE100",
+              "success": true,
+              "unique_id": "12345-12345-12345-12",
+              "cart_id": 12345,
+              "type": "logistic_voucher",
+              "cashback_wallet_amount": 0,
+              "discount_amount": 20000,
+              "invoice_description": "JNE100",
+              "message": {
+                "state": "green",
+                "color": "#ade3af",
+                "text": "Gratis Ongkir sebesar Rp20.000"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
