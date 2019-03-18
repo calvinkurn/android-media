@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.domain.model.Spotlight;
+import com.tokopedia.home.beranda.domain.model.SpotlightItem;
 import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -15,6 +17,8 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
@@ -115,7 +119,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
                                         channel.getEnhanceImpressionDynamicSprintLegoHomePage(position)
                                 );
-                            } else {
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
                                 legoAndCuratedAndSprintSaleBannerList.addAll(
@@ -128,7 +137,16 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
                         } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
                             list.add(mappingDynamicTopAds(channel));
-                        } else {
+                        } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
+                            list.add(mappingSpotlight(homeData.getSpotlight()));
+                        } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)
+                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)) {
                             list.add(mappingDynamicChannel(channel));
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size(),channel);
@@ -207,5 +225,27 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         DynamicChannelViewModel viewModel = new DynamicChannelViewModel();
         viewModel.setChannel(channel);
         return viewModel;
+    }
+
+    private Visitable mappingSpotlight(Spotlight spotlight) {
+        List<SpotlightItemViewModel> spotlightItems = new ArrayList<>();
+
+        for (SpotlightItem spotlightItem : spotlight.getSpotlights()) {
+            spotlightItems.add(new SpotlightItemViewModel(
+                    spotlightItem.getId(),
+                    spotlightItem.getTitle(),
+                    spotlightItem.getDescription(),
+                    spotlightItem.getBackgroundImageUrl(),
+                    spotlightItem.getTagName(),
+                    spotlightItem.getTagNameHexcolor(),
+                    spotlightItem.getTagHexcolor(),
+                    spotlightItem.getCtaText(),
+                    spotlightItem.getCtaTextHexcolor(),
+                    spotlightItem.getUrl(),
+                    spotlightItem.getApplink()
+                    ));
+        }
+
+        return new SpotlightViewModel(spotlightItems);
     }
 }
