@@ -37,7 +37,7 @@ class GetContentFormUseCase @Inject internal constructor(
                     context.resources,
                     R.raw.query_af_quota
             )
-            val requestQouta = GraphqlRequest(queryQouta, CheckQuotaQuery::class.java)
+            val requestQouta = GraphqlRequest(queryQouta, CheckQuotaQuery::class.java, false)
             graphqlUseCase.addRequest(requestQouta)
         }
 

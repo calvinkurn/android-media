@@ -47,7 +47,7 @@ public class GetFeedsDetailUseCase {
         GraphqlRequest feedDetailGraphqlRequest =
                 new GraphqlRequest(query,
                         FeedQuery.class,
-                        variables);
+                        variables, false);
 
         graphqlUseCase.addRequest(feedDetailGraphqlRequest);
         graphqlUseCase.execute(subscriber);

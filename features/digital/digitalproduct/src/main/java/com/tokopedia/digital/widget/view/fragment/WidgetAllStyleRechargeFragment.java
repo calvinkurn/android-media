@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -124,6 +125,14 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //fix crash drawHardwareAccelerated on home
+        //because hierarchy of view is too deep, then require a lot memories
+        //https://fabric.io/pt-tokopedia/android/apps/com.tokopedia.tkpd/issues/5c77446af8b88c29635d8e38?time=last-ninety-days
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
         presenter.attachView(this);
         presenter.fetchCategory(categoryId);
     }

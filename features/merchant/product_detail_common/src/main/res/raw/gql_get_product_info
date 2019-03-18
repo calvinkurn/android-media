@@ -1,0 +1,113 @@
+query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
+    getPDPInfo(productID: $productID, shopDomain: $shopDomain, productKey: $productKey){
+        basic {
+            id
+            shopID
+            name
+            alias
+            price
+            priceCurrency
+            lastUpdatePrice
+            description
+            minOrder
+            maxOrder
+            status
+            weight
+            weightUnit
+            condition
+            url
+            sku
+            gtin
+            isKreasiLokal
+            isMustInsurance
+            isEligibleCOD
+            catalogID
+        }
+        brand {
+            brandID
+            isActive
+            brandStatus
+            name
+        }
+        menu {
+            menuID
+            name
+            url
+        }
+        category {
+            id
+            name
+            title
+            breadcrumbURL
+            detail {
+                id
+                name
+                breadcrumbURL
+            }
+        }
+        pictures {
+            picID
+            fileName
+            filePath
+            description
+            isFromIG
+            width
+            height
+            urlOriginal
+            urlThumbnail
+            url300
+            status
+        }
+        preorder {
+            isActive
+            duration
+            timeUnit
+        }
+        wholesale {
+            minQty
+            price
+        }
+        campaign {
+            campaignID
+            campaignType
+            campaignTypeName
+            percentageAmount
+            originalPrice
+            discountedPrice
+            stock
+            isActive
+            isAppsOnly
+            startDate
+            endDate
+            endDateUnix
+            appLinks
+        }
+        cashback {
+            percentage
+        }
+        stats {
+            countView
+            countReview
+            countTalk
+            rating
+        }
+        txStats {
+            txSuccess
+            txReject
+            itemSold
+        }
+        videos {
+            source
+            url
+        }
+        variant {
+          parentID
+          isVariant
+        }
+        stock {
+          useStock
+          value
+          stockWording
+        }
+    }
+}

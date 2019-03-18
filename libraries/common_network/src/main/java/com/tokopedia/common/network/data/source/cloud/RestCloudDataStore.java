@@ -3,8 +3,6 @@ package com.tokopedia.common.network.data.source.cloud;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.raizlabs.android.dbflow.config.CommonNetworkGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponseIntermediate;
 import com.tokopedia.common.network.data.source.RestDataStore;
@@ -110,7 +108,7 @@ public class RestCloudDataStore implements RestDataStore {
     private Observable<RestResponseIntermediate> doPost(RestRequest request) {
         if (request.getBody() != null && request.getBody() instanceof Map) {
             return mApi.post(request.getUrl(),
-                    (Map<String, Object>) request.getBody(),
+                    (Map<String, String>) request.getBody(),
                     request.getQueryParams(),
                     request.getHeaders()).map(response -> processData(request, response));
         } else {
@@ -145,7 +143,7 @@ public class RestCloudDataStore implements RestDataStore {
     private Observable<RestResponseIntermediate> doPut(RestRequest request) {
         if (request.getBody() != null && request.getBody() instanceof Map) {
             return mApi.put(request.getUrl(),
-                    (Map<String, Object>) request.getBody(),
+                    (Map<String, String>) request.getBody(),
                     request.getQueryParams(),
                     request.getHeaders()).map(response -> processData(request, response));
         } else {
@@ -275,7 +273,6 @@ public class RestCloudDataStore implements RestDataStore {
 
     private RestApi getApiInterface(List<Interceptor> interceptors, Context context) {
         UserSession userSession = new UserSession(context.getApplicationContext());
-        FlowManager.initModule(CommonNetworkGeneratedDatabaseHolder.class);
         TkpdOkHttpBuilder okkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         if (interceptors != null) {
             okkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
