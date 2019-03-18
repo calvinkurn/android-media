@@ -38,7 +38,6 @@ public class FeedbackModule {
     @FeedbackScope
     @Provides
     NpsAnalytics provideNpsAnalytics() {
-        AnalyticTracker analyticTracker = ((AbstractionRouter)this.context.getApplicationContext()).getAnalyticTracker();
-        return new NpsAnalytics(analyticTracker);
+        return new NpsAnalytics();
     }
 }

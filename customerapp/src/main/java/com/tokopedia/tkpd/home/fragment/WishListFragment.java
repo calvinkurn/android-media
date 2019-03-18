@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -106,8 +105,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wishList = new WishListImpl(getActivity(), this);
-        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
-        wishlistAnalytics = new WishlistAnalytics(getAnalyticTracker());
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart();
+        wishlistAnalytics = new WishlistAnalytics();
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
@@ -182,13 +181,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         if (isFromAppShortcut) {
             wishlistAnalytics.eventWishlistShortcut();
         }
-    }
-
-    private AnalyticTracker getAnalyticTracker() {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            return ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-        }
-        return null;
     }
 
     private void loadWishlistData() {

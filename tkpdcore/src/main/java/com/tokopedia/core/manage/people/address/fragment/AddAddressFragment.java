@@ -616,10 +616,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected void initialVar() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
-        }
+        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
             addressTypeEditText.setText(address.getAddressName());

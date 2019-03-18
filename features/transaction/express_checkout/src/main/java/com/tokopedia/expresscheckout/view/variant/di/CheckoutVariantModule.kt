@@ -1,8 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant.di
 
 import android.content.Context
-import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileBottomSheet
@@ -74,11 +72,7 @@ class CheckoutVariantModule {
 
     @CheckoutVariantScope
     @Provides
-    fun provideAnalyticsTracker(router: AbstractionRouter): AnalyticTracker = router.analyticTracker
-
-    @CheckoutVariantScope
-    @Provides
-    fun provideAnalytics(tracker: AnalyticTracker): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker(tracker)
+    fun provideAnalytics(): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker()
 
     @CheckoutVariantScope
     @Provides

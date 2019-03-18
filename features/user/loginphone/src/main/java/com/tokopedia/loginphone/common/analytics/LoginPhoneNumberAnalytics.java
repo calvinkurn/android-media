@@ -1,14 +1,12 @@
 package com.tokopedia.loginphone.common.analytics;
 
 import android.app.Activity;
-import android.content.Context;
-
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 
 import javax.inject.Inject;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by nisie on 1/5/18.
@@ -16,11 +14,8 @@ import javax.inject.Inject;
 
 public class LoginPhoneNumberAnalytics {
 
-    private AnalyticTracker tracker;
-
     @Inject
-    public LoginPhoneNumberAnalytics(AnalyticTracker tracker) {
-        this.tracker = tracker;
+    public LoginPhoneNumberAnalytics() {
     }
 
     public static class Screen {
@@ -57,50 +52,51 @@ public class LoginPhoneNumberAnalytics {
     }
 
     public void sendScreen(Activity activity, String screenName) {
-        tracker.sendScreen(activity, screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     public void trackLoginWithPhone() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_LOGIN,
                 Category.LOGIN_WITH_PHONE,
                 Action.CLICK_ON_NEXT,
                 ""
-        );
+        ));
     }
     public void eventSuccessLoginPhoneNumber() {
-        tracker.sendEventTracking(Event.EVENT_CLICK_LOGIN,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
                 Category.LOGIN_WITH_PHONE,
                 Action.LOGIN_SUCCESS,
-                Label.TOKOCASH);
+                Label.TOKOCASH));
     }
 
 
     public void trackVerifyOtpClick(String mode) {
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_LOGIN,
                 Category.PHONE_VERIFICATION,
                 Action.CLICK_ON_VERIFICATION,
                 mode
-        );
+        ));
     }
 
     public void trackResendVerification(String mode) {
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_LOGIN,
                 Category.PHONE_VERIFICATION,
                 Action.CLICK_ON_RESEND_VERIFICATION,
                 mode
-        );
+        ));
     }
 
     public void eventChooseVerificationMethodTracking(String modeName) {
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_LOGIN,
                 Category.PHONE_VERIFICATION,
                 Action.CHANGE_METHOD,
                 modeName
-        );
+        ));
     }
 
 }

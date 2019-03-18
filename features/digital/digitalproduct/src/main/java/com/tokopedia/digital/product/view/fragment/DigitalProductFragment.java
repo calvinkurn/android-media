@@ -35,7 +35,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -247,9 +246,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) getActivity().getApplicationContext()).getAnalyticTracker(), getActivity());
-        }
+            digitalAnalytics = new DigitalAnalytics();
         View view = inflater.inflate(R.layout.fragment_product_digital_module, container, false);
         initView(view);
         return view;

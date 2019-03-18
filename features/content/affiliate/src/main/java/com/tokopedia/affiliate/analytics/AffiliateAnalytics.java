@@ -1,7 +1,8 @@
 package com.tokopedia.affiliate.analytics;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
@@ -56,12 +57,12 @@ public class AffiliateAnalytics {
         return mapEvent;
     }
 
-    public AnalyticTracker getAnalyticTracker() {
-        return abstractionRouter.getAnalyticTracker();
+    public ContextAnalytics getAnalyticTracker() {
+        return TrackApp.getInstance().getGTM();
     }
 
     public void onByMeButtonClicked(String productId) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -73,7 +74,7 @@ public class AffiliateAnalytics {
     }
 
     public void onProductImpression(String productId) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
                         AffiliateEventTracking.Event.AFFILIATE_VIEW,
@@ -85,7 +86,7 @@ public class AffiliateAnalytics {
     }
 
     public void onProductClicked(String productId) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -97,7 +98,7 @@ public class AffiliateAnalytics {
     }
 
     public void onSearchSubmitted(String keyword) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -109,7 +110,7 @@ public class AffiliateAnalytics {
     }
 
     public void onSearchNotFound(String keyword) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -121,7 +122,7 @@ public class AffiliateAnalytics {
     }
 
     public void onJatahRekomendasiHabisDialogShow() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
                         AffiliateEventTracking.Event.AFFILIATE_VIEW,
@@ -133,7 +134,7 @@ public class AffiliateAnalytics {
     }
 
     public void onJatahRekomendasiHabisPdp() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_PDP,
                         AffiliateEventTracking.Event.AFFILIATE_VIEW,
@@ -145,7 +146,7 @@ public class AffiliateAnalytics {
     }
 
     public void onCobaSekarangButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -157,7 +158,7 @@ public class AffiliateAnalytics {
     }
 
     public void onTentangKomisiButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -169,7 +170,7 @@ public class AffiliateAnalytics {
     }
 
     public void onSimpanButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -181,7 +182,7 @@ public class AffiliateAnalytics {
     }
 
     public void onSKButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -193,7 +194,7 @@ public class AffiliateAnalytics {
     }
 
     public void onLihatContohButtonClicked(String productId) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -205,7 +206,7 @@ public class AffiliateAnalytics {
     }
 
     public void onTambahGambarButtonClicked(String productId) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -217,7 +218,7 @@ public class AffiliateAnalytics {
     }
 
     public void onSelesaiCreateButtonClicked(String productId) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -229,7 +230,7 @@ public class AffiliateAnalytics {
     }
 
     public void onDirectRecommRekomendasikanButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_ADD_RECOMMENDATION,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -241,7 +242,7 @@ public class AffiliateAnalytics {
     }
 
     public void onDirectRecommProdukLainButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_ADD_RECOMMENDATION,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -253,7 +254,7 @@ public class AffiliateAnalytics {
     }
 
     public void onDirectRecommPilihanProdukButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -265,7 +266,7 @@ public class AffiliateAnalytics {
     }
 
     public void onAfterClickTokopediMe(String originalLink) {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_USER_PROFILE,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -277,7 +278,7 @@ public class AffiliateAnalytics {
     }
 
     public void onAfterClickSaldo() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_MY_PROFILE,
                         AffiliateEventTracking.Event.PROFILE_CLICK,
@@ -288,20 +289,8 @@ public class AffiliateAnalytics {
         );
     }
 
-    public void onImpressionOnboard() {
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
-                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
-                        AffiliateEventTracking.Category.BYME_ONBOARD,
-                        AffiliateEventTracking.Action.IMPRESSION_ONBOARD,
-                        ""
-                )
-        );
-    }
-
     public void onClickProfileOnExplore() {
-        getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEnhanceECommerceEvent(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,

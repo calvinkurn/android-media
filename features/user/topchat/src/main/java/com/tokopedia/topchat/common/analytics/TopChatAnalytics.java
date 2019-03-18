@@ -2,8 +2,9 @@ package com.tokopedia.topchat.common.analytics;
 
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,11 +17,9 @@ import javax.inject.Inject;
 public class TopChatAnalytics {
 
 
-    private final AnalyticTracker analyticTracker;
 
     @Inject
-    public TopChatAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
+    public TopChatAnalytics() {
     }
 
     private static final String EVENT_NAME = "event";
@@ -84,121 +83,112 @@ public class TopChatAnalytics {
 
     public void eventClickInboxChannel() {
 
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.EVENT_NAME_CLICK_INBOXCHAT,
                 Category.EVENT_CATEGORY_INBOX_CHAT,
                 Action.EVENT_ACTION_CLICK_COMMUNITY_TAB,
                 ""
-        );
+        ));
     }
 
     public void eventOpenTopChat() {
 
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TopChatAnalytics.Name.INBOX_CHAT,
                 TopChatAnalytics.Category.INBOX_CHAT,
                 TopChatAnalytics.Action.INBOX_CHAT_CLICK,
                 ""
-        );
+        ));
     }
 
     public void eventSearchSubmit() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TopChatAnalytics.Name.INBOX_CHAT,
                 TopChatAnalytics.Category.INBOX_CHAT,
                 TopChatAnalytics.Action.INBOX_CHAT_SEARCH,
                 ""
-        );
+        ));
     }
 
     public void trackSendProductAttachment() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.CHAT_DETAIL,
                 TopChatAnalytics.Category.CHAT_DETAIL,
                 TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
                 ""
-        );
+        ));
     }
 
     public void trackHeaderClicked() {
 
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.INBOX_CHAT,
                 "message room",
                 "click header - shop icon",
                 ""
-        );
+        ));
 
-    }
-
-    public void trackGoToDetailFromMenu() {
-        analyticTracker.sendEventTracking(
-                Name.INBOX_CHAT,
-                "message room",
-                "click header - three bullet",
-                "lihat profile"
-        );
     }
 
     public void trackClickImageAnnouncement(String blastId, @NotNull String attachmentId) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.INBOX_CHAT,
                 "inbox-chat",
                 "click on thumbnail",
                 String.format("%s - %s", blastId, attachmentId)
-        );
+        ));
     }
 
     public void trackOpenChatSetting() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
-                ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
+                ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, ""));
     }
 
     public void eventPickImage() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CHAT_DETAIL_ATTACH,
-                "");
+                ""));
     }
 
     public void eventAttachProduct() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CHAT_DETAIL_INSERT,
-                "");
+                ""));
     }
 
     public void eventSendMessage() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CHAT_DETAIL_SEND,
-                "");
+                ""));
     }
 
     public void eventClickTemplate() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.INBOX_CHAT,
                 Category.INBOX_CHAT,
                 Action.TEMPLATE_CHAT_CLICK,
-                "");
+                ""));
     }
 
     public void trackClickUnblockChat(int shopId) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
-                String.valueOf(shopId));
+                String.valueOf(shopId)));
     }
 
     public void eventClickProductThumbnailEE(int blastId, String productId, String productName,
                                              int productPrice, String category, String variant) {
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, Name.EVENT_NAME_PRODUCT_CLICK,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
@@ -224,7 +214,7 @@ public class TopChatAnalytics {
 
 
     public void trackProductAttachmentClicked() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
         );
     }

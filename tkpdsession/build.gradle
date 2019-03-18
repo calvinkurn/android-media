@@ -31,6 +31,8 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.updateinactivephone)

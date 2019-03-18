@@ -18,8 +18,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
  */
 public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     @Inject
-    public CheckoutAnalyticsCourierSelection(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsCourierSelection() {
     }
 
     public void eventClickAtcCourierSelectionClickBackArrow() {

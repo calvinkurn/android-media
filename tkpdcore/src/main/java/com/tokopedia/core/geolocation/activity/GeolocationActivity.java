@@ -142,9 +142,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     protected void initVar() {
         if (getApplication() instanceof AbstractionRouter) {
             checkoutAnalyticsChangeAddress =
-                    new CheckoutAnalyticsChangeAddress(
-                            ((AbstractionRouter) getApplication()).getAnalyticTracker()
-                    );
+                    new CheckoutAnalyticsChangeAddress();
         }
     }
 

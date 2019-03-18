@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -18,6 +17,10 @@ import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import javax.inject.Inject;
 
@@ -26,7 +29,6 @@ import javax.inject.Inject;
  */
 
 public class FlightAnalytics {
-    private AnalyticTracker analyticTracker;
     private FlightDateUtil flightDateUtil;
     private String GENERIC_EVENT = "genericFlightEvent";
     private String ATC_EVENT = "addToCart";
@@ -40,17 +42,16 @@ public class FlightAnalytics {
     private String ECOMMERCE = "ecommerce";
 
     @Inject
-    public FlightAnalytics(AnalyticTracker analyticTracker, FlightDateUtil flightDateUtil) {
-        this.analyticTracker = analyticTracker;
+    public FlightAnalytics(FlightDateUtil flightDateUtil) {
         this.flightDateUtil = flightDateUtil;
     }
 
     public void eventClickTransactions(String screenName) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_TRANSACTIONS,
                 screenName
-        );
+        ));
     }
 
     public void eventPromotionClick(int position, BannerDetail banner) {
@@ -63,7 +64,7 @@ public class FlightAnalytics {
                 "promo_id", banner.getId(),
                 "promo_code", banner.getAttributes().getPromoCode().toLowerCase()
         ));
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PROMOTION_CLICK,
@@ -90,64 +91,64 @@ public class FlightAnalytics {
     }
 
     public void eventTripTypeClick(String label) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_TRIP_TYPE,
                 label
-        );
+        ));
     }
 
     public void eventOriginClick(String cityName, String airportId) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_ORIGIN,
                 cityName + "|" + airportId
-        );
+        ));
     }
 
     public void eventDestinationClick(String cityName, String airportId) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_DESTINATION,
                 cityName + "|" + airportId
-        );
+        ));
     }
 
     public void eventClassClick(String label) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_CLASS,
                 label
-        );
+        ));
     }
 
     public void eventSearchClick(String label) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH,
                 label
-        );
+        ));
     }
 
     public void eventSearchProductClickFromDetail(FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel) {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
         result.append(String.format("%s%s", Label.PRICE_PREFIX, String.valueOf(viewModel.getFare().getAdultNumeric())));
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT,
                 result.toString()
-        );
+        ));
         productClickEnhanceEcommerce(Action.PRODUCT_CLICK_SEARCH_DETAIL, flightSearchPassData, viewModel, result);
     }
 
     public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel) {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
         result.append(String.format("%s%d", Label.PRICE_PREFIX, viewModel.getFare().getAdultNumeric()));
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT,
                 result.toString()
-        );
+        ));
         productClickEnhanceEcommerce(Action.PRODUCT_CLICK_SEARCH_LIST, flightSearchPassData, viewModel, result);
     }
 
@@ -190,7 +191,7 @@ public class FlightAnalytics {
             ));
         }
 
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, action,
@@ -210,11 +211,11 @@ public class FlightAnalytics {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
         result.append(String.format(getDefaultLocale(), " - %d", adapterPosition));
         result.append(String.format("%s%s", Label.PRICE_PREFIX, String.valueOf(viewModel.getFare().getAdultNumeric())));
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT,
                 result.toString()
-        );
+        ));
         productClickEnhanceEcommerce(Action.PRODUCT_CLICK_SEARCH_LIST, flightSearchPassData, viewModel, result);
     }
 
@@ -239,35 +240,35 @@ public class FlightAnalytics {
 
     public void eventSearchDetailClick(FlightJourneyViewModel viewModel, int adapterPosition) {
         StringBuilder result = transformSearchDetailLabel(viewModel, adapterPosition);
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_DETAIL,
                 result.toString()
-        );
+        ));
     }
 
     public void eventDetailPriceTabClick(FlightDetailViewModel viewModel) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_PRICE_TAB,
                 transformEventDetailLabel(viewModel)
-        );
+        ));
     }
 
     public void eventDetailFacilitiesTabClick(FlightDetailViewModel viewModel) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_FACILITIES_TAB,
                 transformEventDetailLabel(viewModel)
-        );
+        ));
     }
 
     public void eventDetailTabClick(FlightDetailViewModel viewModel) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_DETAIL_TAB,
                 transformEventDetailLabel(viewModel)
-        );
+        ));
     }
 
     private String transformEventDetailLabel(FlightDetailViewModel viewModel) {
@@ -355,55 +356,55 @@ public class FlightAnalytics {
     }
 
     public void eventDetailClick(FlightDetailViewModel viewModel) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.BOOKING_DETAIL,
                 transformEventDetailLabel(viewModel)
-        );
+        ));
     }
 
     public void eventBookingNextClick(String label) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.BOOKING_NEXT,
                 label
-        );
+        ));
     }
 
     public void eventReviewNextClick() {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.REVIEW_NEXT,
                 Label.REVIEW_NEXT
-        );
+        ));
     }
 
     public void eventVoucherClick(String label) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER,
                 label
-        );
+        ));
     }
 
     public void eventVoucherSuccess(String label, String message) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_SUCCESS,
                 String.format("%s - %s", label, message)
-        );
+        ));
     }
 
     public void eventVoucherErrors(String label, String message) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_ERROR,
                 String.format("%s - %s", label, message)
-        );
+        ));
     }
 
     private void eventAddToCart(String label, FlightDetailViewModel viewModel, Object actionField, List<Object> products) {
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(EVENT, ATC_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Category.ADD_TO_CART,
@@ -421,7 +422,7 @@ public class FlightAnalytics {
     }
 
     public void eventPassengerClick(int adult, int children, int infant) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_PASSENGER,
                 String.format(getDefaultLocale(),
@@ -433,7 +434,7 @@ public class FlightAnalytics {
                         infant,
                         Label.INFANT
                 )
-        );
+        ));
     }
 
     public void eventAddToCart(FlightClassViewModel flightClass, FlightBookingCartData cartData, int resultTotalPrice, FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel) {
@@ -503,7 +504,7 @@ public class FlightAnalytics {
     }
 
     public void eventPromoImpression(int position, BannerDetail bannerData) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.PROMOTION_IMPRESSION,
@@ -513,43 +514,43 @@ public class FlightAnalytics {
                         bannerData.getAttributes().getDescription(),
                         bannerData.getAttributes().getLinkUrl()
                 )
-        );
+        ));
     }
 
     public void eventProductDetailImpression(FlightJourneyViewModel flightSearchViewModel, int adapterPosition) {
         StringBuilder result = transformSearchDetailLabel(flightSearchViewModel, adapterPosition);
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.PRODUCT_DETAIL_IMPRESSION,
                 result.toString()
-        );
+        ));
     }
 
     public void eventPurchaseAttemptSuccess() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.PURCHASE_ATTEMPT,
                 Label.SUCCESS_PURCHASE
-        );
+        ));
     }
 
     public void eventPurchaseAttemptFailed() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.PURCHASE_ATTEMPT,
                 Label.FAILED_PURCHASE
-        );
+        ));
     }
 
     public void eventPurchaseAttemptCancelled() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.PURCHASE_ATTEMPT,
                 Label.CANCEL_PURCHASE
-        );
+        ));
     }
 
 
@@ -570,25 +571,25 @@ public class FlightAnalytics {
         }
 
 
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 eventAction,
                 eventLabel
-        );
+        ));
     }
 
     public void eventInsuranceClickMore() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.MORE_INSURANCE_INFO,
                 Label.NONE
-        );
+        ));
     }
 
     public void eventInsuranceAnotherBenefit() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.MORE_INSURANCE,

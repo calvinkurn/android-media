@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
@@ -69,13 +68,6 @@ public class TemplateChatModule {
     NetworkRouter provideNetworkRouter(
             @ApplicationContext Context context) {
         return (NetworkRouter) context;
-    }
-
-    @TemplateChatScope
-    @Provides
-    AnalyticTracker provideAnalyticTracker(
-            @ApplicationContext Context context) {
-        return ((AbstractionRouter) context).getAnalyticTracker();
     }
 
     @TemplateChatScope

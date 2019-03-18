@@ -113,6 +113,8 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../../publish_local.gradle'

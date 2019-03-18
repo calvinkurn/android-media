@@ -5,7 +5,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
@@ -27,6 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by meta on 19/06/18.
@@ -114,13 +117,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             case DISCUSSION_MENU:
                 if (getActivity() != null
                         && getActivity().getApplicationContext() != null) {
-                    if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-                        ((AbstractionRouter) getActivity().getApplicationContext()).getAnalyticTracker().
-                                sendEventTracking("clickInboxChat",
+                    TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
                                         "inbox - talk",
                                         "click on diskusi product",
-                                        "");
-                    }
+                                        ""));
 
                     if (getActivity().getApplication() instanceof GlobalNavRouter) {
                         startActivity(((GlobalNavRouter) getActivity().getApplication())

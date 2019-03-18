@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
@@ -25,6 +24,8 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.youtubeutils.common.YoutubeInitializer;
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
@@ -47,7 +48,6 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     private static final String DASH = "-";
 
     private final KolPostListener.View.ViewHolder viewListener;
-    private final AnalyticTracker analyticTracker;
     private final Context context;
     private BaseKolView baseKolView;
     private ImageView ivPlay;
@@ -69,7 +69,6 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         super(itemView);
         this.viewListener = viewListener;
         this.type = type;
-        analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         context = itemView.getContext();
         topShadow = itemView.findViewById(R.id.top_shadow);
         baseKolView = itemView.findViewById(R.id.base_kol_view);
@@ -197,12 +196,12 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     private void tooltipAreaClicked(KolPostYoutubeViewModel element) {
         List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         if (type == Type.FEED) {
-            analyticTracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                     KolEventTracking.Category.HOMEPAGE,
                     KolEventTracking.Action.FEED_CLICK_CONTENT_CTA,
                     generateKolEventLabel(element.isFollowed(), element.getCardType())
-            );
+            ));
 
             promotionList.add(new KolEnhancedTracking.Promotion(
                     element.getContentId(),
@@ -221,7 +220,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                             viewListener.getUserSession().getUserId() : "0")
             ));
 
-            analyticTracker.sendEnhancedEcommerce(
+            TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
 
@@ -271,12 +270,12 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     }
 
     private void doClickPlayTracking(KolPostYoutubeViewModel element) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 KolEventTracking.Event.EVENT_CLICK_FEED,
                 KolEventTracking.Category.CONTENT_FEED,
                 KolEventTracking.Action.CLICK_YOUTUBE_VIDEO,
                 String.valueOf(element.getContentId())
-        );
+        ));
 
         List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
 
@@ -297,7 +296,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                         viewListener.getUserSession().getUserId() : "0")
         ));
 
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 KolEnhancedTracking.getKolClickTracking(promotionList)
         );
     }

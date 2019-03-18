@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
@@ -23,6 +22,10 @@ import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_LABEL;
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE_CLICK_ORDER;
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE_SALES_SHIPPING;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Temporary class to provide analytics in tkpdtransaction
@@ -31,19 +34,9 @@ import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE
  */
 public class OrderDetailAnalytics {
 
-    private AnalyticTracker analyticTracker;
     private Context context;
 
-    public OrderDetailAnalytics(Context context) {
-        if (context == null)
-            return;
-
-        this.context = context;
-
-        if (context.getApplicationContext() instanceof AbstractionRouter) {
-            analyticTracker = ((AbstractionRouter) context.getApplicationContext())
-                    .getAnalyticTracker();
-        }
+    public OrderDetailAnalytics() {
     }
 
     private HashMap<String, Object> createEventMap(String event, String category, String action, String label) {
@@ -56,7 +49,7 @@ public class OrderDetailAnalytics {
     }
 
     public void sendAnalytics(String event, String category, String action, String label) {
-        analyticTracker.sendEventTracking(createEventMap(event, category, action, label));
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(createEventMap(event, category, action, label));
     }
 
     public void sendAnalyticsClickShipping(String action, String label) {
@@ -102,7 +95,7 @@ public class OrderDetailAnalytics {
             enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
         }
 
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(
                         ConstantTransactionAnalytics.Key.EVENT, ConstantTransactionAnalytics.EventName.ADD_TO_CART,
                         ConstantTransactionAnalytics.Key.EVENT_CATEGORY, "my purchase list detail - mp",

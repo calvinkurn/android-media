@@ -96,6 +96,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.chips
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

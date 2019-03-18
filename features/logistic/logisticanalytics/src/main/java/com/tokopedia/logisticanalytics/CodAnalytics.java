@@ -14,8 +14,7 @@ import java.util.Map;
  */
 public class CodAnalytics extends LogisticAnalytics {
 
-    public CodAnalytics(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CodAnalytics() {
     }
 
     public void eventViewBayarDiTempat() {

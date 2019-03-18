@@ -1043,7 +1043,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private class SeeAllOfficialOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            IntermediaryAnalytics.eventClickSeeAllOfficialStores(getActivity());
+            IntermediaryAnalytics.eventClickSeeAllOfficialStores();
             viewAllOfficialStores();
         }
     }

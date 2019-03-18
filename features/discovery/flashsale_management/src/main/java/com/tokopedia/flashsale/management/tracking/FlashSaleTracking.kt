@@ -2,13 +2,16 @@ package com.tokopedia.flashsale.management.tracking
 
 import android.app.Activity
 import android.text.TextUtils
-import com.tokopedia.abstraction.AbstractionRouter
 import java.sql.RowId
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
-class FlashSaleTracking(protected val router: AbstractionRouter) {
+class FlashSaleTracking() {
 
     private fun sendScreenName(activity: Activity, screenName: String) {
-        router.analyticTracker.sendScreen(activity, screenName)
+        TrackApp.getInstance()?.getGTM()?.sendScreenAuthenticated(screenName)
     }
 
     companion object {
@@ -36,7 +39,7 @@ class FlashSaleTracking(protected val router: AbstractionRouter) {
 
     fun sendFlashSaleEvent(action: String, label: String, shopId: String? = null) {
         val eventMap = createFlashSaleMap(action, label, shopId)
-        router.analyticTracker.sendEventTracking(eventMap)
+        TrackApp.getInstance()?.getGTM()?.sendEnhanceECommerceEvent(eventMap)
     }
 
     fun createFlashSaleMap(action: String, label: String, shopId: String? = null): MutableMap<String, Any> {

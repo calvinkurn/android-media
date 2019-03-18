@@ -52,6 +52,8 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../../publish_local.gradle'

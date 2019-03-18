@@ -3,7 +3,10 @@ package com.tokopedia.gallery.tracking
 import android.content.Context
 
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 object ImageReviewGalleryTracking {
 
@@ -11,15 +14,11 @@ object ImageReviewGalleryTracking {
     private val PRODUCT_DETAIL_PAGE = "product detail page"
 
     fun eventClickReviewGalleryItem(context: Context, productId: String) {
-        if (context.applicationContext !is AbstractionRouter) {
-            return
-        }
-        val tracker = (context.applicationContext as AbstractionRouter).analyticTracker
-        tracker.sendEventTracking(
+        TrackApp.getInstance()!!.getGTM().sendGeneralEvent(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - review gallery on review gallery list page",
                 productId
-        )
+        ))
     }
 }

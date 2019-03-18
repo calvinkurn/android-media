@@ -104,7 +104,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         if (getArguments() != null) {
             viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
+        analytics = UserIdentificationAnalytics.createInstance();
     }
 
     @Nullable

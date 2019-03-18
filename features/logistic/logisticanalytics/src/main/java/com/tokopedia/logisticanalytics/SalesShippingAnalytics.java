@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 public class SalesShippingAnalytics extends LogisticAnalytics {
     @Inject
-    public SalesShippingAnalytics(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public SalesShippingAnalytics() {
+
     }
 
     public void eventClickShippingSalesShippingClickTombolScanAwb() {

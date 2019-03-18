@@ -48,7 +48,7 @@ public class CheckoutWebViewActivity extends BaseWebViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCodTracker = new CodAnalytics(((AbstractionRouter) getApplication()).getAnalyticTracker());
+        mCodTracker = new CodAnalytics();
         mCallerCode = getIntent().getIntExtra(EXTRA_CALLER_CODE, -1);
     }
 

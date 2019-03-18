@@ -31,6 +31,9 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../../publish_local.gradle'

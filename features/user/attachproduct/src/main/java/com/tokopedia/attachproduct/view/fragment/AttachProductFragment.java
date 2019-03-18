@@ -29,6 +29,7 @@ import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter;
 import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -326,19 +327,15 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     private void trackAction(String source, int productId) {
 
-        if ((getActivity().getApplicationContext() instanceof AbstractionRouter)) {
-            AbstractionRouter abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-            if(source.equals(AttachProductActivity.SOURCE_TALK)){
-                abstractionRouter.getAnalyticTracker().sendEventTracking(
+        if(source.equals(AttachProductActivity.SOURCE_TALK)){
+                TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                         AttachProductAnalytics.getEventCheckProductTalk(productId).getEvent()
                 );
             }else{
-                abstractionRouter.getAnalyticTracker().sendEventTracking(
+                TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                         AttachProductAnalytics.getEventCheckProduct().getEvent()
                 );
             }
-
-        }
     }
 
     @Override

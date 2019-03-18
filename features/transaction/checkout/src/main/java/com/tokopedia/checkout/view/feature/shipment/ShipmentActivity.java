@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -89,7 +88,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     @Override
     protected void initVar() {
         checkoutAnalyticsCourierSelection = new CheckoutAnalyticsCourierSelection(
-                ((AbstractionRouter) getApplication()).getAnalyticTracker()
+
         );
     }
 

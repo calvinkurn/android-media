@@ -1,17 +1,17 @@
 package com.tokopedia.useridentification.analytics;
 
 import android.content.Context;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 /**
  * @author by alvinatin on 26/11/18.
  */
 
 public class UserIdentificationAnalytics {
-
-    private final AnalyticTracker analyticTracker;
 
     private static class Event {
         private static final String VIEW_KYC = "viewKYC";
@@ -75,255 +75,191 @@ public class UserIdentificationAnalytics {
         private static final String KYC_PAGE = "kyc page";
     }
 
-    public UserIdentificationAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
+    public UserIdentificationAnalytics() {
     }
 
-    public static UserIdentificationAnalytics createInstance(Context context) {
-        if (context != null && context instanceof AbstractionRouter) {
-            return new UserIdentificationAnalytics(((AbstractionRouter) context).getAnalyticTracker());
-
-        } else return null;
+    public static UserIdentificationAnalytics createInstance() {
+        return new UserIdentificationAnalytics();
     }
 
     public void eventViewOnKYCOnBoarding() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_KYC_ONBOARDING,
                 ""
-        );
+        ));
     }
 
     public void eventClickOnBackOnBoarding() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_ONBOARDING,
                 ""
-        );
+        ));
     }
 
     public void eventClickOnNextOnBoarding() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_ONBOARDING,
                 ""
-        );
+        ));
     }
 
     public void eventViewKtpPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_KTP_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickBackKtpPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_KTP_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickNextKtpPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_KTP_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventViewErrorImageTooLargeKtpPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventViewOpenCameraKtp() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_OPEN_CAMERA_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventClickBackCameraKtp() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_CAMERA_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventClickShutterCameraKtp() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_SHUTTER_CAMERA_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventClickFlipCameraKtp() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_FLIP_CAMERA_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventViewImagePreviewKtp() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_IMAGE_PREVIEW_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventClickCloseImagePreviewKtp() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_CLOSE_IMAGE_PREVIEW_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventClickRecaptureKtp() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_RECAPTURE_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventClickNextImagePreviewKtp() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_IMAGE_PREVIEW_KTP,
                 ""
-        );
+        ));
     }
 
     public void eventViewSelfiePage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_SELFIE_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickBackSelfiePage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_SELFIE_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickNextSelfiePage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_SELFIE_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventViewErrorImageTooLargeSelfiePage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_ERROR_IMAGE_TOO_LARGE_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventViewOpenCameraSelfie() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_OPEN_CAMERA_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventClickBackCameraSelfie() {
@@ -339,254 +275,191 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickShutterCameraSelfie() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_SHUTTER_CAMERA_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventClickFlipCameraSelfie() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_FLIP_CAMERA_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventViewImagePreviewSelfie() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_IMAGE_PREVIEW_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventClickCloseImagePreviewSelfie() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventClickRecaptureSelfie() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_RECAPTURE_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventClickNextImagePreviewSelfie() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventViewFinalForm() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_FINAL_FORM_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickBackFinalForm() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_FINAL_FORM_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickChangeKtpFinalFormPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickChangeSelfieFinalFormPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickTermsFinalFormPage() {
-            if (analyticTracker == null)
-                return;
-
-            analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     Event.CLICK_KYC,
                     Category.KYC_PAGE,
                     Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE,
                     ""
-            );
+        ));
     }
 
     public void eventClickUploadPhotos() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_UPLOAD_PHOTOS,
                 ""
-        );
+        ));
     }
 
     public void eventViewPendingPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_PENDING_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickBackPendingPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_PENDING_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventViewSuccessSnackbarPendingPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_SUCCESS_SNACKBAR_PENDING_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventViewRejectedPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_REJECTED_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickBackRejectedPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_REJECTED_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickNextRejectedPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_REJECTED_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventViewSuccessPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_SUCCES_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickBackSuccessPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_SUCCESS_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickTermsSuccessPage() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
                 ""
-        );
+        ));
     }
 }

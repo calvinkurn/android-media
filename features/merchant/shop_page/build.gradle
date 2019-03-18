@@ -67,6 +67,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../../publish_local.gradle'

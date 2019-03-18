@@ -48,7 +48,9 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation project(rootProject.ext.libraries.config) 
+    implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../publish_local.gradle'

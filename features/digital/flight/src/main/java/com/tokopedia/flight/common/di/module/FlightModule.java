@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -68,15 +67,6 @@ public class FlightModule {
     private static final int NET_CONNECT_TIMEOUT = 30;
     private static final int NET_RETRY = 1;
     private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-
-    @FlightScope
-    @Provides
-    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context).getAnalyticTracker();
-        }
-        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
-    }
 
     @FlightScope
     @Provides

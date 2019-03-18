@@ -56,4 +56,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     implementation rootProject.ext.debugToolsDependencies.stetho
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 }

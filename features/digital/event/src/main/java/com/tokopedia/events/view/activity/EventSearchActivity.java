@@ -91,7 +91,7 @@ public class EventSearchActivity extends EventBaseActivity implements
         unbinder = ButterKnife.bind(this);
         searchInputView.setListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
 
     }
 

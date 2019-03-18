@@ -56,8 +56,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             stepperModel = savedInstanceState.getParcelable(EXTRA_KYC_STEPPER_MODEL);
         }
         if (getActivity() != null) {
-            analytics = UserIdentificationAnalytics.createInstance(getActivity()
-                    .getApplicationContext());
+            analytics = UserIdentificationAnalytics.createInstance();
         }    }
 
     @Override

@@ -3,8 +3,10 @@ package com.tokopedia.topads.sdk.analytics;
 import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import java.util.Map;
@@ -14,16 +16,13 @@ import java.util.Map;
  */
 public class TopAdsGtmTracker {
 
-    public static AnalyticTracker getTracker(Context context) {
-        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return null;
-        }
-        return ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+    public static Analytics getTracker(){
+        return  TrackApp.getInstance().getGTM();
     }
 
 
     public static void eventHomeProductView(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -40,12 +39,12 @@ public class TopAdsGtmTracker {
                                     "list", "/homepage - product topads - product upload",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventHomeProductClick(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -62,12 +61,12 @@ public class TopAdsGtmTracker {
                                             "category", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventSearchResultProductView(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -84,12 +83,12 @@ public class TopAdsGtmTracker {
                                     "list", "/searchproduct - topads  productlist",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventSearchResultPromoView(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoView",
@@ -106,12 +105,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventSearchResultPromoShopClick(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -128,12 +127,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventSearchResultPromoProductClick(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -150,12 +149,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventSearchResultProductClick(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -173,12 +172,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventProductDetailProductView(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -197,12 +196,12 @@ public class TopAdsGtmTracker {
                                     "list", "/productdetail - topads",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventProductDetailProductClick(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -221,12 +220,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventProductDetailPromoView(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoView",
@@ -243,12 +242,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventHotlistPromoView(Context context, String hotlistKey, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoView",
@@ -265,12 +264,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventProductDetailShopPromoClick(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -287,12 +286,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventProductDetailProductPromoClick(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -309,12 +308,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventHotlistShopPromoClick(Context context, String keyword, String hotlistKey, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -331,12 +330,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventHotlistProductPromoClick(Context context, String keyword, String hotlistKey, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -353,12 +352,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventIntermediaryShopPromoClick(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -375,12 +374,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventIntermediaryProductPromoClick(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -397,12 +396,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventIntermediaryPromoView(Context context, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoView",
@@ -419,12 +418,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventIntermediaryProductView(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -443,12 +442,12 @@ public class TopAdsGtmTracker {
                                     "list", "/intermediary page - topads - promoted",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventIntermediaryProductClick(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -467,12 +466,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventHotlistProductView(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -492,12 +491,12 @@ public class TopAdsGtmTracker {
                                     "position", position + 1),
                                     "attribution", ""))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventHotlistProductClick(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -516,12 +515,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCategoryProductView(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -540,12 +539,12 @@ public class TopAdsGtmTracker {
                                     "list", "/category/"+product.getCategory().getId()+" - topads",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCategoryProductClick(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -565,12 +564,12 @@ public class TopAdsGtmTracker {
                                             "position", position + 1),
                                             "attribution", "")))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCategoryPromoView(Context context, String categoryName, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoView",
@@ -588,12 +587,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCategoryPromoProductClick(Context context, String categoryName, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -611,12 +610,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCategoryPromoShopClick(Context context, String categoryName, CpmData cpm, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoClick",
@@ -634,12 +633,12 @@ public class TopAdsGtmTracker {
                                                     "position", position + 1))
                             ))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventWishlistProductView(Context context, Product product, String keyword, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -658,12 +657,12 @@ public class TopAdsGtmTracker {
                                     "list", "/wishlist - product topads - product upload",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventWishlistEmptyProductView(Context context, Product product, String keyword, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -682,12 +681,12 @@ public class TopAdsGtmTracker {
                                     "list", "/wishlist - product topads - product upload",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventWishlistProductClick(Context context, Product product, String keyword, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -706,12 +705,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventWishlistEmptyProductClick(Context context, Product product, String keyword, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -730,12 +729,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCartEmptyProductView(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -754,12 +753,12 @@ public class TopAdsGtmTracker {
                                     "list", "/empty cart - topads",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCartEmptyProductClick(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -778,12 +777,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCartProductView(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -802,12 +801,12 @@ public class TopAdsGtmTracker {
                                     "list", "/cart - topads",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCartProductClick(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -826,12 +825,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCartAfterProductView(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -850,12 +849,12 @@ public class TopAdsGtmTracker {
                                     "list", "/cart - topads",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventCartAfterProductClick(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -874,12 +873,12 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventRecentViewProductView(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -898,12 +897,12 @@ public class TopAdsGtmTracker {
                                     "list", "/recent view - topads - promoted",
                                     "position", position + 1)))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventRecentViewProductClick(Context context, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
+        Analytics tracker= getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
@@ -922,7 +921,7 @@ public class TopAdsGtmTracker {
                                             "varian", "none/other",
                                             "position", position + 1))))
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 }

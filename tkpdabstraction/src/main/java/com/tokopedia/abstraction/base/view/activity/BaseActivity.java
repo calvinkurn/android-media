@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.track.TrackApp;
 
 
 /**
@@ -100,10 +101,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     protected void sendScreenAnalytics() {
-        if (getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getAnalyticTracker();
-            analyticTracker.sendScreen(this, getScreenName());
-        }
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated( getScreenName());
     }
 
     @Override

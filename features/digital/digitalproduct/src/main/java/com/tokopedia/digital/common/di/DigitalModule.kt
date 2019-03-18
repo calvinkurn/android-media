@@ -15,8 +15,8 @@ import dagger.Provides
 class DigitalModule {
 
     @Provides
-    fun provideDigitalAnalytics(router: AbstractionRouter, @ApplicationContext context: Context): DigitalAnalytics {
-        return DigitalAnalytics(router.analyticTracker, context)
+    fun provideDigitalAnalytics(): DigitalAnalytics {
+        return DigitalAnalytics()
     }
 
     @Provides

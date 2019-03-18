@@ -43,7 +43,7 @@ public class CodBottomSheetFragment extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getActivity() != null) {
-            mTracker = new CodAnalytics(((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker());
+            mTracker = new CodAnalytics();
             mTitle = getActivity().getString(R.string.label_cod);
             if (getArguments() != null) {
                 mMessage = getArguments().getString(ARGUMENT_MESSAGE_HTML);

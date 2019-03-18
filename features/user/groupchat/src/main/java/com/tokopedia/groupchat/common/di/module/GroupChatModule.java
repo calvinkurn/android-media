@@ -20,13 +20,4 @@ import dagger.Provides;
 @Module(includes = {GroupChatNetModule.class, VoteModule.class})
 public class GroupChatModule {
 
-    @GroupChatScope
-    @Provides
-    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context).getAnalyticTracker();
-        }
-        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
-    }
-
 }

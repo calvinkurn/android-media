@@ -1,6 +1,5 @@
 package com.tokopedia.loginphone.verifyotptokocash.di;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.verifyotptokocash.view.fragment.ChooseTokocashVerificationMethodFragment;
 import com.tokopedia.loginphone.verifyotptokocash.view.fragment.TokoCashVerificationFragment;
@@ -35,7 +34,6 @@ public interface OtpTokoCashComponent {
 
     SQLoginApi provideSQLoginApi();
 
-    AnalyticTracker provAnalyticTracker();
 
 
 }

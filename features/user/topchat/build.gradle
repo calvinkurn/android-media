@@ -27,6 +27,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
@@ -71,6 +73,9 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
+
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

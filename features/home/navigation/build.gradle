@@ -45,6 +45,8 @@ dependencies {
 
     testImplementation "org.robolectric:robolectric:3.8"
     testImplementation "org.robolectric:multidex:3.4.2"
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 
     testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

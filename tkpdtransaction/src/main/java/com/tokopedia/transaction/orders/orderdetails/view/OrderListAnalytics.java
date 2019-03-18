@@ -1,12 +1,10 @@
 package com.tokopedia.transaction.orders.orderdetails.view;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-
 import javax.inject.Inject;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 public class OrderListAnalytics {
 
@@ -19,41 +17,37 @@ public class OrderListAnalytics {
     private static final String INVOICE_EVENT_ACTION = "click view invoice";
     private static final String LOAD_MORE_EVENT_ACTION = "scroll load more";
 
-    private AnalyticTracker tracker;
 
 
     @Inject
-    public OrderListAnalytics(@ApplicationContext Context context) {
-        if (context != null && context.getApplicationContext() instanceof AbstractionRouter) {
-            tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        }
+    public OrderListAnalytics() {
     }
 
     public void sendProductClickEvent(String eventLabel) {
-        tracker.sendEventTracking(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, PRODUCT_EVENT_ACTION, eventLabel);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, PRODUCT_EVENT_ACTION, eventLabel));
     }
 
     public void sendQuickFilterClickEvent(String filterLabel) {
-        tracker.sendEventTracking(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, FILTER_EVENT_ACTION, filterLabel);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, FILTER_EVENT_ACTION, filterLabel));
     }
 
     public void sendDateFilterClickEvent() {
-        tracker.sendEventTracking(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, DATE_EVENT_ACTION, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, DATE_EVENT_ACTION, ""));
     }
 
     public void sendSearchFilterClickEvent() {
-        tracker.sendEventTracking(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, SEARCH_EVENT_ACTION, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, SEARCH_EVENT_ACTION, ""));
     }
 
     public void sendViewInvoiceClickEvent() {
-        tracker.sendEventTracking(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, INVOICE_EVENT_ACTION, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, INVOICE_EVENT_ACTION, ""));
     }
 
     public void sendActionButtonClickEvent(String eventAction) {
-        tracker.sendEventTracking(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, eventAction, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, eventAction, ""));
     }
 
     public void sendLoadMoreEvent(String eventLabel) {
-        tracker.sendEventTracking(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, LOAD_MORE_EVENT_ACTION, eventLabel);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, LOAD_MORE_EVENT_ACTION, eventLabel));
     }
 }

@@ -13,9 +13,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
  * @author anggaprasetiyo on 05/06/18.
  */
 public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
-    @Inject
-    public CheckoutAnalyticsMultipleAddress(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsMultipleAddress() {
     }
 
     public void eventClickAtcCartMultipleAddressClickBackArrowFromKirimKeBeberapaAlamat() {

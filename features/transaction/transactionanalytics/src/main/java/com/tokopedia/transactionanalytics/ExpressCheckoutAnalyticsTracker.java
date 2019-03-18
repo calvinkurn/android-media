@@ -12,8 +12,7 @@ import java.util.HashMap;
 
 public class ExpressCheckoutAnalyticsTracker extends TransactionAnalytics {
 
-    public ExpressCheckoutAnalyticsTracker(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public ExpressCheckoutAnalyticsTracker() {
     }
 
     public void enhanceEcommerceImpressionExpressCheckoutForm(HashMap<String, Object> data, String eventLabel) {

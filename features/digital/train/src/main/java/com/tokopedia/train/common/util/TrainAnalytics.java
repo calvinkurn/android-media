@@ -3,7 +3,6 @@ package com.tokopedia.train.common.util;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.train.common.constant.TrainEventTracking;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
@@ -11,6 +10,10 @@ import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import javax.inject.Inject;
 
@@ -19,67 +22,65 @@ import javax.inject.Inject;
  */
 public class TrainAnalytics {
 
-    private AnalyticTracker analyticTracker;
     private TrainDateUtil trainDateUtil;
 
     @Inject
-    public TrainAnalytics(AnalyticTracker analyticTracker, TrainDateUtil trainDateUtil) {
-        this.analyticTracker = analyticTracker;
+    public TrainAnalytics(TrainDateUtil trainDateUtil) {
         this.trainDateUtil = trainDateUtil;
     }
 
     public void eventChooseSingleTrip() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CHOOSE_SINGLE_TRIP,
                 ""
-        );
+        ));
     }
 
     public void eventChooseRoundTrip() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CHOOSE_ROUND_TRIP,
                 ""
-        );
+        ));
     }
 
     public void eventClickFindTicket(String trip, String origin, String destination, int numOfPassenger) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_FIND_TICKET,
                 trip + " - " + origin + " - " + destination + " - " + numOfPassenger
-        );
+        ));
     }
 
     public void eventClickPromoList() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.PROMO_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_PROMO_LIST,
                 ""
-        );
+        ));
     }
 
     public void eventClickHelp() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_HELP,
                 ""
-        );
+        ));
     }
 
     public void eventClickTransactionList() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.PROMO_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_TRANSACTION_LIST,
                 ""
-        );
+        ));
     }
 
     public void eventProductImpression(String scheduleId, String origin, String destination,
@@ -92,7 +93,7 @@ public class TrainAnalytics {
                 TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"
         );
 
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.PRODUCT_VIEW,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_IMPRESSIONS,
@@ -116,7 +117,7 @@ public class TrainAnalytics {
                 TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"
         );
 
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.PRODUCT_CLICK,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_CLICK,
@@ -134,25 +135,25 @@ public class TrainAnalytics {
     }
 
     public void eventClickSortOnBottomBar() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_SORT_ON_BOTTOM_BAR,
                 ""
-        );
+        ));
     }
 
     public void eventClickFilterOnBottomBar() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_FILTER_ON_BOTTOM_BAR,
                 ""
-        );
+        ));
     }
 
     public void eventViewRouteNotAvailablePage(String origin, String destination, String date) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 "",
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VIEW_ROUTE_NOT_AVAILABLE_PAGE,
@@ -174,7 +175,7 @@ public class TrainAnalytics {
         List<Object> dataLayerList = new ArrayList<>();
         dataLayerList.add(productItem);
 
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.VIEW_PRODUCT,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_DETAIL_IMPRESSIONS,
@@ -199,7 +200,7 @@ public class TrainAnalytics {
         List<Object> dataLayerList = new ArrayList<>();
         dataLayerList.add(departureItem);
 
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.ADD_TO_CART,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.ADD_TO_CART,
@@ -240,7 +241,7 @@ public class TrainAnalytics {
         dataLayerList.add(departureItem);
         dataLayerList.add(returnItem);
 
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.ADD_TO_CART,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.ADD_TO_CART,
@@ -260,67 +261,67 @@ public class TrainAnalytics {
     }
 
     public void eventClickDetail(String origin, String destination, String trainClass, String trainName) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_DETAIL,
                 origin.toLowerCase() + " - " + destination.toLowerCase() + " - " + trainClass.toLowerCase() + " - " + trainName.toLowerCase()
-        );
+        ));
     }
 
     public void eventClickNextOnCustomersPage() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_NEXT_ON_CUSTOMERS_PAGE,
                 ""
-        );
+        ));
     }
 
     public void eventClickUseVoucherCode(String voucherCode) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_USE_VOUCHER_CODE,
                 voucherCode
-        );
+        ));
     }
 
     public void eventVoucherSuccess(String successMessage) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_SUCCESS,
                 successMessage.toLowerCase()
-        );
+        ));
     }
 
     public void eventVoucherError(String errorMessage) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_ERROR,
                 errorMessage.toLowerCase()
-        );
+        ));
     }
 
     public void eventProceedToPayment(String origin, String destination, String trainClass,
                                       String trainName) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.PROCEED_TO_PAYMENT,
                 origin.toLowerCase() + " - " + destination.toLowerCase() + " - " + trainClass.toLowerCase() + " - " + trainName.toLowerCase()
-        );
+        ));
     }
 
     public void eventProceedToPayment(TrainScheduleDetailViewModel departureTripViewModel, TrainScheduleDetailViewModel returnTripViewModel) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.PROCEED_TO_PAYMENT,
                 buildRoundTripLabel(departureTripViewModel, returnTripViewModel)
-        );
+        ));
     }
 
     @NonNull

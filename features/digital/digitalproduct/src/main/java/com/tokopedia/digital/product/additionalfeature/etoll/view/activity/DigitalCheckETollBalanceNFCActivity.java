@@ -54,6 +54,10 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by Rizky on 15/05/18.
@@ -93,8 +97,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private IntentFilter [] intentFiltersArray;
     private String [][] techListsArray;
 
-    private AbstractionRouter abstractionRouter;
-
     private FirebaseRemoteConfigImpl remoteConfig;
 
     public static Intent newInstance(Context context) {
@@ -133,8 +135,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
         updateTitle(getResources().getString(R.string.toolbar_title_etoll_check_balance));
 
-        abstractionRouter = (AbstractionRouter) getApplication();
-
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         pendingIntent = PendingIntent.getActivity(
@@ -164,16 +164,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         tapETollCardView = findViewById(R.id.view_tap_emoney_card);
 
         eTollUpdateBalanceResultView.setListener(() -> {
-            if (getApplication() instanceof AbstractionRouter) {
-                abstractionRouter
-                        .getAnalyticTracker()
-                        .sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                 ETollEventTracking.Event.CLICK_NFC,
                                 ETollEventTracking.Category.DIGITAL_NFC,
                                 ETollEventTracking.Action.CLICK_TOPUP_EMONEY,
                                 ETollEventTracking.Label.EMONEY
-                        );
-            }
+                        ));
 
             // navigate to category emoney page
             DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
@@ -193,16 +189,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         });
 
         nfcDisabledView.setListener(() -> {
-            if (getApplication() instanceof AbstractionRouter) {
-                abstractionRouter
-                        .getAnalyticTracker()
-                        .sendEventTracking(
-                                ETollEventTracking.Event.CLICK_NFC,
-                                ETollEventTracking.Category.DIGITAL_NFC,
-                                ETollEventTracking.Action.CLICK_ACTIVATE,
-                                ETollEventTracking.Label.EMONEY
-                        );
-            }
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                            ETollEventTracking.Event.CLICK_NFC,
+                            ETollEventTracking.Category.DIGITAL_NFC,
+                            ETollEventTracking.Action.CLICK_ACTIVATE,
+                            ETollEventTracking.Label.EMONEY
+                    ));
             directToNFCSettingsPage();
         });
     }
@@ -297,14 +289,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                 } else {
                     // show error reading card
                     if (getApplication() instanceof AbstractionRouter) {
-                        abstractionRouter
-                                .getAnalyticTracker()
-                                .sendEventTracking(
+                        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                         ETollEventTracking.Event.CLICK_NFC,
                                         ETollEventTracking.Category.DIGITAL_NFC,
                                         ETollEventTracking.Action.CARD_IS_NOT_SUPPORTED,
                                         ETollEventTracking.Label.EMONEY
-                                );
+                                ));
                     }
                     showError(getResources().getString(R.string.card_is_not_supported));
                 }
@@ -322,14 +312,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             tapETollCardView.setVisibility(View.VISIBLE);
             tapETollCardView.showLoading();
             if (getApplication() instanceof AbstractionRouter) {
-                abstractionRouter
-                        .getAnalyticTracker()
-                        .sendEventTracking(
-                                ETollEventTracking.Event.CLICK_NFC,
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                        ETollEventTracking.Event.CLICK_NFC,
                                 ETollEventTracking.Category.DIGITAL_NFC,
                                 ETollEventTracking.Action.CHECK_STEP_2,
                                 ETollEventTracking.Label.EMONEY
-                        );
+                        ));
             }
         }
     }
@@ -357,16 +345,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     @Override
     public void showCardLastBalance(InquiryBalanceModel inquiryBalanceModel) {
-        if (getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             ETollEventTracking.Event.CLICK_NFC,
                             ETollEventTracking.Category.DIGITAL_NFC,
                             ETollEventTracking.Action.SUCCESS_CHECK_BALANCE,
                             ETollEventTracking.Label.EMONEY
-                    );
-        }
+                    ));
         tapETollCardView.setVisibility(View.GONE);
         eTollUpdateBalanceResultView.setVisibility(View.VISIBLE);
         eTollUpdateBalanceResultView.showCardInfoFromApi(inquiryBalanceModel);
@@ -375,16 +359,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     @Override
     public void showError(String errorMessage) {
-        if (getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             ETollEventTracking.Event.CLICK_NFC,
                             ETollEventTracking.Category.DIGITAL_NFC,
                             ETollEventTracking.Action.FAILED_UPDATE_BALANCE,
                             ETollEventTracking.Label.EMONEY
-                    );
-        }
+                    ));
         if (eTollUpdateBalanceResultView.getVisibility() == View.VISIBLE) {
             eTollUpdateBalanceResultView.showError(errorMessage);
         } else {
@@ -403,29 +383,22 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             new AlertDialog.Builder(this)
                     .setMessage(getStringResource(R.string.please_activate_nfc_from_settings))
                     .setPositiveButton(getStringResource(R.string.activate), (dialog, which) -> {
-                        if (getApplication() instanceof AbstractionRouter) {
-                            abstractionRouter
-                                    .getAnalyticTracker()
-                                    .sendEventTracking(
+                            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                             ETollEventTracking.Event.CLICK_NFC,
                                             ETollEventTracking.Category.DIGITAL_NFC,
                                             ETollEventTracking.Action.CLICK_ACTIVATE_PROMPT,
                                             ETollEventTracking.Label.EMONEY
-                                    );
-                        }
+                                    ));
+
                         directToNFCSettingsPage();
                     })
                     .setNegativeButton(getStringResource(R.string.cancel), (dialog, which) -> {
-                        if (getApplication() instanceof AbstractionRouter) {
-                            abstractionRouter
-                                    .getAnalyticTracker()
-                                    .sendEventTracking(
+                                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                             ETollEventTracking.Event.CLICK_NFC,
                                             ETollEventTracking.Category.DIGITAL_NFC,
                                             ETollEventTracking.Action.CLICK_CANCEL_PROMPT,
                                             ETollEventTracking.Label.EMONEY
-                                    );
-                        }
+                                    ));
                         nfcDisabledView.setVisibility(View.VISIBLE);
                     }).show();
         } else {
@@ -433,16 +406,13 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             nfcDisabledView.setVisibility(View.GONE);
 
             if (eTollUpdateBalanceResultView.getVisibility() == View.GONE) {
-                if (getApplication() instanceof AbstractionRouter) {
-                    abstractionRouter
-                            .getAnalyticTracker()
-                            .sendEventTracking(
+                    TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                     ETollEventTracking.Event.CLICK_NFC,
                                     ETollEventTracking.Category.DIGITAL_NFC,
                                     ETollEventTracking.Action.CHECK_STEP_1,
                                     ETollEventTracking.Label.EMONEY
-                            );
-                }
+                            ));
+
                 tapETollCardView.setVisibility(View.VISIBLE);
             }
         }

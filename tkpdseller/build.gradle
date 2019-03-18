@@ -112,6 +112,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../publish_local.gradle'
