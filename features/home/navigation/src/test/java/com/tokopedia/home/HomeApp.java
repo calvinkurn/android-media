@@ -11,7 +11,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
@@ -282,11 +281,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     @Override
     public CacheManager getGlobalCacheManager() {
         return mock(CacheManager.class);
-    }
-
-    @Override
-    public AnalyticTracker getAnalyticTracker() {
-        return mock(AnalyticTracker.class);
     }
 
     @Override

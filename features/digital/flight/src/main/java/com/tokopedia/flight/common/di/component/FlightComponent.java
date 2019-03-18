@@ -49,8 +49,6 @@ public interface FlightComponent {
 
     CacheManager cacheManager();
 
-    AnalyticTracker analyticTracker();
-
     FlightDateUtil flightdateutlil();
 
     FlightModuleRouter flightModuleRouter();

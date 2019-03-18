@@ -74,9 +74,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
         setContentView(R.layout.activity_geolocation);
         if (getApplication() instanceof AbstractionRouter) {
             checkoutAnalyticsChangeAddress =
-                    new CheckoutAnalyticsChangeAddress(
-                            ((AbstractionRouter) getApplication()).getAnalyticTracker()
-                    );
+                    new CheckoutAnalyticsChangeAddress();
         }
         mBundle = getIntent().getExtras();
         if (mBundle != null) {

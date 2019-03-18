@@ -2,35 +2,33 @@ package com.tokopedia.nps;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
 import javax.inject.Inject;
 
 import static com.tokopedia.nps.NpsConstant.Analytic.*;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by meta on 03/10/18.
  */
 public class NpsAnalytics {
 
-    private AnalyticTracker analyticTracker;
-
-    public NpsAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
+    public NpsAnalytics() {
     }
 
     public void eventAppRatingImpression(String label) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 IMPRESSION_APP_RATING,
                 APP_RATING,
                 IMPRESSION,
                 label
-        );
+        ));
     }
 
     public void eventClickAppRating(String label) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_APP_RATING,
                 APP_RATING,
                 CLICK,
@@ -38,7 +36,7 @@ public class NpsAnalytics {
     }
 
     public void eventCancelAppRating(String label) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CANCEL_APP_RATING,
                 APP_RATING,
                 CLICK,

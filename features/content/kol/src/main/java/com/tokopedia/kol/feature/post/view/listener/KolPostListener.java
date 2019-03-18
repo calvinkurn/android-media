@@ -55,8 +55,6 @@ public interface KolPostListener {
 
             UserSessionInterface getUserSession();
 
-            AbstractionRouter getAbstractionRouter();
-
             void onGoToKolProfile(int rowNumber, String userId, int postId);
 
             void onGoToKolProfileUsingApplink(int rowNumber, String applink);

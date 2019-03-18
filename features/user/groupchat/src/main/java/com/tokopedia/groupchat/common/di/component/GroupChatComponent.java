@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.common.di.component;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.groupchat.common.di.module.GroupChatModule;
@@ -29,8 +28,6 @@ public interface GroupChatComponent {
     Retrofit.Builder retrofitBuilder();
 
     void inject(BaseDaggerFragment baseChatActivity);
-
-    AnalyticTracker provideAnalyticTracker();
 
     VoteApi provideVoteApi();
 }

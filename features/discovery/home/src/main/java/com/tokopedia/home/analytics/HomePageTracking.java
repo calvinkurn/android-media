@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
@@ -15,6 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by Akmal on 2/6/18.
@@ -93,11 +96,8 @@ public class HomePageTracking {
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
     public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
 
-    public static AnalyticTracker getTracker(Context context){
-        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return null;
-        }
-        return ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+    public static ContextAnalytics getTracker(Context context){
+        return TrackApp.getInstance().getGTM();
     }
 
     // GA request
@@ -105,9 +105,9 @@ public class HomePageTracking {
     @Deprecated
     public static void eventPromoImpression(Context context,
                                             Promotion promotion) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(promotion.getImpressionDataLayer());
+            tracker.sendEnhanceECommerceEvent(promotion.getImpressionDataLayer());
         }
     }
 
@@ -124,7 +124,7 @@ public class HomePageTracking {
         if (list.size() == 0) {
             return;
         }
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoView",
@@ -140,332 +140,332 @@ public class HomePageTracking {
                     ),
                     "attribution", "1 - sliderBanner"
             );
-            tracker.sendEnhancedEcommerce(map);
+            tracker.sendEnhanceECommerceEvent(map);
         }
     }
 
     public static void eventPromoClick(Context context, Promotion promotion) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(promotion.getClickDataLayer());
+            tracker.sendEnhanceECommerceEvent(promotion.getClickDataLayer());
         }
     }
 
     public static void eventClickViewAllPromo(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if(tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_VIEW_ALL_PROMO,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void sendScreen(Activity activity, String screenName) {
         if(activity != null){
-            AnalyticTracker tracker = getTracker(activity.getBaseContext());
+            ContextAnalytics tracker = getTracker(activity.getBaseContext());
             if(tracker != null){
-                tracker.sendScreen(activity, screenName);
+                tracker.sendScreenAuthenticated(screenName);
             }
         }
     }
 
     public static void eventClickJumpRecomendation(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if(tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     ACTION_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_JUMP_RECOMENDATION,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void eventImpressionJumpRecomendation(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if(tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_IMPRESSION_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_IMPRESSION_JUMP_RECOMENDATION,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void eventClickHomeUseCase(Context context, String title) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_HOME_USE_CASE,
                     title
-            );
+            ));
         }
     }
 
     public static void eventClickTabExplorer(Context context,
                                              String title) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_TAB_EXPLORER,
                     title
-            );
+            ));
         }
     }
 
     public static void eventClickDynamicIcons(Context context, String title) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_DYNAMIC_ICONS,
                     title
-            );
+            ));
         }
     }
 
     public static void eventClickSeeAllProductSprint(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void eventClickSeeAllProductSprintBackground(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void eventEnhancedImpressionSprintSaleHomePage(Context context,
                                                                  Map<String, Object> data) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(data);
+            tracker.sendEnhanceECommerceEvent(data);
         }
     }
 
     public static void eventEnhancedClickSprintSaleProduct(Context context,
                                                            Map<String, Object> data) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(data);
+            tracker.sendEnhanceECommerceEvent(data);
         }
     }
 
     public static void eventEnhancedImpressionDynamicChannelHomePage(Context context,
                                                                      Map<String, Object> data) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(data);
+            tracker.sendEnhanceECommerceEvent(data);
         }
     }
 
     public static void eventEnhancedClickDynamicChannelHomePage(Context context,
                                                                 Map<String, Object> data) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(
+            tracker.sendEnhanceECommerceEvent(
                     data
             );
         }
     }
 
     public static void eventClickSeeAllDynamicChannel(Context context, String applink) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL,
                     applink
-            );
+            ));
         }
     }
 
     public static void eventClickSeeAllLegoBannerChannel(Context context,
                                                          String applink) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL,
                     applink
-            );
+            ));
         }
     }
 
     public static void eventClickSeeAllThreeLegoBannerChannel(Context context,
                                                          String applink) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL,
                     applink
-            );
+            ));
         }
     }
 
     public static void eventClickExplorerItem(Context context, String action, String label) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     action,
                     label
-            );
+            ));
         }
     }
 
     public static void eventEnhancedImpressionFavoriteCategory(Context context,
                                                                Map<String, Object> data) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(data);
+            tracker.sendEnhanceECommerceEvent(data);
         }
     }
 
     public static void eventEnhancedClickFavoriteCategory(Context context,
                                                           Map<String, Object> data) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(data);
+            tracker.sendEnhanceECommerceEvent(data);
         }
     }
 
     public static void eventEnhancedImpressionProductHomePage(Context context,
                                                               Map<String, Object> data) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(data);
+            tracker.sendEnhanceECommerceEvent(data);
         }
     }
 
     public static void eventEnhancedClickProductHomePage(Context context,
                                                          Map<String, Object> data) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEnhancedEcommerce(data);
+            tracker.sendEnhanceECommerceEvent(data);
         }
     }
 
     public static void eventClickOpenShop(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_OPEN_SHOP,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void eventClickEditShop(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_EDIT_SHOP,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void eventHomeGimmick(Context context, String label) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_GIMMICK,
                     CATEGORY_GIMMICK,
                     ACTION_GIMMICK_CLICK,
                     label
-            );
+            ));
         }
     }
 
     public static void eventClickWidgetBar(Context context, String categoryItem) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_USER_INTERACTION_HOMEPAGE,
                     CATEGORY_HOMEPAGE_DIGITAL_WIDGET,
                     ACTION_CLICK_WIDGET_BAR,
                     categoryItem
-            );
+            ));
         }
     }
 
     public static void eventClickLihatSemua(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_USER_INTERACTION_HOMEPAGE,
                     CATEGORY_HOMEPAGE_DIGITAL,
                     ACTION_CLICK_LIHAT_SEMUA_PRODUK,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void eventUserProfileTokopoints(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_TOKO_POINT,
                     CATEGORY_TOKOPOINTS_USER_PAGE,
                     ACTION_CLICK_TOKO_POINTS,
                     LABEL_TOKOPOINTS
-            );
+            ));
         }
     }
 
     public static void eventTokoCashActivateClick(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_USER_INTERACTION_HOMEPAGE,
                     CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
                     ACTION_CLICK_ACTIVATE,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
     public static void eventTokoCashCheckSaldoClick(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_USER_INTERACTION_HOMEPAGE,
                     CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
                     ACTION_CLICK_SALDO,
                     LABEL_EMPTY
-            );
+            ));
         }
     }
 
@@ -473,7 +473,7 @@ public class HomePageTracking {
             Context context,
             List<Object> legoAndCuratedList) {
 
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 "event", "promoView",
@@ -489,7 +489,7 @@ public class HomePageTracking {
                 ),
                 "attribution", "2 - homeBanner"
         );
-        tracker.sendEnhancedEcommerce(data);
+        tracker.sendEnhanceECommerceEvent(data);
     }
 
     public static void eventClickOnHomePageRecommendationTab(
@@ -629,38 +629,38 @@ public class HomePageTracking {
     }
 
     public static void eventClickWishlistOnProductRecommendation(Context context, String tabName) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION,
                     tabName
-            );
+            ));
         }
     }
 
     public static void eventClickRemoveWishlistOnProductRecommendation(Context context, String tabName) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION,
                     tabName
-            );
+            ));
         }
     }
 
     public static void eventClickWishlistOnProductRecommendationForNonLogin(Context context, String tabName) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     tabName
-            );
+            ));
         }
     }
 }

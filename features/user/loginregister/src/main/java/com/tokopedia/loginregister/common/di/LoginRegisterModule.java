@@ -2,7 +2,7 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.readystatesoftware.chuck.ChuckInterceptor;an
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -32,8 +32,8 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    LoginRegisterAnalytics provideLoginAnalytics(@ApplicationContext Context context) {
-        return new LoginRegisterAnalytics(((AbstractionRouter) context).getAnalyticTracker());
+    LoginRegisterAnalytics provideLoginAnalytics() {
+        return new LoginRegisterAnalytics();
     }
 
     @LoginRegisterScope

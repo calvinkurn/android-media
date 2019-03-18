@@ -47,6 +47,8 @@ import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import javax.inject.Inject;
 
@@ -546,29 +548,21 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     private void trackingEggImpression(String idToken) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getActivity().getApplication())
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             GamificationEventTracking.Event.VIEW_LUCKY_EGG,
                             GamificationEventTracking.Category.CLICK_LUCKY_EGG,
                             GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
                             idToken
-                    );
-        }
+                    ));
     }
 
     private void trackingEggClick(String idToken) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getActivity().getApplication())
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                             GamificationEventTracking.Category.CLICK_LUCKY_EGG,
                             GamificationEventTracking.Action.CLICK_LUCKY_EGG,
                             idToken
-                    );
-        }
+                    ));
     }
 
     public void setOnDragListener(OnDragListener onDragListener) {
