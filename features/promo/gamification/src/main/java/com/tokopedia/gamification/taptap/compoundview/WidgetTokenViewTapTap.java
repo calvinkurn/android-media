@@ -279,7 +279,6 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         imageFullWhiteEgg.setVisibility(View.VISIBLE);
         imageSemiWhiteEgg.setVisibility(View.VISIBLE);
         initialGlowAnimatorSet.start();
-        imageViewFull.setEnabled(false);
     }
 
     AnimatorSet.AnimatorListener glowFadeOutListener = new Animator.AnimatorListener() {
@@ -666,8 +665,13 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         imageViewFull.setVisibility(View.VISIBLE);
         imageViewCracked.reset();
 
-        if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenUser.getState()))
+        if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenUser.getState())) {
             glow();
+            imageViewFull.setEnabled(false);
+        } else if (TapTapConstants.TokenState.STATE_EMPTY.equalsIgnoreCase(tokenUser.getState())) {
+            imageViewFull.setEnabled(false);
+        }
+
     }
 
     public void clearTokenAnimation() {
