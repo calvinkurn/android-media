@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +23,9 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.design.component.FloatingButton;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
@@ -30,7 +35,9 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
+import com.tokopedia.transaction.orders.orderlist.common.SurveyBottomSheet;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
@@ -48,12 +55,15 @@ import javax.inject.Inject;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
-        RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, SearchInputView.ResetListener, OrderListAdapter.OnMenuItemListener {
+        RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, SearchInputView.ResetListener, OrderListAdapter.OnMenuItemListener, View.OnClickListener {
 
     private static final String ORDER_CATEGORY = "orderCategory";
     private static final String ORDER_TAB_LIST = "TAB_LIST";
     private static final int MINIMUM_CHARATERS_HIT_API = 3;
     private static final int FILTER_DATE_REQUEST = 1;
+    private static final int ANIMATION_DURATION = 500;
+    private static final int SUBMIT_SURVEY_REQUEST = 2;
+    public static final String OPEN_SURVEY_PAGE = "2";
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -81,6 +91,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private SearchInputView simpleSearchView;
 
+    private ImageView surveyBtn;
+
     private String searchedString = "";
 
     @Inject
@@ -91,6 +103,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private ArrayList<Order> mOrderDataList;
     private String mOrderCategory;
     private OrderLabelList orderLabelList;
+    private boolean isSurveyBtnVisible = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -237,6 +250,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         simpleSearchView = view.findViewById(R.id.simpleSearchView);
         simpleSearchView.setSearchHint(getContext().getResources().getString(R.string.search_hint_text));
         filterDate = view.findViewById(R.id.filterDate);
+        surveyBtn = view.findViewById(R.id.survey_bom);
+        surveyBtn.setOnClickListener(this);
         mainContent = view.findViewById(R.id.mainContent);
         tryAgain = emptyLayoutMarketPlace.findViewById(R.id.tryAgain);
         tryAgain.setOnClickListener(new View.OnClickListener() {
@@ -252,7 +267,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         filterDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(SaveDateBottomSheetActivity.getInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
+                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
             }
         });
 
@@ -267,6 +282,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
                 refreshHandler.startRefresh();
                 orderListAnalytics.sendDateFilterClickEvent();
+            } else if (requestCode == SUBMIT_SURVEY_REQUEST) {
+                presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
             }
         }
     }
@@ -290,6 +307,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+            if (dy > 0 || dy < 0 && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA)))
+                setVisibilitySurveyBtn(false);
             if (!isLoading && hasRecyclerListener) {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 if (linearLayoutManager != null) {
@@ -300,6 +319,14 @@ public class OrderListFragment extends BaseDaggerFragment implements
                     }
                 }
             }
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA))) {
+                setVisibilitySurveyBtn(true);
+            }
+            super.onScrollStateChanged(recyclerView, newState);
         }
     };
 
@@ -368,6 +395,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 emptyLayoutOrderList.setVisibility(View.VISIBLE);
             }
             filterDate.setVisibility(View.GONE);
+            surveyBtn.setVisibility(View.GONE);
         }
     }
 
@@ -487,9 +515,18 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
 
     @Override
-    public void renderOrderStatus(List<QuickFilterItem> filterItems) {
+    public void renderOrderStatus(List<QuickFilterItem> filterItems, int selctedIndex) {
         quickSingleFilterView.setDefaultItem(null);
-        quickSingleFilterView.renderFilter(filterItems);
+        quickSingleFilterView.renderFilter(filterItems, selctedIndex);
+    }
+
+    @Override
+    public void showSurveyButton(boolean isEligible) {
+        if (isEligible && (mOrderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE) || mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA))) {
+            surveyBtn.setVisibility(View.VISIBLE);
+        } else {
+            surveyBtn.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -505,6 +542,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public String getEndDate() {
         return endDate;
+    }
+
+    @Override
+    public void showSuccessMessage(String message) {
+        ToasterNormal.showClose(getActivity(), message);
+    }
+
+    @Override
+    public void showFailureMessage(String message) {
+        ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -531,6 +578,23 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onSearchReset() {
         searchedString = "";
         refreshHandler.startRefresh();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.survey_bom) {
+            startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), OPEN_SURVEY_PAGE), SUBMIT_SURVEY_REQUEST);
+        }
+    }
+
+    private void setVisibilitySurveyBtn(boolean isVisible) {
+        if (isVisible && !isSurveyBtnVisible) {
+           surveyBtn.animate().translationY(0).setDuration(ANIMATION_DURATION).start();
+            isSurveyBtnVisible=true;
+        } else if(!isVisible && isSurveyBtnVisible){
+            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
+            isSurveyBtnVisible=false;
+        }
     }
 }
 

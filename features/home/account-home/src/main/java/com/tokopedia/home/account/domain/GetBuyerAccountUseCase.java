@@ -2,6 +2,7 @@ package com.tokopedia.home.account.domain;
 
 import android.text.TextUtils;
 
+import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
@@ -35,18 +37,21 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     private Observable<WalletModel> tokocashAccountBalance;
     private WalletPref walletPref;
     private UserSession userSession;
+    private CheckAffiliateUseCase checkAffiliateUseCase;
 
     @Inject
     public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase,
                                   Observable<WalletModel> tokocashAccountBalance,
                                   BuyerAccountMapper mapper,
                                   WalletPref walletPref,
-                                  UserSession userSession) {
+                                  UserSession userSession,
+                                  CheckAffiliateUseCase checkAffiliateUseCase) {
         this.graphqlUseCase = graphqlUseCase;
         this.tokocashAccountBalance = tokocashAccountBalance;
         this.mapper = mapper;
         this.walletPref = walletPref;
         this.userSession = userSession;
+        this.checkAffiliateUseCase = checkAffiliateUseCase;
     }
 
     @Override
@@ -54,8 +59,10 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
         return Observable.zip(
                 getAccountData(requestParams),
                 tokocashAccountBalance,
-                (accountModel, walletModel) -> {
+                checkIsAffiliate(requestParams),
+                (accountModel, walletModel, isAffiliate) -> {
                     accountModel.setWallet(walletModel);
+                    accountModel.setAffiliate(isAffiliate);
                     return accountModel;
                 })
                 .doOnNext(this::saveLocallyWallet)
@@ -73,7 +80,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
                     if (!TextUtils.isEmpty(query) && variables != null) {
                         GraphqlRequest requestGraphql = new GraphqlRequest(query,
-                                AccountModel.class, variables);
+                                AccountModel.class, variables, false);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(requestGraphql);
                         return graphqlUseCase.createObservable(null);
@@ -81,6 +88,10 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
                     return Observable.error(new Exception("Query and/or variable are empty."));
                 }).map(graphqlResponse -> graphqlResponse.getData(AccountModel.class));
+    }
+
+    private Observable<Boolean> checkIsAffiliate(RequestParams requestParams) {
+        return checkAffiliateUseCase.createObservable(requestParams).subscribeOn(Schedulers.io());
     }
 
     private void saveLocallyWallet(AccountModel accountModel) {

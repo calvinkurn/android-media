@@ -34,7 +34,7 @@ class GetHolidayUseCase @Inject constructor(@param:ApplicationContext private va
                                 val query = GraphqlHelper.loadRawString(context.resources, R.raw.holiday_calendar_query)
                                 if (!TextUtils.isEmpty(query)) {
                                     graphqlUseCase.clearRequest()
-                                    graphqlUseCase.addRequest(GraphqlRequest(query, HolidayEntity::class.java))
+                                    graphqlUseCase.addRequest(GraphqlRequest(query, HolidayEntity::class.java, false))
                                     return@Func1 graphqlUseCase.createObservable(null)
                                 }
                                 Observable.error(Exception("Query variable are empty"))

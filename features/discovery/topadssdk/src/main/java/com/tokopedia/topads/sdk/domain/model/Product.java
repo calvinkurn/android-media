@@ -61,7 +61,7 @@ public class Product implements Parcelable {
     @SerializedName(KEY_COUNT_TALK_FORMAT)
     private String countTalkFormat = "";
     @SerializedName(KEY_COUNT_REVIEW_FORMAT)
-    private String countReviewFormat = "";
+    private String countReviewFormat = "0";
     @SerializedName(KEY_CATEGORY)
     private Category category = new Category();
     @SerializedName(KEY_PRODUCT_PREORDER)

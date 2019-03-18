@@ -69,6 +69,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         progressBar = view.findViewById(R.id.progress_bar_layout);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(), getString(R.string.ch_active_challenges_label));
+
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
@@ -76,7 +77,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             tvActiveChallenges.setTextColor(getResources().getColor(R.color.tkpd_main_green));
             tvPastChallenges.setTextColor(getResources().getColor(R.color.black_56));
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_HOME_PAGE,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES);
             isPastChallenge = false;
@@ -91,7 +92,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             tvPastChallenges.setTextColor(getResources().getColor(R.color.tkpd_main_green));
             tvActiveChallenges.setTextColor(getResources().getColor(R.color.black_56));
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_HOME_PAGE,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES);
             isPastChallenge = true;

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
@@ -180,6 +181,9 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         webview.settings.javaScriptEnabled = true
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webview.settings.domStorageEnabled = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            webview.settings.mediaPlaybackRequiresUserGesture = false
+        }
         webview.webViewClient = getWebviewClient()
         webview.webChromeClient = getWebviewChromeClient()
         webview.setWebviewScrollListener(object : TkpdWebView.WebviewScrollListener {

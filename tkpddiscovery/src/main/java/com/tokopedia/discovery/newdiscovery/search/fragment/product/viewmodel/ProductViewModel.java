@@ -11,6 +11,7 @@ import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,13 +20,14 @@ import java.util.List;
 
 public class ProductViewModel implements Parcelable {
     private OfficialStoreBannerModel officialStoreBannerModel;
-    private List<ProductItem> productList;
+    private List<ProductItem> productList = new ArrayList<>();
     private boolean hasCatalog;
     private String query;
     private String shareUrl;
     private String additionalParams;
     private SuggestionModel suggestionModel;
     private int totalData;
+    private int totalItem;
     private SearchParameter searchParameter;
     private boolean forceSearch;
     private boolean imageSearch;
@@ -176,6 +178,10 @@ public class ProductViewModel implements Parcelable {
         this.relatedSearchModel = relatedSearchModel;
     }
 
+    public int getTotalItem() {
+        return getProductList().size() + getAdsModel().getData().size();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -191,6 +197,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeString(this.additionalParams);
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
+        dest.writeInt(this.totalItem);
         dest.writeParcelable(this.searchParameter, flags);
         dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
@@ -211,6 +218,7 @@ public class ProductViewModel implements Parcelable {
         this.additionalParams = in.readString();
         this.suggestionModel = in.readParcelable(SuggestionModel.class.getClassLoader());
         this.totalData = in.readInt();
+        this.totalItem = in.readInt();
         this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
         this.forceSearch = in.readByte() != 0;
         this.imageSearch = in.readByte() != 0;
