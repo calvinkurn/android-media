@@ -921,10 +921,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                    toolbar.visibility = View.VISIBLE
-                } else {
-                    toolbar.visibility = View.GONE
+                try {
+                    toolbar.let {
+                        if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+                            it.visibility = View.VISIBLE
+                        } else {
+                            it.visibility = View.GONE
+                        }
+                    }
+                } catch (e: IllegalStateException) {
+
                 }
             }
         })
