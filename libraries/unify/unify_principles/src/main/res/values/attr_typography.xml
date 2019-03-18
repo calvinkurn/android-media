@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Typography">
+        <attr name="typographyType" format="enum">
+            <enum name="heading_1" value="1" />
+            <enum name="heading_2" value="2" />
+            <enum name="heading_3" value="3" />
+            <enum name="heading_4" value="4" />
+            <enum name="heading_5" value="5" />
+            <enum name="heading_6" value="6" />
+            <enum name="body_1" value="7" />
+            <enum name="body_2" value="8" />
+            <enum name="caption" value="9" />
+            <enum name="small" value="10" />
+        </attr>
+        <attr name="typographyWeight" format="enum">
+            <enum name="reguler" value="1"/>
+            <enum name="bold" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>
