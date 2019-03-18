@@ -117,12 +117,12 @@
 /libraries/use_case/                    @tokopedia/core-team
 /libraries/react_native/                @tokopedia/core-team
 /libraries/applink/                     @tokopedia/core-team
-/libraries/push_notification/           @ricoharisin
+/libraries/push_notification/           @tokopedia/core-team
 /libraries/user_session/                @tokopedia/minion-kevin
 /libraries/youtubeutils/                @tokopedia/minion-kevin
 
 /features/user/updateinactivephone      @tokopedia/india-android-team
-/libraries/common_network/              @ricoharisin
+/libraries/common_network/              @tokopedia/core-team
 
 /features/digital/event                 @tokopedia/minion-darth
 /features/operational/contact_us        @tokopedia/minion-darth
@@ -141,9 +141,9 @@
 /features/im/referral                   @tokopedia/minion-yoda
 /libraries/linker                       @tokopedia/minion-yoda
 
-/libraries/pagination                   @lavekush-t
-/libraries/common_network/              @lavekush-t
-/libraries/graphql/                     @lavekush-t
+/libraries/pagination                   @tokopedia/minion-solo
+/libraries/common_network/              @tokopedia/minion-solo
+/libraries/graphql/                     @tokopedia/minion-solo
 /kelontongapp                           @tokopedia/core-team
 
-/libraries/graph_view/                  @aarsy17
+/libraries/graph_view/                  @tokopedia/minion-solo
