@@ -7,6 +7,7 @@ include "libraries:base_list_seller"
 include "libraries:bottom_sheet_builder"
 include "libraries:cache_api"
 include "libraries:camera_view"
+include "libraries:cameraview"
 include "libraries:cm_push_notifications"
 include "libraries:common_network"
 include "libraries:core_legacy"
@@ -22,8 +23,8 @@ include 'libraries:imageuploader'
 include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 include 'libraries:locationmanager'
-include 'libraries:iris'
-//include 'libraries:iris_no_op'
+//include 'libraries:iris'
+include 'libraries:iris_no_op'
 include "libraries:network"
 include "libraries:pagination"
 include "libraries:oms"
@@ -35,6 +36,7 @@ include "libraries:travel_calendar"
 include "libraries:tracking_optimizer"
 include "libraries:use_case"
 include "libraries:user_session"
+include "libraries:video_recorder"
 include "libraries:websocket"
 include "libraries:williamchart"
 include "libraries:YouTubeAndroidPlayerApi"

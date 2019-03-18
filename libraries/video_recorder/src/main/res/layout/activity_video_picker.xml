@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="?toolbarTheme"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance">
+
+        <TextView
+            android:id="@+id/btnDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            style="@style/TextView.Title.Green"
+            android:text="@string/label_next"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_14"
+            android:layout_marginEnd="@dimen/dp_14"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/layoutPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.tokopedia.videorecorder.utils.DynamicSquareLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <VideoView
+                    android:id="@+id/videoPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </com.tokopedia.videorecorder.utils.DynamicSquareLayout>
+
+            <Button
+                android:id="@+id/btnDeleteVideo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_32"
+                android:background="@null"
+                android:text="@string/delete_recording"
+                android:focusable="true"
+                android:clickable="true"
+                android:foreground="?selectableItemBackground"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vpVideoPicker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/tabPicker"/>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabPicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ImagePickerTab"
+            app:tabIndicatorColor="@null"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

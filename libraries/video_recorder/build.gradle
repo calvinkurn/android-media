@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+//android {
+//    defaultConfig {
+//        vectorDrawables.useSupportLibrary = true
+//    }
+//}
+
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.exifinterface
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.imagePicker)
+
+}

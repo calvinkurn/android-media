@@ -43,6 +43,7 @@ ext {
             cacheManager      : ":libraries:cache_manager",
 //            cacheManager      : ":libraries:cache_manager_no_op",
             cameraView        : ":libraries:camera_view",
+            cameraview        : ":libraries:cameraview",
             cmnotification    :":libraries:cm_push_notifications",
             commonNetwork     : ":libraries:common_network",
             coreNetwork       : ":libraries:core_network",
@@ -67,6 +68,8 @@ ext {
             trackingOptimizer : ":libraries:tracking_optimizer",
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
+            videoRecorder     : ":libraries:video_recorder",
+            videouploader     : ":libraries:videouploader"
             webview           : ":libraries:webview",
             websocket         : ":libraries:websocket",
             williamchart      : ":libraries:williamchart",
@@ -80,7 +83,6 @@ ext {
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
 //            iris              : ":libraries:iris_no_op",
-            banner            : ":libraries:banner",
-            videouploader     : ":libraries:videouploader"
+            banner            : ":libraries:banner"
     ]
 }
