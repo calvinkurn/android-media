@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
+import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreBannerViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreEmptySearchViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.FilterViewHolder;
@@ -12,6 +13,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.PopularPr
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.RecommendationViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
@@ -60,6 +62,11 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
     }
 
     @Override
+    public int type(ExploreBannerViewModel exploreBannerViewModel) {
+        return ExploreBannerViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder abstractViewHolder;
         if (type == ExploreViewHolder.LAYOUT) {
@@ -74,6 +81,8 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
             abstractViewHolder = new PopularProfileViewHolder(view);
         } else if (type == RecommendationViewHolder.LAYOUT) {
             abstractViewHolder = new RecommendationViewHolder(view);
+        } else if (type == ExploreBannerViewHolder.LAYOUT) {
+            abstractViewHolder = new ExploreBannerViewHolder(view);
         } else {
             abstractViewHolder = super.createViewHolder(view, type);
         }

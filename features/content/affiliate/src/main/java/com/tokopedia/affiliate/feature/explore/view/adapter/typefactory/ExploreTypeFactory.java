@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
@@ -27,6 +28,8 @@ public interface ExploreTypeFactory extends AdapterTypeFactory {
     int type(PopularProfileViewModel popularProfileViewModel);
 
     int type(RecommendationViewModel recommendationViewModel);
+
+    int type(ExploreBannerViewModel exploreBannerViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }
