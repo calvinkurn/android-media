@@ -136,6 +136,7 @@
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 /features/promo/gamification            @tokopedia/minion-solo
 /features/payment/withdraw/             @tokopedia/minion-solo
+/features/kyc                           @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda
