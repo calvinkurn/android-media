@@ -31,12 +31,6 @@ public class OtpModule {
 
     @OtpScope
     @Provides
-    public UserSession provideUserSession(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @OtpScope
-    @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }

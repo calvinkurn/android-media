@@ -102,12 +102,14 @@ class FlightSearchJourneyByIdUseCase @Inject constructor(
                     0,
                     isBestPairing,
                     beforeTotal,
+                    false,
                     isRefundable,
                     isReturn,
                     fare,
                     routes,
                     flightAirlineDBS,
-                    comboId
+                    comboId,
+                    ""
             )
         }
     }

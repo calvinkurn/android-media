@@ -22,18 +22,22 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
-import com.tokopedia.withdraw.di.DaggerDoWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
+import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
 import com.tokopedia.withdraw.view.listener.WithdrawPasswordContract;
 import com.tokopedia.withdraw.view.presenter.WithdrawPasswordPresenter;
-import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class WithdrawPasswordFragment extends BaseDaggerFragment implements WithdrawPasswordContract.View{
+import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
 
+public class WithdrawPasswordFragment extends BaseDaggerFragment implements WithdrawPasswordContract.View {
 
     private View withdrawButton;
     private View forgotPassword;
@@ -45,7 +49,7 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
     protected String getScreenName() {
         return null;
     }
-    
+
     @Inject
     WithdrawPasswordPresenter presenter;
 
@@ -54,14 +58,14 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
 
     @Override
     protected void initInjector() {
-        WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build();
+        if (getActivity() != null) {
+            WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
+                    .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                    .build();
+            withdrawComponent.inject(this);
+            presenter.attachView(this);
+        }
 
-        DaggerDoWithdrawComponent.builder().withdrawComponent(withdrawComponent)
-                .build().inject(this);
-
-        presenter.attachView(this);
     }
 
     public static Fragment createInstance(Bundle bundle) {
@@ -84,38 +88,30 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        withdrawButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int withdrawal = (int) StringUtils.convertToNumeric(
-                        getArguments().getString(WithdrawPasswordActivity.BUNDLE_WITHDRAW)
-                        ,false);
-                wrapperPassword.setError(null);
-                presenter.doWithdraw(withdrawal, (BankAccountViewModel) getArguments()
-                        .get(WithdrawPasswordActivity.BUNDLE_BANK)
-                        , passwordView.getText().toString());
-            }
+        withdrawButton.setOnClickListener(v -> {
+            int withdrawal = (int) StringUtils.convertToNumeric(
+                    Objects.requireNonNull(getArguments()).getString(WithdrawPasswordActivity.BUNDLE_WITHDRAW)
+                    , false);
+            boolean isSellerWithdrawal = getArguments().getBoolean(WithdrawPasswordActivity.BUNDLE_IS_SELLER_WITHDRAWAL);
+            wrapperPassword.setError(null);
+            presenter.doWithdraw(withdrawal, (BankAccount) getArguments()
+                            .get(WithdrawPasswordActivity.BUNDLE_BANK)
+                    , passwordView.getText().toString(), isSellerWithdrawal);
         });
 
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
-                Bundle bundle = new Bundle();
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 65);
-                analytics.eventClickForgotPassword();
-            }
+        forgotPassword.setOnClickListener(v -> {
+            Intent intent = RouteManager.getIntent(Objects.requireNonNull(getActivity()), ApplinkConst.CHANGE_PASSWORD);
+            Bundle bundle = new Bundle();
+            intent.putExtras(bundle);
+            startActivityForResult(intent, 65);
+            analytics.eventClickForgotPassword();
         });
 
-        snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
+        snackBarError = ToasterError.make(Objects.requireNonNull(getActivity()).findViewById(android.R.id.content),
                 "", BaseToaster.LENGTH_LONG)
-                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        analytics.eventClickCloseErrorMessage();
-                        snackBarError.dismiss();
-                    }
+                .setAction(getActivity().getString(R.string.title_close), v -> {
+                    analytics.eventClickCloseErrorMessage();
+                    snackBarError.dismiss();
                 });
 
     }
@@ -141,8 +137,19 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
 
     @Override
     public void showSuccessWithdraw() {
-        analytics.eventClickWithdrawalConfirm(getActivity().getString(R.string.label_analytics_success_withdraw));
-        getActivity().setResult(Activity.RESULT_OK);
+        analytics.eventClickWithdrawalConfirm(getString(R.string.label_analytics_success_withdraw));
+        Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_OK);
         getActivity().finish();
+    }
+
+    @Override
+    public String loadRawString(int resId) {
+        InputStream rawResource = getResources().openRawResource(resId);
+        String content = streamToString(rawResource);
+        try {
+            rawResource.close();
+        } catch (IOException e) {
+        }
+        return content;
     }
 }

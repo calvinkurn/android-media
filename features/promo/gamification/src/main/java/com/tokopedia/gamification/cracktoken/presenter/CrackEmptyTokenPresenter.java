@@ -31,10 +31,10 @@ public class CrackEmptyTokenPresenter extends BaseDaggerPresenter<CrackEmptyToke
     public void getRewardsCount() {
         getRewardsUseCase.clearRequest();
         GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_sum_coupon),
-                GamificationSumCouponOuter.class);
+                GamificationSumCouponOuter.class, false);
         getRewardsUseCase.addRequest(sumTokenRequest);
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_current_points),
-                TokoPointDetailEntity.class);
+                TokoPointDetailEntity.class, false);
         getRewardsUseCase.addRequest(graphqlRequestPoints);
         getRewardsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override

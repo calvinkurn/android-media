@@ -24,6 +24,8 @@ interface BuyerCardContract {
         void setProfileStatusCompleted();
 
         void setProfileStatusIncomplete(int progress);
+
+        void showBymeIcon();
     }
 
     interface Presenter {
