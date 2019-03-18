@@ -40,11 +40,14 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
     private static final long SLIDE_DELAY = 5000;
     private boolean hasStarted = false;
 
+    private View view;
+
     public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         this.listener = listener;
         this.timer = new Timer();
         this.context = itemView.getContext();
+        this.view = itemView;
         textMessage = itemView.findViewById(R.id.ticker_message);
         btnClose = itemView.findViewById(R.id.btn_close);
         itemView.findViewById(R.id.btn_close).setOnClickListener(this);
@@ -70,7 +73,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
 
         @Override
         public void run() {
-            ((Activity) context).runOnUiThread(new Runnable() {
+            view.post(new Runnable() {
                 @Override
                 public void run() {
                     hasStarted = true;

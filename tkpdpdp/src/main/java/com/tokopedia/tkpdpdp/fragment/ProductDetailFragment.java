@@ -63,6 +63,7 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpdpdp.DescriptionActivityNew;
 import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
@@ -403,6 +404,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     GraphqlUseCase graphqlUseCase;
 
     @Inject
+    ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
+
+    @Inject
     GetImageReviewUseCase getImageReviewUseCase;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
@@ -474,7 +478,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 new CacheInteractorImpl(),
                 getAffiliateProductDataUseCase,
                 getImageReviewUseCase,
-                getMostHelpfulReviewUseCase);
+                getMostHelpfulReviewUseCase,
+                toggleFavouriteShopUseCase);
         this.presenter.initGetRateEstimationUseCase();
     }
 
@@ -931,11 +936,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private String generateShopType(ProductShopInfo productShopInfo) {
-        if (productShopInfo.getShopIsOfficial() == 1)
-            return "official_store";
-        else if (productShopInfo.getShopIsGold() == 1)
-            return "gold_merchant";
-        else return "reguler";
+        if(productShopInfo!=null){
+            if (productShopInfo.getShopIsOfficial() == 1)
+                return "official_store";
+            else if (productShopInfo.getShopIsGold() == 1)
+                return "gold_merchant";
+            else return "reguler";
+        }else {
+            return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
+        }
     }
 
     @Override
@@ -2562,12 +2571,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceProductCartMapData.setProductID(String.valueOf(productData.getInfo().getProductId()));
         enhancedECommerceProductCartMapData.setPrice(String.valueOf(productData.getInfo().getProductPriceUnformatted()));
         enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        String categoryLevelStr = generateCategoryStringLevel(productData.getBreadcrumb());
         enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
         enhancedECommerceProductCartMapData.setDimension45(addToCartResult.getCartId());
-        enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(categoryLevelStr)
-                ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                : categoryLevelStr);
+        enhancedECommerceProductCartMapData.setCategory(generateCategoryStringLevel(productData.getBreadcrumb()));
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setQty(Integer.parseInt(productData.getInfo().getProductMinOrder()));
         enhancedECommerceProductCartMapData.setShopId(productData.getShopInfo().getShopId());
@@ -2625,34 +2631,41 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {
-        Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
-            @Override
-            public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
-                return productBreadcrumb.getDepartmentTree().compareTo(t1.getDepartmentTree());
+        if(breadcrumb!=null && !breadcrumb.isEmpty()){
+            Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
+                @Override
+                public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
+                    return productBreadcrumb.getDepartmentTree().compareTo(t1.getDepartmentTree());
+                }
+            });
+            StringBuilder stringBuilder = new StringBuilder();
+            int size = breadcrumb.size();
+            for (int i = 0; i < size; i++) {
+                ProductBreadcrumb productBreadcrumb = breadcrumb.get(i);
+                stringBuilder.append(productBreadcrumb.getDepartmentName());
+                if (i != (size - 1)) {
+                    stringBuilder.append("/");
+                }
             }
-        });
-        StringBuilder stringBuilder = new StringBuilder();
-        int size = breadcrumb.size();
-        for (int i = 0; i < size; i++) {
-            ProductBreadcrumb productBreadcrumb = breadcrumb.get(i);
-            stringBuilder.append(productBreadcrumb.getDepartmentName());
-            if (i != (size - 1)) {
-                stringBuilder.append("/");
-            }
+            return stringBuilder.toString();
+        }else {
+            return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
         }
-        return stringBuilder.toString();
     }
 
 
     private String generateCategoryId(List<ProductBreadcrumb> breadcrumb) {
-        Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
-            @Override
-            public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
-                return productBreadcrumb.getDepartmentTree().compareTo(t1.getDepartmentTree());
-            }
-        });
-
-        return breadcrumb.get(breadcrumb.size() - 1).getDepartmentId();
+        if(breadcrumb!=null && !breadcrumb.isEmpty()){
+            Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
+                @Override
+                public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
+                    return productBreadcrumb.getDepartmentTree().compareTo(t1.getDepartmentTree());
+                }
+            });
+            return breadcrumb.get(breadcrumb.size() - 1).getDepartmentId();
+        }else {
+          return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
+        }
     }
 
     private void startShowCase() {

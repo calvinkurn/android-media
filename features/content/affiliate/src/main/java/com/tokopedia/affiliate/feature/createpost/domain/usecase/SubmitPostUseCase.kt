@@ -4,8 +4,10 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
+import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -30,29 +32,53 @@ open class SubmitPostUseCase @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<SubmitPostData> {
+        val relatedIdList = requestParams.getObject(PARAM_TAGS) as List<String>
+        val type = requestParams.getString(PARAM_TYPE, "")
+        val tags = getListOfTag(relatedIdList, type)
+
         val imageList = requestParams.getObject(PARAM_IMAGE_LIST) as List<String>
-        val mainImageIndex = requestParams.getInt(PARAM_MAIN_IMAGE_INDEX, 0)
         uploadMultipleImageUseCase.notificationManager = notificationManager
         return uploadMultipleImageUseCase
                 .createObservable(
                         UploadMultipleImageUseCase.createRequestParams(
-                                getMediumList(imageList, mainImageIndex)
+                                getMediumList(imageList, tags)
                         )
                 )
+                .map(rearrangeMedia())
                 .flatMap(submitPostToGraphql(requestParams))
     }
 
-    private fun getMediumList(imageList: List<String>, mainImageIndex: Int): List<SubmitPostMedium> {
+    private fun getMediumList(imageList: List<String>, tags: List<MediaTag>)
+            : List<SubmitPostMedium> {
+
         val mediumList = ArrayList<SubmitPostMedium>()
-        mediumList.add(SubmitPostMedium(imageList[mainImageIndex], 0))
-        for (i in imageList.indices) {
-            if (i != mainImageIndex) {
-                mediumList.add(SubmitPostMedium(imageList[i], mediumList.size))
-            }
+        imageList.forEachIndexed { index, image ->
+            mediumList.add(SubmitPostMedium(image, index, if (index == 0) tags else arrayListOf()))
         }
         return mediumList
     }
 
+    private fun getListOfTag(relatedIdList: List<String>, type: String): List<MediaTag> {
+        val tags = arrayListOf<MediaTag>()
+        relatedIdList.forEach {
+            tags.add(MediaTag(getTagType(type), it))
+        }
+        return tags
+    }
+
+    private fun getTagType(type: String): String {
+        return if (type == TYPE_CONTENT_SHOP) TAGS_TYPE_PRODUCT else type
+    }
+
+    private fun rearrangeMedia(): Func1<List<SubmitPostMedium>, List<SubmitPostMedium>> {
+        return Func1 {
+            val rearrangedList: MutableList<SubmitPostMedium> = ArrayList(it)
+            it.forEach { media ->
+                rearrangedList[media.order] = media
+            }
+            rearrangedList
+        }
+    }
 
     private fun submitPostToGraphql(requestParams: RequestParams): Func1<List<SubmitPostMedium>, Observable<SubmitPostData>> {
         return Func1 { mediumList ->
@@ -83,39 +109,49 @@ open class SubmitPostUseCase @Inject constructor(
         return Func1 { graphqlResponse -> graphqlResponse.getData(SubmitPostData::class.java) }
     }
 
+    private fun getInputType(type: String): String {
+        return if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
+    }
+
     protected open fun getContentSubmitInput(requestParams: RequestParams,
                                              mediumList: List<SubmitPostMedium>): ContentSubmitInput {
         val input = ContentSubmitInput()
-        input.type = requestParams.getString(PARAM_TYPE, "")
+        input.type = getInputType(requestParams.getString(PARAM_TYPE, ""))
         input.token = requestParams.getString(PARAM_TOKEN, "")
-        input.adID = requestParams.getString(PARAM_AD_ID, "")
-        input.productID = requestParams.getString(PARAM_PRODUCT_ID, "")
+        input.authorID = requestParams.getString(PARAM_AUTHOR_ID, "")
+        input.authorType = requestParams.getString(PARAM_AUTHOR_TYPE, "")
+        input.caption = requestParams.getString(PARAM_CAPTION, "")
         input.media = mediumList
+
         return input
     }
 
     companion object {
-        internal const val PARAM_TYPE = "type"
-        internal const val PARAM_TOKEN = "token"
-        internal const val PARAM_IMAGE_LIST = "image_list"
-        internal const val PARAM_MAIN_IMAGE_INDEX = "main_image_index"
-        internal const val TYPE_AFFILIATE = "affiliate"
+        private const val PARAM_TYPE = "type"
+        private const val PARAM_TOKEN = "token"
+        private const val PARAM_AUTHOR_ID = "authorID"
+        private const val PARAM_AUTHOR_TYPE = "authorType"
+        private const val PARAM_CAPTION = "caption"
+        private const val PARAM_IMAGE_LIST = "image_list"
+        private const val PARAM_TAGS = "tags"
 
-        private const val PARAM_AD_ID = "adID"
-        private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_INPUT = "input"
+
+        private const val INPUT_TYPE_CONTENT = "content"
+        private const val TAGS_TYPE_PRODUCT = "product"
 
         const val SUCCESS = 1
 
-        fun createRequestParams(productId: String, adId: String, token: String,
-                                imageList: List<String>, mainImageIndex: Int): RequestParams {
+        fun createRequestParams(type: String, token: String, authorId: String, caption: String,
+                                imageList: List<String>, relatedIdList: List<String>): RequestParams {
             val requestParams = RequestParams.create()
-            requestParams.putString(PARAM_TYPE, TYPE_AFFILIATE)
-            requestParams.putString(PARAM_PRODUCT_ID, productId)
-            requestParams.putString(PARAM_AD_ID, adId)
+            requestParams.putString(PARAM_TYPE, type)
             requestParams.putString(PARAM_TOKEN, token)
+            requestParams.putString(PARAM_AUTHOR_ID, authorId)
+            requestParams.putString(PARAM_AUTHOR_TYPE, type)
+            requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_IMAGE_LIST, imageList)
-            requestParams.putInt(PARAM_MAIN_IMAGE_INDEX, mainImageIndex)
+            requestParams.putObject(PARAM_TAGS, relatedIdList)
             return requestParams
         }
     }

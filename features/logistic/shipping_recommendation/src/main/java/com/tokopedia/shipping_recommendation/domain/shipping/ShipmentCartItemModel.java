@@ -72,6 +72,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     // Flag for courier recommendation
     private boolean useCourierRecommendation;
 
+    // for robinhood III
+    private boolean isBlackbox;
+    private int addressId;
+    private String blackboxInfo;
+
     public ShipmentCartItemModel() {
     }
 
@@ -115,6 +120,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         stateHasLoadCourierState = in.readByte() != 0;
         stateHasExtraMarginTop = in.readByte() != 0;
         shopBadge = in.readString();
+        isBlackbox = in.readByte() != 0;
+        addressId = in.readInt();
+        blackboxInfo = in.readString();
     }
 
     @Override
@@ -158,6 +166,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
         dest.writeString(shopBadge);
+        dest.writeByte((byte) (isBlackbox ? 1 : 0));
+        dest.writeInt(addressId);
+        dest.writeString(blackboxInfo);
     }
 
     @Override
@@ -217,6 +228,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
         newShipmentCartItemModel.setStateHasExtraMarginTop(shipmentCartItemModel.isStateHasExtraMarginTop());
         newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
+        newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
+        newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
+        newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
 
         return newShipmentCartItemModel;
     }
@@ -533,6 +547,26 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.shopBadge = shopBadge;
     }
 
+    public boolean getIsBlackbox() {
+        return isBlackbox;
+    }
+
+    public void setIsBlackbox(boolean blackbox) {
+        this.isBlackbox = blackbox;
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
+    }
+
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -565,6 +599,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getStore(), that.getStore())
                 .append(getRecipientAddressModel(), that.getRecipientAddressModel())
                 .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
+                .append(getIsBlackbox(), that.getIsBlackbox())
+                .append(getAddressId(), that.getAddressId())
+                .append(getBlackboxInfo(), that.getBlackboxInfo())
                 .isEquals();
     }
 
@@ -594,6 +631,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getStore())
                 .append(getRecipientAddressModel())
                 .append(isUseCourierRecommendation())
+                .append(getIsBlackbox())
+                .append(getAddressId())
+                .append(getBlackboxInfo())
                 .toHashCode();
     }
 }

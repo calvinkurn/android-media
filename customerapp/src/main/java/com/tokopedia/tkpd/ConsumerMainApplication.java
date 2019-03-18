@@ -17,8 +17,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -53,7 +51,6 @@ import com.tokopedia.discovery.newdiscovery.constant.DiscoveryBaseURL;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight_dbflow.TkpdFlight;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -174,7 +171,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         InstabugInitalize.init(this);
-        initFirebase();
 
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
@@ -251,6 +247,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
         TkpdBaseURL.CHAT_DOMAIN = ConsumerAppBaseUrl.CHAT_DOMAIN;
         TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN =
+                ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN =
+                ConsumerAppBaseUrl.GROUP_CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         TkpdBaseURL.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
@@ -278,6 +278,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        GroupChatUrl.BASE_GCP_URL = ConsumerAppBaseUrl.PLAY_DOMAIN;
         VoteUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
@@ -326,7 +327,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         CheckMsisdnUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
         com.tokopedia.network.constant.TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
-        com.tokopedia.common_digital.common.constant.DigitalUrl.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
+        com.tokopedia.common_digital.common.constant.DigitalUrl.INSTANCE.setDIGITAL_API_DOMAIN(ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN);
         DigitalDealsUrl.BASE_URL = ConsumerAppBaseUrl.DEALS_DOMAIN;
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
@@ -360,7 +361,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
-        TkpdFlight.initDatabase(getApplicationContext());
         PushNotification.initDatabase(getApplicationContext());
         Analytics.initDB(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
@@ -528,19 +528,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
 
     }
-
-    private void initFirebase() {
-        if (GlobalConfig.DEBUG) {
-            try {
-                FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
-                builder.setApplicationId("1:692092518182:android:f4cc247c743f7921");
-                FirebaseApp.initializeApp(this, builder.build());
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;

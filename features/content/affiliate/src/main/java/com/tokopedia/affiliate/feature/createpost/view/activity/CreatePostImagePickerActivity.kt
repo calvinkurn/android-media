@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.affiliate.R
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -32,31 +31,12 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
     override fun getEditorIntent(selectedImagePaths: ArrayList<String>): Intent {
         return CreatePostImageEditorActivity.getInstance(this, selectedImagePaths,
                 imageDescriptionList,
-                imagePickerBuilder.minResolution, imagePickerBuilder.imageEditActionType,
+                imagePickerBuilder.minResolution,
+                imagePickerBuilder.imageEditActionType,
                 imagePickerBuilder.imageRatioTypeDef,
                 imagePickerBuilder.isCirclePreview,
                 imagePickerBuilder.maxFileSizeInKB,
                 imagePickerBuilder.ratioOptionList)
-    }
-
-    override fun onDoneClicked() {
-        if (intent.getBooleanExtra(ARGS_SHOW_WARNING, true)) {
-            val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-            dialog.setTitle(getString(R.string.af_update_post))
-            dialog.setDesc(getString(R.string.af_add_image_warning))
-            dialog.setBtnOk(getString(R.string.af_continue))
-            dialog.setBtnCancel(getString(R.string.cancel))
-            dialog.setOnOkClickListener{
-                dialog.dismiss()
-                super.onDoneClicked()
-            }
-            dialog.setOnCancelClickListener{
-                dialog.dismiss()
-            }
-            dialog.show()
-        } else {
-            super.onDoneClicked()
-        }
     }
 
     companion object {

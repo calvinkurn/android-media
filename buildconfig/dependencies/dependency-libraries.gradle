@@ -53,6 +53,7 @@ ext {
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
             imageuploader     : ":libraries:imageuploader",
+            inappupdate       : ":libraries:inappupdate",
             kotlinExtensions  : ":libraries:kotlin_extensions",
             linker            : ":libraries:linker",
             locationmanager   : ":libraries:locationmanager",
@@ -68,6 +69,7 @@ ext {
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
             videoRecorder     : ":libraries:video_recorder",
+            webview           : ":libraries:webview",
             websocket         : ":libraries:websocket",
             williamchart      : ":libraries:williamchart",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
@@ -79,6 +81,7 @@ ext {
             trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
 //            iris              : ":libraries:iris",
-            iris              : ":libraries:iris_no_op"
+            iris              : ":libraries:iris_no_op",
+            banner            : ":libraries:banner"
     ]
 }

@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.createpost.domain.usecase
 
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
-import com.tokopedia.affiliate.util.urlIsFile
+import com.tokopedia.affiliate.feature.createpost.view.util.urlIsFile
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
@@ -49,8 +49,8 @@ class UploadMultipleImageUseCase @Inject constructor(
     private fun mapToUrl(
             medium: SubmitPostMedium): Func1<ImageUploadDomainModel<UploadImageResponse>, SubmitPostMedium> {
         return Func1 { uploadDomainModel ->
-            var imageUrl: String? = uploadDomainModel.dataResultImageUpload.data.picSrc
-            if (imageUrl != null && imageUrl.contains(DEFAULT_RESOLUTION)) {
+            var imageUrl: String = uploadDomainModel.dataResultImageUpload.data.picSrc ?: ""
+            if (imageUrl.contains(DEFAULT_RESOLUTION)) {
                 imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
             }
             medium.mediaURL = imageUrl

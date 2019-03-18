@@ -83,14 +83,6 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         relatedProductRv.setHasFixedSize(true)
 
         deleteMediaBtn.setOnClickListener {
-            if (viewModel.mainImageIndex == tabLayout.selectedTabPosition
-                    && tabLayout.selectedTabPosition == imageAdapter.count - 2
-                    && tabLayout.selectedTabPosition - 1 > 0) {
-                viewModel.mainImageIndex = tabLayout.selectedTabPosition - 1
-            } else {
-                viewModel.mainImageIndex = 0
-            }
-
             if (tabLayout.selectedTabPosition < viewModel.fileImageList.size) {
                 viewModel.fileImageList.removeAt(tabLayout.selectedTabPosition)
             } else {
@@ -105,7 +97,18 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         }
 
         mainImageText.setOnClickListener {
-            viewModel.mainImageIndex = tabLayout.selectedTabPosition
+            if (tabLayout.selectedTabPosition < viewModel.fileImageList.size) {
+                val image = viewModel.fileImageList[tabLayout.selectedTabPosition]
+                viewModel.fileImageList.removeAt(tabLayout.selectedTabPosition)
+                viewModel.fileImageList.add(0, image)
+            } else {
+                val image = viewModel.urlImageList[tabLayout.selectedTabPosition]
+                viewModel.urlImageList.removeAt(tabLayout.selectedTabPosition)
+                viewModel.urlImageList.add(0, image)
+            }
+            imageAdapter.setList(viewModel.completeImageList)
+            mediaViewPager.currentItem = 0
+
             updateMainImageText()
             updateResultIntent()
         }
@@ -120,11 +123,17 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
     private fun updateResultIntent() {
         resultIntent.putExtra(CreatePostViewModel.TAG, viewModel)
-        activity?.setResult(Activity.RESULT_OK, resultIntent)
+        activity?.let {
+            it.setResult(Activity.RESULT_OK, resultIntent)
+
+            if (viewModel.completeImageList.isEmpty()) {
+                it.finish()
+            }
+        }
     }
 
     private fun updateMainImageText() {
-        if (viewModel.mainImageIndex == tabLayout.selectedTabPosition) {
+        if (tabLayout.selectedTabPosition == 0) {
             mainImageText.setText(R.string.af_main_image)
             mainImageText.setTextColor(MethodChecker.getColor(context, R.color.black_38))
             mainImageIcon.show()

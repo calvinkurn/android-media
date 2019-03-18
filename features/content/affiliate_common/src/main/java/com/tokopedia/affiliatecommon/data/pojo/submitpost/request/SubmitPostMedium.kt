@@ -6,16 +6,21 @@ import com.google.gson.annotations.SerializedName
 data class SubmitPostMedium(
         @SerializedName("mediaURL")
         @Expose
-        var mediaURL: String? = null,
+        var mediaURL: String = "",
 
         @SerializedName("order")
         @Expose
-        var order: Int? = null) {
+        val order: Int = 0,
+
+        @SerializedName("tags")
+        @Expose
+        var tags: List<MediaTag> = arrayListOf(),
 
         @SerializedName("type")
         @Expose
-        var type: String = TYPE_IMAGE
+        val type: String = TYPE_IMAGE
 
+) {
     companion object {
         private const val TYPE_IMAGE = "image"
     }

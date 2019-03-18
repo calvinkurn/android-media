@@ -43,6 +43,21 @@
                 app:layout_constraintTop_toTopOf="@+id/thumbnail"
                 tools:visibility="visible" />
 
+            <TextView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="6sp"
+                android:text="@string/af_title_edit"
+                android:textColor="@color/medium_green"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/thumbnail"
+                app:layout_constraintStart_toStartOf="@+id/thumbnail"
+                app:layout_constraintTop_toBottomOf="@+id/thumbnail" />
+
             <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/caption"
                 android:layout_width="0dp"
@@ -53,12 +68,28 @@
                 android:gravity="top"
                 android:hint="@string/af_caption_hint"
                 android:lines="4"
+                android:maxLength="2000"
                 android:textColor="@color/black_54"
                 android:textCursorDrawable="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/thumbnail"
                 app:layout_constraintTop_toTopOf="@+id/thumbnail"
                 tools:text="Hahaha\nhahaha" />
+
+            <TextView
+                android:id="@+id/maxCharacter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:gravity="end"
+                android:lineSpacingExtra="8sp"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_10"
+                app:layout_constraintBottom_toTopOf="@+id/separatorCaption"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="0/2.000" />
 
             <View
                 android:id="@+id/separatorCaption"
@@ -236,6 +267,7 @@
             android:layout_margin="@dimen/dp_16"
             android:elevation="0dp"
             android:text="@string/af_done"
+            android:enabled="true"
             android:textAllCaps="false"
             app:buttonCompatSize="medium"
             app:buttonCompatType="primary"

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery
+import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentResponse
 import com.tokopedia.affiliate.feature.createpost.domain.entity.GetContentFormDomain
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -22,21 +23,24 @@ class GetContentFormUseCase @Inject internal constructor(
         private val graphqlUseCase: GraphqlUseCase): UseCase<GetContentFormDomain>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<GetContentFormDomain> {
+        graphqlUseCase.clearRequest()
+
         val query = GraphqlHelper.loadRawString(
                 context.resources,
                 R.raw.query_af_content_form
         )
         val request = GraphqlRequest(query, FeedContentResponse::class.java, requestParams.parameters)
-
-        val queryQouta = GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.query_af_quota
-        )
-        val requestQouta = GraphqlRequest(queryQouta, CheckQuotaQuery::class.java)
-
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(requestQouta)
         graphqlUseCase.addRequest(request)
+
+        if (requestParams.getString(PARAM_TYPE, "") == TYPE_AFFILIATE) {
+            val queryQouta = GraphqlHelper.loadRawString(
+                    context.resources,
+                    R.raw.query_af_quota
+            )
+            val requestQouta = GraphqlRequest(queryQouta, CheckQuotaQuery::class.java)
+            graphqlUseCase.addRequest(requestQouta)
+        }
+
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             GetContentFormDomain(
                     it.getData(FeedContentResponse::class.java),

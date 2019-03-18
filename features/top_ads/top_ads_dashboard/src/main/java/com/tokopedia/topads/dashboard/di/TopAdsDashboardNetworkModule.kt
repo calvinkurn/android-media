@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.di
 
 import android.content.Context
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
@@ -22,9 +21,8 @@ class TopAdsDashboardNetworkModule {
     @TopAdsDashboardScope
     @Provides
     fun provideTopAdsAuthTempInterceptor(@ApplicationContext context: Context,
-                                         abstractionRouter: AbstractionRouter,
-                                         userSession: UserSession): TopAdsAuthInterceptor {
-        return TopAdsAuthInterceptor(context, abstractionRouter, userSession)
+                                         abstractionRouter: AbstractionRouter): TopAdsAuthInterceptor {
+        return TopAdsAuthInterceptor(context, abstractionRouter)
     }
 
     @TopAdsDashboardScope

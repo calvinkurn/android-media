@@ -68,8 +68,7 @@
     <string name="af_main_image">Tampil Pertama</string>
     <string name="af_caption_hint">Tulis caption, yuk!\nContoh: “Promo! Cek produk terbaru kami…”</string>
     <string name="af_related_product">Produk pada Post</string>
-    <string name="af_add_product_tag">Tambah</string>
-    <string name="af_change_product_tag">Pilih</string>
+    <string name="af_add_product_tag">+ Tambah</string>
     <string name="af_error_create_post">Gagal mengunggah post</string>
     <string name="af_notif_uploading">"Mengunggah post"</string>
     <string name="af_notif_media" formatted="false">%d dari %d Media…</string>
@@ -77,7 +76,12 @@
     <string name="af_notif_success">Klik untuk melihat post</string>
     <string name="af_notif_error">Gagal mengunggah post, klik untuk coba lagi</string>
     <string name="af_update_post">Update Post</string>
-    <string name="af_add_image_warning">Foto sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_add_image_warning">Foto sebelumnya akan diganti dengan foto yang dipilih</string>
+    <string name="af_add_video_warning">Foto sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_leave_warning">Apa Kamu yakin ingin keluar?</string>
+    <string name="af_leave_warning_desc">Jika kamu keluar dari form, maka media dan produk akan hilang</string>
+    <string name="af_warning_empty_product">Yuk tambah produk dulu\nbuat post ini</string>
+    <string name="af_warning_empty_photo">Yuk tambah foto dulu\nbuat post ini</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>
@@ -86,5 +90,6 @@
     <string name="af_choose_favorite_product">Pilih produk favoritmu</string>
     <string name="af_curate_product_profile">Kurasi produknya di profilmu</string>
     <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
+    <string name="af_title_edit">Edit</string>
 
 </resources>

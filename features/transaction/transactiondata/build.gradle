@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
@@ -36,6 +37,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

@@ -5,7 +5,6 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.Coroutin
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.iris.*
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Retrofit

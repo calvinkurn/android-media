@@ -58,7 +58,7 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_tokopoint_redeem_coupon),
                 com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity.class,
-                variables);
+                variables, false);
         mRedeemCouponUseCase.clearRequest();
         mRedeemCouponUseCase.addRequest(request);
         mRedeemCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -114,7 +114,7 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
         variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 1);
         variables.put(CommonConstant.GraphqlVariableKeys.GIFT_EMAIL, email);
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_validate_redeem),
-                ValidateCouponBaseEntity.class, variables);
+                ValidateCouponBaseEntity.class, variables, false);
         mStartSendGift.clearRequest();
         mStartSendGift.addRequest(graphqlRequest);
         mStartSendGift.execute(new Subscriber<GraphqlResponse>() {

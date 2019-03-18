@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.util.urlIsFile
 import java.io.File
 
 /**

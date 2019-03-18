@@ -1,10 +1,10 @@
 package com.tokopedia.shop.product.domain.interactor;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductCampaign;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
 import java.util.ArrayList;
@@ -17,13 +17,13 @@ import rx.schedulers.Schedulers;
 public abstract class BaseGetShopProductAttributeUseCase<T> extends UseCase<T> {
 
     private final GetWishListUseCase getWishListUseCase;
-    private final UserSession userSession;
+    protected final UserSessionInterface userSession;
     protected final ShopProductMapper shopProductMapper;
     private final GetProductCampaignsUseCase getProductCampaignsUseCase;
 
     public BaseGetShopProductAttributeUseCase(GetWishListUseCase getWishListUseCase,
                                               GetProductCampaignsUseCase getProductCampaignsUseCase,
-                                              UserSession userSession, ShopProductMapper shopProductMapper) {
+                                              UserSessionInterface userSession, ShopProductMapper shopProductMapper) {
         this.getWishListUseCase = getWishListUseCase;
         this.getProductCampaignsUseCase = getProductCampaignsUseCase;
         this.userSession = userSession;
@@ -31,8 +31,8 @@ public abstract class BaseGetShopProductAttributeUseCase<T> extends UseCase<T> {
     }
 
     protected Observable<List<ShopProductViewModel>> getShopProductViewModelList(
+            final boolean isLogin,
             final boolean isShopOwner, boolean officialStore, final List<ShopProductViewModel> shopProductViewModelList) {
-        List<String> defaultWishList = new ArrayList<>();
         List<ShopProductCampaign> defaultShopProductCampaignList = new ArrayList<>();
         Observable<List<String>> wishlistObservable;
         Observable<List<ShopProductCampaign>> campaignListObservable;
@@ -41,10 +41,10 @@ public abstract class BaseGetShopProductAttributeUseCase<T> extends UseCase<T> {
         for (ShopProductViewModel shopProductViewModel : shopProductViewModelList) {
             productIdList.add(shopProductViewModel.getId());
         }
-        if (shopProductViewModelList.size() > 0 && !isShopOwner) {
+        if (shopProductViewModelList.size() > 0 && isLogin && !isShopOwner) {
             wishlistObservable = getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList));
         } else {
-            wishlistObservable = Observable.just(defaultWishList);
+            wishlistObservable = Observable.just(new ArrayList<>());
         }
         if (shopProductViewModelList.size() > 0 && officialStore) {
             campaignListObservable = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));

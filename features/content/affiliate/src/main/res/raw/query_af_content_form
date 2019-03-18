@@ -7,6 +7,7 @@ query ContentForm($relatedID: [String], $type: String) {
       id
       name
       thumbnail
+      badge
     }
     media {
       multiple_media

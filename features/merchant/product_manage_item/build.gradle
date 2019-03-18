@@ -31,6 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.cacheManager)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.core)

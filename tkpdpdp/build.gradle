@@ -65,6 +65,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
@@ -75,8 +76,8 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.appIndexing
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.appIndexing
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.playServicesDependencies.maps
 
     implementation rootProject.ext.viewDependencies.appIntro

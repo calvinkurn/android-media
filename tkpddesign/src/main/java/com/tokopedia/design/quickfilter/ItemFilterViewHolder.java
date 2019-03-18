@@ -16,7 +16,7 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
 
     protected LinearLayout layoutBorder;
     protected LinearLayout layoutInside;
-    private TextView filterName;
+    protected TextView filterName;
 
     public ItemFilterViewHolder(View itemView, QuickSingleFilterListener listener) {
         super(itemView, listener);
@@ -48,12 +48,12 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
         GradientDrawable drawableInside = (GradientDrawable) layoutInside.getBackground().getCurrent().mutate();
         GradientDrawable drawableBorder = (GradientDrawable) layoutBorder.getBackground().getCurrent().mutate();
         if (selected) {
-            drawableBorder.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.tkpd_main_green));
-            drawableInside.setColor(ContextCompat.getColor(layoutBorder.getContext(), R.color.light_green));
+            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), R.color.tkpd_main_green));
+            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.light_green));
             filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), R.color.tkpd_main_green));
         } else {
-            drawableBorder.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.grey_300));
-            drawableInside.setColor(ContextCompat.getColor(layoutBorder.getContext(), R.color.white));
+            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), R.color.grey_300));
+            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.white));
             filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), R.color.font_black_primary_70));
         }
     }

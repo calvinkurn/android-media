@@ -52,8 +52,6 @@ public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetHomeIntent(Context context);
 
-    Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
-
     Intent getGeolocationIntent(Context context, LocationPass locationPass);
 
     boolean checkoutModuleRouterGetEnableFingerprintPayment();

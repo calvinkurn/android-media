@@ -8,7 +8,7 @@ public class AddToCartResult {
     private boolean success;
     private String message;
     private String cartId;
-    private String source;
+    private String source = "";
 
     public AddToCartResult() {
     }

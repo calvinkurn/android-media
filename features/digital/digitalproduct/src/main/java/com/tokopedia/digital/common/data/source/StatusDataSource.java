@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
 import com.tokopedia.digital.widget.view.model.status.Status;
@@ -24,11 +24,11 @@ public class StatusDataSource {
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
     private final static String KEY_CATEGORY_LIST = "RECHARGE_CATEGORY_LIST";
 
-    private DigitalEndpointService digitalEndpointService;
+    private DigitalRestApi digitalEndpointService;
     private CacheManager cacheManager;
     private StatusMapper statusMapper;
 
-    public StatusDataSource(DigitalEndpointService digitalEndpointService,
+    public StatusDataSource(DigitalRestApi digitalEndpointService,
                             CacheManager globalCacheManager,
                             StatusMapper statusMapper) {
         this.digitalEndpointService = digitalEndpointService;
@@ -37,7 +37,7 @@ public class StatusDataSource {
     }
 
     public Observable<Status> getStatus() {
-        return digitalEndpointService.getApi().getStatus()
+        return digitalEndpointService.getStatus()
                 .map(getFuncTransformStatusEntity())
                 .map(status -> {
                     String currentStatusString = cacheManager.get(KEY_STATUS_CURRENT);

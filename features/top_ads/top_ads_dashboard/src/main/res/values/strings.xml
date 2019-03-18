@@ -6,6 +6,7 @@
     <string name="top_ads_title_product">Produk</string>
     <string name="title_date_picker">Atur Tanggal</string>
 
+    <string name="label_back">Kembali</string>
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
     <string name="label_top_ads_ctr">Persentase Klik</string>
@@ -14,6 +15,7 @@
     <string name="label_top_ads_conversion_store">Favorit</string>
     <string name="label_top_ads_average">Rata - Rata</string>
     <string name="label_top_ads_cost">Terpakai</string>
+    <string name="label_top_ads_choose_credit">Pilih</string>
 
     <string name="topads_dashboard_all_promo_menu">Semua Iklan</string>
 
@@ -95,4 +97,12 @@
     <string name="label_credit_used">Total Terpakai</string>
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
     <string name="top_ads_no_credit_history">Belum Ada Transaksi</string>
+    <string name="descr_min_autotopup">Kredit TopAds akan terisi secara otomatis dari saldo Tokopedia ketika kredit kurang dari %1$s</string>
+    <string name="topads_inactive">Tidak Aktif</string>
+    <string name="label_status">Status</string>
+    <string name="title_add_auto_topup">Nominal Top Up</string>
+    <string name="subtitle_add_auto_topup">Jumlah kredit yang ingin Anda tambahkan secara otomatis.</string>
+    <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
+    <string name="tooltip_auto_topup_descr">Kredit TopAds akan terisi secara otomatis dari Saldo Tokopedia.</string>
+    <string name="auto_topup_success_changed">Status Auto Top Up Berhasil Diperbaharui</string>
 </resources>

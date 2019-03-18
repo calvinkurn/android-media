@@ -22,7 +22,7 @@ class CreatePostPresenter @Inject constructor(
         view.showLoading()
         getContentFormUseCase.execute(
                 GetContentFormUseCase.createRequestParams(idList, type),
-                GetContentFormSubscriber(view)
+                GetContentFormSubscriber(view, type)
         )
     }
 }

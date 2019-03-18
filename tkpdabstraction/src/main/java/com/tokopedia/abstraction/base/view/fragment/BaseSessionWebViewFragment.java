@@ -4,10 +4,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
+import com.tokopedia.user.session.UserSession;
 
+/**
+ * Please use from module webview instead.
+ */
+@Deprecated
 public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public static final String ARGS_URL = "arg_url";
 
@@ -29,7 +32,7 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
         super.onCreate(savedInstanceState);
         url = getArguments().getString(ARGS_URL);
         isTokopediaUrl = Uri.parse(url).getHost().contains(TOKOPEDIA_STRING);
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity());
     }
 
     @Override

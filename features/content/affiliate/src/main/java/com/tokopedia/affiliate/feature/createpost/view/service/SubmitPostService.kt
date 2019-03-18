@@ -67,11 +67,14 @@ class SubmitPostService : IntentService(TAG) {
         submitPostUseCase.notificationManager = notificationManager
         submitPostUseCase.execute(
                 SubmitPostUseCase.createRequestParams(
-                        viewModel.productIdList.firstOrNull() ?: "",
-                        viewModel.adIdList.firstOrNull() ?: "",
+                        viewModel.authorType,
                         viewModel.token,
+                        if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                        else userSession.shopId,
+                        viewModel.caption,
                         viewModel.completeImageList,
-                        viewModel.mainImageIndex
+                        if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+                        else viewModel.productIdList
                 ),
                 getSubscriber()
         )
@@ -84,6 +87,8 @@ class SubmitPostService : IntentService(TAG) {
                 .inject(this)
     }
 
+    private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
+
     private fun getNotificationManager(draftId: String, authorType: String, firstImage: String,
                                        notifId: Int, maxCount: Int): SubmitPostNotificationManager {
 
@@ -92,7 +97,7 @@ class SubmitPostService : IntentService(TAG) {
                 this@SubmitPostService) {
 
             override fun getSuccessIntent(): PendingIntent {
-                val applink = if (authorType == TYPE_AFFILIATE) {
+                val applink = if (isTypeAffiliate(authorType)) {
                     ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
                 } else {
                     ApplinkConst.FEED

@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -15,6 +17,8 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+import static com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.cacheDuration;
 
 public class GetTickerWithdrawalMessageUseCase {
 
@@ -40,10 +44,14 @@ public class GetTickerWithdrawalMessageUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_withdrawal_ticker),
                 GqlWithdrawalTickerResponse.class,
-                usableRequestMap);
+                usableRequestMap, false);
 
+        GraphqlCacheStrategy cacheStrategy =
+                new GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                        .setExpiryTime(cacheDuration).setSessionIncluded(true).build();
+
+        graphqlUseCase.setCacheStrategy(cacheStrategy);
         graphqlUseCase.addRequest(graphqlRequest);
-
         graphqlUseCase.execute(subscriber);
     }
 

@@ -2,18 +2,18 @@ package com.tokopedia.shop.open.domain.interactor;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
+import com.tokopedia.product.manage.item.common.util.ShopSettingNetworkConstant;
 import com.tokopedia.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.shop.open.domain.model.ShopOpenSaveInfoRequestDomainModel;
 import com.tokopedia.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
-import com.tokopedia.product.manage.item.common.util.ShopSettingNetworkConstant;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,12 +46,12 @@ public class ShopOpenSaveInfoUseCase extends UseCase<ShopOpenSaveInfoResponseMod
 
     private ShopOpenSaveInfoRepository shopOpenSaveInfoRepository;
     private UploadImageUseCase<UploadShopImageModel> uploadImageUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public ShopOpenSaveInfoUseCase(ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
                                    UploadImageUseCase<UploadShopImageModel> uploadImageUseCase,
-                                   @ImageUploaderQualifier UserSession userSession) {
+                                   @ImageUploaderQualifier UserSessionInterface userSession) {
         this.shopOpenSaveInfoRepository = shopOpenSaveInfoRepository;
         this.uploadImageUseCase = uploadImageUseCase;
         this.userSession = userSession;
