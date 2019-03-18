@@ -56,16 +56,10 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
 
         if (model.getOrderDetail().getFulfillBy() == 1) {
             layoutFulfillment.setVisibility(View.VISIBLE);
-            layoutFulfillment.setOnClickListener(view -> {
-                Tooltip tooltip = new Tooltip(view.getContext());
-                tooltip.setTitle("Tak Perlu Repot Lagi");
-                tooltip.setDesc("Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang");
-                tooltip.setTextButton("Mengerti");
-                tooltip.setIcon(R.drawable.ic_logistic_som_tokocabang_normal);
-                tooltip.getBtnAction().setOnClickListener(view1 -> tooltip.dismiss());
-                tooltip.show();
-            });
-        } // else
+            layoutFulfillment.setOnClickListener(getFulfillmentTooltip());
+        } else {
+            layoutFulfillment.setVisibility(View.GONE);
+        }
 
     }
 
@@ -87,5 +81,18 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
                 clickListener.onItemClicked(getAdapterPosition());
             }
         });
+    }
+
+    private View.OnClickListener getFulfillmentTooltip() {
+        return view -> {
+            Context context = view.getContext();
+            Tooltip tooltip = new Tooltip(context);
+            tooltip.setTitle(context.getString(R.string.tooltip_fulfillment_title));
+            tooltip.setDesc(context.getString(R.string.tooltip_fulfillment_desc));
+            tooltip.setTextButton(context.getString(R.string.understand));
+            tooltip.setIcon(R.drawable.ic_logistic_som_tokocabang_normal);
+            tooltip.getBtnAction().setOnClickListener(view1 -> tooltip.dismiss());
+            tooltip.show();
+        };
     }
 }

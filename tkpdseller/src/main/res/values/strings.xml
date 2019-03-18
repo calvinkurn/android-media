@@ -228,4 +228,6 @@
     <string name="title_seller_tx_shipped">Sedang Dikirim</string>
     <string name="title_seller_tx_delivered">Sampai Tujuan</string>
     <string name="product_label_message_error_upload_image">Gagal mengunggah gambar, silahkan coba lagi.</string>
+    <string name="tooltip_fulfillment_title">Tak Perlu Repot Lagi</string>
+    <string name="tooltip_fulfillment_desc">Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang</string>
 </resources>
