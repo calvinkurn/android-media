@@ -63,7 +63,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         voteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onVoteComponentClicked("vote", element.getMessage());
+                listener.onVoteComponentClicked("vote", element.getMessage(), "");
             }
         });
     }

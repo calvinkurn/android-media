@@ -103,12 +103,15 @@ buildscript {
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
+        flatDir {
+            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
+        }
     }
     dependencies {
         classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
             exclude group: 'com.android.tools.build', module: 'gradle'
         }
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -320,7 +323,6 @@ dependencies {
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
-    implementation project(rootProject.ext.features.flightDbFlow)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
@@ -436,10 +438,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
 
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)

@@ -379,7 +379,8 @@ class PlayWebSocketMessageMapper @Inject constructor() {
                     VoteInfoViewModel.getStringVoteInfo(activePollPojo.pollTypeId),
                     activePollPojo.winnerUrl.trim { it <= ' ' },
                     activePollPojo.startTime,
-                    activePollPojo.endTime
+                    activePollPojo.endTime,
+                    activePollPojo.voteUrl
             )
         } else {
             null

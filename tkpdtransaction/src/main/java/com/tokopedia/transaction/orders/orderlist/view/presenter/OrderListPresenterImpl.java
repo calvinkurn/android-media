@@ -51,7 +51,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page, int orderId) {
-        if (getView().getAppContext() == null)
+        if (getView() == null || getView().getAppContext() == null)
             return;
         getView().showProcessGetData();
         GraphqlRequest graphqlRequest;
@@ -89,11 +89,13 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                getView().removeProgressBarView();
-                getView().unregisterScrollListener();
-                getView().showErrorNetwork(
-                        ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                if (getView() != null && getView().getAppContext()!=null) {
+                    CommonUtils.dumper("error =" + e.toString());
+                    getView().removeProgressBarView();
+                    getView().unregisterScrollListener();
+                    getView().showErrorNetwork(
+                            ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                }
             }
 
             @Override
@@ -122,7 +124,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         });
     }
 
-
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
         List<QuickFilterItem> quickFilterItems = new ArrayList<>();
         int selctedIndex = 0;
@@ -143,7 +144,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         }
         getView().renderOrderStatus(quickFilterItems, selctedIndex);
     }
-
 
     @Override
     public void detachView() {

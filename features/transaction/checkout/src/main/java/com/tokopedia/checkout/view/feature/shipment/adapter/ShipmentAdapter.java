@@ -88,7 +88,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastChooseCourierItemPosition;
     private String cartIds;
     private int lastServiceId;
-
+    private String blackboxInfo;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -935,6 +935,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void setLastServiceId(int lastServiceId) {
         this.lastServiceId = lastServiceId;
     }
+
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
 
     public PromoData getPromoData() {
         return promoData;

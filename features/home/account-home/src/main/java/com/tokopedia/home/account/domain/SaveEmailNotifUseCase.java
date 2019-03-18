@@ -3,7 +3,6 @@ package com.tokopedia.home.account.domain;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
@@ -13,6 +12,7 @@ import com.tokopedia.home.account.data.model.SettingEditResponse;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import okhttp3.Interceptor;
 
 public class SaveEmailNotifUseCase extends RestRequestSupportInterceptorUseCase{
     private HashMap<String, Integer> bodyParams = new HashMap<>();
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
-    @Inject public SaveEmailNotifUseCase(UserSession userSession, List<Interceptor> interceptors,
+    @Inject public SaveEmailNotifUseCase(UserSessionInterface userSession, List<Interceptor> interceptors,
                                          @ApplicationContext Context context) {
         super(interceptors, context);
         this.userSession = userSession;
