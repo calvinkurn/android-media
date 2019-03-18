@@ -63,6 +63,54 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_choose_variant"/>
 
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/title_multiorigin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:drawablePadding="@dimen/dp_4"
+        android:visibility="gone"
+        app:drawableRightCompat="@drawable/ic_pdp_fulfillment"
+        app:fontSize="micro"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/variant_divider"
+        app:layout_goneMarginTop="@dimen/dp_0"
+        tools:text="@string/service_by_tokopedia"
+        tools:visibility="visible" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/subtitle_multiorigin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:background="@color/grey_background"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="@string/multiorigin_desc"
+        app:fontSize="micro"
+        app:textViewTheme="lightSecondary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_multiorigin"/>
+
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/txt_rate_estimation_start"
         android:layout_width="0dp"
@@ -80,7 +128,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/variant_divider"/>
+        app:layout_constraintTop_toBottomOf="@+id/subtitle_multiorigin"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/icon_shop_location"
@@ -167,6 +215,7 @@
         app:srcCompat="@drawable/ic_pdp_order_prioritas"
         android:visibility="gone"
         tools:visibility="visible"
+        app:layout_goneMarginTop="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/priority_order_divider"/>

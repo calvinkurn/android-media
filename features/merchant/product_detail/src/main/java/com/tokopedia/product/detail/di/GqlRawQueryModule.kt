@@ -159,4 +159,11 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_USER_COD_STATUS)
     fun provideUserCodStatus(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_user_cod)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_MULTI_ORIGIN)
+    fun provideMultiOrigin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_nearest_warehouse)
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.Typeface
+import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -20,6 +22,16 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     companion object {
         fun build(_view: View) = PartialVariantAndRateEstView(_view)
+    }
+
+    init {
+        val titleFulfillment = view.title_multiorigin.text
+        val spanText = SpannableString(titleFulfillment)
+        val from = titleFulfillment.length - "tokopedia".length - 1
+        spanText.setSpan(StyleSpan(Typeface.BOLD), from, titleFulfillment.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.tkpd_main_green)),
+                from, titleFulfillment.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        view.title_multiorigin.text = spanText
     }
 
     fun renderData(productVariant: ProductVariant?, selectedOptionString: String, onVariantClickedListener: (() -> Unit)? = null) {
@@ -100,6 +112,18 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                 icon_priority_order.gone()
                 txt_priority_order_title.gone()
                 txt_priority_order_message.gone()
+            }
+        }
+    }
+
+    fun renderFulfillment(fulfillment: Boolean) {
+        with(view){
+            if (fulfillment){
+                title_multiorigin.visible()
+                subtitle_multiorigin.visible()
+            } else {
+                title_multiorigin.gone()
+                subtitle_multiorigin.gone()
             }
         }
     }

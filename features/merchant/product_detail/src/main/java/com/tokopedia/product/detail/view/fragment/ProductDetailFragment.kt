@@ -1038,6 +1038,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
         otherProductView.renderData(productInfoP2.productOthers)
+        partialVariantAndRateEstView.renderFulfillment(productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
     }
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {

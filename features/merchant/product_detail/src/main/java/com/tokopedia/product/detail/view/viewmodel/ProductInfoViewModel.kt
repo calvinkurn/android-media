@@ -36,6 +36,7 @@ import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
+import com.tokopedia.product.detail.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.data.util.weightInKg
@@ -197,7 +198,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
                 ProductOther.Response::class.java, otherProductParams)
 
-
+        val nearestWarehouseParam = mapOf("productIds" to listOf(productId.toString()))
+        val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
+                MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
 
         val shopCodParam = mapOf("shopID" to shopId.toString())
         val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
@@ -205,7 +208,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         val requests = mutableListOf(shopRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
-                helpfulReviewRequest, latestTalkRequest, otherProductRequest, shopCodRequest)
+                helpfulReviewRequest, latestTalkRequest, otherProductRequest, shopCodRequest,
+                nearestWarehouseRequest)
 
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
@@ -269,6 +273,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             if (gqlResponse.getError(ShopCodStatus.Response::class.java)?.isNotEmpty() != true){
                 productInfoP2.shopCod = gqlResponse.getData<ShopCodStatus.Response>(ShopCodStatus.Response::class.java)
                         .result.shopCodStatus.isCod
+            }
+
+            if (gqlResponse.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true){
+                gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
+                        .result.data.firstOrNull()?.let { productInfoP2.nearestWarehouse = it }
             }
 
             productInfoP2

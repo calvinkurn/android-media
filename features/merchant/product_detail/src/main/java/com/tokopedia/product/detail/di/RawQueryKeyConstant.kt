@@ -22,4 +22,5 @@ object RawQueryKeyConstant {
     const val MUTATION_FAVORITE_SHOP = "favorite_shop"
     const val QUERY_SHOP_COD_STATUS = "shop_cod_status"
     const val QUERY_USER_COD_STATUS = "user_cod_status"
+    const val QUERY_MULTI_ORIGIN = "multiorigin"
 }

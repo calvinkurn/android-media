@@ -107,4 +107,6 @@
     <string name="to">ke %1$s</string>
     <string name="open_shop">Buka Toko GRATIS</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
+    <string name="service_by_tokopedia">Dilayani oleh Tokopedia</string>
+    <string name="multiorigin_desc">Barang lebih cepat tiba karena dikirim dari gudang terdekat</string>
 </resources>
