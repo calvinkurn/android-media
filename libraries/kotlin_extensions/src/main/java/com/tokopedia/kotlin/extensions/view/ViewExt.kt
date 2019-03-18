@@ -130,19 +130,9 @@ fun View.getDimens(@DimenRes id: Int): Int {
 fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     impressHolder = holder;
     hintListener = listener;
-    this.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener{
-        override fun onViewAttachedToWindow(v: View?) {
-            if (impressHolder != null && !impressHolder!!.isInvoke) {
-                invoke(v)
-            }
-        }
-
-        override fun onViewDetachedFromWindow(v: View?) {
-            if (impressHolder != null && impressHolder!!.isInvoke) {
-                revoke(v)
-            }
-        }
-    })
+    if (impressHolder != null && !impressHolder!!.isInvoke) {
+        invoke(this)
+    }
 }
 
 private var hintListener: ViewHintListener? = null
