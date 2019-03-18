@@ -1,9 +1,8 @@
 package com.tokopedia.groupchat.chatroom.domain.mapper
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
+import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentData
 import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentPojo
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.network.data.model.response.DataResponse
 import retrofit2.Response
@@ -35,8 +34,22 @@ class StickyComponentMapper @Inject constructor() : Func1<Response<DataResponse<
                 pojo.stickyComponent.primaryText,
                 pojo.stickyComponent.secondaryText,
                 pojo.stickyComponent.linkUrl,
-                pojo.stickyComponent.stickyTime
+                pojo.stickyComponent.stickyTime,
+                pojo.stickyComponent.relatedButton
         )
     }
 
+
+    public fun mapToViewModel(pojo: StickyComponentData): StickyComponentViewModel {
+        return StickyComponentViewModel(
+                pojo.componentId,
+                pojo.componentType,
+                pojo.imageUrl,
+                pojo.primaryText,
+                pojo.secondaryText,
+                pojo.linkUrl,
+                pojo.stickyTime,
+                pojo.relatedButton
+        )
+    }
 }
