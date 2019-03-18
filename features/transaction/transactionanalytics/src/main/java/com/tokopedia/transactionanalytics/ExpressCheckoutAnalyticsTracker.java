@@ -1,8 +1,6 @@
 package com.tokopedia.transactionanalytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import java.util.HashMap;
 

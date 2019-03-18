@@ -1,7 +1,5 @@
 package com.tokopedia.logisticanalytics;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
 import javax.inject.Inject;
 
 public class SalesShippingAnalytics extends LogisticAnalytics {

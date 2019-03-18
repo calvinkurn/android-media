@@ -2,8 +2,6 @@ package com.tokopedia.nps.presentation.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.nps.NpsAnalytics;
 import com.tokopedia.nps.data.repository.FeedbackDataRepository;
 import com.tokopedia.nps.domain.repository.FeedbackRepository;

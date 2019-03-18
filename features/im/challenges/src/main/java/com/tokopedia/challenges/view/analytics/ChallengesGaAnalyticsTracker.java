@@ -1,16 +1,9 @@
 package com.tokopedia.challenges.view.analytics;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 

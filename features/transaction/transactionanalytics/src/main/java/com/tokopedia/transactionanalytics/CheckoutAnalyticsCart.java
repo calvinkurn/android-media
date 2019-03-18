@@ -1,18 +1,15 @@
 package com.tokopedia.transactionanalytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import java.util.Map;
 
-import javax.inject.Inject;
-
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.CustomDimension;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Key;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.CustomDimension;
 
 
 /**

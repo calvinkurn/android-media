@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.topads.sdk.domain.model.Product;
 
 import rx.Observable;
 
@@ -65,6 +63,4 @@ public interface IHomeRouter {
     String getExtraBroadcastReceiverWallet();
 
     Intent getIntentCreateShop(Context context);
-
-    AnalyticTracker getAnalyticTracker();
 }

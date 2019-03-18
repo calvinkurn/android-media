@@ -5,12 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -49,8 +48,6 @@ public interface TokoCashRouter {
     Intent getWebviewActivityWithIntent(Context context, String url);
 
     String getExtraBroadcastReceiverWallet();
-
-    AnalyticTracker getAnalyticTracker();
 
     Observable<InfoQrTokoCash> getInfoQrTokoCashUseCase(RequestParams requestParams);
 

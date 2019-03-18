@@ -1,16 +1,9 @@
 package com.tokopedia.digital_deals.view.utils;
 
-import android.content.Context;
-
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

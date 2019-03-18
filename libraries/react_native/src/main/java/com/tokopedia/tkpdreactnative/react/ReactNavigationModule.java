@@ -14,7 +14,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -29,16 +28,13 @@ import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerprintDialogConfirmation;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.SingleAuthPaymentDialog;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
 import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author ricoharisin .

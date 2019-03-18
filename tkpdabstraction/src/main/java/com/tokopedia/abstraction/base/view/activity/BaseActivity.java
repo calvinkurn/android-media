@@ -16,7 +16,6 @@ import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;

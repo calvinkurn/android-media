@@ -2,19 +2,31 @@ package com.tokopedia.navigation;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.navigation.GlobalNavConstant.Analytics.*;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.BOTTOM;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOMEPAGE;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOME_PAGE;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_ACTION;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CATEGORY;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_LABEL;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.HOME_PAGE;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.INBOX;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.NAV;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.NOTIFICATION;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.PAGE;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.SCREEN_NAME;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.SCREEN_NAME_CHAT;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.TOP_NAV;
 
 /**
  * Created by meta on 03/08/18.

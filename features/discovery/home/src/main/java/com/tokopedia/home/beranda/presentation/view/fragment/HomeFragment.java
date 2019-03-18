@@ -28,12 +28,10 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
@@ -82,9 +80,11 @@ import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -611,14 +611,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onDigitalMoreClicked(int pos) {
-        AnalyticTracker tracker = HomePageTracking.getTracker(getActivity());
+        Analytics tracker = HomePageTracking.getTracker(getActivity());
         if (tracker != null) {
-            tracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
                     DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
                     DigitalEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
                     ""
-            );
+            ));
         }
     }
 

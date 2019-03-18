@@ -1,11 +1,10 @@
 package com.tokopedia.logisticanalytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.*;
-
-import javax.inject.Inject;
-
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventAction;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventCategory;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventName;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.Key;
 
 import java.util.Map;
 

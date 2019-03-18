@@ -3,7 +3,6 @@ package com.tokopedia.flight.common.di.component;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -21,7 +20,6 @@ import com.tokopedia.flight.search.data.db.FlightComboDao;
 import com.tokopedia.flight.search.data.db.FlightJourneyDao;
 import com.tokopedia.flight.search.data.db.FlightRouteDao;
 import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;

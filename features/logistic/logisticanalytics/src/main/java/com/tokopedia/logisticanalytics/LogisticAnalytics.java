@@ -2,7 +2,6 @@ package com.tokopedia.logisticanalytics;
 
 import android.app.Activity;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
 public interface DealsModuleRouter {
 
     Intent getLoginIntent(Context context);
@@ -21,6 +19,4 @@ public interface DealsModuleRouter {
     void shareDeal(Context context, String uri, String name, String imageUrl, String desktopUrl);
 
     Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(Context context, String platform, String category, String defaultSelectedTab);
-
-    AnalyticTracker getAnalyticTracker();
 }

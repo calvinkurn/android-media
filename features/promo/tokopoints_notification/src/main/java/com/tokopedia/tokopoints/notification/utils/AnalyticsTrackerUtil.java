@@ -2,8 +2,6 @@ package com.tokopedia.tokopoints.notification.utils;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 

@@ -28,8 +28,6 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
@@ -37,7 +35,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -96,13 +93,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
-import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -132,6 +125,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -215,6 +209,8 @@ import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
+import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
@@ -231,6 +227,7 @@ import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
+import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -295,9 +292,10 @@ import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
-import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
+import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -403,6 +401,7 @@ import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -480,9 +479,9 @@ import rx.Observable;
 import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 
 /**
@@ -608,7 +607,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
-    private AnalyticTracker analyticTracker;
 
     private Iris mIris;
 
@@ -1661,52 +1659,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void refreshToken() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         accessTokenRefresh.refreshToken();
-    }
-
-    @NonNull
-    @Override
-    public AnalyticTracker getAnalyticTracker() {
-        initAnalyticTracker();
-        return analyticTracker;
-    }
-
-    private void initAnalyticTracker() {
-        if (analyticTracker == null) {
-            analyticTracker = new AnalyticTracker() {
-                @Override
-                public void sendEventTracking(Map<String, Object> events) {
-                    ConsumerRouterApplication.this.sendEventTracking(events);
-                }
-
-                @Override
-                public void sendEventTracking(String event, String category, String action, String label) {
-                    UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
-                            event,
-                            category,
-                            action,
-                            label
-                    ).getEvent());
-                }
-
-                @Override
-                public void sendScreen(Activity activity, final String screenName) {
-                    ScreenTracking.sendScreen(ConsumerRouterApplication.this, screenName);
-                }
-
-                @Override
-                public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
-                    if (activity != null && !TextUtils.isEmpty(screenName)) {
-                        ScreenTracking.eventCustomScreen(activity, screenName, shopID,
-                                shopType, pageType, productId);
-                    }
-                }
-
-                @Override
-                public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
-                    ConsumerRouterApplication.this.sendEnhanceECommerceTracking(trackingData);
-                }
-            };
-        }
     }
 
     @Override
