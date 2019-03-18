@@ -67,7 +67,7 @@
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_gravity="center_vertical"
-                app:srcCompat="@drawable/ic_kol_badge"
+                app:srcCompat="@drawable/search_kol_badge"
                 />
 
             <TextView
