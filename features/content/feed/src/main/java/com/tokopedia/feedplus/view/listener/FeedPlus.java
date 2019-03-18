@@ -223,5 +223,7 @@ public interface FeedPlus {
         void toggleFavoriteShop(int rowNumber, String shopId);
 
         void toggleFavoriteShop(int rowNumber, int adapterPosition, String shopId);
+
+        void trackAffiliate(String url);
     }
 }
