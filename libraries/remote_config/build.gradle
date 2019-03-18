@@ -16,8 +16,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
 
-    implementation rootProject.ext.playServicesDependencies.firebase
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
+    implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.config
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

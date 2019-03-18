@@ -78,7 +78,6 @@ import rx.Observable;
 import rx.functions.Func1;
 
 import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
-import static com.tokopedia.withdraw.view.activity.WithdrawActivity.IS_SELLER;
 
 public class WithdrawFragment extends BaseDaggerFragment implements WithdrawContract.View {
 
@@ -205,19 +204,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bankAdapter.setList(listBank);
 
         if (getArguments() != null) {
-            isSeller = getArguments().getBoolean(IS_SELLER);
             buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
             sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
         }
 
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
 
-        if (isSeller) {
-            saldoTypeCV.setVisibility(View.VISIBLE);
-            new Handler().postDelayed(this::startShowCase, SHOW_CASE_DELAY);
-        } else {
-            saldoTypeCV.setVisibility(View.GONE);
-        }
+        saldoTypeCV.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(this::startShowCase, SHOW_CASE_DELAY);
 
         bankWithMinimumWithdrawal = Arrays.asList("bca", "bri", "mandiri", "bni", "bank central asia", "bank negara indonesia",
                 "bank rakyat indonesia");
@@ -304,7 +298,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         totalWithdrawal.addTextChangedListener(currencyTextWatcher);
         totalWithdrawal.setText("");
-
+        checkMinimumWithdrawal(0);
         totalWithdrawal.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -448,23 +442,26 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         } else {
             totalWithdrawal.getBackground().mutate().
                     setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setText(getString(R.string.saldo_withdraw_hint));
+            String minAmount = CurrencyFormatUtil.convertPriceValueToIdrFormat(checkSelectedBankMinimumWithdrawal(), false);
+            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minAmount));
             saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_500));
         }
 
     }
 
     private boolean checkMinimumWithdrawal(int withdrawal) {
+        int min = checkSelectedBankMinimumWithdrawal();
+        String minAmount = CurrencyFormatUtil.convertPriceValueToIdrFormat(min, false);
+        saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minAmount));
+
         if (withdrawal == 0) {
             showErrorWithdrawal(null);
             return false;
         }
-        int min = checkSelectedBankMinimumWithdrawal();
 
         if (withdrawal < min) {
             totalWithdrawal.getBackground().mutate().
                     setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setText(getString(R.string.saldo_withdraw_hint));
             saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
             return false;
         } else {
@@ -476,7 +473,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private int checkSelectedBankMinimumWithdrawal() {
         BankAccount selectedBank = bankAdapter.getSelectedBank();
         if (selectedBank == null) {
-            return 0;
+            return DEFAULT_MIN_FOR_SELECTED_BANK;
         }
         String selectedBankName = selectedBank.getBankName().toLowerCase();
         if (inBankGroup(selectedBankName)) {
@@ -542,6 +539,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         if (!userSession.isMsisdnVerified()) {
             showMustVerify();
         }
+        checkMinimumWithdrawal(0);
     }
 
     private void showMustVerify() {
