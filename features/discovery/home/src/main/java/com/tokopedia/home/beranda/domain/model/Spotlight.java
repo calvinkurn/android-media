@@ -65,7 +65,7 @@ public class Spotlight {
         List<Object> list = new ArrayList<>();
 
         if (spotlights != null) {
-            for (int i = 0; i < spotlights.length; i++) {
+            for (int i = 0; i < spotlights.size(); i++) {
                 SpotlightItem item = spotlights.get(i);
                 list.add(
                         DataLayer.mapOf(
