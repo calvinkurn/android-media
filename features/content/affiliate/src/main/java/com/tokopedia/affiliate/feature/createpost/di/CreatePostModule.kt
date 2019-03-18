@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse
+import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadvideo.UploadVideoResponse
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.presenter.CreatePostPresenter
 import com.tokopedia.imageuploader.di.ImageUploaderModule
@@ -18,6 +19,10 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videouploader.data.UploadVideoApi
+import com.tokopedia.videouploader.di.VideoUploaderModule
+import com.tokopedia.videouploader.di.VideoUploaderQualifier
+import com.tokopedia.videouploader.domain.UploadVideoUseCase
 
 import dagger.Module
 import dagger.Provides
@@ -25,7 +30,7 @@ import dagger.Provides
 /**
  * @author by milhamj on 9/26/18.
  */
-@Module(includes = [ImageUploaderModule::class])
+@Module(includes = [ImageUploaderModule::class, VideoUploaderModule::class])
 class CreatePostModule(private val context: Context) {
 
     @Provides
@@ -75,5 +80,13 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager {
         return context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideUploadVideoUseCase(
+            @VideoUploaderQualifier uploadVideoApi: UploadVideoApi,
+            @VideoUploaderQualifier gson: Gson): UploadVideoUseCase<UploadVideoResponse> {
+        return UploadVideoUseCase(uploadVideoApi, gson, UploadVideoResponse::class.java)
     }
 }

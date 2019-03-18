@@ -6,10 +6,10 @@ package com.tokopedia.videouploader.data
 class UploadVideoUrl{
 
     companion object{
-        const val BASE_URL = "http://172.21.62.76"
+        const val BASE_URL = "http://10.255.15.68"
 
-        const val URL_GENERATE_TOKEN = "$BASE_URL/video/token"
-        const val URL_UPLOAD_VIDEO = "$BASE_URL/video/upload"
+        const val URL_GENERATE_TOKEN = "$BASE_URL/v1/video/token"
+        const val URL_UPLOAD_VIDEO = "$BASE_URL/v1/video/upload"
         const val URL_GET_VIDEO_INFO= "$BASE_URL/video/info"
     }
 

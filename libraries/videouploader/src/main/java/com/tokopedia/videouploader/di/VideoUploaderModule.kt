@@ -1,6 +1,7 @@
 package com.tokopedia.videouploader.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.readystatesoftware.chuck.ChuckInterceptor
@@ -34,8 +35,7 @@ import java.util.concurrent.TimeUnit
  */
 
 @Module
-class VideoUploaderModule(private val isNeedProgress: Boolean = false,
-                          private val progressListener: ProgressResponseBody.ProgressListener) {
+class VideoUploaderModule constructor() {
 
     private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     private val NET_READ_TIMEOUT = 100
@@ -43,12 +43,34 @@ class VideoUploaderModule(private val isNeedProgress: Boolean = false,
     private val NET_CONNECT_TIMEOUT = 100
     private val NET_RETRY = 1
 
+    private var isNeedProgress = false
+    private var progressListener : ProgressResponseBody.ProgressListener = ProgressResponseBody.ProgressListener { _, _, _ -> }
+
+    constructor(isNeedProgress: Boolean = false,
+                progressListener: ProgressResponseBody.ProgressListener) : this(){
+        this.isNeedProgress = isNeedProgress
+        this.progressListener = progressListener
+    }
+
+    @VideoUploaderQualifier
+    @Provides
+    fun provideResources(@ApplicationContext context: Context): Resources {
+        return context.resources
+    }
+
+    @VideoUploaderQualifier
+    @Provides
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
+
+
     @VideoUploaderQualifier
     @Provides
     fun provideOkHttpClient(@VideoUploaderQualifier tkpdAuthInterceptor: TkpdAuthInterceptor,
                             @VideoUploaderQualifier fingerprintInterceptor: FingerprintInterceptor,
                             @VideoUploaderQualifier retryPolicy: OkHttpRetryPolicy,
-                            @VideoUploaderQualifier chuckInterceptor: Interceptor,
+                            @VideoUploaderQualifier chuckInterceptor: ChuckInterceptor,
                             @VideoUploaderQualifier loggingInterceptor: HttpLoggingInterceptor,
                             @VideoUploaderQualifier errorHandlerInterceptor: ErrorResponseInterceptor,
                             @VideoUploaderQualifier cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
@@ -80,30 +102,30 @@ class VideoUploaderModule(private val isNeedProgress: Boolean = false,
 
     @VideoUploaderQualifier
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context,
-                             networkRouter: NetworkRouter,
-                             userSessionInterface: UserSessionInterface): NetworkRouter {
+    fun provideNetworkRouter(@VideoUploaderQualifier context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
 
     @VideoUploaderQualifier
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSessionInterface(@VideoUploaderQualifier context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @VideoUploaderQualifier
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
-                                   networkRouter: NetworkRouter,
-                                   userSessionInterface: UserSessionInterface): TkpdAuthInterceptor {
+    fun provideTkpdAuthInterceptor(@VideoUploaderQualifier context: Context,
+                                   @VideoUploaderQualifier networkRouter: NetworkRouter,
+                                   @VideoUploaderQualifier userSessionInterface:
+                                   UserSessionInterface): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @VideoUploaderQualifier
     @Provides
-    fun provideFingerprintInterceptor(networkRouter: NetworkRouter,
-                                      userSessionInterface: UserSessionInterface): FingerprintInterceptor {
+    fun provideFingerprintInterceptor(@VideoUploaderQualifier networkRouter: NetworkRouter,
+                                      @VideoUploaderQualifier userSessionInterface:
+                                      UserSessionInterface): FingerprintInterceptor {
         return FingerprintInterceptor(networkRouter, userSessionInterface)
     }
 
@@ -115,7 +137,7 @@ class VideoUploaderModule(private val isNeedProgress: Boolean = false,
 
     @VideoUploaderQualifier
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
+    fun provideChuckInterceptor(@VideoUploaderQualifier context: Context): ChuckInterceptor {
         return ChuckInterceptor(context)
     }
 
