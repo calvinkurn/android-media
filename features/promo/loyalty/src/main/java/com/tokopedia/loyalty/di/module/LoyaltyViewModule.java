@@ -146,20 +146,12 @@ public class LoyaltyViewModule {
 
     @Provides
     CheckoutAnalyticsCart provideCheckoutAnalyticsCartPage() {
-        AnalyticTracker analyticTracker = null;
-        if (activity.getApplication() instanceof AbstractionRouter) {
-            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
-        }
-        return new CheckoutAnalyticsCart(analyticTracker);
+        return new CheckoutAnalyticsCart();
     }
 
     @Provides
     CheckoutAnalyticsCourierSelection provideCheckoutAnalyticsCourierSelection() {
-        AnalyticTracker analyticTracker = null;
-        if (activity.getApplication() instanceof AbstractionRouter) {
-            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
-        }
-        return new CheckoutAnalyticsCourierSelection(analyticTracker);
+        return new CheckoutAnalyticsCourierSelection();
     }
 
 }

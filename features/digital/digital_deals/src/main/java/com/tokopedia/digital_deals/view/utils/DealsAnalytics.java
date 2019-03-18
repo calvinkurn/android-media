@@ -2,7 +2,10 @@ package com.tokopedia.digital_deals.view.utils;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
@@ -100,41 +103,31 @@ public class DealsAnalytics {
     public static String EVENT_VIEW_SEARCH_BRAND_RESULT = "view search brand result";
 
 
-    private AnalyticTracker tracker;
 
 
     @Inject
-    public DealsAnalytics(@ApplicationContext Context context) {
-        if (context != null && context.getApplicationContext() instanceof AbstractionRouter) {
-            tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        }
+    public DealsAnalytics() {
     }
 
     public void sendEventDealsDigitalClick(String action, String label) {
-        if (tracker == null)
-            return;
-        tracker.sendEventTracking(EVENT_DEALS_CLICK, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DEALS_CLICK, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase());
 
     }
 
     public void sendEventDealsDigitalView(String action, String label) {
-        if (tracker == null)
-            return;
-        tracker.sendEventTracking(EVENT_DEALS_VIEW, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DEALS_VIEW, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase());
 
     }
 
     public void sendEventEcommerce(String event, String action, String label,
                                    HashMap<String, Object> ecommerce) {
-        if (tracker == null)
-            return;
         HashMap<String, Object> map = new HashMap<>();
         map.put("event", event);
         map.put("eventCategory", DIGITAL_DEALS);
         map.put("eventAction", action);
         map.put("eventLabel", label == null ? "" : label.toLowerCase());
         map.put("ecommerce", ecommerce);
-        tracker.sendEnhancedEcommerce(map);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(map);
     }
 
     public void sendDealImpressionEvent(boolean isHeaderAdded, boolean isBrandHeaderAdded, boolean topDealsLayout, ProductItem productItem, String categoryName, int pageType, int position) {

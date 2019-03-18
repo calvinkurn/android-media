@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.signature.StringSignature;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -38,6 +37,10 @@ import com.tokopedia.gamification.di.GamificationComponent;
 import javax.inject.Inject;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by nabillasabbaha on 4/3/18.
@@ -136,16 +139,12 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         getMoreTokenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-                    ((AbstractionRouter) getActivity().getApplication())
-                            .getAnalyticTracker()
-                            .sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                     GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                                     GamificationEventTracking.Category.EMPTY_PAGE,
                                     GamificationEventTracking.Action.CLICK,
                                     getMoreTokenBtn.getText().toString()
-                            );
-                }
+                            ));
 
                 ApplinkUtil.navigateToAssociatedPage(getActivity(),
                         tokenData.getHome().getEmptyState().getButtonApplink(),

@@ -230,7 +230,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 .inflate(R.layout.event_category_item_revamp, parent, false);
 
         this.context = parent.getContext();
-        eventsAnalytics = new EventsAnalytics(context.getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
         return new ViewHolder(view);
     }
 

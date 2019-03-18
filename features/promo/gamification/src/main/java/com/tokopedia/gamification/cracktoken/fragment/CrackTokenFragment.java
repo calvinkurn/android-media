@@ -31,7 +31,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -59,6 +58,10 @@ import com.tokopedia.gamification.di.GamificationComponent;
 import java.util.List;
 
 import javax.inject.Inject;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 
 /**
@@ -86,7 +89,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetEggSource widgetEggSource;
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
     private ProgressBar progressBar;
-    private AbstractionRouter abstractionRouter;
     private TextView infoTitlePage;
 
     private ImageView imageRemainingToken;
@@ -141,7 +143,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
         setUpToolBar();
-        abstractionRouter = (AbstractionRouter) getActivity().getApplication();
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
@@ -622,85 +623,60 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void trackingLuckyEggView() {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             GamificationEventTracking.Event.VIEW_LUCKY_EGG,
                             GamificationEventTracking.Category.CRACK_LUCKY_EGG,
                             GamificationEventTracking.Action.IMPRESSION,
                             String.valueOf(tokenData.getFloating().getTokenId())
-                    );
-        }
+                    ));
     }
 
     private void trackingLuckyEggClick() {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                             GamificationEventTracking.Category.CRACK_LUCKY_EGG,
                             GamificationEventTracking.Action.CRACK_LUCKY_EGG,
                             String.valueOf(tokenData.getFloating().getTokenId())
-                    );
-        }
+                    ));
     }
 
     private void trackingRewardLuckyEggView(String benefitType) {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             GamificationEventTracking.Event.VIEW_LUCKY_EGG,
                             GamificationEventTracking.Category.VIEW_REWARD,
                             GamificationEventTracking.Action.IMPRESSION,
                             benefitType
-                    );
-        }
+                    ));
     }
 
     private void trackingButtonClick(String benefitType, String buttonTitle) {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                             GamificationEventTracking.Category.REWARD_CLICK + benefitType,
                             GamificationEventTracking.Action.CLICK,
                             buttonTitle
-                    );
-        }
+                    ));
     }
 
     private void trackingTryAgainBtnClick() {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                             GamificationEventTracking.Category.ERROR_PAGE,
                             GamificationEventTracking.Action.CLICK_TRY_AGAIN,
                             ""
-                    );
-        }
+                    ));
     }
 
     private void trackingExpiredBtnClick() {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            abstractionRouter
-                    .getAnalyticTracker()
-                    .sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                             GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                             GamificationEventTracking.Category.EXPIRED_TOKEN,
                             GamificationEventTracking.Action.CLICK_OK,
                             ""
-                    );
-        }
+                    ));
     }
 
     private void trackingCloseRewardButtonClick(CrackResultEntity crackResult) {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             String category = "";
             if (crackResult.isCrackTokenSuccess()) {
                 if (crackResult.isTokenUserInvalid()) {
@@ -713,16 +689,14 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             if (!category.equals("")) {
-                abstractionRouter
-                        .getAnalyticTracker()
-                        .sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                 GamificationEventTracking.Event.CLICK_LUCKY_EGG,
                                 category,
                                 GamificationEventTracking.Action.CLICK_CLOSE_BUTTON,
                                 ""
-                        );
+                        ));
             }
-        }
+
     }
 
     @Override

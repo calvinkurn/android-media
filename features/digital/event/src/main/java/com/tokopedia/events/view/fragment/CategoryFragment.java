@@ -81,7 +81,7 @@ public class CategoryFragment extends BaseDaggerFragment implements IFragmentLif
         recyclerview.setAdapter(eventCategoryAdapter);
         isCreated = true;
         this.context = container.getContext();
-        eventsAnalytics = new EventsAnalytics(context.getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
         return view;
     }
 

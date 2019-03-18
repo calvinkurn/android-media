@@ -25,13 +25,16 @@ import com.tokopedia.digital.widget.view.presenter.DigitalChannelPresenter
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by Rizky on 15/11/18.
  */
 class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View, RecommendationAdapter.OnClickListener {
 
-    private lateinit var abstractionRouter: AbstractionRouter
 
     private lateinit var userSession: UserSession
 
@@ -101,7 +104,6 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
     }
 
     override fun initInjector() {
-        abstractionRouter = activity?.application as AbstractionRouter
         userSession = UserSession(activity)
 
         val digitalRecommendationUseCase = DigitalRecommendationUseCase(GraphqlUseCase(), (activity as Activity).applicationContext)
@@ -148,14 +150,12 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
                 "recommendation - ${recommendation.position} - ${recommendation.categoryName.toLowerCase()}"
             }
 
-            abstractionRouter
-                    .analyticTracker
-                    .sendEventTracking(
+            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                             DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
                             DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                             DigitalEventTracking.Action.CLICK_RECOMMENDATION_WIDGET,
                             eventLabel
-                    )
+                    ))
         }
     }
 

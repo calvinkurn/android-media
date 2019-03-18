@@ -12,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
@@ -71,7 +74,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private RecyclerView exploreImageRv;
     private SwipeToRefresh swipeToRefresh;
     private View appBarLayout;
-    private AbstractionRouter abstractionRouter;
     private RecyclerView.OnScrollListener scrollListener;
     private PerformanceMonitoring performanceMonitoring;
 
@@ -189,13 +191,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
             );
             presenter.updateCategoryId(categoryId);
         }
-
-        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must be an instance of " +
-                    AbstractionRouter.class.getSimpleName());
-        }
     }
 
     private void loadData() {
@@ -204,7 +199,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 presenter.getExploreData(true);
                 hasLoadedOnce = !hasLoadedOnce;
             }
-            abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
         }
     }
 
@@ -287,21 +282,21 @@ public class ContentExploreFragment extends BaseDaggerFragment
         boolean isSameCategory = setAllCategoriesInactive(position);
         if (isSameCategory) {
             updateCategoryId(0);
-            abstractionRouter.getAnalyticTracker().sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     ContentExloreEventTracking.Event.EXPLORE,
                     ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
                     ContentExloreEventTracking.Action.DESELECT_CATEGORY,
                     categoryName
-            );
+            ));
 
         } else {
             updateCategoryId(categoryId);
-            abstractionRouter.getAnalyticTracker().sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     ContentExloreEventTracking.Event.EXPLORE,
                     ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
                     ContentExloreEventTracking.Action.FILTER_CATEGORY,
                     categoryName
-            );
+            ));
 
             if (position > 0) {
                 categoryAdapter.getList().get(position).setActive(true);
@@ -350,7 +345,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 String.valueOf(kolPostViewModel.getContentId())
         );
         startActivity(intent);
-        abstractionRouter.getAnalyticTracker().sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 ContentExloreEventTracking.Event.EXPLORE,
                 ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
                 ContentExloreEventTracking.Action.CLICK_GRID_CONTENT,
@@ -359,7 +354,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
                         kolPostViewModel.getName(),
                         kolPostViewModel.getContentId()
                 )
-        );
+        ));
     }
 
     @Override
@@ -371,12 +366,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
         updateSearch(text);
         presenter.getExploreData(true);
-        abstractionRouter.getAnalyticTracker().sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 ContentExloreEventTracking.Event.EXPLORE,
                 ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
                 ContentExloreEventTracking.Action.SEARCH,
                 text
-        );
+        ));
     }
 
     @Override
@@ -476,12 +471,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
                             && canLoadMore
                             && !isLoading()) {
                         presenter.getExploreData(false);
-                        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                 ContentExloreEventTracking.Event.EXPLORE,
                                 ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
                                 ContentExloreEventTracking.Action.LOAD_MORE,
                                 ""
-                        );
+                        ));
                     }
                 }
             };

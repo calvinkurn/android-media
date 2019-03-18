@@ -151,7 +151,7 @@ public class EventsHomeActivity extends EventBaseActivity
         if (defaultSection == null || defaultSection.length() <= 1)
             defaultSection = TOP;
         unbinder = ButterKnife.bind(this);
-        eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
         addToCalendar.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_event_calendar_green), null,
                 null, null);
         searchView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_search_icon),

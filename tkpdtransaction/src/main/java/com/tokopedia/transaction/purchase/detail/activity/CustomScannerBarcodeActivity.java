@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.logisticanalytics.listener.IBarcodeScannerReceiptShippingAnalyticListener;
 import com.tokopedia.transaction.R;
@@ -21,9 +20,7 @@ public class CustomScannerBarcodeActivity extends CaptureActivity implements IBa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getApplicationContext() instanceof AbstractionRouter) {
-            salesShippingAnalytics = new SalesShippingAnalytics();
-        }
+        salesShippingAnalytics = new SalesShippingAnalytics();
         sendAnalyticsOnImpressionBarcodeScanner();
 
     }
