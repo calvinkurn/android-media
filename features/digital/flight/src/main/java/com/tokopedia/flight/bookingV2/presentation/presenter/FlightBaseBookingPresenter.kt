@@ -69,14 +69,16 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                                     t.departureTrip.childNumericPrice,
                                     t.departureTrip.infantNumericPrice
                             ))
-                            paxFares.add(Fare(
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.adultNumericPrice),
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.childNumericPrice),
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.infantNumericPrice),
-                                    t.returnTrip.adultNumericPrice,
-                                    t.returnTrip.childNumericPrice,
-                                    t.returnTrip.infantNumericPrice
-                            ))
+                            if (t.returnTrip != null) {
+                                paxFares.add(Fare(
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.adultNumericPrice),
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.childNumericPrice),
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.infantNumericPrice),
+                                        t.returnTrip.adultNumericPrice,
+                                        t.returnTrip.childNumericPrice,
+                                        t.returnTrip.infantNumericPrice
+                                ))
+                            }
 
                             val newTotalPrice = calculateTotalFareAndAmenities(paxFares,
                                     baseCartData.adult,
