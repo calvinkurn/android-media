@@ -18,7 +18,7 @@ public class RegisterAnalytics {
         public static final String SCREEN_PHONE_NUMBER_VERIFICATION = "Phone number verification Page";
         public static final String SCREEN_FILL_EMAIL_PAGE = "Fill Email Page";
         public static final String SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page";
-    }
+    }ChatModule
 
     public static class Event {
         public static final String CLICK_LOGIN = "clickLogin";
