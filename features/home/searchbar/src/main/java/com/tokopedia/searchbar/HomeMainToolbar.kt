@@ -1,7 +1,13 @@
 package com.tokopedia.searchbar
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
+import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
@@ -9,12 +15,26 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
+import android.support.v4.graphics.drawable.DrawableCompat
+
 
 class HomeMainToolbar : MainToolbar {
 
     var toolbarType: Int = 0
 
     var shadowApplied: Boolean = false
+
+    lateinit var wishlistBitmapWhite: BitmapDrawable
+
+    lateinit var notifBitmapWhite: BitmapDrawable
+
+    lateinit var inboxBitmapWhite: BitmapDrawable
+
+    lateinit var wishlistBitmapGrey: BitmapDrawable
+
+    lateinit var notifBitmapGrey: BitmapDrawable
+
+    lateinit var inboxBitmapGrey: BitmapDrawable
 
     constructor(context: Context) : super(context) {}
 
@@ -27,12 +47,15 @@ class HomeMainToolbar : MainToolbar {
 
         showShadow()
 
-        icon_search.setImageResource(R.drawable.ic_searchbar_search_grey)
         setBackgroundAlpha(0f)
+
         toolbarType = TOOLBAR_LIGHT_TYPE
+
+        initToolbarIcon()
+
         switchToLightToolbar()
 
-        btn_inbox.setOnClickListener { v ->
+        btnInbox.setOnClickListener { v ->
             if (userSession.isLoggedIn) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
                 getContext().startActivity((this.context.applicationContext as SearchBarRouter)
@@ -41,6 +64,38 @@ class HomeMainToolbar : MainToolbar {
                 RouteManager.route(context, ApplinkConst.LOGIN)
             }
         }
+    }
+
+    private lateinit var toolbarShadowBitmap: BitmapDrawable
+
+    private lateinit var toolbarWhiteBitmap: BitmapDrawable
+
+    private lateinit var wishlistCrossfader: TransitionDrawable
+
+    private lateinit var notifCrossfader: TransitionDrawable
+
+    private lateinit var inboxCrossfader: TransitionDrawable
+
+    private fun initToolbarIcon() {
+        wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
+        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_white)
+        inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
+
+        wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
+        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_grey)
+        inboxBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_grey)
+
+        wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
+        notifCrossfader = TransitionDrawable(arrayOf<Drawable>(notifBitmapGrey, notifBitmapWhite))
+        inboxCrossfader = TransitionDrawable(arrayOf<Drawable>(inboxBitmapGrey, inboxBitmapWhite))
+
+        btnWishlist.setImageDrawable(wishlistCrossfader)
+        btnNotification.setImageDrawable(notifCrossfader)
+        btnInbox.setImageDrawable(inboxCrossfader)
+
+        wishlistCrossfader.startTransition(0)
+        notifCrossfader.startTransition(0)
+        inboxCrossfader.startTransition(0)
     }
 
     fun hideShadow() {
@@ -78,18 +133,41 @@ class HomeMainToolbar : MainToolbar {
 
     fun switchToDarkToolbar() {
         if (toolbarType != TOOLBAR_DARK_TYPE) {
-            btnWishlist.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_wishlist_grey)
-            btnNotification.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_notif_grey)
-            btn_inbox.setImageResource(R.drawable.ic_searchbar_inbox_grey);
+            wishlistCrossfader.reverseTransition(200)
+            notifCrossfader.reverseTransition(200)
+            inboxCrossfader.reverseTransition(200)
+
             toolbarType = TOOLBAR_DARK_TYPE
         }
     }
 
+    fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): BitmapDrawable {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            ContextCompat.getDrawable(context, drawableId) as BitmapDrawable
+        } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
+    }
+
+    fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
+        var drawable = ContextCompat.getDrawable(context, drawableId)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = DrawableCompat.wrap(drawable!!).mutate()
+        }
+
+        val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
+                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+        drawable.draw(canvas)
+
+        return bitmap
+    }
+
     fun switchToLightToolbar() {
         if (toolbarType != TOOLBAR_LIGHT_TYPE) {
-            btnWishlist.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_wishlist_white)
-            btnNotification.setImageResource(com.tokopedia.searchbar.R.drawable.ic_searchbar_notif_white)
-            btn_inbox.setImageResource(R.drawable.ic_searchbar_inbox_white)
+            wishlistCrossfader.reverseTransition(200)
+            notifCrossfader.reverseTransition(200)
+            inboxCrossfader.reverseTransition(200)
+
             toolbarType = TOOLBAR_LIGHT_TYPE
         }
     }
