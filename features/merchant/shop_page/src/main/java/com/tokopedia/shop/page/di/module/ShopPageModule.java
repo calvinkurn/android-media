@@ -1,5 +1,8 @@
 package com.tokopedia.shop.page.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.etalase.domain.interactor.DeleteShopEtalaseUseCase;
@@ -8,6 +11,8 @@ import com.tokopedia.shop.page.di.scope.ShopPageScope;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,4 +63,9 @@ public class ShopPageModule {
         return new DeleteReputationSpeedDailyCacheUseCase();
     }
 
+    @ShopPageScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }

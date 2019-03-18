@@ -254,6 +254,7 @@
             <enum name="secondary" value="2" />
             <enum name="transaction" value="3" />
             <enum name="disable" value="4" />
+            <enum name="white_transparent" value="5" />
         </attr>
         <attr name="buttonCompatSize" format="enum">
             <enum name="big" value="4" />
@@ -287,5 +288,10 @@
     </declare-styleable>
     <declare-styleable name="TouchViewPager">
         <attr name="can_swipe" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="RectangleOverlayView">
+        <attr name="fg_color" format="reference"/>
+        <attr name="inset_distance" format="dimension"/>
+        <attr name="outline_img" format="reference"/>
     </declare-styleable>
 </resources>

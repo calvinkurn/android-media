@@ -86,11 +86,13 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel) {
-        SearchTracking.eventUserImpressionProfileResultInTabProfile(
-                context,
-                profileListViewModel.getListTrackingObject(),
-                query
-        )
+        if (profileListViewModel.getListTrackingObject().isNotEmpty()) {
+            SearchTracking.eventUserImpressionProfileResultInTabProfile(
+                    context,
+                    profileListViewModel.getListTrackingObject(),
+                    query
+            )
+        }
 
         totalProfileCount = profileListViewModel.totalSearchCount
         renderList(profileListViewModel.profileModelList, profileListViewModel.isHasNextPage)

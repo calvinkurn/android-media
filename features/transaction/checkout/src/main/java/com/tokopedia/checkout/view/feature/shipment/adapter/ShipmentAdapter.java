@@ -23,6 +23,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
@@ -37,6 +38,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -62,6 +64,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static final int DEFAULT_ERROR_POSITION = -1;
     public static final int HEADER_POSITION = 0;
+    private static final double LAST_THREE_DIGIT_MODULUS = 1000;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -76,6 +79,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentInsuranceTncModel shipmentInsuranceTncModel;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private EgoldAttributeModel egoldAttributeModel;
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
@@ -84,6 +88,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastChooseCourierItemPosition;
     private String cartIds;
     private int lastServiceId;
+    private String blackboxInfo;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -122,6 +127,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
         } else if (item instanceof ShipmentDonationModel) {
             return ShipmentDonationViewHolder.ITEM_VIEW_DONATION;
+        } else if (item instanceof EgoldAttributeModel) {
+            return ShipmentEmasViewHolder.ITEM_VIEW_EMAS;
         }
 
         return super.getItemViewType(position);
@@ -149,6 +156,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentSellerCashbackViewHolder(view);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             return new ShipmentDonationViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
+            return new ShipmentEmasViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -183,6 +192,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentSellerCashbackViewHolder) holder).bindViewHolder(shipmentSellerCashbackModel);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             ((ShipmentDonationViewHolder) holder).bindViewHolder(shipmentDonationModel);
+        } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
+            ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         }
     }
 
@@ -239,12 +250,20 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentInsuranceTncModel = null;
         shipmentSellerCashbackModel = null;
         shipmentDonationModel = null;
+        egoldAttributeModel = null;
         notifyDataSetChanged();
     }
 
     public void addNotifierData(ShipmentNotifierModel shipmentNotifierModel) {
         if (shipmentNotifierModel != null) {
             shipmentDataList.add(HEADER_POSITION, shipmentNotifierModel);
+        }
+    }
+
+    public void removeNotifierData() {
+        if (shipmentDataList.get(HEADER_POSITION) instanceof ShipmentNotifierModel) {
+            shipmentDataList.remove(HEADER_POSITION);
+            notifyItemRemoved(HEADER_POSITION);
         }
     }
 
@@ -282,6 +301,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.shipmentCostModel = shipmentCostModel;
             shipmentDataList.add(shipmentCostModel);
             updateShipmentCostModel();
+        }
+    }
+
+    public void addEgoldAttributeData(EgoldAttributeModel egoldAttributeModel) {
+        if (egoldAttributeModel != null) {
+            this.egoldAttributeModel = egoldAttributeModel;
+            shipmentDataList.add(egoldAttributeModel);
         }
     }
 
@@ -396,6 +422,37 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void updateDonation(boolean checked) {
         if (shipmentDonationModel != null) {
             shipmentDonationModel.setChecked(checked);
+            updateShipmentCostModel();
+            notifyItemChanged(getShipmentCostPosition());
+        }
+    }
+
+    private void updateEmasCostModel() {
+        double totalPrice = shipmentCostModel.getTotalPrice();
+        int valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
+        int buyEgoldValue = 0;
+        for (int i = egoldAttributeModel.getMinEgoldRange(); i <= egoldAttributeModel.getMaxEgoldRange(); i++) {
+
+            if (((valueTOCheck + i) % LAST_THREE_DIGIT_MODULUS) == 0) {
+                buyEgoldValue = i;
+                break;
+            }
+        }
+        egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
+    }
+
+    private int getBuyEmasPosition() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof EgoldAttributeModel) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public void updateEgold(boolean checked) {
+        if (egoldAttributeModel != null) {
+            egoldAttributeModel.setChecked(checked);
             updateShipmentCostModel();
             notifyItemChanged(getShipmentCostPosition());
         }
@@ -674,6 +731,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         totalPrice += shipmentCostModel.getDonation();
         shipmentCostModel.setTotalPrice(totalPrice);
+
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
+            updateEmasCostModel();
+            if (egoldAttributeModel.isChecked()) {
+                totalPrice += egoldAttributeModel.getBuyEgoldValue();
+                shipmentCostModel.setTotalPrice(totalPrice);
+                shipmentCostModel.setEmasPrice(egoldAttributeModel.getBuyEgoldValue());
+            } else if (shipmentCostModel.getEmasPrice() > 0) {
+                shipmentCostModel.setEmasPrice(0);
+            }
+            notifyDataSetChanged();
+        }
+
         updateCheckoutButtonData(null);
     }
 
@@ -843,8 +913,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public ShipmentCartItemModel getShipmentCartItemModelByIndex(int index) {
-        if (shipmentDataList.get(index) instanceof ShipmentCartItemModel) {
-            return (ShipmentCartItemModel) shipmentDataList.get(index);
+        if (shipmentDataList != null && !shipmentDataList.isEmpty() && index < shipmentDataList.size()) {
+            return shipmentDataList.get(index) instanceof ShipmentCartItemModel ?
+                    (ShipmentCartItemModel) shipmentDataList.get(index) : null;
         } else {
             return null;
         }
@@ -865,6 +936,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void setLastServiceId(int lastServiceId) {
         this.lastServiceId = lastServiceId;
     }
+
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
 
     public PromoData getPromoData() {
         return promoData;

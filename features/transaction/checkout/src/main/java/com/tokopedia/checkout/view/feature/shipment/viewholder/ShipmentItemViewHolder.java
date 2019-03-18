@@ -451,8 +451,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
                 if (showCaseObjectList.size() == 1) {
                     showCaseObjectList.add(new ShowCaseObject(llSelectShipmentRecommendation,
-                            llSelectShipmentRecommendation.getContext().getString(R.string.label_title_showcase_shipment),
-                            llSelectShipmentRecommendation.getContext().getString(R.string.label_message_showcase_shipment_courier_recommendation),
+                            llSelectShipmentRecommendation.getContext().getString(R.string.label_title_showcase_shipment_blackbox),
+                            llSelectShipmentRecommendation.getContext().getString(R.string.label_message_showcase_shipment_courier_recommendation_blackbox),
                             ShowCaseContentPosition.UNDEFINED)
                     );
                 }
@@ -845,7 +845,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
             llCourierBlackboxStateLoading.setVisibility(View.GONE);
             tvShipmentBlackboxTickerInfo.setVisibility(View.VISIBLE);
-            tvShipmentBlackboxTickerInfo.setText(R.string.label_hardcoded_courier_blackbox_info);
+            tvShipmentBlackboxTickerInfo.setText(shipmentCartItemModel.getBlackboxInfo());
+            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getBlackboxInfo())) {
+                tvShipmentBlackboxTickerInfo.setText(shipmentDetailData.getSelectedCourier().getBlackboxInfo());
+            } else {
+                tvShipmentBlackboxTickerInfo.setVisibility(View.GONE);
+            }
         } else {
             llSelectedShipmentBlackbox.setVisibility(View.GONE);
             llSelectShipmentBlackbox.setVisibility(View.VISIBLE);

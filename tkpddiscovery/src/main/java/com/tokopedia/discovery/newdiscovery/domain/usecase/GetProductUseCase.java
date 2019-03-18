@@ -10,6 +10,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
@@ -101,6 +102,9 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         if (!TextUtils.isEmpty(searchParameter.getDepartmentId())) {
             requestParams.putString(BrowseApi.SC, searchParameter.getDepartmentId());
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, searchParameter.getDepartmentId());
+        }
+        if (searchParameter.isOfficial()) {
+            requestParams.putString(SearchApiConst.OFFICIAL, String.valueOf(searchParameter.isOfficial()));
         }
         return requestParams;
     }

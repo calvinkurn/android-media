@@ -10,6 +10,7 @@
     <string name="title_account_setting">Akun</string>
     <string name="account_home_title_shop_setting">Toko</string>
     <string name="title_tkpd_pay_setting">Pembayaran</string>
+    <string name="title_tkpd_template_setting">Template Pembelian</string>
     <string name="title_notification_setting">Notifikasi</string>
     <string name="title_touch_id_setting">Touch ID</string>
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
@@ -17,6 +18,7 @@
     <string name="title_help_center_setting">Pusat Bantuan</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
     <string name="account_home_subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
+    <string name="subtitle_template_setting">Nikmati Transaksi Mudah dan Cepat</string>
     <string name="subtitle_tkpd_pay_setting">Kartu Kredit, dan Metode lainnya</string>
     <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan lainnya</string>
     <string name="account_home_label_logout">Keluar dari Tokopedia</string>
@@ -189,5 +191,7 @@
     <string name="title_menu_affiliate">Raih Komisi di By Me</string>
     <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
     <string name="curate_product_by_me">Kurasi Produk di By Me</string>
+    <string name="selesai">Selesai</string>
+    <string name="title_seller_saldo">Saldo</string>
 
 </resources>

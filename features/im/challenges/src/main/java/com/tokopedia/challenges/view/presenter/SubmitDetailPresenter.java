@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
@@ -22,6 +21,8 @@ import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -142,7 +143,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     @Override
     public void getSubmissionDetails(String submissionId) {
-        UserSession userSession = ((AbstractionRouter) getView().getActivity().getApplication()).getSession();
+        UserSessionInterface userSession = new UserSession(getView().getActivity());
         if (!userSession.isLoggedIn()) {
             return;
         }

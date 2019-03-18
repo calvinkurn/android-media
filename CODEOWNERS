@@ -104,7 +104,6 @@
 /features/content/kol_common/           @tokopedia/minion-kevin
 /features/content/profile/              @tokopedia/minion-kevin
 
-/features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
 /libraries/base_list_seller/            @tokopedia/minion-stuart
@@ -131,10 +130,14 @@
 /libraries/oms                          @tokopedia/minion-darth
 
 /features/fintech/instant_loan          @tokopedia/minion-solo
+/features/fintech/ovo_pay_with_qr       @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
 /features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
 /features/promo/tokopoints_notification @tokopedia/minion-solo
+/features/promo/gamification            @tokopedia/minion-solo
+/features/payment/withdraw/             @tokopedia/minion-solo
+/features/kyc                           @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda

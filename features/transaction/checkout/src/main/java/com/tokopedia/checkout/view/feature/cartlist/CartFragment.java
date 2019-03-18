@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.cartlist;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -55,7 +55,6 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -66,6 +65,7 @@ import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -74,8 +74,9 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -94,8 +95,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
-    private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
-
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
     private static final String CART_TRACE = "mp_cart";
@@ -109,7 +108,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private TextView btnToShipment;
     private TextView tvTotalPrice;
     private TextView tvItemCount;
-    private TkpdProgressDialog progressDialogNormal;
     private RelativeLayout layoutUsedPromoEmptyCart;
     private RelativeLayout rlContent;
     private LinearLayout llHeader;
@@ -118,6 +116,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
     private LinearLayout emptyCartContainer;
+
+    private ProgressDialog progressDialog;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -134,11 +134,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Inject
     Context context;
     @Inject
-    UserSession userSession;
-    @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
     private RefreshHandler refreshHandler;
+    private UserSessionInterface userSession;
 
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
@@ -148,6 +147,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
+
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -169,6 +169,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
+        userSession = new UserSession(getActivity());
         performanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
     }
 
@@ -289,7 +290,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         emptyCartContainer = view.findViewById(R.id.container_empty_cart);
-        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setCancelable(false);
+
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartAdapter);
@@ -379,7 +384,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void setViewListener() {
-        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
+        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
         llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
         cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
     }
@@ -404,7 +409,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @NonNull
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
         return view -> {
-            if (message == null) {
+            if (message == null || message.equals("")) {
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);
@@ -651,7 +656,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartDataEnableToCheckout() {
         if (isAdded() && btnToShipment != null) {
-            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
+            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
         }
     }
 
@@ -734,12 +739,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void showProgressLoading() {
-        progressDialogNormal.showDialog();
+        if (progressDialog != null && !progressDialog.isShowing()) progressDialog.show();
     }
 
     @Override
     public void hideProgressLoading() {
-        progressDialogNormal.dismiss();
+        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
         if (refreshHandler.isRefreshing()) {
             refreshHandler.finishRefresh();
         }
@@ -1050,7 +1055,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void renderToAddressChoice() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true;
         boolean isAutoApplyPromoCodeApplied = dPresenter.getCartListData() != null &&
-                dPresenter.getCartListData().getAutoApplyData() != null &&
                 dPresenter.getCartListData().getAutoApplyData().isSuccess();
         Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoData(),
                 cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(),

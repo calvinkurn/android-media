@@ -7,11 +7,10 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.SendDataWorker
-import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -22,30 +21,42 @@ class IrisAnalytics(context: Context) : Iris {
     private val session: Session = IrisSession(context)
 
     override fun setService(config: Configuration) {
-        GlobalScope.launch {
+        GlobalScope.launchCatchError(block = {
             setWorkManager(config)
+        }) {
+            // no-op
         }
     }
 
     override fun resetService(config: Configuration) {
-        GlobalScope.launch {
+        GlobalScope.launchCatchError(block = {
             WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
             setWorkManager(config)
+        }) {
+            // no-op
         }
     }
 
     override fun saveEvent(map: Map<String, Any>) {
-        GlobalScope.launch(context = Dispatchers.IO) {
+        GlobalScope.launchCatchError(context = Dispatchers.IO, block = {
             // convert map to json then save as string
             val event = JSONObject(map).toString()
             val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
             trackingRepository.saveEvent(resultEvent.toString(), session)
+        }) {
+            // no-op
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-        GlobalScope.launch(context = Dispatchers.IO) {
-            trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
+        GlobalScope.launchCatchError(context = Dispatchers.IO, block = {
+            val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
+                    session)
+            if (isSuccess && BuildConfig.DEBUG) {
+                Log.e("Iris", "Success Send Single Event")
+            }
+        }) {
+            // no-op
         }
     }
 

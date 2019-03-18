@@ -48,6 +48,10 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
+def devMode() {
+    return !project.hasProperty('tkpdBuildType')
+}
+
 def archiveAPK(variant, output) {
 
     String density = output.getFilter(com.android.build.OutputFile.DENSITY);
@@ -126,7 +130,9 @@ android {
             ext.enableHansel=false
         }
         release {
-            signingConfig signingConfigs.debug
+            if (devMode()) {
+                signingConfig signingConfigs.debug
+            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
@@ -252,6 +258,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.features.transactiondata)
 
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
@@ -344,8 +352,8 @@ dependencies {
     }
 
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
 
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7

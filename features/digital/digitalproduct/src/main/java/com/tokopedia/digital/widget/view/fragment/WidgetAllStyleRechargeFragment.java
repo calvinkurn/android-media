@@ -7,30 +7,30 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragmentV4;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.VersionInfo;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.constant.DigitalCache;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
@@ -41,9 +41,10 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetCategoryCategoryPresenter;
-import com.tokopedia.digital.widget.view.presenter.IDigitalWidgetCategoryPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -54,9 +55,13 @@ import permissions.dispatcher.RuntimePermissions;
  * @author Rizky on 15/01/18.
  */
 @RuntimePermissions
-public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDigitalWidgetCategoryPresenter>
+public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
         implements IDigitalWidgetView, BaseDigitalProductView.ActionListener {
 
+    private static final int REQUEST_CODE_LOGIN = 1001;
+    private static final int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 1002;
+    private static final int REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER = 1003;
+    private static final int REQUEST_CODE_CONTACT_PICKER = 1004;
     private LinearLayout holderProductDetail;
     private ProgressBar pbMainLoading;
 
@@ -78,7 +83,13 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
     @Inject
+    UserSession userSession;
+    @Inject
     DigitalWidgetCategoryCategoryPresenter presenter;
+    @Inject
+    DigitalAnalytics digitalAnalytics;
+    @Inject
+    DigitalModuleRouter digitalModuleRouter;
 
     public static WidgetAllStyleRechargeFragment newInstance(Category category, int position) {
         WidgetAllStyleRechargeFragment fragment = new WidgetAllStyleRechargeFragment();
@@ -90,79 +101,36 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-        presenter.fetchCategory(categoryId);
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-        state.putParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        digitalCheckoutPassDataState = savedState.getParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA);
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
-        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
-                .inject(this);
-
-        presenter.attachView(this);
-
+        Category category = getArguments().getParcelable(ARG_PARAM_CATEGORY);
+        if (category != null) categoryId = String.valueOf(category.getId());
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void initialPresenter() {
+    protected void initInjector() {
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_widget2, container, false);
+        initView(view);
+        return view;
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
+        presenter.fetchCategory(categoryId);
     }
 
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        Category category = arguments.getParcelable(ARG_PARAM_CATEGORY);
-        if (category != null) categoryId = String.valueOf(category.getId());
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_widget2;
-    }
-
-    @Override
     protected void initView(View view) {
         holderProductDetail = view.findViewById(R.id.holder_product_detail);
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -182,7 +150,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
-        UnifyTracking.eventClickBuyOnWidget(getActivity(),categoryDataState.getName(), isInstantCheckoutChecked ? INSTANT : NO_INSTANT);
+        digitalAnalytics.eventClickBuyOnWidget(categoryDataState.getName(), isInstantCheckoutChecked ? INSTANT : NO_INSTANT);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
@@ -203,16 +171,16 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         }
 
         DigitalCheckoutPassData digitalCheckoutPassData = presenter.generateCheckoutPassData(preCheckoutProduct,
-                VersionInfo.getVersionInfo(getActivity()),
-                SessionHandler.getLoginID(getActivity()));
+                GlobalConfig.VERSION_NAME,
+                userSession.getUserId());
 
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (userSession.isLoggedIn()) {
             if (getActivity().getApplication() instanceof DigitalRouter) {
                 DigitalRouter digitalModuleRouter =
                         (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                        DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
                 );
             }
         } else {
@@ -222,8 +190,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     private void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = ((IDigitalModuleRouter) MainApplication.getAppContext()).getLoginIntent(getActivity());
-        navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
+        navigateToActivityRequest(digitalModuleRouter.getLoginIntent(getActivity()), REQUEST_CODE_LOGIN);
     }
 
     @Override
@@ -232,7 +199,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), categoryId, operatorId, titleChooser
                 ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+                REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
         getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
@@ -245,13 +212,13 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                         categoryDataState.getOperatorLabel(),
                         categoryDataState.getName()
                 ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
+                REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
         getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
-        UnifyTracking.eventSelectNumberOnUserProfileWidget(getActivity(),categoryDataState.getName());
+        digitalAnalytics.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
 
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
@@ -326,7 +293,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         );
         try {
             navigateToActivityRequest(
-                    contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
+                    contactPickerIntent, REQUEST_CODE_CONTACT_PICKER
             );
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
@@ -339,17 +306,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                        if (!TextUtils.isEmpty(message)) {
-                            showToastMessage(message);
-                        }
-                    }
-                }
-                break;
-            case IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER:
+            case REQUEST_CODE_CONTACT_PICKER:
                 try {
                     Uri contactURI = data.getData();
                     ContactData contact = presenter.processGenerateContactDataFromUri(contactURI,
@@ -359,19 +316,19 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                     e.printStackTrace();
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
-                if (SessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
+            case REQUEST_CODE_LOGIN:
+                if (userSession.isLoggedIn() && digitalCheckoutPassDataState != null) {
                     if (getActivity().getApplication() instanceof DigitalRouter) {
                         DigitalRouter digitalModuleRouter =
                                 (DigitalRouter) getActivity().getApplication();
                         navigateToActivityRequest(
                                 digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
-                                DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                                DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
                         );
                     }
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+            case REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackProductChooser(
                             (Product) data.getParcelableExtra(
@@ -379,7 +336,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                             )
                     );
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
+            case REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     handleCallBackOperatorChooser(
                             (Operator) data.getParcelableExtra(
@@ -388,6 +345,16 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                     );
                 }
                 break;
+        }
+        if (requestCode == DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                if (data.hasExtra(DigitalRouter.Companion.getEXTRA_MESSAGE())) {
+                    String message = data.getStringExtra(DigitalRouter.Companion.getEXTRA_MESSAGE());
+                    if (!TextUtils.isEmpty(message)) {
+                        showToastMessage(message);
+                    }
+                }
+            }
         }
     }
 
@@ -453,10 +420,10 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     public boolean isRecentInstantCheckoutUsed(String categoryId) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
             cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+                    getActivity(), DigitalCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
             );
         return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
-                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
+                DigitalCache.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
         );
     }
 
@@ -464,10 +431,10 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
             cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+                    getActivity(), DigitalCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
             );
         cacheHandlerRecentInstantCheckoutUsed.putBoolean(
-                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
+                DigitalCache.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
         );
         cacheHandlerRecentInstantCheckoutUsed.applyEditor();
     }
@@ -484,20 +451,20 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
-        UnifyTracking.eventSelectNumberOnUserProfileWidget(getActivity(),categoryDataState.getName());
+        digitalAnalytics.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
 
         handleCallbackSearchNumber(orderClientNumber);
     }
 
     @Override
     public void onOperatorSelected(String categoryName, String operatorName) {
-        UnifyTracking.eventSelectOperatorOnWidget(getActivity(),categoryName,
+        digitalAnalytics.eventSelectOperatorOnWidget(categoryName,
                 operatorName);
     }
 
     @Override
     public void onProductSelected(String categoryName, String productDesc) {
-        UnifyTracking.eventSelectProductOnWidget(getActivity(),categoryName,
+        digitalAnalytics.eventSelectProductOnWidget(categoryName,
                 productDesc);
     }
 
@@ -514,7 +481,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    public Map<String, String> getGeneratedAuthParamNetwork(Map<String, String> originParams) {
         return null;
     }
 
@@ -535,4 +502,13 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         super.onDestroy();
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    public void onInstantCheckoutChanged(String categoryName, boolean isChecked) {
+        digitalAnalytics.eventCheckInstantSaldo(categoryName, isChecked);
+    }
 }

@@ -69,11 +69,11 @@
     <string name="official_partner">Official Partner</string>
 
     <string name="login_to_chat">Masuk untuk Chat</string>
-    <string name="title_sprintsale_finished">FLASH SALE TELAH BERAKHIR</string>
-    <string name="title_sprintsale_started">FLASH SALE TELAH DIMULAI</string>
+    <string name="title_sprintsale_finished">Flash Sale Telah Berakhir</string>
+    <string name="title_sprintsale_started">Flash Sale Telah Dimulai</string>
     <string name="ongoing">Berlangsung</string>
     <string name="anonymous">Anonymous</string>
-    <string name="admin">Admin:</string>
+    <string name="admin">Admin </string>
     <string name="check_now">Cek sekarang!</string>
     <string name="error_max_characters_reached">Maaf, anda hanya bisa mengirim kurang dari 200 karakter</string>
     <string name="has_voted_label">Sudah Memilih</string>
@@ -83,14 +83,33 @@
     <string name="channel_not_belong_to_user">Anda belum terhubung dengan Play. Silahkan
         coba kembali.</string>
 
+
+    <string name="recommendation_from">Rekomendasi Dari</string>
+
     <string name="exit_group_chat_title">Title</string>
     <string name="exit_group_chat_body">Body</string>
-    <string name="exit_group_chat_yes">Yes</string>
-    <string name="exit_group_chat_no">No</string>
+    <string name="exit_group_chat_yes">Tetap di PLAY</string>
+    <string name="exit_group_chat_no">Keluar</string>
     <string name="exit_group_chat_ok">Ok</string>
     <string name="connecting">Menghubungkan...</string>
     <string name="retry">Coba Lagi</string>
     <string name="default_error_enter_channel">Maaf, Saat Ini Play Sedang Ramai Pengunjung</string>
     <string name="check_next_event_schedule">Cek Jadwal Acara Selanjutnya</string>
+
+    <string name="play_quiz_started">Quiz Telah Dimulai</string>
+    <string name="play_quiz_ended">Quiz Telah Berakhir</string>
+
+    <string name="chat_hint">Chat di sini…</string>
+    <string name="see">Lihat</string>
+    <string name="live">LIVE</string>
+    <string name="try_again_later">Silakan coba beberapa saat lagi</string>
+    <string name="please_try_again">Silakan coba kembali</string>
+    <string name="failed_to_load_content">Gagal memuat konten</string>
+
+    <string name="play_title">Play</string>
+    <string name="play_has_end">"%1$s telah berakhir"</string>
+    <string name="play_next_event">"Nantikan dan gabung di channel Play selanjutnya"</string>
+    <string name="play_start_shopping">"Mulai belanja"</string>
+    <string name="from">oleh</string>
 
 </resources>

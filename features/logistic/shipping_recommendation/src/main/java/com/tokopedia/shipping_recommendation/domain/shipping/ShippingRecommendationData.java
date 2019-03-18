@@ -14,6 +14,7 @@ public class ShippingRecommendationData implements Parcelable {
     private List<ShippingDurationViewModel> shippingDurationViewModels;
     private String errorMessage;
     private String errorId;
+    private String blackboxInfo;
 
     public ShippingRecommendationData() {
     }
@@ -22,6 +23,7 @@ public class ShippingRecommendationData implements Parcelable {
         shippingDurationViewModels = in.createTypedArrayList(ShippingDurationViewModel.CREATOR);
         errorMessage = in.readString();
         errorId = in.readString();
+        blackboxInfo = in.readString();
     }
 
     @Override
@@ -29,6 +31,7 @@ public class ShippingRecommendationData implements Parcelable {
         dest.writeTypedList(shippingDurationViewModels);
         dest.writeString(errorMessage);
         dest.writeString(errorId);
+        dest.writeString(blackboxInfo);
     }
 
     @Override
@@ -71,4 +74,8 @@ public class ShippingRecommendationData implements Parcelable {
     public void setErrorId(String errorId) {
         this.errorId = errorId;
     }
+
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
 }

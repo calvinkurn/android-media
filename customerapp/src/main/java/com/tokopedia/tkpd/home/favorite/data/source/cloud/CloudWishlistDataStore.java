@@ -49,7 +49,7 @@ public class CloudWishlistDataStore {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
                 GqlWishListDataResponse.class,
-                variables);
+                variables, false);
 
         List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
         graphqlRequestList.add(graphqlRequest);

@@ -105,6 +105,8 @@
     <string name="ch_choose_video">Pilih Video</string>
     <string name="ch_error_Video_version_minimum">Mohon maaf device Anda tidak dapat menggunakan fitur ini</string>
     <string name="ch_wait_msg">Mohon tunggu, silakan coba beberapa saat lagi</string>
+    <string name="read_more">More</string>
+    <string name="read_less">Less</string>
 
 
 </resources>

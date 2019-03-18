@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -38,6 +39,7 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -58,6 +60,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -155,6 +158,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     private static final String YOUTUBE_URL = "{youtube_url}";
     private static final String FEED_TRACE = "mp_feed";
+    private static final String AFTER_POST = "after_post";
+    private static final String TRUE = "true";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -173,6 +178,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TopAdsInfoBottomSheet infoBottomSheet;
     private int loginIdInt;
     private boolean isLoadedOnce;
+    private boolean afterPost;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -183,9 +189,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Inject
     UserSessionInterface userSession;
 
-    public static FeedPlusFragment newInstance() {
+    public static FeedPlusFragment newInstance(Bundle bundle) {
         FeedPlusFragment fragment = new FeedPlusFragment();
-        Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -268,6 +273,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
         };
         registerNewFeedReceiver();
+
+        if (getArguments() != null) {
+            afterPost = TextUtils.equals(getArguments().getString(AFTER_POST, ""), TRUE);
+        }
     }
 
     public boolean isMainViewVisible() {
@@ -347,6 +356,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         if (position != 0 && item != null && !isTopads(item)) {
                             trackImpression(item);
                         }
+
+                        if (item instanceof DynamicPostViewModel) {
+                            if (!TextUtils.isEmpty(((DynamicPostViewModel) item).getFooter().getButtonCta().getAppLink())) {
+                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
+                            }
+                        }
                     }
                 } catch (IndexOutOfBoundsException e) {
                     Log.d(FeedPlusFragment.TAG, e.toString());
@@ -383,7 +398,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
-        triggerClearNewFeedNotification();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }
@@ -570,16 +584,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
-        adapter.setEndlessScrollListener();
-    }
-
-    @Override
-    public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
-        trackFeedImpression(listFeed);
-
-        adapter.setList(listFeed);
-        adapter.notifyDataSetChanged();
-        adapter.unsetEndlessScrollListener();
+        triggerClearNewFeedNotification();
     }
 
     @Override
@@ -587,12 +592,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.unsetEndlessScrollListener();
         adapter.showEmpty();
         adapter.notifyDataSetChanged();
-
     }
 
     @Override
     public void clearData() {
         adapter.clearData();
+    }
+
+    @Override
+    public void setEndlessScroll() {
+        adapter.setEndlessScrollListener();
     }
 
     @Override
@@ -829,7 +838,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
-        triggerClearNewFeedNotification();
     }
 
     private void triggerClearNewFeedNotification() {
@@ -875,12 +883,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void loadData(boolean isVisibleToUser) {
-        if (isVisibleToUser && isAdded()
-                && getActivity() != null && presenter != null) {
+        if (isVisibleToUser && isAdded() && getActivity() != null && presenter != null) {
             if (!isLoadedOnce) {
                 presenter.fetchFirstPage();
-
                 isLoadedOnce = !isLoadedOnce;
+            }
+
+            if (afterPost) {
+                showAfterPostToaster();
+                afterPost = false;
             }
 
             analytics.trackScreen(getActivity(), getScreenName());
@@ -1109,7 +1120,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         public void onReportClick() {
                             goToContentReport(element.getContentId());
                         }
+
+                        @Override
+                        public void onEditClick() {
+
+                        }
                     }
+
             );
             menus.show();
         }
@@ -1455,9 +1472,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onWhitelistClicked(String url) {
-        if (getActivity() != null) {
-            startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity(), url),
-                    CREATE_POST);
+        if (getContext() != null) {
+            startActivityForResult(
+                    RouteManager.getIntent(getContext(), ApplinkConst.CONTENT_CREATE_POST),
+                    CREATE_POST
+            );
         }
     }
 
@@ -1599,7 +1618,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
 
         } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
-            presenter.toggleFavoriteShop(positionInFeed, id);
+            presenter.toggleFavoriteShop(positionInFeed, adapterPosition, id);
         }
 
         if (adapter.getlist().get(positionInFeed) instanceof FeedRecommendationViewModel) {
@@ -1814,7 +1833,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-
     @Override
     public void onImageClick(int positionInFeed, int contentPosition,
                              @NotNull String redirectLink) {
@@ -1830,6 +1848,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     FeedAnalytics.Element.IMAGE,
                     redirectLink
             );
+        }
+    }
+
+    @Override
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+        for (TrackingViewModel track : trackList) {
+            presenter.trackAffiliate(track.getClickURL());
         }
     }
 
@@ -2074,4 +2099,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 userId
         );
     }
+
+    private void showAfterPostToaster() {
+        if (getContext() != null) {
+            Toast.makeText(getContext(), R.string.feed_after_post, Toast.LENGTH_LONG).show();
+        }
+    }
+
 }

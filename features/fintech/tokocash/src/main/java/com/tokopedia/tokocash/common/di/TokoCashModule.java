@@ -45,6 +45,7 @@ import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 import com.tokopedia.tokocash.tracker.WalletAnalytics;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -273,5 +274,11 @@ public class TokoCashModule {
             return new WalletAnalytics(analyticTracker);
         }
         throw new RuntimeException("App should implement " + TokoCashRouter.class.getSimpleName());
+    }
+
+    @TokoCashScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }
