@@ -4,6 +4,7 @@ import android.support.v7.widget.AppCompatImageView
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import kotlinx.android.synthetic.main.layout_template_large_business.view.*
@@ -27,14 +28,14 @@ class SizeLargeBusinessViewHolder (itemView: View?) : SizeSmallBusinessViewHolde
             itemView.title1st.visibility = View.GONE
         } else {
             itemView.title1st.visibility = View.VISIBLE
-            itemView.title1st.text = element?.title1st
+            itemView.title1st.text = MethodChecker.fromHtml(element?.title1st)
         }
 
         if (element?.title2nd.isNullOrEmpty()) {
             itemView.title2nd.visibility = View.GONE
         } else {
             itemView.title2nd.visibility = View.VISIBLE
-            itemView.title2nd.text = element?.title2nd
+            itemView.title2nd.text = MethodChecker.fromHtml(element?.title2nd)
         }
 
         if (element?.desc1st.isNullOrEmpty()
@@ -52,14 +53,14 @@ class SizeLargeBusinessViewHolder (itemView: View?) : SizeSmallBusinessViewHolde
             itemView.desc1st.visibility = View.GONE
         } else {
             itemView.desc1st.visibility = View.VISIBLE
-            itemView.desc1st.text = element?.title1st
+            itemView.desc1st.text = MethodChecker.fromHtml(element?.title1st)
         }
 
         if (element?.desc2nd.isNullOrEmpty()) {
             itemView.desc2nd.visibility = View.GONE
         } else {
             itemView.desc2nd.visibility = View.VISIBLE
-            itemView.desc2nd.text = element?.title2nd
+            itemView.desc2nd.text = MethodChecker.fromHtml(element?.title2nd)
         }
 
         if (element?.title1st.isNullOrEmpty()

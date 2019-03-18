@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
@@ -44,22 +45,20 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
     }
 
     open fun renderProduct(element: HomeWidget.ContentItemTab?) {
-        getProductName().text = element?.name ?: ""
-
         if (element?.name.isNullOrEmpty()) {
             getProductName().visibility = View.GONE
         } else {
             getProductName().visibility = View.VISIBLE
+            getProductName().text = MethodChecker.fromHtml(element?.name)
         }
     }
 
     open fun renderTitle(element: HomeWidget.ContentItemTab?) {
-        getTitle().text = element?.title1st ?: ""
-
         if (element?.title1st.isNullOrEmpty()) {
             getTitle().visibility = View.GONE
         } else {
             getTitle().visibility = View.VISIBLE
+            getTitle().text = MethodChecker.fromHtml(element?.title1st)
         }
 
         if (element?.desc1st.isNullOrEmpty()) {
@@ -70,12 +69,11 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
     }
 
     open fun renderSubtitle(element: HomeWidget.ContentItemTab?) {
-        getSubtitle().text = element?.desc1st ?: ""
-
         if (element?.desc1st.isNullOrEmpty()) {
             getSubtitle().visibility = View.GONE
         } else {
             getSubtitle().visibility = View.VISIBLE
+            getSubtitle().text = MethodChecker.fromHtml(element?.desc1st)
         }
 
         if (element?.title1st.isNullOrEmpty() &&
@@ -112,14 +110,14 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
                 itemView.pricePrefix.visibility = View.GONE
             } else {
                 itemView.pricePrefix.visibility = View.VISIBLE
-                itemView.pricePrefix.text = element?.pricePrefix
+                itemView.pricePrefix.text = MethodChecker.fromHtml(element?.pricePrefix)
             }
 
             if (element?.originalPrice.isNullOrEmpty()) {
                 itemView.strikeThroughPrice.visibility = View.GONE
             } else {
                 itemView.strikeThroughPrice.visibility = View.VISIBLE
-                itemView.strikeThroughPrice.text = element?.originalPrice
+                itemView.strikeThroughPrice.text = MethodChecker.fromHtml(element?.originalPrice)
                 itemView.strikeThroughPrice.paintFlags = itemView.strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
 
@@ -127,7 +125,7 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
                 itemView.price.visibility = View.GONE
             } else {
                 itemView.price.visibility = View.VISIBLE
-                itemView.price.text = element?.price
+                itemView.price.text = MethodChecker.fromHtml(element?.price)
             }
 
         } else {
@@ -138,7 +136,7 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
     open fun renderLabel(element: HomeWidget.ContentItemTab?) {
         if (hasTagLabel(element)) {
             itemView.tagLine.visibility = View.VISIBLE
-            itemView.tagLine.text = element?.tagName
+            itemView.tagLine.text = MethodChecker.fromHtml(element?.tagName)
             if (element != null) {
                 when (element.tagType) {
                     1 -> {
