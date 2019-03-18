@@ -21,6 +21,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:text="Dilayani TokoCabang"
         android:textSize="@dimen/sp_10"
@@ -29,6 +30,7 @@
     <ImageView
         android:layout_width="@dimen/dp_18"
         android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:src="@drawable/ic_info_dark"
         android:tint="@color/grey_400" />

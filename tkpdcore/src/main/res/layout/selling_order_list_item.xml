@@ -129,6 +129,8 @@
         android:textColor="@color/red_500"
         android:visibility="gone" />
 
-    <include layout="@layout/partial_fulfillment_label" />
+    <include
+        android:id="@+id/layout_fulfillment"
+        layout="@layout/partial_fulfillment_label" />
 
 </LinearLayout>
