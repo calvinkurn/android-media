@@ -155,7 +155,7 @@ private fun invoke(view: View?) {
             object : ViewTreeObserver.OnScrollChangedListener {
                 override fun onScrollChanged() {
                     scrollChangedListener = this
-                    if (isVisible(view)) {
+                    if (isViewVisible(view)) {
                         if (impressHolder != null && !impressHolder!!.isInvoke) {
                             if (hintListener != null) {
                                 hintListener!!.onViewHint()
@@ -176,7 +176,7 @@ interface ViewHintListener {
     fun onViewHint()
 }
 
-private fun isVisible(view: View?): Boolean {
+private fun isViewVisible(view: View?): Boolean {
     if (view == null) {
         return false
     }
