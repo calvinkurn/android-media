@@ -176,6 +176,7 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
     String DEPOSIT = "tokopedia://saldo";
+    String SALDO_INTRO = "tokopedia://saldointro";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
@@ -216,6 +217,10 @@ public interface ApplinkConst {
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
+
+    interface WebViewUrl {
+        String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
+    }
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
