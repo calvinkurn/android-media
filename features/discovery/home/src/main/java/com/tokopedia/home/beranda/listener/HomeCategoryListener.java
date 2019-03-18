@@ -28,7 +28,7 @@ public interface HomeCategoryListener {
 
     void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String appLinkActionButton);
 
-    void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
+    void actionTokoPointClicked(String appLink, String tokoPointUrl, String pageTitle);
 
     void showNetworkError(String message);
 
