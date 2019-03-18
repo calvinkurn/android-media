@@ -375,7 +375,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     private void buildAttachmentReasonView() {
         if (selectedReason != null && selectedReason.getRequiredDocs() != null &&
-                selectedReason.getRequiredDocs().size() > 0) {
+                selectedReason.getRequiredDocs().size() > 0 && attachments != null &&
+                attachments.size() > 0) {
             showAttachmentContainer();
         } else {
             hideAttachmentContainer();

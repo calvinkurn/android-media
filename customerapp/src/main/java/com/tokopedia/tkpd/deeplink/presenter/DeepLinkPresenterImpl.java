@@ -15,6 +15,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -24,13 +27,11 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
@@ -43,7 +44,10 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.loyalty.LoyaltyRouter;
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant;
+import com.tokopedia.product.detail.common.data.model.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
@@ -56,17 +60,18 @@ import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Subscriber;
 
@@ -94,6 +99,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Inject
     GetShopInfoUseCase getShopInfoUseCase;
+
+    @Inject
+    @Named("productUseCase")
+    GraphqlUseCase<ProductInfo.Response> getProductUseCase;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity, MapUrlUseCase mapUrlUseCase) {
         this.viewListener = activity;
@@ -246,7 +255,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
                 case DeepLinkChecker.PRODUCT:
-                    openDetailProduct(linkSegment, uriData);
+                    openProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_PRODUCT_INFO;
                     break;
                 case DeepLinkChecker.SHOP:
@@ -477,10 +486,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         } else {
             openWebView(uriData, false,
                     uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
-                    (PARAM_TITLEBAR).equalsIgnoreCase("true"),
+                            (PARAM_TITLEBAR).equalsIgnoreCase("true"),
                     uriData.getQueryParameter(PARAM_NEED_LOGIN) != null && uriData.getQueryParameter
                             (PARAM_NEED_LOGIN).equalsIgnoreCase("true")
-                    );
+            );
         }
     }
 
@@ -541,19 +550,34 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     prepareOpenWebView(uriData);
                 }
+                context.finish();
             }
         });
     }
 
-    private void openDetailProduct(List<String> linkSegment, Uri uriData) {
-        CommonUtils.dumper("wvlogin opened product");
-        Intent productInfoIntent = ProductInfoActivity.createInstance(context, ProductPass.Builder.aProductPass()
-                .setProductKey(linkSegment.get(1))
-                .setShopDomain(linkSegment.get(0))
-                .setProductUri(uriData.toString())
-                .build());
-        productInfoIntent.setData(uriData);
-        viewListener.goToPage(productInfoIntent);
+    private void openProduct(final List<String> linkSegment, final Uri uriData) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, linkSegment.get(1));
+        parameters.put(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, linkSegment.get(0));
+        getProductUseCase.setRequestParams(parameters);
+        viewListener.showLoading();
+        getProductUseCase.execute(response -> {
+            viewListener.finishLoading();
+            if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0) {
+                try {
+                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                            String.valueOf(response.getData().getBasic().getId())));
+                } catch (Exception e) {
+                    prepareOpenWebView(uriData);
+                }
+                context.finish();
+            }
+            return null;
+        }, throwable -> {
+            viewListener.finishLoading();
+            viewListener.networkError(uriData);
+            return null;
+        });
     }
 
     private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
@@ -609,9 +633,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     uriData
             );
         } else {
-            context.startActivity(
-                    BrowseProductRouter.getIntermediaryIntent(context, urlParser.getDepIDfromURI(context))
-            );
+            RouteManager.route(context,ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                            urlParser.getDepIDfromURI(context));
         }
         context.finish();
     }
@@ -622,12 +645,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String searchQuery = uriData.getQueryParameter("q");
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
-        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
         bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
@@ -759,7 +779,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void sendAuthenticatedEvent(Uri uriData, String screenName){
+    public void sendAuthenticatedEvent(Uri uriData, String screenName) {
         try {
             URL obtainedURL = new URL(uriData.getScheme(), uriData.getHost(), uriData.getPath());
             if (obtainedURL != null)

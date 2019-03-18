@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">App L</string>
+    <string name="tokopedia_scheme" translatable="false">tokopedia</string>
+    <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 </resources>

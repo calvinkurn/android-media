@@ -19,6 +19,7 @@ import java.util.Map;
 /**
  * Created by nisie on 11/30/16.
  */
+@Deprecated
 public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";

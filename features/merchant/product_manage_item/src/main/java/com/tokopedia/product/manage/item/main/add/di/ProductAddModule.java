@@ -3,10 +3,14 @@ package com.tokopedia.product.manage.item.main.add.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
+import com.tokopedia.core.common.category.data.source.CategoryDataSource;
+import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
+import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
+import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
@@ -18,14 +22,6 @@ import com.tokopedia.product.manage.item.category.data.repository.CategoryRecomm
 import com.tokopedia.product.manage.item.category.data.source.CategoryRecommDataSource;
 import com.tokopedia.product.manage.item.category.domain.CategoryRecommRepository;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
-import com.tokopedia.core.common.category.data.source.CategoryDataSource;
-import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
-import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
-import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.core.common.category.domain.CategoryRepository;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView;
 import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl;
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.MerlinApi;
@@ -40,6 +36,8 @@ import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataS
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,18 +54,9 @@ public class ProductAddModule {
     @ProductAddScope
     @Provides
     ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                                       GetShopInfoUseCase getShopInfoUseCase, UserSession userSession,
+                                                                       GetShopInfoUseCase getShopInfoUseCase, UserSessionInterface userSession,
                                                                        FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
         return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
-    }
-
-    @ProductAddScope
-    @Provides
-    UserSession userSession(AbstractionRouter abstractionRouter){
-        if(abstractionRouter!=null){
-            return abstractionRouter.getSession();
-        }
-        return null;
     }
 
     @ProductAddScope

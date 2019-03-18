@@ -18,6 +18,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     private String iconUrlRight;
     private String iconUrlLeft;
     private boolean isRightImportant;
+    private boolean isRightSaldo;
     private TokopediaPayBSModel bsDataLeft;
     private TokopediaPayBSModel bsDataRight;
     private boolean isLinked;
@@ -141,6 +142,14 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.vccUserStatus = vccUserStatus;
     }
 
+    public boolean isRightSaldo() {
+        return isRightSaldo;
+    }
+
+    public void setRightSaldo(boolean rightSaldo) {
+        isRightSaldo = rightSaldo;
+    }
+
     public TokopediaPayViewModel() {
     }
 
@@ -160,6 +169,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         dest.writeString(this.iconUrlRight);
         dest.writeString(this.iconUrlLeft);
         dest.writeByte(this.isRightImportant ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isRightSaldo ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.bsDataLeft, flags);
         dest.writeParcelable(this.bsDataRight, flags);
         dest.writeByte(this.isLinked ? (byte) 1 : (byte) 0);
@@ -177,6 +187,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.iconUrlRight = in.readString();
         this.iconUrlLeft = in.readString();
         this.isRightImportant = in.readByte() != 0;
+        this.isRightSaldo = in.readByte() != 0;
         this.bsDataLeft = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
         this.bsDataRight = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
         this.isLinked = in.readByte() != 0;

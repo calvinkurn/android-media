@@ -136,6 +136,24 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         app:layout_constraintTop_toBottomOf="@+id/tv_ticket_title"
         tools:text="ID: #00079468" />
 
+    <TextView
+        android:id="@+id/tv_priority_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_10"
+        android:textStyle="normal"
+        android:text="Prioritas"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:lineSpacingExtra="6sp"
+        android:gravity="center"
+        android:drawablePadding="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_10"
+        android:drawableLeft="@drawable/priority_label_img"
+        app:layout_constraintTop_toBottomOf="@id/tv_ticket_title"
+        app:layout_constraintLeft_toRightOf="@+id/tv_id_num"/>
+
 
     <TextView
         android:id="@+id/tv_view_transaction"

@@ -90,8 +90,8 @@ class PlayModule {
 
     @PlayScope
     @Provides
-    fun provideAccountsAuthorizationInterceptor(userSession: com.tokopedia.abstraction.common.data.model.session.UserSession): AccountsAuthorizationInterceptor {
-        return AccountsAuthorizationInterceptor(userSession)
+    fun provideAccountsAuthorizationInterceptor(@ApplicationContext context: Context): AccountsAuthorizationInterceptor {
+        return AccountsAuthorizationInterceptor(context)
     }
 
     @PlayScope

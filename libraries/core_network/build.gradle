@@ -25,7 +25,7 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.volley
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.testDependencies.androidAnnotation
 
     implementation rootProject.ext.miscDependencies.parcelerApi

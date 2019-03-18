@@ -200,12 +200,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     @Override
-    protected void onPause() {
-        MainApplication.setCurrentActivity(null);
-        super.onPause();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         updateDrawerData();

@@ -10,7 +10,7 @@ abstract class UseCase<out T : Any> {
 
     abstract suspend fun executeOnBackground(): T
 
-    private suspend fun executeCatchError(): Result<T> = withContext(Dispatchers.Default){
+    private suspend fun executeCatchError(): Result<T> = withContext(Dispatchers.Default) {
         try {
             Success(executeOnBackground())
         } catch (throwable: Throwable) {
@@ -19,14 +19,14 @@ abstract class UseCase<out T : Any> {
     }
 
     fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit) {
-       cancelJobs()
+        cancelJobs()
         localScope.launchCatchError(block = {
             val result = executeCatchError()
             when (result) {
                 is Success -> onSuccess(result.data)
                 is Fail -> onError(result.throwable)
             }
-        }){
+        }) {
             if (it !is CancellationException)
                 onError(it)
         }
