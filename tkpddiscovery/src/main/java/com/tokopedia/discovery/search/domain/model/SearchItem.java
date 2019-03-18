@@ -27,6 +27,14 @@ public class SearchItem {
     private String productId;
     @SerializedName("price")
     private String price;
+    @SerializedName("id")
+    private String peopleId;
+    @SerializedName("affiliate_username")
+    private String affiliateUserName;
+    @SerializedName("iskol")
+    private boolean isKOL;
+    @SerializedName("post_count")
+    private int postCount;
 
     public String getProductId() {
         return productId;
@@ -116,6 +124,38 @@ public class SearchItem {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getPeopleId() {
+        return peopleId;
+    }
+
+    public void setPeopleId(String peopleId) {
+        this.peopleId = peopleId;
+    }
+
+    public String getAffiliateUserName() {
+        return affiliateUserName;
+    }
+
+    public void setAffiliateUserName(String affiliateUserName) {
+        this.affiliateUserName = affiliateUserName;
+    }
+
+    public boolean isKOL() {
+        return isKOL;
+    }
+
+    public void setKOL(boolean KOL) {
+        isKOL = KOL;
+    }
+
+    public int getPostCount() {
+        return postCount;
+    }
+
+    public void setPostCount(int postCount) {
+        this.postCount = postCount;
     }
 }
 

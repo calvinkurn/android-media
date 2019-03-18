@@ -9,6 +9,7 @@ import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.ProfileSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
@@ -39,6 +40,8 @@ public interface SearchTypeFactory {
     int type(RecentViewSearch viewModel);
 
     int type(HotlistSearch viewModel);
+
+    int type(ProfileSearch viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

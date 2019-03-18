@@ -19,6 +19,7 @@ public class SearchData {
     public static final String AUTOCOMPLETE_HOTLIST = "hotlist";
     public static final String AUTOCOMPLETE_IN_CATEGORY = "in_category";
     public static final String AUTOCOMPLETE_SHOP = "shop";
+    public static final String AUTOCOMPLETE_PROFILE = "profile";
 
     @SerializedName("id")
     private String id;

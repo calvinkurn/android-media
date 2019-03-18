@@ -15,6 +15,7 @@ import com.tokopedia.discovery.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.ProfileSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.discovery.search.domain.model.SearchData;
@@ -131,6 +132,12 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
                     list = prepareShopSearch(searchData, element.getSearchTerm());
                     shopFragmentList.addAll(list);
                     shopFragment.addBulkSearchResult(list);
+                    list = insertTitle(list, searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
+                    continue;
+                case SearchData.AUTOCOMPLETE_PROFILE:
+                    list = prepareProfileSearch(searchData, element.getSearchTerm());
                     list = insertTitle(list, searchData.getName());
                     allFragmentList.addAll(list);
                     allFragment.addBulkSearchResult(list);
@@ -268,6 +275,24 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
             model.setIsOfficial(item.isOfficial());
+            list.add(model);
+        }
+        return list;
+    }
+
+    private List<Visitable> prepareProfileSearch(SearchData searchData, String searchTerm) {
+        List<Visitable> list = new ArrayList<>();
+        for(SearchItem item : searchData.getItems()) {
+            ProfileSearch model = new ProfileSearch();
+            model.setKeyword(item.getKeyword());
+            model.setUrl(item.getUrl());
+            model.setApplink(item.getApplink());
+            model.setImageUrl(item.getImageURI());
+            model.setPeopleId(item.getPeopleId());
+            model.setAffiliateUserName(item.getAffiliateUserName());
+            model.setKOL(item.isKOL());
+            model.setPostCount(item.getPostCount());
+            model.setSearchTerm(searchTerm);
             list.add(model);
         }
         return list;
