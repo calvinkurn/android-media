@@ -1,0 +1,7 @@
+mutation {
+ clearCacheAutoApplyStack(
+    serviceID: "#serviceId",
+    promoCode: ["#promoCode"]) {
+        Success
+ }
+}
