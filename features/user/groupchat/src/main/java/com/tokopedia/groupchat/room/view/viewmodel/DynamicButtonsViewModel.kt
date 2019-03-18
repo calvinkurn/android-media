@@ -26,7 +26,10 @@ class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
                  var contentLinkUrl: String = "",
                  var contentImageUrl: String = "",
                  var hasNotification: Boolean = false,
-                 var tooltip: String = "") : Parcelable {
+                 var tooltip: String = "",
+                 var tooltipDuration: Int = 0,
+                 var priority: Int = 0
+                 ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readString(),
                 parcel.readString(),
@@ -37,7 +40,9 @@ class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
                 parcel.readString(),
                 parcel.readString(),
                 parcel.readByte() != 0.toByte(),
-                parcel.readString()) {
+                parcel.readString(),
+                parcel.readInt(),
+                parcel.readInt()) {
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -51,6 +56,8 @@ class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
             parcel.writeString(contentImageUrl)
             parcel.writeByte(if (hasNotification) 1 else 0)
             parcel.writeString(tooltip)
+            parcel.writeInt(tooltipDuration)
+            parcel.writeInt(priority)
         }
 
         override fun describeContents(): Int {

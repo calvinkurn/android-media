@@ -34,7 +34,8 @@ class StickyComponentMapper @Inject constructor() : Func1<Response<DataResponse<
                 pojo.stickyComponent.primaryText,
                 pojo.stickyComponent.secondaryText,
                 pojo.stickyComponent.linkUrl,
-                pojo.stickyComponent.stickyTime
+                pojo.stickyComponent.stickyTime,
+                pojo.stickyComponent.relatedButton
         )
     }
 
@@ -47,7 +48,8 @@ class StickyComponentMapper @Inject constructor() : Func1<Response<DataResponse<
                 pojo.primaryText,
                 pojo.secondaryText,
                 pojo.linkUrl,
-                pojo.stickyTime
+                pojo.stickyTime,
+                pojo.relatedButton
         )
     }
 }

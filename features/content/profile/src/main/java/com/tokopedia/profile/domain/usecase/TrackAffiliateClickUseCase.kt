@@ -13,7 +13,7 @@ class TrackAffiliateClickUseCase @Inject constructor(
         private val trackAffiliateClickCloudSource: TrackAffiliateClickCloudSource)
     : UseCase<Boolean>() {
     override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
-        return trackAffiliateClickCloudSource.doTracking(requestParams!!)
+        return trackAffiliateClickCloudSource.doTrackingWithUrl(requestParams!!)
     }
 
     companion object {
@@ -21,6 +21,7 @@ class TrackAffiliateClickUseCase @Inject constructor(
         private const val PARAM_TRACKING_ID = "tracker_id"
         private const val PARAM_USER_ID = "user_id"
         private const val PARAM_EVENT = "event"
+        private const val PARAM_URL = "url"
 
         private const val EVENT_AFFILITE = "affiliate"
 
@@ -31,6 +32,13 @@ class TrackAffiliateClickUseCase @Inject constructor(
             requestParams.putString(PARAM_TRACKING_ID, deviceId)
             requestParams.putString(PARAM_USER_ID, userId)
             requestParams.putString(PARAM_EVENT, EVENT_AFFILITE)
+            return requestParams
+        }
+
+        fun createRequestParams(url: String)
+                : RequestParams {
+            val requestParams = RequestParams.create()
+            requestParams.putString(PARAM_URL, url)
             return requestParams
         }
     }

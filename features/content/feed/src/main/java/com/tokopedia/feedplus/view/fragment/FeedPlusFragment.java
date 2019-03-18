@@ -32,6 +32,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
@@ -39,6 +41,7 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -59,6 +62,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -354,6 +358,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         if (position != 0 && item != null && !isTopads(item)) {
                             trackImpression(item);
                         }
+
+                        if (item instanceof DynamicPostViewModel) {
+                            if (!TextUtils.isEmpty(((DynamicPostViewModel) item).getFooter().getButtonCta().getAppLink())) {
+                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
+                            }
+                        }
                     }
                 } catch (IndexOutOfBoundsException e) {
                     Log.d(FeedPlusFragment.TAG, e.toString());
@@ -417,9 +427,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name,
                                    String price) {
-        feedModuleRouter.goToProductDetail(getContext(), productId, imageSourceSingle, name, price);
+        getActivity().startActivity(getProductIntent(productId));
     }
 
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
+    }
     @Override
     public void onGoToProductDetail(int rowNumber, int page, String productId, String
             imageSourceSingle, String name, String price) {
@@ -1112,7 +1129,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         public void onReportClick() {
                             goToContentReport(element.getContentId());
                         }
+
+                        @Override
+                        public void onEditClick() {
+
+                        }
                     }
+
             );
             menus.show();
         }
@@ -1608,7 +1631,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
 
         } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
-            presenter.toggleFavoriteShop(positionInFeed, id);
+            presenter.toggleFavoriteShop(positionInFeed, adapterPosition, id);
         }
 
         if (adapter.getlist().get(positionInFeed) instanceof FeedRecommendationViewModel) {
@@ -1823,7 +1846,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-
     @Override
     public void onImageClick(int positionInFeed, int contentPosition,
                              @NotNull String redirectLink) {
@@ -1839,6 +1861,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     FeedAnalytics.Element.IMAGE,
                     redirectLink
             );
+        }
+    }
+
+    @Override
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+        for (TrackingViewModel track : trackList) {
+            presenter.trackAffiliate(track.getClickURL());
         }
     }
 

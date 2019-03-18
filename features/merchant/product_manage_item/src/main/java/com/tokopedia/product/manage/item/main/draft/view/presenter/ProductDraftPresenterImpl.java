@@ -1,7 +1,5 @@
 package com.tokopedia.product.manage.item.main.draft.view.presenter;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase;
 import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.main.draft.domain.FetchDraftProductUseCase;
@@ -9,6 +7,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCa
 import com.tokopedia.product.manage.item.main.draft.view.listener.ProductDraftView;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -25,7 +24,7 @@ public class ProductDraftPresenterImpl extends ProductAddPresenterImpl<ProductDr
     @Inject
     public ProductDraftPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                      GetShopInfoUseCase getShopInfoUseCase,
-                                     UserSession userSession,
+                                     UserSessionInterface userSession,
                                      FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                      FetchDraftProductUseCase fetchDraftProductUseCase) {
         super(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);

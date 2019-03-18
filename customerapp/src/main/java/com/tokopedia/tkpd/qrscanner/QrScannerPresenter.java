@@ -3,12 +3,18 @@ package com.tokopedia.tkpd.qrscanner;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -21,8 +27,12 @@ import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.network.exception.WalletException;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -44,23 +54,29 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     private static final String TAG_QR_PAYMENT = "QR";
     private static final String IDENTIFIER = "identifier";
+    private static final String GOAL_QR_INQUIRY = "goalQRInquiry";
+    private static final String ERRORS = "errors";
+    private static final String MESSAGE = "message";
+    private static final String QR_ID = "qr_id";
+    private static final String OVO_TEXT = "ovo";
+    private static final String GPNR_TEXT = "gpnqr";
 
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
     private Context context;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private LocalCacheHandler localCacheHandler;
     private CompositeSubscription compositeSubscription;
 
     @Inject
     public QrScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase,
                               BranchIODeeplinkUseCase branchIODeeplinkUseCase,
-                              @ApplicationContext Context context, UserSession userSession,
+                              @ApplicationContext Context context,
                               @IdentifierWalletQualifier LocalCacheHandler localCacheHandler
     ) {
         this.postBarCodeDataUseCase = postBarCodeDataUseCase;
         this.context = context;
-        this.userSession = userSession;
+        this.userSession = new UserSession(context);
         this.localCacheHandler = localCacheHandler;
         this.branchIODeeplinkUseCase = branchIODeeplinkUseCase;
         this.compositeSubscription = new CompositeSubscription();
@@ -83,9 +99,59 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
+        } else if (barcodeData.toLowerCase().contains(OVO_TEXT)
+                || barcodeData.toLowerCase().contains(GPNR_TEXT)) {
+            checkBarCode(barcodeData);
         } else {
             getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
         }
+    }
+
+    private void checkBarCode(String barcodeData) {
+        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(QR_ID, barcodeData);
+        GraphqlRequest graphqlRequest = new GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.verify_ovo_qr_code),
+                JsonObject.class,
+                variables);
+
+        graphqlUseCase.addRequest(graphqlRequest);
+        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                JsonObject response = graphqlResponse.getData(JsonObject.class);
+                JsonArray error;
+                if (response != null) {
+                    JsonObject object = response.getAsJsonObject(GOAL_QR_INQUIRY);
+                    if (object != null) {
+                        error = object.getAsJsonArray(ERRORS);
+                        if (error != null && error.size() > 0) {
+                            JsonObject errorObject = error.get(0).getAsJsonObject();
+                            if (errorObject != null && errorObject.get(MESSAGE) != null
+                                    && !TextUtils.isEmpty(errorObject.get(MESSAGE).getAsString())) {
+                                //error
+                                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                            }
+                        } else {
+                            getView().goToPaymentPage(barcodeData, response);
+                        }
+                    }
+                }
+
+            }
+        });
     }
 
     private void onScanBranchIOLink(String qrCode) {

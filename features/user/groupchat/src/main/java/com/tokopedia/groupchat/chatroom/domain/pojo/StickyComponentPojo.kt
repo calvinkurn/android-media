@@ -36,7 +36,10 @@ class StickyComponentData (
         var secondaryText: String = "",
         @SerializedName("sticky_time_in_seconds")
         @Expose
-        var stickyTime: Int = 0
+        var stickyTime: Int = 0,
+        @SerializedName("related_button_id")
+        @Expose
+        var relatedButton: Int = 0
 ){
         constructor() : this("")
 }
