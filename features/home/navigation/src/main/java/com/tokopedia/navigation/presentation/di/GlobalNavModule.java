@@ -15,6 +15,7 @@ import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase;
 import com.tokopedia.navigation.domain.GetRecomendationUseCase;
 import com.tokopedia.navigation.listener.CartListener;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
