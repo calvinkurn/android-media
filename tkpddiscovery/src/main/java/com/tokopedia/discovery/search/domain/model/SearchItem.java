@@ -24,11 +24,9 @@ public class SearchItem {
     @SerializedName("location")
     private String location;
     @SerializedName("id")
-    private String productId;
+    private String itemId;
     @SerializedName("price")
     private String price;
-    @SerializedName("id")
-    private String peopleId;
     @SerializedName("affiliate_username")
     private String affiliateUserName;
     @SerializedName("iskol")
@@ -36,12 +34,12 @@ public class SearchItem {
     @SerializedName("post_count")
     private int postCount;
 
-    public String getProductId() {
-        return productId;
+    public String getItemId() {
+        return itemId;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
     public String getPrice() {
@@ -124,14 +122,6 @@ public class SearchItem {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getPeopleId() {
-        return peopleId;
-    }
-
-    public void setPeopleId(String peopleId) {
-        this.peopleId = peopleId;
     }
 
     public String getAffiliateUserName() {
