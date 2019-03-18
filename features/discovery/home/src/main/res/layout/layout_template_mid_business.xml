@@ -6,109 +6,103 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="@dimen/dp_180"
-        android:layout_height="100dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
-        tools:cardCornerRadius="@dimen/dp_4">
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical">
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="100dp"
+            tools:cardCornerRadius="@dimen/dp_4"
+            tools:cardElevation="@dimen/dp_10"
+            tools:cardMaxElevation="@dimen/dp_14">
 
-            <TextView
-                android:id="@+id/productName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
-                android:textSize="@dimen/sp_10"
-                android:textColor="#ae31353b"
-                android:letterSpacing="0.02"
-                android:layout_gravity="end"
-                tools:text="EVENTS"
-                />
-
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8">
-
-                <include layout="@layout/layout_template_footer_business"
-                    android:id="@+id/footer"
-                    android:layout_alignParentBottom="true"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content" />
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/productName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/sp_12"
-                    android:textColor="@color/charcoal_grey_88"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="BRONET 4G OWS"
-                    tools:visibility="visible"
-                    />
-
-                <TextView
-                    android:id="@+id/subtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/title"
-                    android:layout_above="@id/footer"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:maxLines="1"
-                    android:ellipsize="end"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:textSize="@dimen/sp_10"
-                    android:textColor="#f531353b"
-                    android:lineSpacingExtra="@dimen/sp_6"
-                    android:visibility="gone"
-                    tools:text="081234567890"
-                    tools:visibility="visible"
+                    android:textColor="#ae31353b"
+                    android:letterSpacing="0.02"
+                    android:layout_gravity="end"
+                    tools:text="EVENTS"
                     />
 
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8">
 
-        </LinearLayout>
+                    <include layout="@layout/layout_template_footer_business"
+                        android:id="@+id/footer"
+                        android:layout_alignParentBottom="true"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
 
-    </android.support.v7.widget.CardView>
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/sp_12"
+                        android:textColor="@color/charcoal_grey_88"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="BRONET 4G OWS"
+                        tools:visibility="visible"
+                        />
 
-    <FrameLayout
+                    <TextView
+                        android:id="@+id/subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/title"
+                        android:layout_above="@id/footer"
+                        android:layout_marginTop="@dimen/dp_2"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/sp_10"
+                        android:textColor="#f531353b"
+                        android:lineSpacingExtra="@dimen/sp_6"
+                        android:visibility="gone"
+                        tools:text="081234567890"
+                        tools:visibility="visible"
+                        />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+    <include layout="@layout/layout_template_icon_business_widget"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/ic_squircle" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/dp_4"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_beli"
-            tools:ignore="VectorDrawableCompat" />
-
-    </FrameLayout>
+        android:layout_marginLeft="@dimen/dp_16"
+        />
 
 </FrameLayout>

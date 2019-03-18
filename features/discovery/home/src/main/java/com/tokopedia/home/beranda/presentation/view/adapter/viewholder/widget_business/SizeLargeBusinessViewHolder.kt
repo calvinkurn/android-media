@@ -7,6 +7,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
+import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_large_business.view.*
 
 class SizeLargeBusinessViewHolder (itemView: View?) : SizeSmallBusinessViewHolder(itemView) {
