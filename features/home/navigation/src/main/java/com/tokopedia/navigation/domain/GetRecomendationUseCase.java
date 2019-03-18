@@ -11,7 +11,7 @@ import com.tokopedia.navigation.data.entity.RecomendationEntity;
 import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +36,10 @@ public class GetRecomendationUseCase extends UseCase<RecomendationEntity.Recomen
     public static final String DEFAULT_PAGE_NAME = "default";
     private final GraphqlUseCase graphqlUseCase;
     private final Context context;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public GetRecomendationUseCase(Context context, GraphqlUseCase graphqlUseCase, UserSession userSession) {
+    public GetRecomendationUseCase(Context context, GraphqlUseCase graphqlUseCase, UserSessionInterface userSession) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
         this.userSession = userSession;
