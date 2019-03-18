@@ -58,7 +58,7 @@ class ProductDetailTracking() {
             merchantVoucherViewModel, position))
     }
 
-    fun eventImpressionMerchantVoucherUse(merchantVoucherViewModelList: List<MerchantVoucherViewModel>){
+    fun eventImpressionMerchantVoucherUse(merchantVoucherViewModelList: List<MerchantVoucherViewModel>) {
         val map = createMvcImpressionMap(
             "promoView",
             ProductTrackingConstant.Category.PDP.toLowerCase(),
@@ -102,8 +102,8 @@ class ProductDetailTracking() {
                 list.add(
                     DataLayer.mapOf(
                         ID, viewModel.voucherId,
-                        "name", viewModel.voucherName,
-                        "position", (startIndex + i + 1).toString(),
+                        PROMO_NAME, viewModel.voucherName,
+                        PROMO_POSITION, (startIndex + i + 1).toString(),
                         PROMO_ID, viewModel.voucherId,
                         PROMO_CODE, viewModel.voucherCode
                     )
@@ -288,7 +288,7 @@ class ProductDetailTracking() {
         val list = ArrayList<String>()
         if (detail != null) {
             for (i in 0 until detail.size) {
-                list.add(detail.get(i).name ?: "")
+                list.add(detail.get(i).name)
             }
         }
         return TextUtils.join("/", list)
@@ -367,6 +367,15 @@ class ProductDetailTracking() {
             "url", productInfo?.basic?.url,
             "shopType", getEnhanceShopType(shopInfo?.goldOS)
         ))
+    }
+
+    fun sendMoEngagePDPReferralCodeShareEvent() {
+        TrackApp.getInstance()?.moEngage?.sendEvent("Share_Event",
+            mutableMapOf<String, Any>(
+                "channel" to "lainnya",
+                "source" to "pdp_share"
+            )
+        )
     }
 
     companion object {

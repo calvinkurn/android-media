@@ -568,6 +568,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 viewModel.getSelectedOption()?.let {
                     optionList.add(it)
                 }
+                if (viewModel.getSelectedOption() == selectedOptionViewModel.optionId) {
+                    if (viewModel.isColorIdentifier) {
+                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName)
+                    } else if (viewModel.isSizeIdentifier){
+                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName)
+                    }
+                }
                 variantSize++
             }
         }
@@ -621,7 +628,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
         quantity = quantityViewModel.orderQuantity
-        //TODO check with the previous code
         selectedProductInfo?.let {
             renderActionButton(it)
             renderTotalPrice(it)

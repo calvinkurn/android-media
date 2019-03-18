@@ -6,6 +6,7 @@ import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -18,8 +19,12 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
 import android.view.*
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -77,8 +82,11 @@ import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
+import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
+import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -95,6 +103,7 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestPar
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
@@ -961,8 +970,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoP2.vouchers.isNotEmpty()) {
                 merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
                 merchantVoucherListWidget.visible()
-                if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID ?: 0)) {
-                    productDetailTracking.eventImpressionMerchantVoucherUse (productInfoP2.vouchers)
+                if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID
+                        ?: 0)) {
+                    productDetailTracking.eventImpressionMerchantVoucherUse(productInfoP2.vouchers)
                 }
             } else {
                 merchantVoucherListWidget.gone()
@@ -1461,8 +1471,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun shareProduct() {
         if (productInfo == null && activity == null) return
-
-        val productShare = ProductShare(activity!!)
         val productData = ProductData(
             productInfo!!.basic.price.getCurrencyFormatted(),
             "${productInfo!!.cashback.percentage}%",
@@ -1474,11 +1482,62 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productInfo!!.pictures?.getOrNull(0)?.urlOriginal ?: ""
         )
 
+        checkAndExecuteReferralAction(productData)
+    }
+
+    private fun checkAndExecuteReferralAction(productData: ProductData) {
+        val userSession = UserSession(activity)
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+
+        val fireBaseRemoteMsgGuest = remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
+        if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
+
+        if (userSession.isLoggedIn && userSession.isMsisdnVerified) {
+            val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
+            if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
+                doReferralShareAction(productData, fireBaseRemoteMsg)
+                return
+            }
+        }
+        executeProductShare(productData)
+    }
+
+    private fun doReferralShareAction(productData: ProductData, fireBaseRemoteMsg: String) {
+        val actionCreator = object : ActionCreator<String, Int> {
+            override fun actionSuccess(actionId: Int, dataObj: String) {
+                if (!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
+                    productData.productShareDescription = FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
+                        ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj)
+                    productDetailTracking.sendMoEngagePDPReferralCodeShareEvent()
+                }
+                executeProductShare(productData)
+            }
+
+            override fun actionError(actionId: Int, dataObj: Int?) {
+                executeProductShare(productData)
+            }
+        }
+        val referralAction = ReferralAction<Context, String, Int, String, String, String, Context>()
+        referralAction.doAction(ACTION_GET_REFERRAL_CODE, context, actionCreator, object: ActionUIDelegate<String, String> {
+            override fun waitForResult(actionId: Int, dataObj: String?) {
+                showProgressDialog()
+            }
+
+            override fun stopWaiting(actionId: Int, dataObj: String?) {
+                hideProgressDialog()
+            }
+        })
+
+    }
+
+    private fun executeProductShare(productData: ProductData) {
+        val productShare = ProductShare(activity!!, ProductShare.MODE_TEXT)
         productShare.share(productData, {
             showProgressLoading()
-        }) {
+        }, {
             hideProgressLoading()
-        }
+        })
+
     }
 
     private fun hideProgressLoading() {
@@ -1493,7 +1552,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (loadingProgressDialog == null) {
             loadingProgressDialog = activity?.createDefaultProgressDialog(
                 getString(R.string.title_loading),
-                cancelable = true,
+                cancelable = onCancelClicked!= null,
                 onCancelClicked = {
                     onCancelClicked?.invoke()
                 })

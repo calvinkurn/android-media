@@ -3,12 +3,13 @@ package com.tokopedia.normalcheckout.view
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
 import com.tokopedia.track.TrackApp
-import java.util.HashMap
 
 class NormalCheckoutTracking {
     companion object {
         const val CLICK_PDP = "clickPDP"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
+        const val SELECT_COLOR_VARIANT = "select color on variants page"
+        const val SELECT_SIZE_VARIANT = "select size on variants page"
     }
     fun eventClickBuyInVariantNotLogin(productId: String?) {
         if (productId.isNullOrEmpty()) return
@@ -28,11 +29,29 @@ class NormalCheckoutTracking {
             productId)
     }
 
+    fun eventSelectSizeVariant(size: String?) {
+        if (size.isNullOrEmpty()) return
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+            CLICK_PDP,
+            PRODUCT_DETAIL_PAGE,
+            SELECT_SIZE_VARIANT,
+            size)
+    }
+
+    fun eventSelectColorVariant(color: String?) {
+        if (color.isNullOrEmpty()) return
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+            CLICK_PDP,
+            PRODUCT_DETAIL_PAGE,
+            SELECT_COLOR_VARIANT,
+            color)
+    }
+
     fun eventAppsFlyer(productId: String, priceItem: String,
                        quantity: Int,
                        productName: String,
                        category: String) {
-        TrackApp.getInstance()?.appsFlyer?.sendTrackEvent(
+        TrackApp.getInstance()?.appsFlyer?.sendEvent(
             AFInAppEventType.ADD_TO_CART,
             mutableMapOf<String, Any>(
                 AFInAppEventParameterName.CONTENT_ID to productId,

@@ -10,7 +10,6 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
@@ -216,8 +215,8 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @Override
-    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
-        //no op, only for appsfyler
+    public void sendEvent(String eventName, Map<String, Object> eventValue) {
+        //no op, only for appsfyler and moengage
     }
 
     public void eventAuthenticate() {
