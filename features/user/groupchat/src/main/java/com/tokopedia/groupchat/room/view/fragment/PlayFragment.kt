@@ -298,6 +298,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 dialog.setDesc(exitMessage.body)
                 dialog.setBtnOk(activity?.getString(R.string.exit_group_chat_yes))
                 dialog.setOnOkClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.setBtnCancel(activity?.getString(R.string.exit_group_chat_no))
+                dialog.setOnCancelClickListener {
                     viewState.getChannelInfo()?.let {
                         analytics.eventUserExit(it.channelId + " " + (System.currentTimeMillis() - enterTimeStamp))
                         if(!viewState.getDurationWatchVideo().isNullOrBlank() &&
@@ -313,9 +318,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     }
                     activity?.finish()
                 }
-
-                dialog.setBtnCancel(activity?.getString(R.string.exit_group_chat_no))
-                dialog.setOnCancelClickListener { dialog.dismiss() }
             }
         }
     }
