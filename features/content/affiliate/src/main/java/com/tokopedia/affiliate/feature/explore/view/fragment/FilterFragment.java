@@ -70,10 +70,10 @@ public class FilterFragment extends BaseDaggerFragment {
     }
 
     private void initView() {
-        adapter = new FilterAdapter(getActivity(), filterList, getFilterClickListener(), R.layout.item_explore_filter_detail);
+        adapter = new FilterAdapter(getFilterClickListener(), R.layout.item_explore_filter_detail);
         rvFilter.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        adapter.addItem(filterList);
         rvFilter.setAdapter(adapter);
+        adapter.setList(filterList);
     }
 
     private void initViewListener() {

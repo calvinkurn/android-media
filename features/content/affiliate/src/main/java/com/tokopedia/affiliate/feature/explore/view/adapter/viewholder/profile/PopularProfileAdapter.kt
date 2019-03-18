@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.feature.explore.view.adapter
+package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.profile
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -15,7 +15,7 @@ class PopularProfileAdapter: RecyclerView.Adapter<PopularProfileAdapter.ViewHold
     val list: MutableList<PopularProfileChildViewModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(View.inflate(parent.context, R.layout.item_af_popular_profile_child,null))
+        return ViewHolder(View.inflate(parent.context, R.layout.item_af_popular_profile_child, null))
     }
 
     override fun getItemCount(): Int = list.size

@@ -1,22 +1,17 @@
 package com.tokopedia.affiliate.feature.explore.view.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.widget.ChipView;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -32,17 +27,12 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     private List<FilterViewModel> filterList = new ArrayList<>();
     private List<FilterViewModel> currentSelectedFilter = new ArrayList<>();
-    private Context context;
     private int layout;
     private static final int MAX_CHIP = 5;
-    private int PADDING_DEFAULT;
 
-    public FilterAdapter(Context context, List<FilterViewModel> filterList, OnFilterClickedListener onFilterClickedListener, int layout) {
-        this.filterList = filterList;
-        this.context = context;
+    public FilterAdapter(OnFilterClickedListener onFilterClickedListener, int layout) {
         this.filterClickedListener = onFilterClickedListener;
         this.layout = layout;
-        PADDING_DEFAULT = context.getResources().getDimensionPixelOffset(R.dimen.dp_16);
     }
 
     @NonNull
@@ -59,44 +49,18 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     private void initView(Holder holder, FilterViewModel filter) {
-        holder.text.setText(filter.getName());
-        ImageHandler.loadImageRounded2(context, holder.imageView, filter.getImage());
-        holder.layer.setBackgroundColor(getLayerBackground(filter.isSelected()));
-        holder.cardView.setPadding(getPadding(PADDING_DEFAULT), 0, getPadding(PADDING_DEFAULT), 0);
-    }
-
-    private int getPadding(int padding) {
-        return (int)(padding *  context.getResources().getDisplayMetrics().density);
+        holder.chip.setIconUrl(filter.getImage());
+        holder.chip.setTitle(filter.getName());
+        holder.itemView.setSelected(filter.isSelected());
     }
 
     private void initViewListener(Holder holder, FilterViewModel filter) {
-        holder.cardView.setOnClickListener(v -> {
-            enableCurrentItem(filter);
-            if (layout ==  R.layout.item_explore_filter){
-                if (filter.isSelected()) {
-                    moveSelectedSingleItemToFront(filter);
-                } else {
-                    moveAllSelectedToFront();
-                }
-            }
+        holder.itemView.setOnClickListener(v -> {
+            boolean isSelected = filterList.get(holder.getAdapterPosition()).isSelected();
+            filterList.get(holder.getAdapterPosition()).setSelected(!isSelected);
+            processCurrentSelected(filter);
             filterClickedListener.onItemClicked(getOnlySelectedFilter());
         });
-    }
-
-    private int getLayerBackground(boolean isSelected) {
-        return context.getResources().getColor(isSelected ?
-                R.color.filter_background_active :
-                R.color.filter_background_inactive);
-    }
-    private void enableCurrentItem(FilterViewModel filter) {
-        for (FilterViewModel item: getAllFilterList()) {
-            if (item.getName().equals(filter.getName())) {
-                item.setSelected(!item.isSelected());
-                processCurrentSelected(item);
-                break;
-            }
-        }
-        notifyDataSetChanged();
     }
 
     private void processCurrentSelected(FilterViewModel filter) {
@@ -130,21 +94,16 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     @Override
     public int getItemCount() {
-        if (layout ==  R.layout.item_explore_filter && filterList.size() > MAX_CHIP) return MAX_CHIP;
+        if (layout == R.layout.item_explore_filter_child && filterList.size() > MAX_CHIP) return MAX_CHIP;
         return filterList.size();
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        private ImageView imageView;
-        private TextView text;
-        private View layer;
-        private CardView cardView;
-        public Holder(View itemView) {
+        private ChipView chip;
+
+        Holder(View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.image);
-            text = itemView.findViewById(R.id.category);
-            layer = itemView.findViewById(R.id.backgroundView);
-            cardView = itemView.findViewById(R.id.card_view);
+            chip = itemView.findViewById(R.id.chip);
         }
     }
 
@@ -153,7 +112,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         notifyDataSetChanged();
     }
 
-    public void addItem(List<FilterViewModel> filterList) {
+    public void setList(List<FilterViewModel> filterList) {
         this.filterList = filterList;
         notifyDataSetChanged();
     }
@@ -172,7 +131,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
                 sortedList.add(item);
             }
         }
-        Collections.sort(sortedList, (item1, item2) -> Boolean.compare(item2.isSelected(), item1.isSelected()));
+        Collections.sort(sortedList, (item1, item2) -> Boolean.compare(item2.isSelected(),
+                item1.isSelected()));
         return sortedList;
     }
 
@@ -201,7 +161,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
                 items.add(item);
             }
         }
-        addItem(items);
+        setList(items);
         notifyDataSetChanged();
     }
 
@@ -209,12 +169,12 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         List<FilterViewModel> items = new ArrayList<>();
         items.addAll(getOnlySelectedFilter());
         items.addAll(getNotSelectedItems());
-        addItem(items);
+        setList(items);
     }
 
     private List<FilterViewModel> getNotSelectedItems() {
         List<FilterViewModel> items = new ArrayList<>();
-        for (FilterViewModel item: getAllFilterList()) {
+        for (FilterViewModel item : getAllFilterList()) {
             if (!item.isSelected()) {
                 items.add(item);
             }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -87,7 +85,9 @@ public class ExploreFragment
         extends BaseDaggerFragment
         implements ExploreContract.View,
         SearchInputView.Listener,
-        SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
+        SearchInputView.ResetListener,
+        SwipeToRefresh.OnRefreshListener,
+        FilterAdapter.OnFilterClickedListener {
 
     private static final String TAG_SHOWCASE = ExploreActivity.class.getName() + ".bottomNavigation";
     private static final String PRODUCT_ID_PARAM = "{product_id}";
@@ -119,13 +119,11 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private ImageView ivBack, ivBantuan, ivProfile;
-    private RecyclerView rvExplore, rvAutoComplete, rvFilter;
+    private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty, layoutProfile;
-    private LinearLayout layoutFilter;
-    private CardView btnFilterMore;
     private BottomActionView sortButton;
     private FloatingActionButton btnBackToTop;
     private BadgeView badgeView;
@@ -170,14 +168,11 @@ public class ExploreFragment
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
-        rvFilter = view.findViewById(R.id.rv_filter);
-        layoutFilter = view.findViewById(R.id.layout_filter);
         layoutProfile = view.findViewById(R.id.action_profile);
         ivProfile = view.findViewById(R.id.iv_profile);
-        btnFilterMore = view.findViewById(R.id.btn_filter_more);
         sortButton = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
-        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
+        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         return view;
     }
 
@@ -203,7 +198,6 @@ public class ExploreFragment
         initProfileSection();
         autoCompleteLayout.setVisibility(View.GONE);
         btnBackToTop.hide();
-        layoutFilter.setVisibility(View.GONE);
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
         searchView.setListener(this);
@@ -232,7 +226,7 @@ public class ExploreFragment
         rvExplore.setLayoutManager(layoutManager);
         rvExplore.addOnScrollListener(getScrollListener());
 
-        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
+        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         rvExplore.setAdapter(adapter);
     }
 
@@ -273,6 +267,10 @@ public class ExploreFragment
     }
 
     private void initListener() {
+        if (getActivity() == null) {
+            return;
+        }
+
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
         ivBantuan.setOnClickListener(view -> goToEducation());
         btnBackToTop.setOnClickListener(view -> {
@@ -362,7 +360,6 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
-        layoutFilter.setVisibility(View.GONE);
         exploreParams.setSearchParam(text);
         loadFirstData(false);
     }
@@ -401,7 +398,7 @@ public class ExploreFragment
             filterAdapter.clearAllData();
             filterAdapter.resetAllFilters();
             //TODO milhamj remove?
-//            filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
+//            filterAdapter.setList(tempLocalSortFilterData.getFilterList());
         }
     }
 
@@ -537,20 +534,21 @@ public class ExploreFragment
 
     private void populateFilter(List<FilterViewModel> filterList) {
         if (remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_EXPLORE_ENABLE_FILTER, true)) {
-            layoutFilter.setVisibility(View.VISIBLE);
-            rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-            if (filterAdapter == null) {
-                filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener(), R.layout.item_explore_filter);
-            } else {
-                filterAdapter.clearAllData();
-                filterAdapter.addItem(filterList);
-            }
-            rvFilter.setAdapter(filterAdapter);
-            btnFilterMore.setOnClickListener(v -> {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
-                startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
-            });
+            //TODO milhamj
+//            layoutFilter.setVisibility(View.VISIBLE);
+//            rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+//            if (filterAdapter == null) {
+//                filterAdapter = new FilterAdapter(filterList, getFilterClickedListener(), R.layout.item_explore_filter_child);
+//            } else {
+//                filterAdapter.clearAllData();
+//                filterAdapter.setList(filterList);
+//            }
+//            rvFilter.setAdapter(filterAdapter);
+//            btnFilterMore.setOnClickListener(v -> {
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
+//                startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
+//            });
         }
     }
 
@@ -570,13 +568,6 @@ public class ExploreFragment
         } else {
             sortButton.setVisibility(View.GONE);
         }
-    }
-
-    private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
-        return filters -> {
-            getFilteredFirstData(filters);
-            rvFilter.smoothScrollToPosition(0);
-        };
     }
 
     private void getFilteredFirstData(List<FilterViewModel> filters) {
@@ -754,6 +745,11 @@ public class ExploreFragment
         }
     }
 
+    @Override
+    public void onItemClicked(List<FilterViewModel> filters) {
+        getFilteredFirstData(filters);
+    }
+
     private void clearAutoCompleteAdapter(String keyword) {
         searchView.setDelayTextChanged(0);
         searchView.getSearchTextView().setText(keyword);
@@ -766,7 +762,7 @@ public class ExploreFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DETAIL_FILTER) {
-                List<FilterViewModel> currentFilter = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                List<FilterViewModel> currentFilter = new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(currentFilter);
                 getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
             }

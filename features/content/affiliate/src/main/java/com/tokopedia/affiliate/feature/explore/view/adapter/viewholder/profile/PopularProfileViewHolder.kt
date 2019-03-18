@@ -1,10 +1,9 @@
-package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder
+package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.profile
 
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.feature.explore.view.adapter.PopularProfileAdapter
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel
 import kotlinx.android.synthetic.main.item_af_popular_profile.view.*
 

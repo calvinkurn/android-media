@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.feature.explore.view.adapter
+package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.banner
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

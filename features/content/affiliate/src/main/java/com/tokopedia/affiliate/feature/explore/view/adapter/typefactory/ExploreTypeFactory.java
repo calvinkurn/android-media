@@ -8,7 +8,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewMo
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterListViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel;
 
@@ -23,7 +23,7 @@ public interface ExploreTypeFactory extends AdapterTypeFactory {
 
     int type(ExploreEmptySearchViewModel exploreEmptySearchViewModel);
 
-    int type(FilterViewModel filterViewModel);
+    int type(FilterListViewModel filterViewModel);
 
     int type(PopularProfileViewModel popularProfileViewModel);
 
