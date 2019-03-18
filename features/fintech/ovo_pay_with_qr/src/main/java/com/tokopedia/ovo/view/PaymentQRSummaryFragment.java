@@ -22,8 +22,6 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -40,6 +38,8 @@ import java.net.URLDecoder;
 
 import static com.tokopedia.ovo.view.PaymentQRSummaryActivity.IMEI;
 import static com.tokopedia.ovo.view.PaymentQRSummaryActivity.QR_DATA;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSACTION_ID;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSFER_ID;
 
 public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         PaymentQrSummaryContract.View, View.OnFocusChangeListener, TextWatcher, View.OnClickListener {
@@ -72,6 +72,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     int transferId;
     private TextView pointCash;
     private Wallet wallet;
+    private SaveInstanceCacheManager cacheManager;
 
     public static Fragment createInstance(String qrData, String imei) {
         Bundle bundle = new Bundle();
@@ -100,16 +101,12 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         presenter = new PaymentQrSummaryPresenterImpl(getActivity());
         presenter.attachView(this);
         presenter.fetchWalletDetails();
-        SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        cacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         if (savedInstanceState == null)
             cacheManager = new SaveInstanceCacheManager(getActivity(), id);
 
-        JsonObject response = cacheManager.get(QR_RESPONSE, new TypeToken<JsonObject>() {
+        responseData = cacheManager.get(QR_RESPONSE, new TypeToken<BarcodeResponseData>() {
         }.getType());
-        if (response != null) {
-            responseData = new GsonBuilder().create().fromJson(response, BarcodeResponseData.class);
-
-        }
 
     }
 
@@ -193,9 +190,15 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             setProgressButton();
             if (response.getStatus().equalsIgnoreCase(PENDING_STATUS)) {
                 try {
-                    ((OvoPayWithQrRouter) getActivity().getApplication())
-                            .openTokopointWebview(getActivity(), URLDecoder.decode(
+                    Intent intent = ((OvoPayWithQrRouter) getActivity().getApplication())
+                            .tokopointWebviewIntent(getActivity(), URLDecoder.decode(
                                     response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
+                    intent.putExtra("cache_id",id);
+                    intent.putExtra(TRANSACTION_ID, response.getTransactionId());
+                    startActivity(intent);
+//                    ((OvoPayWithQrRouter) getActivity().getApplication())
+//                            .openTokopointWebview(getActivity(), URLDecoder.decode(
+//                                    response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -302,6 +305,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         progressBar.setVisibility(View.VISIBLE);
         bayarBtn.setClickable(false);
         transferId = responseData.getGoalQRInquiry().getTransferId();
+        cacheManager.put(TRANSFER_ID, transferId);
         presenter.confirmQrPayment(imeiNumber,
                 responseData.getGoalQRInquiry().getTransferId(),
                 Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()),

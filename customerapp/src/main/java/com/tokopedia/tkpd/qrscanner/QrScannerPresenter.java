@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -15,6 +13,8 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.ovo.model.BarcodeResponseData;
+import com.tokopedia.ovo.model.Errors;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -114,7 +114,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         variables.put(QR_ID, barcodeData);
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.verify_ovo_qr_code),
-                JsonObject.class,
+                BarcodeResponseData.class,
                 variables);
 
         graphqlUseCase.addRequest(graphqlRequest);
@@ -131,23 +131,19 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                JsonObject response = graphqlResponse.getData(JsonObject.class);
-                JsonArray error;
-                if (response != null) {
-                    JsonObject object = response.getAsJsonObject(GOAL_QR_INQUIRY);
-                    if (object != null) {
-                        error = object.getAsJsonArray(ERRORS);
-                        if (error != null && error.size() > 0) {
-                            JsonObject errorObject = error.get(0).getAsJsonObject();
-                            if (errorObject != null && errorObject.get(MESSAGE) != null
-                                    && !TextUtils.isEmpty(errorObject.get(MESSAGE).getAsString())) {
-                                //error
-                                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
-                            }
-                        } else {
-                            getView().goToPaymentPage(barcodeData, response);
+                BarcodeResponseData response = graphqlResponse.getData(BarcodeResponseData.class);
+                if (response != null && response.getGoalQRInquiry() != null) {
+                    List<Errors> errors = response.getGoalQRInquiry().getErrors();
+                    if (errors != null && errors.size() > 0) {
+                        Errors error = errors.get(0);
+                        if (error != null && !TextUtils.isEmpty(error.getMessage())) {
+                            getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
                         }
+                    } else {
+                        getView().goToPaymentPage(barcodeData, response);
                     }
+                } else {
+                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
                 }
 
             }

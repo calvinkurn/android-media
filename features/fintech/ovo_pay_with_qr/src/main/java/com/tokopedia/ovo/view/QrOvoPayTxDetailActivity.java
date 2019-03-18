@@ -8,11 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.ovo.R;
 
 import static com.tokopedia.ovo.Constants.OVO_THANKS_TRANSACTION_URL;
-import static com.tokopedia.ovo.Constants.OVO_THANKS_URL;
 
 public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements TransactionResultListener {
     public static final int SUCCESS = 0;
@@ -20,8 +21,13 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     public static final String TRANSFER_ID = "transfer_id";
     public static final String TRANSACTION_ID = "transaction_id";
     private static final String CODE = "code";
+    private static final String CACHE_ID = "cache_id";
+    private String cacheId;
+    private int transferId;
+    private int transactionId;
+    private SaveInstanceCacheManager cacheManager;
 
-    @DeepLink({OVO_THANKS_TRANSACTION_URL, OVO_THANKS_URL})
+    @DeepLink({OVO_THANKS_TRANSACTION_URL})
     public static Intent getContactUsIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, QrOvoPayTxDetailActivity.class)
@@ -31,6 +37,18 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (getIntent().getIntExtra(TRANSFER_ID, 0) != 0) {
+            transferId = getIntent().getIntExtra(TRANSFER_ID, 0);
+        } else {
+            cacheId = getIntent().getStringExtra(CACHE_ID);
+            cacheManager = new SaveInstanceCacheManager(this, savedInstanceState);
+            if (savedInstanceState == null)
+                cacheManager = new SaveInstanceCacheManager(this, cacheId);
+
+            transferId = cacheManager.get(TRANSFER_ID, new TypeToken<Integer>() {
+            }.getType());
+        }
+        transactionId = getIntent().getIntExtra(TRANSACTION_ID, 0);
         super.onCreate(savedInstanceState);
         getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -51,30 +69,22 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     protected Fragment getNewFragment() {
         if (getIntent().getIntExtra(CODE, -1) == SUCCESS) {
             updateTitle(getString(R.string.oqr_success_transaction));
-            return QrTxSuccessDetailFragment.createInstance(
-                    getIntent().getIntExtra(TRANSFER_ID, -1),
-                    getIntent().getIntExtra(TRANSACTION_ID, -1));
+            return QrTxSuccessDetailFragment.createInstance(transferId, transactionId);
         } else {
             updateTitle(getString(R.string.oqr_fail_transaction));
-            return QrPayTxFailFragment.createInstance(
-                    getIntent().getIntExtra(TRANSFER_ID, -1),
-                    getIntent().getIntExtra(TRANSACTION_ID, -1));
+            return QrPayTxFailFragment.createInstance(transferId, transactionId);
         }
     }
 
     public void goToFailFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, QrPayTxFailFragment.createInstance(
-                getIntent().getIntExtra(TRANSFER_ID, -1),
-                getIntent().getIntExtra(TRANSACTION_ID, -1)));
+        transaction.add(R.id.parent_view, QrPayTxFailFragment.createInstance(transferId, transactionId));
         transaction.commit();
     }
 
     public void goToSuccessFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, QrTxSuccessDetailFragment.createInstance(
-                getIntent().getIntExtra(TRANSFER_ID, -1),
-                getIntent().getIntExtra(TRANSACTION_ID, -1)));
+        transaction.add(R.id.parent_view, QrTxSuccessDetailFragment.createInstance(transferId, transactionId));
         transaction.commit();
     }
 }
