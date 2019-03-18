@@ -1943,7 +1943,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null) {
             checkoutAnalyticsCourierSelection.eventClickGantiNomor();
             Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                    shipmentPresenter.getRecipientAddressModel(),
+                    shipmentPresenter.getRecipientAddressModel(), shipmentPresenter.getKeroToken(),
                     CartAddressChoiceActivity.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN);
             startActivityForResult(intent, REQUEST_CODE_EDIT_ADDRESS);
         }

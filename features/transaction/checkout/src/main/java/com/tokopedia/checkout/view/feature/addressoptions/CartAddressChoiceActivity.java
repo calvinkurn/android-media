@@ -86,6 +86,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     public static Intent createInstance(Activity activity,
+                                        RecipientAddressModel currentAddress,
+                                        Token token,
+                                        int typeRequest) {
+        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
+        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
+        if (currentAddress != null) {
+            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
+        }
+        return intent;
+    }
+
+    public static Intent createInstance(Activity activity,
                                         int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
