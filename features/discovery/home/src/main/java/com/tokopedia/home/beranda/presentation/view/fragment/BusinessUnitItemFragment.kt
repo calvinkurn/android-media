@@ -102,9 +102,25 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
                 .goToApplinkActivity(activity, t?.applink ?: t?.url)
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && view != null) {
+            requestListData()
+        }
+    }
+
     override fun loadData(page: Int) {
+        if (userVisibleHint) {
+            requestListData()
+        }
+    }
+
+    private fun requestListData() {
         viewModel.getList(
-                GraphqlHelper.loadRawString(activity?.resources, R.raw.query_content_tab_business_widget),
+                GraphqlHelper.loadRawString(
+                        activity?.resources,
+                        R.raw.query_content_tab_business_widget
+                ),
                 itemTab.id
         )
     }
