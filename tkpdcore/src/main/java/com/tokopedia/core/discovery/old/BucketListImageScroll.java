@@ -117,8 +117,8 @@ public class BucketListImageScroll {
                     Intent intent = null;
                     if (VI == 2) {
                         TopAdsUtil.clickTopAdsAction(context, ProductClickUrl.get(pos));
-                        intent = ProductDetailRouter
-                                .createInstanceProductDetailInfoActivity(context, ID.get(pos));
+//                        intent = ProductDetailRouter
+//                                .createInstanceProductDetailInfoActivity(context, ID.get(pos));
 
                         bundle.putString("ad_key", Key.get(pos));
                         bundle.putString("ad_r", Referrer.get(pos));
