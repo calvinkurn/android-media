@@ -38,17 +38,24 @@
 
                 <com.tokopedia.searchbar.HomeMainToolbar
                     android:id="@+id/toolbar"
-                    android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
                     android:paddingBottom="@dimen/dp_16"
                     android:layout_height="wrap_content"
                     android:gravity="top"
-                    app:contentInsetStart="0dp"
-                    app:contentInsetLeft="0dp"
                     app:layout_collapseMode="pin"
                     app:layout_anchor="@id/list"
+                    app:contentInsetStart="0dp"
+                    app:contentInsetLeft="0dp"
                     app:screenName="/"/>
 
+                <View
+                    android:visibility="invisible"
+                    app:layout_collapseMode="pin"
+                    app:layout_anchor="@id/list"
+                    android:id="@+id/status_bar_bg"
+                    android:background="@color/green_600"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"/>
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>

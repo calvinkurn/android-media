@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
+import android.os.Build
 import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -23,6 +24,7 @@ import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.home.beranda.presentation.view.adapter.CardBannerPagerAdapter
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeBannerViewDecorator
 import kotlinx.android.synthetic.main.layout_card_banner_dynamic_background.view.*
 
@@ -45,6 +47,7 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun init() {
         val view = View.inflate(context, R.layout.layout_card_banner_dynamic_background, this)
+
         bannerRecyclerView = view.findViewById(R.id.viewpager_banner_category)
         bannerIndicator = view.findViewById<ViewGroup>(R.id.indicator_banner_container)
         bannerSeeAll = view.findViewById(R.id.promo_link)
