@@ -72,8 +72,8 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.analytics
 

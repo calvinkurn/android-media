@@ -733,9 +733,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
+    public void actionTokoPointClicked(String appLink, String tokoPointUrl, String pageTitle) {
         if (mShowTokopointNative) {
-            openApplink(ApplinkConstant.HOMEPAGE);
+            openApplink(appLink);
         } else {
             if (TextUtils.isEmpty(pageTitle))
                 startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
