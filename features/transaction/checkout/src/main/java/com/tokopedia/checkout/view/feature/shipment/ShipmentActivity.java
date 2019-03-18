@@ -122,12 +122,4 @@ public class ShipmentActivity extends BaseCheckoutActivity {
             super.onBackPressed();
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ShipmentFragment.REQUEST_CODE_MANAGE_PROFILE && shipmentFragment != null) {
-            shipmentFragment.onResultFromManageProfile();
-        }
-    }
 }

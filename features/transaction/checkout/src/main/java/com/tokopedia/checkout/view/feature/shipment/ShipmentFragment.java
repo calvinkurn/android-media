@@ -116,7 +116,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener, CourierBottomsheet.ActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
 
-    public static final int REQUEST_CODE_MANAGE_PROFILE = 11;
+    private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
@@ -971,10 +971,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromCourierPinpoint(resultCode, data);
         } else if (requestCode == REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS) {
             onResultFromMultipleAddress(resultCode, data);
+        } else if (requestCode == REQUEST_CODE_EDIT_ADDRESS) {
+            onResultFromEditAddress();
         }
     }
 
-    public void onResultFromManageProfile() {
+    public void onResultFromEditAddress() {
         shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), null, getDeviceId());
     }
 
@@ -1937,10 +1939,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onClickChangePhoneNumber() {
+    public void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel) {
         if (getActivity() != null) {
             checkoutAnalyticsCourierSelection.eventClickGantiNomor();
-            getActivity().startActivityForResult(checkoutModuleRouter.getManageProfileIntent(getActivity()), REQUEST_CODE_MANAGE_PROFILE);
+            Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+                    shipmentPresenter.getRecipientAddressModel(),
+                    CartAddressChoiceActivity.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN);
+            startActivityForResult(intent, REQUEST_CODE_EDIT_ADDRESS);
         }
     }
 
