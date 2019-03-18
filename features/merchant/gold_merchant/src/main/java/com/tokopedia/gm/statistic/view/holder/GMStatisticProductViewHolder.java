@@ -13,6 +13,9 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import android.content.Context;
 
 /**
  * Created by normansyahputa on 11/9/16.
@@ -67,13 +70,18 @@ public class GMStatisticProductViewHolder implements GMStatisticViewHolder {
         if (getPopularProduct == null) {
             return;
         }
-        popularProductCardView.getContext().startActivity(ProductDetailRouter
-                .createInstanceProductDetailInfoActivity(
-                        popularProductCardView.getContext(),
-                        getPopularProduct.getProductId() + ""));
+        popularProductCardView.getContext().startActivity(getProductIntent(popularProductCardView.getContext(), getPopularProduct.getProductId() + ""));
 
         // analytic below : https://phab.tokopedia.com/T18496
         clickGMStat();
+    }
+
+    private Intent getProductIntent(Context context, String productId) {
+        if (context != null) {
+            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
