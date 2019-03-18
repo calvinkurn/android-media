@@ -11,6 +11,7 @@ import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
 import com.tokopedia.videouploader.R
+import com.tokopedia.videouploader.di.VideoUploaderQualifier
 import com.tokopedia.videouploader.domain.pojo.GenerateTokenPojo
 import rx.Observable
 
@@ -18,7 +19,7 @@ import rx.Observable
  * @author by nisie on 15/03/19.
  */
 class GenerateVideoTokenUseCase @Inject constructor(
-        val resources: Resources,
+        @VideoUploaderQualifier val resources: Resources,
         private val graphqlUseCase: GraphqlUseCase
 ) {
 

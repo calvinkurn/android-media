@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse
-import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadvideo.UploadVideoResponse
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.presenter.CreatePostPresenter
 import com.tokopedia.imageuploader.di.ImageUploaderModule
@@ -22,7 +21,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.data.UploadVideoApi
 import com.tokopedia.videouploader.di.VideoUploaderModule
 import com.tokopedia.videouploader.di.VideoUploaderQualifier
-import com.tokopedia.videouploader.domain.UploadVideoUseCase
+import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
+import com.tokopedia.videouploader.domain.usecase.GenerateVideoTokenUseCase
+import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
 
 import dagger.Module
 import dagger.Provides
@@ -86,7 +87,9 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun provideUploadVideoUseCase(
             @VideoUploaderQualifier uploadVideoApi: UploadVideoApi,
-            @VideoUploaderQualifier gson: Gson): UploadVideoUseCase<UploadVideoResponse> {
-        return UploadVideoUseCase(uploadVideoApi, gson, UploadVideoResponse::class.java)
+            @VideoUploaderQualifier gson: Gson,
+            generateVideoTokenUseCase: GenerateVideoTokenUseCase):
+            UploadVideoUseCase<DefaultUploadVideoResponse> {
+        return UploadVideoUseCase(uploadVideoApi, gson, DefaultUploadVideoResponse::class.java, generateVideoTokenUseCase)
     }
 }
