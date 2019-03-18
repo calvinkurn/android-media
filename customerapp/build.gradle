@@ -558,6 +558,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.libraries.cacheManager)
+    implementation project(rootProject.ext.features.kyc)
 }
 
 
