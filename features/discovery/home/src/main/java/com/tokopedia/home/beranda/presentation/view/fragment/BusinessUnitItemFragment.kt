@@ -116,7 +116,6 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     private fun requestListData() {
-        showLoading()
         viewModel.getList(
                 GraphqlHelper.loadRawString(
                         activity?.resources,
@@ -150,12 +149,10 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     private fun onSuccessGetList(data: HomeWidget) {
-        hideLoading()
         renderList(data.contentItemTabList, false)
     }
 
     private fun onErrorGetList(throwable: Throwable) {
-        hideLoading()
         onGetListErrorWithEmptyData(throwable)
     }
 }
