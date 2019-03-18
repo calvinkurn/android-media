@@ -29,6 +29,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
@@ -803,6 +804,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         startActivity(intent);
     }
 
+    // before promo stacking
     /*@Override
     public void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData) {
         PromoData.Builder builder = new PromoData.Builder();
@@ -824,6 +826,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.notifyDataSetChanged();
     }*/
 
+    // dummy autoapply_stack not ready
     @Override
     public void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData) {
         PromoStackingData.Builder builder = new PromoStackingData.Builder();
@@ -844,6 +847,28 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.addPromoStackingVoucherData(builder.build());
         shipmentAdapter.notifyDataSetChanged();
     }
+
+    // open if autoapplys_stack dummy is ready
+    /*@Override
+    public void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        PromoStackingData.Builder builder = new PromoStackingData.Builder();
+        if (cartShipmentAddressFormData.getAutoApplyData() != null && cartShipmentAddressFormData.getAutoApplyData().isSuccess()) {
+            AutoApplyStackData autoApplyStackData = cartShipmentAddressFormData.getAutoApplyStackData();
+            builder.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
+                    PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
+                    .description(autoApplyStackData.getMessageSuccess())
+                    .amount(autoApplyStackData.getDiscountAmount())
+                    .promoCode(autoApplyStackData.getCode())
+                    .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
+                    .title(autoApplyStackData.getTitleDescription())
+                    .build();
+            sendAnalyticsOnViewPromoAutoApply();
+        } else {
+            builder.state(TickerPromoStackingCheckoutView.State.EMPTY);
+        }
+        shipmentAdapter.addPromoStackingVoucherData(builder.build());
+        shipmentAdapter.notifyDataSetChanged();
+    }*/
 
     @Override
     public void showToastFailedTickerPromo(String text) {

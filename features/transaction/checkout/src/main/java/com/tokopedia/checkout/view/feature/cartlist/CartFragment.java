@@ -606,6 +606,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             /*TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
             bottomSheet.show(getFragmentManager(), null);*/
         }
+        // dPresenter.processCheckPromoStackingCode();
     }
 
     /*@Override
@@ -942,6 +943,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
     }
 
+    @Override
+    public void renderAppliedPromoStacking() {
+
+    }
+
     private void showErrorLayout(String message) {
         if (getActivity() != null) {
             enableSwipeRefresh();
@@ -1250,17 +1256,23 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             /*emptyCartListener.onCartEmpty(cartListData.getAutoApplyData().getMessageSuccess(),
                     cartListData.getAutoApplyData().getState(),
                     cartListData.getAutoApplyData().getTitleDescription());*/
-            emptyCartListener.onCartEmpty(cartListData.getAutoApplyStackData().getMessageSuccess(),
-                    cartListData.getAutoApplyStackData().getState(),
-                    cartListData.getAutoApplyStackData().getTitleDescription());
+
+            if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()) {
+                emptyCartListener.onCartEmpty(cartListData.getAutoApplyStackData().getMessageSuccess(),
+                        cartListData.getAutoApplyStackData().getState(),
+                        cartListData.getAutoApplyStackData().getTitleDescription());
+            }
         } else {
             if (getActivity() instanceof EmptyCartListener) {
                 /*((EmptyCartListener) getActivity()).onCartEmpty(cartListData.getAutoApplyData().getMessageSuccess(),
                         cartListData.getAutoApplyData().getState(),
                         cartListData.getAutoApplyData().getTitleDescription());*/
-                ((EmptyCartListener) getActivity()).onCartEmpty(cartListData.getAutoApplyStackData().getMessageSuccess(),
-                        cartListData.getAutoApplyStackData().getState(),
-                        cartListData.getAutoApplyStackData().getTitleDescription());
+
+                if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()) {
+                    ((EmptyCartListener) getActivity()).onCartEmpty(cartListData.getAutoApplyStackData().getMessageSuccess(),
+                            cartListData.getAutoApplyStackData().getState(),
+                            cartListData.getAutoApplyStackData().getTitleDescription());
+                }
             }
         }
         showEmptyCartContainer();

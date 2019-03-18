@@ -14,6 +14,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
@@ -50,7 +51,8 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailPresenter.validatePromoUse(codeCoupon, isOneClickShipment,  resources)
+        // promoCheckoutDetailPresenter.validatePromoUse(codeCoupon, isOneClickShipment,  resources)
+        promoCheckoutDetailPresenter.validatePromoStackingUse()
     }
 
     override fun onClickCancel() {
@@ -62,13 +64,22 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         promoCheckoutDetailPresenter.cancelPromo()
     }
 
-    override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
+    /*override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
         if(pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(dataVoucher.code?:"")
         }else{
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(dataVoucher.code?:"")
         }
         super.onSuccessValidatePromo(dataVoucher)
+    }*/
+
+    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
+        if(pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(data.codes[0])
+        }else{
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
+        }
+        super.onSuccessValidatePromoStacking(data)
     }
 
     override fun onErrorValidatePromo(e: Throwable) {

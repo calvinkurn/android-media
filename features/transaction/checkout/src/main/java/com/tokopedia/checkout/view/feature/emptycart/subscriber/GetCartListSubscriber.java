@@ -52,7 +52,9 @@ public class GetCartListSubscriber extends Subscriber<CartListData> {
                 view.navigateToCartFragment(cartListData);
             } else {
                 // view.renderEmptyCart(cartListData.getAutoApplyData());
-                view.renderEmptyCartStack(cartListData.getAutoApplyStackData());
+                if (cartListData.getAutoApplyStackData() != null) {
+                    view.renderEmptyCartStack(cartListData.getAutoApplyStackData());
+                }
             }
             stopTrace();
         }

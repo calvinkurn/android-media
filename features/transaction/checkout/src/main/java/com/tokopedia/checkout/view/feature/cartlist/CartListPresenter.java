@@ -9,6 +9,7 @@ import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -31,17 +32,18 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.checkout.view.feature.promostacking.subscriber.CheckPromoStackingSubscriber;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.Response;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.promocheckout.common.view.uimodel.ResponseUiModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
@@ -113,6 +115,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
     private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
+    private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
     private final TopAdsGqlUseCase topAdsUseCase;
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
@@ -160,6 +163,7 @@ public class CartListPresenter implements ICartListPresenter {
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
+                             CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -177,6 +181,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.updateCartUseCase = updateCartUseCase;
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
+        this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
@@ -1499,7 +1504,10 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processCheckPromoStackingCode() {
-        checkPromoStackingCodeUseCase.setParams();
-        checkPromoStackingCodeUseCase.execute(RequestParams.create(), new CheckPromoStackingSubscriber(this));
+        checkPromoStackingCodeUseCase.setParams(123, 1, "VOUCHERTOKO10",
+                "JNE100", 1, "", "CASHBACK50",
+                0, 1);
+        checkPromoStackingCodeUseCase.execute(RequestParams.create(),
+                new CheckPromoStackingSubscriber(checkPromoStackingCodeMapper));
     }
 }

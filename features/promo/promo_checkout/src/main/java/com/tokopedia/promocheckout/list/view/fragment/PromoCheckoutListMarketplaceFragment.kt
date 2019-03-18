@@ -14,11 +14,11 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
-import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
@@ -68,7 +68,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        promoCheckoutListMarketplacePresenter.checkPromoCode(promoCode, isOneClickShipment)
+        promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment)
     }
 
     override fun showProgressLoading() {
@@ -96,7 +96,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         textInputLayoutCoupon.error = getString(R.string.promo_checkout_label_error_empty_voucher_code)
     }
 
-    override fun onSuccessCheckPromoCode(dataVoucher: DataVoucher) {
+    /*override fun onSuccessCheckPromoCode(dataVoucher: DataVoucher) {
         if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(dataVoucher.code ?: "")
         } else {
@@ -109,6 +109,22 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                 dataVoucher.cashbackAmount, dataVoucher.message?.state?.mapToStatePromoCheckout()
                 ?: TickerCheckoutView.State.EMPTY)
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }*/
+
+    override fun onSuccessCheckPromoStackingCode(data: DataUiModel) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes[0])
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
+        }
+        val intent = Intent()
+        val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
+        val promoStackingData = PromoStackingData(typePromo, data.codes[0],
+                data.message.text, data.titleDescription,
+                data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
+        intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

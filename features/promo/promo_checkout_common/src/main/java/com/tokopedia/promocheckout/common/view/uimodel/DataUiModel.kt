@@ -15,5 +15,6 @@ data class DataUiModel(
 		var gatewayId: String = "",
 		var isCoupon: Int = -1,
 		var couponDescription: String = "",
+		var clashings: ClashingInfoDetailUiModel = ClashingInfoDetailUiModel(),
 		var voucherOrders: List<VoucherOrdersItemUiModel> = emptyList()
 )
