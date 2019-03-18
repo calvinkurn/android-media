@@ -100,6 +100,7 @@ import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -294,6 +295,7 @@ import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
+import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -580,6 +582,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoginRegisterPhoneRouter,
         ExpressCheckoutRouter,
         ResolutionRouter,
+        OvoPayWithQrRouter,
         KYCRouter{
 
 
@@ -1955,6 +1958,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getNominalActivityIntent(Context context, String qrcode, InfoQrTokoCash infoQrTokoCash) {
         return NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
+    }
+
+    @Override
+    public Intent getOvoActivityIntent(Context context) {
+        return new Intent(context,PaymentQRSummaryActivity.class);
     }
 
     @Override
