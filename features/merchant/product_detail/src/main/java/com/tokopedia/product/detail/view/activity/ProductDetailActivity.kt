@@ -64,7 +64,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     object DeeplinkIntents {
-        @DeepLink(ApplinkConst.PRODUCT_INFO)
+//        @DeepLink(ApplinkConst.PRODUCT_INFO)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
@@ -73,7 +73,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
                 uri.lastPathSegment) ?: Intent()
         }
 
-        @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
+//        @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
         @JvmStatic
         fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()

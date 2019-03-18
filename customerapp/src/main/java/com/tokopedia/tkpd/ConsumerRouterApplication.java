@@ -182,7 +182,6 @@ import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
-import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
 import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
@@ -1143,7 +1142,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new GlobalCacheManager().delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase().executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
-        new FlightDeleteDashboardCacheUseCase(appComponent.context()).executeSync();
     }
 
     @Override
