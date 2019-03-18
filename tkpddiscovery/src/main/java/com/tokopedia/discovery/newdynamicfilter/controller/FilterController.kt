@@ -14,10 +14,9 @@ import java.util.*
 class FilterController() : Parcelable {
 
     private val filterParameter = mutableMapOf<String, String>()
-    private val flagFilterHelper = mutableMapOf<String, Boolean>()
+    private val filterViewState = mutableMapOf<String, Boolean>()
     private val filterList = mutableListOf<Filter>()
     private val activeFilterKeyList = mutableSetOf<String>()
-    private val shownInMainState = mutableMapOf<String, Boolean>()
 
     private var pressedSliderMinValueState = -1
     private var pressedSliderMaxValueState = -1
@@ -26,9 +25,8 @@ class FilterController() : Parcelable {
         resetStatesBeforeLoad()
 
         parcel.readMap(filterParameter, String::class.java.classLoader)
-        parcel.readMap(flagFilterHelper, Boolean::class.java.classLoader)
+        parcel.readMap(filterViewState, Boolean::class.java.classLoader)
         parcel.readList(filterList, Filter::class.java.classLoader)
-        parcel.readMap(shownInMainState, Boolean::class.java.classLoader)
         pressedSliderMinValueState = parcel.readInt()
         pressedSliderMaxValueState = parcel.readInt()
 
@@ -47,20 +45,19 @@ class FilterController() : Parcelable {
 
     private fun resetStatesBeforeLoad() {
         filterParameter.clear()
-        flagFilterHelper.clear()
+        filterViewState.clear()
         filterList.clear()
         activeFilterKeyList.clear()
-        shownInMainState.clear()
         pressedSliderMaxValueState = -1
         pressedSliderMaxValueState = -1
     }
 
     private fun loadFilterParameter(filterParameter: Map<String, String>) {
         this.filterParameter.putAll(filterParameter)
-        removeDuplicateValues()
+        filterParameterRemoveDuplicateValues()
     }
 
-    private fun removeDuplicateValues() {
+    private fun filterParameterRemoveDuplicateValues() {
         for(entrySet in filterParameter.entries) {
             val valueSet = entrySet.value.split(Option.VALUE_SEPARATOR).toSet()
             entrySet.setValue(valueSet.joinToString(separator = Option.VALUE_SEPARATOR))
@@ -155,7 +152,7 @@ class FilterController() : Parcelable {
         }
 
         for(option in optionsForFlagFilterHelper) {
-            flagFilterHelper[option.uniqueId] = true
+            filterViewState[option.uniqueId] = true
         }
     }
 
@@ -253,7 +250,6 @@ class FilterController() : Parcelable {
             activeFilterKeyList.remove(option.key)
 
             val isFilterApplied = isFilterApplied(option.inputState)
-            setOrRemoveShownInMainState(option.uniqueId, isFilterApplied)
             setOrRemoveFlagFilterHelper(option.uniqueId, isFilterApplied)
 
             if(isFilterApplied) {
@@ -284,8 +280,8 @@ class FilterController() : Parcelable {
     }
 
     private fun setOrRemoveFlagFilterHelper(key: String, value: Boolean) {
-        if(value) flagFilterHelper[key] = true
-        else flagFilterHelper.remove(key)
+        if(value) filterViewState[key] = true
+        else filterViewState.remove(key)
     }
 
     private fun getNewFilterValue(isFilterAdded: Boolean, key: String, value: String) : String {
@@ -333,15 +329,10 @@ class FilterController() : Parcelable {
         return !TextUtils.isEmpty(value) && value != java.lang.Boolean.FALSE.toString()
     }
 
-    private fun setOrRemoveShownInMainState(key: String, value: Boolean) {
-        if(value) shownInMainState[key] = true
-        else shownInMainState.remove(key)
-    }
-
     fun resetAllFilters() {
         removeActiveFiltersFromFilterParameter()
 
-        flagFilterHelper.clear()
+        filterViewState.clear()
 
         resetSliderStates()
     }
@@ -389,19 +380,6 @@ class FilterController() : Parcelable {
         return selectedOptionList
     }
 
-    private fun putSelectedOptionsToList(selectedOptionList: MutableList<Option>, filter: Filter, popularOptionList: List<Option>) {
-        if (isAddCategoryFilter(filter, popularOptionList)) {
-            selectedOptionList.add(getSelectedCategoryAsOption(filter))
-        } else {
-            selectedOptionList.addAll(
-                getCustomSelectedOptionList(filter) { option ->
-                isCustomOptionDisplayed(option) && (popularOptionList.isEmpty() || !option.isPopular)
-            })
-        }
-
-        selectedOptionList.addAll(popularOptionList)
-    }
-
     private fun getPopularOptionList(filter: Filter): List<Option> {
         val checkedOptions = ArrayList<Option>()
 
@@ -411,6 +389,19 @@ class FilterController() : Parcelable {
             }
         }
         return checkedOptions
+    }
+
+    private fun putSelectedOptionsToList(selectedOptionList: MutableList<Option>, filter: Filter, popularOptionList: List<Option>) {
+        if (isAddCategoryFilter(filter, popularOptionList)) {
+            selectedOptionList.add(getSelectedCategoryAsOption(filter))
+        } else {
+            selectedOptionList.addAll(
+                getCustomSelectedOptionList(filter) { option ->
+                isCustomOptionDisplayed(option) && isIncludePopularOption(popularOptionList, option)
+            })
+        }
+
+        selectedOptionList.addAll(popularOptionList)
     }
 
     private fun isAddCategoryFilter(filter: Filter, popularOptionList: List<Option>) : Boolean {
@@ -458,7 +449,10 @@ class FilterController() : Parcelable {
 
     private fun isCustomOptionDisplayed(option: Option) : Boolean {
         return java.lang.Boolean.TRUE == getFlagFilterHelperValue(option.uniqueId)
-                || java.lang.Boolean.TRUE == shownInMainState[option.uniqueId]
+    }
+
+    private fun isIncludePopularOption(popularOptionList: List<Option>, option: Option) : Boolean {
+        return (popularOptionList.isEmpty() || !option.isPopular)
     }
 
     fun isFilterActive() : Boolean {
@@ -470,7 +464,7 @@ class FilterController() : Parcelable {
     }
 
     fun getFlagFilterHelperValue(key: String) : Boolean {
-        return flagFilterHelper[key] ?: false
+        return filterViewState[key] ?: false
     }
 
     fun getFilterParameter() : Map<String, String> {
@@ -483,9 +477,8 @@ class FilterController() : Parcelable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeMap(filterParameter)
-        parcel.writeMap(flagFilterHelper)
+        parcel.writeMap(filterViewState)
         parcel.writeList(filterList)
-        parcel.writeMap(shownInMainState)
         parcel.writeInt(pressedSliderMinValueState)
         parcel.writeInt(pressedSliderMaxValueState)
     }

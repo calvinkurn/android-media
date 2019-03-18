@@ -10,21 +10,49 @@ import org.junit.Test
 class FilterControllerTest {
 
     @Test
-    fun testInitFilterController() {
-        val regularSearchParameter = createRegularSearchParameter()
-        val regularFilterList = createFilterList()
+    fun testInsertAndGetFilterParameter() {
+        val givenFilterParameter = mutableMapOf<String, String>()
+        givenFilterParameter[SearchApiConst.Q] = "samsung"
+        givenFilterParameter[SearchApiConst.OFFICIAL] = "true"
 
         val filterController = FilterController()
-        filterController.initFilterController(regularSearchParameter, regularFilterList)
+        filterController.initFilterController(givenFilterParameter)
 
-        assertFilterValueCorrect(filterController, regularSearchParameter)
-        assertFilterListCorrect(filterController, regularFilterList)
-        assertFlagFilterHelperCorrect(filterController) { option ->
-            (option.key == SearchApiConst.OFFICIAL && option.value == "true")
-                    || (option.key == SearchApiConst.SC && option.value == "1800")
-                    || (option.key == SearchApiConst.FCITY && option.value == "144,146,150,151,167,168,171,174,175,176,177,178,463")
-                    || (option.key == SearchApiConst.FCITY && option.value == "165")
-        }
+        val expectedFilterParameter = givenFilterParameter.toMap()
+
+        assertFilterParameter(filterController.getFilterParameter(), expectedFilterParameter)
+    }
+
+    @Test
+    fun testInsertAndGetFilterParameterWithMultipleValues() {
+        val givenFilterParameter = mutableMapOf<String, String>()
+        givenFilterParameter[SearchApiConst.Q] = "samsung"
+        givenFilterParameter[SearchApiConst.FCITY] = "145,146"
+
+        val filterController = FilterController()
+        filterController.initFilterController(givenFilterParameter)
+
+        val expectedFilterParameter = mutableMapOf<String, String>()
+        expectedFilterParameter[SearchApiConst.Q] = "samsung"
+        expectedFilterParameter[SearchApiConst.FCITY] = "146,145"
+
+        assertFilterParameter(filterController.getFilterParameter(), expectedFilterParameter)
+    }
+
+    @Test
+    fun testFilterParameterRemoveDuplicateValues() {
+        val givenFilterParameter = mutableMapOf<String, String>()
+        givenFilterParameter[SearchApiConst.Q] = "samsung"
+        givenFilterParameter[SearchApiConst.FCITY] = "145,146,145,145,146"
+
+        val filterController = FilterController()
+        filterController.initFilterController(givenFilterParameter)
+
+        val expectedFilterParameter = mutableMapOf<String, String>()
+        expectedFilterParameter[SearchApiConst.Q] = "samsung"
+        expectedFilterParameter[SearchApiConst.FCITY] = "146,145"
+
+        assertFilterParameter(filterController.getFilterParameter(), expectedFilterParameter)
     }
 
     private fun createRegularSearchParameter() : Map<String, String> {
@@ -37,29 +65,6 @@ class FilterControllerTest {
         return searchParameter
     }
 
-    @Test
-    fun testRemoveDuplicateValuesSearchParameter() {
-        val regularFilterList = createFilterList()
-
-        val filterController = FilterController()
-        filterController.initFilterController(createSearchParameterWithDuplicateValues(), createFilterList())
-
-        val expectedFilterValue = mutableMapOf<String, String>()
-        expectedFilterValue[SearchApiConst.Q] = "sepatu"
-        expectedFilterValue[SearchApiConst.OFFICIAL] = "true"
-        expectedFilterValue[SearchApiConst.SC] = "1800"
-        expectedFilterValue[SearchApiConst.FCITY] = "144,146,150,151,167,168,171,174,175,176,177,178,463,165"
-
-        assertFilterValueCorrect(filterController, expectedFilterValue)
-        assertFilterListCorrect(filterController, regularFilterList)
-        assertFlagFilterHelperCorrect(filterController) { option ->
-            (option.key == SearchApiConst.OFFICIAL && option.value == "true")
-                    || (option.key == SearchApiConst.SC && option.value == "1800")
-                    || (option.key == SearchApiConst.FCITY && option.value == "144,146,150,151,167,168,171,174,175,176,177,178,463")
-                    || (option.key == SearchApiConst.FCITY && option.value == "165")
-        }
-    }
-
     private fun createSearchParameterWithDuplicateValues() : Map<String, String> {
         val searchParameter = mutableMapOf<String, String>()
         searchParameter[SearchApiConst.Q] = "sepatu"
@@ -68,6 +73,23 @@ class FilterControllerTest {
         searchParameter[SearchApiConst.FCITY] = "144,146,150,151,167,168,171,174,175,176,177,178,463,165,174,175,176,177,178"
 
         return searchParameter
+    }
+
+    private fun createRespondFromDetailPage() : List<Option> {
+        val response = mutableListOf<Option>()
+
+        val locationOptions = createLocationOptions()
+        for(locationOption in locationOptions) {
+            locationOption.inputState =
+                (locationOption.value == "144,146,150,151,167,168,171,174,175,176,177,178,463"
+                    || locationOption.value == "174,175,176,177,178"
+                    || locationOption.value == "165")
+                    .toString()
+        }
+
+        response.addAll(locationOptions)
+
+        return response
     }
 
     private fun createFilterList() : List<Filter> {
@@ -167,10 +189,41 @@ class FilterControllerTest {
         return option
     }
 
-    private fun assertFilterValueCorrect(filterController: FilterController, expectedFilterValue: Map<String, String>) {
-        for(expectedFilterSet in expectedFilterValue) {
-            assert(filterController.getFilterValue(expectedFilterSet.key) == expectedFilterSet.value)
+    private fun assertFilterParameter(actualFilterParameter: Map<String, String>, expectedFilterParameter: Map<String, String>) {
+        assertFilterParameterSize(actualFilterParameter, expectedFilterParameter)
+
+        assertFilterParameterContents(actualFilterParameter, expectedFilterParameter)
+    }
+
+    private fun assertFilterParameterSize(actualFilterParameter: Map<String, String>, expectedFilterParameter: Map<String, String>) {
+        assert(actualFilterParameter.size == expectedFilterParameter.size)
+    }
+
+    private fun assertFilterParameterContents(actualFilterParameter: Map<String, String>, expectedFilterParameter: Map<String, String>) {
+        for(expectedFilterSet in expectedFilterParameter) {
+            val actualFilterValue = actualFilterParameter[expectedFilterSet.key] ?: ""
+            val expectedFilterValue = expectedFilterSet.value
+
+            assertFilterValue(actualFilterValue, expectedFilterValue)
         }
+    }
+
+    private fun assertFilterValue(actualFilterValue: String, expectedFilterValue: String) {
+        val actualFilterValueList = actualFilterValue.split(Option.VALUE_SEPARATOR).toList()
+        val expectedFilterValueList = expectedFilterValue.split(Option.VALUE_SEPARATOR).toList()
+
+        assertFilterValueSize(actualFilterValueList, expectedFilterValueList)
+
+        assertFilterValueContents(actualFilterValueList, expectedFilterValueList)
+    }
+
+    private fun assertFilterValueSize(actualFilterValueList: List<String>, expectedFilterValueList: List<String>) {
+        assert(actualFilterValueList.size == expectedFilterValueList.size)
+    }
+
+    private fun assertFilterValueContents(actualFilterValueList: List<String>, expectedFilterValueList: List<String>) {
+        assert(actualFilterValueList.containsAll(expectedFilterValueList))
+        assert(expectedFilterValueList.containsAll(actualFilterValueList))
     }
 
     private fun assertFilterListCorrect(filterController: FilterController, filterList: List<Filter>) {
