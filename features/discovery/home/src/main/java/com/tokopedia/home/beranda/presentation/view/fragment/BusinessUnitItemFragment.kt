@@ -116,13 +116,15 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     private fun requestListData() {
-        viewModel.getList(
-                GraphqlHelper.loadRawString(
-                        activity?.resources,
-                        R.raw.query_content_tab_business_widget
-                ),
-                itemTab.id
-        )
+        if (!adapter.isContainData) {
+            viewModel.getList(
+                    GraphqlHelper.loadRawString(
+                            activity?.resources,
+                            R.raw.query_content_tab_business_widget
+                    ),
+                    itemTab.id
+            )
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
