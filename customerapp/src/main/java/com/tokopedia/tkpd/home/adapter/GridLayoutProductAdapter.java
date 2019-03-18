@@ -275,7 +275,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         if (context != null) {
             return RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
-            return null;
+            return new Intent();
         }
     }
 
