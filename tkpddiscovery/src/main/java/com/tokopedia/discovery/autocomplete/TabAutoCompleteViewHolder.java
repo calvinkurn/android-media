@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -289,7 +290,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setApplink(item.getApplink());
             model.setImageUrl(item.getImageURI());
             model.setPeopleId(item.getItemId());
-            model.setAffiliateUserName(item.getAffiliateUserName());
+            model.setAffiliateUserName(!TextUtils.isEmpty(item.getAffiliateUserName()) ? item.getAffiliateUserName() : "");
             model.setKOL(item.isKOL());
             model.setPostCount(item.getPostCount());
             model.setSearchTerm(searchTerm);
