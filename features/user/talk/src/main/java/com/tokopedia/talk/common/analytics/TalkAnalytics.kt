@@ -1,14 +1,16 @@
 package com.tokopedia.talk.common.analytics
 
-import android.app.Activity
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import javax.inject.Inject
 
 /**
  * @author by nisie on 8/28/18.
  */
-class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
+class TalkAnalytics @Inject constructor() {
     private val EVENT_CLICK_INBOX_CHAT: String = "clickInboxChat"
     private val EVENT_CLICK_SHOP_PAGE: String = "clickShopPage"
 
@@ -17,19 +19,19 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
 
     fun trackSendCommentTalk(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            tracker.sendEventTracking(
+            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click on send comment on discussion box",
                     ""
-            )
+            ))
         } else {
-            tracker.sendEventTracking(
+            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_INBOX_CHAT,
                     CATEGORY_INBOX_TALK,
                     "send comment talk",
                     source
-            )
+            ))
         }
     }
 
@@ -38,39 +40,39 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
     }
 
     fun trackClickReplyButton(talkId: String) {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click on reply discussion",
                 talkId
-        )
+        ))
     }
 
     fun trackClickReplyButtonFromShop(talkId: String) {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_SHOP_PAGE,
                 CATEGORY_SHOP_PAGE,
                 "click on reply discussion box",
                 talkId
-        )
+        ))
     }
 
     fun trackClickProduct() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click link / photo product",
                 ""
-        )
+        ))
     }
 
     fun trackClickProductFromAttachment() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_SHOP_PAGE,
                 CATEGORY_SHOP_PAGE,
                 "click link / photo from talk",
                 ""
-        )
+        ))
     }
 
     fun trackClickProductFromAttachmentInDetail(source: String) {
@@ -82,68 +84,68 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
     }
 
     fun trackClickProductFromAttachmentFromShop() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_SHOP_PAGE,
                 CATEGORY_SHOP_PAGE,
                 "click product link from talk on shop page",
                 ""
-        )
+        ))
     }
 
     fun trackSelectTab(tabName: String) {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click on tab",
                 tabName
-        )
+        ))
     }
 
     fun trackClickFilter(filter: String) {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "choose filter",
                 filter
-        )
+        ))
     }
 
 
     fun trackClickOnMenuDelete() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
                 "delete talk"
-        )
+        ))
     }
 
     fun trackClickOnMenuDeleteInDetail(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            tracker.sendEventTracking(
+            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
                     "delete talk"
-            )
+            ))
         } else {
             trackClickOnMenuDelete()
         }
     }
 
     fun trackClickOnMenuFollow() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
                 "follow talk"
-        )
+        ))
     }
 
 
     fun trackClickOnMenuFollowInDetail(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            tracker.sendEventTracking(
+            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
@@ -155,7 +157,7 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
     }
 
     fun trackClickOnMenuUnfollow() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
@@ -165,30 +167,30 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
 
     fun trackClickOnMenuUnfollowInDetail(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            tracker.sendEventTracking(
+            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
                     "unfollow talk"
-            )
+            ))
         } else {
             trackClickOnMenuUnfollow()
         }
     }
 
     fun trackClickOnMenuReport() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
                 "click on laporkan"
-        )
+        ))
     }
 
 
     fun trackClickOnMenuReportInDetail(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            tracker.sendEventTracking(
+            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
@@ -200,21 +202,21 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
     }
 
     fun trackClickUserProfile() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click user profile from talk on inbox",
                 ""
-        )
+        ))
     }
 
     fun trackClickUserProfileFromShop() {
-        tracker.sendEventTracking(
+        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_SHOP_PAGE,
                 CATEGORY_SHOP_PAGE,
                 "click user profile from talk on shop page",
                 ""
-        )
+        ))
     }
 
     fun trackClickUserProfileInDetail(source: String) {
@@ -226,9 +228,6 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
     }
 
     companion object {
-        fun createInstance(analyticTracker: AnalyticTracker): TalkAnalytics {
-            return TalkAnalytics(analyticTracker)
-        }
 
         val SCREEN_NAME_INBOX_TALK: String = "Inbox Talk"
         val SCREEN_NAME_REPORT_TALK: String = "Report Talk"
