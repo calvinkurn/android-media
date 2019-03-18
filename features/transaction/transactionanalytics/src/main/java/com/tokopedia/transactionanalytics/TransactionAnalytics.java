@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.Map;
 
@@ -12,30 +16,27 @@ import java.util.Map;
  */
 public abstract class TransactionAnalytics {
 
-    private final AnalyticTracker analyticTracker;
-
-    TransactionAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
+    TransactionAnalytics() {
     }
 
     public void sendScreenName(Activity activity, String screenName) {
-        if (analyticTracker != null) analyticTracker.sendScreen(activity, screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     void sendEventCategoryActionLabel(String event, String eventCategory,
                                       String eventAction, String eventLabel) {
-        if (analyticTracker != null)
-            analyticTracker.sendEventTracking(event, eventCategory, eventAction, eventLabel);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel));
     }
+
 
     void sendEventCategoryAction(String event, String eventCategory,
                                  String eventAction) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "");
     }
 
+
     void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
-        if (analyticTracker != null) {
-            analyticTracker.sendEnhancedEcommerce(dataLayer);
-        }
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(dataLayer);
     }
 }

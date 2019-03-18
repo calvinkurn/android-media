@@ -11,8 +11,7 @@ import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName
  */
 public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
 
-    public CheckoutAnalyticsPurchaseProtection(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsPurchaseProtection() {
     }
 
     /**

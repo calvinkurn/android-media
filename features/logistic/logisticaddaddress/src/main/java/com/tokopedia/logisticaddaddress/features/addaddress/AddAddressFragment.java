@@ -763,11 +763,9 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     protected void initialVar() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
-            checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress(analyticTracker);
-        }
+
+        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
+        checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress();
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
             addressTypeEditText.setText(address.getAddressName());

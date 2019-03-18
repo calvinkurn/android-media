@@ -20,8 +20,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Cu
 public class CheckoutAnalyticsAddToCart extends TransactionAnalytics {
 
     @Inject
-    public CheckoutAnalyticsAddToCart(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsAddToCart() {
     }
 
     public void enhancedECommerceAddToCartClickBeli(Map<String, Object> cartMap, String eventLabel) {

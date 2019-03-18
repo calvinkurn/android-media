@@ -8,8 +8,8 @@ import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.*;
  */
 public class CornerAnalytics extends TransactionAnalytics {
 
-    public CornerAnalytics(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CornerAnalytics() {
+
     }
 
     public void sendChooseCornerAddress() {

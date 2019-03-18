@@ -15,16 +15,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
  */
 public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
     @Inject
-    public CheckoutAnalyticsChangeAddress(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
-    }
-
-    public void eventClickAtcCartChangeAddressClickPilihAlamatLainnyaFromGantiAlamat() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_PILIH_ALAMAT_LAINNYA_FROM_GANTI_ALAMAT
-        );
+    public CheckoutAnalyticsChangeAddress() {
     }
 
     public void eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat() {
@@ -32,38 +23,6 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
                 EventName.CLICK_ATC,
                 EventCategory.CART_CHANGE_ADDRESS,
                 EventAction.CLICK_TAMBAH_ALAMAT_BARU_FROM_GANTI_ALAMAT
-        );
-    }
-
-    public void eventClickAtcCartChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_KIRIM_KE_BEBERAPA_ALAMAT_FROM_GANTI_ALAMAT
-        );
-    }
-
-    public void eventClickAtcCartChangeAddressClickKirimKeAlamatIniFromGantiAlamat() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_KIRIM_KE_ALAMAT_INI_FROM_GANTI_ALAMAT
-        );
-    }
-
-    public void eventClickAtcCartChangeAddressClickXFromPilihAlamatLainnya() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_X_FROM_PILIH_ALAMAT_LAINNYA
-        );
-    }
-
-    public void eventClickAtcCartChangeAddressClickPlusFromPilihAlamatLainnya() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_PLUS_FROM_PILIH_ALAMAT_LAINNYA
         );
     }
 
@@ -98,36 +57,11 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
                 EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
         );
     }
-
-    public void eventClickAtcCartChangeAddressClickTambahAlamatFromPlus() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_ALAMAT_FROM_PLUS
-        );
-    }
-
     public void eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
                 EventCategory.CART_CHANGE_ADDRESS,
                 EventAction.CLICK_ARROW_BACK_FROM_GANTI_ALAMAT
-        );
-    }
-
-    public void eventClickAtcCartChangeAddressClickArrowBackFromPlus() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_ARROW_BACK_FROM_PLUS
-        );
-    }
-
-    public void eventClickShippingCartChangeAddressClickPlusIconFromTujuanPengiriman() {
-        sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_PLUS_ICON_FROM_TUJUAN_PENGIRIMAN
         );
     }
 
@@ -144,14 +78,6 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
                 EventName.CLICK_SHIPPING,
                 EventCategory.CART_CHANGE_ADDRESS,
                 EventAction.CLICK_SIMPAN_FROM_TAMBAH_ALAMAT
-        );
-    }
-
-    public void eventClickShippingCartChangeAddressClickRadioButtonFromTujuanPengiriman() {
-        sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_RADIO_BUTTON_FROM_TUJUAN_PENGIRIMAN
         );
     }
 

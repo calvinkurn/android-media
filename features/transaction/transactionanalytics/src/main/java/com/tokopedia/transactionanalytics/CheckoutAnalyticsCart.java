@@ -20,9 +20,8 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Cu
  */
 public class CheckoutAnalyticsCart extends TransactionAnalytics {
 
-    @Inject
-    public CheckoutAnalyticsCart(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsCart() {
+
     }
 
     @Deprecated
