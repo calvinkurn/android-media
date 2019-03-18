@@ -20,7 +20,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 /**
  * Author errysuprayogi on 13,March,2019
  */
-public class RecomendationViewHolder(itemView: View, private val listener: InboxAdapterListener) : AbstractViewHolder<Recomendation>(itemView) {
+class RecomendationViewHolder(itemView: View, private val listener: InboxAdapterListener) : AbstractViewHolder<Recomendation>(itemView) {
     private val productCardView: ProductCardView
     private val context: Context
 
