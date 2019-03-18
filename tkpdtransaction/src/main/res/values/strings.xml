@@ -325,4 +325,6 @@ Anda di sini.</string>
     <string name="survey_suggestion_text">Apa yang bisa ditingkatkan pada laman ini?</string>
     <string name="survey_suggestion_hint">Saran anda (opsional)</string>
     <string name="submit_survey_bom">Submit</string>
+    <string name="tooltip_fulfillment_title">Tak Perlu Repot Lagi</string>
+    <string name="tooltip_fulfillment_desc">Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang</string>
 </resources>

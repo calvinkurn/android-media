@@ -131,6 +131,11 @@
 
     <include
         android:id="@+id/layout_fulfillment"
-        layout="@layout/partial_fulfillment_label" />
+        layout="@layout/partial_fulfillment_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="58dp"
+        android:layout_marginLeft="58dp"
+        android:layout_marginTop="@dimen/dp_16" />
 
 </LinearLayout>
