@@ -7,7 +7,6 @@ import android.os.Build
 import android.support.annotation.DimenRes
 import android.support.annotation.StringRes
 import android.view.*
-import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster

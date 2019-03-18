@@ -16,12 +16,11 @@ import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.topads.sdk.view.ImpressedImageView
 
 /**
  * Author errysuprayogi on 13,March,2019
  */
-class RecomendationViewHolder(itemView: View, private val listener: InboxAdapterListener) : AbstractViewHolder<Recomendation>(itemView) {
+public class RecomendationViewHolder(itemView: View, private val listener: InboxAdapterListener) : AbstractViewHolder<Recomendation>(itemView) {
     private val productCardView: ProductCardView
     private val context: Context
 
