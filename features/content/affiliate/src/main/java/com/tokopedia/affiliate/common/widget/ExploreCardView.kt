@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.widget_af_explore_card.view.*
  */
 class ExploreCardView : BaseCustomView {
 
+    var showTitle: Boolean = true
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -35,7 +37,7 @@ class ExploreCardView : BaseCustomView {
 
     fun bind(element: ExploreCardViewModel) {
         image.loadImage(element.imageUrl)
-        title.shouldShowWithAction(!TextUtils.isEmpty(element.title)) {
+        title.shouldShowWithAction(!TextUtils.isEmpty(element.title) && showTitle) {
             title.text = element.title
         }
         subtitle.shouldShowWithAction(!TextUtils.isEmpty(element.subtitle)) {

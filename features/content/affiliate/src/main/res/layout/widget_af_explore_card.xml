@@ -5,8 +5,8 @@
     android:id="@+id/mainView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
     android:background="@color/white"
+    android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/dp_8"
@@ -31,12 +31,14 @@
             android:id="@+id/bymeIcon"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
+            android:layout_alignEnd="@+id/image"
+            android:layout_alignRight="@+id/image"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
-            android:src="@drawable/ic_product_affiliate_logo_grayscale_32" />
+            app:srcCompat="@drawable/ic_product_affiliate_logo_grayscale_32" />
 
         <TextView
             android:id="@+id/title"

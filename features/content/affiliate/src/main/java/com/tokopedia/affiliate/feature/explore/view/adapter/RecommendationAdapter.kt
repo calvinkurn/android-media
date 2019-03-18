@@ -23,8 +23,9 @@ class RecommendationAdapter : RecyclerView.Adapter<RecommendationAdapter.ViewHol
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val element = list[position]
         val itemView = holder.itemView
+        itemView.card.showTitle = false
         itemView.card.bind(element)
     }
 
-    class ViewHolder(v: View): RecyclerView.ViewHolder(v)
+    class ViewHolder(v: View) : RecyclerView.ViewHolder(v)
 }
