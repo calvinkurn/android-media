@@ -1170,9 +1170,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         )
         when (source) {
             SOURCE_PROFILE_FOOTER ->
-                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-            SOURCE_PROFILE_HEADER ->
                 profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+            SOURCE_PROFILE_HEADER ->
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
         }
     }
 

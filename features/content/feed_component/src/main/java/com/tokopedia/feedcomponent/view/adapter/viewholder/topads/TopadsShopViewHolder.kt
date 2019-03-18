@@ -37,6 +37,9 @@ class TopadsShopViewHolder(v: View,
 
         itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
         itemView.cardTitle.listener = cardTitleListener
+        if (element.title.text.isEmpty()) {
+            itemView.mainView.visibility = View.GONE
+        }
     }
 
     override fun bind(element: TopadsShopViewModel?, payloads: MutableList<Any>) {
