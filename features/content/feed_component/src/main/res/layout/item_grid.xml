@@ -71,7 +71,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/orange_red"
         android:textSize="@dimen/sp_12"
-        android:textStyle="normal"
+        android:textStyle="bold"
         android:visibility="visible"
         tools:text="Rp 3.121.500"
         tools:visibility="visible" />

@@ -183,6 +183,7 @@ public class HeaderHomeView extends BaseCustomView {
                     if (headerViewModel.getTokopointsDrawerHomeData() != null) {
                         HomePageTracking.eventUserProfileTokopoints(getContext());
                         listener.actionTokoPointClicked(
+                                headerViewModel.getTokopointsDrawerHomeData().getRedirectAppLink(),
                                 headerViewModel.getTokopointsDrawerHomeData().getRedirectURL(),
                                 TextUtils.isEmpty(headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle())
                                         ? TITLE_HEADER_WEBSITE

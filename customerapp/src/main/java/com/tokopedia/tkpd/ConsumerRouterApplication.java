@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
@@ -29,9 +30,11 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -91,9 +94,13 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
+import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
+import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -288,6 +295,7 @@ import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
+import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -478,6 +486,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FR
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
+import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 
 
 /**
@@ -571,7 +581,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackingOptimizerRouter,
         LoginRegisterPhoneRouter,
         ExpressCheckoutRouter,
-        ResolutionRouter {
+        ResolutionRouter,
+        OvoPayWithQrRouter,
+        KYCRouter{
 
 
     private final static int IRIS_ROW_LIMIT = 50;
@@ -1946,6 +1958,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getNominalActivityIntent(Context context, String qrcode, InfoQrTokoCash infoQrTokoCash) {
         return NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
+    }
+
+    @Override
+    public Intent getOvoActivityIntent(Context context) {
+        return new Intent(context,PaymentQRSummaryActivity.class);
     }
 
     @Override
@@ -3836,5 +3853,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
         return CheckLoginPhoneNumberActivity.getCallingIntent(context);
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
+                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType){
+        Bundle bundle = new Bundle();
+        BaseDaggerFragment baseDaggerFragment = null;
+        switch (cameraType) {
+            case KYC_CARDID_CAMERA:
+                baseDaggerFragment = FragmentCardIdCamera.newInstance();
+                bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
+                bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
+                baseDaggerFragment.setArguments(bundle);
+            break;
+            case KYC_SELFIEID_CAMERA:
+                baseDaggerFragment = new FragmentSelfieIdCamera();
+                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);
+                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
+                baseDaggerFragment.setArguments(bundle);
+                break;
+        }
+        return baseDaggerFragment;
     }
 }
