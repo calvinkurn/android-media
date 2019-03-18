@@ -47,6 +47,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -61,7 +62,14 @@ import javax.inject.Inject;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
+import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_EDIT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
@@ -125,14 +133,20 @@ public class AddAddressFragment extends BaseDaggerFragment
     private Token token;
     private Destination address;
 
+    private CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject AddAddressContract.Presenter mPresenter;
-    @Inject @LogisticUserSessionQualifier UserSessionInterface userSession;
+    @Inject
+    AddAddressContract.Presenter mPresenter;
+    @Inject
+    @LogisticUserSessionQualifier
+    UserSessionInterface userSession;
     @Inject
     PerformanceMonitoring performanceMonitoring;
+
+    private int instanceType;
 
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
@@ -153,6 +167,7 @@ public class AddAddressFragment extends BaseDaggerFragment
             this.address = arguments.getParcelable(EDIT_PARAM);
             this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
             this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
+            this.instanceType = arguments.getInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_DEFAULT);
         }
 
         if (token == null) {
@@ -595,11 +610,27 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
         if (success) {
-            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
+            if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanSuccess();
+            } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanFromEditSuccess();
+            } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT) {
+                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickButtonSimpanFromEditSuccess();
+            } else if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT) {
+                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
+            }
         } else {
-            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+            if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanNotSuccess();
+            } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanFromEditNotSuccess();
+            } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT) {
+                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickButtonSimpanFromEditNotSuccess();
+            } else if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT) {
+                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
+            }
         }
     }
 
@@ -735,6 +766,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
             checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
+            checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress(analyticTracker);
         }
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());

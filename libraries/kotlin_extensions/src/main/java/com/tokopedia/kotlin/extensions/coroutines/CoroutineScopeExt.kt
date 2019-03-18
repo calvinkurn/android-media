@@ -6,11 +6,15 @@ import kotlin.coroutines.experimental.CoroutineContext
 
 fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,
                                     block: suspend (()->Unit),
-                                    onError: (Throwable)-> Unit) =
+                                    onError: suspend (Throwable)-> Unit) =
     launch (context){
         try{
-            block.invoke()
+            block()
         } catch (t: Throwable){
-            onError(t)
+            try {
+                onError(t)
+            } catch (e: Throwable){
+
+            }
         }
     }

@@ -12,9 +12,12 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearch> {
@@ -65,9 +68,11 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
                         ),
                         tabName
                 );
+
                 listener.onItemSearchClicked(
                         element.getKeyword(),
-                        element.getCategoryId()
+                        element.getCategoryId(),
+                        getAutoCompleteItemIsOfficial(element)
                 );
             }
         });
@@ -85,5 +90,17 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
             return displayName.toLowerCase(Locale.getDefault()).indexOf(searchTerm.toLowerCase(Locale.getDefault()));
         }
         return -1;
+    }
+
+    private boolean getAutoCompleteItemIsOfficial(BaseItemAutoCompleteSearch autoCompleteSearch) {
+        boolean isOfficial = false;
+
+        HashMap<String, String> applinkParameterHashMap = autoCompleteSearch.getApplinkParameterHashmap();
+
+        if(applinkParameterHashMap.containsKey(SearchApiConst.OFFICIAL)) {
+            isOfficial = Boolean.parseBoolean(applinkParameterHashMap.get(SearchApiConst.OFFICIAL));
+        }
+
+        return isOfficial;
     }
 }

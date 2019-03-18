@@ -58,6 +58,7 @@ public class HomePageTracking {
     private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND = "sprint sale with backgroud click view all";
     private static final String ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL = "curated list click view all";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL = "lego banner click view all";
+    private static final String ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL = "lego banner 3 image click view all";
     private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
     private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
 
@@ -310,6 +311,19 @@ public class HomePageTracking {
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL,
+                    applink
+            );
+        }
+    }
+
+    public static void eventClickSeeAllThreeLegoBannerChannel(Context context,
+                                                         String applink) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL,
                     applink
             );
         }

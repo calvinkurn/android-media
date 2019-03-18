@@ -1,16 +1,17 @@
 package com.tokopedia.flashsale.management.product.view.presenter
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.flashsale.management.product.data.FlashSaleDataContainer
 import com.tokopedia.flashsale.management.product.domain.usecase.DereserveProductUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.ReserveProductUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.SubmitProductUseCase
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import javax.inject.Inject
 
 class FlashSaleProductDetailPresenter @Inject constructor(val reserveProductUseCase: ReserveProductUseCase,
                                                           val dereserveProductUseCase: DereserveProductUseCase,
                                                           val submitProductUseCase: SubmitProductUseCase,
-                                                          val userSession: UserSession) {
+                                                          val userSession: UserSessionInterface) {
 
     fun reserveProduct(campaignId: Int, criteriaId: Int, productId: Int, discountedPrice: Int, cashback: Int, customStock: Int,
                        onSuccess: (FlashSaleDataContainer) -> Unit, onError: (Throwable) -> Unit) {

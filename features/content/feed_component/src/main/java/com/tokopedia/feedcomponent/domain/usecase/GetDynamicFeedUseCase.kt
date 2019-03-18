@@ -25,6 +25,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
                                                 private val dynamicPostMapper: DynamicFeedMapper)
     : UseCase<DynamicFeedDomainModel>() {
 
+    var queryRaw = R.raw.query_feed_dynamic;
     init {
         graphqlUseCase.setCacheStrategy(
                 GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
@@ -37,7 +38,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
     override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
         val query: String = GraphqlHelper.loadRawString(
                 context.resources,
-                R.raw.query_feed_dynamic
+                queryRaw
         )
 
         val graphqlRequest = GraphqlRequest(query, FeedQuery::class.java, requestParams?.parameters)
@@ -54,15 +55,16 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         private const val PARAM_SOURCE = "source"
 
         private const val LIMIT_3 = 3
-        private const val SOURCE_FEEDS = "feeds"
+        const val SOURCE_FEEDS = "feeds"
+        const val SOURCE_PROFILE = "profile"
 
         @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = ""): RequestParams {
+        fun createRequestParams(userId: String, cursor: String = "", source: String): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_USER_ID, userId)
             requestParams.putInt(PARAM_LIMIT, LIMIT_3)
             requestParams.putString(PARAM_CURSOR, cursor)
-            requestParams.putString(PARAM_SOURCE, SOURCE_FEEDS)
+            requestParams.putString(PARAM_SOURCE, source)
             return requestParams
         }
     }

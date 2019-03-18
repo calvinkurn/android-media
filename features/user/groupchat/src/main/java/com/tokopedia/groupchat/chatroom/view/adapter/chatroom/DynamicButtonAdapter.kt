@@ -13,6 +13,9 @@ import com.tokopedia.design.widget.ViewTooltip
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * @author by StevenFredian on 05/06/18.
@@ -37,7 +40,11 @@ class DynamicButtonAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var element = list[position]
         ImageHandler.loadImage(activity, holder.icon, element.imageUrl, R.drawable.ic_play_dynamic_icon)
-        holder.icon.setOnClickListener { listener.onDynamicIconClicked(element) }
+        holder.icon.setOnClickListener {
+            listener.onDynamicIconClicked(element)
+            element.hasNotification = false
+            notifyItemChanged(position)
+        }
 
         if (element.hasNotification) {
             holder.notification.visibility = View.VISIBLE
@@ -46,16 +53,28 @@ class DynamicButtonAdapter(
         }
 
         if (element.tooltip.isNotBlank()) {
-            ViewTooltip.on(activity, holder.icon)
-                    .autoHide(true, 5000)
-                    .corner(30)
-                    .clickToHide(false)
-                    .color(MethodChecker.getColor(activity, R.color.white))
-                    .textColor(MethodChecker.getColor(activity, R.color.black_70))
-                    .position(ViewTooltip.Position.TOP)
-                    .text(element.tooltip)
-                    .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                    .show()
+            if(element.tooltipDuration == 0) {
+                element.tooltipDuration = Companion.TOOLTIP_DURATION_DEFAULT
+            }
+
+            var timeToShow = element.tooltipDuration
+            var intervalToHideMs = ((element.tooltipDuration - 1)*1000).toLong()
+            var index = if(element.priority > 0) element.priority-1 else position
+
+            Observable.timer((timeToShow*index).toLong(), TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        ViewTooltip.on(activity, holder.icon)
+                                .autoHide(true, intervalToHideMs)
+                                .corner(30)
+                                .clickToHide(false)
+                                .color(MethodChecker.getColor(activity, R.color.white))
+                                .textColor(MethodChecker.getColor(activity, R.color.black_70))
+                                .position(ViewTooltip.Position.TOP)
+                                .text(element.tooltip)
+                                .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                                .show()
+                    }
         }
     }
 
@@ -73,5 +92,9 @@ class DynamicButtonAdapter(
             this.list.addAll(it)
             notifyDataSetChanged()
         }
+    }
+
+    companion object {
+        private const val TOOLTIP_DURATION_DEFAULT = 3
     }
 }

@@ -35,9 +35,17 @@
     <string name="profile_tokopedia_app">Segera coba fiturnya di aplikasi Tokopedia versi terbaru.</string>
     <string name="profile_try_now">Coba Sekarang</string>
     <string name="profile_surprise">Ssst, Akan Ada Kejutan di Profilmu!</string>
+    <string name="profile_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
 
     <string name="title_profile_following">Following</string>
     <string name="fl_toppers_title">Toppers</string>
     <string name="fl_shop_title">Toko</string>
     <string name="profile_wait_soon">Penasaran? Nantikan kabar selanjutnya!</string>
+
+    <string name="profile_feed_content_reported">Konten berhasil dilaporkan</string>
+    <string name="profile_feed_see_shop">Lihat Toko</string>
+    <string name="profile_feed_see_profile">Lihat Profil</string>
+    <string name="profile_feed_report">Laporkan</string>
+    <string name="profile_feed_delete">Hapus</string>
+    <string name="profile_feed_cancel">Batal</string>
 </resources>

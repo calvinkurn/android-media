@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_grid.view.*
 
@@ -97,6 +98,9 @@ class GridPostAdapter(private val contentPosition: Int,
 
             itemView.setOnClickListener {
                 listener.onGridItemClick(positionInFeed, contentPosition, item.redirectLink)
+                if (!item.trackingList.isEmpty()) {
+                    listener.onAffiliateTrackClicked(item.trackingList)
+                }
             }
         }
 
@@ -152,5 +156,7 @@ class GridPostAdapter(private val contentPosition: Int,
 
     interface GridItemListener {
         fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
+
+        fun onAffiliateTrackClicked(trackList : MutableList<TrackingViewModel>)
     }
 }

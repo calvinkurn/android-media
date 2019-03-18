@@ -20,4 +20,5 @@
     <color name="yellow_100">#fffbcd</color>
     <color name="yellow_200">#ecdb77</color>
     <color name="valid_date_bg">#f6f6f6</color>
+    <color name="tkpd_survey_icon_gray">#979797</color>
 </resources>
