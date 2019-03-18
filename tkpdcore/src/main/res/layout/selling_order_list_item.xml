@@ -1,69 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
     android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/border_bottom_05dp"
-    android:padding="16dp"
-    android:layout_height="wrap_content">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="?attr/selectableItemBackground"
-        >
+        android:orientation="horizontal">
 
         <!-- buyer profile picture -->
         <ImageView
             android:id="@+id/user_avatar"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            app:srcCompat="@drawable/ic_icon_toped_announce"
             android:layout_gravity="center_vertical"
-            />
+            app:srcCompat="@drawable/ic_icon_toped_announce" />
 
         <!-- invoice number, buyer, & status -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/padding_small"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_small"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/invoice"
+                style="@style/invoice_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:maxLines="2"
-                style="@style/invoice_number"
-                android:text="INV/20160505/XVI/IV/1321786"/>
+                android:text="INV/20160505/XVI/IV/1321786" />
 
             <TextView
                 android:id="@+id/order_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
                 android:ellipsize="end"
-                android:text="18 Agustus 2016"/>
+                android:maxLines="1"
+                android:text="18 Agustus 2016" />
 
             <TextView
                 android:id="@+id/user_name"
+                style="@style/text_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
                 android:ellipsize="end"
-                style="@style/text_bold"
-                android:text="Capture Della Mode"/>
+                android:maxLines="1"
+                android:text="Capture Della Mode" />
 
             <TextView
                 android:id="@+id/bounty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_below="@+id/user_name"
+                android:layout_alignParentLeft="true"
                 android:includeFontPadding="false"
                 android:text="Rp.12000"
                 android:textSize="@dimen/fonts"
@@ -76,44 +74,44 @@
             android:id="@+id/deadline_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="8dp"
+            android:layout_marginLeft="@dimen/padding_vs"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            android:layout_marginLeft="@dimen/padding_vs">
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp">
 
             <View
                 android:id="@+id/colored_border"
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:background="@color/white" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center"
+                android:layout_toEndOf="@id/colored_border"
                 android:layout_toRightOf="@id/colored_border"
-                android:layout_toEndOf="@id/colored_border">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
-                    android:paddingLeft="@dimen/padding_vs"
                     android:id="@+id/text__response"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:text="Batas Respon"/>
+                    android:paddingLeft="@dimen/padding_vs"
+                    android:text="Batas Respon" />
 
                 <TextView
                     android:id="@+id/deadline"
-                    android:paddingLeft="@dimen/padding_vs"
+                    style="@style/text_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    style="@style/text_bold"
-                    android:text="3 Hari Lagi"/>
+                    android:paddingLeft="@dimen/padding_vs"
+                    android:text="3 Hari Lagi" />
 
             </LinearLayout>
 
@@ -122,12 +120,15 @@
     </LinearLayout>
 
     <TextView
-        android:visibility="gone"
+        android:id="@+id/buyer_request_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="58dp"
+        android:maxLines="2"
         android:text="@string/buyer_request_cancel"
         android:textColor="@color/red_500"
-        android:id="@+id/buyer_request_cancel"
-        android:maxLines="2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:visibility="gone" />
+
+    <include layout="@layout/partial_fulfillment_label" />
+
 </LinearLayout>
