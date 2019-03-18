@@ -99,11 +99,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                     @Override
                     public void onNext(CancellationRequestEntity cancellationRequestEntity) {
                         getView().hideLoading();
-                        if (isRefundable()) {
-                            getView().showSuccessDialog(R.string.flight_cancellation_review_dialog_refundable_success_description);
-                        } else {
-                            getView().showSuccessDialog(R.string.flight_cancellation_review_dialog_non_refundable_success_description);
-                        }
+                        getView().showSuccessDialog(R.string.flight_cancellation_review_dialog_non_refundable_success_description);
                     }
                 }
         );

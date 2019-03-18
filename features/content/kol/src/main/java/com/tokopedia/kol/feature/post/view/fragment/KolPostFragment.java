@@ -378,6 +378,11 @@ public class KolPostFragment extends BaseDaggerFragment implements
                         public void onReportClick() {
 
                         }
+
+                        @Override
+                        public void onEditClick() {
+
+                        }
                     }
             );
             menus.show();
