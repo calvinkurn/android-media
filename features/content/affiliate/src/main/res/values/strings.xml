@@ -37,6 +37,8 @@
     <string name="text_button_sort">Urutkan</string>
     <string name="title_showcase">Cek dan Bagikan Hasil Kurasimu</string>
     <string name="desc_showcase">Semua kurasi akan disimpan di profilmu</string>
+    <string name="af_product_title">Barang lainnya</string>
+    <string name="af_product_desc">Semua ada loh. Lihat yuk!</string>
     <string name="af_get_commission">Raih Komisi</string>
 
     <!--ONBOARDING-->

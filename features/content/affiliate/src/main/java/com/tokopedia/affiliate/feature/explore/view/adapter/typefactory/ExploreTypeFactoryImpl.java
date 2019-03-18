@@ -9,6 +9,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreEmptySearchViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.FilterViewHolder;
+import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ProductTitleViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.banner.ExploreBannerViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.profile.PopularProfileViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.recommendation.RecommendationViewHolder;
@@ -16,6 +17,7 @@ import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ProductTitleViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterListViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel;
@@ -71,6 +73,11 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
     }
 
     @Override
+    public int type(ProductTitleViewModel productTitleViewModel) {
+        return ProductTitleViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder abstractViewHolder;
         if (type == ExploreViewHolder.LAYOUT) {
@@ -87,6 +94,8 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
             abstractViewHolder = new RecommendationViewHolder(view);
         } else if (type == ExploreBannerViewHolder.LAYOUT) {
             abstractViewHolder = new ExploreBannerViewHolder(view);
+        } else if (type == ProductTitleViewHolder.LAYOUT) {
+            abstractViewHolder = new ProductTitleViewHolder(view);
         } else {
             abstractViewHolder = super.createViewHolder(view, type);
         }

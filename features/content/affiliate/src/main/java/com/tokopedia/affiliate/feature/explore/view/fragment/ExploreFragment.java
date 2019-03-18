@@ -53,6 +53,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductView
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChildViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ProductTitleViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.affiliate.util.AffiliateHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -183,8 +184,7 @@ public class ExploreFragment
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         initView();
         initListener();
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        loadFirstData(false);
 
         if (affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
             goToEducation();
@@ -453,6 +453,8 @@ public class ExploreFragment
                                       boolean isSearch,
                                       boolean isPullToRefresh,
                                       List<SortViewModel> sortViewModels) {
+        addTitleBeforeProducts(sections);
+
         List<Visitable<?>> itemList = new ArrayList<>();
         itemList.addAll(sections);
         itemList.addAll(products);
@@ -462,6 +464,17 @@ public class ExploreFragment
             populateSort(sortViewModels);
             if (!isSearch) saveFirstDataToLocal(sections, products, cursor, sortViewModels);
         }
+    }
+
+    private void addTitleBeforeProducts(List<Visitable<?>> sections) {
+        sections.add(getProductTitleModel());
+    }
+
+    private ProductTitleViewModel getProductTitleModel() {
+        return new ProductTitleViewModel(new ExploreTitleViewModel(
+                getString(R.string.af_product_title),
+                getString(R.string.af_product_desc)
+        ));
     }
 
     private void populateFirstData(List<Visitable<?>> itemList, String cursor) {
@@ -570,6 +583,7 @@ public class ExploreFragment
     }
 
     private void getFilteredFirstData(List<FilterViewModel> filters) {
+
         exploreParams.setFilters(filters);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
