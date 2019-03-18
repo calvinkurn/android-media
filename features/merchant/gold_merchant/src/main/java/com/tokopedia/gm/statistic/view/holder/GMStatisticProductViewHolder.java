@@ -16,6 +16,7 @@ import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import android.content.Context;
+import android.content.Intent;
 
 /**
  * Created by normansyahputa on 11/9/16.
