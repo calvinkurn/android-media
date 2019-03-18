@@ -40,10 +40,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -95,7 +93,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.ChannelCloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
 import com.tokopedia.groupchat.common.util.TextFormatter;
@@ -187,8 +185,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     private ImageView channelBanner;
     private RecyclerView tabs;
     private GroupChatTabAdapter tabAdapter;
-    private CloseableBottomSheetDialog channelInfoDialog;
-    private CloseableBottomSheetDialog overlayDialog;
+    private ChannelCloseableBottomSheetDialog channelInfoDialog;
+    private ChannelCloseableBottomSheetDialog overlayDialog;
     private View sponsorLayout;
     private ImageView sponsorImage;
     private GroupChatVideoFragment videoFragment;
@@ -424,9 +422,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         loading = findViewById(R.id.loading);
         main = findViewById(R.id.main_content);
 
-        channelInfoDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
+        channelInfoDialog = ChannelCloseableBottomSheetDialog.createInstance(this, () -> {
             showOverlayDialogOnScreen();
-        }, new CloseableBottomSheetDialog.BackHardwareClickedListener() {
+        }, new ChannelCloseableBottomSheetDialog.BackHardwareClickedListener() {
             @Override
             public void onBackHardwareClicked() {
 
@@ -1661,7 +1659,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
-        overlayDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
+        overlayDialog = ChannelCloseableBottomSheetDialog.createInstance(this, () -> {
             analytics.eventClickCloseOverlayCloseButton(model.getChannelId());
         }, () -> {
             analytics.eventClickCloseOverlayBackButton(model.getChannelId());
