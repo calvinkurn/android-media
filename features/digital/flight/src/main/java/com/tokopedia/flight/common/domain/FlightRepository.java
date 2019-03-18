@@ -49,8 +49,6 @@ public interface FlightRepository {
 
     Observable<GetCartEntity> getCart(String cartId);
 
-    Observable<Boolean> getAirportListBackground(long versionAirport);
-
     Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString);
 
     Observable<DataResponseVerify> verifyBooking(VerifyRequest verifyRequest);
