@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
 
+import java.util.List;
+
 public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTypeFactory>, Parcelable {
     private String countryName;
     private String cityId;
@@ -13,7 +15,7 @@ public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTyp
     private String cityCode;
     private String airportName;
     private String airportCode;
-    private String[] cityAirports;
+    private List<String> cityAirports;
 
     public FlightAirportViewModel() {
     }
@@ -25,7 +27,7 @@ public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTyp
         cityCode = in.readString();
         airportName = in.readString();
         airportCode = in.readString();
-        cityAirports = in.createStringArray();
+        cityAirports = in.createStringArrayList();
     }
 
     public static final Creator<FlightAirportViewModel> CREATOR = new Creator<FlightAirportViewModel>() {
@@ -72,11 +74,11 @@ public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTyp
         this.airportCode = airportCode;
     }
 
-    public String[] getCityAirports() {
+    public List<String> getCityAirports() {
         return cityAirports;
     }
 
-    public void setCityAirports(String[] cityAirports) {
+    public void setCityAirports(List<String> cityAirports) {
         this.cityAirports = cityAirports;
     }
 
@@ -114,6 +116,6 @@ public class FlightAirportViewModel implements Visitable<FlightAirportAdapterTyp
         parcel.writeString(cityCode);
         parcel.writeString(airportName);
         parcel.writeString(airportCode);
-        parcel.writeStringArray(cityAirports);
+        parcel.writeStringList(cityAirports);
     }
 }

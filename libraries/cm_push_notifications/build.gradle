@@ -38,7 +38,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.useCase)
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.messaging
 }
 
 apply from: '../../publish_local.gradle'

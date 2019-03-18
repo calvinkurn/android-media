@@ -75,6 +75,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     // for robinhood III
     private boolean isBlackbox;
     private int addressId;
+    private String blackboxInfo;
 
     private boolean isFulfillment;
     private int fulfillmentId;
@@ -128,6 +129,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment);
         newShipmentCartItemModel.setFulfillmentId(shipmentCartItemModel.getFulfillmentId());
         newShipmentCartItemModel.setFulfillmentName(shipmentCartItemModel.getFulfillmentName());
+        newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
 
         return newShipmentCartItemModel;
     }
@@ -484,6 +486,10 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.fulfillmentName = fulfillmentName;
     }
 
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -518,6 +524,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .append(getIsBlackbox(), that.getIsBlackbox())
                 .append(getAddressId(), that.getAddressId())
+                .append(getBlackboxInfo(), that.getBlackboxInfo())
                 .isEquals();
     }
 
@@ -549,6 +556,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isUseCourierRecommendation())
                 .append(getIsBlackbox())
                 .append(getAddressId())
+                .append(getBlackboxInfo())
                 .toHashCode();
     }
 
@@ -603,6 +611,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
         dest.writeInt(this.fulfillmentId);
         dest.writeString(this.fulfillmentName);
+        dest.writeString(this.blackboxInfo);
     }
 
     protected ShipmentCartItemModel(Parcel in) {
@@ -650,6 +659,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.isFulfillment = in.readByte() != 0;
         this.fulfillmentId = in.readInt();
         this.fulfillmentName = in.readString();
+        this.blackboxInfo = in.readString();
     }
 
     public static final Creator<ShipmentCartItemModel> CREATOR = new Creator<ShipmentCartItemModel>() {

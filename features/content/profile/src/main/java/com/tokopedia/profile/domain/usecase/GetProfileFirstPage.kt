@@ -34,7 +34,7 @@ class GetProfileFirstPage @Inject constructor(
 
     override fun createObservable(requestParams: RequestParams?)
             : Observable<ProfileFirstPageViewModel>? {
-        userId = requestParams!!.getInt(GetProfileHeaderUseCase.PARAM_USER_ID, 0)
+        userId = requestParams!!.getInt(GetProfileHeaderUseCase.PARAM_USER_ID_TARGET, 0)
         return Observable.zip(
                 getHeader(userId),
                 getPost(),
@@ -104,9 +104,9 @@ class GetProfileFirstPage @Inject constructor(
     }
 
     companion object {
-        fun createRequestParams(userId: Int): RequestParams {
+        fun createRequestParams(targetUserId: Int): RequestParams {
             val requestParams = RequestParams.create()
-            requestParams.putInt(GetProfileHeaderUseCase.PARAM_USER_ID, userId)
+            requestParams.putInt(GetProfileHeaderUseCase.PARAM_USER_ID_TARGET, targetUserId)
             return requestParams
         }
     }
