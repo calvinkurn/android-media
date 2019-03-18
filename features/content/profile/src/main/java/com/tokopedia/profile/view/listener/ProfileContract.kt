@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 
 /**
@@ -11,7 +12,7 @@ import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
  */
 interface ProfileContract {
     interface View : BaseListViewListener<Visitable<*>>, ProfileEmptyContract.View {
-        fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel, isFromLogin: Boolean)
+        fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean)
 
         fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String)
 
@@ -28,13 +29,15 @@ interface ProfileContract {
         fun showLoadingLayout()
 
         fun hideLoadingLayout()
+
+        fun hideHeader()
     }
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
 
-        fun getProfileFirstPage(userId: Int, isFromLogin: Boolean)
+        fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean)
 
-        fun getProfilePost(userId: Int)
+        fun getProfilePost(targetUserId: Int)
 
         fun followKol(id: Int)
 
@@ -47,5 +50,7 @@ interface ProfileContract {
         fun deletePost(id: Int, rowNumber: Int)
 
         fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
+
+        fun trackPostClickUrl(url:String)
     }
 }

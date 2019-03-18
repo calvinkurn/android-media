@@ -27,6 +27,7 @@ ext {
     tkpdInterestPickVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
     tkpdKolVersion = '2.22'
+    tkpdKycVersion = '1.00'
     tkpdAffiliateVersion = '2.22'
     tkpdAffiliateCommonVersion = '2.22'
     tkpdLoyaltyVersion = '2.22'
@@ -126,6 +127,7 @@ ext {
             inbox                   : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             kol                     : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon               : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
+            kyc                     : "com.tokopedia.kyc:kyc:${tkpdKycVersion}",
             loginphone              : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
             loginregister           : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
             sessioncommon           : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",
@@ -197,7 +199,6 @@ ext {
             digitalproduct              : ":features:digital:digitalproduct",
             event                       : ":features:digital:event",
             flight                      : ":features:digital:flight",
-            flightDbFlow                : ":features:digital:flight_dbflow",
 //            flight                          : ":features:digital:flight_no_op",
             train                         : ":features:digital:train",
 //            train                         : ":features:digital:train_no_op",
@@ -255,6 +256,8 @@ ext {
             goldMerchantResource          : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe         : ":features:merchant:gold_merchant_subscribe",
 //            goldMerchantSubscribe  : ":features:merchant:gold_merchant_subscribe_no_op",
+            kyc                      : ":features:kyc",
+
             productDraftDatabase          : ":features:merchant:product_draft_database",
             productManageItem             : ":features:merchant:product_manage_item",
             productManageList             : ":features:merchant:product_manage_list",
@@ -348,6 +351,7 @@ ext {
             session                       : ":tkpdsession",
             transaction                   : ":tkpdtransaction",
             transactioncommon             : ":tkpdtransaction-common",
-            commonTravel                  : ":features:digital:common_travel"
+            commonTravel                  : ":features:digital:common_travel",
+            ovo                           : ":features:fintech:ovo_pay_with_qr"
     ]
 }

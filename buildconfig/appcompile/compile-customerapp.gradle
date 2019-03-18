@@ -24,7 +24,6 @@ include "features:digital:digital_deals"
 include "features:digital:event"
 include "features:digital:digitalproduct"
 include "features:digital:flight"
-include "features:digital:flight_dbflow"
 //include "features:digital:flight_no_op"
 include "features:digital:train"
 //include "features:digital:train_no_op"
@@ -59,6 +58,7 @@ include "features:im:challenges"
 //include "features:im:challenges_no_op"
 include "features:im:common_promo"
 include "features:im:referral"
+include "features:kyc"
 
 include "features:logistic:tracking"
 //include 'features:logistic:tracking_no_op'
@@ -161,6 +161,7 @@ include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
 include "features:user:vote"
+include "features:fintech:ovo_pay_with_qr"
 
 include 'logisticanalytics'
 include 'tkpdfeed'
