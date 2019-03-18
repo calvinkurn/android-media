@@ -19,6 +19,10 @@ public abstract class TransactionAnalytics {
     TransactionAnalytics() {
     }
 
+    Analytics getTracker(){
+        return  TrackApp.getInstance().getGTM();
+    }
+
     public void sendScreenName(Activity activity, String screenName) {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }

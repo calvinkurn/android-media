@@ -1,10 +1,11 @@
 package com.tokopedia.tkpd.home.wishlist.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.List;
 
@@ -20,10 +21,8 @@ public class WishlistAnalytics {
     private static final String CLICK_WISHLIST = "Click Wishlist";
     private static final String LONG_PRESS_SHORTCUT_WISHLIST = "Share";
 
-    private AnalyticTracker analyticTracker;
-
     public void trackEventAddToCardProductWishlist(Object dataItem) {
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf("event", "addToCart",
                         "eventCategory", "wishlist page",
                         "eventAction", "click - beli on wishlist",
@@ -40,7 +39,7 @@ public class WishlistAnalytics {
     }
     public void trackEventClickOnProductWishlist(String position,
                                                         Object dataItem) {
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf("event", "productClick",
                         "eventCategory", "wishlist page",
                         "eventAction", "click product",
@@ -58,7 +57,7 @@ public class WishlistAnalytics {
     }
 
     public void trackEventImpressionOnProductWishlist(List<Object> dataItemList) {
-        analyticTracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 DataLayer.mapOf("event", "productView",
                         "eventCategory", "wishlist page",
                         "eventAction", "product impressions",
@@ -73,67 +72,61 @@ public class WishlistAnalytics {
         );
     }
 
-    public WishlistAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
+    public WishlistAnalytics() {
     }
 
     public void eventClickCariWishlist(String query) {
-        if (analyticTracker != null) {
-            analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     AppEventTracking.Event.WISHLIST,
                     AppEventTracking.Category.HOMEPAGE.toLowerCase(),
                     AppEventTracking.Action.CLICK_SEARCH_ITEM_WISHLIST,
                     query
-            );
-        }
+            ));
+
     }
 
     public void eventSearchWishlist(String label) {
-        if (analyticTracker != null) {
-            analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 AppEventTracking.Event.HOME_WISHLIST,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.WISHLIST_SEARCH_ITEM,
                 label
-            );
-        }
+            ));
     }
 
     public void eventRemoveWishlist() {
-        if (analyticTracker != null) {
-            analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     AppEventTracking.Event.WISHLIST,
                     AppEventTracking.Category.HOMEPAGE.toLowerCase(),
                     AppEventTracking.Action.CLICK_REMOVE_WISHLIST,
                     ""
-            );
-        }
+            ));
+
     }
 
     public void eventClickCariEmptyWishlist() {
-        if (analyticTracker != null) {
-            analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     AppEventTracking.Event.WISHLIST,
                     AppEventTracking.Category.HOMEPAGE.toLowerCase(),
                     AppEventTracking.Action.CLICK_EMPTY_SEARCH_WISHLIST,
                     ""
-            );
-        }
+            ));
+
     }
 
     public void eventClickCartWishlist() {
-        if (analyticTracker != null) {
-            analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     AppEventTracking.Event.WISHLIST,
                     WISHLIST_PAGE,
                     CLICK_CART_WISHLIST,
                     ""
-            );
-        }
+            ));
+
     }
 
     public void eventWishlistShortcut() {
-        analyticTracker.sendEventTracking(new EventTracking(
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                new EventTracking(
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,
                 CLICK_WISHLIST,

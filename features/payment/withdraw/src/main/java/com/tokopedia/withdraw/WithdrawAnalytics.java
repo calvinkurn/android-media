@@ -2,7 +2,6 @@ package com.tokopedia.withdraw;
 
 import android.app.Activity;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import javax.inject.Inject;
 
@@ -11,7 +10,6 @@ import javax.inject.Inject;
  */
 public class WithdrawAnalytics {
 
-    private AnalyticTracker analyticTracker;
 
     public static final String SCREEN_WITHDRAW = "/withdraw/";
     public static final String SCREEN_WITHDRAW_PASSWORD = "/withdraw-password/";
@@ -32,8 +30,7 @@ public class WithdrawAnalytics {
     private static final String EVENT_ACTION_CLICK_CLOSE_ERROR = "click close error message";
 
     @Inject
-    public WithdrawAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
+    public WithdrawAnalytics() {
     }
 
     public void sendScreen(Activity activity, String screenName) {

@@ -1,9 +1,5 @@
 package com.tokopedia.analytics;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 /**
  * @author by nisie on 1/26/18.
