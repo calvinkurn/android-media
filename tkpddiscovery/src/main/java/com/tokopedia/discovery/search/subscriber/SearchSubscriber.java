@@ -19,6 +19,7 @@ public class SearchSubscriber extends Subscriber<List<SearchData>> {
     public static final String HOTLIST = "hotlist";
     public static final String IN_CATEGORY = "in_category";
     public static final String SHOP = "shop";
+    public static final String PROFILE = "profile";
 
     private final String querySearch;
     private final DefaultAutoCompleteViewModel defaultAutoCompleteViewModel;
@@ -62,6 +63,7 @@ public class SearchSubscriber extends Subscriber<List<SearchData>> {
                     case HOTLIST:
                     case IN_CATEGORY:
                     case SHOP:
+                    case PROFILE:
                         tabAutoCompleteViewModel.setSearchTerm(querySearch);
                         tabAutoCompleteViewModel.addList(searchData);
                         continue;
