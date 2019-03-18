@@ -257,7 +257,10 @@ class ProductModalFragment : BaseDaggerFragment() {
 
         if (stateProductModal == STATE_BUTTON_TRADEIN) {
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, true)
-
+        } else {
+            if (tradeInParams!!.isEligible != 0) {
+                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+            }
         }
 
         if (stateProductModal == STATE_BUTTON_TRADEIN) {

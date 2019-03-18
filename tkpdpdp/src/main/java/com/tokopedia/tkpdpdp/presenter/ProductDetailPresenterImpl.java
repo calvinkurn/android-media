@@ -48,6 +48,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListen
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopShipment;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
@@ -561,7 +562,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.onProductDetailLoaded(productDetailData, mappingToViewData(productDetailData));
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
-                            int productid = Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId());
+                            int productid = 0;
+                            for (ProductBreadcrumb breadcrumb : productDetailData.getBreadcrumb()) {
+                                if (breadcrumb.getDepartmentName().equals("Handphone"))
+                                    productid = Integer.parseInt(breadcrumb.getDepartmentId());
+                            }
                             if (productid == 24) {
                                 UserSession userSession = new UserSession(viewListener.getActivityContext());
                                 TradeInParams tradeInParams = new TradeInParams();
@@ -1167,7 +1172,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
 
                         viewListener.onProductDetailLoaded(data, mappingToViewData(data));
-                        int productid = Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId());
+                        int productid = 0;
+                        for (ProductBreadcrumb breadcrumb : data.getBreadcrumb()) {
+                            if (breadcrumb.getDepartmentName().equals("Handphone"))
+                                productid = Integer.parseInt(breadcrumb.getDepartmentId());
+                        }
                         if (productid == 24) {
                             TradeInParams tradeInParams = new TradeInParams();
                             UserSession userSession = new UserSession(viewListener.getActivityContext());

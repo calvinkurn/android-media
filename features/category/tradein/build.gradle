@@ -21,6 +21,7 @@ dependencies {
         exclude group: 'com.google.android.gms'
         exclude group: 'com.android.support.constraint'
     }
+    implementation 'com.google.firebase:firebase-firestore:17.1.2'
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 

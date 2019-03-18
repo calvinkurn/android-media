@@ -181,8 +181,12 @@ public class VariantActivity extends TActivity implements
         viewContainerRemark = findViewById(R.id.view_remark_for_seller);
         viewContainerButton = findViewById(R.id.all_kind_button_buy);
         tradeInTextView = findViewById(R.id.tv_trade_in);
-        if (tradeInParams != null) {
+        if (stateFormVariantPage == STATE_BUTTON_TRADEIN) {
             tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, true);
+        } else {
+            if(tradeInParams!=null && tradeInParams.getIsEligible()!=0){
+                tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams,false);
+            }
         }
 
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
