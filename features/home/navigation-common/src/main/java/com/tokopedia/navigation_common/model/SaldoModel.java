@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class SaldoModel {
 
     @SerializedName(value = "saldo", alternate = {"balance"})
-    private DepositModel saldo;
+    private DepositModel saldo = new DepositModel();
 
     public DepositModel getSaldo() {
         return saldo;

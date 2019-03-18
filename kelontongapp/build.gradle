@@ -4,14 +4,17 @@ apply plugin: 'io.fabric'
 
 buildscript {
     repositories {
+        maven {
+            url "https://maven.google.com"
+        }
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'com.google.gms:google-services:4.1.0'
+        classpath rootProject.ext.gradlePlugin.crashlytics
+        classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
 
@@ -104,8 +107,8 @@ dependencies {
         transitive = true
     }
 
-    implementation rootProject.ext.playServicesDependencies.firebase
-    implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
+    implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.core
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
 
