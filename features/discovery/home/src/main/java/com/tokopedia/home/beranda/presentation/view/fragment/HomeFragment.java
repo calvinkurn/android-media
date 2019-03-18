@@ -7,7 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,17 +18,16 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -48,7 +48,6 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
-import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -65,7 +64,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
@@ -165,6 +163,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isTraceStopped = false;
     private boolean isFeedLoaded = false;
 
+    private View statusBarBackground;
+          
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -240,6 +240,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        statusBarBackground.setBackground(new ColorDrawable(
+                ContextCompat.getColor(getActivity(), R.color.green_600)
+        ));
+        setStatusBarAlpha(0f);
+
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
@@ -249,10 +255,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeFeedsViewPager = view.findViewById(R.id.view_pager_home_feeds);
         homeFeedsTabLayout = view.findViewById(R.id.tab_layout_home_feeds);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-        initStatusBarDark();
 
         if (getArguments() != null) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+        }
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.INVISIBLE);
         }
 
         initEggDragListener();
@@ -500,7 +511,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     homeMainToolbar.switchToDarkToolbar();
                 } else {
                     homeMainToolbar.switchToLightToolbar();
-                    initStatusBarDark();
+                }
+
+                if (offsetAlpha >= 0 && offsetAlpha <= 2.55) {
+                    float alpha = offsetAlpha*100;
+                    homeMainToolbar.setBackgroundAlpha(alpha);
+                    setStatusBarAlpha(alpha);
                 }
 
                 if (isAppBarFullyCollapsed(offset) &&
@@ -512,8 +528,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
                     homeMainToolbar.showShadow();
                 }
-
-                homeMainToolbar.setBackgroundAlpha(offsetAlpha*100);
 
                 if (isAppBarFullyExpanded(offset)) {
                     refreshLayout.setCanChildScrollUp(false);
@@ -537,6 +551,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 lastOffset = offset;
             }
         });
+    }
+
+    private void setStatusBarAlpha(float alpha) {
+        Drawable drawable = statusBarBackground.getBackground();
+        drawable.setAlpha((int)alpha);
+        statusBarBackground.setBackground(drawable);
     }
 
     private boolean isAppBarScrollUp(int offset) {
@@ -619,6 +639,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSectionItemClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
+    }
+
+    @Override
+    public void onSpotlightItemClicked(String actionLink) {
         onActionLinkClicked(actionLink);
     }
 
@@ -861,18 +886,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void setItems(List<Visitable> items) {
         this.serverTimeOffset = 0;
 
-        if (items.get(0) instanceof HeaderViewModel) {
-            HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
-            updateHeaderItem(dataHeader);
-        }
-        Visitable dummyTicker = new TickerViewModel();
-        ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
-        Ticker.Tickers tis = new Ticker.Tickers();
-        tis.setMessage("Ayo\u003cb\u003e mari kita berbelanja di \u003c/b\u003e\u003ci\u003eBukalapak\u0026nbsp;\u003ca href=\"https://www.tokopedia.com/\" title=\"#KeTokopedia\"\u003e#KeTokopedia\u003c/a\u003e\u003c/i\u003e");
-        tis.setColor("#0a8f08");
-        tickers.add(tis);
-        ((TickerViewModel) dummyTicker).setTickers(tickers);
-        items.add(1, dummyTicker);
+//        Visitable dummyTicker = new TickerViewModel();
+//        ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
+//        Ticker.Tickers tis = new Ticker.Tickers();
+//        tis.setMessage("Ayo\u003cb\u003e mari kita berbelanja di \u003c/b\u003e\u003ci\u003eBukalapak\u0026nbsp;\u003ca href=\"https://www.tokopedia.com/\" title=\"#KeTokopedia\"\u003e#KeTokopedia\u003c/a\u003e\u003c/i\u003e");
+//        tis.setColor("#0a8f08");
+//        tickers.add(tis);
+//        ((TickerViewModel) dummyTicker).setTickers(tickers);
+//        items.add(1, dummyTicker);
         adapter.setItems(items);
     }
 
@@ -885,9 +906,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
-            adapter.getItems().set(0, headerViewModel);
-            adapter.notifyItemChanged(0);
+        if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
+            adapter.getItems().set(1, headerViewModel);
+            adapter.notifyItemChanged(1);
         }
     }
 
@@ -1349,22 +1370,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    private boolean getWindowValidation() {
+        return getActivity() != null && getActivity().getWindow() != null;
+    }
+
     @Override
     public void onNotificationChanged(int notificationCount, int inboxCount) {
         if (homeMainToolbar != null) {
             homeMainToolbar.setNotificationNumber(notificationCount);
             homeMainToolbar.setInboxNumber(inboxCount);
         }
-    }
-
-    private void initStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation() && isAdded()) {
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
-    private boolean getWindowValidation() {
-        return getActivity() != null && getActivity().getWindow() != null;
     }
 }

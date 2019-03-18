@@ -61,4 +61,6 @@ public interface HomeCategoryListener {
     void onDynamicIconScrollStart();
 
     void onDynamicIconScrollEnd();
+
+    void onSpotlightItemClicked(String actionLink);
 }

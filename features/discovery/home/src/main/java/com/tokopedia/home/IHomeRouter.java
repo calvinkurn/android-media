@@ -81,4 +81,6 @@ public interface IHomeRouter {
     Intent getIntentCreateShop(Context context);
 
     AnalyticTracker getAnalyticTracker();
+
+    Intent gotoQrScannerPage(boolean needResult);
 }

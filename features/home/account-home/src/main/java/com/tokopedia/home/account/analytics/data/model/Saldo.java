@@ -6,18 +6,30 @@ import com.google.gson.annotations.SerializedName;
 
 public class Saldo {
 
-    @SerializedName("deposit_fmt")
+    @SerializedName("buyer_usable")
     @Expose
-    private String depositFmt = "";
-    @SerializedName("deposit")
+    private long buyerUsable = 0;
+    @SerializedName("seller_usable")
     @Expose
-    private Integer deposit = 0;
+    private long sellerUsable = 0;
 
-    public String getDepositFmt() {
-        return depositFmt;
+    public long getBuyerUsable() {
+        return buyerUsable;
     }
 
-    public Integer getDeposit() {
-        return deposit;
+    public void setBuyerUsable(long buyerUsable) {
+        this.buyerUsable = buyerUsable;
+    }
+
+    public long getSellerUsable() {
+        return sellerUsable;
+    }
+
+    public void setSellerUsable(long sellerUsable) {
+        this.sellerUsable = sellerUsable;
+    }
+
+    public long getDeposit() {
+        return getBuyerUsable() + getSellerUsable();
     }
 }
