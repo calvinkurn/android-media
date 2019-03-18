@@ -501,7 +501,7 @@ public class SearchActivity extends DiscoveryActivity
     protected void prepareView() {
         super.prepareView();
 
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
