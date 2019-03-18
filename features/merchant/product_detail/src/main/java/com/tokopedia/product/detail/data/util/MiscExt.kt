@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.data.util
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.data.model.warehouse.WarehouseInfo
 
 inline fun <reified T> GraphqlResponse.getSuccessData(): T {
     val error = getError(T::class.java)
@@ -15,11 +13,9 @@ inline fun <reified T> GraphqlResponse.getSuccessData(): T {
     }
 }
 
-fun Context?.getIntentUrl(url: String): Intent{
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            .addCategory(Intent.CATEGORY_DEFAULT)
-            .addCategory(Intent.CATEGORY_BROWSABLE)
-
-    this?.let { intent.`package` = it.packageName }
-    return intent
-}
+val WarehouseInfo.origin: String?
+    get() {
+        return if (districtId.isNotBlank() && (postalCode.isNotBlank() || geoLocation.isNotBlank())){
+            arrayOf(districtId, postalCode, geoLocation).joinToString("|")
+        } else null
+    }

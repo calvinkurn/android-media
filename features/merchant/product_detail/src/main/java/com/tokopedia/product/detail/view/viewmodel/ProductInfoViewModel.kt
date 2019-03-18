@@ -37,8 +37,10 @@ import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
 import com.tokopedia.product.detail.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.getSuccessData
+import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
@@ -67,6 +69,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productInfoP2resp = MutableLiveData<ProductInfoP2>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
+    private var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
         get() = userSessionInterface.userId
 
@@ -110,13 +113,16 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
                 productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price, forceRefresh)
+
             productInfoP2resp.value = productInfoP2
+            multiOrigin = productInfoP2.nearestWarehouse.warehouseInfo
+
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
 
             if (isUserSessionActive() )
                 productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, forceRefresh,
-                        needRequestCod)
+                        needRequestCod, if (multiOrigin.isFulfillment) multiOrigin.origin else null)
 
             try {
                 val result = variantJob.await()
@@ -307,7 +313,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
 
     private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String,
-                                         forceRefresh: Boolean, needRequestCod: Boolean)
+                                         forceRefresh: Boolean, needRequestCod: Boolean, origin: String?)
             : ProductInfoP3 = withContext(Dispatchers.IO) {
         val productInfoP3 = ProductInfoP3()
 
@@ -316,7 +322,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
         val estimationParams = mapOf(PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg,
-                PARAM_RATE_EST_SHOP_DOMAIN to shopDomain)
+                PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, "origin" to origin)
         val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
                 RatesEstimationModel.Response::class.java, estimationParams, false)
 

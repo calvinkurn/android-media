@@ -73,6 +73,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:drawablePadding="@dimen/dp_4"
         android:visibility="gone"
+        android:text="@string/service_by_tokopedia"
         app:drawableRightCompat="@drawable/ic_pdp_fulfillment"
         app:fontSize="micro"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +83,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/variant_divider"
         app:layout_goneMarginTop="@dimen/dp_0"
-        tools:text="@string/service_by_tokopedia"
         tools:visibility="visible" />
 
     <com.tokopedia.design.component.TextViewCompat
@@ -101,8 +101,8 @@
         android:paddingRight="@dimen/dp_8"
         android:background="@color/grey_background"
         android:visibility="gone"
+        android:text="@string/multiorigin_desc"
         tools:visibility="visible"
-        tools:text="@string/multiorigin_desc"
         app:fontSize="micro"
         app:textViewTheme="lightSecondary"
         app:layout_constraintStart_toStartOf="parent"
