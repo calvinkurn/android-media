@@ -12,6 +12,7 @@ import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.AutoCompleteSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckAffiliateSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckQuotaSubscriber;
+import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreDataSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreFirstSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreLoadMoreSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
@@ -60,10 +61,23 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
             getView().showLoading();
         }
 
+        exploreFirstPageUseCase.setExploreParams(exploreParams);
         exploreFirstPageUseCase.execute(new GetExploreFirstSubscriber(
                 getView(),
                 !TextUtils.isEmpty(exploreParams.getKeyword()),
                 isPullToRefresh,
+                exploreParams
+        ));
+    }
+
+    @Override
+    public void getData(ExploreParams exploreParams) {
+        unsubscribeAutoComplete();
+
+        exploreUseCase.setExploreParams(exploreParams);
+        exploreUseCase.execute(new GetExploreDataSubscriber(
+                getView(),
+                !TextUtils.isEmpty(exploreParams.getKeyword()),
                 exploreParams
         ));
     }

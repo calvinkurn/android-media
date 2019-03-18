@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactory
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel
 
 /**
  * @author by yfsx on 24/09/18.
@@ -16,5 +17,12 @@ class ExploreAdapter(adapterTypeFactory: ExploreTypeFactory, visitables: List<Vi
     override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewRecycled(holder)
         holder.onViewRecycled()
+    }
+
+    fun clearNonProductElements() {
+        visitables.removeAll {
+            it is ExploreProductViewModel
+        }
+        notifyDataSetChanged()
     }
 }

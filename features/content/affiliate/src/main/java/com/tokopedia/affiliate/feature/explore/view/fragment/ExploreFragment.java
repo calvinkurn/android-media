@@ -111,6 +111,7 @@ public class ExploreFragment
     private EmptyModel emptyResultModel;
     private String firstCursor = "";
     private List<Visitable<?>> tempFirstData = new ArrayList<>();
+    private List<Visitable<?>> sections = new ArrayList<>();
     private List<SortViewModel> tempLocalSortData = new ArrayList<>();
     private RemoteConfig remoteConfig;
     private PerformanceMonitoring performanceMonitoring;
@@ -356,11 +357,12 @@ public class ExploreFragment
     public void onSearchSubmitted(String text) {
         dropKeyboard();
         searchView.removeSearchTextWatcher();
-        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
-        adapter.clearAllElements();
+        }
+        adapter.clearNonProductElements();
         exploreParams.setSearchParam(text);
-        loadFirstData(false);
+        presenter.getData(exploreParams);
     }
 
     @Override
@@ -445,24 +447,21 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable<?>> itemList,
+    public void onSuccessGetFirstData(List<Visitable<?>> sections,
+                                      List<Visitable<?>> products,
                                       String cursor,
                                       boolean isSearch,
                                       boolean isPullToRefresh,
                                       List<SortViewModel> sortViewModels) {
+        List<Visitable<?>> itemList = new ArrayList<>();
+        itemList.addAll(sections);
+        itemList.addAll(products);
+
         populateFirstData(itemList, cursor);
         if (!isPullToRefresh) {
             populateSort(sortViewModels);
-            if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortViewModels);
+            if (!isSearch) saveFirstDataToLocal(sections, products, cursor, sortViewModels);
         }
-    }
-
-    @Override
-    public void onSuccessGetFilteredSortedFirstData(List<Visitable<?>> itemList,
-                                                    String cursor,
-                                                    boolean isSearch,
-                                                    boolean isPullToRefresh) {
-        populateFirstData(itemList, cursor);
     }
 
     private void populateFirstData(List<Visitable<?>> itemList, String cursor) {
@@ -470,7 +469,9 @@ public class ExploreFragment
         rvExplore.scrollTo(0,0);
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
-        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
         sortButton.setVisibility(View.VISIBLE);
@@ -497,8 +498,12 @@ public class ExploreFragment
         return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling berjasa", "Dimulai dari Tokopedia"));
     }
 
-    private void saveFirstDataToLocal(List<Visitable<?>> itemList, String firstCursor, List<SortViewModel> sortViewModels) {
-        tempFirstData = itemList;
+    private void saveFirstDataToLocal(List<Visitable<?>> sections,
+                                      List<Visitable<?>> itemList,
+                                      String firstCursor,
+                                      List<SortViewModel> sortViewModels) {
+        this.sections = sections;
+        this.tempFirstData = itemList;
         this.firstCursor = firstCursor;
         this.tempLocalSortData = sortViewModels;
     }
@@ -521,8 +526,9 @@ public class ExploreFragment
         }
         adapter.clearAllElements();
         adapter.addElement(itemList);
-        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
+        }
     }
 
     private void populateFilter(List<FilterViewModel> filterList) {
@@ -567,14 +573,24 @@ public class ExploreFragment
         exploreParams.setFilters(filters);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        presenter.getData(exploreParams);
     }
 
     private void getSortedData(SortViewModel sort) {
         exploreParams.setSort(sort);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        presenter.getData(exploreParams);
+    }
+
+    @Override
+    public void onSuccessGetData(List<Visitable<?>> products, String cursor, boolean isSearch) {
+
+    }
+
+    @Override
+    public void onErrorGetData(String error) {
+        showError(error, (view) -> presenter.getData(exploreParams));
     }
 
     @Override
@@ -616,17 +632,17 @@ public class ExploreFragment
     @Override
     public void onButtonEmptySearchClicked() {
         presenter.unsubscribeAutoComplete();
-        adapter.clearAllElements();
+        adapter.clearNonProductElements();
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
-        loadFirstData(false);
+        presenter.getData(exploreParams);
     }
 
     @Override
     public void onEmptySearchResult() {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
-        adapter.clearAllElements();
+        adapter.clearNonProductElements();
         adapter.addElement(new ExploreEmptySearchViewModel());
         exploreParams.disableLoadMore();
         presenter.unsubscribeAutoComplete();

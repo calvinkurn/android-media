@@ -27,18 +27,20 @@ public interface ExploreContract {
 
         void hideLoading();
 
-        void onSuccessGetFirstData(List<Visitable<?>> itemList,
+        void onSuccessGetFirstData(List<Visitable<?>> sections,
+                                   List<Visitable<?>> products,
                                    String cursor,
                                    boolean isSearch,
                                    boolean isPullToRefresh,
                                    List<SortViewModel> sortViewModel);
 
-        void onSuccessGetFilteredSortedFirstData(List<Visitable<?>> itemList,
-                                   String cursor,
-                                   boolean isSearch,
-                                   boolean isPullToRefresh);
-
         void onErrorGetFirstData(String error);
+
+        void onSuccessGetData(List<Visitable<?>> products,
+                              String cursor,
+                              boolean isSearch);
+
+        void onErrorGetData(String error);
 
         void onSuccessGetMoreData(List<Visitable<?>> itemList, String cursor);
 
@@ -76,6 +78,8 @@ public interface ExploreContract {
     interface Presenter extends CustomerPresenter<View> {
 
         void getFirstData(ExploreParams exploreParams, boolean isPullToRefresh);
+
+        void getData(ExploreParams exploreParams);
 
         void loadMoreData(ExploreParams exploreParams);
 

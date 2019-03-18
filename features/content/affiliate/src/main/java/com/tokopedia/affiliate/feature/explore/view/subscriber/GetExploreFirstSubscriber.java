@@ -1,7 +1,5 @@
 package com.tokopedia.affiliate.feature.explore.view.subscriber;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
@@ -40,6 +38,7 @@ public class GetExploreFirstSubscriber extends Subscriber<ExploreFirstPageViewMo
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+
         if (mainView == null) {
             return;
         }
@@ -51,31 +50,15 @@ public class GetExploreFirstSubscriber extends Subscriber<ExploreFirstPageViewMo
     @Override
     public void onNext(ExploreFirstPageViewModel firstPageViewModel) {
         mainView.hideLoading();
-        if (isSearch && firstPageViewModel.getVisitables().isEmpty()) {
-            mainView.getAffiliateAnalytics().onSearchNotFound(exploreParams.getKeyword());
-            mainView.onEmptySearchResult();
-        } else {
-            if (isFirstDataWithFilterSort(exploreParams)) {
-                mainView.onSuccessGetFilteredSortedFirstData(
-                        firstPageViewModel.getVisitables(),
-                        firstPageViewModel.getNextCursor(),
-                        isSearch,
-                        isPullToRefresh);
-            } else {
-                mainView.onSuccessGetFirstData(
-                        firstPageViewModel.getVisitables(),
-                        firstPageViewModel.getNextCursor(),
-                        isSearch,
-                        isPullToRefresh,
-                        firstPageViewModel.getSortList()
-                );
-            }
-        }
+        mainView.onSuccessGetFirstData(
+                firstPageViewModel.getSection(),
+                firstPageViewModel.getProducts(),
+                firstPageViewModel.getNextCursor(),
+                isSearch,
+                isPullToRefresh,
+                firstPageViewModel.getSortList()
+        );
 
         mainView.stopTrace();
-    }
-
-    private boolean isFirstDataWithFilterSort(ExploreParams exploreParams) {
-        return exploreParams.getFilters().size() != 0 || !TextUtils.isEmpty(exploreParams.getSort().getText());
     }
 }
