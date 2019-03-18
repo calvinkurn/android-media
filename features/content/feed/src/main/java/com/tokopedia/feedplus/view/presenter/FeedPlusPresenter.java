@@ -27,6 +27,8 @@ import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
+import com.tokopedia.profile.domain.usecase.TrackAffiliateClickUseCase;
+import com.tokopedia.profile.view.subscriber.TrackPostClickSubscriber;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.usecase.RequestParams;
@@ -60,6 +62,7 @@ public class FeedPlusPresenter
     private final GetWhitelistUseCase getWhitelistUseCase;
     private final GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase;
     private final GetDynamicFeedUseCase getDynamicFeedUseCase;
+    private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -76,6 +79,7 @@ public class FeedPlusPresenter
                       GetWhitelistUseCase whitelistUseCase,
                       GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase,
                       GetDynamicFeedUseCase getDynamicFeedUseCase,
+                      TrackAffiliateClickUseCase trackAffiliateClickUseCase,
                       FeedAnalytics analytics) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
@@ -89,6 +93,7 @@ public class FeedPlusPresenter
         this.getWhitelistUseCase = whitelistUseCase;
         this.getDynamicFeedFirstPageUseCase = getDynamicFeedFirstPageUseCase;
         this.getDynamicFeedUseCase = getDynamicFeedUseCase;
+        this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
         this.analytics = analytics;
     }
 
@@ -448,5 +453,12 @@ public class FeedPlusPresenter
                     }
                 }
         );
+    }
+
+    @Override
+    public void trackAffiliate(String url) {
+        trackAffiliateClickUseCase.execute(
+                TrackAffiliateClickUseCase.Companion.createRequestParams(url),
+                new TrackPostClickSubscriber());
     }
 }

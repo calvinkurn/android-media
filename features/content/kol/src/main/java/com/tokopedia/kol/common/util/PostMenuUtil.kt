@@ -30,6 +30,14 @@ fun createBottomMenu(context: Context,
                 )
         )
     }
+    if (model.isEditable) {
+        menuList.add(
+                Menus.ItemMenus(
+                        context.getString(R.string.kol_edit_post),
+                        -1
+                )
+        )
+    }
     menus.itemMenuList = menuList
     menus.setActionText(context.getString(R.string.button_cancel))
     menus.setOnActionClickListener { menus.dismiss() }
@@ -37,6 +45,7 @@ fun createBottomMenu(context: Context,
         when (itemMenus.title) {
             context.getString(R.string.kol_delete_post) -> listener?.onDeleteClicked()
             context.getString(R.string.kol_report) -> listener?.onReportClick()
+            context.getString(R.string.kol_edit_post) -> listener?.onEditClick()
         }
         menus.dismiss()
     }
@@ -47,4 +56,6 @@ interface PostMenuListener {
     fun onDeleteClicked()
 
     fun onReportClick()
+
+    fun onEditClick()
 }

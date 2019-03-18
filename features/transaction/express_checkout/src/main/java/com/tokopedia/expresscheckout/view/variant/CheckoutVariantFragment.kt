@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -35,7 +36,6 @@ import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListene
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
@@ -43,8 +43,8 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewMod
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.logisticcommon.LogisticCommonConstant
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
@@ -109,7 +109,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var recyclerView: RecyclerView
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
-    private lateinit var tkpdProgressDialog: TkpdProgressDialog
+    private lateinit var tkpdProgressDialog: ProgressDialog
     private var trackerAttribution: String? = ""
     private var trackerListName: String? = ""
 
@@ -156,7 +156,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_detail_product_page, container, false)
-        tkpdProgressDialog = TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        tkpdProgressDialog = ProgressDialog(activity)
+        tkpdProgressDialog.setCancelable(false)
+        tkpdProgressDialog.setMessage(getString(R.string.title_loading))
+
         recyclerView = getRecyclerView(view)
         recyclerView.addItemDecoration(itemDecorator)
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -202,11 +206,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showLoadingDialog() {
-        tkpdProgressDialog.showDialog()
+        if (!tkpdProgressDialog.isShowing) tkpdProgressDialog.show()
     }
 
     override fun hideLoadingDialog() {
-        tkpdProgressDialog.dismiss()
+        if (tkpdProgressDialog.isShowing) tkpdProgressDialog.dismiss()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {

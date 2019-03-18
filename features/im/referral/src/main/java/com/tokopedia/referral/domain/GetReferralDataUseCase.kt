@@ -42,7 +42,6 @@ constructor() : RestRequestUseCase() {
     }
 
     companion object {
-
         val userId = "user_id"
         val msisdn = "msisdn"
         val data = "data"
