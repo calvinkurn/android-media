@@ -1,14 +1,16 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,8 +20,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.DynamicIconDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
@@ -35,16 +36,30 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
     private RecyclerView recyclerView;
     private DynamicIconAdapter adapter;
 
-    public DynamicIconSectionViewHolder(View itemView, HomeCategoryListener listener) {
+    public DynamicIconSectionViewHolder(View itemView,
+                                        HomeCategoryListener listener){
         super(itemView);
         adapter = new DynamicIconAdapter(itemView.getContext(), listener);
         recyclerView = itemView.findViewById(R.id.list);
-        int edgeMargin = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
-        int spacingBetween = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
-        recyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(spacingBetween, edgeMargin));
+
+        WindowManager windowManager = (WindowManager) itemView.getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+
+        recyclerView.addItemDecoration(new DynamicIconDecoration(
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                width,
+                5,
+                itemView.getContext().getResources().getDimensionPixelOffset(
+                        R.dimen.use_case_and_dynamic_icon_size
+                )
+        ));
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
-                LinearLayoutManager.HORIZONTAL, false));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(itemView.getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.clearOnScrollListeners();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -87,7 +102,7 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
 
         @Override
         public DynamicIconViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new DynamicIconViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_dynamic_icon, parent, false));
+            return new DynamicIconViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_use_case_and_dynamic_icon, parent, false));
         }
 
         @Override

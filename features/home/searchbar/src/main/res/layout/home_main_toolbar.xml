@@ -5,116 +5,84 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    tools:layout_height="@dimen/dp_100"
+    tools:layout_height="100dp"
     app:contentInsetStart="0dp"
     app:contentInsetEnd="0dp"
     app:contentInsetStartWithNavigation="0dp">
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
+        tools:layout_height="100dp"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_4"
-        tools:layout_height="@dimen/dp_100">
+        android:padding="@dimen/dp_8">
 
-        <ImageButton
-            android:id="@+id/btn_qrcode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
-            android:background="@null"
-            android:src="@drawable/ic_qr_bar"
-            android:visibility="gone" />
-
-        <View
+        <LinearLayout
             android:id="@+id/layout_search"
-            android:layout_width="0dp"
+            android:layout_toLeftOf="@+id/btn_wishlist"
+            android:layout_toStartOf="@+id/btn_wishlist"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:background="@drawable/bg_corner"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_wishlist"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_width="0dp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_4">
 
-        <ImageView
-            android:id="@+id/icon_search"
-            android:layout_width="@dimen/icon_toolbar"
-            android:layout_height="@dimen/icon_toolbar"
-            android:scaleType="center"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_searchbar_search_grey"
-            app:layout_constraintBottom_toBottomOf="@+id/et_search"
-            app:layout_constraintStart_toStartOf="@+id/layout_search"
-            app:layout_constraintTop_toTopOf="@+id/et_search" />
+            <ImageView
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_search_bar"/>
 
-        <EditText
-            android:id="@+id/et_search"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@null"
-            android:enabled="true"
-            android:focusable="false"
-            android:hint="@string/search_tokopedia"
-            android:inputType="none"
-            android:maxLines="1"
-            android:textColorHint="@android:color/darker_gray"
-            android:textSize="@dimen/sp_16"
-            app:layout_constraintBottom_toBottomOf="@+id/layout_search"
-            app:layout_constraintEnd_toEndOf="@+id/layout_search"
-            app:layout_constraintStart_toEndOf="@+id/icon_search"
-            app:layout_constraintTop_toTopOf="@+id/layout_search" />
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_marginLeft="@dimen/margin_16"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/search_tokopedia"
+                android:inputType="none"
+                android:focusable="false"
+                android:enabled="true"
+                android:textSize="@dimen/sp_16"
+                android:maxLines="1"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@null"/>
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/btn_wishlist"
+            android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/btn_inbox"
             android:scaleType="center"
             android:src="@drawable/ic_searchbar_wishlist_white"
-            app:layout_constraintBottom_toBottomOf="@+id/layout_search"
-            app:layout_constraintEnd_toStartOf="@+id/btn_inbox"
-            app:layout_constraintTop_toTopOf="@+id/layout_search" />
+            android:layout_toStartOf="@+id/btn_inbox"
+            android:layout_toLeftOf="@+id/btn_inbox"/>
 
         <ImageView
             android:id="@+id/btn_inbox"
-            android:layout_width="40dp"
-            android:layout_height="@dimen/icon_toolbar"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_width="@dimen/icon_toolbar"
+            android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
             android:src="@drawable/ic_searchbar_inbox_white"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_wishlist"
-            app:layout_constraintEnd_toStartOf="@+id/btn_notification"
-            app:layout_constraintTop_toTopOf="@+id/btn_wishlist"
-            app:layout_constraintVertical_bias="0.0" />
+            android:layout_toStartOf="@+id/btn_notification"
+            android:layout_toLeftOf="@+id/btn_notification"/>
 
         <ImageView
             android:id="@+id/btn_notification"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:scaleType="center"
-            android:src="@drawable/ic_searchbar_notif_white"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_inbox"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_inbox" />
+            android:src="@drawable/ic_searchbar_notif_white"/>
 
-    </android.support.constraint.ConstraintLayout>
-
+    </RelativeLayout>
 </android.support.v7.widget.Toolbar>

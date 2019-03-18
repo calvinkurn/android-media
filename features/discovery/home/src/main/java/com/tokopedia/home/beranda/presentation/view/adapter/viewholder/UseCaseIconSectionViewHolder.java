@@ -38,8 +38,9 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
         adapter = new UseCaseIconAdapter(itemView.getContext(), listener);
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
-                GridLayoutManager.VERTICAL, false));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(itemView.getContext(), spanCount,
+                GridLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(gridLayoutManager);
     }
 
     @Override
