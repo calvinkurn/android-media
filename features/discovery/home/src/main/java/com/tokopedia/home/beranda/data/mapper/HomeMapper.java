@@ -135,7 +135,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 list.add(mappingDynamicTopAds(channel));
                                 break;
                             case "spotlight":
-                                list.add(new BusinessUnitViewModel(context.getString(R.string.digital_widget_title)));
+
                                 break;
 //                            case "6_image":
 //                                list.add(mappingDynamicChannel(channel));
@@ -150,6 +150,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 //                                        list.size(), channel);
 //                                break;
                             case "organic":
+                                list.add(new BusinessUnitViewModel(context.getString(R.string.digital_widget_title)));
                                 list.add(mappingDynamicChannel(channel));
                                 HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                         list.size(), channel);
