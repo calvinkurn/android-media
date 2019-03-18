@@ -11,7 +11,6 @@ import com.tokopedia.affiliate.common.widget.ChipView;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,7 +25,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     private OnFilterClickedListener filterClickedListener;
 
     private List<FilterViewModel> filterList = new ArrayList<>();
-    private List<FilterViewModel> currentSelectedFilter = new ArrayList<>();
     private int layout;
     private static final int MAX_CHIP = 5;
 
@@ -58,43 +56,18 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         holder.itemView.setOnClickListener(v -> {
             boolean isSelected = filterList.get(holder.getAdapterPosition()).isSelected();
             filterList.get(holder.getAdapterPosition()).setSelected(!isSelected);
-            processCurrentSelected(filter);
             filterClickedListener.onItemClicked(getOnlySelectedFilter());
         });
     }
 
-    private void processCurrentSelected(FilterViewModel filter) {
-        if (filter.isSelected() && !containsInCurrentSelected(filter)) {
-            currentSelectedFilter.add(filter);
-        } else
-            removeItemFromSelected(filter);
-    }
-
-    private boolean containsInCurrentSelected(FilterViewModel filter) {
-        for (FilterViewModel item : currentSelectedFilter) {
-            if (item.getName().equals(filter.getName()))
-                return true;
-        }
-        return false;
-    }
-
-    private void removeItemFromSelected(FilterViewModel filter) {
-        List<FilterViewModel> newItemList = new ArrayList<>();
-        for (FilterViewModel item : currentSelectedFilter) {
-            if (!item.getName().equals(filter.getName())) {
-                newItemList.add(item);
-            }
-        }
-        currentSelectedFilter = newItemList;
-    }
-
-    public List<FilterViewModel> getAllFilterList() {
+    private List<FilterViewModel> getAllFilterList() {
         return filterList;
     }
 
     @Override
     public int getItemCount() {
-        if (layout == R.layout.item_explore_filter_child && filterList.size() > MAX_CHIP) return MAX_CHIP;
+        if (layout == R.layout.item_explore_filter_child && filterList.size() > MAX_CHIP)
+            return MAX_CHIP;
         return filterList.size();
     }
 
@@ -119,24 +92,32 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
 
     public List<FilterViewModel> getFilterListCurrentSelectedSorted() {
         List<FilterViewModel> sortedList = new ArrayList<>();
-        sortedList.addAll(currentSelectedFilter);
-        sortedList.addAll(addRemainingItemNotCurrentlySelected());
+        sortedList.addAll(addSelectedItems());
+        sortedList.addAll(addUnselectedItems());
         return sortedList;
     }
 
-    private List<FilterViewModel> addRemainingItemNotCurrentlySelected() {
+    private List<FilterViewModel> addSelectedItems() {
         List<FilterViewModel> sortedList = new ArrayList<>();
         for (FilterViewModel item : getAllFilterList()) {
-            if (!containsInCurrentSelected(item)) {
+            if (item.isSelected()) {
                 sortedList.add(item);
             }
         }
-        Collections.sort(sortedList, (item1, item2) -> Boolean.compare(item2.isSelected(),
-                item1.isSelected()));
         return sortedList;
     }
 
-    public List<FilterViewModel> getOnlySelectedFilter() {
+    private List<FilterViewModel> addUnselectedItems() {
+        List<FilterViewModel> sortedList = new ArrayList<>();
+        for (FilterViewModel item : getAllFilterList()) {
+            if (!item.isSelected()) {
+                sortedList.add(item);
+            }
+        }
+        return sortedList;
+    }
+
+    private List<FilterViewModel> getOnlySelectedFilter() {
         List<FilterViewModel> items = new ArrayList<>();
         for (FilterViewModel filter : getAllFilterList()) {
             if (filter.isSelected()) {
@@ -151,25 +132,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
             item.setSelected(false);
         }
         notifyDataSetChanged();
-    }
-
-    private void moveSelectedSingleItemToFront(FilterViewModel filter) {
-        List<FilterViewModel> items = new ArrayList<>();
-        items.add(filter);
-        for (FilterViewModel item : getAllFilterList()) {
-            if (!item.getName().equals(filter.getName())) {
-                items.add(item);
-            }
-        }
-        setList(items);
-        notifyDataSetChanged();
-    }
-
-    private void moveAllSelectedToFront() {
-        List<FilterViewModel> items = new ArrayList<>();
-        items.addAll(getOnlySelectedFilter());
-        items.addAll(getNotSelectedItems());
-        setList(items);
     }
 
     private List<FilterViewModel> getNotSelectedItems() {

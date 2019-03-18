@@ -108,7 +108,6 @@ public class ExploreFragment
 
     private ExploreAdapter adapter;
     private ExploreParams exploreParams;
-    private FilterAdapter filterAdapter;
     private EmptyModel emptyResultModel;
     private String firstCursor = "";
     private List<Visitable<?>> tempFirstData = new ArrayList<>();
@@ -394,12 +393,6 @@ public class ExploreFragment
     private void populateLocalDataToAdapter() {
         adapter.clearAllElements();
         adapter.addElement(getLocalFirstData());
-        if (filterAdapter != null) {
-            filterAdapter.clearAllData();
-            filterAdapter.resetAllFilters();
-            //TODO milhamj remove?
-//            filterAdapter.setList(tempLocalSortFilterData.getFilterList());
-        }
     }
 
     @Override
@@ -764,7 +757,8 @@ public class ExploreFragment
             if (requestCode == REQUEST_DETAIL_FILTER) {
                 List<FilterViewModel> currentFilter = new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(currentFilter);
-                getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
+                //TODO milhamj
+//                getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
             }
             else if (requestCode == REQUEST_DETAIL_SORT) {
                 SortViewModel selectedSort = data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
