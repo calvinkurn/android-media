@@ -23,6 +23,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -32,6 +35,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -328,22 +332,18 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void goToPreviewImage(int position, ArrayList<ImageUpload> list) {
-        if (MainApplication.getAppContext() instanceof PdpRouter) {
-            ArrayList<String> listLocation = new ArrayList<>();
-            ArrayList<String> listDesc = new ArrayList<>();
+        ArrayList<String> listLocation = new ArrayList<>();
+        ArrayList<String> listDesc = new ArrayList<>();
 
-            for (ImageUpload image : list) {
-                listLocation.add(image.getPicSrcLarge());
-                listDesc.add(image.getDescription());
-            }
-
-            ((PdpRouter) MainApplication.getAppContext()).openImagePreview(
-                    getActivity(),
-                    listLocation,
-                    listDesc,
-                    position
-            );
+        for (ImageUpload image : list) {
+            listLocation.add(image.getPicSrcLarge());
+            listDesc.add(image.getDescription());
         }
+
+        startActivity(ImagePreviewActivity.getCallingIntent(getContext(),
+                listLocation,
+                listDesc,
+                position));
     }
 
     @Override
@@ -446,15 +446,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProductDetail(String productId, String productAvatar, String productName) {
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .setProductImage(productAvatar)
-                            .setProductName(productName)
-                            .build()
-            );
+        if (getContext()!= null) {
+            Intent intent = RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            getContext().startActivity(intent);
         }
     }
 
