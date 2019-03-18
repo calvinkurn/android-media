@@ -45,7 +45,7 @@
         android:gravity="center_horizontal|center_vertical"
         android:text="Lihat Semua"
         android:textColor="@color/medium_green"
-        android:textSize="13sp"
+        android:textSize="@dimen/sp_10"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewpager_banner_category" />
