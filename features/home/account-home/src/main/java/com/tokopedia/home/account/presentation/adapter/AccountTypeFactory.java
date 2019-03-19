@@ -28,9 +28,6 @@ import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
-import com.tokopedia.showcase.ShowCaseObject;
-
-import java.util.ArrayList;
 
 /**
  * @author okasurya on 7/17/18.
