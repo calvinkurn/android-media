@@ -21,7 +21,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     public static final String TRANSFER_ID = "transfer_id";
     public static final String TRANSACTION_ID = "transaction_id";
     private static final String CODE = "code";
-    private static final String CACHE_ID = "cache_id";
+    public static final String CACHE_ID = "cache_id";
     private String cacheId;
     private int transferId;
     private int transactionId;

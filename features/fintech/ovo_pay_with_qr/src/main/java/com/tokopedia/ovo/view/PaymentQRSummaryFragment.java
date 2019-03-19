@@ -38,6 +38,7 @@ import java.net.URLDecoder;
 
 import static com.tokopedia.ovo.view.PaymentQRSummaryActivity.IMEI;
 import static com.tokopedia.ovo.view.PaymentQRSummaryActivity.QR_DATA;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.CACHE_ID;
 import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSACTION_ID;
 import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSFER_ID;
 
@@ -194,7 +195,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                     Intent intent = ((OvoPayWithQrRouter) getActivity().getApplication())
                             .tokopointWebviewIntent(getActivity(), URLDecoder.decode(
                                     response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
-                    intent.putExtra("cache_id",id);
+                    intent.putExtra(CACHE_ID,id);
                     intent.putExtra(TRANSACTION_ID, response.getTransactionId());
                     startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
