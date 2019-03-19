@@ -119,7 +119,7 @@ public class TopAdsGtmTracker {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
                     "eventCategory", "inbox",
-                    "eventAction", "impression - product - topads",
+                    "eventAction", "impression on topads product",
                     "eventLabel", "",
                     "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
                             "impressions", DataLayer.listOf(
@@ -138,7 +138,7 @@ public class TopAdsGtmTracker {
                 "brand", "none/other",
                 "varian", "none/other",
                 "category", product.getCategory().getId(),
-                "list", "/inbox - topads  productlist",
+                "list", "/inbox - topads rekomendasi untuk anda",
                 "position", position + 1));
     }
 
@@ -237,10 +237,11 @@ public class TopAdsGtmTracker {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "inbox",
-                    "eventAction", "click - product - topads",
+                    "eventAction", "click on topads product",
                     "eventLabel", "",
                     "ecommerce", DataLayer.mapOf(
-                            "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/inbox - topads  productlist"),
+                            "click", DataLayer.mapOf("actionField",
+                                    DataLayer.mapOf("list", "/inbox - topads - rekomendasi untuk anda"),
                                     "product", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
