@@ -345,7 +345,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
                         gotoEditProduct()
                     } else {
-                        // TODO show toast product status title
+                        activity?.run {
+                            val statusMessage = productInfo?.basic?.statusMessage(this)
+                            if (statusMessage?.isNotEmpty() == true) {
+                                ToasterError.showClose(this, getString(R.string.product_is_at_status_x, statusMessage))
+                            }
+                        }
                     }
                 } else if (productP3value != null) {
                     if (it.isActivated) {
@@ -1210,7 +1215,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.productInfoP3resp.value?.isWishlisted = false
         updateWishlist(false)
         //TODO clear cache
-        //TODO action success remove wishlist. in old version, will broadcast
         sendIntentResusltWishlistChange(productId ?: "", false)
 
     }
@@ -1231,6 +1235,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         productInfoViewModel.productInfoP3resp.value?.isWishlisted = true
         updateWishlist(true)
+        //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
