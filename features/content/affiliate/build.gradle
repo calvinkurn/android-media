@@ -48,6 +48,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.cacheManager)
+    implementation project(rootProject.ext.libraries.videouploader)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

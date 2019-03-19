@@ -9,8 +9,8 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.*
-import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
+import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
@@ -65,19 +65,41 @@ class SubmitPostService : IntentService(TAG) {
                 notifId,
                 viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
-        submitPostUseCase.execute(
-                SubmitPostUseCase.createRequestParams(
-                        viewModel.authorType,
-                        viewModel.token,
-                        if (isTypeAffiliate(viewModel.authorType)) userSession.userId
-                        else userSession.shopId,
-                        viewModel.caption,
-                        viewModel.completeImageList,
-                        if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                        else viewModel.productIdList
-                ),
-                getSubscriber()
-        )
+
+        if (isUploadVideo(viewModel)) {
+            submitPostUseCase.execute(
+                    SubmitPostUseCase.createRequestParamsVideo(
+                            viewModel.authorType,
+                            viewModel.token,
+                            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                            else userSession.shopId,
+                            viewModel.caption,
+                            viewModel.videoPath,
+                            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+                            else viewModel.productIdList
+                    ),
+                    getSubscriber()
+            )
+        } else {
+
+            submitPostUseCase.execute(
+                    SubmitPostUseCase.createRequestParams(
+                            viewModel.authorType,
+                            viewModel.token,
+                            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                            else userSession.shopId,
+                            viewModel.caption,
+                            viewModel.completeImageList,
+                            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+                            else viewModel.productIdList
+                    ),
+                    getSubscriber()
+            )
+        }
+    }
+
+    private fun isUploadVideo( viewModel: CreatePostViewModel): Boolean {
+        return viewModel.videoPath.isNotBlank()
     }
 
     private fun initInjector() {

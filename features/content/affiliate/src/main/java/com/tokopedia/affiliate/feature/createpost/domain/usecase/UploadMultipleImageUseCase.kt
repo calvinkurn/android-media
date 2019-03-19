@@ -9,6 +9,9 @@ import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
+import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
+import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import rx.Observable
@@ -22,15 +25,26 @@ import javax.inject.Inject
  */
 class UploadMultipleImageUseCase @Inject constructor(
         private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>,
+        private val uploadVideoUseCase: UploadVideoUseCase<DefaultUploadVideoResponse>,
         private val userSession: UserSessionInterface) : UseCase<List<SubmitPostMedium>>() {
 
     var notificationManager: SubmitPostNotificationManager? = null
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<List<SubmitPostMedium>> {
+        val isUploadVideo = requestParams.getBoolean(IS_UPLOAD_VIDEO, false)
         return Observable.from(requestParams.getObject(PARAM_URL_LIST) as List<SubmitPostMedium>)
-                .flatMap(uploadSingleImage())
+                .flatMap(if (isUploadVideo) uploadVideo() else uploadSingleImage())
                 .toList()
+    }
+
+    private fun uploadVideo(): Func1<SubmitPostMedium, Observable<SubmitPostMedium>> {
+        return Func1 { medium ->
+            uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(medium.mediaURL))
+                    .map(mapToUrlVideo(medium))
+                    .map(updateNotification())
+                    .subscribeOn(Schedulers.io())
+        }
     }
 
     private fun uploadSingleImage(): Func1<SubmitPostMedium, Observable<SubmitPostMedium>> {
@@ -54,6 +68,18 @@ class UploadMultipleImageUseCase @Inject constructor(
                 imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
             }
             medium.mediaURL = imageUrl
+            medium
+        }
+    }
+
+    private fun mapToUrlVideo(
+            medium: SubmitPostMedium): Func1<VideoUploadDomainModel<DefaultUploadVideoResponse>,
+            SubmitPostMedium> {
+        return Func1 { uploadDomainModel ->
+            val videoId: String = uploadDomainModel?.dataResultVideoUpload?.videoId ?: ""
+            val videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url ?: ""
+            medium.id = videoId
+            medium.mediaURL = videoUrl
             medium
         }
     }
@@ -102,9 +128,13 @@ class UploadMultipleImageUseCase @Inject constructor(
         private const val RESOLUTION_500 = "500"
         private const val TEXT_PLAIN = "text/plain"
 
-        fun createRequestParams(mediumList: List<SubmitPostMedium>): RequestParams {
+        private const val IS_UPLOAD_VIDEO = "isUploadVideo"
+
+        fun createRequestParams(mediumList: List<SubmitPostMedium>, isUploadVideo: Boolean):
+                RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putObject(PARAM_URL_LIST, mediumList)
+            requestParams.putBoolean(IS_UPLOAD_VIDEO, isUploadVideo)
             return requestParams
         }
     }
