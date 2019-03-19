@@ -105,9 +105,9 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         presenter = new PaymentQrSummaryPresenterImpl(getActivity());
         presenter.attachView(this);
         presenter.fetchWalletDetails();
-        cacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        cacheManager = new SaveInstanceCacheManager(getActivity().getApplicationContext(), savedInstanceState);
         if (savedInstanceState == null)
-            cacheManager = new SaveInstanceCacheManager(getActivity(), id);
+            cacheManager = new SaveInstanceCacheManager(getActivity().getApplicationContext(), id);
 
         responseData = cacheManager.get(QR_RESPONSE, new TypeToken<BarcodeResponseData>() {
         }.getType());
@@ -203,10 +203,12 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                             .getWebViewIntent(getActivity(), URLDecoder.decode(
                                     response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
 
-                    LocalCacheHandler cacheHandler = new LocalCacheHandler(
+                    LocalCacheHandler localCacheHandler = new LocalCacheHandler(
                             getActivity().getApplicationContext(), LOCAL_CACHE_ID);
                     cacheManager.put(TRANSACTION_ID, response.getTransactionId());
-                    cacheHandler.putString(CACHE_ID, cacheManager.getId());
+                    cacheManager.put(TRANSFER_ID, response.getTransferId());
+                    localCacheHandler.putString(CACHE_ID, cacheManager.getId());
+                    localCacheHandler.applyEditor();
                     startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
