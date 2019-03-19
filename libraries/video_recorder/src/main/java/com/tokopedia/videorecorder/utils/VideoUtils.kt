@@ -22,4 +22,26 @@ object VideoUtils {
         )
     }
 
+    fun ffmegCommand(cropSize: Int?, sourceFile: String, resultFile: String): Array<String> {
+        return arrayOf(
+                "-i",
+                sourceFile,
+                "-filter:v",
+                "crop=$cropSize:$cropSize",
+                "-codec:v",
+                "libx264",
+                "-profile:v",
+                "high",
+                "-threads",
+                "5",
+                "-preset",
+                "ultrafast",
+                "-strict",
+                "-2",
+                "-c:a",
+                "copy",
+                resultFile
+        )
+    }
+
 }

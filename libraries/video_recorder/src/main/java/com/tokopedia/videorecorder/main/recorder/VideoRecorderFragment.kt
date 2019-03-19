@@ -60,7 +60,6 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
         cameraView.mode = Mode.VIDEO
         cameraView.addCameraListener(cameraListener())
-        cameraView.setVideoSize(VideoUtils.squareSize())
 
         //set max progress value
         progressBar.max = DURATION_MAX
