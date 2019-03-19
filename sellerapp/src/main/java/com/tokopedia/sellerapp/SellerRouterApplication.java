@@ -19,8 +19,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkConst;
@@ -1917,5 +1917,9 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+    }
+
+    public void shareFeed(Activity activity, String detailId, String url, String title, String
+            imageUrl, String description) {
     }
 }
