@@ -132,10 +132,8 @@ class TabBusinessFragment : BaseDaggerFragment() {
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager.postDelayed({
-                    viewPager.setCurrentItem(tab.position, false)
-                    adapter.notifyDataSetChanged()
-                }, 300)
+                viewPager.setCurrentItem(tab.position, false)
+                adapter.notifyDataSetChanged()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}

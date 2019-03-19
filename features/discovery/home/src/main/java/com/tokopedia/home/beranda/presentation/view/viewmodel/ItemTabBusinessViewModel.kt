@@ -49,11 +49,7 @@ class ItemTabBusinessViewModel @Inject constructor(
                         HomeWidget.Data::class.java,
                         params
                 )
-                graphqlRepository.getReseponse(
-                        listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                                .build()
-                )
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }
 
             if (data.getError(HomeWidget.Data::class.java) == null ||
@@ -71,15 +67,6 @@ class ItemTabBusinessViewModel @Inject constructor(
         }){
             homeWidget.value = Fail(it)
         }
-    }
-
-    private fun validateTemplate(homeWidget: HomeWidget): HomeWidget {
-        return HomeWidget(
-                homeWidget.tabBusinessList,
-                homeWidget.contentItemTabList.filter {
-                    it.templateId == 1 || it.templateId == 2 || it.templateId == 3
-                }
-        )
     }
 
 }
