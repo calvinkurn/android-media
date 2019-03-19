@@ -89,8 +89,3 @@ class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
         }
     }
 }
-
-interface SearchParameterOwnerListener : Serializable {
-    fun setSearchParameter(searchParameter: SearchParameter)
-    fun getSearchParameter() : SearchParameter
-}

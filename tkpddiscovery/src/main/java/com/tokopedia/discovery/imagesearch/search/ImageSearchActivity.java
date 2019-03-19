@@ -83,7 +83,7 @@ public class ImageSearchActivity extends DiscoveryActivity
         SearchParameter searchParameter = new SearchParameter();
         searchParameter.setSearchQuery(searchQuery);
 
-        setSearchParameter(searchParameter);
+        this.searchParameter = searchParameter;
     }
 
     private void initInjector() {

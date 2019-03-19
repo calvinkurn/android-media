@@ -28,7 +28,6 @@ import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterOwnerListener;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
@@ -55,8 +54,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
         DiscoverySearchView.ImageSearchClickListener,
         DiscoverySearchView.OnQueryTextListener,
-        BottomNavigationListener,
-        SearchParameterOwnerListener {
+        BottomNavigationListener {
 
     private static final int REQUEST_CODE_IMAGE = 2390;
     private static final double MIN_SCORE = 10.0;
@@ -80,7 +78,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private PerformanceMonitoring performanceMonitoring;
     private View root;
 
-    private SearchParameter searchParameter;
+    protected SearchParameter searchParameter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,7 +204,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     private void handleNonOfficialStoreSearchQuery(SearchParameter searchParameter) throws RuntimeException {
-        setSearchParameter(searchParameter);
+        this.searchParameter = searchParameter;
 
         String query = searchParameter.getSearchQuery();
 
@@ -350,7 +348,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void onSuggestionProductClick(SearchParameter searchParameter) {
         SearchParameter copySearchParameter = new SearchParameter(searchParameter);
-        setSearchParameter(copySearchParameter);
+        this.searchParameter = copySearchParameter;
         onProductQuerySubmit();
     }
 
@@ -365,7 +363,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void performRequestProduct(String searchQuery, String categoryId) {
         updateSearchParameterBeforeSearch(searchQuery, categoryId);
 
-        searchQuery = getSearchParameter().getSearchQuery();
+        searchQuery = this.searchParameter.getSearchQuery();
 
         onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
@@ -637,15 +635,5 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         if (performanceMonitoring != null) {
             performanceMonitoring.stopTrace();
         }
-    }
-
-    @Override
-    public void setSearchParameter(SearchParameter searchParameter) {
-        this.searchParameter = searchParameter;
-    }
-
-    @Override
-    public SearchParameter getSearchParameter() {
-        return this.searchParameter;
     }
 }

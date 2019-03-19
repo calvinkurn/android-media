@@ -38,7 +38,6 @@ import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterOwnerListener;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -66,7 +65,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author Erry Suprayogi
  */
 @SuppressWarnings("all")
-public class DiscoverySearchView extends FrameLayout implements Filter.FilterListener, SearchParameterOwnerListener {
+public class DiscoverySearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
     private static final String TAG = DiscoverySearchView.class.getSimpleName();
     private static final String LOCALE_INDONESIA = "in_ID";
@@ -694,10 +693,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public void showSearch(boolean finishOnClose, boolean animate, SearchParameter searchParameter) {
         if(mSuggestionFragment != null) {
-            mSuggestionFragment.setSearchParameterOwner(this);
+            mSuggestionFragment.setSearchParameter(this.searchParameter);
         }
 
-        setSearchParameter(searchParameter);
+        this.searchParameter = searchParameter;
 
         setLastQuery(searchParameter.getSearchQuery());
         showSearch(finishOnClose, animate);
@@ -841,16 +840,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public boolean getIsOfficial() {
         return searchParameter.getBoolean(SearchApiConst.OFFICIAL);
-    }
-
-    @Override
-    public void setSearchParameter(SearchParameter searchParameter) {
-        this.searchParameter = searchParameter;
-    }
-
-    @Override
-    public SearchParameter getSearchParameter() {
-        return searchParameter;
     }
 
     /**

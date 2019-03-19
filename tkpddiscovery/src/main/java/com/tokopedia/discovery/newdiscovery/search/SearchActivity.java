@@ -259,7 +259,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void handleIntentWithProductViewModel(ProductViewModel productViewModel) {
-        setSearchParameter(productViewModel.getSearchParameter());
+        this.searchParameter = productViewModel.getSearchParameter();
 
         setLastQuerySearchView(productViewModel.getQuery());
         loadSection(productViewModel, forceSwipeToShop);
@@ -268,7 +268,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void handleIntentWithSearchQuery(SearchParameter searchParameter) {
-        setSearchParameter(searchParameter);
+        this.searchParameter = searchParameter;
         onProductQuerySubmit();
     }
 
@@ -457,7 +457,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private CatalogFragment getCatalogFragment() {
-        return CatalogFragment.newInstance(getSearchParameter());
+        return CatalogFragment.newInstance(searchParameter);
     }
 
     private ProductListFragment getProductFragment(ProductViewModel productViewModel) {
@@ -465,7 +465,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private ShopListFragment getShopFragment() {
-        return ShopListFragment.newInstance(getSearchParameter());
+        return ShopListFragment.newInstance(searchParameter);
     }
 
     private ProfileListFragment getProfileListFragment(String query, SearchNavigationListener searchNavigationListener) {

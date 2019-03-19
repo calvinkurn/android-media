@@ -29,7 +29,6 @@ import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameterOwnerListener;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
@@ -47,7 +46,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
-    private static final String SEARCH_PARAMETER_OWNER = "SEARCH_PARAMETER_OWNER";
+    private static final String SEARCH_PARAMETER = "SEARCH_PARAMETER";
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -59,7 +58,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     private String networkErrorMessage;
     private boolean onTabShop;
 
-    private SearchParameterOwnerListener searchParameterOwner;
+    private SearchParameter searchParameter;
 
     public static SearchMainFragment newInstance() {
 
@@ -76,16 +75,6 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         args.putString(INIT_QUERY, query);
         SearchMainFragment fragment = new SearchMainFragment();
         fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static SearchMainFragment newInstance(SearchParameterOwnerListener searchParameter) {
-        Bundle args = new Bundle();
-        args.putSerializable(SEARCH_PARAMETER_OWNER, searchParameter);
-
-        SearchMainFragment fragment = new SearchMainFragment();
-        fragment.setArguments(args);
-
         return fragment;
     }
 
@@ -186,10 +175,9 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         super.onViewStateRestored(savedInstanceState);
 
         if(savedInstanceState != null) {
-            searchParameterOwner = (SearchParameterOwnerListener) savedInstanceState.getSerializable(SEARCH_PARAMETER_OWNER);
-
-            if (searchParameterOwner != null) {
-                presenter.search(searchParameterOwner.getSearchParameter());
+            searchParameter = savedInstanceState.getParcelable(SEARCH_PARAMETER);
+            if(searchParameter != null) {
+                presenter.search(searchParameter);
             }
         }
     }
@@ -197,7 +185,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(SEARCH_PARAMETER_OWNER, searchParameterOwner);
+        outState.putParcelable(SEARCH_PARAMETER, searchParameter);
     }
 
     public void search(SearchParameter searchParameter){
@@ -282,7 +270,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         return onTabShop;
     }
 
-    public void setSearchParameterOwner(SearchParameterOwnerListener searchParameterOwner) {
-        this.searchParameterOwner = searchParameterOwner;
+    public void setSearchParameter(SearchParameter searchParameter) {
+        this.searchParameter = searchParameter;
     }
 }
