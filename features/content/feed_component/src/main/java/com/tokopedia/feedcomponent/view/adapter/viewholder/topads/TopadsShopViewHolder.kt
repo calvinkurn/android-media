@@ -37,7 +37,7 @@ class TopadsShopViewHolder(v: View,
 
         itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
         itemView.cardTitle.listener = cardTitleListener
-        if (element.title.text.isEmpty()) {
+        if (element.title.text.isEmpty() && element.dataList.isEmpty()) {
             itemView.mainView.visibility = View.GONE
         }
     }
