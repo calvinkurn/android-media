@@ -268,6 +268,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun renderUi(flightBookingCartData: FlightBookingCartData?, isFromSavedInstance: Boolean) {
         if (flightBookingCartData != null && flightBookingCartData.id != null) {
+            view.hideFullPageLoading()
             view.getCurrentBookingParamViewModel().id = flightBookingCartData.id
             view.setCartData(flightBookingCartData)
             view.showAndRenderDepartureTripCardDetail(view.getCurrentBookingParamViewModel().searchParam,

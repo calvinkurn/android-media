@@ -594,7 +594,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         private val REQUEST_CODE_OTP = 5
 
         fun newInstance(searchPassDataViewModel: FlightSearchPassDataViewModel,
-                        departureId: String, returnId: String?,
+                        departureId: String, returnId: String,
                         priceViewModel: FlightPriceViewModel): FlightBookingFragment {
             val fragment = FlightBookingFragment()
             val bundle = Bundle()
