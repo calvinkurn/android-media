@@ -25,6 +25,9 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -465,9 +468,13 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @Override
     public void actionToProductInfo(ProductPass productPass) {
-        Intent intent = ProductDetailRouter
-                .createInstanceProductDetailInfoActivity(this, productPass);
+        Intent intent = getProductIntent(productPass.getProductId());
         navigateToActivity(intent);
+    }
+
+    private Intent getProductIntent(String productId){
+            return RouteManager.getIntent(this,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
     }
 
     @Override

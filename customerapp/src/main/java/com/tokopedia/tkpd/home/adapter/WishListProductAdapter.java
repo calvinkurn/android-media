@@ -19,6 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
@@ -39,8 +42,6 @@ import com.tokopedia.tkpd.home.adapter.viewmodel.EmptyStateItem;
 import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.List;
 
@@ -275,21 +276,25 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                     UnifyTracking.eventWishlistView(view.getContext(), product.getName());
                     wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf(position+1), product.getProductAsObjectDataLayerForWishlistClick(position+1));
                     Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
-                    intent.putExtras(bundle);
+                    Intent intent = getProductIntent(((ProductItem) data.get(position)).id);
                     context.startActivity(intent);
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
                     UnifyTracking.eventWishlistView(view.getContext(), product.getProductName());
-                    context.startActivity(
-                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                                    context, getProductDataToPass((RecentView) data.get(position))
-                            )
-                    );
+                    Intent intent = getProductIntent(((ProductItem) data.get(position)).id);
+                    context.startActivity(intent);
                 }
             }
         };
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntent(context,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {
@@ -423,7 +428,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBuyButtonAvailable(TextView buyButtonUnavailable) {
-        buyButtonUnavailable.setBackgroundResource(R.drawable.btn_buy);
+        buyButtonUnavailable.setBackgroundResource(R.drawable.rect_orange);
         buyButtonUnavailable.setTextColor(getColor(context, R.color.white));
         buyButtonUnavailable.setText(R.string.title_buy);
     }

@@ -35,6 +35,8 @@ import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -679,16 +681,10 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onItemClicked(ProductModel productModel, String curatedName) {
         trackEventEnhance(createClickProductDataLayer(productModel));
-        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(String.valueOf(productModel.getId()));
-        data.setName(productModel.getName());
-        data.setPrice(productModel.getPrice());
-        data.setImgUri(productModel.getImageUrl());
-        data.setTrackerAttribution(productModel.getTrackerAttribution());
-        data.setTrackerListName(productModel.getTrackerListName());
         Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        Intent intent = getProductIntent(String.valueOf(productModel.getId()));
+        bundle.putString("tracker_attribution", productModel.getTrackerAttribution());
+        bundle.putString("tracker_list_name", productModel.getTrackerListName());
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
         UnifyTracking.eventCuratedIntermediary(getActivity(), departmentId,
@@ -725,17 +721,18 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         getActivity().startActivity(intent);
         TopAdsGtmTracker.eventIntermediaryProductClick(getContext(), "", product, position);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getActivity() != null) {
+            return RouteManager.getIntent(getActivity(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     @Override

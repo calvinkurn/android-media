@@ -1,6 +1,7 @@
 package com.tokopedia.core.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -20,6 +24,8 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
+
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 /**
  * Created by Nisie on 4/06/15.
@@ -95,9 +101,8 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             public void onClick(View view) {
                 if(position < data.size()) {
                     UnifyTracking.eventFeedRecent(view.getContext(), data.get(position).getName());
-                    ((PdpRouter) ((BaseActivity) context)
-                            .getApplication())
-                            .goToProductDetail(context, getProductDataToPass(data.get(position)));
+                    RouteManager.route(getContext(),
+                            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, data.get(position).getId()));
                 }
             }
         };

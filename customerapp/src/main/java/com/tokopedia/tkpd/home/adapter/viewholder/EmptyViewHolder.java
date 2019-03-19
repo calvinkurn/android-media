@@ -7,6 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -80,11 +83,20 @@ public class EmptyViewHolder extends RecyclerView.ViewHolder implements
         data.setPrice(product.getPriceFormat());
         data.setImgUri(product.getImage().getM_ecs());
         Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+        Intent intent = getProductIntent(product.getId());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         context.startActivity(intent);
         TopAdsGtmTracker.eventWishlistEmptyProductClick(context, product, query, position);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntent(context,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     @Override

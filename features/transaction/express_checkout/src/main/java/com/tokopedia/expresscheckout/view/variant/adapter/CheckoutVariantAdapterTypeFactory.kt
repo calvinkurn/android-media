@@ -13,7 +13,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantActionListener) : BaseAdapterTypeFactory(), CheckoutVariantTypeFactory {
+open class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantActionListener) : BaseAdapterTypeFactory(), CheckoutVariantTypeFactory {
 
     override fun type(viewModel: NoteViewModel): Int {
         return NoteViewHolder.LAYOUT

@@ -14,6 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
@@ -110,15 +113,7 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ProductItem data = new ProductItem();
-                    data.setId(String.valueOf(productsItem.getId()));
-                    data.setName(productsItem.getName());
-                    data.setPrice(productsItem.getPrice());
-                    data.setImgUri(productsItem.getImageUrl());
-                    Bundle bundle = new Bundle();
-                    Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(itemView.getContext());
-                    bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-                    intent.putExtras(bundle);
+                    Intent intent = getProductIntent(String.valueOf(productsItem.getId()));
                     itemView.getContext().startActivity(intent);
                     Object productItem = null;
                     if (productsItem != null) {
@@ -132,6 +127,15 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
 
             });
 
+        }
+
+        private Intent getProductIntent(String productId){
+            if (itemView.getContext() != null) {
+                return RouteManager.getIntent(itemView.getContext(),
+                        UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            } else {
+                return null;
+            }
         }
 
         public void updateView(ProductsItem productsItem, int position) {

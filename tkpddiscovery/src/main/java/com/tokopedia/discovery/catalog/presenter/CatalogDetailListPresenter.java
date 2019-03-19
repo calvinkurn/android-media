@@ -3,6 +3,9 @@ package com.tokopedia.discovery.catalog.presenter;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -110,11 +113,17 @@ public class CatalogDetailListPresenter implements ICatalogDetailListPresenter {
 
     @Override
     public void goToProductDetailPage(CatalogDetailItemProduct product) {
-        view.getActivity().startActivity(
-                ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                        view.getActivity(), getProductDataToPass(product)
-                )
+        view.getActivity().startActivity(getProductIntent(product.getId())
         );
+    }
+
+    private Intent getProductIntent(String productId){
+        if (view.getActivity() != null) {
+            return RouteManager.getIntent(view.getActivity(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     private ProductPass getProductDataToPass(CatalogDetailItemProduct product) {

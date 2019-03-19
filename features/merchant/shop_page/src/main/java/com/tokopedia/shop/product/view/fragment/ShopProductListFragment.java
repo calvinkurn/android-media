@@ -29,6 +29,9 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -44,7 +47,6 @@ import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
@@ -61,6 +63,7 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -446,7 +449,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         };
     }
 
-    private boolean isOwner(){
+    private boolean isOwner() {
         return shopProductListPresenter.isMyShop(shopId);
     }
 
@@ -507,7 +510,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             shopPageTracking.clickMoreMenuChip(isOwner(),
                     CustomDimensionShopPage.create(shopInfo));
 
-            Intent shopEtalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), selectedEtalaseId);
+            Intent shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), selectedEtalaseId,
+                    true, false);
             startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE);
         }
     }
@@ -541,9 +545,24 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     CustomDimensionShopPageAttribution.create(shopInfo, shopProductViewModel.getId(), attribution),
                     shopProductViewModel, productPosition, shopId, shopInfo.getInfo().getShopName());
         }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
-                shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
-                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName));
+
+        //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
+
+        startActivity(getProductIntent(shopProductViewModel.getId(), attribution,
+                shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)));
+    }
+
+    private Intent getProductIntent(String productId, String attribution, String listNameOfProduct) {
+        if (getContext() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("tracker_attribution", attribution);
+            bundle.putString("tracker_list_name", listNameOfProduct);
+            Intent intent = RouteManager.getIntent(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            return intent;
+        } else {
+            return null;
+        }
     }
 
     @Override

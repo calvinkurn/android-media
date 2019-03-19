@@ -27,6 +27,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
@@ -405,11 +408,15 @@ public class ReputationViewShop extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ProductDetailRouter
-                        .createInstanceProductDetailInfoActivity(ReputationViewShop.this, model.productId);
+                Intent intent = getProductIntent(model.productId);
                 startActivity(intent);
             }
         };
+    }
+
+    private Intent getProductIntent(String productId){
+        return RouteManager.getIntent(this,
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
     }
 
     private View.OnClickListener OnUserNameClickListener() {

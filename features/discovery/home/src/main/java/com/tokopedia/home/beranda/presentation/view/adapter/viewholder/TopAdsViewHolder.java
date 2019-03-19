@@ -8,6 +8,9 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
@@ -50,13 +53,17 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public void onProductItemClicked(int position, Product product) {
         if(context instanceof Activity) {
             Activity activity = (Activity) context;
-            Intent intent = ((IHomeRouter) activity.getApplication()).getTopAdsProductDetailIntentForHome(context,
-                    product.getId(),
-                    product.getName(),
-                    product.getPriceFormat(),
-                    product.getImage().getM_ecs());
-
+            Intent intent = getProductIntent(product.getId());
             activity.startActivity(intent);
+        }
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntent(context,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
         }
     }
 

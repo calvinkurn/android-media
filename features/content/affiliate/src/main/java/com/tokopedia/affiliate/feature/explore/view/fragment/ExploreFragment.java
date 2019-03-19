@@ -57,6 +57,7 @@ import com.tokopedia.affiliate.util.AffiliateHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -428,10 +429,12 @@ public class ExploreFragment
         affiliateAnalytics.onProductClicked(model.getProductId());
         if (isCanDoAction) {
             isCanDoAction = false;
-            RouteManager.route(
-                    getContext(),
-                    ApplinkConst.AFFILIATE_PRODUCT.replace(PRODUCT_ID_PARAM, model.getProductId())
-            );
+            if (getContext()!= null) {
+                RouteManager.route(
+                        getContext(),
+                        UriUtil.buildUri(ApplinkConst.AFFILIATE_PRODUCT, model.getProductId())
+                );
+            }
         }
     }
 

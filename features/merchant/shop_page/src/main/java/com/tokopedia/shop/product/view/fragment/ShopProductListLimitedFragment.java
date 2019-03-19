@@ -31,6 +31,9 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -58,7 +61,6 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -84,10 +86,11 @@ import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -209,7 +212,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shopInfo!= null) {
+                if (shopInfo != null) {
                     Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortName);
                     ShopProductListLimitedFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
                 }
@@ -779,7 +782,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                     CustomDimensionShopPage.create(shopInfo));
 
-            Intent shopEtalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), selectedEtalaseId);
+            Intent shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), selectedEtalaseId,
+                    true, false);
             startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE);
         }
     }
@@ -848,9 +852,31 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         shopProductViewModel, productPosition, shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
             }
         }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
-                shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
+        goToPDP(shopProductViewModel.getId(),  attribution,
                 shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName));
+
+
+    }
+
+    /**
+     * This function is temporary for testing to avoid router and applink
+     * For Dynamic Feature Support
+     */
+    private void goToPDP(String productId, String attribution, String listNameOfProduct) {
+        startActivity(getProductIntent(productId, attribution, listNameOfProduct));
+    }
+
+    private Intent getProductIntent(String productId, String attribution, String listNameOfProduct){
+        if (getContext() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("tracker_attribution", attribution);
+            bundle.putString("tracker_list_name", listNameOfProduct);
+            Intent intent = RouteManager.getIntent(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            return intent;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -868,7 +894,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         this.selectedEtalaseId = etalaseId;
                         this.selectedEtalaseName = etalaseName;
                     } else {
-                        if (shopInfo!= null) {
+                        if (shopInfo != null) {
                             Intent intent = ShopProductListActivity.createIntent(getActivity(),
                                     shopInfo.getInfo().getShopId(), "",
                                     etalaseId, attribution, sortName);
@@ -880,7 +906,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
                     needReloadData = true;
 
-                    if (shopPageTracking != null && shopInfo!= null) {
+                    if (shopPageTracking != null && shopInfo != null) {
                         shopPageTracking.clickMenuFromMoreMenu(
                                 shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                                 etalaseName,
@@ -1093,7 +1119,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         super.onAttachActivity(context);
         shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
     }
-
 
 
 }

@@ -10,6 +10,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
@@ -90,17 +93,18 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public void onProductItemClicked(int position, Product product) {
         if(context instanceof Activity) {
             Activity activity = (Activity) context;
-            ProductItem data = new ProductItem();
-            data.setId(product.getId());
-            data.setName(product.getName());
-            data.setPrice(product.getPriceFormat());
-            data.setImgUri(product.getImage().getM_ecs());
-            Bundle bundle = new Bundle();
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(activity);
-            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-            intent.putExtras(bundle);
+            Intent intent = getProductIntent(product.getId());
             activity.startActivity(intent);
             TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position);
+        }
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntent(context,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
         }
     }
 

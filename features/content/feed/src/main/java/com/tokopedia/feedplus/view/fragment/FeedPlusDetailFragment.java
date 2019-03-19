@@ -18,6 +18,9 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
@@ -371,14 +374,22 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                 && getArguments() != null
                 && getActivity().getApplicationContext() instanceof FeedModuleRouter) {
 
-            ((FeedModuleRouter) getActivity().getApplicationContext()).goToProductDetailForResult(this,
-                    productId, adapterPosition, REQUEST_OPEN_PDP);
+            getActivity().startActivityForResult(getProductIntent(productId), REQUEST_OPEN_PDP);
 
             analytics.eventFeedViewProduct(
                     getScreenName(),
                     productId,
                     getArguments().getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
                             + FeedTrackingEventLabel.View.PRODUCTLIST_PDP);
+        }
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
         }
     }
 

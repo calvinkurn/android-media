@@ -17,6 +17,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -392,8 +394,17 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     private fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
             analytics.trackClickProduct()
-            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
+            val intent: Intent? = getProductIntent(productId)
             this@ShopTalkFragment.startActivity(intent)
+        }
+    }
+
+    private fun getProductIntent(productId: String): Intent? {
+        return if (context != null) {
+            RouteManager.getIntent(context!!,
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId))
+        } else {
+            null
         }
     }
 

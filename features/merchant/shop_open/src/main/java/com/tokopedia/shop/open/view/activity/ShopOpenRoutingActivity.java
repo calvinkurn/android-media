@@ -20,8 +20,8 @@ import com.tokopedia.shop.open.view.fragment.ShopOpenRoutingFragment;
 
 /**
  * Created by nathan on 12/19/17.
+ * For navigating: use ApplinkConstInternalMarketplace.OPEN_SHOP
  */
-
 public class ShopOpenRoutingActivity extends BaseSimpleActivity implements HasComponent<ShopOpenDomainComponent> {
 
     public static Intent getIntent(Context context) {

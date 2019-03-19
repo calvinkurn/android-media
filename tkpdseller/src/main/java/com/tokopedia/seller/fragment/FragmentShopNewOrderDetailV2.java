@@ -28,6 +28,9 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -431,14 +434,20 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(
-                        ProductDetailRouter
-                                .createInstanceProductDetailInfoActivity(
-                                        getActivity(), getProductDataToPass(position)));
+                startActivity(getProductIntent(order.getOrderProducts().get(position).getProductId().toString()));
             }
         });
         ListViewHelper.getListViewSize(holder.ProductListView);
 
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        } else {
+            return null;
+        }
     }
 
     private void loadViewHolder() {

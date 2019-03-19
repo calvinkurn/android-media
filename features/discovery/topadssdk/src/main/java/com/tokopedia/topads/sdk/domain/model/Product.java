@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -43,53 +44,97 @@ public class Product implements Parcelable {
     private static final String KEY_IMAGE_PRODUCT = "image_product";
 
     @SerializedName(KEY_ID)
+    @Expose
     private String id = "";
     private String adRefKey = "";
     private String adId = "";
     @SerializedName(KEY_NAME)
+    @Expose
     private String name = "";
+
     @SerializedName(KEY_WISHLIST)
+    @Expose
     private boolean wishlist = false;
+
     @SerializedName(KEY_IMAGE)
+    @Expose
     private ProductImage image = new ProductImage();
+
     @SerializedName(KEY_URI)
+    @Expose
     private String uri = "";
+
     @SerializedName(KEY_RELATIVE_URI)
+    @Expose
     private String relativeUri = "";
+
     @SerializedName(KEY_PRICE_FORMAT)
+    @Expose
     private String priceFormat = "";
+
     @SerializedName(KEY_COUNT_TALK_FORMAT)
+    @Expose
     private String countTalkFormat = "";
+
     @SerializedName(KEY_COUNT_REVIEW_FORMAT)
+    @Expose
     private String countReviewFormat = "";
+
     @SerializedName(KEY_CATEGORY)
+    @Expose
     private Category category = new Category();
+
     @SerializedName(KEY_PRODUCT_PREORDER)
+    @Expose
     private boolean productPreorder = false;
+
     @SerializedName(KEY_PRODUCT_WHOLESALE)
+    @Expose
     private boolean productWholesale = false;
+
     @SerializedName(KEY_FREERETURN)
+    @Expose
     private String freeReturn = "";
+
     @SerializedName(KEY_PRODUCT_CASHBACK)
+    @Expose
     private boolean productCashback = false;
+
     @SerializedName(KEY_PRODUCT_CASHBACK_RATE)
+    @Expose
     private String productCashbackRate = "";
+
     @SerializedName(KEY_PRODUCT_NEW_LABEL)
+    @Expose
     private boolean productNewLabel = false;
+
     @SerializedName(KEY_PRODUCT_RATE)
+    @Expose
     private int productRating = 0;
+
     @SerializedName(KEY_APPLINKS)
+    @Expose
     private String applinks = "";
+
     @SerializedName(KEY_WHOLESALE_PRICE)
+    @Expose
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
+
     @SerializedName(KEY_LABELS)
+    @Expose
     private List<Label> labels = new ArrayList<>();
+
     @SerializedName(KEY_TOP_LABEL)
+    @Expose
     private List<String> topLabels = new ArrayList<>();
+
     @SerializedName(KEY_BOTTOM_LABEL)
+    @Expose
     private List<String> bottomLabels = new ArrayList<>();
+
     @SerializedName(KEY_IMAGE_PRODUCT)
-    private ImageProduct imageProduct = new ImageProduct();
+    @Expose
+    private ImageProduct imageProduct;
     private boolean loaded = false;
 
     public Product() {
