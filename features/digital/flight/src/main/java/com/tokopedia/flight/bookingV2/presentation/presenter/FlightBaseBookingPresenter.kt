@@ -155,7 +155,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                         view.renderFinishTimeCountDown(expiredDate)
                         onCountDownTimestampChanged(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT))
 
-                        if (baseCartData.total != getCurrentCartData().total) {
+                        if (baseCartData.total != getCurrentCartData().total && getCurrentCartData().total > 0) {
                             view.showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(baseCartData.total),
                                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getCurrentCartData().total))
                             updateTotalPrice(baseCartData.total)

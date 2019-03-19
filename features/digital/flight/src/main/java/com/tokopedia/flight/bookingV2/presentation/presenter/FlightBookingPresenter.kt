@@ -330,7 +330,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     }
                 }
                 val newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.departureTrip, flightBookingCartData.returnTrip)
-                if (newTotalPrice != oldTotalPrice) {
+                if (newTotalPrice != oldTotalPrice && getCurrentCartData().total > 0) {
                     resultTotalPrice = newTotalPrice
                     view.showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(resultTotalPrice), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(oldTotalPrice))
                 }
@@ -418,7 +418,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Subscriber<FlightBookingCartData>() {
-                            override fun onNext(t: FlightBookingCartData?) {
+                            override fun onNext(t: FlightBookingCartData) {
                                 getReturnTripDataAndCart(t)
                             }
 
