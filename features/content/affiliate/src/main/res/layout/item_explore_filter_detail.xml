@@ -1,51 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:id="@+id/card_view" xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="@dimen/dp_70"
-    android:layout_marginBottom="@dimen/dp_5"
-    android:layout_marginEnd="@dimen/dp_5"
-    android:layout_marginRight="@dimen/dp_5"
-    app:cardCornerRadius="@dimen/dp_4">
-
-    <android.support.constraint.ConstraintLayout
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.tokopedia.affiliate.common.widget.ChipView
+        android:id="@+id/chip"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-
-        <View
-            android:id="@+id/backgroundView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/filter_background_active"
-            android:foreground="?android:attr/selectableItemBackground"/>
-
-        <TextView
-            android:id="@+id/category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:foregroundGravity="center"
-            android:gravity="center_horizontal"
-            android:maxLines="3"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Anak-anak " />
-    </android.support.constraint.ConstraintLayout>
-</android.support.v7.widget.CardView>
+        android:layout_height="wrap_content" />
+</FrameLayout>

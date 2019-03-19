@@ -73,7 +73,7 @@ public class FilterFragment extends BaseDaggerFragment {
     }
 
     private void initView() {
-        adapter = new FilterAdapter(getFilterClickListener(), R.layout.item_explore_filter_child);
+        adapter = new FilterAdapter(getFilterClickListener(), R.layout.item_explore_filter_detail);
         rvFilter.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         rvFilter.setAdapter(adapter);
         adapter.setList(filterList);
