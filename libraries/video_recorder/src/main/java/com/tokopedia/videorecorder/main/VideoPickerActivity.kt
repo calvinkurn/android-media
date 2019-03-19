@@ -37,15 +37,15 @@ class VideoPickerActivity: BaseSimpleActivity(),
     companion object {
         //video recorder const
         const val VIDEOS_RESULT = "video_result"
-        const val VIDEO_MAX_SIZE = 50000L
+        const val VIDEO_MAX_SIZE = 50000L //50 mb
+        const val VIDEO_MAX_DURATION = 60000 //ms = 1 minute
 
         //flag
         var isVideoSourcePicker = false
 
         //image/video picker configuration
         const val supportMultipleSelection = false
-        const val minImageResolution = 0
-
+        const val minImageResolution = 0 //unnecessary but needed
     }
 
     override fun getNewFragment(): Fragment? = null
@@ -151,8 +151,8 @@ class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     private fun onVideoPicked() {
-        if (videoPreview.duration >= 60000) {
-            Toast.makeText(this, "videonya lebih dari 60 detik, trim!", Toast.LENGTH_LONG).show()
+        if (videoPreview.duration > VIDEO_MAX_DURATION) {
+            //@TODO(trim video startPosition 0 into endPosition 60 with ffmpeg
         }
 
         val videos = arrayListOf<String>()
