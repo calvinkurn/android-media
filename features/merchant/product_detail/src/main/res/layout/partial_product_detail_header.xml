@@ -114,7 +114,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_title_discount_timer"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="Stok tersedia (>100)"/>
+            tools:text="Stok tersedia (>100)"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -222,6 +224,7 @@
         android:layout_marginTop="@dimen/dp_10"
         android:layout_gravity="center_vertical"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintLeft_toLeftOf="@+id/product_name"
         app:layout_constraintStart_toStartOf="@+id/product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_price_pdp"
