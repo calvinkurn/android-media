@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
 import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
 import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
@@ -16,15 +15,12 @@ import javax.inject.Inject
  * @author by milhamj on 9/26/18.
  */
 class CreatePostPresenter @Inject constructor(
-        private val getContentFormUseCase: GetContentFormUseCase,
-        private val uploadVideoUseCase : UploadVideoUseCase<DefaultUploadVideoResponse>,
-        private val userSessionInterface : UserSessionInterface)
+        private val getContentFormUseCase: GetContentFormUseCase)
     : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter {
 
     override fun detachView() {
         super.detachView()
         getContentFormUseCase.unsubscribe()
-        uploadVideoUseCase.unsubscribe()
     }
 
     override fun fetchContentForm(idList: MutableList<String>, type: String) {
@@ -32,26 +28,6 @@ class CreatePostPresenter @Inject constructor(
         getContentFormUseCase.execute(
                 GetContentFormUseCase.createRequestParams(idList, type),
                 GetContentFormSubscriber(view, type)
-        )
-
-        uploadVideoUseCase.execute(
-                UploadVideoUseCase.createParam("/storage/emulated/0/DCIM/Camera/VID_20190315_115325.mp4"),
-              object : Subscriber<VideoUploadDomainModel<DefaultUploadVideoResponse>>(){
-                  override fun onNext(video: VideoUploadDomainModel<DefaultUploadVideoResponse>?) {
-                      video?.dataResultVideoUpload?.run{
-                          Log.d("NGENG", "onNotNull : " + playbackList[0].url)
-                      }
-                     Log.d("NGENG", "onNext")
-                  }
-
-                  override fun onCompleted() {
-
-                  }
-
-                  override fun onError(e: Throwable?) {
-                     Log.d("NGENG", e.toString())
-                  }
-              }
         )
     }
 }

@@ -22,6 +22,8 @@ data class SubmitPostMedium(
 
 ) {
     companion object {
-        private const val TYPE_IMAGE = "image"
+        const val TYPE_IMAGE = "image"
+        const val TYPE_VIDEO = "video"
+
     }
 }

@@ -354,7 +354,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 startActivityForResult(Intent(it, VideoPickerActivity::class.java), REQUEST_VIDEO_PICKER)
             }
         }
-        relatedAddBtn.text = getAddRelatedProductText()
         relatedAddBtn.setOnClickListener {
             onRelatedAddProductClick()
         }
