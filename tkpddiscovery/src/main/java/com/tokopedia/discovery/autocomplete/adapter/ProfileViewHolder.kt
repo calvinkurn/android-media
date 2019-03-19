@@ -8,6 +8,7 @@ import android.text.style.TextAppearanceSpan
 import android.view.View
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.autocomplete.viewmodel.ProfileSearch
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener
@@ -88,7 +89,7 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
     }
 
     private fun loadImageIntoProfileAvatar() {
-        Glide.with(context).load(boundedProfileSearch.imageUrl).into(view.profile_avatar)
+        ImageHandler.loadImageCircle2(context, view.profile_avatar, boundedProfileSearch.imageUrl)
     }
 
     private fun setBadgesKOLVisibleIfKOL() {

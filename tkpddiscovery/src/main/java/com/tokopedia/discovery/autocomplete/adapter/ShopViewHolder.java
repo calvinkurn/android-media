@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
@@ -34,11 +35,20 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
 
     private final ItemClickListener listener;
 
+    private ShopSearch boundedShopSearch;
+    private int searchQueryStartIndexInKeyword = -1;
+
     public ShopViewHolder(View itemView, ItemClickListener clickListener, String tabName) {
         super(itemView);
+
         this.context = itemView.getContext();
         this.listener = clickListener;
         this.tabName = tabName;
+
+        initView();
+    }
+
+    private void initView() {
         titleTextView = itemView.findViewById(R.id.titleTextView);
         location = itemView.findViewById(R.id.subTitleTextView);
         badgesOfficialStore = itemView.findViewById(R.id.badgesOfficialStore);
@@ -48,57 +58,91 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
 
     @Override
     public void bind(final ShopSearch element) {
-        int startIndex = indexOfSearchQuery(element.getKeyword(), element.getSearchTerm());
-        if(startIndex == -1){
-            titleTextView.setText(element.getKeyword().toLowerCase());
-        } else {
-            SpannableString highlightedTitle = new SpannableString(element.getKeyword());
-            highlightedTitle.setSpan(new TextAppearanceSpan(context, R.style.searchTextHiglight),
-                    0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            highlightedTitle.setSpan(new TextAppearanceSpan(context, R.style.searchTextHiglight),
-                    startIndex + element.getSearchTerm().length(),
-                    element.getKeyword().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            titleTextView.setText(highlightedTitle);
-        }
+        boundedShopSearch = element;
 
-        Glide.with(context).load(element.getImageUrl()).into(shopAvatar);
-        if(element.isOfficial()){
+        setSearchQueryStartIndexInKeyword();
+
+        setTitle();
+        setSubtitle();
+        loadImageIntoShopAvatar();
+        setBadgesOfficialStoreIfOfficial();
+        setItemViewOnClickListener();
+        setIconCopyTextViewOnClickListener();
+    }
+
+    private void setSearchQueryStartIndexInKeyword() {
+        String displayName = boundedShopSearch.getKeyword();
+        String searchTerm = boundedShopSearch.getSearchTerm();
+
+        searchQueryStartIndexInKeyword = !TextUtils.isEmpty(searchTerm) ?
+                displayName.toLowerCase(Locale.getDefault()).indexOf(searchTerm.toLowerCase(Locale.getDefault())) : -1;
+    }
+
+    private void setTitle() {
+        if(searchQueryStartIndexInKeyword == -1){
+            titleTextView.setText(boundedShopSearch.getKeyword().toLowerCase());
+        } else {
+            titleTextView.setText(getHighlightedTitle());
+        }
+    }
+
+    private SpannableString getHighlightedTitle() {
+        SpannableString highlightedTitle = new SpannableString(boundedShopSearch.getKeyword());
+
+        highlightTitleBeforeKeyword(highlightedTitle);
+
+        highlightTitleAfterKeyword(highlightedTitle);
+
+        return highlightedTitle;
+    }
+
+    private void highlightTitleBeforeKeyword(SpannableString highlightedTitle) {
+        highlightedTitle.setSpan(new TextAppearanceSpan(context, R.style.searchTextHiglight),
+                0, searchQueryStartIndexInKeyword, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void highlightTitleAfterKeyword(SpannableString highlightedTitle) {
+        int highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + boundedShopSearch.getSearchTerm().length();
+        int highlightAfterKeywordEndIndex = boundedShopSearch.getKeyword().length();
+
+        highlightedTitle.setSpan(
+                new TextAppearanceSpan(context, R.style.searchTextHiglight),
+                highlightAfterKeywordStartIndex, highlightAfterKeywordEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void setSubtitle() {
+        location.setText(boundedShopSearch.getLocation());
+    }
+
+    private void loadImageIntoShopAvatar() {
+        ImageHandler.loadImageCircle2(context, shopAvatar, boundedShopSearch.getImageUrl());
+    }
+
+    private void setBadgesOfficialStoreIfOfficial() {
+        if(boundedShopSearch.isOfficial()){
             badgesOfficialStore.setVisibility(View.VISIBLE);
         } else {
             badgesOfficialStore.setVisibility(View.GONE);
         }
+    }
 
-        location.setText(element.getLocation());
-
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AutoCompleteTracking.eventClickShopSearch(
-                        itemView.getContext(),
-                        String.format(
-                                "keyword: %s - shop: %s - applink: %s",
-                                element.getSearchTerm(),
-                                element.getKeyword(),
-                                element.getApplink()
-                        ),
-                        tabName
-                );
-                listener.onItemClicked(element.getApplink(), element.getUrl());
-            }
-        });
-
-        iconCopyTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.copyTextToSearchView(element.getKeyword());
-            }
+    private void setItemViewOnClickListener() {
+        itemView.setOnClickListener(v -> {
+            AutoCompleteTracking.eventClickShopSearch(
+                    itemView.getContext(),
+                    String.format(
+                            "keyword: %s - shop: %s - applink: %s",
+                            boundedShopSearch.getSearchTerm(),
+                            boundedShopSearch.getKeyword(),
+                            boundedShopSearch.getApplink()
+                    ),
+                    tabName
+            );
+            listener.onItemClicked(boundedShopSearch.getApplink(), boundedShopSearch.getUrl());
         });
     }
 
-    private int indexOfSearchQuery(String displayName, String searchTerm) {
-        if (!TextUtils.isEmpty(searchTerm)) {
-            return displayName.toLowerCase(Locale.getDefault()).indexOf(searchTerm.toLowerCase(Locale.getDefault()));
-        }
-        return -1;
+    private void setIconCopyTextViewOnClickListener() {
+        iconCopyTextView.setOnClickListener(v -> listener.copyTextToSearchView(boundedShopSearch.getKeyword()));
     }
 }
