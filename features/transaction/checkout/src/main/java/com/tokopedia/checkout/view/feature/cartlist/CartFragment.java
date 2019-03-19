@@ -1581,10 +1581,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     }
                 }*/
 
+                // ON_NEXT AFTER CHOOSE PROMO
                 PromoStackingData promoStackingData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 if (promoStackingData != null) {
                     cartAdapter.updateItemPromoStackVoucher(promoStackingData);
-                    if (promoStackingData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
+                    if (promoStackingData.getTypePromo() == PromoStackingData.CREATOR.getTYPE_VOUCHER()) {
                         sendAnalyticsOnViewPromoManualApply("voucher");
                     } else {
                         sendAnalyticsOnViewPromoManualApply("coupon");

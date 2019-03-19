@@ -11,6 +11,7 @@ import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCa
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.cancelpromo.ResponseCancelPromo
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.domain.DetailCouponMarkeplaceModel
 import com.tokopedia.usecase.RequestParams
@@ -64,8 +65,8 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                 view.hideProgressLoading()
 
                 val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
-                if (responseGetPromoStack.data.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED) {
-                    view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message?.text))
+                if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerCheckoutView.State.FAILED) {
+                    view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message.text))
                 } else {
                     view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
                 }

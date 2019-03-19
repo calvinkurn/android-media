@@ -10,6 +10,7 @@ val GREEN = "green"
 val EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
 
 val MERCHANT = "merchant_voucher"
+val GLOBAL = "global"
 
 fun String?.mapToStatePromoCheckout() : TickerCheckoutView.State{
     when(this){
@@ -21,17 +22,17 @@ fun String?.mapToStatePromoCheckout() : TickerCheckoutView.State{
 }
 
 fun String?.mapToStatePromoStackingCheckout() : TickerPromoStackingCheckoutView.State{
-    when(this){
-        RED_STATE -> return TickerPromoStackingCheckoutView.State.FAILED
-        GREY -> return TickerPromoStackingCheckoutView.State.INACTIVE
-        GREEN -> return TickerPromoStackingCheckoutView.State.ACTIVE
-        else -> return TickerPromoStackingCheckoutView.State.EMPTY
+    return when(this){
+        RED_STATE -> TickerPromoStackingCheckoutView.State.FAILED
+        GREY -> TickerPromoStackingCheckoutView.State.INACTIVE
+        GREEN -> TickerPromoStackingCheckoutView.State.ACTIVE
+        else -> TickerPromoStackingCheckoutView.State.EMPTY
     }
 }
 
 fun String?.mapToVariantPromoStackingCheckout() : TickerPromoStackingCheckoutView.Variant{
-    when(this){
-        MERCHANT -> return TickerPromoStackingCheckoutView.Variant.MERCHANT
-        else -> return TickerPromoStackingCheckoutView.Variant.GLOBAL
+    return when(this){
+        MERCHANT -> TickerPromoStackingCheckoutView.Variant.MERCHANT
+        else -> TickerPromoStackingCheckoutView.Variant.GLOBAL
     }
 }

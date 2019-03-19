@@ -19,6 +19,7 @@ import com.tokopedia.promocheckout.common.domain.model.DataVoucher
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.util.mapToVariantPromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -149,10 +150,12 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     override fun onSuccessValidatePromoStacking(data: DataUiModel) {
         val intent = Intent()
-        val typePromo = if (data.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
+        val variant = "global"
+        val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(typePromo, data.codes[0],
                 data.message.text, data.titleDescription,
-                data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
+                data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout(),
+                variant.mapToVariantPromoStackingCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

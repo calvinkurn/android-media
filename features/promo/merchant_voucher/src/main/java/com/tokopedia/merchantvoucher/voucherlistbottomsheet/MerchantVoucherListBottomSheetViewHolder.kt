@@ -5,14 +5,14 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import kotlinx.android.synthetic.main.item_merchant_voucher_used.view.*
 
 /**
  * Created by fwidjaja on 10/03/19.
  */
 class MerchantVoucherListBottomSheetViewHolder(itemView: View,
-                                               onMerchantVoucherViewListener: MerchantVoucherViewUsed.OnMerchantVoucherViewListener?)
+                                               onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener?)
     : AbstractViewHolder<MerchantVoucherViewModel>(itemView) {
 
     companion object {

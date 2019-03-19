@@ -10,9 +10,6 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.model.*
 import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
-import android.content.ClipData
-import android.content.ClipboardManager
-
 
 /*
     Based on CustomVoucherView with predefined parameter and fixed layout.

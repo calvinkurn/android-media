@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -19,9 +21,10 @@ import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
+import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment.Companion.REQUEST_CODE_LOGIN
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
@@ -32,7 +35,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 03/03/19.
  */
 
-open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVoucherListView, MerchantVoucherViewUsed.OnMerchantVoucherViewListener {
+open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVoucherListView, MerchantVoucherView.OnMerchantVoucherViewListener {
 
     @Suppress("DEPRECATION")
     private var loadingUseMerchantVoucher: ProgressDialog? = null
@@ -89,7 +92,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         return false
     }
 
-    override fun onMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+    fun onMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
         context?.let {
             merchantVoucherViewModel.run {
                 this.status = MerchantVoucherStatusTypeDef.TYPE_RUN_OUT
@@ -110,21 +113,22 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
         // merchantVoucherTracking?.clickUseVoucherFromList()
         //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
-        /*if (presenter.isLogin() == false) {
+        if (!presenter.isLogin()) {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         } else if (!presenter.isMyShop(shopId)) {
-            showUseMerchantVoucherLoading();
+            showUseMerchantVoucherLoading()
             presenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode, merchantVoucherViewModel.voucherId)
-        }*/
+        }
+
         //TOGGLE_MVC_OFF
-        activity?.run {
+        /*activity?.run {
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
             snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
             snackbar.setActionTextColor(Color.WHITE)
             snackbar.show()
-        }
+        }*/
     }
 
     fun initInjector() {

@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.
 
 
 class TickerPromoStackingCheckoutView @JvmOverloads constructor(
-        context: Context, val attrs: AttributeSet? = null, val defStyleAttr: Int = 0
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val IMAGE_ALPHA_DISABLED = 128
@@ -94,7 +94,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         }
     }
 
-    fun resetView() {
+    private fun resetView() {
         state = State.EMPTY
     }
 
@@ -160,14 +160,16 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         title_button_coupon.setText(R.string.promo_merchant_title)
     }
 
-    public fun setViewDisabled() {
-        val nonActiveTextColor = ContextCompat.getColor(context, R.color.promo_checkout_grey_nonactive_text)
-        title_button_coupon.setTextColor(nonActiveTextColor)
-        title_action_coupon.setTextColor(nonActiveTextColor)
-        setImageFilterGrayScale()
+    private fun setViewDisabled() {
+        if (variant != Variant.GLOBAL) {
+            val nonActiveTextColor = ContextCompat.getColor(context, R.color.promo_checkout_grey_nonactive_text)
+            title_button_coupon.setTextColor(nonActiveTextColor)
+            title_action_coupon.setTextColor(nonActiveTextColor)
+            setImageFilterGrayScale()
+        }
     }
 
-    public fun setViewEnabled() {
+    private fun setViewEnabled() {
         title_button_coupon.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green))
         title_action_coupon.setTextColor(ContextCompat.getColor(context, R.color.black_70))
         setImageFilterNormal()
@@ -199,13 +201,13 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         return R.layout.layout_checkout_ticker_promostacking
     }
 
-    enum class Variant(val variant: String) : Parcelable {
+    enum class Variant(val id: Int) : Parcelable {
 
-        GLOBAL("global"),
-        MERCHANT("merchant");
+        GLOBAL(0),
+        MERCHANT(1);
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(variant)
+            parcel.writeInt(id)
         }
 
         override fun describeContents(): Int {
@@ -221,6 +223,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
                 return arrayOfNulls(size)
             }
         }
+
 
     }
 
