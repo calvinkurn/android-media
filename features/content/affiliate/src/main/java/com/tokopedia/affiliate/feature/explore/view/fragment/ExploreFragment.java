@@ -92,7 +92,8 @@ public class ExploreFragment
         SwipeToRefresh.OnRefreshListener,
         FilterAdapter.OnFilterClickedListener {
 
-    private static final String TAG_SHOWCASE = ExploreActivity.class.getName() + ".bottomNavigation";
+    private static final String TAG_SHOWCASE = ExploreActivity.class.getName() +
+            ".bottomNavigation";
     private static final String PRODUCT_ID_PARAM = "{product_id}";
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
@@ -245,7 +246,8 @@ public class ExploreFragment
     private void initProfileSection() {
         //init image
         if (userSession.isLoggedIn()) {
-            ImageHandler.loadImageCircle2(getActivity(), ivProfile, userSession.getProfilePicture(), R.drawable.loading_page);
+            ImageHandler.loadImageCircle2(getActivity(), ivProfile,
+                    userSession.getProfilePicture(), R.drawable.loading_page);
         }
 
         if (getActivity() == null) {
@@ -347,9 +349,9 @@ public class ExploreFragment
                     adapter.addElement(new LoadingMoreModel());
                     presenter.loadMoreData(exploreParams);
                 }
-                if (layoutManager.findFirstCompletelyVisibleItemPosition() > FULL_SPAN_COUNT){
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() > FULL_SPAN_COUNT) {
                     btnBackToTop.show();
-                }else{
+                } else {
                     btnBackToTop.hide();
                 }
 
@@ -444,7 +446,7 @@ public class ExploreFragment
     @Override
     public void onProductClicked(ExploreCardViewModel model) {
         affiliateAnalytics.onProductClicked(model.getProductId());
-        if (getContext() != null &&  isCanDoAction) {
+        if (getContext() != null && isCanDoAction) {
             RouteManager.route(
                     getContext(),
                     ApplinkConst.AFFILIATE_PRODUCT
@@ -487,7 +489,7 @@ public class ExploreFragment
 
     private void populateFirstData(List<Visitable<?>> itemList, String cursor) {
         itemList.add(0, getDummyPopularProfile());
-        rvExplore.scrollTo(0,0);
+        rvExplore.scrollTo(0, 0);
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) {
@@ -502,21 +504,35 @@ public class ExploreFragment
     //TODO milhamj delete this
     private PopularProfileViewModel getDummyPopularProfile() {
         ArrayList<PopularProfileChildViewModel> list = new ArrayList<>();
-        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
-        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
-        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
-        list.add(new PopularProfileChildViewModel("", "https://ca.slack-edge.com/T038RGMSP-U2WPGER2T-0faadc531b0a-72"));
+        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+        list.add(new PopularProfileChildViewModel("", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U2WPGER2T-0faadc531b0a-72"));
         list.add(new PopularProfileChildViewModel("Febby Mulia", ""));
-        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
-        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
-        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
-        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
-        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
-        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
-        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge.com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
-        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge.com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
-        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
-        return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling berjasa", "Dimulai dari Tokopedia"));
+        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+        list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+        list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+        list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+        return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling " +
+                "berjasa", "Dimulai dari Tokopedia"));
     }
 
     private void saveFirstDataToLocal(List<Visitable<?>> sections,
@@ -556,9 +572,11 @@ public class ExploreFragment
         if (remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_EXPLORE_ENABLE_FILTER, true)) {
             //TODO milhamj
 //            layoutFilter.setVisibility(View.VISIBLE);
-//            rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+//            rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(),
+// LinearLayoutManager.HORIZONTAL, false));
 //            if (filterAdapter == null) {
-//                filterAdapter = new FilterAdapter(filterList, getFilterClickedListener(), R.layout.item_explore_filter_child);
+//                filterAdapter = new FilterAdapter(filterList, getFilterClickedListener(), R
+// .layout.item_explore_filter_child);
 //            } else {
 //                filterAdapter.clearAllData();
 //                filterAdapter.setList(filterList);
@@ -566,8 +584,10 @@ public class ExploreFragment
 //            rvFilter.setAdapter(filterAdapter);
 //            btnFilterMore.setOnClickListener(v -> {
 //                Bundle bundle = new Bundle();
-//                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
-//                startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
+//                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>
+// (filterAdapter.getAllFilterList()));
+//                startActivityForResult(FilterActivity.getIntent(getActivity(), bundle),
+// REQUEST_DETAIL_FILTER);
 //            });
         }
     }
@@ -581,9 +601,11 @@ public class ExploreFragment
             exploreParams.setSort(sortList.get(0));
             sortButton.setButton2OnClickListener(view -> {
                 Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST, new ArrayList<>(sortList));
+                bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST,
+                        new ArrayList<>(sortList));
                 bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
-                startActivityForResult(SortActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_SORT);
+                startActivityForResult(SortActivity.getIntent(getActivity(), bundle),
+                        REQUEST_DETAIL_SORT);
             });
         } else {
             sortButton.setVisibility(View.GONE);
@@ -739,18 +761,28 @@ public class ExploreFragment
     }
 
     private void goToProfile() {
-        RouteManager.route(
-                getActivity(),
-                ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
+        if (getContext() != null) {
+            RouteManager.route(
+                    getContext(),
+                    ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
+        }
     }
 
     private void goToLogin() {
-        startActivityForResult(
-                RouteManager.getIntent(
-                        getActivity(),
-                        ApplinkConst.LOGIN
-                ),
-                LOGIN_CODE);
+        if (getContext() != null) {
+            startActivityForResult(
+                    RouteManager.getIntent(
+                            getContext(),
+                            ApplinkConst.LOGIN
+                    ),
+                    LOGIN_CODE);
+        }
+    }
+
+    private void goToLink(String url) {
+        if (getContext() != null && !TextUtils.isEmpty(url)) {
+            RouteManager.route(getContext(), url);
+        }
     }
 
     private Dialog buildDialog() {
@@ -824,16 +856,16 @@ public class ExploreFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DETAIL_FILTER) {
-                List<FilterViewModel> currentFilter = new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                List<FilterViewModel> currentFilter =
+                        new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(currentFilter);
                 //TODO milhamj
 //                getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
-            }
-            else if (requestCode == REQUEST_DETAIL_SORT) {
-                SortViewModel selectedSort = data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
+            } else if (requestCode == REQUEST_DETAIL_SORT) {
+                SortViewModel selectedSort =
+                        data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
                 getSortedData(selectedSort);
-            }
-            else if (requestCode == LOGIN_CODE) {
+            } else if (requestCode == LOGIN_CODE) {
                 initProfileSection();
             }
         }
