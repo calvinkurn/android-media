@@ -99,24 +99,24 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
         mPreview = Preview.fromValue(a.getInteger(R.styleable.CameraView_cameraPreview, Preview.DEFAULT.value()));
 
         // Camera controller params
-        Facing facing = Facing.fromValue(a.getInteger(R.styleable.CameraView_cameraFacing, Facing.DEFAULT(context).value()));
-        Flash flash = Flash.fromValue(a.getInteger(R.styleable.CameraView_cameraFlash, Flash.DEFAULT.value()));
-        Grid grid = Grid.fromValue(a.getInteger(R.styleable.CameraView_cameraGrid, Grid.DEFAULT.value()));
-        int gridColor = a.getColor(R.styleable.CameraView_cameraGrid, GridLinesLayout.DEFAULT_COLOR);
-        WhiteBalance whiteBalance = WhiteBalance.fromValue(a.getInteger(R.styleable.CameraView_cameraWhiteBalance, WhiteBalance.DEFAULT.value()));
+        Facing facing = Facing.fromValue(a.getInteger(R.styleable.CameraView_camFacing, Facing.DEFAULT(context).value()));
+        Flash flash = Flash.fromValue(a.getInteger(R.styleable.CameraView_camFlash, Flash.DEFAULT.value()));
+        Grid grid = Grid.fromValue(a.getInteger(R.styleable.CameraView_camGrid, Grid.DEFAULT.value()));
+        int gridColor = a.getColor(R.styleable.CameraView_camGrid, GridLinesLayout.DEFAULT_COLOR);
+        WhiteBalance whiteBalance = WhiteBalance.fromValue(a.getInteger(R.styleable.CameraView_camWhiteBalance, WhiteBalance.DEFAULT.value()));
         Mode mode = Mode.fromValue(a.getInteger(R.styleable.CameraView_cameraMode, Mode.DEFAULT.value()));
-        Hdr hdr = Hdr.fromValue(a.getInteger(R.styleable.CameraView_cameraHdr, Hdr.DEFAULT.value()));
-        Audio audio = Audio.fromValue(a.getInteger(R.styleable.CameraView_cameraAudio, Audio.DEFAULT.value()));
-        VideoCodec codec = VideoCodec.fromValue(a.getInteger(R.styleable.CameraView_cameraVideoCodec, VideoCodec.DEFAULT.value()));
+        Hdr hdr = Hdr.fromValue(a.getInteger(R.styleable.CameraView_camHdr, Hdr.DEFAULT.value()));
+        Audio audio = Audio.fromValue(a.getInteger(R.styleable.CameraView_camAudio, Audio.DEFAULT.value()));
+        VideoCodec codec = VideoCodec.fromValue(a.getInteger(R.styleable.CameraView_camVideoCodec, VideoCodec.DEFAULT.value()));
         long videoMaxSize = (long) a.getFloat(R.styleable.CameraView_cameraVideoMaxSize, 0);
         int videoMaxDuration = a.getInteger(R.styleable.CameraView_cameraVideoMaxDuration, 0);
         int videoBitRate = a.getInteger(R.styleable.CameraView_cameraVideoBitRate, 0);
-        int audioBitRate = a.getInteger(R.styleable.CameraView_cameraAudioBitRate, 0);
+        int audioBitRate = a.getInteger(R.styleable.CameraView_camAudioBitRate, 0);
 
         // Picture size selector
         List<SizeSelector> pictureConstraints = new ArrayList<>(3);
-        if (a.hasValue(R.styleable.CameraView_cameraPictureSizeMinWidth)) {
-            pictureConstraints.add(SizeSelectors.minWidth(a.getInteger(R.styleable.CameraView_cameraPictureSizeMinWidth, 0)));
+        if (a.hasValue(R.styleable.CameraView_camPictureSizeMinWidth)) {
+            pictureConstraints.add(SizeSelectors.minWidth(a.getInteger(R.styleable.CameraView_camPictureSizeMinWidth, 0)));
         }
         if (a.hasValue(R.styleable.CameraView_cameraPictureSizeMaxWidth)) {
             pictureConstraints.add(SizeSelectors.maxWidth(a.getInteger(R.styleable.CameraView_cameraPictureSizeMaxWidth, 0)));
@@ -175,11 +175,11 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
                 SizeSelectors.biggest();
 
         // Gestures
-        GestureAction tapGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_cameraGestureTap, GestureAction.DEFAULT_TAP.value()));
-        GestureAction longTapGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_cameraGestureLongTap, GestureAction.DEFAULT_LONG_TAP.value()));
-        GestureAction pinchGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_cameraGesturePinch, GestureAction.DEFAULT_PINCH.value()));
-        GestureAction scrollHorizontalGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_cameraGestureScrollHorizontal, GestureAction.DEFAULT_SCROLL_HORIZONTAL.value()));
-        GestureAction scrollVerticalGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_cameraGestureScrollVertical, GestureAction.DEFAULT_SCROLL_VERTICAL.value()));
+        GestureAction tapGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_camGestureTap, GestureAction.DEFAULT_TAP.value()));
+        GestureAction longTapGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_camGestureLongTap, GestureAction.DEFAULT_LONG_TAP.value()));
+        GestureAction pinchGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_camGesturePinch, GestureAction.DEFAULT_PINCH.value()));
+        GestureAction scrollHorizontalGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_camGestureScrollHorizontal, GestureAction.DEFAULT_SCROLL_HORIZONTAL.value()));
+        GestureAction scrollVerticalGesture = GestureAction.fromValue(a.getInteger(R.styleable.CameraView_camGestureScrollVertical, GestureAction.DEFAULT_SCROLL_VERTICAL.value()));
 
         a.recycle();
 

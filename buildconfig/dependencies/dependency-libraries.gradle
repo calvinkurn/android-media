@@ -69,6 +69,7 @@ ext {
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
             videoRecorder     : ":libraries:video_recorder",
+            videouploader     : ":libraries:videouploader",
             webview           : ":libraries:webview",
             websocket         : ":libraries:websocket",
             williamchart      : ":libraries:williamchart",
@@ -80,8 +81,8 @@ ext {
             track             : ":libraries:track",
             trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
-//            iris              : ":libraries:iris",
-            iris              : ":libraries:iris_no_op",
+            iris              : ":libraries:iris",
+//            iris              : ":libraries:iris_no_op",
             banner            : ":libraries:banner"
     ]
 }

@@ -11,7 +11,7 @@ public class RequestParams {
 
     private final HashMap<String, Object> parameters = new HashMap<>();
 
-    private RequestParams() {
+    public RequestParams() {
     }
 
     public static RequestParams create() {
