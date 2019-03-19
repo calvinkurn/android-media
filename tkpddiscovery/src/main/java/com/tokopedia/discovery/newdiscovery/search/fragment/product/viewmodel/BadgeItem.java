@@ -39,6 +39,12 @@ public class BadgeItem implements Parcelable {
     public BadgeItem() {
     }
 
+    public BadgeItem(String imageUrl, String title, boolean isShown) {
+        this.imageUrl = imageUrl;
+        this.title = title;
+        this.isShown = isShown;
+    }
+
     @Override
     public int describeContents() {
         return 0;

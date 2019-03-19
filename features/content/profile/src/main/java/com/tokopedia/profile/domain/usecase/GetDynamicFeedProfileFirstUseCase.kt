@@ -48,7 +48,6 @@ class GetDynamicFeedProfileFirstUseCase
 
 
     private fun getDynamicFeed(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
-        getDynamicFeedUseCase.queryRaw = R.raw.query_feed_profile_dynamic
         return getDynamicFeedUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
     }
 

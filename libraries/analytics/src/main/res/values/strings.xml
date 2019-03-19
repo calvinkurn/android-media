@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">libraries/analytics</string>
+    <string name="analytics_debugger_label_search">Search</string>
 </resources>
