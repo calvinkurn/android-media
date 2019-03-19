@@ -63,7 +63,6 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private Context context;
     private TextView title;
     private TextView seeMore;
-    private CardView seeMoreContainer;
     private ImageView headerBg;
     private CountDownView countDownView;
     private HomeCategoryListener listener;
@@ -82,7 +81,6 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         title = itemView.findViewById(R.id.title);
         title.setSelected(true);
         seeMore = itemView.findViewById(R.id.see_more);
-        seeMoreContainer = itemView.findViewById(R.id.see_more_container);
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(itemAdapter);
@@ -127,9 +125,9 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
             countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
-                seeMoreContainer.setVisibility(View.VISIBLE);
+                seeMore.setVisibility(View.VISIBLE);
             } else {
-                seeMoreContainer.setVisibility(View.GONE);
+                seeMore.setVisibility(View.GONE);
             }
             seeMore.setOnClickListener(new View.OnClickListener() {
                 @Override

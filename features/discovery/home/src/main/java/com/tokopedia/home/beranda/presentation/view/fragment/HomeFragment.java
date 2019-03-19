@@ -127,15 +127,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private UserSessionInterface userSession;
     private View fragmentRootView;
     private RecyclerView recyclerView;
-    private TabLayout tabLayout;
     private CoordinatorLayout root;
-    private SectionContainer tabContainer;
     private ToggleableSwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
     private RemoteConfig firebaseRemoteConfig;
     private PerformanceMonitoring performanceMonitoring;
     private SnackbarRetry messageSnackbar;
-    private String[] tabSectionTitle;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
@@ -145,6 +142,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private CollapsingTabLayout homeFeedsTabLayout;
     private AppBarLayout appBarLayout;
     private HomeFeedPagerAdapter homeFeedPagerAdapter;
+    private View viewFeedShadow;
     private int lastOffset;
     private int fragmentHeight;
     private int actionBarHeight;
@@ -236,6 +234,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        viewFeedShadow = view.findViewById(R.id.view_feed_shadow);
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
         statusBarBackground.setBackground(new ColorDrawable(
                 ContextCompat.getColor(getActivity(), R.color.green_600)
@@ -244,8 +243,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
-        tabLayout = view.findViewById(R.id.tabs);
-        tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
         homeFeedsViewPager = view.findViewById(R.id.view_pager_home_feeds);
@@ -337,7 +334,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         presenter.onFirstLaunch();
-        initTabNavigation();
         initAdapter();
         initRefreshLayout();
         initAppBarScrollListener();
@@ -418,16 +414,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         appBarLayout.setExpanded(false, true);
         homeFeedsTabLayout.resetCollapseState();
         scrollToRecommendList = false;
-    }
-
-    private void initTabNavigation() {
-        tabSectionTitle = getResources().getStringArray(R.array.section_title);
-        TypedArray icons = getResources().obtainTypedArray(R.array.section_icon);
-        for (int i = 0; i < tabSectionTitle.length; i++) {
-            TabLayout.Tab tab = tabLayout.newTab();
-            tab.setIcon(icons.getResourceId(i, R.drawable.ic_beli));
-            tabLayout.addTab(tab);
-        }
     }
 
     @Override
@@ -518,11 +504,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (isAppBarFullyCollapsed(offset) &&
                         homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
                     homeMainToolbar.hideShadow();
+                    viewFeedShadow.setVisibility(View.VISIBLE);
                 }
 
                 if (!isAppBarFullyCollapsed(offset) &&
                         homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
                     homeMainToolbar.showShadow();
+                    viewFeedShadow.setVisibility(View.INVISIBLE);
                 }
 
                 if (isAppBarFullyExpanded(offset)) {
@@ -1350,6 +1338,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (homeMainToolbar != null) {
             homeMainToolbar.setNotificationNumber(notificationCount);
             homeMainToolbar.setInboxNumber(inboxCount);
+        }
+    }
+
+    @Override
+    public void onTokopointCheckNowClicked(String applink) {
+        if (TextUtils.isEmpty(applink)) {
+            return;
+        }
+
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof IHomeRouter
+                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(applink)) {
+            openApplink(applink);
+        } else {
+            openWebViewURL(applink, getContext());
         }
     }
 }

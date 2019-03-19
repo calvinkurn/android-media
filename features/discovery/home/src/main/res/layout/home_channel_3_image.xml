@@ -6,22 +6,20 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         android:background="@color/white"
-        android:paddingTop="@dimen/dp_8">
+        android:padding="@dimen/page_margin">
 
         <TextView
             android:id="@+id/home_channel_title"
             style="@style/TextView.Title"
-            android:textSize="@dimen/sp_18"
             android:layout_centerVertical="true"
             android:maxEms="12"
-            android:paddingLeft="@dimen/page_margin"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8"
+            android:textSize="@dimen/sp_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Sprint Sale" />
 
         <com.tokopedia.design.countdown.CountDownView
@@ -30,8 +28,14 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_toRightOf="@id/home_channel_title"
-            app:coundDownBackgroud="@drawable/background_countdown" />
+            app:coundDownBackgroud="@drawable/background_countdown"
+            app:layout_constraintBottom_toBottomOf="@+id/home_channel_title"
+            app:layout_constraintStart_toEndOf="@+id/home_channel_title"
+            app:layout_constraintTop_toTopOf="@+id/home_channel_title"
+            tools:layout_height="40dp"
+            tools:layout_width="100dp" />
 
         <TextView
             android:id="@+id/see_all_button"
@@ -43,15 +47,14 @@
             android:gravity="end"
             android:lineSpacingExtra="3sp"
             android:paddingLeft="@dimen/page_margin"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingRight="@dimen/page_margin"
-            android:paddingBottom="@dimen/dp_8"
             android:text="@string/lihat_semua"
             android:textColor="@color/medium_green"
             android:textSize="13sp"
-            android:textStyle="normal" />
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/home_channel_title"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycleList"

@@ -157,7 +157,7 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private OnClickListener onCheckNowListener() {
-        return v -> RouteManager.route(getContext(), ApplinkConst.LOGIN);
+        return v -> listener.onTokopointCheckNowClicked(ApplinkConst.LOGIN);
     }
 
     private void viewListener() {

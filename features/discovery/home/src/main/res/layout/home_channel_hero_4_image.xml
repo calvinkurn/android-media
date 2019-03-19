@@ -1,41 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/padding_ms">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/channel_title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="@dimen/page_margin">
+        android:padding="@dimen/page_margin"
+        >
 
         <TextView
             android:id="@+id/channel_title"
             style="@style/TextView.Title"
-            android:textSize="@dimen/sp_18"
             android:layout_centerVertical="true"
             android:maxEms="12"
+            android:textSize="@dimen/sp_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Hypebeast Banget Pokoknya" />
 
         <TextView
             android:id="@+id/see_all_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="end"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="end"
             android:lineSpacingExtra="3sp"
             android:text="@string/lihat_semua"
             android:textColor="@color/medium_green"
             android:textSize="13sp"
-            android:textStyle="normal" />
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/channel_title"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
