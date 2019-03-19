@@ -391,6 +391,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (!viewModel.isUserSessionActive()) {
                 //do tracking
                 normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
+                //do login
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN)
             } else {
                 addToCart()
             }
