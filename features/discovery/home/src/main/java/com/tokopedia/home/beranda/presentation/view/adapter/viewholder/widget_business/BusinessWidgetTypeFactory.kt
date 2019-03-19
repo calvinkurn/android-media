@@ -16,7 +16,7 @@ class BusinessWidgetTypeFactory(private val listener: BusinessUnitItemView) : Ba
             1 -> SizeSmallBusinessViewHolder.LAYOUT
             2 -> SizeMiddleBusinessViewHolder.LAYOUT
             3 -> SizeLargeBusinessViewHolder.LAYOUT
-            else -> DefaultBusinessViewHolder.LAYOUT
+            else -> SizeSmallBusinessViewHolder.LAYOUT
         }
     }
 
