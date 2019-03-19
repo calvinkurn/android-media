@@ -6,8 +6,8 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/dp_52"
+        android:layout_height="@dimen/dp_52"
         android:layout_gravity="center"
         app:srcCompat="@drawable/ic_squircle" />
 
