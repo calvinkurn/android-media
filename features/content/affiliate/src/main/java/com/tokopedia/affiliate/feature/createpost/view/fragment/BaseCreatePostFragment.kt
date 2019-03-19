@@ -319,7 +319,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.afterTextChanged {
             viewModel.caption = it
-            updateMaxCharacter()
         }
         addVideoBtn.setOnClickListener {
             goToVideoPicker()

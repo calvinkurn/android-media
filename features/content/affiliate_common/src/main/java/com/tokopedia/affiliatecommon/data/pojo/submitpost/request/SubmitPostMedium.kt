@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class SubmitPostMedium(
+        @SerializedName("id")
+        @Expose
+        var id: String = "",
         @SerializedName("mediaURL")
         @Expose
         var mediaURL: String = "",
