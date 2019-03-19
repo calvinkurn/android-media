@@ -13,7 +13,6 @@ public interface ProductListener extends EmptyStateListener {
 
     void onLongClick(ProductItem item, int adapterPosition);
 
-
     void onWishlistButtonClicked(final ProductItem productItem);
 
     void onSuggestionClicked(String suggestedQuery);
@@ -23,4 +22,6 @@ public interface ProductListener extends EmptyStateListener {
     void onRelatedSearchClicked(String keyword);
 
     void onQuickFilterSelected(Option option);
+
+    boolean isQuickFilterSelected(Option option);
 }

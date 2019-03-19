@@ -92,7 +92,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private boolean isUsingBottomSheetFilter;
 
     protected SearchParameter searchParameter;
-    protected FilterController filterController;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

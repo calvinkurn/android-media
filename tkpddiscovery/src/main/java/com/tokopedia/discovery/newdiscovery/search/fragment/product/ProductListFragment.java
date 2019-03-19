@@ -117,6 +117,8 @@ public class ProductListFragment extends SearchSectionFragment
     private ShowCaseDialog showCaseDialog;
     private PerformanceMonitoring performanceMonitoring;
 
+    private FilterController filterController = new FilterController();
+
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
@@ -150,7 +152,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void initFilterControllerForQuickFilterIfExists() {
         if(isProductViewModelHasQuickFilter()) {
-            filterController = new FilterController();
             filterController.initFilterController(searchParameter.getSearchParameterHashMap(), productViewModel.getQuickFilterModel().getFilter());
         }
     }
@@ -577,45 +578,29 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public boolean isQuickFilterSelected(Option option) {
+        return filterController.getFlagFilterHelperValue(option.getKey());
+    }
+
+    @Override
     public void onQuickFilterSelected(Option option) {
         boolean isQuickFilterSelected = !Boolean.parseBoolean(option.getInputState());
-        if (getFlagFilterHelper() == null) {
-            setFlagFilterHelper(new FilterFlagSelectedModel());
-            getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
-            getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
-        }
 
-        if (isQuickFilterSelected) {
-            getFlagFilterHelper().getSavedCheckedState().put(option.getUniqueId(), true);
-        } else {
-            getFlagFilterHelper().getSavedCheckedState().remove(option.getUniqueId());
-        }
+        setFilterToController(option, isQuickFilterSelected);
+        applyFilterToSearchParameter(filterController.getFilterParameter());
 
-        if (getSelectedFilter() == null) {
-            setSelectedFilter(new HashMap<String, String>());
-        }
-        String mapValue = getSelectedFilter().get(option.getKey());
-        if (TextUtils.isEmpty(mapValue)) {
-            mapValue = option.getValue();
-        } else if (isQuickFilterSelected) {
-            mapValue += "," + option.getValue();
-        } else {
-            mapValue = removeValue(mapValue, option.getValue());
-        }
-        getSelectedFilter().put(option.getKey(), mapValue);
         clearDataFilterSort();
-        if (option.isCategoryOption()) {
-            if (isQuickFilterSelected) {
-                getSearchParameter().set(SearchApiConst.SC, option.getValue());
-            } else {
-                getSearchParameter().remove(SearchApiConst.SC);
-            }
-        }
-        if (option.isOfficialOption()) {
-            getSearchParameter().set(SearchApiConst.OFFICIAL, String.valueOf(isQuickFilterSelected));
-        }
         reloadData();
+
         UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
+    }
+
+    private void setFilterToController(Option option, boolean isQuickFilterSelected) {
+        if(option.isCategoryOption()) {
+            filterController.setFilterValueExpandableItem(option, false);
+        }
+
+        filterController.setFilterValueExpandableItem(option, isQuickFilterSelected);
     }
 
     @Override

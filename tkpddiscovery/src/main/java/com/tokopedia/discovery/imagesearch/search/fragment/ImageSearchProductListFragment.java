@@ -630,6 +630,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public boolean isQuickFilterSelected(Option option) {
+        return false;
+    }
+
+    @Override
     public void onQuickFilterSelected(Option option) {
 
     }

@@ -29,7 +29,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Gu
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
-import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
@@ -250,27 +249,24 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private static class QuickFilterItemViewHolder extends RecyclerView.ViewHolder {
         private TextView quickFilterText;
-        private final ProductListener clickListener;
+        private final ProductListener quickFilterListener;
 
-        public QuickFilterItemViewHolder(View itemView, ProductListener clickListener) {
+        public QuickFilterItemViewHolder(View itemView, ProductListener quickFilterListener) {
             super(itemView);
             quickFilterText = itemView.findViewById(R.id.quick_filter_text);
-            this.clickListener = clickListener;
+            this.quickFilterListener = quickFilterListener;
         }
 
         public void bind(final Option option) {
             quickFilterText.setText(option.getName());
-            if (Boolean.parseBoolean(option.getInputState())) {
+
+            if (quickFilterListener.isQuickFilterSelected(option)) {
                 quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
             } else {
                 quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
             }
-            quickFilterText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    clickListener.onQuickFilterSelected(option);
-                }
-            });
+
+            quickFilterText.setOnClickListener(view -> quickFilterListener.onQuickFilterSelected(option));
         }
     }
 
