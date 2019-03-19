@@ -85,7 +85,7 @@ public class SpotlightItemViewModel {
                 "event", "promoClick",
                 "eventCategory", "homepage",
                 "eventAction", "click on banner spotlight",
-                "eventLabel", "",
+                "eventLabel", title,
                 "ecommerce", DataLayer.mapOf(
                         "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
@@ -98,8 +98,7 @@ public class SpotlightItemViewModel {
                                         )
                                 )
                         )
-                ),
-                "attribution", ""
+                )
         );
     }
 }

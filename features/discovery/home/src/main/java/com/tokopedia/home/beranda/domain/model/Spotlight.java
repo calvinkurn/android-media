@@ -50,15 +50,8 @@ public class Spotlight {
                                         list.toArray(new Object[list.size()])
                                 )
                         )
-                ),
-                "attribution", getHomeAttribution(position + 1, "")
+                )
         );
-    }
-
-    private String getHomeAttribution(int position, String creativeName) {
-        if (homeAttribution != null)
-            return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
-        return "";
     }
 
     private List<Object> convertPromoEnhanceSpotlight() {
