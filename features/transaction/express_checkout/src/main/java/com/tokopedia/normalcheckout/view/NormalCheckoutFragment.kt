@@ -470,6 +470,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?) -> Unit),
                           onRetryWhenError: (() -> Unit)) {
         val selectedVariant = selectedVariantId
+        val selectedWarehouseId: Int = viewModel.selectedwarehouse?.warehouseInfo?.id?.toInt() ?: 0
         showLoadingDialog()
         router.addToCartProduct(AddToCartRequest.Builder()
             .productId(if (selectedVariant != null && selectedVariant.toInt() > 0) {
@@ -482,6 +483,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             .shopId(shopId?.toInt() ?: 0)
             .trackerAttribution(trackerAttribution)
             .trackerListName(trackerListName)
+            .warehouseId(selectedWarehouseId)
             .build(), oneClickShipment)
             .subscribeOn(Schedulers.io())
             .unsubscribeOn(Schedulers.io())
