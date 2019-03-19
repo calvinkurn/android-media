@@ -5,8 +5,8 @@ import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.Category
-import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.Category
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp

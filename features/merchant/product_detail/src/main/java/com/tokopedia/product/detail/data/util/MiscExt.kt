@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.detail.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
 inline fun <reified T> GraphqlResponse.getSuccessData(): T {
     val error = getError(T::class.java)

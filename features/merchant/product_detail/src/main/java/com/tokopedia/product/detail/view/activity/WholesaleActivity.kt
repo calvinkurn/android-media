@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Wholesale
+import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.view.adapter.WholesaleAdapter
 import kotlinx.android.synthetic.main.activity_wholesale_detail.*
 

@@ -2,16 +2,16 @@ package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.ProductOther
-import com.tokopedia.product.detail.common.data.model.Rating
-import com.tokopedia.product.detail.common.data.model.WishlistCount
+import com.tokopedia.product.detail.common.data.model.product.ProductOther
+import com.tokopedia.product.detail.common.data.model.product.Rating
+import com.tokopedia.product.detail.common.data.model.product.WishlistCount
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
-import com.tokopedia.product.detail.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 
 data class ProductInfoP2(
         var shopInfo: ShopInfo? = null,

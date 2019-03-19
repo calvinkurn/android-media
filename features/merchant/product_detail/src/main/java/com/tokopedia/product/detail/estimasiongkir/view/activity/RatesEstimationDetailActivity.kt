@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.product.detail.data.util.LABEL_GRAM
 import com.tokopedia.product.detail.estimasiongkir.data.constant.RatesEstimationConstant
 import com.tokopedia.product.detail.estimasiongkir.di.RatesEstimationModule
 import com.tokopedia.product.detail.estimasiongkir.di.RatesEstimationComponent
@@ -20,7 +19,11 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
         val shopDomain = intent.getStringExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN)
         val weight = intent.getFloatExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
         val weightUnit = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT)
-        return RatesEstimationDetailFragment.createInstance(shopDomain, weight, weightUnit)
+
+        return RatesEstimationDetailFragment.createInstance(shopDomain, weight, weightUnit,
+                if (intent.hasExtra(RatesEstimationConstant.PARAM_ORIGIN))
+                    intent.getStringExtra(RatesEstimationConstant.PARAM_ORIGIN)
+                else null)
     }
 
     override fun getComponent(): RatesEstimationComponent {
@@ -32,11 +35,12 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
     companion object {
 
         @JvmStatic
-        fun createIntent(context: Context, shopDomain: String, productWeight: Float, productWeightUnit: String): Intent {
+        fun createIntent(context: Context, shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String?): Intent {
             return Intent(context, RatesEstimationDetailActivity::class.java)
                     .putExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                     .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                     .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
+                    .putExtra(RatesEstimationConstant.PARAM_ORIGIN, origin)
         }
     }
 }

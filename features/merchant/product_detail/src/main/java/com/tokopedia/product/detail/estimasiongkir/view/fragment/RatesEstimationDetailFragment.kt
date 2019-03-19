@@ -46,6 +46,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
     private var shopDomain: String = ""
     private var productWeightUnit: String = LABEL_GRAM
     private var productWeight: Float = 0f
+    private var origin: String? = null
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -84,6 +85,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
             productWeightUnit = it.getString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, LABEL_GRAM)
             productWeight = it.getFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
             productWeight
+            origin = it.getString(RatesEstimationConstant.PARAM_ORIGIN)
         }
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -99,7 +101,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
         val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight/1000)
-        viewModel.getCostEstimation(weightInKg, shopDomain)
+        viewModel.getCostEstimation(weightInKg, shopDomain, origin)
     }
 
     private fun setViewState(viewLoading: Int) {
@@ -158,12 +160,14 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
 
-        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String) = RatesEstimationDetailFragment().apply {
-            arguments = Bundle().apply {
-                putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
-                putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
-                putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
-            }
-        }
+        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null) =
+                RatesEstimationDetailFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
+                        putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
+                        putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
+                        putString(RatesEstimationConstant.PARAM_ORIGIN, origin)
+                    }
+                }
     }
 }

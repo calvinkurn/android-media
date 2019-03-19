@@ -15,8 +15,9 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Campaign
-import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.Campaign
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
@@ -140,6 +141,23 @@ class PartialHeaderView private constructor(private val view: View,
                     campaign.originalPrice.getCurrencyFormatted())
             sale_text_stock_available.gone()
             text_stock_available.visible()
+        }
+    }
+
+    fun updateStockAndPriceWarehouse(nearestWarehouse: MultiOriginWarehouse, campaign: Campaign) {
+        with(view) {
+            if (campaign.activeAndHasId) {
+                val discountedPrice = (100 - campaign.percentage) * nearestWarehouse.price
+                tv_price_pdp.text = context.getString(R.string.template_price, "",
+                        discountedPrice.getCurrencyFormatted())
+                text_original_price.text = context.getString(R.string.template_price, "",
+                        nearestWarehouse.price.getCurrencyFormatted())
+                sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
+            } else {
+                tv_price_pdp.text = context.getString(R.string.template_price, "",
+                        nearestWarehouse.price.getCurrencyFormatted())
+                text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
+            }
         }
     }
 }
