@@ -160,7 +160,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     override fun onReloadButtonClick() {
-        requestListData()
+        onRetryClicked()
     }
 }
 
