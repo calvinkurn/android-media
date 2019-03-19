@@ -3361,7 +3361,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
-//        InstabugInitalize.dispatchTouchEvent(activity, me);
+        InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
     @Override
