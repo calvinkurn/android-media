@@ -176,6 +176,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         WebViewGeneral.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         WebViewGeneral.getSettings().setDomStorageEnabled(true);
         WebViewGeneral.setWebViewClient(new MyWebClient());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            WebViewGeneral.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        }
         WebViewGeneral.setWebChromeClient(new WebChromeClient() {
             //For Android 3.0+
             public void openFileChooser(ValueCallback<Uri> uploadMsg) {
@@ -208,7 +211,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             //For Android 5.0+
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
-                    WebChromeClient.FileChooserParams fileChooserParams) {
+                    FileChooserParams fileChooserParams) {
                 if (callbackAfterL != null) {
                     callbackAfterL.onReceiveValue(null);
                 }

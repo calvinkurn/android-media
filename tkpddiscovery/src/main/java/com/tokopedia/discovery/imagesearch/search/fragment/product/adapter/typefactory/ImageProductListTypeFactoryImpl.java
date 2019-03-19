@@ -86,9 +86,9 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == ListProductItemViewHolder.LAYOUT) {
-            viewHolder = new ListProductItemViewHolder(view, itemClickListener);
+            viewHolder = new ListProductItemViewHolder(view, itemClickListener, searchQuery);
         } else if (type == GridProductItemViewHolder.LAYOUT) {
-            viewHolder = new GridProductItemViewHolder(view, itemClickListener);
+            viewHolder = new GridProductItemViewHolder(view, itemClickListener, searchQuery);
         } else if(type == HeaderViewHolder.LAYOUT){
             viewHolder = new HeaderViewHolder(view, itemClickListener, searchQuery);
         } else if (type == ImageEmptySearchViewHolder.LAYOUT) {
