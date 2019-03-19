@@ -7,7 +7,6 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
@@ -32,18 +31,13 @@ class TopadsShopViewHolder(v: View,
             itemView.hide()
             return
         }
-        if (element.title.text.isEmpty() || element.dataList.isEmpty()) {
-            itemView.viewPaddingBottom.visibility = View.GONE
-            itemView.hide()
-        } else {
-            itemView.topadsShop.bind(element.dataList)
-            itemView.topadsShop.setItemClickListener(this)
-            itemView.show()
-            itemView.viewPaddingBottom.visibility = View.VISIBLE
 
-            itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
-            itemView.cardTitle.listener = cardTitleListener
-        }
+        itemView.topadsShop.bind(element.dataList)
+        itemView.topadsShop.setItemClickListener(this)
+
+        itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
+        itemView.cardTitle.listener = cardTitleListener
+
     }
 
     override fun bind(element: TopadsShopViewModel?, payloads: MutableList<Any>) {
