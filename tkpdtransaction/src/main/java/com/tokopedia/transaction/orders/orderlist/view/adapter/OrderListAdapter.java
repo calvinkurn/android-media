@@ -68,7 +68,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        orderListAnalytics = new OrderListAnalytics(parent.getContext().getApplicationContext());
+        orderListAnalytics = new OrderListAnalytics();
         RecyclerView.ViewHolder vh;
         if (viewType == VIEW_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list, parent, false);

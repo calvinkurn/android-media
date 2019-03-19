@@ -158,7 +158,7 @@ public class TrainAnalytics {
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VIEW_ROUTE_NOT_AVAILABLE_PAGE,
                 origin + " - " + destination + " - " + date
-        );
+        ));
     }
 
     public void eventProductDetailImpressions(String scheduleId, String origin, String destination,

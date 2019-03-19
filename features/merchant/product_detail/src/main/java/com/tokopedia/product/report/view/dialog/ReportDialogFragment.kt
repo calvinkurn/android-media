@@ -40,7 +40,7 @@ class ReportDialogFragment : DialogFragment() {
     var reportTypeList: List<ReportType> = listOf()
 
     private val productReportTracking: ProductReportTracking by lazy {
-        ProductReportTracking((context?.applicationContext as? AbstractionRouter)?.analyticTracker)
+        ProductReportTracking()
     }
 
     companion object {

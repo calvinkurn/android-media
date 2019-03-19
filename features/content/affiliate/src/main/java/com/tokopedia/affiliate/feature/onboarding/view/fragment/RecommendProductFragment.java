@@ -75,7 +75,7 @@ public class RecommendProductFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+        affiliateAnalytics.getAnalyticTracker().sendScreenAuthenticated(getScreenName());
     }
 
     @Override

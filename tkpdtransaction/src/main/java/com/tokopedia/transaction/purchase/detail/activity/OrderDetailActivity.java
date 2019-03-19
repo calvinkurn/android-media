@@ -142,7 +142,7 @@ public class OrderDetailActivity extends TActivity
         presenter.setMainViewListener(this);
         presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
         orderDetailAnalytics =
-                new OrderDetailAnalytics(this);
+                new OrderDetailAnalytics();
     }
 
     private void initInjector() {

@@ -55,7 +55,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getContext().getApplicationContext(),
+        shopPageTracking = new ShopPageTrackingBuyer(
                 new TrackingQueue(getContext()));
         shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopFavouriteListPresenter.attachView(this);

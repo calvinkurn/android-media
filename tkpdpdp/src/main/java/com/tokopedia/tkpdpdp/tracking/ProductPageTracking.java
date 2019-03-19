@@ -13,6 +13,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,16 +112,12 @@ public class ProductPageTracking {
     }
 
     public static void eventClickBuyNotLogin(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - beli - before login",
                 productId
-        );
+        ));
     }
 
     public static void eventClickBuyInVariantNotLogin(Context context, String productId) {
@@ -391,7 +389,7 @@ public class ProductPageTracking {
                         productId,
                         reviewId
                 )
-        );
+        ));
     }
 
     public static void eventClickReviewOnSeeAllImage(Context context, String productId) {
@@ -400,7 +398,7 @@ public class ProductPageTracking {
                 PRODUCT_DETAIL_PAGE,
                 EVENT_ACTION_CLICK_REVIEW_ON_SEE_ALL_IMAGE,
                 productId
-        );
+        ));
     }
 
     public static void eventClickReviewOnMostHelpfulReview(Context context,
@@ -415,7 +413,7 @@ public class ProductPageTracking {
                         productId,
                         reviewId
                 )
-        );
+        ));
     }
 
     public static void eventClickFilterReview(Context context,
@@ -429,7 +427,7 @@ public class ProductPageTracking {
                         filterName.toLowerCase()
                 ),
                 productId
-        );
+        ));
     }
 
     public static void eventClickImageOnReviewList(Context context,
@@ -444,6 +442,6 @@ public class ProductPageTracking {
                         productId,
                         reviewId
                 )
-        );
+        ));
     }
 }

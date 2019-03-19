@@ -61,7 +61,7 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
-        analytics = new ChallengesGaAnalyticsTracker(this);
+        analytics = new ChallengesGaAnalyticsTracker();
         analytics.sendScreenEvent(ChallengesHomeActivity.this, SCREEN_CHALLENGES);
         tabLayout = findViewById(R.id.tab_challenges);
         viewPager = findViewById(R.id.pager);

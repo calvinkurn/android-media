@@ -40,7 +40,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         this.context = viewGroup.getContext();
-        dealsAnalytics=new DealsAnalytics(context.getApplicationContext());
+        dealsAnalytics=new DealsAnalytics();
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_item, viewGroup, false));
     }
 

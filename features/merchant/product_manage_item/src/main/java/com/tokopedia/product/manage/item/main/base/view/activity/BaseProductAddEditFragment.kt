@@ -57,6 +57,10 @@ import com.tokopedia.product.manage.item.variant.data.model.variantbycat.Product
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 import javax.inject.Inject
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(),
         ProductAddView, ListenerOnErrorAddProduct {
@@ -463,9 +467,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         context?.let {
             val app = it.applicationContext
             if (app is AbstractionRouter){
-                app.analyticTracker.sendEventTracking(ProductVariantConstant.TRACKING_EVENT,
+                TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(ProductVariantConstant.TRACKING_EVENT,
                         ProductVariantConstant.TRACKING_EVENT_CATEGORY,
-                        ProductVariantConstant.TRACKING_EVENT_ACTION, null)
+                        ProductVariantConstant.TRACKING_EVENT_ACTION, null))
             }
         }
         currentProductAddViewModel?.run {

@@ -1,5 +1,6 @@
 package com.tokopedia.talk.common.analytics
 
+import android.app.Activity
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -36,7 +37,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun sendScreen(activity: Activity, screenName: String) {
-        tracker.sendScreen(activity, screenName)
+        TrackApp.getInstance()?.gtm?.sendScreenAuthenticated(screenName)
     }
 
     fun trackClickReplyButton(talkId: String) {
@@ -150,7 +151,7 @@ class TalkAnalytics @Inject constructor() {
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
                     "follow talk"
-            )
+            ))
         } else {
             trackClickOnMenuFollow()
         }
@@ -162,7 +163,7 @@ class TalkAnalytics @Inject constructor() {
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
                 "unfollow talk"
-        )
+        ))
     }
 
     fun trackClickOnMenuUnfollowInDetail(source: String) {
@@ -195,7 +196,7 @@ class TalkAnalytics @Inject constructor() {
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
                     "click on laporkan"
-            )
+            ))
         } else {
             trackClickOnMenuReport()
         }

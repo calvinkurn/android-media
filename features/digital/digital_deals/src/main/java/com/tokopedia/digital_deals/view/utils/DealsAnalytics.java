@@ -103,12 +103,12 @@ public class DealsAnalytics {
     }
 
     public void sendEventDealsDigitalClick(String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DEALS_CLICK, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DEALS_CLICK, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase()));
 
     }
 
     public void sendEventDealsDigitalView(String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DEALS_VIEW, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DEALS_VIEW, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase()));
 
     }
 

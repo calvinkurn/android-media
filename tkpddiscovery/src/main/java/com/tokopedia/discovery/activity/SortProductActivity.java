@@ -90,7 +90,6 @@ public class SortProductActivity extends TActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this));
         recyclerView.setAdapter(adapter);
 
-        getWindow()
     }
 
     private void generateSelectedKeyValue(HashMap<String, String> selectedSort) {

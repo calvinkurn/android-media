@@ -193,7 +193,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             isOfficialStore = savedInstanceState.getBoolean(SAVED_SHOP_IS_OFFICIAL);
         }
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication(),
+        shopPageTracking = new ShopPageTrackingBuyer(
                 new TrackingQueue(getContext()));
         MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
                 .baseAppComponent(((BaseMainApplication) (getActivity().getApplication())).getBaseAppComponent())

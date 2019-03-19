@@ -8,6 +8,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;

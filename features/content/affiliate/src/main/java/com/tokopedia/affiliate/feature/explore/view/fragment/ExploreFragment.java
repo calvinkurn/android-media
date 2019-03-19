@@ -300,7 +300,7 @@ public class ExploreFragment
     @Override
     public void onStart() {
         super.onStart();
-        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+        affiliateAnalytics.getAnalyticTracker().sendScreenAuthenticated(getScreenName());
     }
 
     private void loadFirstData(boolean isPullToRefresh) {

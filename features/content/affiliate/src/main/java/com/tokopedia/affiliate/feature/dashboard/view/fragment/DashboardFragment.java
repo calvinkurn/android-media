@@ -105,7 +105,7 @@ public class DashboardFragment
     @Override
     public void onStart() {
         super.onStart();
-        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+        affiliateAnalytics.getAnalyticTracker().sendScreenAuthenticated(getScreenName());
     }
 
     @Nullable

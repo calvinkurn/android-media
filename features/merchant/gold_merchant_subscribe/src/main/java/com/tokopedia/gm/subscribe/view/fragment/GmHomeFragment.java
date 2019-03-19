@@ -167,7 +167,7 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
             @Override
             public void onClick(View view) {
                 if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter){
-                    new GMTracking((AbstractionRouter) getActivity().getApplication()).sendClickGMSubscribingEvent(isFromFeatured);
+                    new GMTracking().sendClickGMSubscribingEvent(isFromFeatured);
                 }
                 goToProductSelection();
             }

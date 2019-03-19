@@ -38,7 +38,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         imgLikes = view.findViewById(R.id.img_likes);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
-        analytics = new ChallengesGaAnalyticsTracker(context);
+        analytics = new ChallengesGaAnalyticsTracker();
     }
 
     void bind(SubmissionResult challengesResult, ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {

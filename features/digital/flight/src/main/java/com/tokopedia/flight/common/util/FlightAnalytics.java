@@ -594,7 +594,7 @@ public class FlightAnalytics {
                 GENERIC_CATEGORY,
                 Category.MORE_INSURANCE,
                 Label.NONE
-        );
+        ));
     }
 
 

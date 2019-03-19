@@ -211,7 +211,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             shopId = savedInstanceState.getString(SAVED_SHOP_ID);
         }
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication(),
+        shopPageTracking = new ShopPageTrackingBuyer(
                 new TrackingQueue(getContext()));
         etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
         shopProductListPresenter.attachView(this, this);

@@ -129,7 +129,7 @@ public class ChangePhoneNumberModule {
     @ChangePhoneNumberScope
     ChangePhoneNumberAnalytics provideChangePhoneNumberAnalytics(@ApplicationContext Context
                                                                          context) {
-        return new ChangePhoneNumberAnalytics(context);
+        return new ChangePhoneNumberAnalytics();
     }
 
     @Provides

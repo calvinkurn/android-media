@@ -117,7 +117,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on join",
                 channelId
-        );
+        ));
     }
 
     //#5
@@ -375,7 +375,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "watch duration play",
                 channelId + " - " + duration
-        );
+        ));
     }
 
     //#18
@@ -703,7 +703,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_FLASH_SALE),
                 id
-        );
+        ));
     }
 
     @Deprecated
@@ -713,7 +713,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "view banner push promo",
                 channelLabel
-        );
+        ));
     }
 
     public void eventClickOverlayCTAButton(@Nullable String channelId, @NotNull String contentButtonText) {
@@ -721,7 +721,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on menu button",
                 channelId + " - " + contentButtonText
-        );
+        ));
     }
 
     @Deprecated
@@ -730,7 +730,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VOTE,
                 type + " - " + channelName
-        );
+        ));
     }
 
     @Deprecated
@@ -739,7 +739,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_SHARE,
                 EVENT_ACTION_SHARE_CHANNEL,
                 channelType + " - " + channelName
-        );
+        ));
     }
 
     @Deprecated
@@ -748,7 +748,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_FLASH_SALE),
                 id
-        );
+        ));
     }
 
 
@@ -758,7 +758,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_VOTE_INFO,
                 channelLabel
-        );
+        ));
     }
 
     @Deprecated
@@ -767,7 +767,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_OFFICIAL_PARTNER,
                 officialPartner
-        );
+        ));
     }
 
 
@@ -777,7 +777,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_PARTNER),
                 label
-        );
+        ));
     }
 
     @Deprecated
@@ -786,7 +786,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
                 channelLabel
-        );
+        ));
     }
 
 
@@ -796,7 +796,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_THUMBNAIL,
                 id
-        );
+        ));
     }
 
     @Deprecated
@@ -805,7 +805,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
                 channelLabel
-        );
+        ));
     }
 
     @Deprecated
@@ -814,7 +814,7 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_COMPONENT + "vote",
                 componentType + " " + componentName
-        );
+        ));
     }
 
 }

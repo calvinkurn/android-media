@@ -40,9 +40,9 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAG
 
 public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
 
-    public ShopPageTrackingBuyer(AbstractionRouter shopTrackingRouter,
+    public ShopPageTrackingBuyer(
                                  TrackingQueue trackingQueue) {
-        super(shopTrackingRouter, trackingQueue);
+        super(trackingQueue);
     }
 
     private List<Object> createProductListMap(List<ShopProductViewModel> shopProductViewModelList,

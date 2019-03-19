@@ -263,15 +263,12 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickBackCameraSelfie() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_KYC,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_CAMERA_SELFIE,
                 ""
-        );
+        ));
     }
 
     public void eventClickShutterCameraSelfie() {

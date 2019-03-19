@@ -152,7 +152,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         GraphqlClient.init(this)
         initInjector()
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-        shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter,
+        shopPageTracking = ShopPageTrackingBuyer(
                 TrackingQueue(this))
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))

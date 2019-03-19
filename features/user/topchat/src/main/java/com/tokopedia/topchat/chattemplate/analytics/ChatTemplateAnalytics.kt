@@ -21,6 +21,6 @@ class ChatTemplateAnalytics @Inject constructor() {
                 TopChatAnalytics.Category.ADD_TEMPLATE,
                 TopChatAnalytics.Action.UPDATE_TEMPLATE,
                 ""
-        )
+        ))
     }
 }
