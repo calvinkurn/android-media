@@ -17,7 +17,9 @@
         android:src="@drawable/ic_loading_image"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8" />
 
     <ImageView
         android:id="@+id/icon"
