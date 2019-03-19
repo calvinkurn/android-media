@@ -239,7 +239,7 @@ public class ExploreFragment
         emptyResultModel = new EmptyModel();
         emptyResultModel.setIconRes(R.drawable.ic_empty_search);
         emptyResultModel.setTitle(
-                getActivity().getResources().getString(R.string.text_product_not_found)
+                getString(R.string.text_product_not_found)
         );
     }
 
@@ -279,9 +279,7 @@ public class ExploreFragment
 
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
         ivBantuan.setOnClickListener(view -> goToEducation());
-        btnBackToTop.setOnClickListener(view -> {
-            rvExplore.scrollToPosition(0);
-        });
+        btnBackToTop.setOnClickListener(view -> rvExplore.scrollToPosition(0));
         layoutProfile.setOnClickListener(view -> {
             if (!userSession.isLoggedIn()) {
                 goToLogin();
@@ -505,32 +503,32 @@ public class ExploreFragment
     private PopularProfileViewModel getDummyPopularProfile() {
         ArrayList<PopularProfileChildViewModel> list = new ArrayList<>();
         list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72",""));
         list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72",ApplinkConst.TALK));
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U2WPGER2T-0faadc531b0a-72"));
-        list.add(new PopularProfileChildViewModel("Febby Mulia", ""));
+                ".com/T038RGMSP-U2WPGER2T-0faadc531b0a-72","https://www.tokopedia.com/order-list"));
+        list.add(new PopularProfileChildViewModel("Febby Mulia", "","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72"));
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72"));
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72","https://www.tokopedia.com/order-list"));
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72"));
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72","https://www.tokopedia.com/order-list"));
         return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling " +
                 "berjasa", "Dimulai dari Tokopedia"));
     }
@@ -723,12 +721,14 @@ public class ExploreFragment
         if (isAffiliate) {
             presenter.checkAffiliateQuota(productId, adId);
         } else {
-            String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
-                    .concat(PRODUCT_ID_QUERY_PARAM)
-                    .concat(productId);
-            Intent intent = RouteManager.getIntent(getContext(), onboardingApplink);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            if (getContext() != null) {
+                String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
+                        .concat(PRODUCT_ID_QUERY_PARAM)
+                        .concat(productId);
+                Intent intent = RouteManager.getIntent(getContext(), onboardingApplink);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         }
     }
 
@@ -739,12 +739,14 @@ public class ExploreFragment
 
     @Override
     public void onSuccessCheckQuota(String productId, String adId) {
-        RouteManager.route(
-                getActivity(),
-                ApplinkConst.AFFILIATE_CREATE_POST
-                        .replace(PRODUCT_ID_PARAM, productId)
-                        .replace(AD_ID_PARAM, adId)
-        );
+        if (getActivity() != null) {
+            RouteManager.route(
+                    getActivity(),
+                    ApplinkConst.AFFILIATE_CREATE_POST
+                            .replace(PRODUCT_ID_PARAM, productId)
+                            .replace(AD_ID_PARAM, adId)
+            );
+        }
     }
 
     @Override
@@ -781,17 +783,23 @@ public class ExploreFragment
 
     private void goToLink(String url) {
         if (getContext() != null && !TextUtils.isEmpty(url)) {
-            RouteManager.route(getContext(), url);
+            if (RouteManager.isSupportApplink(getContext(), url)) {
+                RouteManager.route(getContext(), url);
+            } else {
+                RouteManager.route(
+                        getContext(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                );
+            }
         }
     }
 
     private Dialog buildDialog() {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
-        dialog.setTitle(getActivity().getResources().getString(R.string.text_full_affiliate_title));
-        dialog.setDesc(getActivity().getResources().getString(R.string.text_full_affiliate));
-        dialog.setBtnOk(getActivity().getResources().getString(R.string.text_full_affiliate_ok));
-        dialog.setBtnCancel(getActivity().getResources().getString(R.string
-                .text_full_affiliate_no));
+        dialog.setTitle(getString(R.string.text_full_affiliate_title));
+        dialog.setDesc(getString(R.string.text_full_affiliate));
+        dialog.setBtnOk(getString(R.string.text_full_affiliate_ok));
+        dialog.setBtnCancel(getString(R.string.text_full_affiliate_no));
         dialog.getAlertDialog().setCancelable(true);
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
         return dialog;
