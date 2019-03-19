@@ -259,12 +259,6 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
-    public UserSession provideUserSessionAbstract(AbstractionRouter abstractionRouter) {
-        return abstractionRouter.getSession();
-    }
-
-    @SellerDashboardScope
-    @Provides
     public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new com.tokopedia.user.session.UserSession(context);
     }
