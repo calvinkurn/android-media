@@ -10,7 +10,6 @@ import com.tokopedia.cameraview.*
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.VideoPickerCallback
 import com.tokopedia.videorecorder.utils.FileUtils
-import com.tokopedia.videorecorder.utils.VideoUtils
 import com.tokopedia.videorecorder.utils.exceptionHandler
 import com.tokopedia.videorecorder.utils.visible
 import kotlinx.android.synthetic.main.fragment_recorder.*
@@ -115,11 +114,14 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     }
 
     private fun recording() {
+        //set default value
         progressBar.progress = 0
         var countDownMills = DURATION_MAX.toLong()
+        txtDuration.text = getString(R.string.duration_default)
+
         if (cameraView.isTakingVideo) {
             cameraView.stopVideo()
-            timer.purge()
+            timer.cancel()
         } else {
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
             cameraView.takeVideo(file, DURATION_MAX)
@@ -127,13 +129,15 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
             //progress and duration countdown
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    countDownMills -= 1000
-                    if (cameraView.isTakingVideo) {
-                        activity?.runOnUiThread {
-                            val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
-                            val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
-                            txtDuration.text = "$minutes:$seconds"
-                            progressBar.progress += 1000
+                    if (cameraView != null) {
+                        countDownMills -= 1000
+                        if (cameraView.isTakingVideo) {
+                            activity?.runOnUiThread {
+                                val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
+                                val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
+                                txtDuration.text = "$minutes:$seconds"
+                                progressBar.progress += 1000
+                            }
                         }
                     }
                 }
