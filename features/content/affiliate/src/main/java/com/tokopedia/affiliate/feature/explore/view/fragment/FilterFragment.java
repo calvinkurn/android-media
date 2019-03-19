@@ -64,8 +64,11 @@ public class FilterFragment extends BaseDaggerFragment {
             filterList.addAll(getArguments().getParcelableArrayList(FilterActivity.PARAM_FILTER_LIST));
             initView();
             initViewListener();
-
-        } else getActivity().finish();
+        } else {
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
+        }
 
     }
 
@@ -78,13 +81,16 @@ public class FilterFragment extends BaseDaggerFragment {
 
     private void initViewListener() {
         btnApply.setOnClickListener(view -> {
-            Intent result = new Intent();
-            Bundle bundle = new Bundle();
-            ArrayList<FilterViewModel> data = new ArrayList<>(adapter.getFilterListCurrentSelectedSorted());
-            bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, data);
-            result.putExtras(bundle);
-            getActivity().setResult(Activity.RESULT_OK, result);
-            getActivity().finish();
+            if (getActivity() != null) {
+                Intent result = new Intent();
+                Bundle bundle = new Bundle();
+                ArrayList<FilterViewModel> data =
+                        new ArrayList<>(adapter.getFilterListCurrentSelectedSorted());
+                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, data);
+                result.putExtras(bundle);
+                getActivity().setResult(Activity.RESULT_OK, result);
+                getActivity().finish();
+            }
         });
     }
 
