@@ -29,7 +29,7 @@ import java.util.List;
 
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
-    private List<String> bannerImageUrls = new ArrayList<>();
+    protected List<String> bannerImageUrls = new ArrayList<>();
     private BannerView.OnPromoClickListener onPromoClickListener;
 
     public BannerPagerAdapter(List<String> bannerImageUrls, BannerView.OnPromoClickListener onPromoClickListener) {

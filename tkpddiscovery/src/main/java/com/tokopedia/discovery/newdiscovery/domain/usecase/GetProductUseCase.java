@@ -113,6 +113,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
         requestParams.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
         requestParams.putString(TopAdsParams.KEY_SRC, getSearchSource(searchParameter));
+        requestParams.putBoolean(TopAdsParams.KEY_WITH_TEMPLATE, true);
         requestParams.putInt(TopAdsParams.KEY_PAGE, getTopAdsKeyPage(searchParameter));
     }
 

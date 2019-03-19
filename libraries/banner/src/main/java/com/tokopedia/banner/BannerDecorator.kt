@@ -19,14 +19,6 @@ class BannerDecorator(val leftFirst: Int,
                                 parent: RecyclerView, state: RecyclerView.State) {
         if (parent.layoutManager.getPosition(view) == 0) {
             outRect.left = leftFirst
-        } else {
-            outRect.left = left
-        }
-
-        if (parent.layoutManager.getPosition(view) == parent.layoutManager.itemCount - 1) {
-            outRect.right = rightLast
-        } else {
-            outRect.right = right
         }
     }
 }

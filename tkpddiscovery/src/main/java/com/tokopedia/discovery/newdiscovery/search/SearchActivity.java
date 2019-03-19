@@ -116,8 +116,6 @@ public class SearchActivity extends DiscoveryActivity
     private SearchComponent searchComponent;
     private MenuItem menuChangeGrid;
 
-    private boolean profileEnabled = false;
-
     public SearchComponent getSearchComponent() {
         return searchComponent;
     }
@@ -422,10 +420,7 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-
-        if (profileEnabled) {
-            searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
-        }
+        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -486,10 +481,7 @@ public class SearchActivity extends DiscoveryActivity
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-
-        if (profileEnabled) {
-            searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
-        }
+        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -540,7 +532,7 @@ public class SearchActivity extends DiscoveryActivity
     protected void prepareView() {
         super.prepareView();
 
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

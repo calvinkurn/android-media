@@ -1,14 +1,12 @@
 package com.tokopedia.imageuploader.data.source;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.imageuploader.data.entity.GenerateHost;
 import com.tokopedia.imageuploader.data.entity.GenerateHostModel;
 import com.tokopedia.imageuploader.data.entity.GetData;
 import com.tokopedia.imageuploader.data.source.api.GenerateHostApi;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -19,9 +17,9 @@ import rx.functions.Func1;
 
 public class GenerateHostCloud {
     private final GenerateHostApi generateHostApi;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
-    public GenerateHostCloud(GenerateHostApi generateHostApi, UserSession userSession) {
+    public GenerateHostCloud(GenerateHostApi generateHostApi, UserSessionInterface userSession) {
         this.generateHostApi = generateHostApi;
         this.userSession = userSession;
     }

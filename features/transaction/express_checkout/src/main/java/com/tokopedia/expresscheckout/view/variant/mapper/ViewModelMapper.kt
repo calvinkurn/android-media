@@ -6,6 +6,9 @@ import com.tokopedia.expresscheckout.data.entity.response.atc.Message
 import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.expresscheckout.domain.model.profile.ProfileModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import javax.inject.Inject
@@ -190,10 +193,10 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
                         // Set option id state with checking result
                         if (!hasAvailableChild) {
                             optionViewModel.hasAvailableChild = false
-                            optionViewModel.currentState == optionViewModel.STATE_NOT_AVAILABLE
-                        } else if (optionViewModel.currentState != optionViewModel.STATE_SELECTED) {
+                            optionViewModel.currentState == STATE_NOT_AVAILABLE
+                        } else if (optionViewModel.currentState != STATE_SELECTED) {
                             optionViewModel.hasAvailableChild = true
-                            optionViewModel.currentState == optionViewModel.STATE_NOT_SELECTED
+                            optionViewModel.currentState == STATE_NOT_SELECTED
                         }
                     }
                 }
@@ -315,7 +318,7 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
         }
         optionVariantViewModel.hasAvailableChild = hasAvailableChild
         if (!hasAvailableChild) {
-            optionVariantViewModel.currentState = optionVariantViewModel.STATE_NOT_AVAILABLE
+            optionVariantViewModel.currentState = STATE_NOT_AVAILABLE
         }
 
         return optionVariantViewModel

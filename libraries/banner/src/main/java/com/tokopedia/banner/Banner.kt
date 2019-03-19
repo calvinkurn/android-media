@@ -1,7 +1,6 @@
 package com.tokopedia.banner
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.banner.BannerPagerAdapter
@@ -13,6 +12,13 @@ import com.tokopedia.design.banner.BannerView
  */
 
 class Banner : BannerView {
+
+    @Indicator.Type
+    var typeIndicator: Int? = 0
+
+    companion object {
+        const val GREEN_INDICATOR = 1
+    }
 
     constructor(context: Context) : super(context) {}
 
@@ -36,37 +42,40 @@ class Banner : BannerView {
             bannerRecyclerView.addItemDecoration(
                     BannerDecorator(
                             context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_4),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_4))
+                            context.resources.getDimensionPixelSize(R.dimen.dp_0),
+                            context.resources.getDimensionPixelSize(R.dimen.dp_0),
+                            context.resources.getDimensionPixelSize(R.dimen.dp_0))
             )
         }
-        bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var currentImagePosition = currentPosition
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE
-                        && currentImagePosition != currentPosition
-                        && currentPosition != -1) {
-                    currentImagePosition = currentPosition
-                }
-            }
-        })
+        bannerSeeAll.setOnClickListener {
+            if (onPromoAllClickListener != null)
+                onPromoAllClickListener.onPromoAllClick()
+        }
     }
 
     override fun getBannerPagerAdapter(): BannerPagerAdapter {
         return BannerAdapter(promoImageUrls, onPromoClickListener)
     }
 
+    fun setBannerIndicator(@Indicator.Type indicatorType: Int) {
+        typeIndicator = indicatorType
+    }
+
     override fun getIndicator(): Int {
-        return R.drawable.indicator_default
+        if (typeIndicator == GREEN_INDICATOR) {
+            return R.drawable.banner_green_indicator_default
+        }
+        return R.drawable.banner_indicator_default
     }
 
     override fun getIndicatorFocus(): Int {
-        return R.drawable.indicator_focus
+        if (typeIndicator == GREEN_INDICATOR) {
+            return R.drawable.banner_green_indicator_focus
+        }
+        return R.drawable.banner_indicator_focus
     }
 
-    fun getBannerSeeAll() : View {
-        return bannerSeeAll
+    fun setBannerSeeAllTextColor(color: Int) {
+        bannerSeeAll.setTextColor(color)
     }
 }

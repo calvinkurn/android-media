@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -21,6 +20,7 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -84,7 +84,7 @@ public class ShopModule {
 
     @HomeScope
     @Provides
-    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, ShopCommonWSApi shopCommonWS4Api, UserSession userSession) {
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, ShopCommonWSApi shopCommonWS4Api, UserSessionInterface userSession) {
         return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
     }
 

@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -42,6 +45,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -55,9 +59,16 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -111,6 +122,7 @@ public class ProductListFragment extends SearchSectionFragment
         productListFragment.setArguments(args);
         return productListFragment;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -232,10 +244,7 @@ public class ProductListFragment extends SearchSectionFragment
             headerViewModel.setCpmModel(productViewModel.getCpmModel());
         }
         list.add(headerViewModel);
-        if (!productViewModel.getAdsModel().getData().isEmpty()) {
-            list.add(new TopAdsViewModel(productViewModel.getAdsModel(), productViewModel.getQuery()));
-        }
-        list.addAll(productViewModel.getProductList());
+        list.addAll(ProductListPresenterImpl.enrich(productViewModel));
         if (productViewModel.getRelatedSearchModel() != null) {
             list.add(productViewModel.getRelatedSearchModel());
         }
@@ -330,7 +339,10 @@ public class ProductListFragment extends SearchSectionFragment
         List<Object> dataLayerList = new ArrayList<>();
         for (Visitable object : list) {
             if (object instanceof ProductItem) {
-                dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
+                ProductItem item = (ProductItem) object;
+                if (!item.isTopAds()) {
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId));
+                }
             }
         }
         SearchTracking.eventImpressionSearchResultProduct(getActivity(), dataLayerList, getQueryKey());
@@ -416,7 +428,6 @@ public class ProductListFragment extends SearchSectionFragment
                 if (adapter.isEmptyItem(position) ||
                         adapter.isRelatedSearch(position) ||
                         adapter.isHeaderBanner(position) ||
-                        adapter.isTopAds(position) ||
                         adapter.isLoading(position)) {
                     return spanCount;
                 } else {
@@ -466,38 +477,18 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
-        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(item.getProductID());
-        data.setName(item.getProductName());
-        data.setPrice(item.getPrice());
-        data.setImgUri(item.getImageUrl());
-        data.setIsWishlist(item.isWishlisted());
-        data.setRating(Integer.toString(item.getRating()));
-        data.setReviewCount(Integer.toString(item.getCountReview()));
-        data.setCountCourier(item.getCountCourier());
-        data.setDiscountPercentage(item.getDiscountPercentage());
-        data.setOriginalPrice(item.getOriginalPrice());
-        data.setShop(item.getShopName());
-        data.setShopLocation(item.getShopCity());
-        data.setOfficial(item.isOfficial());
-
-        if (item.getLabelList() != null) {
-            for (int i = 0; i < item.getLabelList().size(); i++) {
-                if (item.getLabelList().get(i).getTitle().toLowerCase()
-                        .contains(com.tokopedia.core.var.ProductItem.CASHBACK)) {
-                    data.setCashback(item.getLabelList().get(i).getTitle());
-                    break;
-                }
-            }
-        }
-
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(item.getProductID());
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
-        sendItemClickTrackingEvent(item);
+        sendItemClickTrackingEvent(item, adapterPosition);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -505,18 +496,26 @@ public class ProductListFragment extends SearchSectionFragment
         similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item);
     }
 
-    private void sendItemClickTrackingEvent(ProductItem item) {
-        String userId = userSession.isLoggedIn() ?
-                userSession.getUserId() : "";
-
-        SearchTracking.trackEventClickSearchResultProduct(
-                getActivity(),
-                item.getProductAsObjectDataLayer(userId),
-                item.getPageNumber(),
-                productViewModel.getQuery(),
-                getSelectedFilter(),
-                getSelectedSort()
-        );
+    private void sendItemClickTrackingEvent(ProductItem item, int pos) {
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
+        if (item.isTopAds()) {
+            new ImpresionTask().execute(item.getTopadsClickUrl());
+            Product product = new Product();
+            product.setId(item.getProductID());
+            product.setName(item.getProductName());
+            product.setPriceFormat(item.getPrice());
+            product.setCategory(new Category(item.getCategoryID()));
+            TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos);
+        } else {
+            SearchTracking.trackEventClickSearchResultProduct(
+                    getActivity(),
+                    item.getProductAsObjectDataLayer(userId),
+                    item.getPageNumber(),
+                    productViewModel.getQuery(),
+                    getSelectedFilter(),
+                    getSelectedSort()
+            );
+        }
     }
 
     @Override

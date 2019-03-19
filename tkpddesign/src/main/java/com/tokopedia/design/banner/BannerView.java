@@ -3,7 +3,6 @@ package com.tokopedia.design.banner;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -15,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -34,7 +34,7 @@ public class BannerView extends BaseCustomView {
 
     protected RecyclerView bannerRecyclerView;
     protected ViewGroup bannerIndicator;
-    protected View bannerSeeAll;
+    protected TextView bannerSeeAll;
     private Handler bannerHandler;
     private Runnable runnableScrollBanner;
     private boolean autoScrollOnProgress;

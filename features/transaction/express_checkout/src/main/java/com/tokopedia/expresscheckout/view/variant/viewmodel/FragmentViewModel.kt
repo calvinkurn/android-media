@@ -95,4 +95,17 @@ data class FragmentViewModel(
         return viewModels.indexOf(visitable)
     }
 
+    fun getSelectedProductChild(): ProductChild? {
+        if (getProductViewModel()?.productChildrenList?.isNotEmpty() == true) {
+            val productChildrenList = getProductViewModel()?.productChildrenList
+            if (productChildrenList != null) {
+                for (productChild: ProductChild in productChildrenList) {
+                    if (productChild.isSelected) {
+                        return productChild
+                    }
+                }
+            }
+        }
+        return null
+    }
 }

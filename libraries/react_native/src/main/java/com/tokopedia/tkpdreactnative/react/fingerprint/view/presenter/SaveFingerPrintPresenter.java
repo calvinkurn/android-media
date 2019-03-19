@@ -1,8 +1,8 @@
 package com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdreactnative.react.fingerprint.domain.SaveFingerPrintUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Subscriber;
 
@@ -11,10 +11,10 @@ import rx.Subscriber;
  */
 
 public class SaveFingerPrintPresenter extends BaseDaggerPresenter<SaveFingerPrintContract.View> implements SaveFingerPrintContract.Presenter {
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private SaveFingerPrintUseCase saveFingerPrintUseCase;
 
-    public SaveFingerPrintPresenter(UserSession userSession, SaveFingerPrintUseCase saveFingerPrintUseCase) {
+    public SaveFingerPrintPresenter(UserSessionInterface userSession, SaveFingerPrintUseCase saveFingerPrintUseCase) {
         this.userSession = userSession;
         this.saveFingerPrintUseCase = saveFingerPrintUseCase;
     }

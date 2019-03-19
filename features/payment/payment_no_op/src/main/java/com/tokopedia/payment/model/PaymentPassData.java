@@ -2,6 +2,13 @@ package com.tokopedia.payment.model;
 
 public class PaymentPassData {
 
+    public String paymentId;
+    public String queryString;
+    public String redirectUrl;
+    public String callbackSuccessUrl;
+    public String callbackFailedUrl;
+    public String transactionId;
+
     public <T> T getPaymentId() {
         return null;
     }

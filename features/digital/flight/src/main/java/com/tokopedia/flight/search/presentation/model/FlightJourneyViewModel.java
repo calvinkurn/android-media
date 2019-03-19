@@ -37,12 +37,14 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
     private int comboPriceNumeric; // Fare 500000
     private boolean isBestPairing;
     private String beforeTotal; // original price
+    private boolean showSpecialPriceTag;
     private RefundableEnum isRefundable;
     private boolean isReturning;
     private FlightFareViewModel fare;
     private List<Route> routeList;
     private List<FlightAirlineViewModel> airlineDataList; // merge result
     private String comboId;
+    private String specialTagText;
 
     public FlightJourneyViewModel(String term, String id, String departureAirport,
                                   String departureAirportName, String departureAirportCity, String departureTime,
@@ -50,9 +52,10 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
                                   String arrivalAirportName, String arrivalAirportCity, int arrivalTimeInt,
                                   int totalTransit, int addDayArrival, String duration, int durationMinute,
                                   String total, int totalNumeric, String comboPrice, int comboPriceNumeric,
-                                  boolean isBestPairing, String beforeTotal, RefundableEnum isRefundable,
-                                  boolean isReturning, FlightFareViewModel fare, List<Route> routeList,
-                                  List<FlightAirlineViewModel> airlineDataList, String comboId) {
+                                  boolean isBestPairing, String beforeTotal, boolean showSpecialPriceTag,
+                                  RefundableEnum isRefundable, boolean isReturning, FlightFareViewModel fare,
+                                  List<Route> routeList, List<FlightAirlineViewModel> airlineDataList,
+                                  String comboId, String specialTagText) {
         this.term = term;
         this.id = id;
         this.departureAirport = departureAirport;
@@ -75,12 +78,14 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
         this.comboPriceNumeric = comboPriceNumeric;
         this.isBestPairing = isBestPairing;
         this.beforeTotal = beforeTotal;
+        this.showSpecialPriceTag = showSpecialPriceTag;
         this.isRefundable = isRefundable;
         this.isReturning = isReturning;
         this.fare = fare;
         this.routeList = routeList;
         this.airlineDataList = airlineDataList;
         this.comboId = comboId;
+        this.specialTagText = specialTagText;
     }
 
     public String getTerm() {
@@ -171,6 +176,8 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
         return beforeTotal;
     }
 
+    public boolean isShowSpecialPriceTag() { return showSpecialPriceTag; }
+
     public RefundableEnum isRefundable() {
         return isRefundable;
     }
@@ -194,6 +201,8 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
     public String getComboId() {
         return comboId;
     }
+
+    public String getSpecialTagText() { return specialTagText; }
 
     @Override
     public int type(FlightSearchAdapterTypeFactory typeFactory) {

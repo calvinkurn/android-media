@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.view.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -22,6 +21,7 @@ import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.profile.data.network.TopAdsApi;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -29,6 +29,7 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -166,7 +167,7 @@ public class FeedPlusModule {
     FeedPlusDetail.Presenter FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
                                                      AddWishListUseCase addWishlistUseCase,
                                                      RemoveWishListUseCase removeWishlistUseCase,
-                                                     UserSession userSession) {
+                                                     UserSessionInterface userSession) {
         return new FeedPlusDetailPresenter(getFeedsDetailUseCase,
                 addWishlistUseCase,
                 removeWishlistUseCase,
@@ -213,7 +214,7 @@ public class FeedPlusModule {
     @Provides
     public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
                                                                       ShopCommonWSApi shopCommonWS4Api,
-                                                                      com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
+                                                                      UserSessionInterface userSession) {
         return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
     }
 
@@ -233,6 +234,12 @@ public class FeedPlusModule {
     @Provides
     ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase( @ApplicationContext Context context) {
         return new ToggleFavouriteShopUseCase( new GraphqlUseCase(), context.getResources());
+    }
+
+    @FeedPlusScope
+    @Provides
+    TopAdsApi provideTopAdsApi(@Named("WS") Retrofit retrofit) {
+        return retrofit.create(TopAdsApi.class);
     }
 
 

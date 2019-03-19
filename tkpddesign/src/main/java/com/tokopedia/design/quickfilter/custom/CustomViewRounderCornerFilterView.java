@@ -11,6 +11,8 @@ import com.tokopedia.design.R;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 
+import java.util.List;
+
 public class CustomViewRounderCornerFilterView extends QuickSingleFilterView {
     public CustomViewRounderCornerFilterView(@NonNull Context context) {
         super(context);
@@ -46,6 +48,11 @@ public class CustomViewRounderCornerFilterView extends QuickSingleFilterView {
             return quickFilterItem.getType();
         }
         return "0";
+    }
+
+    public void renderFilter(List<QuickFilterItem> quickFilterItems, int selectedPos) {
+        super.renderFilter(quickFilterItems);
+        recyclerView.scrollToPosition(selectedPos);
     }
 
 }

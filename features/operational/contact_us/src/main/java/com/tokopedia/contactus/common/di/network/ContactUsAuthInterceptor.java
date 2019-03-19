@@ -3,7 +3,6 @@ package com.tokopedia.contactus.common.di.network;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -20,8 +19,8 @@ public class ContactUsAuthInterceptor extends TkpdAuthInterceptor {
 
 
     Context mContext;
-    public ContactUsAuthInterceptor(Context context, AbstractionRouter abstractionRouter, UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+    public ContactUsAuthInterceptor(Context context, AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
         mContext = context;
     }
     private static final String HEADER_SESSION_ID = "tkpd-SessionId";

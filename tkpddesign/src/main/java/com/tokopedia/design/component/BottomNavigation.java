@@ -79,8 +79,6 @@ public class BottomNavigation extends BottomNavigationView {
 
     private void setDefaultStyle() {
         this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bottomnav_bg));
-        //this.setItemIconTintList(ContextCompat.getColorStateList(getContext(), R.color.selector_bottomnav));
-        this.setItemTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_bottomnav));
         this.enableAnimation(false);
         this.enableShiftingMode(false);
         this.enableItemShiftingMode(false);

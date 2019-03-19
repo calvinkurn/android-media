@@ -57,6 +57,7 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
@@ -134,6 +135,9 @@ open class PlayViewStateImpl(
             R.drawable.bg_play_2,
             R.drawable.bg_play_3
     )
+
+    private var defaultType = arrayListOf(
+            "default", "default1", "default2", "default3")
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -232,15 +236,18 @@ open class PlayViewStateImpl(
         viewModel?.let { viewModel ->
             dynamicButtonsViewModel = it
 
-            if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.linkUrl.isBlank()) {
+            webviewIcon.hide()
+            if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.contentLinkUrl.isBlank()) {
                 it.floatingButton.run {
                     setFloatingIcon(this)
                 }
             }
 
+            dynamicButtonRecyclerView.hide()
             if (!it.listDynamicButton.isEmpty()) {
                 analytics.eventViewDynamicButtons(viewModel, it.listDynamicButton)
                 dynamicButtonAdapter.setList(it.listDynamicButton)
+                dynamicButtonRecyclerView.show()
             }
         }
 
@@ -266,17 +273,18 @@ open class PlayViewStateImpl(
     private fun showStickComponent(item: StickyComponentViewModel?) {
         stickyComponent.hide()
         item?.run {
-            if(title.isNullOrEmpty()) return
+            if(title.isNullOrEmpty() || !userSession.isLoggedIn) return
             StickyComponentHelper.setView(stickyComponent, item)
             stickyComponent.setOnClickListener {
                 viewModel?.let {
                     analytics.eventClickStickyComponent(item, it)
-                    RouteManager.routeWithAttribution(activity, item.redirectUrl,
+                    var applink = RouteManager.routeWithAttribution(activity, item.redirectUrl,
                             GroupChatAnalytics.generateTrackerAttribution(
                                     GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
                                     it.channelUrl,
                                     it.title
                             ))
+                    listener.openRedirectUrl(applink)
                 }
 
             }
@@ -354,6 +362,7 @@ open class PlayViewStateImpl(
     override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
 
         viewModel = it
+        viewModel?.infoUrl = it.infoUrl
 
         loadingView.hide()
 
@@ -372,11 +381,12 @@ open class PlayViewStateImpl(
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
         }
-
         onBackgroundUpdated(it.backgroundViewModel)
         errorView.hide()
 
         autoAddSprintSale()
+
+        setPinnedMessage(it)
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
@@ -385,7 +395,8 @@ open class PlayViewStateImpl(
 
         lateinit var url: String
         it.let {
-            background = defaultBackground[it.default]
+            var index = defaultType.indexOf(it.default)
+            background = defaultBackground[Math.max(0, index-1)]
             url = it.url
 
             if (url.isBlank()) {
@@ -528,6 +539,8 @@ open class PlayViewStateImpl(
                 }
                 (pinnedMessageContainer.findViewById(R.id.message) as TextView).text =
                         it.title
+                (pinnedMessageContainer.findViewById(R.id.nickname) as TextView).text =
+                        channelInfoViewModel.adminName
                 pinnedMessageContainer.setOnClickListener { view ->
                     channelInfoViewModel.pinnedMessageViewModel?.let {
                         analytics.eventClickAdminPinnedMessage(
@@ -605,12 +618,13 @@ open class PlayViewStateImpl(
                 ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
                 overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
                     if (!TextUtils.isEmpty(interruptViewModel.imageLink)) {
-                        RouteManager.routeWithAttribution(view.context, interruptViewModel.imageLink,
+                        var applink = RouteManager.routeWithAttribution(view.context, interruptViewModel.imageLink,
                                 GroupChatAnalytics.generateTrackerAttribution(
                                         GroupChatAnalytics.ATTRIBUTE_OVERLAY_IMAGE,
                                         channelInfoViewModel.channelUrl,
                                         channelInfoViewModel.title
                                 ))
+                        listener.openRedirectUrl(applink)
                         closeOverlayDialog()
                     }
 
@@ -639,12 +653,13 @@ open class PlayViewStateImpl(
                         interruptViewModel.imageUrl)
 
                 if (!TextUtils.isEmpty(interruptViewModel.btnLink)) {
-                    RouteManager.routeWithAttribution(view.context, interruptViewModel.btnLink,
+                    var applink = RouteManager.routeWithAttribution(view.context, interruptViewModel.btnLink,
                             GroupChatAnalytics.generateTrackerAttribution(
                                     GroupChatAnalytics.ATTRIBUTE_OVERLAY_BUTTON,
                                     channelInfoViewModel.channelUrl,
                                     channelInfoViewModel.title
                             ))
+                    listener.openRedirectUrl(applink)
                 }
                 closeOverlayDialog()
             }
@@ -904,9 +919,9 @@ open class PlayViewStateImpl(
 
 
     private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
+        webviewIcon.hide()
         if (floatingButton.imageUrl.isBlank()
-                || floatingButton.linkUrl.isBlank()
-                || !RouteManager.isSupportApplink(view.context, floatingButton.linkUrl)) {
+                || floatingButton.contentLinkUrl.isBlank()) {
             return
         }
 
@@ -925,11 +940,16 @@ open class PlayViewStateImpl(
             viewModel?.let {
                 analytics.eventClickProminentButton(it, floatingButton)
 
-                RouteManager.routeWithAttribution(view.context, floatingButton.linkUrl, GroupChatAnalytics.generateTrackerAttribution(
-                        GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
-                        it.channelUrl,
-                        it.title
-                ))
+                if(!userSession.isLoggedIn) {
+                    listener.onLoginClicked(it.channelId)
+                } else {
+                    var applink = RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
+                            GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
+                            it.channelUrl,
+                            it.title
+                    ))
+                    listener.openRedirectUrl(applink)
+                }
             }
         }
 
@@ -946,7 +966,8 @@ open class PlayViewStateImpl(
             webviewDialog.setUrl(url)
         }
 
-        webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
+        if(!webviewDialog.isAdded)
+            webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
 
     }
 
@@ -1024,24 +1045,25 @@ open class PlayViewStateImpl(
     override fun onReceiveOverlayMessageFromWebsocket(channelInfoViewModel: ChannelInfoViewModel) {
         viewModel = channelInfoViewModel
         viewModel?.let {
+            if (userSession.isLoggedIn) {
+                if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
+                    welcomeInfoDialog.setOnDismissListener { onDismiss ->
+                        checkShowWhichBottomSheet(channelInfoViewModel)
+                    }
+                } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
+                    pinnedMessageDialog.setOnDismissListener { onDismiss ->
+                        checkShowWhichBottomSheet(channelInfoViewModel)
 
-            if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
-                welcomeInfoDialog.setOnDismissListener { onDismiss ->
+                    }
+                } else if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
+                    overlayDialog.dismiss()
+                    checkShowWhichBottomSheet(channelInfoViewModel)
+
+                } else {
                     checkShowWhichBottomSheet(channelInfoViewModel)
                 }
-            } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
-                pinnedMessageDialog.setOnDismissListener { onDismiss ->
-                    checkShowWhichBottomSheet(channelInfoViewModel)
 
-                }
-            } else if (::overlayDialog.isInitialized && overlayDialog.isShowing) {
-                overlayDialog.dismiss()
-                checkShowWhichBottomSheet(channelInfoViewModel)
-
-            } else {
-                checkShowWhichBottomSheet(channelInfoViewModel)
             }
-
         }
     }
 
@@ -1067,7 +1089,7 @@ open class PlayViewStateImpl(
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
                                     onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            welcomeInfoDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
         }
 
         welcomeInfoDialog.setOnDismissListener {
@@ -1085,7 +1107,7 @@ open class PlayViewStateImpl(
             }
         }
 
-        welcomeInfoDialog.setContentView(welcomeInfoView, "")
+        welcomeInfoDialog.setCustomContentView(welcomeInfoView, "", false)
         view.setOnClickListener(null)
         welcomeInfoDialog.show()
 
@@ -1125,7 +1147,7 @@ open class PlayViewStateImpl(
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
         if (!::pinnedMessageDialog.isInitialized) {
-            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            pinnedMessageDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
         }
 
         val pinnedMessageView = createPinnedMessageView(viewModel)
@@ -1139,7 +1161,7 @@ open class PlayViewStateImpl(
             }
         }
 
-        pinnedMessageDialog.setContentView(pinnedMessageView, "Pinned Chat")
+        pinnedMessageDialog.setCustomContentView(pinnedMessageView, "", false)
         pinnedMessageDialog.show()
 
     }
@@ -1147,9 +1169,7 @@ open class PlayViewStateImpl(
     private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
         val view = activity.layoutInflater.inflate(R.layout
                 .layout_pinned_message_expanded, null)
-        ImageHandler.loadImageCircle2(activity, view.findViewById(R.id.pinned_message_avatar) as ImageView, channelInfoViewModel!!.adminPicture, R.drawable.ic_loading_toped_new)
-        (view.findViewById<View>(R.id.chat_header).findViewById(R.id.nickname) as TextView).text =
-                channelInfoViewModel.adminName
+        (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " "+ channelInfoViewModel.adminName
         channelInfoViewModel.pinnedMessageViewModel?.let {
             (view.findViewById(R.id.message) as TextView).text = it.message
             ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
@@ -1184,10 +1204,16 @@ open class PlayViewStateImpl(
 
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
         var space = when {
-            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_32)
-            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
+            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
+            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
         }
-        chatRecyclerView.setPadding(0, space, 0, 0)
+        var padding = when {
+            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
+            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+        }
+        chatRecyclerView.setMargin(0, padding, 0,0)
+        chatRecyclerView.setFadingEdgeLength(space)
+        chatRecyclerView.invalidate()
     }
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
@@ -1228,8 +1254,12 @@ open class PlayViewStateImpl(
         viewModel?.sprintSaleViewModel = item
     }
 
+    override fun onShowOverlayFromVoteComponent(voteUrl: String) {
+        showWebviewBottomSheet(voteUrl)
+    }
+
     override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
-        showWebviewBottomSheet(it.linkUrl)
+        showWebviewBottomSheet(it.contentLinkUrl)
     }
 
     override fun destroy() {
