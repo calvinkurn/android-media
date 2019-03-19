@@ -8,22 +8,22 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.autocomplete.viewmodel.ProfileSearch
+import com.tokopedia.discovery.autocomplete.viewmodel.TopProfileSearch
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener
 import com.tokopedia.discovery.util.AutoCompleteTracking
 import kotlinx.android.synthetic.main.layout_profile_item_autocomplete.view.*
 
-class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener) : AbstractViewHolder<ProfileSearch>(view) {
+class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener) : AbstractViewHolder<TopProfileSearch>(view) {
 
     private val context = view.context
-    private lateinit var boundedProfileSearch : ProfileSearch
+    private lateinit var boundedProfileSearch : TopProfileSearch
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_top_profile_item_autocomplete
     }
 
-    override fun bind(element: ProfileSearch) {
+    override fun bind(element: TopProfileSearch) {
         boundedProfileSearch = element
 
         setTitle()
