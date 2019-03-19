@@ -424,6 +424,8 @@ import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
@@ -2362,11 +2364,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendTrackingGroupChatLeftNavigation() {
-        getAnalyticTracker().sendEventTracking(GroupChatAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GroupChatAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
                 GroupChatAnalytics.EVENT_CATEGORY_LEFT_NAVIGATION,
                 GroupChatAnalytics.EVENT_ACTION_CLICK_GROUP_CHAT,
                 ""
-        );
+        ));
     }
 
     @Override
@@ -2655,13 +2657,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void trainSendTrackingOnClickUseVoucherCode(String voucherCode) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker(), new TrainDateUtil());
+        TrainAnalytics trainAnalytics = new TrainAnalytics(new TrainDateUtil());
         trainAnalytics.eventClickUseVoucherCode(voucherCode);
     }
 
     @Override
     public void trainSendTrackingOnCheckVoucherCodeError(String errorMessage) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker(), new TrainDateUtil());
+        TrainAnalytics trainAnalytics = new TrainAnalytics(new TrainDateUtil());
         trainAnalytics.eventVoucherError(errorMessage);
     }
 

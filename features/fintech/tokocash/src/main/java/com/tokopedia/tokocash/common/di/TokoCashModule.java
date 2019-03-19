@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.InputFilter;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.tokocash.TokoCashRouter;
