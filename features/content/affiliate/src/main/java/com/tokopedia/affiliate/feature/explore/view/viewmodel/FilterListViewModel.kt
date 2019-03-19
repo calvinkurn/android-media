@@ -7,7 +7,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreT
  * @author by milhamj on 18/03/19.
  */
 data class FilterListViewModel(
-        val filters: MutableList<FilterViewModel> = arrayListOf()
+        var filters: MutableList<FilterViewModel> = arrayListOf()
 ) : Visitable<ExploreTypeFactory> {
     override fun type(typeFactory: ExploreTypeFactory): Int {
         return typeFactory.type(this)

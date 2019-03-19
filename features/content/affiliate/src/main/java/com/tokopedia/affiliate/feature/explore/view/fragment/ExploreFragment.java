@@ -69,7 +69,6 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -129,7 +128,7 @@ public class ExploreFragment
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty, layoutProfile;
-    private BottomActionView sortButton;
+    private BottomActionView bottomActionView;
     private FloatingActionButton btnBackToTop;
     private BadgeView badgeView;
     private LinearLayout mainView;
@@ -176,7 +175,7 @@ public class ExploreFragment
         layoutEmpty = view.findViewById(R.id.layout_empty);
         layoutProfile = view.findViewById(R.id.action_profile);
         ivProfile = view.findViewById(R.id.iv_profile);
-        sortButton = view.findViewById(R.id.bav);
+        bottomActionView = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
         mainView = view.findViewById(R.id.main_view);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
@@ -291,7 +290,17 @@ public class ExploreFragment
                 affiliateAnalytics.onClickProfileOnExplore();
             }
         });
-
+        bottomActionView.setButton2OnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(
+                    FilterActivity.PARAM_FILTER_LIST,
+                    new ArrayList<>(getAllFilterList())
+            );
+            startActivityForResult(
+                    FilterActivity.getIntent(getActivity(), bundle),
+                    REQUEST_DETAIL_FILTER
+            );
+        });
     }
 
     @Override
@@ -506,7 +515,7 @@ public class ExploreFragment
         }
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
-        sortButton.setVisibility(View.VISIBLE);
+        bottomActionView.setVisibility(View.VISIBLE);
         populateExploreItem(itemList, cursor);
     }
 
@@ -514,32 +523,44 @@ public class ExploreFragment
     private PopularProfileViewModel getDummyPopularProfile() {
         ArrayList<PopularProfileChildViewModel> list = new ArrayList<>();
         list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72",""));
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72", ""));
         list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72",ApplinkConst.TALK));
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72", ApplinkConst.TALK));
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U2WPGER2T-0faadc531b0a-72","https://www.tokopedia.com/order-list"));
-        list.add(new PopularProfileChildViewModel("Febby Mulia", "","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U2WPGER2T-0faadc531b0a-72", "https://www.tokopedia" +
+                ".com/order-list"));
+        list.add(new PopularProfileChildViewModel("Febby Mulia", "", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U9Z8PS38U-117c29274484-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Suaminya Raisa", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U4CQFBPPY-2dfb080baf55-72", "https://www.tokopedia" +
+                ".com/order-list"));
         list.add(new PopularProfileChildViewModel("Jessie Paling Cantik", "https://ca.slack-edge" +
-                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72","https://www.tokopedia.com/order-list"));
+                ".com/T038RGMSP-U7RNUK482-2b9e9ddaeff1-72", "https://www.tokopedia" +
+                ".com/order-list"));
         return new PopularProfileViewModel(list, new ExploreTitleViewModel("Orang orang paling " +
                 "berjasa", "Dimulai dari Tokopedia"));
     }
@@ -577,38 +598,28 @@ public class ExploreFragment
         }
     }
 
-    private void populateFilter(List<FilterViewModel> filterList) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_EXPLORE_ENABLE_FILTER, true)) {
-            //TODO milhamj
-//            layoutFilter.setVisibility(View.VISIBLE);
-//            rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(),
-// LinearLayoutManager.HORIZONTAL, false));
-//            if (filterAdapter == null) {
-//                filterAdapter = new FilterAdapter(filterList, getFilterClickedListener(), R
-// .layout.item_explore_filter_child);
-//            } else {
-//                filterAdapter.clearAllData();
-//                filterAdapter.setList(filterList);
-//            }
-//            rvFilter.setAdapter(filterAdapter);
-//            btnFilterMore.setOnClickListener(v -> {
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>
-// (filterAdapter.getAllFilterList()));
-//                startActivityForResult(FilterActivity.getIntent(getActivity(), bundle),
-// REQUEST_DETAIL_FILTER);
-//            });
+    private void populateFilter(List<FilterViewModel> currentFilter) {
+        adapter.setFilterList(currentFilter);
+    }
+
+    private List<FilterViewModel> getOnlySelectedFilter(List<FilterViewModel> filters) {
+        ArrayList<FilterViewModel> selectedFilters = new ArrayList<>();
+        for (FilterViewModel filter : filters) {
+            if (filter.isSelected()) {
+                selectedFilters.add(filter);
+            }
         }
+        return selectedFilters;
     }
 
     private void populateSort(List<SortViewModel> sortList) {
         //1. show button sort
         //2. handle onclick and passing sortlist and current selected sort (default is first data)
         if (sortList.size() > 0) {
-            sortButton.setVisibility(View.VISIBLE);
+            bottomActionView.setVisibility(View.VISIBLE);
             sortList.get(0).setSelected(true);
             exploreParams.setSort(sortList.get(0));
-            sortButton.setButton2OnClickListener(view -> {
+            bottomActionView.setButton1OnClickListener(view -> {
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST,
                         new ArrayList<>(sortList));
@@ -617,7 +628,7 @@ public class ExploreFragment
                         REQUEST_DETAIL_SORT);
             });
         } else {
-            sortButton.setVisibility(View.GONE);
+            bottomActionView.setVisibility(View.GONE);
         }
     }
 
@@ -635,6 +646,10 @@ public class ExploreFragment
         exploreParams.setLoading(true);
         adapter.clearProductElements();
         presenter.getData(exploreParams);
+    }
+
+    private List<FilterViewModel> getAllFilterList() {
+        return adapter.getFilterList();
     }
 
     @Override
@@ -668,7 +683,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
-        sortButton.setVisibility(View.GONE);
+        bottomActionView.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) {
@@ -875,11 +890,9 @@ public class ExploreFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DETAIL_FILTER) {
-                List<FilterViewModel> currentFilter =
-                        new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                List<FilterViewModel> currentFilter = new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(currentFilter);
-                //TODO milhamj
-//                getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
+                getFilteredFirstData(getOnlySelectedFilter(currentFilter));
             } else if (requestCode == REQUEST_DETAIL_SORT) {
                 SortViewModel selectedSort =
                         data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);

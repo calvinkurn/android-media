@@ -134,9 +134,12 @@
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="@dimen/dp_16"
         android:visibility="gone"
+        app:bav_1_display="true"
         app:bav_2_display="true"
-        app:bav_icon_2="@drawable/ic_sort_aff"
-        app:bav_label_2="@string/text_button_sort" />
+        app:bav_icon_1="@drawable/ic_sort_aff"
+        app:bav_icon_2="@drawable/ic_filter_button"
+        app:bav_label_1="@string/text_button_sort"
+        app:bav_label_2="@string/text_title_filter" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_back_to_top"

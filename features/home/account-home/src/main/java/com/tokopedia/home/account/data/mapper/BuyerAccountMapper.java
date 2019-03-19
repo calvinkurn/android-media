@@ -111,14 +111,14 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_ELIGIBLE)) {
 
-            tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
-            tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
-            tokopediaPayViewModel.setRightSaldo(true);
-            tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
-
-            tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
-            items.add(tokopediaPayViewModel);
+//            tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
+//            tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
+//            tokopediaPayViewModel.setRightSaldo(true);
+//            tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+//                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
+//
+//            tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
+//            items.add(tokopediaPayViewModel);
         } else {
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
             tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
