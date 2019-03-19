@@ -8,7 +8,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbarVideoPicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="?toolbarTheme"
@@ -51,16 +51,16 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <com.tokopedia.videorecorder.utils.DynamicSquareLayout
+            <VideoView
+                android:id="@+id/videoPreview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <VideoView
-                    android:id="@+id/videoPreview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-            </com.tokopedia.videorecorder.utils.DynamicSquareLayout>
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true" />
 
             <Button
                 android:id="@+id/btnDeleteVideo"
@@ -71,6 +71,8 @@
                 android:text="@string/delete_recording"
                 android:focusable="true"
                 android:clickable="true"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
                 android:foreground="?selectableItemBackground"
                 android:layout_alignParentBottom="true"/>
 
@@ -86,8 +88,13 @@
             android:id="@+id/tabPicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             style="@style/ImagePickerTab"
+            app:tabGravity="fill"
             app:tabIndicatorColor="@null"
+            app:tabMinWidth="@dimen/image_picker_tab_min_width"
+            app:tabMode="fixed"
             android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>

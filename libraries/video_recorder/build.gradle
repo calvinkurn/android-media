@@ -24,5 +24,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation rootProject.ext.miscDependencies.ffmpeg
 
 }

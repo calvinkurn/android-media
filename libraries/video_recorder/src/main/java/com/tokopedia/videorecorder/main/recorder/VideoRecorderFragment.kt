@@ -9,12 +9,10 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.cameraview.*
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.VideoPickerCallback
-import com.tokopedia.videorecorder.utils.FileUtils
-import com.tokopedia.videorecorder.utils.VideoUtils
-import com.tokopedia.videorecorder.utils.exceptionHandler
-import com.tokopedia.videorecorder.utils.visible
+import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by isfaaghyth on 04/03/19.
@@ -37,7 +35,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     private lateinit var videoCallback: VideoPickerCallback
 
     //for progress loader
-    private val timer = Timer()
+    private lateinit var timer: Timer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +56,8 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //camera prepared
         cameraView.mode = Mode.VIDEO
         cameraView.addCameraListener(cameraListener())
-        cameraView.setVideoSize(VideoUtils.squareSize())
 
         //set max progress value
         progressBar.max = DURATION_MAX
@@ -116,21 +112,32 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     }
 
     private fun recording() {
+        //set default value
         progressBar.progress = 0
+        var countDownMills = DURATION_MAX.toLong()
+        txtDuration.text = getString(R.string.duration_default)
+
         if (cameraView.isTakingVideo) {
+            vwRecord.hide()
             cameraView.stopVideo()
             timer.cancel()
-            timer.purge()
         } else {
+            vwRecord.show()
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
             cameraView.takeVideo(file, DURATION_MAX)
-
             //progress and duration countdown
+            timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    if (cameraView.isTakingVideo) {
-                        activity?.runOnUiThread {
-                            progressBar.progress += 1000
+                    if (cameraView != null) {
+                        if (cameraView.isTakingVideo) {
+                            activity?.runOnUiThread {
+                                val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
+                                val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
+                                txtDuration.text = getString(R.string.duration_format, formatter(minutes), formatter(seconds))
+                                progressBar.progress += 1000
+                                countDownMills -= 1000
+                            }
                         }
                     }
                 }

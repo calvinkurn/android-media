@@ -30,6 +30,7 @@ ext {
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
+    ffmpegVersion = '0.3.2'
     
     playServiceFirebaseConfig = '16.1.3'
     playServiceBaseVersion = '16.0.1'
@@ -194,7 +195,8 @@ ext {
             guava                 : "com.google.guava:guava:21.0",
             viewModel             : "android.arch.lifecycle:viewmodel:$lifeCycleVersion",
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
-            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion"
+            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
+            ffmpeg                : "com.writingminds:FFmpegAndroid:$ffmpegVersion"
     ]
 
     testDependencies = [

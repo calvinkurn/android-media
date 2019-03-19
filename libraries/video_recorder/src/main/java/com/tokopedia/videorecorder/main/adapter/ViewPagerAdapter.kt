@@ -26,4 +26,8 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
         mFragmentTitleList.add(title)
     }
 
+    fun destroyAllView() {
+        mFragmentList.clear()
+    }
+
 }
