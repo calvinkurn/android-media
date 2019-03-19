@@ -99,8 +99,8 @@
     </LinearLayout>
 
     <include layout="@layout/layout_template_icon_business_widget"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         />
