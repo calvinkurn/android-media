@@ -360,7 +360,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public int getProductId() {
-        return Integer.parseInt(cartPassData.getProductId());
+        return (cartPassData.getProductId().isEmpty())? 0 : Integer.parseInt(cartPassData.getProductId());
     }
 
     @Override

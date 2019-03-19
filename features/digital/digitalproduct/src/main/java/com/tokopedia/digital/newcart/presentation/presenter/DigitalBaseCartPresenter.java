@@ -104,13 +104,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     public void onViewCreated() {
         if (!userSession.isLoggedIn()){
             getView().closeViewWithMessageAlert(getView().getString(R.string.digital_cart_login_message));
+        } else {
+            getView().hideCartView();
+            getView().showFullPageLoading();
+            RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
+                    getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
+            getView().startPerfomanceMonitoringTrace();
+            digitalAddToCartUseCase.execute(requestParams, getSubscriberAddToCart());
         }
-        getView().hideCartView();
-        getView().showFullPageLoading();
-        RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
-                getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
-        getView().startPerfomanceMonitoringTrace();
-        digitalAddToCartUseCase.execute(requestParams, getSubscriberAddToCart());
     }
 
 
