@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.UiThreadUtil;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -134,5 +135,14 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void stopTracing() {
         ReactUtils.stopTracing();
+    }
+
+    @ReactMethod
+    public void getStatusBarHeight(Promise promise) {
+        if(getCurrentActivity() != null) {
+            promise.resolve(DisplayMetricUtils.getStatusBarHeight(getCurrentActivity()));
+        }
+
+        promise.reject(new RuntimeException("Context is null"));
     }
 }

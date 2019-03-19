@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
@@ -46,6 +48,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     @Inject
     AccountHome.Presenter presenter;
+    private CoordinatorLayout containerAccountHome;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private AppBarLayout appBarLayout;
@@ -74,6 +77,14 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         View view = inflater.inflate(R.layout.fragment_account_home, container, false);
         initView(view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(getContext() != null) {
+            containerAccountHome.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+        }
     }
 
     @Override
@@ -131,6 +142,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     private void initView(View view) {
+        containerAccountHome = view.findViewById(R.id.container_account_home);
         accountAnalytics = new AccountAnalytics(getActivity());
         setToolbar(view);
         appBarLayout = view.findViewById(R.id.app_bar_layout);

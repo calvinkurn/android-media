@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -105,6 +106,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
 
+    private LinearLayout cartContainer;
     private View toolbar;
     private AppBarLayout appBarLayout;
     private RecyclerView cartRecyclerView;
@@ -451,6 +453,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 renderInitialGetCartListDataSuccess(cartListData);
                 stopTrace();
             }
+            cartContainer.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getActivity()), 0, 0);
         }
     }
 
