@@ -1,23 +1,18 @@
 package com.tokopedia.videorecorder.main
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
-import android.widget.Toast
+import android.view.MenuItem
 import com.tokopedia.videorecorder.R
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
 import com.tokopedia.videorecorder.utils.FileUtils
@@ -45,7 +40,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
 
     override fun getNewFragment(): Fragment? = null
 
-    //vpager adapter
+    //viewpager adapter
     private lateinit var adapter: ViewPagerAdapter
 
     //catch videoPath uri
@@ -57,7 +52,6 @@ class VideoPickerActivity: BaseSimpleActivity(),
 
     //runtime permission handle
     private lateinit var runtimePermission: RuntimePermission
-    private var permissionList = arrayListOf<String>()
 
     override fun getLayoutRes(): Int = R.layout.activity_video_picker
 
@@ -69,6 +63,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
 
         //support actionbar
         setSupportActionBar(toolbarVideoPicker)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         //initial of adapter for viewPager and tabPicker
         setupViewPager()
@@ -89,6 +84,16 @@ class VideoPickerActivity: BaseSimpleActivity(),
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setupViewPager() {
         adapter = ViewPagerAdapter(supportFragmentManager)
         adapter = viewPagerAdapter()
@@ -106,12 +111,6 @@ class VideoPickerActivity: BaseSimpleActivity(),
 
     private fun setupTabLayout() {
         tabPicker.setupWithViewPager(vpVideoPicker)
-    }
-
-    private fun refreshViewPager() {
-        adapter.destroyAllView()
-        adapter = viewPagerAdapter()
-        adapter.notifyDataSetChanged()
     }
 
     @SuppressLint("MissingPermission")

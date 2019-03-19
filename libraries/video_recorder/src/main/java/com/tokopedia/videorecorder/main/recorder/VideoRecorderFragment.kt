@@ -15,6 +15,7 @@ import com.tokopedia.videorecorder.utils.exceptionHandler
 import com.tokopedia.videorecorder.utils.visible
 import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by isfaaghyth on 04/03/19.
@@ -115,9 +116,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     private fun recording() {
         progressBar.progress = 0
+        var countDownMills = DURATION_MAX.toLong()
         if (cameraView.isTakingVideo) {
             cameraView.stopVideo()
-            timer.cancel()
             timer.purge()
         } else {
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
@@ -126,8 +127,12 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
             //progress and duration countdown
             timer.schedule(object : TimerTask() {
                 override fun run() {
+                    countDownMills -= 1000
                     if (cameraView.isTakingVideo) {
                         activity?.runOnUiThread {
+                            val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
+                            val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
+                            txtDuration.text = "$minutes:$seconds"
                             progressBar.progress += 1000
                         }
                     }
