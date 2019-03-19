@@ -156,6 +156,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
     private var shouldShowCod = false
+    private var warehouseId: Int = 0
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -498,6 +499,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 atcRequestParam.setNotes(userInputNotes)
                 val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
                 atcRequestParam.setQuantity(qty)
+                atcRequestParam.setWarehouseId(warehouseId)
 
                 val expressCheckoutUriString = ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
                 val intent = RouteManager.getIntent(it, expressCheckoutUriString)
@@ -1026,6 +1028,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 base_view_wholesale.visible()
             }
         }
+        warehouseId = productInfoP2.nearestWarehouse.warehouseInfo.id.toInt()
         shopCod = productInfoP2.shopCod
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
