@@ -151,7 +151,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     private fun onVideoPicked() {
-        if (videoPreview.duration > 60000) {
+        if (videoPreview.duration >= 60000) {
             Toast.makeText(this, "videonya lebih dari 60 detik, trim!", Toast.LENGTH_LONG).show()
         }
 
