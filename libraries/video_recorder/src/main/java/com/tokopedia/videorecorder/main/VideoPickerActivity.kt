@@ -40,6 +40,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
     companion object {
         const val VIDEOS_RESULT = "video_result"
         const val VIDEO_MAX_SIZE = 50000L
+        var isVideoSourcePicker = false
     }
 
     override fun getNewFragment(): Fragment? = null
@@ -67,7 +68,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
         runtimePermission.requestPermissionForRecord()
 
         //support actionbar
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbarVideoPicker)
 
         //initial of adapter for viewPager and tabPicker
         setupViewPager()
@@ -130,6 +131,24 @@ class VideoPickerActivity: BaseSimpleActivity(),
         FileUtils.deleteCacheDir()
     }
 
+    private fun playVideoPreview() {
+        if (videoPreview.isPlaying) return
+        if (File(videoPath).exists()) {
+            videoPreview.start()
+        }
+    }
+
+    private fun cancelVideo() {
+        onVideoVisible()
+        videoPreview.stopPlayback()
+        if (!isVideoSourcePicker) {
+            if (File(videoPath).exists()) {
+                FileUtils.deleteCacheDir()
+            }
+        }
+    }
+
+    //video recorder callback
 
     override fun onVideoTaken(filePath: String) {
         val uriFile = Uri.parse(filePath)
@@ -142,37 +161,27 @@ class VideoPickerActivity: BaseSimpleActivity(),
         }
     }
 
-    private fun playVideoPreview() {
-        if (videoPreview.isPlaying) return
-        if (File(videoPath).exists()) {
-            videoPreview.start()
-        }
-    }
-
-    private fun cancelVideo() {
-        onVideoVisible()
-        videoPreview.stopPlayback()
-        if (File(videoPath).exists()) {
-            FileUtils.deleteCacheDir()
-        }
-    }
-
     override fun onPreviewVideoVisible() {
         layoutPreview.show()
         vpVideoPicker.hide()
         tabPicker.hide()
+        btnDone.show()
     }
 
     override fun onVideoVisible() {
         layoutPreview.hide()
         vpVideoPicker.show()
         tabPicker.show()
+        btnDone.hide()
     }
+
+    //video picker callback
 
     override fun onAlbumItemClicked(item: MediaItem?, isChecked: Boolean) {
         //get single image
+        isVideoSourcePicker = true
         videoPath = item?.realPath.toString()
-        Toast.makeText(this, videoPath, Toast.LENGTH_LONG).show()
+        onVideoTaken(videoPath)
     }
 
     override fun isMaxImageReached(): Boolean = false
