@@ -7,6 +7,8 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -47,7 +49,11 @@ class ItemTabBusinessViewModel @Inject constructor(
                         HomeWidget.Data::class.java,
                         params
                 )
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.getReseponse(
+                        listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                                .build()
+                )
             }
 
             if (data.getError(HomeWidget.Data::class.java) == null ||

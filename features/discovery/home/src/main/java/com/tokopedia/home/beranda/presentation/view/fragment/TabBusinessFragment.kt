@@ -74,7 +74,9 @@ class TabBusinessFragment : BaseDaggerFragment() {
     }
 
     private fun getTabBusinessUnit() {
-        viewModel.getTabList(getRawQuery())
+        if (tabLayout.tabCount == 0) {
+            viewModel.getTabList(getRawQuery())
+        }
     }
 
     private fun getRawQuery(): String {
