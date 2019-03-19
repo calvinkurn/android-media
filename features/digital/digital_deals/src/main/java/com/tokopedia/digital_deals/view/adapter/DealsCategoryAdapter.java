@@ -231,20 +231,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     }
 
-//    @Override
-//    public int getItemViewType(int position) {
-//        return (shortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
-//                ? HEADER_TRENDING_DEALS : ITEM_PRODUCT_SHORT
-//                :
-//                (topDealsLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
-//                        ? HEADER_TRENDING_DEALS_SEARCHED : ITEM_PRODUCT_TOP_DEALS
-//                        :
-//                        (isLastPosition(position) && isFooterAdded)
-//                                ? FOOTER : (position == 0 && isHeaderAdded)
-//                                ? HEADER_TRENDING_DEALS : (position == 0 && isBrandHeaderAdded && brandPageCard)
-//                                ? HEADER_BRAND : ITEM_PRODUCT_NORMAL));
-//    }
-
     @Override
     public int getItemViewType(int position) {
         int itemType;

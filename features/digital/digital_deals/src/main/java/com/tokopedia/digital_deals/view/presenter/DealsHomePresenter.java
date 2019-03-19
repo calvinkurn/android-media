@@ -109,6 +109,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         getAllBrandsUseCase.unsubscribe();
         getDealsListRequestUseCase.unsubscribe();
         getNextDealPageUseCase.unsubscribe();
+        if (getSearchLocationListRequestUseCase != null) {
+            getSearchLocationListRequestUseCase.unsubscribe();
+        }
         stopBannerSlide();
     }
 

@@ -82,7 +82,6 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
             ViewGroup.LayoutParams lp = itemView.getLayoutParams();
             if (lp instanceof FlexboxLayoutManager.LayoutParams) {
                 FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) lp;
-//                flexboxLp.setFlexGrow(1.0f);
                 flexboxLp.setAlignSelf(AlignItems.CENTER);
             }
 
