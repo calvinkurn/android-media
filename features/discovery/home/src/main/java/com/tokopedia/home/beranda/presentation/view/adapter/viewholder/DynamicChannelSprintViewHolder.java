@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -80,6 +81,8 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             final DynamicHomeChannel.Channels channel = element.getChannel();
             listener.onServerTimeReceived(element.getChannel().getHeader().getServerTimeUnix());
             itemAdapter.setChannel(channel);
+            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+            homeChannelTitle.setTypeface(typeface);
             homeChannelTitle.setText(channel.getHeader().getName());
 
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {

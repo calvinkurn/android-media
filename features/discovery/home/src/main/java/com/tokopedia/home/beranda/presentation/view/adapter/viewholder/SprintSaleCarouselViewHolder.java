@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
@@ -114,6 +115,8 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         try {
             this.channels = element.getChannel();
             listener.onServerTimeReceived(channels.getHeader().getServerTimeUnix());
+            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+            title.setTypeface(typeface);
             title.setText(channels.getHeader().getName());
             if (channels.getHeader().getBackColor() != null) {
                 Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);

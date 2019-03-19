@@ -1,5 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewmodel;
 
+import com.google.android.gms.tagmanager.DataLayer;
+import java.util.Map;
+
 public class SpotlightItemViewModel {
     private int id;
     private String title;
@@ -12,12 +15,13 @@ public class SpotlightItemViewModel {
     private String ctaTextHexcolor;
     private String url;
     private String applink;
+    private String promoName;
 
     public SpotlightItemViewModel(int id, String title, String description,
                                   String backgroundImageUrl, String tagName,
                                   String tagNameHexcolor, String tagHexcolor,
                                   String ctaText, String ctaTextHexcolor,
-                                  String url, String applink) {
+                                  String url, String applink, String promoName) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -29,6 +33,7 @@ public class SpotlightItemViewModel {
         this.ctaTextHexcolor = ctaTextHexcolor;
         this.url = url;
         this.applink = applink;
+        this.promoName = promoName;
     }
 
     public int getId() {
@@ -73,5 +78,27 @@ public class SpotlightItemViewModel {
 
     public String getApplink() {
         return applink;
+    }
+
+    public Map<String, Object> getEnhanceClickSpotlightHomePage(int position) {
+        return DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "homepage",
+                "eventAction", "click on banner spotlight",
+                "eventLabel", title,
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", id,
+                                                "name", promoName,
+                                                "position", String.valueOf(position + 1),
+                                                "creative", title,
+                                                "creative_url", backgroundImageUrl
+                                        )
+                                )
+                        )
+                )
+        );
     }
 }

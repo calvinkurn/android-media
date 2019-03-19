@@ -27,15 +27,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
             android:lineSpacingExtra="7sp"
             android:paddingBottom="@dimen/page_margin"
             android:paddingLeft="@dimen/page_margin"
             android:paddingTop="@dimen/page_margin"
             android:scrollHorizontally="true"
-            android:textColor="#ffffff"
-            android:textSize="17sp"
-            android:textStyle="bold"
+            style="@style/TextView.Title"
+            android:textSize="@dimen/sp_18"
             tools:text="Lucky Hour" />
 
         <com.tokopedia.design.countdown.CountDownView
