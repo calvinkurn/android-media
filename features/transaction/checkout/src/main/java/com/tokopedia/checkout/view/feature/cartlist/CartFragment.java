@@ -106,7 +106,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
 
-    private LinearLayout cartContainer;
     private View toolbar;
     private AppBarLayout appBarLayout;
     private RecyclerView cartRecyclerView;
@@ -330,8 +329,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else {
             toolbar = toolbarRemoveView();
             // add padding programmatically
-            int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
-            view.setPadding(0,padding,0,0);
+            view.setPadding(0,DisplayMetricUtils.getStatusBarHeight(getContext()),0,0);
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);
@@ -453,7 +451,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 renderInitialGetCartListDataSuccess(cartListData);
                 stopTrace();
             }
-            cartContainer.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getActivity()), 0, 0);
         }
     }
 

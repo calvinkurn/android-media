@@ -48,7 +48,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     @Inject
     AccountHome.Presenter presenter;
-    private CoordinatorLayout containerAccountHome;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private AppBarLayout appBarLayout;
@@ -77,14 +76,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         View view = inflater.inflate(R.layout.fragment_account_home, container, false);
         initView(view);
         return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if(getContext() != null) {
-            containerAccountHome.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
-        }
     }
 
     @Override
@@ -142,13 +133,15 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     private void initView(View view) {
-        containerAccountHome = view.findViewById(R.id.container_account_home);
         accountAnalytics = new AccountAnalytics(getActivity());
         setToolbar(view);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
         setAdapter();
+        if(getContext() != null) {
+            view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+        }
     }
 
     private void setToolbar(View view) {

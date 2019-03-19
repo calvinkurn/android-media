@@ -30,7 +30,6 @@ import java.util.List;
 public class FeedPlusContainerFragment extends BaseDaggerFragment
         implements FragmentListener, AllNotificationListener {
 
-    private CoordinatorLayout feedContainer;
     private MainToolbar mainToolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -51,10 +50,12 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false);
-        feedContainer = view.findViewById(R.id.container);
         mainToolbar = view.findViewById(R.id.toolbar);
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
+        if(getContext() != null) {
+            view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+        }
         return view;
     }
 
@@ -62,9 +63,6 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView();
-        if(getContext() != null) {
-            feedContainer.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
-        }
     }
 
     @Override

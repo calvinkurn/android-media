@@ -251,6 +251,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
+        if(getContext() != null) {
+            view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+        }
         return view;
     }
 
@@ -261,9 +264,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initResources();
         disableExpandFeedSection();
 
-        if(getContext() != null) {
-            refreshLayout.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
-        }
     }
 
     private void initResources() {
