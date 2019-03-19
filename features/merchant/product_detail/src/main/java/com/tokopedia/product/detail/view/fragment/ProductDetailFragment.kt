@@ -361,7 +361,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
                                 onErrorAddWishList = this::onErrorAddWishList)
                             productDetailTracking.eventPDPWishlist()
-                            // TODO APPFLYER IMPL 943
+                            productInfo?.let {
+                                productDetailTracking.eventPDPWishlistAppsFyler(it)
+                            }
                             productInfo?.basic?.let { productDetailTracking.eventPDPAddToWishlist(it.name) }
                         }
                     }
@@ -1459,15 +1461,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
             }
-            if (hasVariant()) {
-                productDetailTracking.eventCartMenuClicked(generateVariantString())
-            }
+            productDetailTracking.eventCartMenuClicked(generateVariantString())
         }
-    }
-
-    private fun hasVariant(): Boolean {
-        //TODO CHECK VARIAN
-        return false
     }
 
     private fun shareProduct() {

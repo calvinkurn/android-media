@@ -43,11 +43,11 @@ class ProductDetailTracking() {
             ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
     }
 
-    fun eventCartMenuClicked(variant: String) {
+    fun eventCartMenuClicked(variant: String?) {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP.toLowerCase(),
             ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
-            variant)
+            variant ?: "")
     }
 
     fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
@@ -379,6 +379,38 @@ class ProductDetailTracking() {
             "shopType", getEnhanceShopType(shopInfo?.goldOS)
         ))
     }
+
+    ////////////////////////////////////////////////////////////////
+    // APPSFYLER START
+    ////////////////////////////////////////////////////////////////
+    fun eventPDPWishlistAppsFyler(productInfo: ProductInfo){
+        TrackApp.getInstance()?.appsFlyer?.run {
+            sendEvent("af_add_to_wishlist",
+                mutableMapOf<String, Any>(
+                    "advertising_id" to id,
+                    "af_description" to "productView",
+                    "af_content_id" to productInfo.basic.id,
+                    "af_content_type" to "product",
+                    "af_price" to productInfo.basic.price,
+                    "af_currency" to "IDR",
+                    "af_quantity" to 1.toString()
+                ).apply {
+                    if (productInfo.category.detail.isNotEmpty()) {
+                        val size = productInfo.category.detail.size
+                        for (i in 1..size) {
+                            put("level" + i + "_name", productInfo.category.detail.get(size - i).name)
+                            put("level" + i + "_id", productInfo.category.detail.get(size - i).id)
+                        }
+                    }
+                }
+            )
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////
+    // APPSFYLER END
+    ////////////////////////////////////////////////////////////////
+
 
     ////////////////////////////////////////////////////////////////
     // MOENGAGE START
