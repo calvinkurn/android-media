@@ -231,19 +231,16 @@ public class HeaderHomeView extends BaseCustomView {
                 mTextCouponCount.setTextColor(getContext().getResources().getColor(R.color.tkpd_main_green));
             }
 
-            tokoPointHolder.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (headerViewModel.getTokopointsDrawerHomeData() != null) {
-                        HomePageTracking.eventUserProfileTokopoints(getContext());
-                        listener.actionTokoPointClicked(
-                                headerViewModel.getTokopointsDrawerHomeData().getRedirectAppLink(),
-                                headerViewModel.getTokopointsDrawerHomeData().getRedirectURL(),
-                                TextUtils.isEmpty(headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle())
-                                        ? TITLE_HEADER_WEBSITE
-                                        : headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle()
-                        );
-                    }
+            tokoPointHolder.setOnClickListener(view -> {
+                if (headerViewModel.getTokopointsDrawerHomeData() != null) {
+                    HomePageTracking.eventUserProfileTokopoints(getContext());
+                    listener.actionTokoPointClicked(
+                            headerViewModel.getTokopointsDrawerHomeData().getRedirectAppLink(),
+                            headerViewModel.getTokopointsDrawerHomeData().getRedirectURL(),
+                            TextUtils.isEmpty(headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle())
+                                    ? TITLE_HEADER_WEBSITE
+                                    : headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle()
+                    );
                 }
             });
         }

@@ -11,14 +11,16 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:minHeight="1px"
-    android:weightSum="7"
     android:orientation="horizontal">
 
     <RelativeLayout
         android:id="@+id/container_action_scan"
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatImageView
@@ -31,7 +33,7 @@
 
         <TextView
             android:layout_below="@+id/img_scan"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/home_header_fintech_scan"
             android:textColor="@color/font_black_disabled_38"
@@ -52,7 +54,7 @@
         android:id="@+id/container_nonlogin"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="6"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageView
