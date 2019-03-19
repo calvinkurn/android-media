@@ -67,6 +67,17 @@ class MerchantVoucherViewUsed : CustomVoucherView {
         //TOGGLE_MVC_OFF
         //btnUseVoucher.text = context.getString(R.string.copy_to_clipboard)
 
+    }
+
+    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
+        if (merchantVoucherViewModel?.enableButtonUse == true) {
+            btnUseVoucher.visibility = View.VISIBLE
+            tvCode.visibility = View.GONE
+        } else {
+            btnUseVoucher.visibility = View.GONE
+            tvCode.visibility = View.VISIBLE
+        }
+        this.merchantVoucherViewModel = merchantVoucherViewModel
         btnUseVoucher.setOnClickListener {
             merchantVoucherViewModel?.run {
                 //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
@@ -85,18 +96,6 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                 onMerchantVoucherViewListener?.onMerchantVoucherClicked(this)
             }
         }
-
-    }
-
-    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
-        if (merchantVoucherViewModel?.enableButtonUse == true) {
-            btnUseVoucher.visibility = View.VISIBLE
-            tvCode.visibility = View.GONE
-        } else {
-            btnUseVoucher.visibility = View.GONE
-            tvCode.visibility = View.VISIBLE
-        }
-        this.merchantVoucherViewModel = merchantVoucherViewModel
         merchantVoucherViewModel?.run {
             ivVoucherLogo.setImageResource(when (merchantVoucherViewModel.ownerId) {
                 MerchantVoucherOwnerTypeDef.TYPE_TOKOPEDIA -> R.drawable.ic_big_notif_customerapp

@@ -3,6 +3,7 @@ package com.tokopedia.promocheckout.detail.view.presenter
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.Data
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -27,7 +28,7 @@ interface PromoCheckoutDetailContract {
     interface Presenter : CustomerPresenter<View>{
         fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean)
         // fun validatePromoUse(codeCoupon: String, oneClickShipment : Boolean, resources: Resources)
-        fun validatePromoStackingUse()
+        fun validatePromoStackingUse(checkPromoFirstStepParam: CheckPromoFirstStepParam?)
         fun cancelPromo()
     }
 }

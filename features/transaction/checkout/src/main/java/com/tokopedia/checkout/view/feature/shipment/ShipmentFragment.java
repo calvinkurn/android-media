@@ -1558,26 +1558,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
         trackingPromoCheckoutUtil.checkoutClickUseTickerPromoOrCoupon();
-        startActivityForResult(
-                checkoutModuleRouter
-                        .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-                                true, "", isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()
-                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-        );
+        // Todo : generate CheckPromoFirstStepParam & navigate to promo checkout
+//        startActivityForResult(
+//                checkoutModuleRouter
+//                        .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+//                                true, "", isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()
+//                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+//        );
     }
 
     @Override
-    public void onCartPromoUseVoucherMerchantPromoClickedTest() {
+    public void onCartPromoUseVoucherMerchantPromoClickedTest(int position) {
         if (getFragmentManager() != null) {
-            /*MerchantBottomSheetFragment bottomSheet = MerchantBottomSheetFragment.newInstance("1767940");
-            bottomSheet.show(getFragmentManager(), null);*/
-
-            MerchantVoucherListBottomsheetParamData data = new MerchantVoucherListBottomsheetParamData.BundleBuilder()
-                    .shopId("1767940")
-                    .checkoutType("ocs")
-                    .build();
-            MerchantVoucherListBottomSheetFragment.newInstance(data)
-                    .show(getFragmentManager(), null);
+            // Todo : Handle this
+//            MerchantVoucherListBottomsheetParamData data = new MerchantVoucherListBottomsheetParamData.BundleBuilder()
+//                    .shopId("1767940")
+//                    .checkoutType("ocs")
+//                    .build();
+//            MerchantVoucherListBottomSheetFragment.newInstance(data)
+//                    .show(getFragmentManager(), null);
 
         }
     }
@@ -1692,14 +1691,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
-        trackingPromoCheckoutUtil.checkoutClickTicker(dataGlobal.getDescription());
-        if (dataGlobal.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(dataGlobal.getPromoCodeSafe(),
-                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        } else {
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(dataGlobal.getPromoCodeSafe(),
-                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        }
+        // Todo : Generate CheckPromoFirstStepParam
+//        trackingPromoCheckoutUtil.checkoutClickTicker(dataGlobal.getDescription());
+//        if (dataGlobal.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
+//            startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(dataGlobal.getPromoCodeSafe(),
+//                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+//        } else {
+//            startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(dataGlobal.getPromoCodeSafe(),
+//                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+//        }
     }
 
     @Override

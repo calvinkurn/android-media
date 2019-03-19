@@ -424,14 +424,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void cancelAutoApplyStackCoupon(int position) {
         // for (int i = 0; i < cartDataList.size(); i++) {
-            Object object = cartDataList.get(position);
-            if (object instanceof VoucherOrdersItemData) {
-                ((VoucherOrdersItemData) object).setState("grey");
-                notifyItemChanged(position);
-            } else if (object instanceof CartPromoSuggestion) {
-                ((CartPromoSuggestion) object).setVisible(true);
-                notifyItemChanged(position);
-            }
+        Object object = cartDataList.get(position);
+        if (object instanceof VoucherOrdersItemData) {
+            ((VoucherOrdersItemData) object).setState("grey");
+            notifyItemChanged(position);
+        } else if (object instanceof CartPromoSuggestion) {
+            ((CartPromoSuggestion) object).setVisible(true);
+            notifyItemChanged(position);
+        }
         // }
     }
 
@@ -554,6 +554,15 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (int i = 0; i < cartDataList.size(); i++) {
             if (cartDataList.get(i) instanceof PromoData) {
                 return (PromoData) cartDataList.get(i);
+            }
+        }
+        return null;
+    }
+
+    public PromoStackingData getPromoStackingGlobaldata() {
+        for (int i = 0; i < cartDataList.size(); i++) {
+            if (cartDataList.get(i) instanceof PromoStackingData) {
+                return (PromoStackingData) cartDataList.get(i);
             }
         }
         return null;

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
 import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
@@ -44,7 +45,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                 var resultSuccess = responseCancelPromo?.data?.isSuccess ?: false
 
                 if (resultSuccess) {
-                   // view.onSuccessCancelPromo();
+                    // view.onSuccessCancelPromo();
                     view.onSuccessCancelPromoStacking()
                 } else {
                     view.onErrorCancelPromo(RuntimeException())
@@ -54,11 +55,11 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
 
     }
 
-    override fun validatePromoStackingUse() {
+    override fun validatePromoStackingUse(checkPromoFirstStepParam: CheckPromoFirstStepParam?) {
+        if (checkPromoFirstStepParam == null) return
+
         view.showProgressLoading()
-        checkPromoStackingUseCase.setParams(123, 1, "VOUCHERTOKO10",
-                "JNE100", 1, "", "CASHBACK50",
-                0, 1)
+        checkPromoStackingUseCase.setParams(checkPromoFirstStepParam)
         checkPromoStackingUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse?) {
                 view.hideProgressLoading()

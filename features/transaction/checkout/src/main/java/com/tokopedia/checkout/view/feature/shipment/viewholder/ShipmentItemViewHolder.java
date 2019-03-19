@@ -528,7 +528,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             @Override
             public void onClickUsePromo() {
                 // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
-                mActionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
+                mActionListener.onCartPromoUseVoucherMerchantPromoClickedTest(getAdapterPosition());
             }
 
             @Override

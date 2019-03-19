@@ -1504,9 +1504,9 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processCheckPromoStackingCode() {
-        checkPromoStackingCodeUseCase.setParams(123, 1, "VOUCHERTOKO10",
-                "JNE100", 1, "", "CASHBACK50",
-                0, 1);
+//        checkPromoStackingCodeUseCase.setParams(123, 1, "VOUCHERTOKO10",
+//                "JNE100", 1, "", "CASHBACK50",
+//                0, 1);
         checkPromoStackingCodeUseCase.execute(RequestParams.create(),
                 new CheckPromoStackingSubscriber(checkPromoStackingCodeMapper));
     }

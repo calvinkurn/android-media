@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckout.common.domain
 
 import android.content.Context
+import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -9,6 +10,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.data.entity.request.PromoStackingRequestData
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -34,42 +37,47 @@ class CheckPromoStackingCodeUseCase @Inject constructor (@ApplicationContext pri
         private const val ORDERS = "orders"
     }
 
-    fun setParams(productId : Int, qty: Int, promoCode1: String, promoCode2: String, shopId: Int,
-                  uniqueId: String, promoGlobalCode: String, skipApply: Int, isSuggested: Int) {
+    fun setParams(checkPromoFirstStepParam: CheckPromoFirstStepParam) {
 
-        val objProductDetail = JsonObject()
-        objProductDetail.addProperty(PRODUCT_ID, productId)
-        objProductDetail.addProperty(QUANTITY, qty)
+//        val objProductDetail = JsonObject()
+//        objProductDetail.addProperty(PRODUCT_ID, promoStackingRequestData.productId)
+//        objProductDetail.addProperty(QUANTITY, promoStackingRequestData.qty)
+//
+//        val listProductDetails = JsonArray()
+//        listProductDetails.add(objProductDetail)
+//
+//        val listPromoCodes = JsonArray()
+//        for (promoMerchant: String in promoStackingRequestData.promoMerchantList) {
+//            listPromoCodes.add(promoMerchant)
+//        }
+//
+//        val objOrders = JsonObject()
+//        objOrders.addProperty(SHOP_ID, promoStackingRequestData.shopId)
+//        objOrders.addProperty(UNIQUE_ID, promoStackingRequestData.uniqueId)
+//        objOrders.add(PRODUCT_DETAILS, listProductDetails)
+//        objOrders.add(CODES, listPromoCodes)
+//
+//        val listOrders = JsonArray()
+//        listOrders.add(objOrders)
+//
+//        val promoMerchantCodeArray = JsonArray()
+//        promoMerchantCodeArray.add(promoStackingRequestData.promoGlobalCode)
+//
+//        val objPromo = JsonObject()
+//        objPromo.add(CODES, promoMerchantCodeArray)
+//        objPromo.addProperty(SKIP_APPLY, promoStackingRequestData.skipApply)
+//        objPromo.addProperty(CART_TYPE, promoStackingRequestData.cartType)
+//        objPromo.addProperty(IS_SUGGESTED, promoStackingRequestData.isSuggested)
+//        objPromo.add(ORDERS, listOrders)
+//
+//        val objParams = JsonObject()
+//        objParams.add(PROMO, objPromo)
+//
+//        variables[PARAMS] = objParams
+        val jsonTreeCheckoutRequest = Gson().toJsonTree(checkPromoFirstStepParam)
+        val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
+        variables.put("param", jsonObjectCheckoutRequest)
 
-        val listProductDetails = JsonArray()
-        listProductDetails.add(objProductDetail)
-
-        val listPromoCodes = JsonArray()
-        listPromoCodes.add(promoCode1)
-        listPromoCodes.add(promoCode2)
-
-        val objOrders = JsonObject()
-        objOrders.addProperty(SHOP_ID, shopId)
-        objOrders.addProperty(UNIQUE_ID, uniqueId)
-        objOrders.add(PRODUCT_DETAILS, listProductDetails)
-        objOrders.add(CODES, listPromoCodes)
-
-        val listOrders = JsonArray()
-        listOrders.add(objOrders)
-
-        val promoMerchantCodeArray = JsonArray()
-        promoMerchantCodeArray.add(promoGlobalCode)
-
-        val objPromo = JsonObject()
-        objPromo.add(CODES, promoMerchantCodeArray)
-        objPromo.addProperty(SKIP_APPLY, skipApply)
-        objPromo.addProperty(IS_SUGGESTED, isSuggested)
-        objPromo.add(ORDERS, listOrders)
-
-        val objParams = JsonObject()
-        objParams.add(PROMO, objPromo)
-
-        variables[PARAMS] = objParams
     }
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {

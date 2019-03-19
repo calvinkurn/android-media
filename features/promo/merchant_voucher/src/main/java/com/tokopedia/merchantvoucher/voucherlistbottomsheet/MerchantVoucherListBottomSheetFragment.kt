@@ -1,30 +1,25 @@
 package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
+import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
-import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
-import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
-import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
-import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
 import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
 
@@ -35,28 +30,42 @@ import javax.inject.Inject
 open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVoucherListBottomsheetContract.View, MerchantVoucherViewUsed.OnMerchantVoucherViewListener {
 
     @Suppress("DEPRECATION")
-    private var loadingUseMerchantVoucher: ProgressDialog? = null
     private var progressDialog: ProgressDialog? = null
     private lateinit var merchantVoucherListBottomSheetAdapter: MerchantVoucherListBottomSheetAdapter
-    private lateinit var rvVoucherList: RecyclerView
 
-    lateinit var shopId: String
-    lateinit var checkoutType: String
+    private lateinit var rvVoucherList: RecyclerView
+    private lateinit var buttonUse: TextView
+    private lateinit var textInputCoupon: EditText
+
+    private var checkPromoFirstStepParam: CheckPromoFirstStepParam? = null
+    private var shopId: Int = 0
+    private var cartString: String = ""
 
     @Inject
     lateinit var presenter: MerchantVoucherListBottomsheetPresenter
 
     companion object {
+        val ARGUMENT_SHOP_ID = "ARGUMENT_SHOP_ID"
+        val ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM = "ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM"
+        val ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING"
+
         @JvmStatic
-        fun newInstance(merchantVoucherListBottomsheetParamData: MerchantVoucherListBottomsheetParamData): MerchantVoucherListBottomSheetFragment {
-            return MerchantVoucherListBottomSheetFragment().apply {
-                arguments = merchantVoucherListBottomsheetParamData.getBundle()
-            }
+        fun newInstance(shopId: Int, cartString: String, checkPromoFirstStepParam: CheckPromoFirstStepParam): MerchantVoucherListBottomSheetFragment {
+            val bundle = Bundle()
+            bundle.putParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM, checkPromoFirstStepParam)
+            bundle.putInt(ARGUMENT_SHOP_ID, shopId)
+            bundle.putString(ARGUMENT_CART_STRING, cartString)
+
+            val fragment = MerchantVoucherListBottomSheetFragment()
+            fragment.arguments = bundle
+
+            return fragment
         }
     }
 
     override fun initView(view: View) {
         getArgumentsValue()
+
         merchantVoucherListBottomSheetAdapter = MerchantVoucherListBottomSheetAdapter(this)
         if (activity != null) {
             initInjector()
@@ -66,15 +75,22 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         progressDialog = ProgressDialog(activity)
         progressDialog?.setMessage(getString(R.string.title_loading))
 
-        // merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget)
         rvVoucherList = view.findViewById(R.id.rvVoucherList)
+        buttonUse = view.findViewById(R.id.buttonUse)
+        textInputCoupon = view.findViewById(R.id.textInputCoupon)
+
         presenter.clearCache()
-        presenter.getVoucherList(shopId, 0)
+        presenter.getVoucherList(shopId.toString(), 0)
+
+        buttonUse.setOnClickListener {
+            presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, checkPromoFirstStepParam)
+        }
     }
 
-    fun getArgumentsValue() {
-        shopId = arguments?.getString(MerchantVoucherListBottomsheetParamData.EXTRA_SHOP_ID) ?: MerchantVoucherListBottomsheetParamData.EXTRA_SHOP_ID_DEFAULT_VALUE
-        checkoutType = arguments?.getString(MerchantVoucherListBottomsheetParamData.EXTRA_CHECKOUT_TYPE) ?: MerchantVoucherListBottomsheetParamData.EXTRA_CHECKOUT_TYPE_DEFAULT_VALUE
+    private fun getArgumentsValue() {
+        shopId = arguments?.getInt(ARGUMENT_SHOP_ID, 0) ?: 0
+        checkPromoFirstStepParam = arguments?.getParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM)
+        cartString = arguments?.getString(ARGUMENT_CART_STRING) ?: ""
     }
 
     override fun getLayoutResourceId(): Int {
@@ -83,6 +99,24 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     override fun title(): String {
         return getString(R.string.merchant_bottomsheet_title)
+    }
+
+    override fun showProgressLoading() {
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(activity)
+            progressDialog?.setCancelable(false)
+            progressDialog?.setMessage(getString(R.string.title_loading))
+        }
+        if (progressDialog!!.isShowing()) {
+            progressDialog?.dismiss()
+        }
+        progressDialog?.show()
+    }
+
+    override fun hideProgressLoading() {
+        if (progressDialog != null) {
+            progressDialog!!.dismiss()
+        }
     }
 
     override fun isOwner(): Boolean {
@@ -94,7 +128,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             merchantVoucherViewModel.run {
                 this.status = MerchantVoucherStatusTypeDef.TYPE_RUN_OUT
                 val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
-                        this, shopId)
+                        this, shopId.toString())
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
             }
         }
@@ -160,21 +194,4 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         super.showGetListError(e)*/
     }
 
-    private fun hideUseMerchantVoucherLoading() {
-        if (loadingUseMerchantVoucher != null) {
-            loadingUseMerchantVoucher!!.dismiss()
-        }
-    }
-
-    private fun showUseMerchantVoucherLoading() {
-        if (progressDialog == null) {
-            progressDialog = ProgressDialog(activity)
-            progressDialog?.setCancelable(false)
-            progressDialog?.setMessage(getString(R.string.title_loading))
-        }
-        if (progressDialog!!.isShowing()) {
-            progressDialog?.dismiss()
-        }
-        progressDialog?.show()
-    }
 }

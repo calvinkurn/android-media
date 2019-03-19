@@ -24,7 +24,7 @@ public interface CartAdapterActionListener {
 
     // void onCartPromoUseVoucherMerchantPromoClicked(PromoDataMerchant cartPromoMerchant, int position);
 
-    void onCartPromoUseVoucherMerchantPromoClickedTest();
+    void onCartPromoUseVoucherMerchantPromoClickedTest(int position);
 
     // void onCartPromoCancelVoucherPromoClicked(PromoData cartPromo, int position);
 

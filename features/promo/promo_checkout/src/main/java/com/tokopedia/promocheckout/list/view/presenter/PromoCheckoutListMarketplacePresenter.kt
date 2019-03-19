@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
@@ -11,25 +12,26 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper): BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter  {
-    override fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean) {
-        if(TextUtils.isEmpty(promoCode)){
+class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
+
+    override fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, checkPromoFirstStepParam: CheckPromoFirstStepParam?) {
+        if (checkPromoFirstStepParam == null) return
+
+        if (TextUtils.isEmpty(promoCode)) {
             view.onErrorEmptyPromoCode()
             return
         }
         view.showProgressLoading()
 
-        checkPromoStackingUseCase.setParams(123, 1, "VOUCHERTOKO10",
-                "JNE100", 1, "", "CASHBACK50",
-                0, 1)
+        checkPromoStackingUseCase.setParams(checkPromoFirstStepParam)
         checkPromoStackingUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse?) {
                 view.hideProgressLoading()
 
                 val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
-                if(responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED){
+                if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                     view.onErrorCheckPromoCode(MessageErrorException(responseGetPromoStack.data.message.text))
-                }else{
+                } else {
                     view.onSuccessCheckPromoStackingCode(responseGetPromoStack.data)
                 }
             }
