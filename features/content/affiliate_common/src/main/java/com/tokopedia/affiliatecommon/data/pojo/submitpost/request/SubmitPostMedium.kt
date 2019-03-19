@@ -4,9 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class SubmitPostMedium(
-        @SerializedName("id")
-        @Expose
-        var id: String = "",
         @SerializedName("mediaURL")
         @Expose
         var mediaURL: String = "",
@@ -21,7 +18,10 @@ data class SubmitPostMedium(
 
         @SerializedName("type")
         @Expose
-        val type: String = TYPE_IMAGE
+        val type: String = TYPE_IMAGE,
+        @SerializedName("id")
+        @Expose
+        var id: String = ""
 
 ) {
     companion object {
