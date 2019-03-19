@@ -1744,7 +1744,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable,
                             boolean editable) {
         if (getContext() != null) {
-            Menus menus = createBottomMenu(getContext(), deletable, reportable, editable, new PostMenuListener() {
+            Menus menus = createBottomMenu(getContext(), deletable, reportable, false, new PostMenuListener() {
                 @Override
                 public void onDeleteClicked() {
 

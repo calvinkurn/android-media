@@ -639,7 +639,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, editable, object: PostMenuListener{
+            val menus = createBottomMenu(it, deletable, reportable, false, object: PostMenuListener{
                 override fun onDeleteClicked() {
                     createDeleteDialog(postId, postId).show()
                 }
