@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_12">
 
     <TextView
@@ -10,10 +11,10 @@
         style="@style/TextView.Medium.FontMedium.BlackPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
         android:textStyle="bold"
+        android:text="Deals"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +35,7 @@
         android:id="@+id/rv_curated_deals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:nestedScrollingEnabled="false"

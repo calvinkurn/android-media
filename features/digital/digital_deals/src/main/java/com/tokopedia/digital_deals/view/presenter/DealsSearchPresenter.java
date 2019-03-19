@@ -8,9 +8,11 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
@@ -19,6 +21,7 @@ import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
@@ -37,18 +40,21 @@ public class DealsSearchPresenter
         implements DealsSearchContract.Presenter {
 
     private GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase;
+    private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
     private List<ProductItem> mTopDeals;
     private SearchResponse mSearchData;
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
+    private List<Location> mTopLocations;
     private RequestParams searchNextParams = RequestParams.create();
 
     @Inject
     public DealsSearchPresenter(GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase,
-                                GetSearchNextUseCase searchNextUseCase) {
+                                GetLocationListRequestUseCase getLocationListRequestUseCase, GetSearchNextUseCase searchNextUseCase) {
         this.getSearchDealsListRequestUseCase = getSearchDealsListRequestUseCase;
+        this.getSearchLocationListRequestUseCase = getLocationListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
     }
 
@@ -59,6 +65,7 @@ public class DealsSearchPresenter
         requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
         Location location = Utils.getSingletonInstance().getLocation(getView().getActivity());
         requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, "brand_product");
         getSearchDealsListRequestUseCase.setRequestParams(requestParams);
         getSearchDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -121,8 +128,7 @@ public class DealsSearchPresenter
     @Override
     public boolean onItemClick(int id) {
         if (id == R.id.tv_change_city) {
-            getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
-            getView().getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.hold);
+            getLocations(false);
         } else if (id == R.id.imageViewBack) {
             getView().goBack();
         }
@@ -190,6 +196,40 @@ public class DealsSearchPresenter
             isLastPage = true;
         }
         return searchResponse.getDeals();
+    }
+
+
+    private void getLocations(boolean isForFirstime) {
+        getSearchLocationListRequestUseCase.setRequestParams(RequestParams.EMPTY);
+        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("enter error");
+                e.printStackTrace();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getLocations(false);
+                    }
+                });
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                mTopLocations = locationResponse.getLocations();
+                getView().startLocationFragment(mTopLocations, isForFirstime);
+            }
+        });
     }
 
 }

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 
 
 public class DealsLocationActivity extends BaseSimpleActivity {

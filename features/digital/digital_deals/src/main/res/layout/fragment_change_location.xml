@@ -36,15 +36,6 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/grey_300" />
-
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_search_results"
         android:layout_width="match_parent"

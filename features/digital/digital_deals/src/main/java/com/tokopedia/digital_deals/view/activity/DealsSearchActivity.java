@@ -22,13 +22,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
+import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
@@ -45,7 +48,7 @@ import javax.inject.Inject;
 import static com.tokopedia.digital_deals.view.activity.DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY;
 
 public class DealsSearchActivity extends DealsBaseActivity implements
-        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
+        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener {
 
     private final boolean IS_SHORT_LAYOUT = true;
 
@@ -71,6 +74,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private String searchText;
     private int adapterPosition = -1;
     private boolean forceRefresh;
+    CloseableBottomSheetDialog selectLocationFragment;
 
     @Override
     public int getLayoutRes() {
@@ -104,7 +108,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_14));
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
-        searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_grey_deal));
+        searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_deal));
         EditText etSearch = searchInputView.findViewById(R.id.edit_text_search);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
@@ -159,6 +163,13 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Override
     public void navigateToActivity(Intent intent) {
         startActivity(intent);
+    }
+
+    @Override
+    public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
+        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        selectLocationFragment.setContentView(new SelectLocationBottomSheet(this, isForFirstTime, locationList, this));
+        selectLocationFragment.show();
     }
 
     @Override
@@ -398,4 +409,18 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         navigateToActivityRequest(intent, requestCode);
     }
 
+    @Override
+    public void onLocationItemSelected(boolean locationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location == null) {
+            finish();
+        } else {
+            tvCityName.setText(location.getName());
+            if (selectLocationFragment != null) {
+                selectLocationFragment.dismiss();
+            }
+            if (!TextUtils.isEmpty(searchInputView.getSearchText()))
+                mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+        }
+    }
 }

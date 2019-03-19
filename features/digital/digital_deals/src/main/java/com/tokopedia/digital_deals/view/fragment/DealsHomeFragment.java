@@ -34,18 +34,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.flexbox.AlignItems;
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -58,7 +52,6 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.adapter.PromoAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
-import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
@@ -187,7 +180,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         rvTrendingDeals.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         rvTrendingDeals.setNestedScrollingEnabled(false);
 
-        Drawable img = getResources().getDrawable(R.drawable.ic_search_grey_deal);
+        Drawable img = getResources().getDrawable(R.drawable.ic_search_deal);
         setDrawableTint(img);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
@@ -332,7 +325,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             ImageView imageViewCatItem;
             TextView textViewCatItem;
 
-            for (int position = 0; position < 5; position++) {
+            for (int position = 0; position < 4; position++) {
                 if (categoryList.get(position).getIsCard() != 1) {
                     LayoutInflater inflater = getLayoutInflater();
                     view = inflater.inflate(R.layout.category_item, mainContent, false);
@@ -361,7 +354,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             view = inflater.inflate(R.layout.category_item, mainContent, false);
             imageViewCatItem = view.findViewById(R.id.iv_category);
             textViewCatItem = view.findViewById(R.id.tv_category);
-            textViewCatItem.setText("Semua\n Kategori");
+            textViewCatItem.setText(getContext().getResources().getString(R.string.sell_all_category));
             imageViewCatItem.setImageResource(R.drawable.ic_semua_kategori);
             view.setLayoutParams(params);
             catItems.addView(view);
@@ -587,32 +580,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
         selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        View locationView = getLayoutInflater().inflate(R.layout.fragment_change_location, null);
-        rvSearchResults = locationView.findViewById(R.id.rv_search_results);
-        ImageView crossIcon = locationView.findViewById(R.id.cross_icon_bottomsheet);
-        TextView titletext = locationView.findViewById(R.id.location_bottomsheet_title);
-
-        if (isForFirstime) {
-            titletext.setText(getContext().getResources().getString(R.string.location_bottomsheet_title));
-            crossIcon.setVisibility(View.GONE);
-        } else {
-            titletext.setText(getContext().getResources().getString(R.string.select_location_bottomsheet_title));
-            crossIcon.setVisibility(View.VISIBLE);
-            crossIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selectLocationFragment.dismiss();
-                }
-            });
-        }
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getActivity());
-        layoutManager.setFlexWrap(FlexWrap.WRAP);
-        layoutManager.setFlexDirection(FlexDirection.ROW);
-        layoutManager.setAlignItems(AlignItems.CENTER);
-        layoutManager.setJustifyContent(JustifyContent.CENTER);
-        rvSearchResults.setLayoutManager(layoutManager);
-        rvSearchResults.setAdapter(new DealsLocationAdapter(locationList, this));
-        selectLocationFragment.setContentView(locationView);
+        selectLocationFragment.setContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this));
         selectLocationFragment.show();
         selectLocationFragment.setCanceledOnTouchOutside(true);
     }

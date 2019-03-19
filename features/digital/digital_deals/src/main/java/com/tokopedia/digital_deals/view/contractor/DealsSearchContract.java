@@ -39,6 +39,8 @@ public class DealsSearchContract {
         void goBack();
 
         void navigateToActivity(Intent intent);
+
+        void startLocationFragment(List<Location> locationList, boolean isTopLocations);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

@@ -36,7 +36,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/location_arrow_down"
-                        android:text="Deals Di"
+                        android:text="Deals di"
                         android:gravity="center"
                         android:textColor="#7031353b"
                         android:textSize="@dimen/sp_12"
@@ -66,14 +66,6 @@
                 android:visibility="gone"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-
-                <View
-                    android:id="@+id/divider1"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/divider_height_thinv"
-                    android:background="@color/divider_color"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <TextView
                     android:id="@+id/search_input_view"
                     style="@style/TextView.Small.BlackPrimary"
@@ -84,39 +76,18 @@
                     android:layout_marginRight="@dimen/dp_15"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:background="@drawable/rect_grey_search_background"
-                    android:drawableLeft="@drawable/ic_search_grey_deal"
+                    android:drawableLeft="@drawable/ic_search_deal"
                     android:drawablePadding="@dimen/dp_4"
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:hint="@string/search_input_hint_deals"
                     android:maxLines="1"
                     android:orientation="horizontal"
+                    android:textColor="#ae31353b"
                     android:padding="@dimen/dp_10"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider1" />
-
-
-                <!--<TextView-->
-                <!--android:id="@+id/tv_location_name"-->
-                <!--style="@style/TextView.Small.BlackPrimary"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginRight="@dimen/dp_16"-->
-                <!--android:drawableLeft="@drawable/ic_location_2"-->
-                <!--android:drawablePadding="@dimen/dp_8"-->
-                <!--android:ellipsize="end"-->
-                <!--android:fontFamily="sans-serif"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:lines="1"-->
-                <!--android:maxWidth="@dimen/dp_100"-->
-                <!--android:paddingBottom="@dimen/dp_8"-->
-                <!--android:paddingTop="@dimen/dp_8"-->
-                <!--android:text="Surabayhjhhhhhhhhhhjhjhjhhghgha"-->
-                <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--app:layout_constraintHorizontal_bias="1.0"-->
-                <!--app:layout_constraintRight_toRightOf="parent"-->
-                <!--app:layout_constraintTop_toTopOf="parent" />-->
+                    app:layout_constraintTop_toBottomOf="@+id/cl_search_view" />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -133,62 +104,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!--<android.support.constraint.ConstraintLayout-->
-                <!--android:id="@+id/cl_banners"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--app:layout_constraintTop_toTopOf="parent">-->
-
-                <!--<com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager-->
-                <!--android:id="@+id/deals_bannerpager"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content" />-->
-
-
-                <!--<com.tokopedia.design.viewpagerindicator.CirclePageIndicator-->
-                <!--android:id="@+id/pager_indicator"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="@dimen/dp_12"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:layout_marginLeft="@dimen/dp_16"-->
-                <!--android:layout_marginTop="@dimen/dp_16"-->
-                <!--android:padding="@dimen/dp_2"-->
-                <!--app:centered="false"-->
-                <!--app:fillColor="@color/green_250"-->
-                <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/deals_bannerpager"-->
-                <!--app:pageColor="@color/grey_400"-->
-                <!--app:radius="@dimen/dp_3"-->
-                <!--app:strokeColor="@color/grey_400" />-->
-
-                <!--<TextView-->
-                <!--android:id="@+id/see_all_promo"-->
-                <!--style="@style/TextView.Micro.Green"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginRight="@dimen/dp_16"-->
-                <!--android:gravity="top"-->
-                <!--android:text="@string/promo_button_text"-->
-                <!--app:layout_constraintBottom_toBottomOf="@+id/pager_indicator"-->
-                <!--app:layout_constraintRight_toRightOf="parent"-->
-                <!--app:layout_constraintTop_toTopOf="@+id/pager_indicator"-->
-                <!--app:layout_constraintVertical_bias="0.5" />-->
-
-                <!--</android.support.constraint.ConstraintLayout>-->
-
-
-                <!--<TextView-->
-                <!--android:id="@+id/tv_popular_category"-->
-                <!--style="@style/TextView.Title.FontMedium.BlackPrimary"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginLeft="@dimen/dp_16"-->
-                <!--android:layout_marginTop="@dimen/dp_24"-->
-                <!--android:text="@string/category_voucher"-->
-                <!--android:visibility="gone"-->
-                <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/cl_banners" />-->
-
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/bg_layut"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_blue_gradient"
+                    app:layout_constraintTop_toTopOf="parent" >
                 <LinearLayout
                     android:id="@+id/category_items"
                     android:layout_width="match_parent"
@@ -197,17 +119,6 @@
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <!--<android.support.v7.widget.RecyclerView-->
-                <!--android:id="@+id/rv_category_items"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginLeft="@dimen/dp_16"-->
-                <!--android:layout_marginRight="@dimen/dp_16"-->
-                <!--android:layout_marginTop="@dimen/dp_16"-->
-                <!--android:nestedScrollingEnabled="false"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/tv_popular_category"-->
-                <!--tools:listitem="@layout/category_item" />-->
 
 
                 <android.support.constraint.ConstraintLayout
@@ -255,6 +166,7 @@
                         tools:listitem="@layout/item_brand_short" />
 
                 </android.support.constraint.ConstraintLayout>
+                </android.support.constraint.ConstraintLayout>
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/cl_topDeals"
@@ -262,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_12"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_brands">
+                    app:layout_constraintTop_toBottomOf="@+id/bg_layut">
 
                     <TextView
                         android:id="@+id/tv_popular"
