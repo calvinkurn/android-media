@@ -19,6 +19,7 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
@@ -31,9 +32,11 @@ import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
+import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
@@ -80,13 +83,18 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private HashMap<String, Object> params = new HashMap<>();
     private UserSessionInterface userSession;
     private DealsAnalytics dealsAnalytics;
+    private boolean isTopLocations = true;
+
+    private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
+    private List<Location> mTopLocations;
 
 
     @Inject
-    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, DealsAnalytics dealsAnalytics) {
+    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, DealsAnalytics dealsAnalytics) {
         this.getDealsListRequestUseCase = getDealsListRequestUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextDealPageUseCase = getNextDealPageUseCase;
+        this.getSearchLocationListRequestUseCase = getSearchLocationListRequestUseCase;
         this.dealsAnalytics = dealsAnalytics;
     }
 
@@ -178,7 +186,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.tv_location_name || id == R.id.toolbar_title) {
-            getView().startLocationFragment();
+            getLocations(false);
         } else if (id == R.id.action_menu_favourite) {
 
         } else if (id == R.id.action_promo) {
@@ -279,7 +287,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 getView().renderCategoryList(getCategories(categoryItems),
                         getCarouselOrTop(categoryItems, CAROUSEL),
                         getCarouselOrTop(categoryItems, TOP));
-                getView().renderCuratedDealsList(getCuratedDeals(categoryItems));
+                getView().renderCuratedDealsList(getCuratedDeals(categoryItems, TOP));
 
                 Type token2 = new TypeToken<DataResponse<AllBrandsResponse>>() {
                 }.getType();
@@ -382,10 +390,10 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
     }
 
-    private List<CategoryItem> getCuratedDeals(List<CategoryItem> categoryItems) {
+    private List<CategoryItem> getCuratedDeals(List<CategoryItem> categoryItems, String carouselOrTop) {
         curatedItems = new ArrayList<>();
         for (CategoryItem categoryItem: categoryItems) {
-            if (categoryItem.getIsCard() == 1) {
+            if (categoryItem.getIsCard() == 1 && !categoryItem.getName().equalsIgnoreCase(carouselOrTop)) {
                 curatedItems.add(categoryItem);
             }
         }
@@ -449,5 +457,38 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     public void sendEventView(String action, String label) {
         dealsAnalytics.sendEventDealsDigitalView(action, label);
+    }
+
+    public void getLocations(boolean isForFirstime) {
+        getSearchLocationListRequestUseCase.setRequestParams(RequestParams.EMPTY);
+        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("enter error");
+                e.printStackTrace();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getLocations(false);
+                    }
+                });
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                mTopLocations = locationResponse.getLocations();
+                getView().startLocationFragment(mTopLocations, isForFirstime);
+            }
+        });
     }
 }

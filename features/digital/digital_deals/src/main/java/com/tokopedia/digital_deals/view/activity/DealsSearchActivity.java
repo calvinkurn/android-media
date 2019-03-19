@@ -28,6 +28,7 @@ import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
+import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -315,8 +316,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                         finish();
                     } else {
                         if (data != null) {
-                            boolean isLocationUpdated = data.getBooleanExtra(SelectLocationFragment.EXTRA_CALLBACK_LOCATION, true);
-                            if (isLocationUpdated)
+                            if (DealsHomeFragment.isLocationUpdated)
                                 Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
                         }
                         tvCityName.setText(location.getName());

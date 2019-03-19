@@ -141,7 +141,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-        return (categoryItems == null) ? 0 : (isDealsHomeLayout) ? 9 : categoryItems.size();
+        return (categoryItems == null) ? 0 : categoryItems.size();
     }
 
     @Override

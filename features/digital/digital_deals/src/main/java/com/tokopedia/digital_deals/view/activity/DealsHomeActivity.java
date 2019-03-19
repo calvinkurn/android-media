@@ -15,6 +15,7 @@ import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFr
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.TrendingDealsFragment;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.TrendingDealsCallBacks;
 
 import java.util.List;

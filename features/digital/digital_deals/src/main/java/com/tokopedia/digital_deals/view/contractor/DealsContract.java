@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -59,9 +60,10 @@ public class DealsContract {
 
         int getRequestCode();
 
-        void startLocationFragment();
+        void startLocationFragment(List<Location> locationList, boolean isTopLocations);
 
         void startDealsCategoryFragment(List<CategoryItem> categoryItems);
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {
