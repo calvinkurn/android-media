@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_ovo_tokopoint_widget"
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginLeft="@dimen/margin_16"
@@ -20,12 +21,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_scan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_product_fintech_qr_normal_24"
-            android:layout_marginTop="@dimen/dp_10"
+            app:srcCompat="@drawable/ic_product_fintech_qr_normal_24"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_centerHorizontal="true"/>
 
         <TextView
@@ -36,7 +37,7 @@
             android:textColor="@color/font_black_disabled_38"
             android:textSize="@dimen/sp_10"
             android:gravity="center"
-            android:layout_marginBottom="@dimen/dp_8"/>
+            android:layout_marginBottom="@dimen/dp_6"/>
 
     </RelativeLayout>
 
@@ -47,7 +48,6 @@
         android:layout_marginBottom="8dp"
         android:background="#1e000000" />
 
-
     <RelativeLayout
         android:id="@+id/container_nonlogin"
         android:layout_width="0dp"
@@ -55,20 +55,23 @@
         android:layout_weight="6"
         android:orientation="horizontal">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/bg_container_nonlogin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitEnd"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"/>
+            android:adjustViewBounds="true"
+            android:scaleType="fitEnd"/>
 
-        <ImageView
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_logo_tokopoint"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_margin="@dimen/dp_8"
-            android:src="@drawable/ic_product_fintech_tokopoint_green_24"
+            app:srcCompat="@drawable/ic_product_fintech_tokopoint_green_24"
             android:layout_centerVertical="true"/>
 
         <RelativeLayout

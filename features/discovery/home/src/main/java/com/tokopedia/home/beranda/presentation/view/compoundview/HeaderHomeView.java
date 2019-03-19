@@ -13,15 +13,16 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
@@ -61,14 +62,14 @@ public class HeaderHomeView extends BaseCustomView {
     private View tokoCashHolder;
     private TextView tvTitleTokocash;
     private TextView tvBalanceTokocash;
-    private ImageView ivLogoTokocash;
+    private AppCompatImageView ivLogoTokocash;
     private TextView tvActionTokocash;
     private ProgressBar tokocashProgressBar;
 
     private View tokoPointHolder;
     private TextView tvBalanceTokoPoint;
     private TextView tvActionTokopoint;
-    private ImageView ivLogoTokoPoint;
+    private AppCompatImageView ivLogoTokoPoint;
     private ProgressBar tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
     private WalletAnalytics walletAnalytics;
@@ -118,9 +119,14 @@ public class HeaderHomeView extends BaseCustomView {
             view = inflate(getContext(), R.layout.layout_item_widget_ovo_tokopoint_nonlogin, this);
             scanHolder = view.findViewById(R.id.container_action_scan);
             View container = view.findViewById(R.id.container_nonlogin);
-            ImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
+            AppCompatImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
 
-            ImageHandler.LoadImage(imgNonLogin, BG_CONTAINER_URL);
+            Glide.with(getContext())
+                    .load(BG_CONTAINER_URL)
+                    .bitmapTransform(new RoundedCornersTransformation(getContext(), Math.round(TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics())), 0,
+                            RoundedCornersTransformation.CornerType.RIGHT))
+                    .into(imgNonLogin);
 
             container.setOnClickListener(onCheckNowListener());
             scanHolder.setOnClickListener(onScanListener());
