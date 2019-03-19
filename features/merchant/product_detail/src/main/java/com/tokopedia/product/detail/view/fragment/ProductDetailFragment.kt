@@ -460,7 +460,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     userInputQuantity,
                     userInputVariant,
                     action,
-                    null), REQUEST_CODE_NORMAL_CHECKOUT)
+                    null,
+                    trackerAttribution,
+                    trackerListName),
+                    REQUEST_CODE_NORMAL_CHECKOUT)
             }
         }
     }
@@ -762,7 +765,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
-                //TODO need to check if product id is null when device don't keep activity
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
                     val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
@@ -781,7 +783,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
-                //TODO need to check when device don't keep activity
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
@@ -884,7 +885,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             ToasterNormal.make(view, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
                 .setAction(getString(R.string.label_atc_open_cart)) { v ->
-                    //TODO tracking
+                    productDetailTracking.eventAtcClickLihat(productId)
                     val intent = RouteManager.getIntent(this, ApplinkConst.CART)
                     startActivity(intent)
                 }
@@ -1228,8 +1229,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         productInfoViewModel.productInfoP3resp.value?.isWishlisted = true
         updateWishlist(true)
-        //TODO clear cache
-        //TODO action success add wishlist. in old version, will broadcast
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
@@ -1242,8 +1241,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString())
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
-        if (productInfo != null) {
-            //TODO SENT MOENGAGE
+        productInfo?.run {
+            productDetailTracking.sendMoEngageClickDiskusi(this,
+                (shopInfo?.goldOS?.isOfficial?: 0) > 0,
+                shopInfo?.shopCore?.name ?: "")
         }
     }
 

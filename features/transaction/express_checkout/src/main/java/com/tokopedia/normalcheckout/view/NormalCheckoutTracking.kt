@@ -7,6 +7,9 @@ import com.tokopedia.track.TrackApp
 class NormalCheckoutTracking {
     companion object {
         const val CLICK_PDP = "clickPDP"
+        const val CLICK_BUY = "clickBuy"
+        const val CLICK = "click"
+        const val BUY = "buy"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
         const val SELECT_COLOR_VARIANT = "select color on variants page"
         const val SELECT_SIZE_VARIANT = "select size on variants page"
@@ -61,5 +64,10 @@ class NormalCheckoutTracking {
                 AFInAppEventParameterName.PRICE to priceItem,
                 "category" to category
             ))
+    }
+
+    fun eventPDPCart() {
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+            CLICK_BUY, PRODUCT_DETAIL_PAGE, CLICK, BUY)
     }
 }

@@ -516,6 +516,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     }
                 }
             })
+        normalCheckoutTracking.eventPDPCart()
     }
 
     fun showLoadingDialog(onCancelClicked: (() -> Unit)? = null) {

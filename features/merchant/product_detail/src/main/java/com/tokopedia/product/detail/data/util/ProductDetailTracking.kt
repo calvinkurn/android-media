@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.data.util
 
-import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
@@ -16,17 +15,18 @@ import java.util.*
 class ProductDetailTracking() {
 
     fun eventTalkClicked() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
-            ProductTrackingConstant.ProductTalk.EVENT_LABEL)
+            ProductTrackingConstant.ProductTalk.TALK)
     }
 
     fun eventReviewClicked() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
-            ProductTrackingConstant.ProductReview.EVENT_LABEL)
+            ProductTrackingConstant.ProductReview.REVIEW)
     }
 
     fun eventReportLogin() {
@@ -132,6 +132,17 @@ class ProductDetailTracking() {
         return list
     }
 
+    fun eventAtcClickLihat(productId: String?) {
+        if (productId.isNullOrEmpty()) {
+            return
+        }
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+            ProductTrackingConstant.Category.PDP.toLowerCase(),
+            "click - cek keranjang",
+            productId)
+    }
+
     fun eventClickVariant(eventLabel: String) {
         if (eventLabel.isEmpty()) return
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
@@ -198,7 +209,7 @@ class ProductDetailTracking() {
     fun eventClickWishlistOnAffiliate(userId: String,
                                       productId: String) {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-            mutableMapOf<String, Any>(KEY_EVENT to ProductTrackingConstant.Affiliate.EVENT,
+            mutableMapOf<String, Any>(KEY_EVENT to ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
                 KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
                 KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION_CLICK_WISHLIST,
                 KEY_LABEL to productId,
@@ -212,7 +223,7 @@ class ProductDetailTracking() {
                 KEY_ACTION to ProductTrackingConstant.Action.CLICK_BY_ME,
                 KEY_LABEL to "$shopID - $productId")
         } else {
-            mutableMapOf(KEY_EVENT to ProductTrackingConstant.Affiliate.EVENT,
+            mutableMapOf(KEY_EVENT to ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
                 KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
                 KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION,
                 KEY_LABEL to productId)
@@ -279,7 +290,7 @@ class ProductDetailTracking() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP.toLowerCase(),
-            ProductTrackingConstant.ImageReview.ACTION_MOST_HELPFULL,
+            "click - review gallery on most helpful review",
             "product_id: $productId - review_id : $reviewId"
         )
     }
@@ -369,6 +380,9 @@ class ProductDetailTracking() {
         ))
     }
 
+    ////////////////////////////////////////////////////////////////
+    // MOENGAGE START
+    ////////////////////////////////////////////////////////////////
     fun sendMoEngagePDPReferralCodeShareEvent() {
         TrackApp.getInstance()?.moEngage?.sendEvent("Share_Event",
             mutableMapOf<String, Any>(
@@ -377,6 +391,37 @@ class ProductDetailTracking() {
             )
         )
     }
+
+    fun sendMoEngageClickDiskusi(productInfo: ProductInfo, isOfficialStore: Boolean, shopName: String) {
+        productInfo.category.breadcrumbUrl
+        TrackApp.getInstance()?.moEngage?.sendEvent(
+            "Clicked_Diskusi_Pdp",
+            mutableMapOf<String, Any>().apply {
+                if (productInfo.category.detail.isNotEmpty()) {
+                    put("category", productInfo.category.detail[0].name)
+                    put("category_id", productInfo.category.detail[0].id)
+                }
+                if (productInfo.category.detail.size > 1) {
+                    put("subcategory", productInfo.category.detail[1].name)
+                    put("subcategory_id", productInfo.category.detail[1].id)
+                }
+                put("product_name", productInfo.basic.name)
+                put("product_id", productInfo.basic.id)
+                put("product_url", productInfo.basic.url)
+                put("product_price", productInfo.basic.price)
+                put("is_official_store", isOfficialStore)
+                put("shop_id", productInfo.basic.shopID)
+                put("shop_name", shopName)
+                if (productInfo.pictures?.isNotEmpty() == true) {
+                    put("product_image_url", productInfo.pictures?.get(0)?.urlOriginal ?: "")
+                }
+            }
+        )
+    }
+
+    ////////////////////////////////////////////////////////////////
+    // MOENGAGE END
+    ////////////////////////////////////////////////////////////////
 
     companion object {
         private const val KEY_EVENT = "event"
