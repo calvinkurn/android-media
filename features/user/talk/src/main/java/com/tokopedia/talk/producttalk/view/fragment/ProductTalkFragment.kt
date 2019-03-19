@@ -275,9 +275,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onEmptyTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
         setHasOptionsMenu(false)
         adapter.showEmpty(presenter.isMyShop(shopId))
+        stopTrace()
+
     }
 
     override fun setCanLoad() {
