@@ -95,7 +95,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.cobaLagi,
                     OvoPayByQrTrackerUtil.LABEL.defaultLabel);
-            presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID))
+            presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID));
         });
 
         presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID));
