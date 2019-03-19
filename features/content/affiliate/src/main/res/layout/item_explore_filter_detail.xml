@@ -7,5 +7,6 @@
     <com.tokopedia.affiliate.common.widget.ChipView
         android:id="@+id/chip"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:chipViewSize="small"/>
 </FrameLayout>

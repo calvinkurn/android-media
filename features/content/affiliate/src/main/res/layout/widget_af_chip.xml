@@ -28,10 +28,8 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        android:fontFamily="sans-serif-black"
         android:lineSpacingExtra="4sp"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
         tools:text="Perawatan Tubuh" />
 </LinearLayout>
