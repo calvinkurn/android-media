@@ -104,6 +104,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         private const val TRACKER_LIST_NAME = "tracker_list_name"
 
         const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
+        const val RESULT_SELECTED_WAREHOUSE = "selected_warehouse"
         const val RESULT_PRODUCT_DATA = "product_data"
         const val RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message"
 
@@ -403,10 +404,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 setResult(Activity.RESULT_OK, Intent().apply {
                     if (!selectedVariantId.isNullOrEmpty()) {
                         putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
-                        selectedProductInfo?.let { it ->
+                        selectedProductInfo?.let {
                             val cacheManager =
                                 SaveInstanceCacheManager(this@run, true).apply {
                                     put(RESULT_PRODUCT_DATA, it)
+                                    viewModel.selectedwarehouse?.let {
+                                        put(RESULT_SELECTED_WAREHOUSE, it)
+                                    }
                                 }
                             putExtra(RESULT_PRODUCT_DATA_CACHE_ID, cacheManager.id)
                         }

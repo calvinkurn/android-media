@@ -39,7 +39,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             if (productVariant != null) {
                 label_variant.visible()
                 label_choose_variant.visible()
-                if (txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible) {
+                if (title_multiorigin.isVisible || txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible) {
                     variant_divider.visible()
                 } else {
                     variant_divider.gone()
