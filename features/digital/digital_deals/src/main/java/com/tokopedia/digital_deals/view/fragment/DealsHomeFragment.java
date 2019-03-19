@@ -332,7 +332,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             ImageView imageViewCatItem;
             TextView textViewCatItem;
 
-            for (int position = 0; position < 4; position++) {
+            for (int position = 0; position < 5; position++) {
                 if (categoryList.get(position).getIsCard() != 1) {
                     LayoutInflater inflater = getLayoutInflater();
                     view = inflater.inflate(R.layout.category_item, mainContent, false);
