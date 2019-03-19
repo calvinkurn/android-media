@@ -22,7 +22,7 @@ import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
-import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener;
+import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
 import com.tokopedia.navigation.presentation.adapter.viewholder.RecomendationViewHolder;

@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.InboxGtmTracker
 import com.tokopedia.navigation.domain.model.Recomendation
-import com.tokopedia.navigation.presentation.adapter.InboxAdapterListener
+import com.tokopedia.navigation.presentation.view.InboxAdapterListener
 import com.tokopedia.productcard.ProductCardView
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.Category
