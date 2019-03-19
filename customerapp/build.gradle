@@ -240,7 +240,7 @@ android {
         applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary = vectorDrawable
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "x86", "armeabi-v7a"
@@ -275,24 +275,24 @@ android {
         live {
             dimension "tier"
         }
-//        staging {
-//            dimension "tier"
-//        }
-//        dev {
-//            dimension "client"
-//        }
-//        prod {
-//            dimension "client"
-//        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
     }
 }
 
-//afterEvaluate {
-//    dependencies {
-//        liveDevImplementation rootProject.ext.instabugDependencies.instabug
-//        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
-//    }
-//}
+afterEvaluate {
+    dependencies {
+        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
+    }
+}
 
 dependencies {
 
