@@ -1918,4 +1918,8 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
+
+    public void shareFeed(Activity activity, String detailId, String url, String title, String
+            imageUrl, String description) {
+    }
 }
