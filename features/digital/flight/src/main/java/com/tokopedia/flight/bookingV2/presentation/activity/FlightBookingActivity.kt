@@ -86,8 +86,8 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
         fun getCallingIntent(activity: Activity,
                              passDataViewModel: FlightSearchPassDataViewModel,
                              departureId: String,
-                             returnId: String = "",
-                             priceViewModel: FlightPriceViewModel): Intent {
+                             priceViewModel: FlightPriceViewModel,
+                             returnId: String = ""): Intent {
             val intent = Intent(activity, FlightBookingActivity::class.java)
             intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
             intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataViewModel)

@@ -62,8 +62,8 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                 .getCallingIntent(this,
                         passDataViewModel,
                         selectedDepartureID,
-                        selectedFlightID,
-                        flightPriceViewModel),
+                        flightPriceViewModel,
+                        selectedFlightID),
                 REQUEST_CODE_BOOKING)
     }
 
