@@ -127,14 +127,6 @@ fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
 }
 
-fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
-    impressHolder = holder;
-    hintListener = listener;
-    if (impressHolder != null && !impressHolder!!.isInvoke) {
-        invoke(this)
-    }
-}
-
 fun View.addOnImpressionListener(holder: ImpressHolder?, listener: ViewHintListener) {
     viewTreeObserver.addOnScrollChangedListener(
             object : ViewTreeObserver.OnScrollChangedListener {
