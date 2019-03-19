@@ -9,14 +9,14 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
-import java.util.*
 
 /**
  * Created by Steven on 18/03/19.
  */
-class TopChatVoucherViewHolder(itemView: View)
-    : BaseChatViewHolder<TopChatVoucherViewModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
+class TopChatVoucherViewHolder(itemView: View, var voucherListener: TopChatVoucherListener)
+    : BaseChatViewHolder<TopChatVoucherViewModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener{
 
     private var chatStatus: ImageView = itemView.findViewById<ImageView>(R.id.chat_status)
     private var isOwner: Boolean = false
@@ -25,16 +25,14 @@ class TopChatVoucherViewHolder(itemView: View)
         super.bind(viewModel)
         val element = viewModel.voucherModel
         val data = MerchantVoucherViewModel(element)
-//        isOwner = viewModel.isSender
-        isOwner = Random().nextBoolean()
+        isOwner = viewModel.isSender
         itemView.findViewById<MerchantVoucherView>(R.id.merchantVoucherView).onMerchantVoucherViewListener = this
         itemView.findViewById<MerchantVoucherView>(R.id.merchantVoucherView).setData(data)
 
-//        setupChatBubbleAlignment(itemView, viewModel.isSender, viewModel)
-        setupChatBubbleAlignment(itemView, isOwner, viewModel)
+        setupChatBubbleAlignment(isOwner, viewModel)
     }
 
-    fun setupChatBubbleAlignment(itemView: View, isSender: Boolean, element: TopChatVoucherViewModel){
+    private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherViewModel){
         if(isSender){
             setChatRight(element)
         }else{
@@ -57,10 +55,9 @@ class TopChatVoucherViewHolder(itemView: View)
         var imageResource: Int
         if (element.isShowTime) {
             chatStatus.visibility = View.VISIBLE
-            if (element.isRead) {
-                imageResource = com.tokopedia.chat_common.R.drawable.ic_chat_read
-            } else {
-                imageResource = com.tokopedia.chat_common.R.drawable.ic_chat_unread
+            when {
+                element.isRead -> imageResource = com.tokopedia.chat_common.R.drawable.ic_chat_read
+                else -> imageResource = com.tokopedia.chat_common.R.drawable.ic_chat_unread
             }
 
             if (element.isDummy) {
@@ -76,7 +73,7 @@ class TopChatVoucherViewHolder(itemView: View)
         return isOwner
     }
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-
+        voucherListener.onVoucherClicked(merchantVoucherViewModel.voucherCode)
     }
 
     companion object {

@@ -73,6 +73,7 @@ public class TopChatAnalytics {
         public static final String UPDATE_TEMPLATE = "click on tambah template";
         public static final String CLICK_PRODUCT_IMAGE = "click on product image";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
+        public static final String CLICK_COPY_VOUCHER_THUMBNAIL = "click copy on shop voucher thumbnail";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -195,6 +196,17 @@ public class TopChatAnalytics {
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
                 String.valueOf(shopId));
     }
+
+    //#AV4
+    public void eventVoucherCopyClicked(@NotNull String voucherCode) {
+        analyticTracker.sendEventTracking(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_COPY_VOUCHER_THUMBNAIL,
+                voucherCode
+        );
+    }
+
 
     public void eventClickProductThumbnailEE(int blastId, String productId, String productName,
                                              int productPrice, String category, String variant) {
