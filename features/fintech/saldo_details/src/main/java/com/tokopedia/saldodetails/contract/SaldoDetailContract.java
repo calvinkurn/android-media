@@ -47,6 +47,8 @@ public interface SaldoDetailContract {
 
         void hideSaldoPrioritasFragment();
 
+        void hideUserFinancialStatusLayout();
+
         void hideMerchantCreditLineFragment();
 
         void showMerchantCreditLineFragment(GqlMerchantCreditResponse response);
@@ -71,6 +73,8 @@ public interface SaldoDetailContract {
         void getTickerWithdrawalMessage();
 
         void getMerchantSaldoDetails();
+
+        void getUserFinancialStatus();
 
         void getMerchantCreditLineDetails();
 

@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.SpannableString;
@@ -18,6 +20,7 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,6 +30,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
@@ -219,8 +223,25 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                 mclActionItemTV.setTextColor(getResources().getColor(R.color.tkpd_main_green));
             }
             mclActionItemTV.setOnClickListener(v -> {
-                if (gqlAnchorListResponse.isShowDialog()) {
-                    // TODO: 12/3/19 open bottom sheet
+                if (gqlAnchorListResponse.isShowDialog() &&
+                        gqlAnchorListResponse.getDialogInfo() != null) {
+
+                    CloseableBottomSheetDialog closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context);
+                    View view = getLayoutInflater().inflate(R.layout.mcl_bottom_dialog, null);
+                    ((TextView) view.findViewById(R.id.mcl_bottom_sheet_title)).setText(gqlAnchorListResponse.getDialogInfo().getDialogTitle());
+                    ((TextView) view.findViewById(R.id.mcl_bottom_sheet_desc)).setText(gqlAnchorListResponse.getDialogInfo().getDialogBody());
+
+                    closeableBottomSheetDialog.setContentView(view);
+                    closeableBottomSheetDialog.setOnShowListener(dialog -> {
+                        BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                        FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+                        if (bottomSheet != null) {
+                            BottomSheetBehavior.from(bottomSheet)
+                                    .setState(BottomSheetBehavior.STATE_EXPANDED);
+                        }
+                    });
                 } else {
                     RouteManager.route(context, String.format("%s?url=%s",
                             ApplinkConst.WEBVIEW, gqlAnchorListResponse.getLink()));

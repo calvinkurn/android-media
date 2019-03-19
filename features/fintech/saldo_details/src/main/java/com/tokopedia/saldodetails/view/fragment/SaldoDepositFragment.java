@@ -101,8 +101,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private ImageView merchantDetailsExpandIV;
     private boolean expandLayout;
     private boolean expandMerchantDetailLayout = true;
-    private boolean isShowingSaldoPrioritasWidget;
-    private boolean isShowingMerchantCreditLineFragment;
     private View merchantCreditFrameLayout;
     private LinearLayout merchantStatusLL;
 
@@ -323,7 +321,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             public boolean willChangeBounds() {
                 return true;
             }
-        };    // 1dp/ms
+        };
         a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
@@ -345,7 +343,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             public boolean willChangeBounds() {
                 return true;
             }
-        };    // 1dp/ms
+        };
         a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
@@ -374,7 +372,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void showSaldoWarningDialog() {
-
         new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(R.string.sp_saldo_withdraw_warning_title))
                 .setMessage(getActivity().getString(R.string.sp_saldo_withdraw_warning_desc))
@@ -402,27 +399,36 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
-                    .isSaldoNativeEnabled()) {
-                saldoDetailsPresenter.getMerchantSaldoDetails();
-            } else {
-                hideSaldoPrioritasFragment();
-            }
-        } else {
-            hideSaldoPrioritasFragment();
-        }
-
-        if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
-
-            if (((SaldoDetailsRouter) getActivity().getApplication())
+                    .isSaldoNativeEnabled() && ((SaldoDetailsRouter) getActivity().getApplication())
                     .isMerchantCreditLineEnabled()) {
-                saldoDetailsPresenter.getMerchantCreditLineDetails();
+                saldoDetailsPresenter.getUserFinancialStatus();
             } else {
-                hideMerchantCreditLineFragment();
+
+                if (((SaldoDetailsRouter) getActivity().getApplication())
+                        .isSaldoNativeEnabled()) {
+                    saldoDetailsPresenter.getMerchantSaldoDetails();
+                } else {
+                    hideSaldoPrioritasFragment();
+                }
+
+                if (((SaldoDetailsRouter) getActivity().getApplication())
+                        .isMerchantCreditLineEnabled()) {
+                    saldoDetailsPresenter.getMerchantCreditLineDetails();
+                } else {
+                    hideMerchantCreditLineFragment();
+                }
             }
         } else {
-            hideMerchantCreditLineFragment();
+            hideUserFinancialStatusLayout();
         }
 
+    }
+
+    @Override
+    public void hideUserFinancialStatusLayout() {
+        merchantStatusLL.setVisibility(View.GONE);
+        hideSaldoPrioritasFragment();
+        hideMerchantCreditLineFragment();
     }
 
     private void showBottomSheetInfoDialog(boolean isSellerClicked) {
@@ -539,13 +545,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void hideSaldoPrioritasFragment() {
-        isShowingSaldoPrioritasWidget = false;
         saldoFrameLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void hideMerchantCreditLineFragment() {
-        isShowingMerchantCreditLineFragment = false;
         merchantCreditFrameLayout.setVisibility(View.GONE);
     }
 
@@ -591,7 +595,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
         if (sellerDetails != null &&
                 sellerDetails.isEligible()) {
-            isShowingSaldoPrioritasWidget = true;
+            merchantStatusLL.setVisibility(View.VISIBLE);
             Bundle bundle = new Bundle();
             bundle.putParcelable(BUNDLE_PARAM_SELLER_DETAILS, sellerDetails);
             getChildFragmentManager()
@@ -606,7 +610,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
         if (response != null && response.isEligible()) {
-            isShowingMerchantCreditLineFragment = true;
+            merchantStatusLL.setVisibility(View.VISIBLE);
             Bundle bundle = new Bundle();
             bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
             getChildFragmentManager()
