@@ -37,7 +37,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     private lateinit var videoCallback: VideoPickerCallback
 
     //for progress loader
-    private val timer = Timer()
+    private lateinit var timer: Timer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,7 +122,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         } else {
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
             cameraView.takeVideo(file, DURATION_MAX)
-
+            timer = Timer()
             //progress and duration countdown
             timer.schedule(object : TimerTask() {
                 override fun run() {
