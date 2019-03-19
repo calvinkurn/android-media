@@ -28,7 +28,8 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_recyclerview_business_widget.*
 import javax.inject.Inject
 
-class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, BusinessWidgetTypeFactory>() {
+class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, BusinessWidgetTypeFactory>(),
+    BusinessUnitItemView {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -94,7 +95,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     override fun getAdapterTypeFactory(): BusinessWidgetTypeFactory {
-        return BusinessWidgetTypeFactory()
+        return BusinessWidgetTypeFactory(this)
     }
 
     override fun onItemClicked(t: HomeWidget.ContentItemTab?) {
@@ -157,4 +158,12 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     private fun onErrorGetList(throwable: Throwable) {
         onGetListErrorWithEmptyData(throwable)
     }
+
+    override fun onReloadButtonClick() {
+        requestListData()
+    }
+}
+
+interface BusinessUnitItemView {
+    fun onReloadButtonClick()
 }
