@@ -57,7 +57,7 @@ fun createBottomMenu(context: Context,
 fun createBottomMenu(context: Context,
                      model: BaseKolViewModel,
                      listener: PostMenuListener?): Menus {
-    createBottomMenu(
+    return createBottomMenu(
             context,
             model.isDeletable,
             model.isReportable,

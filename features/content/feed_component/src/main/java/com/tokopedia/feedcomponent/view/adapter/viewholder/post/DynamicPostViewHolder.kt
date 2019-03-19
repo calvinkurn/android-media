@@ -204,7 +204,6 @@ class DynamicPostViewHolder(v: View,
                 itemView.caption.text = caption.text.replace(NEWLINE, " ")
             }
         }
-
     }
 
     private fun bindContentList(postId: Int,
