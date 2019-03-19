@@ -11,6 +11,12 @@ public class FlightDashboardCache {
     private static final String CACHE_NAME = "FlightDashboardNewCache";
     private static final String DEPARTURE = "DEPARTURE_AIRPORT_ID";
     private static final String ARRIVAL = "ARRIVAL_AIRPORT_ID";
+    private static final String DEPARTURE_CITY_CODE = "DEPARTURE_CITY_CODE";
+    private static final String ARRIVAL_CITY_CODE = "ARRIVAL_CITY_CODE";
+    private static final String DEPARTURE_CITY_NAME = "DEPARTURE_CITY_NAME";
+    private static final String ARRIVAL_CITY_NAME = "ARRIVAL_CITY_NAME";
+    private static final String DEPARTURE_CITY_ID = "DEPARTURE_CITY_ID";
+    private static final String ARRIVAL_CITY_ID = "ARRIVAL_CITY_ID";
     private static final String DEPARTURE_DATE = "DEPARTURE_DATE";
     private static final String RETURN_DATE = "RETURN_DATE";
     private static final String PASSENGER_ADULT = "PASSENGER_ADULT";
@@ -20,6 +26,10 @@ public class FlightDashboardCache {
     private static final String CLASS ="CLASS";
     private static final String DEFAULT_DEPARTURE_AIRPORT_ID = "CGK";
     private static final String DEFAULT_ARRIVAL_AIRPORT_ID = "DPS";
+    private static final String DEFAULT_DEPARTURE_CITY_CODE = "JKTA";
+    private static final String DEFAULT_ARRIVAL_CITY_CODE = "";
+    private static final String DEFAULT_DEPARTURE_CITY_NAME = "Jakarta";
+    private static final String DEFAULT_ARRIVAL_CITY_NAME = "Denpasar";
     private static final String DEFAULT_EMPTY_VALUE = "";
     private static final int DEFAULT_PASSENGER_ADULT = 1;
     private static final int DEFAULT_PASSENGER_CHILD = 0;
@@ -52,6 +62,46 @@ public class FlightDashboardCache {
 
     public String getArrivalAirport() {
         return sharedPrefs.getString(ARRIVAL, DEFAULT_ARRIVAL_AIRPORT_ID);
+    }
+
+    public void putDepartureCityCode(String cityCode) {
+        editor
+                .putString(DEPARTURE_CITY_CODE, cityCode)
+                .apply();
+    }
+
+    public String getDepartureCityCode() {
+        return sharedPrefs.getString(DEPARTURE_CITY_CODE, DEFAULT_DEPARTURE_CITY_CODE);
+    }
+
+    public void putArrivalCityCode(String cityCode) {
+        editor
+                .putString(ARRIVAL_CITY_CODE, cityCode)
+                .apply();
+    }
+
+    public String getArrivalCityCode() {
+        return sharedPrefs.getString(ARRIVAL_CITY_CODE, DEFAULT_ARRIVAL_CITY_CODE);
+    }
+
+    public void putDepartureCityName(String cityName) {
+        editor
+                .putString(DEPARTURE_CITY_NAME, cityName)
+                .apply();
+    }
+
+    public String getDepartureCityName() {
+        return sharedPrefs.getString(DEPARTURE_CITY_NAME, DEFAULT_DEPARTURE_CITY_NAME);
+    }
+
+    public void putArrivalCityName(String cityName) {
+        editor
+                .putString(ARRIVAL_CITY_NAME, cityName)
+                .apply();
+    }
+
+    public String getArrivalCityName() {
+        return sharedPrefs.getString(ARRIVAL_CITY_NAME, DEFAULT_ARRIVAL_CITY_NAME);
     }
 
     public void putDepartureDate(String departureDate) {

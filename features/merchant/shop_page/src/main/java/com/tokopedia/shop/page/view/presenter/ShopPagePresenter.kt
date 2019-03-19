@@ -13,7 +13,6 @@ import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.etalase.domain.interactor.DeleteShopEtalaseUseCase
 import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
 import com.tokopedia.shop.page.view.listener.ShopPageView
@@ -34,7 +33,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val deleteShopProductUseCase: DeleteShopProductUseCase,
             private val deleteFeatureProductListCacheUseCase: DeleteFeatureProductListCacheUseCase,
             private val deleteShopInfoCacheUseCase: DeleteShopInfoCacheUseCase,
-            private val deleteShopEtalaseUseCase: DeleteShopEtalaseUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase,
             private val deleteReputationSpeedDailyUseCase: DeleteReputationSpeedDailyCacheUseCase,
             private val getWhitelistUseCase: GetWhitelistUseCase,
@@ -118,7 +116,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
     fun clearCache() {
         deleteShopInfoCacheUseCase.executeSync()
         deleteShopProductUseCase.executeSync()
-        deleteShopEtalaseUseCase.executeSync()
         deleteShopNoteUseCase.executeSync()
         deleteFeatureProductListCacheUseCase.executeSync()
         deleteReputationSpeedDailyUseCase.executeSync()
@@ -132,7 +129,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe()
         deleteShopInfoCacheUseCase.unsubscribe()
         deleteShopProductUseCase.unsubscribe()
-        deleteShopEtalaseUseCase.unsubscribe()
         deleteShopNoteUseCase.unsubscribe()
         deleteFeatureProductListCacheUseCase.unsubscribe()
         deleteReputationSpeedDailyUseCase.unsubscribe()

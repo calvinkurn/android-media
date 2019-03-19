@@ -1,6 +1,7 @@
 package com.tokopedia.district_recommendation.view.shopsettings;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -21,9 +22,7 @@ import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.domain.usecase.GetShopAddressUseCase;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationFragment;
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -43,7 +42,6 @@ import rx.Subscriber;
  * for the case this acticity is called without token beforehand
  */
 public class DistrictRecommendationShopSettingsActivity extends DistrictRecommendationActivity {
-    private TkpdProgressDialog progressDialog;
 
     @Inject
     GetShopAddressUseCase getShopAddressUseCase;
@@ -59,7 +57,6 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeInjector();
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
         requestGetToken();
     }
 
@@ -79,9 +76,12 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(GetShopAddressUseCase.PARAM_AUTH, params);
 
-        if (progressDialog != null) {
-            progressDialog.showDialog();
-        }
+        ProgressDialog progress = new ProgressDialog(this, com.tokopedia.logisticcommon.R.style.CoolDialog);
+        progress.show();
+        progress.setContentView(com.tokopedia.logisticcommon.R.layout.loader_logistic_module);
+        progress.setCancelable(false);
+        progress.setOnCancelListener(dialog -> (this).finish());
+
         getShopAddressUseCase.execute(requestParams, new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
@@ -90,16 +90,16 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
 
             @Override
             public void onError(Throwable e) {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
+                if (progress.isShowing()) {
+                    progress.dismiss();
                 }
                 showErrorState();
             }
 
             @Override
             public void onNext(Response<TokopediaWsV4Response> tokopediaWsV4ResponseResponse) {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
+                if (progress.isShowing()) {
+                    progress.dismiss();
                 }
                 TokopediaWsV4Response response = tokopediaWsV4ResponseResponse.body();
                 try {

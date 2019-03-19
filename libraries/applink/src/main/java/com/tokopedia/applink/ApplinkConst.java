@@ -98,6 +98,7 @@ public interface ApplinkConst {
     String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
     String BRAND_LIST = "tokopedia://official-store/brand";
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
+    String BRAND_LIST_CATEGORY = "tokopedia://official-store/brand/{category_id}";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
     String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
@@ -176,6 +177,7 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
     String DEPOSIT = "tokopedia://saldo";
+    String SALDO_INTRO = "tokopedia://saldointro";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
@@ -216,6 +218,10 @@ public interface ApplinkConst {
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
+
+    interface WebViewUrl {
+        String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
+    }
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

@@ -22,10 +22,13 @@ class NoteViewHolder(val view: View, val listener: CheckoutVariantActionListener
 
     override fun bind(element: NoteViewModel?) {
         if (element != null) {
+            if (element.note.isNotEmpty()) {
+                itemView.et_note.setText(element.note)
+            }
             itemView.et_note.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(element.noteCharMax))
             itemView.tv_note_char_counter.text = String.format(
-                    itemView.context.getString(R.string.format_note_counter),
-                    element.note.length, element.noteCharMax)
+                itemView.context.getString(R.string.format_note_counter),
+                element.note.length, element.noteCharMax)
 
             itemView.et_note.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {
@@ -37,8 +40,8 @@ class NoteViewHolder(val view: View, val listener: CheckoutVariantActionListener
                 override fun onTextChanged(note: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     element.note = note.toString()
                     itemView.tv_note_char_counter.text = String.format(
-                            itemView.context.getString(R.string.format_note_counter),
-                            element.note.length, element.noteCharMax)
+                        itemView.context.getString(R.string.format_note_counter),
+                        element.note.length, element.noteCharMax)
                     listener.onChangeNote(element)
                 }
             })
