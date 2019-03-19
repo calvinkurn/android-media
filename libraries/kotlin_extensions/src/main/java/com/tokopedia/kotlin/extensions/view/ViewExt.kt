@@ -16,7 +16,6 @@ import android.app.ProgressDialog
 import android.view.ViewGroup
 import android.widget.TextView
 import android.view.*
-import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
