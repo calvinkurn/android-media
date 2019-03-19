@@ -121,6 +121,12 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             if (fulfillment){
                 title_multiorigin.visible()
                 subtitle_multiorigin.visible()
+                if (label_variant.isVisible) {
+                    variant_divider.visible()
+                } else {
+                    variant_divider.gone()
+                }
+                visible()
             } else {
                 title_multiorigin.gone()
                 subtitle_multiorigin.gone()

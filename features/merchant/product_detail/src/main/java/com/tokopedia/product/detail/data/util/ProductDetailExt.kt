@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.data.util
 
-import com.tokopedia.product.detail.common.data.model.Basic
-import com.tokopedia.product.detail.common.data.model.TxStats
-import com.tokopedia.product.detail.common.data.model.Video
+import com.tokopedia.product.detail.common.data.model.product.Basic
+import com.tokopedia.product.detail.common.data.model.product.TxStats
+import com.tokopedia.product.detail.common.data.model.product.Video
 
 const val KG = "kilogram"
 const val KILO = 1000

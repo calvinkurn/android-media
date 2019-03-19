@@ -6,23 +6,25 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
-import com.tokopedia.product.detail.common.data.model.Picture
-import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.Picture
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.ACTIVE
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.WAREHOUSE
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.variant.Option
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import kotlin.math.roundToInt
 
 object ModelMapper {
 
     fun convertVariantToModels(productInfo: ProductInfo,
+                               multiorigin: MultiOriginWarehouse?,
                                productVariant: ProductVariant?,
                                noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
-        dataList.add(convertToProductViewModel(productInfo))
+        dataList.add(convertToProductViewModel(productInfo, multiorigin))
         if (productVariant != null && productVariant.hasChildren) {
             val variantModelList = convertToProductVariantViewModel(productVariant, productInfo)
             if (variantModelList != null && variantModelList.isNotEmpty()) {
@@ -66,8 +68,8 @@ object ModelMapper {
                 val list = mutableListOf<Picture>()
                 val variantPicture = Picture(urlOriginal =
                 selectedVariant.picture?.original ?: "",
-                    urlThumbnail = selectedVariant.picture?.thumbnail ?: "",
-                    url300 = selectedVariant.picture?.thumbnail ?: "")
+                        urlThumbnail = selectedVariant.picture?.thumbnail ?: "",
+                        url300 = selectedVariant.picture?.thumbnail ?: "")
                 list.add(variantPicture)
                 list
             } else {
@@ -116,7 +118,7 @@ object ModelMapper {
      * convert the product Info to ProductViewModel
      * to show the basic data of the product: name, image, price, discount
      */
-    fun convertToProductViewModel(productInfo: ProductInfo): ProductViewModel {
+    fun convertToProductViewModel(productInfo: ProductInfo, multiorigin: MultiOriginWarehouse? = null): ProductViewModel {
         val productViewModel = ProductViewModel()
         productViewModel.parentId = productInfo.parentProductId.toInt()
         productViewModel.productImageUrl = productInfo.firstThumbnailPicture
@@ -128,12 +130,23 @@ object ModelMapper {
             productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
             else -> MAX_QUANTITY
         }
-        productViewModel.productPrice = if (productInfo.hasActiveCampaign && productInfo.campaign.discountedPrice > 0) {
-            productInfo.campaign.discountedPrice.roundToInt()
+        productViewModel.productPrice = if (multiorigin != null && multiorigin.warehouseInfo.id.isNotBlank()){
+            if (productInfo.hasActiveCampaign && productInfo.campaign.discountedPrice > 0) {
+                ((100 - productInfo.campaign.percentage) * multiorigin.price).roundToInt()
+            } else {
+                multiorigin.price
+            }
         } else {
-            productInfo.basic.price.roundToInt()
+            if (productInfo.hasActiveCampaign && productInfo.campaign.discountedPrice > 0) {
+                productInfo.campaign.discountedPrice.roundToInt()
+            } else {
+                productInfo.basic.price.roundToInt()
+            }
         }
-        productViewModel.originalPrice = if (productInfo.hasActiveCampaign && productInfo.campaign.originalPrice > 0) {
+
+        productViewModel.originalPrice = if (multiorigin != null && multiorigin.warehouseInfo.id.isNotBlank()){
+            multiorigin.price
+        } else if (productInfo.hasActiveCampaign && productInfo.campaign.originalPrice > 0) {
             productInfo.campaign.originalPrice.roundToInt()
         } else {
             productInfo.basic.price.roundToInt()

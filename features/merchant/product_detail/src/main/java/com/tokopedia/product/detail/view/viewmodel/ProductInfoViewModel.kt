@@ -23,7 +23,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRO
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_ID
-import com.tokopedia.product.detail.common.data.model.*
+import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.*
@@ -36,8 +36,8 @@ import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
-import com.tokopedia.product.detail.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.product.detail.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.data.util.origin
@@ -69,7 +69,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productInfoP2resp = MutableLiveData<ProductInfoP2>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
-    private var multiOrigin : WarehouseInfo = WarehouseInfo()
+    var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
         get() = userSessionInterface.userId
 

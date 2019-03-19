@@ -19,7 +19,6 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -56,9 +55,9 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.ProductInfo
-import com.tokopedia.product.detail.common.data.model.ProductParams
-import com.tokopedia.product.detail.common.data.model.Wholesale
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -68,6 +67,7 @@ import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
+import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -969,7 +969,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (productInfo == null && shopInfo == null) return
         activity?.let {
             startActivity(RatesEstimationDetailActivity.createIntent(it,
-                shopInfo!!.shopCore.domain, productInfo!!.basic.weight, productInfo!!.basic.weightUnit))
+                shopInfo!!.shopCore.domain, productInfo!!.basic.weight,
+                    productInfo!!.basic.weightUnit, productInfoViewModel.multiOrigin.origin))
         }
     }
 
@@ -1039,6 +1040,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         otherProductView.renderData(productInfoP2.productOthers)
         partialVariantAndRateEstView.renderFulfillment(productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
+        if (productInfo != null && productInfoP2.nearestWarehouse.warehouseInfo.id.isNotBlank())
+            headerView.updateStockAndPriceWarehouse(productInfoP2.nearestWarehouse, productInfo!!.campaign)
     }
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
