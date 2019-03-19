@@ -53,7 +53,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
         getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
-
+        toolbar.setPadding(16, 0 , 0, 0);
     }
 
     public static Intent createInstance(Context context, int transferId, int transactionId, int code) {
