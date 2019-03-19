@@ -17,7 +17,8 @@ data class CreatePostViewModel(
         val adIdList: MutableList<String> = arrayListOf(),
         val fileImageList: MutableList<String> = arrayListOf(),
         val urlImageList: MutableList<String> = arrayListOf(),
-        val relatedProducts: MutableList<RelatedProductItem> = arrayListOf()
+        val relatedProducts: MutableList<RelatedProductItem> = arrayListOf(),
+        var videoPath : String = ""
 ) : Parcelable {
     val completeImageList: ArrayList<String>
         get() {
@@ -40,8 +41,10 @@ data class CreatePostViewModel(
             source.createStringArrayList() ?: arrayListOf(),
             source.createStringArrayList() ?: arrayListOf(),
             source.createStringArrayList() ?: arrayListOf(),
-            source.createTypedArrayList(RelatedProductItem.CREATOR) ?: arrayListOf()
-    )
+            source.createTypedArrayList(RelatedProductItem.CREATOR) ?: arrayListOf(),
+            source.readString() ?: ""
+
+            )
 
     override fun describeContents() = 0
 
@@ -59,6 +62,8 @@ data class CreatePostViewModel(
         writeStringList(fileImageList)
         writeStringList(urlImageList)
         writeTypedList(relatedProducts)
+        writeString(videoPath)
+
     }
 
     companion object {

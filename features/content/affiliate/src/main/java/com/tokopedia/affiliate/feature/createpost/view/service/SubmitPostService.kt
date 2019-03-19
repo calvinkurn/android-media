@@ -66,8 +66,7 @@ class SubmitPostService : IntentService(TAG) {
                 viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
 
-        if (isUploadVideo()) {
-            //TODO bersihin
+        if (isUploadVideo(viewModel)) {
             submitPostUseCase.execute(
                     SubmitPostUseCase.createRequestParamsVideo(
                             viewModel.authorType,
@@ -75,7 +74,7 @@ class SubmitPostService : IntentService(TAG) {
                             if (isTypeAffiliate(viewModel.authorType)) userSession.userId
                             else userSession.shopId,
                             viewModel.caption,
-                            "/storage/emulated/0/DCIM/Camera/VID_20190315_115325.mp4",
+                            viewModel.videoPath,
                             if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
                             else viewModel.productIdList
                     ),
@@ -99,9 +98,8 @@ class SubmitPostService : IntentService(TAG) {
         }
     }
 
-    private fun isUploadVideo(): Boolean {
-        //TODO bersihin
-        return true
+    private fun isUploadVideo( viewModel: CreatePostViewModel): Boolean {
+        return viewModel.videoPath.isNotBlank()
     }
 
     private fun initInjector() {

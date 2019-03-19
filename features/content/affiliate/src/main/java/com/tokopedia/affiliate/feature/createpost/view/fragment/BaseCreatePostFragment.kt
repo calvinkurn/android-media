@@ -132,6 +132,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
                 for (path: String in videoList) {
+                    viewModel.videoPath = path
                     Toast.makeText(context, path, Toast.LENGTH_SHORT).show()
                 }
             }
