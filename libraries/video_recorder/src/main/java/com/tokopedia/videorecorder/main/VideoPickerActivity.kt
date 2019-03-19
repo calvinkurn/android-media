@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.MenuItem
+import android.widget.MediaController
 import com.tokopedia.videorecorder.R
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
@@ -33,9 +34,17 @@ class VideoPickerActivity: BaseSimpleActivity(),
         ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
     companion object {
+        //video recorder const
         const val VIDEOS_RESULT = "video_result"
         const val VIDEO_MAX_SIZE = 50000L
+
+        //flag
         var isVideoSourcePicker = false
+
+        //image/video picker configuration
+        const val supportMultipleSelection = false
+        const val minImageResolution = 0
+
     }
 
     override fun getNewFragment(): Fragment? = null
@@ -118,8 +127,8 @@ class VideoPickerActivity: BaseSimpleActivity(),
     private fun viewPagerAdapter(): ViewPagerAdapter {
         val videoPickerGallery = ImagePickerGalleryFragment.newInstance(
                 GalleryType.VIDEO_ONLY,
-                false,
-                0)
+                supportMultipleSelection,
+                minImageResolution)
 
         adapter.addFragment(videoPickerGallery, getString(R.string.menu_video_picker))
         adapter.addFragment(VideoRecorderFragment(), getString(R.string.menu_recorder))
@@ -151,13 +160,15 @@ class VideoPickerActivity: BaseSimpleActivity(),
     //video recorder callback
 
     override fun onVideoTaken(filePath: String) {
-        val uriFile = Uri.parse(filePath)
-        videoPath = filePath
-        onPreviewVideoVisible()
-        videoPreview.setVideoURI(uriFile)
-        videoPreview.setOnPreparedListener { mp ->
-            mp.isLooping = true //loop
-            playVideoPreview()
+        if (filePath.isNotEmpty()) {
+            val uriFile = Uri.parse(filePath)
+            videoPath = filePath
+            onPreviewVideoVisible()
+            videoPreview.setVideoURI(uriFile)
+            videoPreview.setOnPreparedListener { mp ->
+                mp.isLooping = true //loop
+                playVideoPreview()
+            }
         }
     }
 

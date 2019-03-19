@@ -134,7 +134,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
                             activity?.runOnUiThread {
                                 val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
                                 val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
-                                txtDuration.text = "$minutes:$seconds"
+                                txtDuration.text = getString(R.string.duration_format, formatter(minutes), formatter(seconds))
                                 progressBar.progress += 1000
                                 countDownMills -= 1000
                             }

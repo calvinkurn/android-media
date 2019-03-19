@@ -15,3 +15,7 @@ fun exceptionHandler(func: () -> Unit) {
         Log.d("TKPDVideo", e.message)
     }
 }
+
+internal fun formatter(num: Long): String {
+    return String.format("%02d", num)
+}
