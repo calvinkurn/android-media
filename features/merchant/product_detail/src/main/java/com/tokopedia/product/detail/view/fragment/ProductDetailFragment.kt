@@ -157,7 +157,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
     private var shouldShowCod = false
-    private var warehouseId: Int = 0
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -494,6 +493,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             try {
                 val productInfo = (productInfoViewModel.productInfoP1Resp.value as Success).data
+                val warehouseId: Int = productInfoViewModel.multiOrigin.id.toInt()
                 val atcRequestParam = AtcRequestParam()
                 atcRequestParam.setShopId(productInfo.productInfo.basic.shopID)
                 atcRequestParam.setProductId(productInfo.productInfo.basic.id)
@@ -1039,7 +1039,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 base_view_wholesale.visible()
             }
         }
-        warehouseId = productInfoP2.nearestWarehouse.warehouseInfo.id.toInt()
         shopCod = productInfoP2.shopCod
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
