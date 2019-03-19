@@ -3,6 +3,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_b
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.data.model.HomeWidget
 
@@ -15,6 +17,10 @@ class BusinessWidgetTypeFactory : BaseAdapterTypeFactory() {
             3 -> SizeLargeBusinessViewHolder.LAYOUT
             else -> DefaultBusinessViewHolder.LAYOUT
         }
+    }
+
+    override fun type(viewModel: EmptyModel?): Int {
+        return DefaultBusinessViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {

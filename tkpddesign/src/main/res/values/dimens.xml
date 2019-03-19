@@ -65,6 +65,7 @@
     <dimen name="dp_220">220dp</dimen> <!-- not recommended -->
     <dimen name="dp_230">230dp</dimen> <!-- not recommended -->
     <dimen name="dp_240">240dp</dimen> <!-- not recommended -->
+    <dimen name="dp_288">288dp</dimen> <!-- not recommended -->
     <dimen name="dp_121">121dp</dimen> <!-- not recommended -->
     <dimen name="dp_250">250dp</dimen> <!-- not recommended -->
     <dimen name="dp_280">280dp</dimen> <!-- not recommended -->

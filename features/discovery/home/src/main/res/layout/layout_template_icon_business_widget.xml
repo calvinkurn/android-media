@@ -9,6 +9,7 @@
         android:layout_width="@dimen/dp_52"
         android:layout_height="@dimen/dp_52"
         android:layout_gravity="center"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_squircle" />
 
     <android.support.v7.widget.AppCompatImageView

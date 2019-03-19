@@ -12,7 +12,7 @@ class DefaultBusinessViewHolder (itemView: View?) : AbstractViewHolder<HomeWidge
     }
 
     companion object {
-        val LAYOUT: Int = R.layout.layout_template_small_business
+        val LAYOUT: Int = R.layout.layout_template_empty_business_widget
     }
 
 }
