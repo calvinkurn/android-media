@@ -184,7 +184,7 @@ public interface FeedPlus {
 
         int getAdapterListSize();
 
-        void onWhitelistClicked(String url);
+        void onWhitelistClicked();
 
         void onSuccessToggleFavoriteShop(int rowNumber, int adapterPosition);
 

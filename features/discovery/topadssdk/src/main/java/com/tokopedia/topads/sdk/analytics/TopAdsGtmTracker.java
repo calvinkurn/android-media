@@ -225,7 +225,7 @@ public class TopAdsGtmTracker {
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
                                             "varian", "none/other",
-                                            "position", position + 1))))
+                                            "position", position))))
             );
             tracker.sendEnhancedEcommerce(map);
         }

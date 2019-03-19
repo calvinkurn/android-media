@@ -22,6 +22,9 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
@@ -530,6 +533,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
             toolbar = toolbarRemoveWithBackView();
         } else {
             toolbar = toolbarRemoveView();
+                
+            // add padding programmatically
+            int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
+            view.setPadding(0,padding,0,0);
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);
@@ -563,7 +570,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     public void onProductItemClicked(int position, Product product) {
         cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
                 String.valueOf(position + 1), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
-        startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
+        startActivity(getProductIntent(product.getId()));
         TopAdsGtmTracker.eventCartEmptyProductClick(getContext(), product, position);
     }
 
@@ -581,9 +588,15 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     public void onItemWishListClicked(Wishlist wishlist, int position) {
         cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(
                 String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(wishlist, position));
-        startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
-                wishlist.getId()
-        ), REQUEST_CODE_ROUTE_WISHLIST);
+        startActivityForResult(getProductIntent(wishlist.getId()), REQUEST_CODE_ROUTE_WISHLIST);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -600,9 +613,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(
                 String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(recentView, position));
 
-        startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
-                recentView.getProductId()
-        ), REQUEST_CODE_ROUTE_WISHLIST);
+        startActivityForResult(getProductIntent(recentView.getProductId()), REQUEST_CODE_ROUTE_WISHLIST);
     }
 
     @Override
