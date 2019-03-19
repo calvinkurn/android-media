@@ -82,11 +82,11 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         AbstractViewHolder viewHolder;
 
         if (type == ListProductItemViewHolder.LAYOUT) {
-            viewHolder = new ListProductItemViewHolder(view, itemClickListener);
+            viewHolder = new ListProductItemViewHolder(view, itemClickListener, searchQuery);
         } else if (type == GridProductItemViewHolder.LAYOUT) {
-            viewHolder = new GridProductItemViewHolder(view, itemClickListener);
+            viewHolder = new GridProductItemViewHolder(view, itemClickListener, searchQuery);
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {
-            viewHolder = new BigGridProductItemViewHolder(view, itemClickListener);
+            viewHolder = new BigGridProductItemViewHolder(view, itemClickListener, searchQuery);
         } else if(type == HeaderViewHolder.LAYOUT){
             viewHolder = new HeaderViewHolder(view, itemClickListener, searchQuery);
         } else if (type == EmptySearchViewHolder.LAYOUT) {

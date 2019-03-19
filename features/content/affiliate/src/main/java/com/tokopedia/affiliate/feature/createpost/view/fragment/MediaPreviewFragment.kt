@@ -13,6 +13,7 @@ import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,6 +37,23 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
     private val resultIntent: Intent by lazy {
         Intent()
+    }
+
+    private val deleteDialog: Dialog by lazy {
+        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        dialog.setTitle(getString(R.string.af_update_post))
+        dialog.setDesc(getString(R.string.af_delete_warning_desc))
+        dialog.setBtnOk(getString(R.string.cancel))
+        dialog.setBtnCancel(getString(R.string.title_delete))
+        dialog.setOnOkClickListener{
+            dialog.dismiss()
+        }
+        dialog.setOnCancelClickListener{
+            dialog.dismiss()
+            doDeleteMedia()
+        }
+        dialog.setCancelable(true)
+        dialog
     }
 
     companion object {
@@ -83,17 +101,11 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         relatedProductRv.setHasFixedSize(true)
 
         deleteMediaBtn.setOnClickListener {
-            if (tabLayout.selectedTabPosition < viewModel.fileImageList.size) {
-                viewModel.fileImageList.removeAt(tabLayout.selectedTabPosition)
+            if (viewModel.completeImageList.size == 1) {
+                deleteDialog.show()
             } else {
-                viewModel.urlImageList.removeAt(
-                        tabLayout.selectedTabPosition - viewModel.fileImageList.size
-                )
+                doDeleteMedia()
             }
-            imageAdapter.setList(viewModel.completeImageList)
-
-            updateDeleteBtn()
-            updateResultIntent()
         }
 
         mainImageText.setOnClickListener {
@@ -115,6 +127,20 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
         updateMainImageText()
         updateDeleteBtn()
+    }
+
+    private fun doDeleteMedia() {
+        if (tabLayout.selectedTabPosition < viewModel.fileImageList.size) {
+            viewModel.fileImageList.removeAt(tabLayout.selectedTabPosition)
+        } else {
+            viewModel.urlImageList.removeAt(
+                    tabLayout.selectedTabPosition - viewModel.fileImageList.size
+            )
+        }
+        imageAdapter.setList(viewModel.completeImageList)
+
+        updateDeleteBtn()
+        updateResultIntent()
     }
 
     private fun updateDeleteBtn() {
