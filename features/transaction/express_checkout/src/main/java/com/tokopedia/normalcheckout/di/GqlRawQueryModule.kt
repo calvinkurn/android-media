@@ -27,4 +27,11 @@ class GqlRawQueryModule {
     fun provideRawVariant(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_variant)
 
+    @NormalCheckoutScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_MULTI_ORIGIN)
+    fun provideRawMultiOrigin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_nearest_warehouse)
+
 }
