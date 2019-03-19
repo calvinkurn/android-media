@@ -39,6 +39,7 @@ import model.DeviceDiagInputResponse;
 import model.DeviceDiagnostics;
 import model.TradeInParams;
 import rx.Subscriber;
+import tradein_common.Constants;
 import view.viewcontrollers.FinalPriceActivity;
 
 public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver, Laku6TradeIn.TradeInListener {
@@ -138,8 +139,8 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     public void getPriceFromSDK() {
-        laku6TradeIn = Laku6TradeIn.getInstance(activityWeakReference.get(),"tokopediaSandbox",
-                "1:109002668043:android:f4cc247c743f7921","AIzaSyAJk4XqSdT0qWg5ahBxWYT5CJ9vzv2TqS4","http://wst.laku6.com/");
+        laku6TradeIn = Laku6TradeIn.getInstance(activityWeakReference.get(), "tokopediaSandbox",
+                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
         laku6TradeIn.setCampaignTradeInId("tokopediaSandbox");
         inData = activityWeakReference.get().getIntent().getExtras();
         requestPermission();
@@ -188,7 +189,6 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
     }
 
     public void getMaxPrice() {
-        Toast.makeText(activityWeakReference.get(), "Calling Max Price API", Toast.LENGTH_SHORT).show();
         laku6TradeIn.getMinMaxPrice(this);
     }
 }

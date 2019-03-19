@@ -343,6 +343,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.network.constant.TkpdBaseURL.ACCOUNTS_DOMAIN =
                 ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         CMNotificationUrls.CM_TOKEN_UPDATE = ConsumerAppBaseUrl.CM_TOKEN_UPDATE;
+        tradein_common.Constants.LAKU6_BASEURL = ConsumerAppBaseUrl.LAKU6_BASE_URL;
 
     }
 
