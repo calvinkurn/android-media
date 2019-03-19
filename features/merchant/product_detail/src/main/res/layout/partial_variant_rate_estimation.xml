@@ -74,7 +74,7 @@
         android:drawablePadding="@dimen/dp_4"
         android:visibility="gone"
         android:text="@string/service_by_tokopedia"
-        app:drawableRightCompat="@drawable/ic_pdp_fulfillment"
+        app:drawableRightCompat="@drawable/ic_logistic_logistic_fulfillment_normal_16"
         app:fontSize="micro"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
