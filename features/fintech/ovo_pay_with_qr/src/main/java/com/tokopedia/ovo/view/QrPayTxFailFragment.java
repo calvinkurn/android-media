@@ -78,8 +78,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickButuhBantuan,
                     OvoPayByQrTrackerUtil.LABEL.defaultLabel);
-            ((OvoPayWithQrRouter) getActivity().getApplication())
-                    .openTokopointWebview(getActivity(), HELP_URL, getString(R.string.oqr_contact_us));
+            startActivity(OvoWebViewActivity.getWebViewIntent(getActivity(), HELP_URL, getString(R.string.oqr_contact_us)));
         });
         backToMain.setOnClickListener(view1 -> {
             OvoPayByQrTrackerUtil.sendEvent(getActivity(),
