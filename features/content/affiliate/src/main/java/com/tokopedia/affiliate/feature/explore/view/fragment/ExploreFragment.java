@@ -616,8 +616,9 @@ public class ExploreFragment
         }
 
         int lastIndex = adapter.getLastIndex();
+        int offset = products.size() > 4 ? 4 : products.size();
         adapter.addElement(products);
-        rvExplore.smoothScrollToPosition(lastIndex);
+        rvExplore.smoothScrollToPosition(lastIndex + offset);
 
         if (TextUtils.isEmpty(cursor)) {
             exploreParams.disableLoadMore();
