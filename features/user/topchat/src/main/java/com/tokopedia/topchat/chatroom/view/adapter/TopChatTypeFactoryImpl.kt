@@ -7,15 +7,15 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
-import com.tokopedia.merchantvoucher.voucherList.adapter.viewholder.MerchantVoucherViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ImageDualAnnouncementViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.SecurityInfoChatViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopChatVoucherViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.SecurityInfoListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 
 open class TopChatTypeFactoryImpl(
         imageAnnouncementListener: ImageAnnouncementListener,
@@ -41,8 +41,8 @@ open class TopChatTypeFactoryImpl(
         return ImageDualAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(merchantVoucherViewModel: MerchantVoucherViewModel): Int {
-        return MerchantVoucherViewHolder.LAYOUT
+    override fun type(voucherViewModel: TopChatVoucherViewModel): Int {
+        return TopChatVoucherViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -50,7 +50,7 @@ open class TopChatTypeFactoryImpl(
             SecurityInfoChatViewHolder.LAYOUT -> SecurityInfoChatViewHolder(parent, securityInfoListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent,
                     imageDualAnnouncementListener)
-            MerchantVoucherViewHolder.LAYOUT -> MerchantVoucherViewHolder(parent, merchantVoucherViewListener)
+            TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
