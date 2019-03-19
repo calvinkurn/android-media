@@ -100,7 +100,7 @@ data class Basic(
 
         fun statusMessage(context: Context): String {
                 return when(status) {
-                        ProductStatusTypeDef.DELETED -> context.getString(R.string.prroduct_status_deleted)
+                        ProductStatusTypeDef.DELETED -> context.getString(R.string.product_status_deleted)
                         ProductStatusTypeDef.ACTIVE -> context.getString(R.string.product_status_active)
                         ProductStatusTypeDef.WAREHOUSE -> context.getString(R.string.product_status_warehouse)
                         ProductStatusTypeDef.HIDDEN -> context.getString(R.string.product_status_hidden)

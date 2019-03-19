@@ -92,6 +92,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     var trackerAttribution: String? = null
     var trackerListName: String? = null
+    var shopType: String? = null
+    var shopName: String? = null
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -101,6 +103,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
         const val EXTRA_ACTION = "action"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
+        const val EXTRA_SHOP_TYPE = "shop_type"
+        const val EXTRA_SHOP_NAME = "shop_name"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
 
@@ -116,7 +120,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            @ProductAction action: Int = ATC_AND_BUY,
                            placeholderProductImage: String?,
                            trackerAttribution: String? = "",
-                           trackerListName: String? = ""): NormalCheckoutFragment {
+                           trackerListName: String? = "",
+                           shopType: String? = "",
+                           shopName: String? = ""): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_SHOP_ID, shopId)
@@ -128,6 +134,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId ?: "")
                     putString(TRACKER_ATTRIBUTION, trackerAttribution ?: "")
                     putString(TRACKER_LIST_NAME, trackerListName ?: "")
+                    putString(EXTRA_SHOP_TYPE, shopType ?: "")
+                    putString(EXTRA_SHOP_NAME, shopName ?: "")
                 }
             }
 
@@ -338,6 +346,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             action = argument.getInt(EXTRA_ACTION, ATC_AND_BUY)
             trackerAttribution = argument.getString(TRACKER_ATTRIBUTION)
             trackerListName = argument.getString(TRACKER_LIST_NAME)
+            shopType = argument.getString(EXTRA_SHOP_TYPE)
+            shopName = argument.getString(EXTRA_SHOP_NAME)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -432,7 +442,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
-                if (!selectedVariantId.isNullOrEmpty()) { selectedProductInfo } else { originalProduct?.productInfo}
+                if (!selectedVariantId.isNullOrEmpty()) {
+                    selectedProductInfo
+                } else {
+                    originalProduct?.productInfo
+                }
                     .let { it ->
                         val cacheManager =
                             SaveInstanceCacheManager(this@run, true).apply {
@@ -449,9 +463,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun doBuyOrPreorder() {
-        //TODO tracking
-        addToCart(true, onFinish = {
-            onFinishAddToCart(it)
+        addToCart(true, onFinish = { message: String?, cartId: String? ->
+            onFinishAddToCart(message)
+            selectedProductInfo?.run {
+                normalCheckoutTracking.eventClickBuyInVariant(
+                    originalProduct,
+                    selectedVariantId ?: "",
+                    this, quantity,
+                    shopId, shopType, shopName, cartId,
+                    trackerAttribution, trackerListName)
+            }
             activity?.run {
                 val intent = router.getCheckoutIntent(this)
                 startActivity(intent)
@@ -462,14 +483,22 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun addToCart() {
-        addToCart(false, onFinish = {
-            onFinishAddToCart(it)
+        addToCart(false, onFinish = { message: String?, cartId: String? ->
+            onFinishAddToCart(message)
+            selectedProductInfo?.run {
+                normalCheckoutTracking.eventClickAddToCartInVariant(
+                    originalProduct,
+                    selectedVariantId ?: "",
+                    this, quantity,
+                    shopId, shopType, shopName, cartId,
+                    trackerAttribution, trackerListName)
+            }
         }, onRetryWhenError = {
             addToCart()
         })
     }
 
-    private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?) -> Unit),
+    private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
                           onRetryWhenError: (() -> Unit)) {
         val selectedVariant = selectedVariantId
         showLoadingDialog()
@@ -498,7 +527,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                                 quantity,
                                 selectedProductInfo?.basic?.name ?: "",
                                 selectedProductInfo?.category?.name ?: "")
-                            onFinish(addToCartResult.message)
+                            onFinish(addToCartResult.message, addToCartResult.cartId)
                         } else {
                             activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
                                 addToCartResult.message
@@ -519,7 +548,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     }
                 }
             })
-        normalCheckoutTracking.eventPDPCart()
     }
 
     fun showLoadingDialog(onCancelClicked: (() -> Unit)? = null) {
@@ -575,7 +603,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 if (viewModel.getSelectedOption() == selectedOptionViewModel.optionId) {
                     if (viewModel.isColorIdentifier) {
                         normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName)
-                    } else if (viewModel.isSizeIdentifier){
+                    } else if (viewModel.isSizeIdentifier) {
                         normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName)
                     }
                 }

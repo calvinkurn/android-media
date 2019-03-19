@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 object ProductTrackingConstant {
     object Category {
-        const val PDP = "Product Detail Page"
+        const val PDP = "product petail page"
         const val PRODUCT_PAGE = "Product Page"
     }
 
@@ -23,12 +23,6 @@ object ProductTrackingConstant {
 
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
-    }
-
-    object Wishlist{
-        const val EVENT = "clickWishlist"
-        const val CATEGORY = "Wishlist"
-        const val LABEL = "Add To Wishlist"
     }
 
     object Affiliate {

@@ -358,6 +358,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfoViewModel.removeWishList(it,
                                 onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
                                 onErrorRemoveWishList = this::onErrorRemoveWishList)
+                            productDetailTracking.eventPDPRemoveToWishlist(productInfo?.basic?.id.toString())
                         }
 
                     } else {
@@ -365,11 +366,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfoViewModel.addWishList(it,
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
                                 onErrorAddWishList = this::onErrorAddWishList)
-                            productDetailTracking.eventPDPWishlist()
                             productInfo?.let {
                                 productDetailTracking.eventPDPWishlistAppsFyler(it)
                             }
-                            productInfo?.basic?.let { productDetailTracking.eventPDPAddToWishlist(it.name) }
+                            productDetailTracking.eventPDPAddToWishlist(productInfo?.basic?.id.toString())
                         }
                     }
                     if (isAffiliate && productId?.isNotEmpty() == true) {
@@ -380,6 +380,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     }
                 }
             } else {
+                productDetailTracking.eventPDPAddToWishlistNonLogin(productInfo?.basic?.id.toString())
                 context?.run {
                     startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
@@ -398,7 +399,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         actionButtonView.addToCartClick = {
-            //TODO tracking
+            productDetailTracking.eventClickAddToCart(productInfo?.basic?.id?.toString() ?: "",
+                productInfo?.variant?.isVariant ?: false)
             if (productInfoViewModel.isUserSessionActive()) {
                 goToNormalCheckout(ATC_ONLY)
             } else {
@@ -410,8 +412,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
         actionButtonView.buyNowClick = {
             // buy now / buy / preorder
+            productDetailTracking.eventClickBuy(productInfo?.basic?.id?.toString() ?: "",
+                productInfo?.variant?.isVariant ?: false)
             if (productInfoViewModel.isUserSessionActive()) {
-                //TODO tracking
                 val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
                     ?: false
                 if (isExpressCheckout) {
@@ -420,7 +423,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     goToNormalCheckout()
                 }
             } else { // not login
-                //TODO tracking
                 context?.let {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
@@ -469,7 +471,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     action,
                     null,
                     trackerAttribution,
-                    trackerListName),
+                    trackerListName,
+                    shopInfo?.goldOS?.shopTypeString,
+                    shopInfo?.shopCore?.name),
                     REQUEST_CODE_NORMAL_CHECKOUT)
             }
         }
@@ -591,6 +595,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun onShopFavoriteClick() {
         val shop = shopInfo ?: return
         activity?.let {
+            //TODO Tracking?
             if (productInfoViewModel.isUserSessionActive()) {
                 productShopView.toggleClickableFavoriteBtn(false)
                 productInfoViewModel.toggleFavorite(shop.shopCore.shopID,
@@ -1148,7 +1153,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun onSuccessFavoriteShop(isSuccess: Boolean) {
         val favorite = shopInfo?.favoriteData ?: return
         if (isSuccess) {
-            //TODO TRACKING FOLLOW / UNFOLLOW
             val newFavorite =
                 if (favorite.alreadyFavorited == 1)
                     ShopInfo.FavoriteData(0, favorite.totalFavorite - 1)
@@ -1300,7 +1304,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun getImageURIPaths(): ArrayList<String> {
         return ArrayList(productInfo?.run { pictures?.map { it.urlOriginal } } ?: listOf())
-        //TODO need to add variant images?
     }
 
     private fun onVariantClicked() {
