@@ -1575,11 +1575,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public AbstractionRouter getAbstractionRouter() {
-        return abstractionRouter;
-    }
-
-    @Override
     public void onBannerItemClick(int positionInFeed, int adapterPosition,
                                   @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);

@@ -1,8 +1,11 @@
 package com.tokopedia.product.report.view.tracking
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
-class ProductReportTracking(private val analyticTracker: AnalyticTracker?) {
+class ProductReportTracking() {
 
     companion object {
         const val REPORT_SUCCESS_CAMEL = "reportSuccess"
@@ -11,11 +14,11 @@ class ProductReportTracking(private val analyticTracker: AnalyticTracker?) {
     }
 
     fun eventSubmitReport() {
-        analyticTracker?.sendEventTracking(
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
                 REPORT_SUCCESS_CAMEL,
                 PRODUCT_DETAIL,
                 REPORT_SUCCESS,
-                REPORT_SUCCESS)
+                REPORT_SUCCESS))
     }
 
 }

@@ -267,12 +267,8 @@ public class TokoCashModule {
     }
 
     @Provides
-    WalletAnalytics provideWalletAnalytics(@ApplicationContext Context context) {
-        if (context instanceof TokoCashRouter) {
-            AnalyticTracker analyticTracker = ((TokoCashRouter) context).getAnalyticTracker();
-            return new WalletAnalytics(analyticTracker);
-        }
-        throw new RuntimeException("App should implement " + TokoCashRouter.class.getSimpleName());
+    WalletAnalytics provideWalletAnalytics() {
+        return new WalletAnalytics();
     }
 
     @TokoCashScope

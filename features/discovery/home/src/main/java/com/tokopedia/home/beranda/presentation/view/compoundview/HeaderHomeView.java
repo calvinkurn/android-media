@@ -10,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -24,12 +23,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.gamification.util.HexValidator;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.SectionContentItem;
@@ -93,10 +90,8 @@ public class HeaderHomeView extends BaseCustomView {
         if (listener == null)
             return;
 
-        if (getContext().getApplicationContext() instanceof IHomeRouter) {
-            AnalyticTracker analyticTracker = ((IHomeRouter) getContext().getApplicationContext()).getAnalyticTracker();
-            walletAnalytics = new WalletAnalytics(analyticTracker);
-        }
+        walletAnalytics = new WalletAnalytics();
+
 
         if (headerViewModel.getTokopointsDrawerHomeData() != null && headerViewModel.getTokopointsDrawerHomeData().isOffFlag()) {
             renderHeaderOnlyTokocash();

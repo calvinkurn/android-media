@@ -279,15 +279,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getUserSession(): UserSession = UserSession(context)
 
-    override fun getAbstractionRouter(): AbstractionRouter {
-        if (context!!.applicationContext is AbstractionRouter) {
-            return context!!.applicationContext as AbstractionRouter
-        } else {
-            throw IllegalStateException("Application must implement "
-                    .plus(AbstractionRouter::class.java.simpleName))
-        }
-    }
-
     override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
         presenter.cursor = element.dynamicFeedDomainModel.cursor
         onlyOnePost = element.dynamicFeedDomainModel.postList.size == 1

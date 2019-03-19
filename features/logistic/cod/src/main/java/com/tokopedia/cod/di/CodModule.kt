@@ -1,6 +1,5 @@
 package com.tokopedia.cod.di
 
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.cod.view.CodContract
 import com.tokopedia.cod.view.CodPresenter
 import com.tokopedia.logisticanalytics.CodAnalytics
@@ -11,7 +10,7 @@ import dagger.Provides
  * Created by fajarnuha on 29/12/18.
  */
 @Module
-class CodModule{
+class CodModule {
 
     @CodScope
     @Provides
