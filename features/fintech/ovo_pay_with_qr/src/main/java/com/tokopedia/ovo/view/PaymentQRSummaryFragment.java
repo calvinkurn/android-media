@@ -50,6 +50,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     public static final String PENDING_STATUS = "pending";
     public static final String SUCCESS_STATUS = "success";
     private static final float BUY_BTN_FADE_VISIBILITY = 0.19f;
+    private static final float BUY_BTN_COMPLETE_VISIBILITY = 1f;
     private static final long MIN_AMOUNT = 1000;
     private static final long MAX_AMOUNT = 10000000;
     String id;
@@ -196,20 +197,18 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                     intent.putExtra("cache_id",id);
                     intent.putExtra(TRANSACTION_ID, response.getTransactionId());
                     startActivity(intent);
-//                    ((OvoPayWithQrRouter) getActivity().getApplication())
-//                            .openTokopointWebview(getActivity(), URLDecoder.decode(
-//                                    response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
 
             } else if (response.getStatus().equalsIgnoreCase(SUCCESS_STATUS)) {
-                startActivityForResult(QrOvoPayTxDetailActivity.createInstance(
-                        getActivity(), transferId, response.getTransactionId(), SUCCESS), REQUEST_CODE);
+                startActivity(QrOvoPayTxDetailActivity.createInstance(
+                        getActivity(), transferId, response.getTransactionId(), SUCCESS));
             } else {
-                startActivityForResult(QrOvoPayTxDetailActivity.createInstance(
-                        getActivity(), transferId, response.getTransactionId(), FAIL), REQUEST_CODE);
+                startActivity(QrOvoPayTxDetailActivity.createInstance(
+                        getActivity(), transferId, response.getTransactionId(), FAIL));
             }
+            getActivity().finish();
         }
     }
 
@@ -226,7 +225,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     }
 
     public void setProgressButton() {
-        bayarLayout.setAlpha(1f);
+        bayarLayout.setAlpha(BUY_BTN_COMPLETE_VISIBILITY);
         progressBar.setVisibility(View.GONE);
         bayarBtn.setClickable(true);
     }

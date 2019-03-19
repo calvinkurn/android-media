@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.model.GoalQRThanks;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailContract;
@@ -85,8 +86,7 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
         backToMain = view.findViewById(R.id.back_to_main);
         transferId = getArguments().getInt(TRANSFER_ID);
         backToMain.setOnClickListener(view1 -> {
-            listener.setResult(Activity.RESULT_OK);
-            listener.finish();
+            startActivity(((OvoPayWithQrRouter)getActivity().getApplicationContext()).getHomeIntent(getActivity()));
         });
         pasteToClipboard.setOnClickListener(view1 -> {
             ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);

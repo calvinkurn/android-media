@@ -76,8 +76,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
                     .openTokopointWebview(getActivity(), HELP_URL, getString(R.string.oqr_contact_us));
         });
         backToMain.setOnClickListener(view1 -> {
-            listener.setResult(Activity.RESULT_OK);
-            listener.finish();
+            startActivity(((OvoPayWithQrRouter)getActivity().getApplicationContext()).getHomeIntent(getActivity()));
         });
         tryAgain.setOnClickListener(view1 -> presenter.requestForThankYouPage(getActivity(), getArguments().getInt(TRANSFER_ID)));
 
