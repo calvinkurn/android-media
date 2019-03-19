@@ -633,6 +633,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             order.setProductDetails(productDetails);
             order.setUniqueId(shopGroupData.getCartString());
             order.setShopId(Integer.parseInt(shopGroupData.getShopId()));
+            orders.add(order);
         }
         CheckPromoFirstStepParam checkPromoFirstStepParam = new CheckPromoFirstStepParam();
         checkPromoFirstStepParam.setCartType(MerchantVoucherListBottomsheetParamData.Companion.getEXTRA_CHECKOUT_TYPE_DEFAULT_VALUE());

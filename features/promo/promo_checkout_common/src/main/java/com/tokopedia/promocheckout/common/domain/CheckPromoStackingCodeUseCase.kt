@@ -2,8 +2,6 @@ package com.tokopedia.promocheckout.common.domain
 
 import android.content.Context
 import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -11,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
-import com.tokopedia.promocheckout.common.data.entity.request.PromoStackingRequestData
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -74,7 +72,9 @@ class CheckPromoStackingCodeUseCase @Inject constructor (@ApplicationContext pri
 //        objParams.add(PROMO, objPromo)
 //
 //        variables[PARAMS] = objParams
-        val jsonTreeCheckoutRequest = Gson().toJsonTree(checkPromoFirstStepParam)
+        var checkPromoParam = CheckPromoParam()
+        checkPromoParam.promo = checkPromoFirstStepParam
+        val jsonTreeCheckoutRequest = Gson().toJsonTree(checkPromoParam)
         val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
         variables.put("param", jsonObjectCheckoutRequest)
 
