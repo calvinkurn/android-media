@@ -17,6 +17,7 @@ class GetExploreDataSubscriber(private val mainView: ExploreContract.View?,
 
     override fun onNext(exploreViewModel: ExploreViewModel) {
         mainView?.hideLoading()
+        mainView?.unsubscribeAutoComplete()
 
         if (isSearch && exploreViewModel.exploreProducts.isEmpty()) {
             mainView?.affiliateAnalytics?.onSearchNotFound(exploreParams.keyword)
@@ -39,6 +40,7 @@ class GetExploreDataSubscriber(private val mainView: ExploreContract.View?,
         }
 
         mainView?.hideLoading()
+        mainView?.unsubscribeAutoComplete()
         mainView?.onErrorGetData(ErrorHandler.getErrorMessage(mainView.context, e))
     }
 }

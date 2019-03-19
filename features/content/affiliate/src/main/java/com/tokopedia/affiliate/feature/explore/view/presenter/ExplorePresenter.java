@@ -74,6 +74,8 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     public void getData(ExploreParams exploreParams) {
         unsubscribeAutoComplete();
 
+        getView().showLoadingScreen();
+
         exploreUseCase.setExploreParams(exploreParams);
         exploreUseCase.execute(new GetExploreDataSubscriber(
                 getView(),

@@ -43,6 +43,7 @@ public class GetExploreFirstSubscriber extends Subscriber<ExploreFirstPageViewMo
             return;
         }
         mainView.hideLoading();
+        mainView.unsubscribeAutoComplete();
         mainView.onErrorGetFirstData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
         mainView.stopTrace();
     }
@@ -50,6 +51,7 @@ public class GetExploreFirstSubscriber extends Subscriber<ExploreFirstPageViewMo
     @Override
     public void onNext(ExploreFirstPageViewModel firstPageViewModel) {
         mainView.hideLoading();
+        mainView.unsubscribeAutoComplete();
         mainView.onSuccessGetFirstData(
                 firstPageViewModel.getSection(),
                 firstPageViewModel.getProducts(),

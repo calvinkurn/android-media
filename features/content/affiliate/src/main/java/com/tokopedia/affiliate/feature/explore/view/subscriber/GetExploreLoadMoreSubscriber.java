@@ -31,12 +31,14 @@ public class GetExploreLoadMoreSubscriber extends Subscriber<ExploreViewModel> {
         if (mainView == null)
             return;
         mainView.hideLoading();
+        mainView.unsubscribeAutoComplete();
         mainView.onErrorGetMoreData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
     }
 
     @Override
     public void onNext(ExploreViewModel exploreViewModel) {
         mainView.hideLoading();
+        mainView.unsubscribeAutoComplete();
         mainView.onSuccessGetMoreData(
                 exploreViewModel.getExploreProducts(),
                 exploreViewModel.getNextCursor()

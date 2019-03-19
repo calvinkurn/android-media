@@ -25,6 +25,8 @@ public interface ExploreContract {
 
         void showLoading();
 
+        void showLoadingScreen();
+
         void hideLoading();
 
         void onSuccessGetFirstData(List<Visitable<?>> sections,
@@ -73,6 +75,8 @@ public interface ExploreContract {
         void onSuccessGetAutoComplete(List<AutoCompleteViewModel> modelList);
 
         void stopTrace();
+
+        void unsubscribeAutoComplete();
     }
 
     interface Presenter extends CustomerPresenter<View> {

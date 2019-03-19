@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -64,6 +65,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -128,6 +130,7 @@ public class ExploreFragment
     private BottomActionView sortButton;
     private FloatingActionButton btnBackToTop;
     private BadgeView badgeView;
+    private LinearLayout mainView;
 
     private boolean isCanDoAction;
     private boolean isTraceStopped;
@@ -173,6 +176,7 @@ public class ExploreFragment
         ivProfile = view.findViewById(R.id.iv_profile);
         sortButton = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
+        mainView = view.findViewById(R.id.main_view);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         return view;
     }
@@ -362,8 +366,6 @@ public class ExploreFragment
         }
         exploreParams.setSearchParam(text);
         adapter.clearProductElements();
-        adapter.showLoading();
-        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
         presenter.getData(exploreParams);
     }
 
@@ -410,8 +412,14 @@ public class ExploreFragment
     }
 
     @Override
+    public void showLoadingScreen() {
+        ViewExtKt.showLoadingTransparent(mainView);
+    }
+
+    @Override
     public void hideLoading() {
         adapter.hideLoading();
+        ViewExtKt.hideLoadingTransparent(mainView);
     }
 
     @Override
@@ -464,7 +472,7 @@ public class ExploreFragment
         populateFirstData(itemList, cursor);
         if (!isPullToRefresh) {
             populateSort(sortViewModels);
-            if (!isSearch) saveFirstDataToLocal(sections, products, cursor, sortViewModels);
+            if (!isSearch) saveFirstDataToLocal(sections, itemList, cursor, sortViewModels);
         }
     }
 
@@ -585,13 +593,10 @@ public class ExploreFragment
     }
 
     private void getFilteredFirstData(List<FilterViewModel> filters) {
-
         exploreParams.setFilters(filters);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
         adapter.clearProductElements();
-        adapter.showLoading();
-        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
         presenter.getData(exploreParams);
     }
 
@@ -600,8 +605,6 @@ public class ExploreFragment
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
         adapter.clearProductElements();
-        adapter.showLoading();
-        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
         presenter.getData(exploreParams);
     }
 
@@ -611,7 +614,11 @@ public class ExploreFragment
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
+
+        int lastIndex = adapter.getLastIndex();
         adapter.addElement(products);
+        rvExplore.smoothScrollToPosition(lastIndex);
+
         if (TextUtils.isEmpty(cursor)) {
             exploreParams.disableLoadMore();
         } else {
@@ -620,6 +627,7 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
         }
+
         presenter.unsubscribeAutoComplete();
     }
 
@@ -673,22 +681,20 @@ public class ExploreFragment
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
-        adapter.clearProductElements();
+        adapter.clearAllElements();
         adapter.showLoading();
-        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
-        presenter.getData(exploreParams);
+        loadFirstData(false);
     }
 
     @Override
     public void onEmptySearchResult() {
+        presenter.unsubscribeAutoComplete();
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
         exploreParams.disableLoadMore();
-        adapter.clearProductElements();
+        adapter.clearAllElements();
         adapter.addElement(new ExploreEmptySearchViewModel());
-        rvExplore.smoothScrollToPosition(adapter.getLastIndex());
-        presenter.unsubscribeAutoComplete();
     }
 
     @Override
@@ -795,6 +801,11 @@ public class ExploreFragment
             performanceMonitoring.stopTrace();
             isTraceStopped = true;
         }
+    }
+
+    @Override
+    public void unsubscribeAutoComplete() {
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override
