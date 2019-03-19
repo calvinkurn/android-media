@@ -638,26 +638,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
-        if (context != null) {
-            val menus = Menus(context!!)
-            val menusList = ArrayList<Menus.ItemMenus>()
-            if (reportable) {
-                menusList.add(
-                        Menus.ItemMenus(
-                                getString(R.string.profile_feed_report),
-                                -1
-                        )
-                )
-            }
-            menus.itemMenuList = menusList
-            menus.setActionText(getString(R.string.profile_feed_cancel))
-            menus.setOnActionClickListener { v -> menus.dismiss() }
-            menus.setOnItemMenuClickListener { itemMenus, pos ->
-                if (itemMenus.title == getString(R.string.profile_feed_report)) {
+        context?.let {
+            val menus = createBottomMenu(it, deletable, reportable, editable, object: PostMenuListener{
+                override fun onDeleteClicked() {
+                    createDeleteDialog(postId, postId).show()
+                }
+
+                override fun onReportClick() {
                     goToContentReport(postId)
                 }
-                menus.dismiss()
-            }
+
+                override fun onEditClick() {
+
+                }
+            })
             menus.show()
         }
     }

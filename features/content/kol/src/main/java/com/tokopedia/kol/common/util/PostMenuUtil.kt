@@ -10,11 +10,13 @@ import java.util.*
  * @author by milhamj on 13/11/18.
  */
 fun createBottomMenu(context: Context,
-                     model: BaseKolViewModel,
+                     isDeletable: Boolean,
+                     isReportable: Boolean,
+                     isEditable: Boolean,
                      listener: PostMenuListener?): Menus {
     val menus = Menus(context)
     val menuList = ArrayList<Menus.ItemMenus>()
-    if (model.isDeletable) {
+    if (isDeletable) {
         menuList.add(
                 Menus.ItemMenus(
                         context.getString(R.string.kol_delete_post),
@@ -22,7 +24,7 @@ fun createBottomMenu(context: Context,
                 )
         )
     }
-    if (model.isReportable) {
+    if (isReportable) {
         menuList.add(
                 Menus.ItemMenus(
                         context.getString(R.string.kol_report),
@@ -30,7 +32,7 @@ fun createBottomMenu(context: Context,
                 )
         )
     }
-    if (model.isEditable) {
+    if (isEditable) {
         menuList.add(
                 Menus.ItemMenus(
                         context.getString(R.string.kol_edit_post),
@@ -50,6 +52,16 @@ fun createBottomMenu(context: Context,
         menus.dismiss()
     }
     return menus
+}
+
+fun createBottomMenu(context: Context,
+                     model: BaseKolViewModel,
+                     listener: PostMenuListener?): Menus {
+    createBottomMenu(
+            context,
+            model.isDeletable,
+            model.isReportable,
+            model.isEditable, listener)
 }
 
 interface PostMenuListener {

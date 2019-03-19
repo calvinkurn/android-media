@@ -1744,28 +1744,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable,
                             boolean editable) {
         if (getContext() != null) {
-            Menus menus = new Menus(getContext());
-            List<Menus.ItemMenus> menusList = new ArrayList<>();
+            Menus menus = createBottomMenu(getContext(), deletable, reportable, editable, new PostMenuListener() {
+                @Override
+                public void onDeleteClicked() {
 
-            if (reportable) {
-                menusList.add(
-                        new Menus.ItemMenus(
-                                getString(R.string.feed_report),
-                                -1
-                        )
-                );
-            }
+                }
 
-            menus.setItemMenuList(menusList);
-            menus.setActionText(getString(R.string.feed_cancel));
-
-            menus.setOnActionClickListener(v -> menus.dismiss());
-            menus.setOnItemMenuClickListener((itemMenus, pos) -> {
-                if (itemMenus.title.equals(getString(R.string.feed_report))) {
+                @Override
+                public void onReportClick() {
                     goToContentReport(postId);
                 }
 
-                menus.dismiss();
+                @Override
+                public void onEditClick() {
+
+                }
             });
             menus.show();
         }
