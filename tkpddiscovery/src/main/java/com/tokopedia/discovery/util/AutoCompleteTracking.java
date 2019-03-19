@@ -20,6 +20,7 @@ public class AutoCompleteTracking {
     public static final String CLICK_CATEGORY_SUGGESTION = "click - category suggestion";
     public static final String CLICK_SEARCH = "click - search";
     public static final String CLICK_PROFILE_SUGGESTION = "click - profile suggestion";
+    public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - top profile suggestion";
     public static final String EVENT_CLICK_SEARCH = "clickSearch";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
     public static final String EVENT = "event";
@@ -176,6 +177,19 @@ public class AutoCompleteTracking {
                 EVENT_CLICK_SEARCH_RESULT,
                 TOP_NAV,
                 CLICK_PROFILE_SUGGESTION,
+                label
+        );
+    }
+
+    public static void eventClickTopProfile(Context context, String label) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                EVENT_CLICK_SEARCH_RESULT,
+                TOP_NAV,
+                CLICK_TOP_PROFILE_SUGGESTION,
                 label
         );
     }

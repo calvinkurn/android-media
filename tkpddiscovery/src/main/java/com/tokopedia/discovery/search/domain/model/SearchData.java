@@ -20,6 +20,7 @@ public class SearchData {
     public static final String AUTOCOMPLETE_IN_CATEGORY = "in_category";
     public static final String AUTOCOMPLETE_SHOP = "shop";
     public static final String AUTOCOMPLETE_PROFILE = "profile";
+    public static final String AUTOCOMPLETE_TOP_PROFILE = "top_profile";
 
     @SerializedName("id")
     private String id;

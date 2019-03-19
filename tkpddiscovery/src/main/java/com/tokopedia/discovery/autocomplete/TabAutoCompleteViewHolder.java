@@ -19,6 +19,7 @@ import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ProfileSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.TopProfileSearch;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
@@ -140,6 +141,11 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
                 case SearchData.AUTOCOMPLETE_PROFILE:
                     list = prepareProfileSearch(searchData, element.getSearchTerm());
                     list = insertTitle(list, searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
+                    continue;
+                case SearchData.AUTOCOMPLETE_TOP_PROFILE:
+                    list = prepareTopProfileSearch(searchData, element.getSearchTerm());
                     allFragmentList.addAll(list);
                     allFragment.addBulkSearchResult(list);
                     continue;
@@ -285,6 +291,24 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
         List<Visitable> list = new ArrayList<>();
         for(SearchItem item : searchData.getItems()) {
             ProfileSearch model = new ProfileSearch();
+            model.setKeyword(item.getKeyword());
+            model.setUrl(item.getUrl());
+            model.setApplink(item.getApplink());
+            model.setImageUrl(item.getImageURI());
+            model.setPeopleId(item.getItemId());
+            model.setAffiliateUserName(!TextUtils.isEmpty(item.getAffiliateUserName()) ? item.getAffiliateUserName() : "");
+            model.setKOL(item.isKOL());
+            model.setPostCount(item.getPostCount());
+            model.setSearchTerm(searchTerm);
+            list.add(model);
+        }
+        return list;
+    }
+
+    private List<Visitable> prepareTopProfileSearch(SearchData searchData, String searchTerm) {
+        List<Visitable> list = new ArrayList<>();
+        for(SearchItem item : searchData.getItems()) {
+            TopProfileSearch model = new TopProfileSearch();
             model.setKeyword(item.getKeyword());
             model.setUrl(item.getUrl());
             model.setApplink(item.getApplink());
