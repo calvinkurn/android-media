@@ -56,6 +56,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
         holder.itemView.setOnClickListener(v -> {
             boolean isSelected = filterList.get(holder.getAdapterPosition()).isSelected();
             filterList.get(holder.getAdapterPosition()).setSelected(!isSelected);
+            notifyItemChanged(holder.getAdapterPosition());
             filterClickedListener.onItemClicked(getOnlySelectedFilter());
         });
     }
