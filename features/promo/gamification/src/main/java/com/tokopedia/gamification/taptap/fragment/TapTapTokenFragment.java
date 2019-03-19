@@ -1,6 +1,5 @@
 package com.tokopedia.gamification.taptap.fragment;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -41,33 +40,36 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
-import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
+import com.tokopedia.gamification.di.GamificationComponentInstance;
 import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.compoundview.WidgetCrackResultTapTap;
 import com.tokopedia.gamification.taptap.compoundview.WidgetTokenViewTapTap;
 import com.tokopedia.gamification.taptap.contract.TapTapTokenContract;
 import com.tokopedia.gamification.taptap.data.entiity.ActionButton;
-import com.tokopedia.gamification.taptap.data.entiity.BackButton;
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 import com.tokopedia.gamification.taptap.data.entiity.TimeRemaining;
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
 import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
+import com.tokopedia.gamification.taptap.database.GamificationDatabaseWrapper;
+import com.tokopedia.gamification.taptap.database.GamificationDbCallback;
+import com.tokopedia.gamification.taptap.database.GamificationRoomDb;
 import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.util.HexValidator;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 
-public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTokenContract.View {
+public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTokenContract.View, GamificationDbCallback {
 
     private static final String FPM_RENDER = "ft_gamification";
     private static final String FPM_CRACKING = "ft_gamification_cracking_egg";
@@ -104,6 +106,11 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private PerformanceMonitoring fpmRender;
     private PerformanceMonitoring fpmCrack;
     private View rootContainer;
+    private BackPopupDialogFragment backPopupDialogFragment;
+
+    @Inject
+    GamificationDatabaseWrapper gamificationDatabaseWrapper;
+    private TapTapSummaryDialogFragment summaryPageDialogFragment;
 
     public static Fragment newInstance() {
         return new TapTapTokenFragment();
@@ -142,6 +149,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
         setUpToolBar();
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
+//        showSummaryPopup();
+
 
         widgetCrackResult.setListener(new WidgetCrackResultTapTap.WidgetCrackResultListener() {
             @Override
@@ -299,15 +308,18 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     private void setActionButtons() {
-        if (tokenData.getActionButton() != null) {
+        if (tokenData.getActionButton() != null && tokenData.getActionButton().size() != 0) {
             for (int i = 0; i < tokenData.getActionButton().size(); i++) {
                 ActionButton actionButton = tokenData.getActionButton().get(i);
                 if (!actionButton.getIsDisable() && buttonUp.getVisibility() == View.GONE) {
                     setActionButton(buttonUp, actionButton);
-                }else if (!actionButton.getIsDisable() && buttonDown.getVisibility() == View.GONE) {
+                } else if (!actionButton.getIsDisable() && buttonDown.getVisibility() == View.GONE) {
                     setActionButton(buttonDown, actionButton);
                 }
             }
+        } else {
+            buttonUp.setVisibility(View.GONE);
+            buttonDown.setVisibility(View.GONE);
         }
     }
 
@@ -459,9 +471,9 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                             crackTokenPresenter.getGetTokenTokopoints(false, true);
                         }
                     } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-
+                        showSummaryPopup();
                     } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-
+                        showSummaryPopup();
                     }
                 }
             }.start();
@@ -469,6 +481,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         } else {
             textCountdownTimer.setVisibility(View.GONE);
         }
+    }
+
+    private void showSummaryPopup() {
+        gamificationDatabaseWrapper.getAllEntries(this);
+    }
+
+    private void checkPendingCampaingAndShowSummary() {
+
+        gamificationDatabaseWrapper.getAllEntriesForCampaignId(this, tokenData.getTokensUser().getCampaignID());
+
     }
 
     private void onTick(long millisUntilFinished) {
@@ -558,6 +580,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onSuccessGetToken(GamiTapEggHome gamiTapEggHome, boolean isRefetchEgg) {
+        if (tokenData != null)
+            checkPendingCampaingAndShowSummary();
         if (tokenData != null
                 && tokenData.getTokensUser() != null
                 && gamiTapEggHome.getTokensUser() != null) {
@@ -568,12 +592,20 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
                     && TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
                 this.tokenData = gamiTapEggHome;
-
                 widgetTokenView.startRotateBackAnimation();
                 return;
             } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
                     && TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
+
+            } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
+                    && !TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
+                this.tokenData = gamiTapEggHome;
+                showSummaryPopup();
+            } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
+                    && !TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
+                showSummaryPopup();
             }
+
         }
         this.tokenData = gamiTapEggHome;
         downloadAssets();
@@ -608,6 +640,9 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onSuccessCrackToken(final CrackResultEntity crackResult) {
+        if(crackResult!=null){
+            gamificationDatabaseWrapper.insert(tokenData.getTokensUser().getCampaignID(), crackResult);
+        }
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
             Glide.with(getContext())
@@ -821,6 +856,44 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         }
     }
 
+    @Override
+    public void onSuccessGetFromDb(List<CrackResultEntity> crackResultEntities) {
+        if (crackResultEntities != null && crackResultEntities.size() != 0) {
+            showSummaryDialogOnSuccess();
+        }
+    }
+
+    private void showSummaryDialogOnSuccess() {
+        if (getContext() != null) {
+            summaryPageDialogFragment = TapTapSummaryDialogFragment.createDialog();
+        }
+        if (tokenData != null) {
+            summaryPageDialogFragment.setActionButtons(tokenData.getActionButton());
+        }
+        if (summaryPageDialogFragment != null && summaryPageDialogFragment.getDialog() != null && summaryPageDialogFragment.getDialog().isShowing()) {
+            summaryPageDialogFragment.dismiss();
+        } else if (summaryPageDialogFragment != null) {
+            summaryPageDialogFragment.show(getChildFragmentManager(), "summaryPageDialogFragment");
+        }
+
+    }
+
+    @Override
+    public void onErrorGetFromDb() {
+
+    }
+
+    @Override
+    public void onSuccessGetFromDbForCampaign(List<CrackResultEntity> crackResultEntities) {
+        if (crackResultEntities != null && crackResultEntities.size() != 0) {
+            showSummaryDialogOnSuccess();
+        }
+    }
+
+    public void clearViewAndAnimations() {
+        widgetTokenView.clearTokenAnimation();
+    }
+
     public interface ActionListener {
         void directPageToCrackEmpty(TokenDataEntity tokenData);
     }
@@ -828,43 +901,47 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     public void showBackPopup() {
         // custom dialog
 
-        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null) {
-            BackPopupDialogFragment.createDialog(tokenData.getBackButton());
+        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null && backPopupDialogFragment == null) {
+            backPopupDialogFragment = BackPopupDialogFragment.createDialog();
         }
-        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null) {
-            BackButton backButton = tokenData.getBackButton();
-            final Dialog dialog = new Dialog(getContext());
-            dialog.setContentView(R.layout.gf_popup_exit_game);
-
-            TextView textHeader = dialog.findViewById(R.id.tv_header);
-            TextView textSubHeader = dialog.findViewById(R.id.tv_subheader);
-            Button btnCancel = dialog.findViewById(R.id.btn_cancel);
-            Button btnOkay = dialog.findViewById(R.id.btn_ok);
-            ImageView imagePopupHeader = dialog.findViewById(R.id.image_popup_header);
-            textHeader.setText(backButton.getTitle());
-            textSubHeader.setText(backButton.getText());
-            btnOkay.setText(backButton.getYesText());
-            btnCancel.setText(backButton.getCancelText());
-            ImageHandler.loadImage(getContext(), imagePopupHeader, backButton.getImageURL(), R.color.grey_1100, R.color.grey_1100);
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-            btnOkay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getContext() != null) {
-                        ((GamificationRouter) getContext().getApplicationContext()).goToHome(getContext());
-                    }
-                }
-            });
-
-            dialog.show();
-
+        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null && backPopupDialogFragment != null) {
+            backPopupDialogFragment.setBackButton(tokenData.getBackButton());
+            backPopupDialogFragment.show(getChildFragmentManager(), "tokenDialog");
         }
+//        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null) {
+//            BackButton backButton = tokenData.getBackButton();
+//            final Dialog dialog = new Dialog(getContext());
+//            dialog.setContentView(R.layout.gf_popup_exit_game);
+//
+//            TextView textHeader = dialog.findViewById(R.id.tv_header);
+//            TextView textSubHeader = dialog.findViewById(R.id.tv_subheader);
+//            Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+//            Button btnOkay = dialog.findViewById(R.id.btn_ok);
+//            ImageView imagePopupHeader = dialog.findViewById(R.id.image_popup_header);
+//            textHeader.setText(backButton.getTitle());
+//            textSubHeader.setText(backButton.getText());
+//            btnOkay.setText(backButton.getYesText());
+//            btnCancel.setText(backButton.getCancelText());
+//            ImageHandler.loadImage(getContext(), imagePopupHeader, backButton.getImageURL(), R.color.grey_1100, R.color.grey_1100);
+//            btnCancel.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    dialog.dismiss();
+//                }
+//            });
+//
+//            btnOkay.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (getContext() != null) {
+//                        ((GamificationRouter) getContext().getApplicationContext()).goToHome(getContext());
+//                    }
+//                }
+//            });
+//
+//            dialog.show();
+//
+//        }
     }
 
     public void showErrorSnackBar(String text, Context context, View coordinatorLayout, boolean homeToast) {

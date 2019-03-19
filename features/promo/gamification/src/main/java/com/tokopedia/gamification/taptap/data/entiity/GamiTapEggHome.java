@@ -3,6 +3,7 @@ package com.tokopedia.gamification.taptap.data.entiity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class GamiTapEggHome {
 
     @SerializedName("actionButton")
-    private List<ActionButton> mActionButton;
+    private ArrayList<ActionButton> mActionButton;
     @SerializedName("backButton")
     private BackButton mBackButton;
     @SerializedName("rewardButton")
@@ -22,11 +23,11 @@ public class GamiTapEggHome {
     @SerializedName("tokensUser")
     private TokensUser mTokensUser;
 
-    public List<ActionButton> getActionButton() {
+    public ArrayList<ActionButton> getActionButton() {
         return mActionButton;
     }
 
-    public void setActionButton(List<ActionButton> actionButton) {
+    public void setActionButton(ArrayList<ActionButton> actionButton) {
         mActionButton = actionButton;
     }
 

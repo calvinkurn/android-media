@@ -19,23 +19,26 @@ import com.tokopedia.gamification.taptap.data.entiity.BackButton;
 
 public class BackPopupDialogFragment extends DialogFragment {
 
-    private static String KEY_BTN="backbtn";
+    private static String KEY_BTN = "backbtn";
+    private BackButton backButton;
 
-    public static BackPopupDialogFragment createDialog(BackButton backButton){
+    public static BackPopupDialogFragment createDialog() {
 
-        BackPopupDialogFragment backPopupDialogFragment=new BackPopupDialogFragment();
-        Bundle bundle=new Bundle();
-        bundle.putParcelable(KEY_BTN, backButton);
-        backPopupDialogFragment.setArguments(bundle);
+        BackPopupDialogFragment backPopupDialogFragment = new BackPopupDialogFragment();
         return backPopupDialogFragment;
 
     }
+
+    public void setBackButton(BackButton backButton){
+        this.backButton=backButton;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.gf_popup_exit_game, container, false);
-
-        BackButton backButton=getArguments().getParcelable(KEY_BTN);
+        View view = inflater.inflate(R.layout.gf_popup_exit_game, container, false);
+        if (getDialog() != null && getDialog().getWindow() != null)
+            getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         TextView textHeader = view.findViewById(R.id.tv_header);
         TextView textSubHeader = view.findViewById(R.id.tv_subheader);

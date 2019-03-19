@@ -1,0 +1,204 @@
+package com.tokopedia.gamification.taptap.compoundview;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.applink.ApplinkUtil;
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
+import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
+import com.tokopedia.gamification.taptap.contract.TapTapTokenContract;
+import com.tokopedia.gamification.taptap.data.entiity.ActionButton;
+import com.tokopedia.gamification.taptap.utils.TapTapConstants;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class WidgetSummaryTapTap extends FrameLayout {
+    private View rootView;
+    private ImageView imageSinar;
+    private Button btnBottomLeft;
+    private Button btnBottomRight;
+    private Button btnTop;
+    private RecyclerView rvRewards;
+    private RewardsAdapter rewardsAdapter;
+    private SummaryPageActionListener interactionListener;
+
+    public interface SummaryPageActionListener {
+
+        void playWithPoints();
+    }
+
+    public WidgetSummaryTapTap(@NonNull Context context) {
+        super(context);
+        init();
+    }
+
+    public WidgetSummaryTapTap(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public WidgetSummaryTapTap(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        rootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward_summary_tap_tap, this, true);
+        imageSinar = findViewById(R.id.image_sinar);
+        rvRewards = findViewById(R.id.rv_rewards);
+        btnTop = findViewById(R.id.btn_top);
+        btnBottomLeft = findViewById(R.id.btn_bottom_left);
+        btnBottomRight = findViewById(R.id.btn_bottom_right);
+        rewardsAdapter = new RewardsAdapter(null);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
+        dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
+        rvRewards.addItemDecoration(dividerItemDecoration);
+        rvRewards.setAdapter(rewardsAdapter);
+
+    }
+
+    void setInteractionListener(SummaryPageActionListener interactionListener) {
+        this.interactionListener = interactionListener;
+    }
+
+    public void inflateReward(List<CrackResultEntity> rewards) {
+        rewardsAdapter.updateList(rewards);
+        runLayoutAnimation();
+        Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
+        rotateAnimationCrackResult.setDuration(15000);
+        imageSinar.startAnimation(rotateAnimationCrackResult);
+
+    }
+
+    public void renderButtons(ArrayList<ActionButton> actionButtons) {
+        if (actionButtons != null && actionButtons.size() != 0) {
+            if (actionButtons.size() == 1) {
+                btnTop.setVisibility(GONE);
+                btnBottomLeft.setVisibility(GONE);
+                btnBottomRight.setVisibility(VISIBLE);
+                setActionButton(actionButtons.get(0), btnTop);
+            } else if (actionButtons.size() == 2) {
+                btnBottomLeft.setVisibility(GONE);
+                btnTop.setVisibility(VISIBLE);
+                btnBottomRight.setVisibility(VISIBLE);
+                setActionButton(actionButtons.get(0), btnTop);
+                setActionButton(actionButtons.get(1), btnBottomRight);
+            } else {
+                btnBottomLeft.setVisibility(VISIBLE);
+                btnTop.setVisibility(VISIBLE);
+                btnBottomRight.setVisibility(VISIBLE);
+                setActionButton(actionButtons.get(0), btnTop);
+                setActionButton(actionButtons.get(1), btnBottomLeft);
+                setActionButton(actionButtons.get(2), btnBottomRight);
+            }
+        } else {
+            btnTop.setVisibility(GONE);
+            btnBottomLeft.setVisibility(GONE);
+            btnBottomRight.setVisibility(GONE);
+        }
+    }
+
+    private void setActionButton(ActionButton actionButton, Button btnAction) {
+        btnAction.setText(actionButton.getText());
+        btnAction.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
+                    interactionListener.playWithPoints();
+                } else {
+                    ApplinkUtil.navigateToAssociatedPage((AppCompatActivity) getContext(), actionButton.getApplink(),
+                            actionButton.getUrl(),
+                            TapTapTokenActivity.class);
+                }
+            }
+        });
+    }
+
+    class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.RewardsHolder> {
+
+
+        private List<CrackResultEntity> rewardItems;
+
+        public RewardsAdapter(List<CrackResultEntity> rewardItems) {
+            this.rewardItems = rewardItems;
+        }
+
+        @NonNull
+        @Override
+        public RewardsHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            return new RewardsHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_rewards_summary, viewGroup, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RewardsHolder rewardsHolder, int i) {
+            rewardsHolder.bindData(rewardItems.get(i));
+        }
+
+        @Override
+        public int getItemCount() {
+            return rewardItems == null ? 0 : rewardItems.size();
+        }
+
+        public void updateList(List<CrackResultEntity> rewards) {
+            this.rewardItems = rewards;
+        }
+
+        class RewardsHolder extends RecyclerView.ViewHolder {
+
+            private final TextView rewardText;
+            private final ImageView imageReward;
+
+            public RewardsHolder(@NonNull View itemView) {
+                super(itemView);
+                rewardText = itemView.findViewById(R.id.reward_text);
+                imageReward = itemView.findViewById(R.id.image_reward);
+
+            }
+
+            public void bindData(CrackResultEntity crackResultEntity) {
+
+                ImageHandler.loadImage(getContext(), imageReward, crackResultEntity.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                ArrayList<String> rewardString = null;
+                if (crackResultEntity.getBenefits() != null) {
+                    rewardString=new ArrayList<>();
+                    for (CrackBenefitEntity crackBenefitEntity : crackResultEntity.getBenefits()) {
+                        rewardString.add(crackBenefitEntity.getText());
+                    }
+                }
+
+                if (rewardString!=null)
+                    rewardText.setText(TextUtils.join("\n", rewardString));
+            }
+        }
+    }
+
+
+    private void runLayoutAnimation() {
+
+        final LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_from_bottom);
+
+        rvRewards.setLayoutAnimation(controller);
+        rvRewards.getAdapter().notifyDataSetChanged();
+        rvRewards.scheduleLayoutAnimation();
+    }
+}

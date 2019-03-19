@@ -93,6 +93,7 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     private AnimatorSet animatorSetRotateEggs;
     private CrackResultEntity crackResult;
     private AnimatorSet animatorSetRotateBackEggs;
+    private ObjectAnimator fadeInEggAfterMerge;
 
     public interface WidgetTokenListener {
         void onClick();
@@ -605,9 +606,9 @@ public class WidgetTokenViewTapTap extends FrameLayout {
                     PropertyValuesHolder.ofFloat(View.ALPHA, 1.0f, 0.0f);
 
 
-            ObjectAnimator alphaAnimator2 = ObjectAnimator.ofPropertyValuesHolder(imageFullWhiteEgg, pvhAlpha1);
-            alphaAnimator2.setDuration(1000);
-            alphaAnimator2.addListener(new Animator.AnimatorListener() {
+            fadeInEggAfterMerge = ObjectAnimator.ofPropertyValuesHolder(imageFullWhiteEgg, pvhAlpha1);
+            fadeInEggAfterMerge.setDuration(1000);
+            fadeInEggAfterMerge.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
 
@@ -633,7 +634,7 @@ public class WidgetTokenViewTapTap extends FrameLayout {
             });
 
 
-            alphaAnimator2.start();
+            fadeInEggAfterMerge.start();
         }
 
         @Override
@@ -697,6 +698,10 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         if (animatorSetFadeOut != null) {
             animatorSetFadeOut.removeListener(glowFadeOutListener);
             animatorSetFadeOut.cancel();
+        }
+
+        if (fadeInEggAfterMerge != null) {
+            fadeInEggAfterMerge.cancel();
         }
     }
 

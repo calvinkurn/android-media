@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -55,6 +56,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     private static final long COUNTER_ANIMATION_DURATION = 500;
     private static final long COUNTER_ANIMATION_START_DELAY = 200;
     private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET = 500;
+    private static final long REWARDS_VIEW_TRANSLATE_START_DELAY = 400;
 
     private ImageView imageViewCrackResult;
 
@@ -149,7 +151,14 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             imageViewCrackResult.setImageBitmap(crackResult.getImageBitmap());
             rewardTranslateAnimatorSet.start();
             imageViewCrackResult.setVisibility(View.VISIBLE);
-            listCrackResultText.setVisibility(View.VISIBLE);
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (getContext() != null) {
+                        listCrackResultText.setVisibility(View.VISIBLE);
+                    }
+                }
+            }, REWARDS_VIEW_TRANSLATE_START_DELAY);
 //            startImageResultAnimation(imageViewCrackResult, animationCrackResult);
         } else {
             if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
@@ -216,7 +225,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             AnimatorSet rewardsAnimatorSet = new AnimatorSet();
             rewardsAnimatorSet.playSequentially(animatorSetTranslateRewards, fadeOutAnimatorReward);
             rewardsAnimatorSet.setDuration(1000);
-            rewardsAnimatorSet.setStartDelay(400);
+            rewardsAnimatorSet.setStartDelay(REWARDS_VIEW_TRANSLATE_START_DELAY);
 
 
             AnimatorSet imageTranslateAnimatorSet = new AnimatorSet();
@@ -282,10 +291,10 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             rewardTranslateAnimatorSet.cancel();
         }
         imageViewCrackResult.clearAnimation();
-        imageViewCrackResult.setVisibility(View.GONE);
+        imageViewCrackResult.setVisibility(View.INVISIBLE);
         listCrackResultText.clearAnimation();
         listCrackResultText.removeAllViews();
-        listCrackResultText.setVisibility(View.GONE);
+        listCrackResultText.setVisibility(View.INVISIBLE);
         listener.onCrackResultCleared();
     }
 

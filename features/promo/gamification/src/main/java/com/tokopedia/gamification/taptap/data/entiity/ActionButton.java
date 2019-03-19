@@ -1,10 +1,13 @@
 
 package com.tokopedia.gamification.taptap.data.entiity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("unused")
-public class ActionButton {
+public class ActionButton implements Parcelable {
 
     @SerializedName("applink")
     private String mApplink;
@@ -18,6 +21,27 @@ public class ActionButton {
     private String mType;
     @SerializedName("url")
     private String mUrl;
+
+    protected ActionButton(Parcel in) {
+        mApplink = in.readString();
+        mBackgroundColor = in.readString();
+        mIsDisable = in.readByte() != 0;
+        mText = in.readString();
+        mType = in.readString();
+        mUrl = in.readString();
+    }
+
+    public static final Creator<ActionButton> CREATOR = new Creator<ActionButton>() {
+        @Override
+        public ActionButton createFromParcel(Parcel in) {
+            return new ActionButton(in);
+        }
+
+        @Override
+        public ActionButton[] newArray(int size) {
+            return new ActionButton[size];
+        }
+    };
 
     public String getApplink() {
         return mApplink;
@@ -67,4 +91,18 @@ public class ActionButton {
         mUrl = url;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mApplink);
+        dest.writeString(mBackgroundColor);
+        dest.writeByte((byte) (mIsDisable ? 1 : 0));
+        dest.writeString(mText);
+        dest.writeString(mType);
+        dest.writeString(mUrl);
+    }
 }

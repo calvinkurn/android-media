@@ -76,6 +76,8 @@ public class TapTapTokenActivity extends BaseSimpleActivity implements TapTapTok
         if (crackTokenFragment!=null && crackTokenFragment.isShowBackPopup()) {
             crackTokenFragment.showBackPopup();
 
+        }else if(crackTokenFragment!=null){
+            crackTokenFragment.clearViewAndAnimations();
         } else {
             onBackPressedRoot();
         }

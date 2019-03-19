@@ -9,7 +9,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationConstants;
@@ -27,6 +26,7 @@ import com.tokopedia.gamification.taptap.model.GeneralErrorCrackResult;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,13 +43,13 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
     private GraphqlUseCase getTokenTokopointsUseCase;
     private GraphqlUseCase getCrackResultEggUseCase;
     Lazy<GraphqlUseCase> getCrackResultEggUseCaseProvider;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public TapTapTokenPresenter(GraphqlUseCase getTokenTokopointsUseCase,
                                 GraphqlUseCase getCrackResultEggUseCase,
                                 Lazy<GraphqlUseCase> getCrackResultEggUseCaseProvider,
-                                UserSession userSession) {
+                                UserSessionInterface userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
         this.getCrackResultEggUseCaseProvider = getCrackResultEggUseCaseProvider;
@@ -222,44 +222,42 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
     @Override
     public void playWithPoints() {
-        if (getCrackResultEggUseCaseProvider != null) {
-            getView().showLoading();
-            GraphqlUseCase getCrackResultEggUseCase = getCrackResultEggUseCaseProvider.get();
-            getCrackResultEggUseCase.clearRequest();
-            GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_play_with_tokopoints),
-                    PlayWithPointsEntity.class, false);
-            getCrackResultEggUseCase.addRequest(tokenTokopointsRequest);
-            getCrackResultEggUseCase.execute(new Subscriber<GraphqlResponse>() {
-                @Override
-                public void onCompleted() {
+        getView().showLoading();
 
-                }
+        getCrackResultEggUseCase.clearRequest();
+        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gf_play_with_tokopoints),
+                PlayWithPointsEntity.class, false);
+        getCrackResultEggUseCase.addRequest(tokenTokopointsRequest);
+        getCrackResultEggUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
-                @Override
-                public void onError(Throwable e) {
+            }
 
-                }
+            @Override
+            public void onError(Throwable e) {
 
-                @Override
-                public void onNext(GraphqlResponse graphqlResponse) {
-                    if (graphqlResponse != null) {
-                        PlayWithPointsEntity playWithPointsEntity = graphqlResponse.getData(PlayWithPointsEntity.class);
-                        if (playWithPointsEntity != null && playWithPointsEntity.getGamiPlayWithPoints() != null) {
-                            if (playWithPointsEntity.getGamiPlayWithPoints().getCode().equals("200")) {
-                                getGetTokenTokopoints(true, false);
-                                return;
-                            } else if (playWithPointsEntity.getGamiPlayWithPoints().getMessage() != null) {
-                                getView().showErrorSnackBar(TextUtils.join(",", playWithPointsEntity.getGamiPlayWithPoints().getMessage()));
-                            }
+            }
 
-
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                if (graphqlResponse != null) {
+                    PlayWithPointsEntity playWithPointsEntity = graphqlResponse.getData(PlayWithPointsEntity.class);
+                    if (playWithPointsEntity != null && playWithPointsEntity.getGamiPlayWithPoints() != null) {
+                        if (playWithPointsEntity.getGamiPlayWithPoints().getCode().equals("200")) {
+                            getGetTokenTokopoints(true, false);
+                            return;
+                        } else if (playWithPointsEntity.getGamiPlayWithPoints().getMessage() != null) {
+                            getView().showErrorSnackBar(TextUtils.join(",", playWithPointsEntity.getGamiPlayWithPoints().getMessage()));
                         }
-                    }
-                    getView().showErrorSnackBar();
 
+
+                    }
                 }
-            });
-        }
+                getView().showErrorSnackBar();
+
+            }
+        });
 
     }
 
@@ -303,6 +301,6 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
     public void detachView() {
         getCrackResultEggUseCase.unsubscribe();
         getTokenTokopointsUseCase.unsubscribe();
-        super.detachView();
+                super.detachView();
     }
 }
