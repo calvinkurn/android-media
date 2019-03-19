@@ -240,7 +240,7 @@ android {
         applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = false
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "x86", "armeabi-v7a"
@@ -269,30 +269,30 @@ android {
     }
 
     // Specifies 4 flavor dimensions.
-    flavorDimensions "tier", "client"
+    flavorDimensions "tier"// , "client"
 
     productFlavors {
         live {
             dimension "tier"
         }
-        staging {
-            dimension "tier"
-        }
-        dev {
-            dimension "client"
-        }
-        prod {
-            dimension "client"
-        }
+//        staging {
+//            dimension "tier"
+//        }
+//        dev {
+//            dimension "client"
+//        }
+//        prod {
+//            dimension "client"
+//        }
     }
 }
 
-afterEvaluate {
-    dependencies {
-        liveDevImplementation rootProject.ext.instabugDependencies.instabug
-        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
-    }
-}
+//afterEvaluate {
+//    dependencies {
+//        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+//        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
+//    }
+//}
 
 dependencies {
 
@@ -468,6 +468,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.cpm)
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation (rootProject.ext.analyticsDependencies.moengage) {
