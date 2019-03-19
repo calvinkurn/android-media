@@ -287,11 +287,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessResetTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
-
         adapter.setList(productTalkViewModel.listThread, ProductTalkTitleViewModel(productImage,
                 productName, productPrice))
-
+        stopTrace()
     }
 
     private fun setupViewModel(productTalkViewModel: ProductTalkViewModel) {
