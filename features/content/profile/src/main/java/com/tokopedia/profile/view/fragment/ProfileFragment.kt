@@ -935,7 +935,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (!selfProfile) {
             iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
             iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
-            action = shareLinkClickListener(element.link, SOURCE_PROFILE_FOOTER)
+            action = shareLinkClickListener(element.link, SOURCE_PROFILE_HEADER)
         } else {
             iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
             iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
