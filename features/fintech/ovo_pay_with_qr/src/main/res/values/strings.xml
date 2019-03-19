@@ -1,13 +1,13 @@
 <resources>
     <string name="oqr_app_name">Ovo</string>
     <string name="oqr_payment_summary">Pembayaran</string>
-    <string name="oqr_ovo_cash_point_amnt">%s</string>
+    <string name="oqr_ovo_cash_point_amnt">%1$s</string>
     <string name="oqr_balance_exceed_error">Saldo Anda tidak mencukupi</string>
     <string name="oqr_min_input_hint">Minimal pembayaran Rp1.000</string>
     <string name="oqr_error_message">Terjadi kendala teknis. Coba lagi.</string>
     <string name="oqr_max_input_hint">Maksimal pembayaran Rp10.000.000</string>
     <string name="oqr_copied_to_clipboard">Copied to Clipboard</string>
-    <string name="oqr_cash_point">Sisa Saldo %s &amp; OVO Points %s</string>
+    <string name="oqr_cash_point">Sisa Saldo %1$s &amp; OVO Points %1$s</string>
     <string name="oqr_ovo_cash_title">OVO CASH TERPAKAI</string>
     <string name="oqr_ovo_point_title">OVO POINTS TERPAKAI</string>
     <string name="oqr_use_ovo_points">Gunakan OVO Points</string>

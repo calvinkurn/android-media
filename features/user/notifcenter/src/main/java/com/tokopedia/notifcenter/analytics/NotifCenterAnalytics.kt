@@ -19,7 +19,7 @@ class NotifCenterAnalytics @Inject constructor() {
                 CATEGORY_NOTIF_CENTER,
                 "click on notif list",
                 ""
-        )
+        ))
     }
 
     fun trackClickFilter(filterName: String) {
@@ -28,7 +28,7 @@ class NotifCenterAnalytics @Inject constructor() {
                 CATEGORY_NOTIF_CENTER,
                 "click on filter request",
                 filterName
-        )
+        ))
     }
 
     fun trackScrollToBottom() {
@@ -37,7 +37,7 @@ class NotifCenterAnalytics @Inject constructor() {
                 CATEGORY_NOTIF_CENTER,
                 "scroll to bottom",
                 ""
-        )
+        ))
     }
 
 

@@ -2,6 +2,10 @@ package com.tokopedia.otp.common;
 
 
 import android.app.Activity;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import javax.inject.Inject;
 
@@ -51,7 +55,7 @@ public class OTPAnalytics {
     }
 
     public void eventClickBackOTPPage(int otpType) {
-        analyticTrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_BACK,
                 Action.INPUT_OTP_PAGE,
                 "click back button",

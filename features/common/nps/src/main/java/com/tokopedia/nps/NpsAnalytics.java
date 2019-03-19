@@ -32,7 +32,7 @@ public class NpsAnalytics {
                 CLICK_APP_RATING,
                 APP_RATING,
                 CLICK,
-                label);
+                label));
     }
 
     public void eventCancelAppRating(String label) {
@@ -41,6 +41,6 @@ public class NpsAnalytics {
                 APP_RATING,
                 CLICK,
                 label
-        );
+        ));
     }
 }
