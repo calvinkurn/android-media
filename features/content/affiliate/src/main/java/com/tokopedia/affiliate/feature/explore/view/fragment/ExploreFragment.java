@@ -48,6 +48,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerChildViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
@@ -452,6 +453,16 @@ public class ExploreFragment
             );
         }
         isCanDoAction = false;
+    }
+
+    @Override
+    public void onBannerClicked(ExploreBannerChildViewModel model) {
+        goToLink(model.getRedirectUrl());
+    }
+
+    @Override
+    public void onProfileClicked(PopularProfileChildViewModel model) {
+        goToLink(model.getRedirectUrl());
     }
 
     @Override

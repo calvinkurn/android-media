@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerChildViewModel
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_af_banner_child.view.*
 
@@ -14,7 +14,8 @@ import kotlinx.android.synthetic.main.item_af_banner_child.view.*
  * @author by milhamj on 18/03/19.
  */
 
-class ExploreBannerAdapter: RecyclerView.Adapter<ExploreBannerAdapter.ViewHolder>() {
+class ExploreBannerAdapter(private val mainView: ExploreContract.View)
+    : RecyclerView.Adapter<ExploreBannerAdapter.ViewHolder>() {
 
     val list: MutableList<ExploreBannerChildViewModel> = arrayListOf()
 
@@ -30,7 +31,7 @@ class ExploreBannerAdapter: RecyclerView.Adapter<ExploreBannerAdapter.ViewHolder
 
         itemView.banner.loadImage(element.imageUrl)
         itemView.setOnClickListener {
-            RouteManager.route(itemView.context, element.redirectUrl)
+            mainView.onBannerClicked(element)
         }
     }
 

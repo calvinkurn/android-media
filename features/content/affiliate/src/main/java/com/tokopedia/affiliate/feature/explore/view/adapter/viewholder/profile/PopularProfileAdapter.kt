@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChildViewModel
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import kotlinx.android.synthetic.main.item_af_popular_profile_child.view.*
@@ -11,7 +12,9 @@ import kotlinx.android.synthetic.main.item_af_popular_profile_child.view.*
 /**
  * @author by milhamj on 12/03/19.
  */
-class PopularProfileAdapter: RecyclerView.Adapter<PopularProfileAdapter.ViewHolder>() {
+class PopularProfileAdapter(private val mainView: ExploreContract.View)
+    : RecyclerView.Adapter<PopularProfileAdapter.ViewHolder>() {
+
     val list: MutableList<PopularProfileChildViewModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,6 +29,9 @@ class PopularProfileAdapter: RecyclerView.Adapter<PopularProfileAdapter.ViewHold
 
         itemView.avatar.loadImageCircle(element.avatar)
         itemView.name.text = element.name
+        itemView.setOnClickListener {
+            mainView.onProfileClicked(element)
+        }
     }
 
     class ViewHolder(v: View): RecyclerView.ViewHolder(v)

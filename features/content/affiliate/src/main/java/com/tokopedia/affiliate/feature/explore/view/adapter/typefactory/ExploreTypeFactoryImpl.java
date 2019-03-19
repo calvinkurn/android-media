@@ -89,11 +89,11 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
         } else if (type == FilterViewHolder.LAYOUT) {
             abstractViewHolder = new FilterViewHolder(view, filterClickedListener);
         } else if (type == PopularProfileViewHolder.LAYOUT) {
-            abstractViewHolder = new PopularProfileViewHolder(view);
+            abstractViewHolder = new PopularProfileViewHolder(view, mainView);
         } else if (type == RecommendationViewHolder.LAYOUT) {
             abstractViewHolder = new RecommendationViewHolder(view, mainView);
         } else if (type == ExploreBannerViewHolder.LAYOUT) {
-            abstractViewHolder = new ExploreBannerViewHolder(view);
+            abstractViewHolder = new ExploreBannerViewHolder(view, mainView);
         } else if (type == ProductTitleViewHolder.LAYOUT) {
             abstractViewHolder = new ProductTitleViewHolder(view);
         } else {

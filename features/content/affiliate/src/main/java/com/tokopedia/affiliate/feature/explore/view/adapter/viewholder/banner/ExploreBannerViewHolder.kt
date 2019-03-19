@@ -4,16 +4,18 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerViewModel
 import kotlinx.android.synthetic.main.item_af_banner.view.*
 
 /**
  * @author by milhamj on 18/03/19.
  */
-class ExploreBannerViewHolder(v: View) : AbstractViewHolder<ExploreBannerViewModel>(v) {
+class ExploreBannerViewHolder(v: View, private val mainView: ExploreContract.View)
+    : AbstractViewHolder<ExploreBannerViewModel>(v) {
 
     val adapter: ExploreBannerAdapter by lazy {
-        ExploreBannerAdapter()
+        ExploreBannerAdapter(mainView)
     }
 
     companion object {

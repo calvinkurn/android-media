@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileViewModel
 import com.tokopedia.kotlin.extensions.view.getDimens
 import kotlinx.android.synthetic.main.item_af_popular_profile.view.*
@@ -13,10 +14,11 @@ import kotlinx.android.synthetic.main.item_af_popular_profile.view.*
 /**
  * @author by milhamj on 12/03/19.
  */
-class PopularProfileViewHolder(v: View) : AbstractViewHolder<PopularProfileViewModel>(v) {
+class PopularProfileViewHolder(v: View, private val mainView: ExploreContract.View)
+    : AbstractViewHolder<PopularProfileViewModel>(v) {
 
     val adapter: PopularProfileAdapter by lazy {
-        PopularProfileAdapter()
+        PopularProfileAdapter(mainView)
     }
 
     init {
