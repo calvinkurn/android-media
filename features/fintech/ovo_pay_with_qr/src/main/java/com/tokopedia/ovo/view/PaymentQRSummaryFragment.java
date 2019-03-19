@@ -24,9 +24,11 @@ import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
+import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.ovo.model.ImeiConfirmResponse;
 import com.tokopedia.ovo.model.Wallet;
@@ -54,6 +56,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     private static final float BUY_BTN_COMPLETE_VISIBILITY = 1f;
     private static final long MIN_AMOUNT = 1000;
     private static final long MAX_AMOUNT = 10000000;
+    public static final String LOCAL_CACHE_ID = "local_cache_id";
     String id;
     String imeiNumber;
     BarcodeResponseData responseData;
@@ -160,6 +163,11 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             }
             cancelBtn.setOnClickListener(view1 -> getActivity().finish());
         }
+        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+                OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
+                OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
+                OvoPayByQrTrackerUtil.ACTION.viewPagePaymentSummary,
+                OvoPayByQrTrackerUtil.LABEL.defaultLabel);
     }
 
     private void enableInputField(boolean isEnabled) {
@@ -195,13 +203,15 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                     Intent intent = ((OvoPayWithQrRouter) getActivity().getApplication())
                             .tokopointWebviewIntent(getActivity(), URLDecoder.decode(
                                     response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
-                    intent.putExtra(CACHE_ID,id);
-                    intent.putExtra(TRANSACTION_ID, response.getTransactionId());
+
+                    LocalCacheHandler cacheHandler = new LocalCacheHandler(
+                            getActivity().getApplicationContext(), LOCAL_CACHE_ID);
+                    cacheManager.put(TRANSACTION_ID, response.getTransactionId());
+                    cacheHandler.putString(CACHE_ID, cacheManager.getId());
                     startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-
             } else if (response.getStatus().equalsIgnoreCase(SUCCESS_STATUS)) {
                 startActivity(QrOvoPayTxDetailActivity.createInstance(
                         getActivity(), transferId, response.getTransactionId(), SUCCESS));
@@ -297,6 +307,11 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             } else {
                 confirmQrRequest();
             }
+            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+                    OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
+                    OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
+                    OvoPayByQrTrackerUtil.ACTION.clickBayar,
+                    OvoPayByQrTrackerUtil.LABEL.defaultLabel);
         }
     }
 
