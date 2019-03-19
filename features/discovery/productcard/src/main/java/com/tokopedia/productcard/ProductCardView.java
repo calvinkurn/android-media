@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.productcard.R;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -54,7 +55,7 @@ public class ProductCardView extends BaseCustomView {
     }
 
     public void setTitle(String title) {
-        textName.setText(title);
+        textName.setText(MethodChecker.fromHtml(title));
     }
 
     public void setDiscount(int discount) {
