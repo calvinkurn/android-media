@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract
@@ -23,6 +22,9 @@ class ExploreViewHolder(itemView: View,
 
     override fun bind(element: ExploreProductViewModel) {
         itemView.card.bind(element.exploreCardViewModel)
+        itemView.card.setMainViewClickListener {
+            mainView.onProductClicked(element.exploreCardViewModel)
+        }
     }
 
     override fun onViewRecycled() {

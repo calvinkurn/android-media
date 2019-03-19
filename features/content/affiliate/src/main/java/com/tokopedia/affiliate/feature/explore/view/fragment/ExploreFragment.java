@@ -429,13 +429,12 @@ public class ExploreFragment
     }
 
     @Override
-    public void onBymeClicked(ExploreProductViewModel model) {
-        ExploreCardViewModel cardViewModel = model.getExploreCardViewModel();
-        affiliateAnalytics.onByMeButtonClicked(cardViewModel.getProductId());
+    public void onBymeClicked(ExploreCardViewModel model) {
+        affiliateAnalytics.onByMeButtonClicked(model.getProductId());
         if (isCanDoAction) {
             isCanDoAction = false;
             if (userSession.isLoggedIn()) {
-                presenter.checkIsAffiliate(cardViewModel.getProductId(), cardViewModel.getAdId());
+                presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
             } else {
                 goToLogin();
             }
@@ -443,14 +442,13 @@ public class ExploreFragment
     }
 
     @Override
-    public void onProductClicked(ExploreProductViewModel model) {
-        ExploreCardViewModel cardViewModel = model.getExploreCardViewModel();
-        affiliateAnalytics.onProductClicked(cardViewModel.getProductId());
+    public void onProductClicked(ExploreCardViewModel model) {
+        affiliateAnalytics.onProductClicked(model.getProductId());
         if (getContext() != null &&  isCanDoAction) {
             RouteManager.route(
                     getContext(),
                     ApplinkConst.AFFILIATE_PRODUCT
-                            .replace(PRODUCT_ID_PARAM, cardViewModel.getProductId())
+                            .replace(PRODUCT_ID_PARAM, model.getProductId())
             );
         }
         isCanDoAction = false;

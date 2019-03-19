@@ -4,16 +4,19 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel
 import kotlinx.android.synthetic.main.item_af_recommendation.view.*
 
 /**
  * @author by milhamj on 14/03/19.
  */
-class RecommendationViewHolder(v: View) : AbstractViewHolder<RecommendationViewModel>(v) {
+class RecommendationViewHolder(v: View,
+                               private val mainView: ExploreContract.View)
+    : AbstractViewHolder<RecommendationViewModel>(v) {
 
     val adapter: RecommendationAdapter by lazy {
-        RecommendationAdapter()
+        RecommendationAdapter(mainView)
     }
 
     companion object {

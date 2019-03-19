@@ -91,7 +91,7 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
         } else if (type == PopularProfileViewHolder.LAYOUT) {
             abstractViewHolder = new PopularProfileViewHolder(view);
         } else if (type == RecommendationViewHolder.LAYOUT) {
-            abstractViewHolder = new RecommendationViewHolder(view);
+            abstractViewHolder = new RecommendationViewHolder(view, mainView);
         } else if (type == ExploreBannerViewHolder.LAYOUT) {
             abstractViewHolder = new ExploreBannerViewHolder(view);
         } else if (type == ProductTitleViewHolder.LAYOUT) {

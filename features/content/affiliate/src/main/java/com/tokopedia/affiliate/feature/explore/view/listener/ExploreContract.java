@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 
 import java.util.List;
@@ -48,9 +48,9 @@ public interface ExploreContract {
 
         void onErrorGetMoreData(String error);
 
-        void onBymeClicked(ExploreProductViewModel model);
+        void onBymeClicked(ExploreCardViewModel model);
 
-        void onProductClicked(ExploreProductViewModel model);
+        void onProductClicked(ExploreCardViewModel model);
 
         void dropKeyboard();
 

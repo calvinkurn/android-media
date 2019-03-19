@@ -5,12 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
+import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract
 import kotlinx.android.synthetic.main.item_af_recommendation_child.view.*
 
 /**
  * @author by milhamj on 14/03/19.
  */
-class RecommendationAdapter : RecyclerView.Adapter<RecommendationAdapter.ViewHolder>() {
+class RecommendationAdapter(private val mainView: ExploreContract.View)
+    : RecyclerView.Adapter<RecommendationAdapter.ViewHolder>() {
 
     val list: MutableList<ExploreCardViewModel> = arrayListOf()
 
@@ -25,6 +27,9 @@ class RecommendationAdapter : RecyclerView.Adapter<RecommendationAdapter.ViewHol
         val itemView = holder.itemView
         itemView.card.showTitle = false
         itemView.card.bind(element)
+        itemView.card.setMainViewClickListener {
+            mainView.onProductClicked(element)
+        }
     }
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v)

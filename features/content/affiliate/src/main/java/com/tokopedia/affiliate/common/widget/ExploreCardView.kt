@@ -48,6 +48,12 @@ class ExploreCardView : BaseCustomView {
         }
     }
 
+    fun setMainViewClickListener(listener: () -> Unit) {
+        mainView.setOnClickListener {
+            listener()
+        }
+    }
+
     fun clearImage() {
         image.clearImage()
     }
