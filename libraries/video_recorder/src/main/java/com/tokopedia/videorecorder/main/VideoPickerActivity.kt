@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.MenuItem
 import android.widget.MediaController
+import android.widget.Toast
 import com.tokopedia.videorecorder.R
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
@@ -82,16 +83,8 @@ class VideoPickerActivity: BaseSimpleActivity(),
         //remove recording result
         btnDeleteVideo.setOnClickListener { cancelVideo() }
 
-        btnDone.setOnClickListener {
-            //testing purpose
-            val videos = arrayListOf<String>()
-            videos.add(videoPath)
-
-            val intent = Intent()
-            intent.putStringArrayListExtra(VIDEOS_RESULT, videos)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
+        //video picked
+        btnDone.setOnClickListener { onVideoPicked() }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -155,6 +148,20 @@ class VideoPickerActivity: BaseSimpleActivity(),
                 FileUtils.deleteCacheDir()
             }
         }
+    }
+
+    private fun onVideoPicked() {
+        if (videoPreview.duration > 60000) {
+            Toast.makeText(this, "videonya lebih dari 60 detik, trim!", Toast.LENGTH_LONG).show()
+        }
+
+        val videos = arrayListOf<String>()
+        videos.add(videoPath)
+
+        val intent = Intent()
+        intent.putStringArrayListExtra(VIDEOS_RESULT, videos)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     //video recorder callback
