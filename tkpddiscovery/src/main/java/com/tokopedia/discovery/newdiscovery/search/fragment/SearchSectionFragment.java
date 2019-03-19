@@ -33,6 +33,7 @@ import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.linker.model.LinkerData;
@@ -91,6 +92,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private boolean isUsingBottomSheetFilter;
 
     protected SearchParameter searchParameter;
+    protected FilterController filterController;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
