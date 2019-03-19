@@ -30,7 +30,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     private SaveInstanceCacheManager cacheManager;
     LocalCacheHandler cacheHandler;
 
-    @DeepLink({OVO_THANKS_TRANSACTION_URL})
+    @DeepLink(OVO_THANKS_TRANSACTION_URL)
     public static Intent getContactUsIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, QrOvoPayTxDetailActivity.class)
