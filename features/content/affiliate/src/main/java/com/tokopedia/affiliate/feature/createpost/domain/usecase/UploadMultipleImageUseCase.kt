@@ -76,9 +76,8 @@ class UploadMultipleImageUseCase @Inject constructor(
             medium: SubmitPostMedium): Func1<VideoUploadDomainModel<DefaultUploadVideoResponse>,
             SubmitPostMedium> {
         return Func1 { uploadDomainModel ->
-            var videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url
-                    ?: ""
-            medium.mediaURL = videoUrl
+            val videoId: String = uploadDomainModel?.dataResultVideoUpload?.videoId ?: ""
+            medium.mediaURL = videoId
             medium
         }
     }
