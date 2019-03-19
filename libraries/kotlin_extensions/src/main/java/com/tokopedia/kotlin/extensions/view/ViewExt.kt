@@ -128,16 +128,18 @@ fun View.getDimens(@DimenRes id: Int): Int {
 }
 
 fun View.addOnImpressionListener(holder: ImpressHolder?, listener: ViewHintListener) {
-    viewTreeObserver.addOnScrollChangedListener(
-            object : ViewTreeObserver.OnScrollChangedListener {
-                override fun onScrollChanged() {
-                    if (!holder!!.isInvoke && listener != null) {
-                        listener.onViewHint()
-                        holder.invoke()
+    if (!holder!!.isInvoke) {
+        viewTreeObserver.addOnScrollChangedListener(
+                object : ViewTreeObserver.OnScrollChangedListener {
+                    override fun onScrollChanged() {
+                        if (!holder.isInvoke && listener != null) {
+                            listener.onViewHint()
+                            holder.invoke()
+                        }
+                        viewTreeObserver.removeOnScrollChangedListener(this)
                     }
-                    viewTreeObserver.removeOnScrollChangedListener(this)
-                }
-            })
+                })
+    }
 }
 
 interface ViewHintListener {
