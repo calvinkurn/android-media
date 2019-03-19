@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg_ovo_tokopoint_widget"
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginLeft="@dimen/margin_16"
@@ -53,8 +52,16 @@
         android:id="@+id/container_nonlogin"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="6"
         android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/bg_container_nonlogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitEnd"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"/>
 
         <ImageView
             android:id="@+id/iv_logo_tokopoint"
@@ -90,18 +97,6 @@
                 android:textSize="@dimen/sp_12" />
 
         </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3">
-
-        <ImageView
-            android:id="@+id/bg_container_nonlogin"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
     </RelativeLayout>
 
