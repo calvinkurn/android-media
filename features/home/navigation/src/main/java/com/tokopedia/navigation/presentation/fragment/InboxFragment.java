@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
@@ -154,19 +156,18 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             getCallingIntent(position);
         } else if (item instanceof Recomendation) {
             Recomendation r = (Recomendation) item;
-            if (getActivity() != null &&
-                    getActivity().getApplication() instanceof GlobalNavRouter) {
-                ((GlobalNavRouter) getActivity().getApplication()).goToProductDetail(
-                        getActivity(),
-                        String.valueOf(r.getProductId()),
-                        r.getImageUrl(),
-                        r.getProductName(),
-                        r.getPrice()
-                );
-                if(!r.isTopAds()){
-                    InboxGtmTracker.getInstance().eventInboxProductClick(trackingQueue, r, position);
-                }
+            getActivity().startActivity(getProductIntent(String.valueOf(r.getProductId())));
+            if(!r.isTopAds()){
+                InboxGtmTracker.getInstance().eventInboxProductClick(trackingQueue, r, position);
             }
+        }
+    }
+
+    private Intent getProductIntent(String productId) {
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
         }
     }
 

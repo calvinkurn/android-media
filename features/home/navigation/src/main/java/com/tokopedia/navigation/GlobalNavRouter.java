@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
@@ -56,12 +55,4 @@ public interface GlobalNavRouter {
     void sendOpenHomeEvent();
 
     Intent getOldOfficialStore(Context context);
-
-    void goToProductDetail(
-            @NonNull Context context,
-            @NonNull String productId,
-            @NonNull String productImage,
-            @NonNull String productName,
-            @NonNull String productPrice
-    );
 }
