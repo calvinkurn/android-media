@@ -9,9 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.cameraview.*
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.VideoPickerCallback
-import com.tokopedia.videorecorder.utils.FileUtils
-import com.tokopedia.videorecorder.utils.exceptionHandler
-import com.tokopedia.videorecorder.utils.visible
+import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -120,23 +118,25 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         txtDuration.text = getString(R.string.duration_default)
 
         if (cameraView.isTakingVideo) {
+            vwRecord.hide()
             cameraView.stopVideo()
             timer.cancel()
         } else {
+            vwRecord.show()
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
             cameraView.takeVideo(file, DURATION_MAX)
-            timer = Timer()
             //progress and duration countdown
+            timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
                     if (cameraView != null) {
-                        countDownMills -= 1000
                         if (cameraView.isTakingVideo) {
                             activity?.runOnUiThread {
                                 val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
                                 val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
                                 txtDuration.text = "$minutes:$seconds"
                                 progressBar.progress += 1000
+                                countDownMills -= 1000
                             }
                         }
                     }

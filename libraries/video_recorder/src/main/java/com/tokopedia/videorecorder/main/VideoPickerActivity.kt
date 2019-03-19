@@ -64,6 +64,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
         //support actionbar
         setSupportActionBar(toolbarVideoPicker)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.videopicker_title)
 
         //initial of adapter for viewPager and tabPicker
         setupViewPager()

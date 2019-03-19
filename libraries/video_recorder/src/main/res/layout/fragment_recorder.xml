@@ -30,8 +30,16 @@
             android:layout_above="@+id/btnRecord"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:gravity="center">
+
+            <View
+                android:id="@+id/vwRecord"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:background="@drawable/ic_record"/>
 
             <TextView
                 android:id="@+id/txtDuration"
