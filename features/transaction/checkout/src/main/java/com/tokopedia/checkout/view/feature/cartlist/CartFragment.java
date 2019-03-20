@@ -625,10 +625,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 productDetail.setQuantity(cartItemHolderData.getCartItemData().getUpdatedData().getQuantity());
                 productDetails.add(productDetail);
             }
-            if (shopGroupData.getVoucherOrdersItemData() != null) {
+            if (shopGroupData.getVoucherOrdersItemData() != null && !TextUtils.isEmpty(shopGroupData.getVoucherOrdersItemData().getCode())) {
                 ArrayList<String> merchantPromoCodes = new ArrayList<>();
                 merchantPromoCodes.add(shopGroupData.getVoucherOrdersItemData().getCode());
-                order.setCodes(merchantPromoCodes);
+                if (merchantPromoCodes.size() > 0) {
+                    order.setCodes(merchantPromoCodes);
+                }
             }
             order.setProductDetails(productDetails);
             order.setUniqueId(shopGroupData.getCartString());

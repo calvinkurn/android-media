@@ -22,13 +22,13 @@ data class Order(
         var codes: ArrayList<String>? = null,
 
         @SerializedName("shipping_id")
-        var shippingId: Int? = 0,
+        var shippingId: Int? = null,
 
         @SerializedName("sp_id")
-        var spId: Int? = 0,
+        var spId: Int? = null,
 
         @SerializedName("is_insurance_price")
-        var isInsurancePrice: Int? = 0
+        var isInsurancePrice: Int? = null
 ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readValue(Int::class.java.classLoader) as? Int,
