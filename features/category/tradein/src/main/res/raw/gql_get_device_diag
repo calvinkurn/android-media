@@ -1,5 +1,5 @@
-query getTradeInDeviceDiag($arguments:TradeInDeviceDiagInput){
- getTradeInDeviceDiag(params:$arguments)
+query getTradeInDeviceDiag($params:TradeInDeviceDiagInput){
+ getTradeInDeviceDiag(params:$params)
  {
      IsEligible
      OldPrice
