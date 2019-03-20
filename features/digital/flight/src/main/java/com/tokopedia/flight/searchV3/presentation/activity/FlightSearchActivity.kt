@@ -18,6 +18,9 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 open class FlightSearchActivity : BaseFlightActivity(),
         FlightSearchFragment.OnFlightSearchFragmentListener {
@@ -27,11 +30,16 @@ open class FlightSearchActivity : BaseFlightActivity(),
     protected lateinit var classString: String
     protected lateinit var passDataViewModel: FlightSearchPassDataViewModel
 
+    private lateinit var remoteConfig: RemoteConfig
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initializeDataFromExtras()
         super.onCreate(savedInstanceState)
 
         setupSearchToolbar()
+
+        remoteConfig = FirebaseRemoteConfigImpl(this)
+
     }
 
     override fun getNewFragment(): Fragment = FlightSearchFragment.newInstance(passDataViewModel)
@@ -113,10 +121,17 @@ open class FlightSearchActivity : BaseFlightActivity(),
     override fun selectFlight(selectedFlightID: String, flightPriceViewModel: FlightPriceViewModel,
                               isBestPairing: Boolean, isCombineDone: Boolean) {
         if (passDataViewModel.isOneWay) {
-            startActivityForResult(FlightBookingActivity
-                    .getCallingIntent(this, passDataViewModel, selectedFlightID,
-                            flightPriceViewModel),
-                    REQUEST_CODE_BOOKING)
+            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
+                startActivityForResult(FlightBookingActivity
+                        .getCallingIntent(this, passDataViewModel, selectedFlightID,
+                                flightPriceViewModel),
+                        REQUEST_CODE_BOOKING)
+            } else {
+                startActivityForResult(com.tokopedia.flight.booking.view.activity.FlightBookingActivity
+                        .getCallingIntent(this, passDataViewModel, selectedFlightID,
+                                flightPriceViewModel),
+                        REQUEST_CODE_BOOKING)
+            }
         } else {
             startActivityForResult(FlightSearchReturnActivity
                     .getCallingIntent(this, passDataViewModel, selectedFlightID,
