@@ -71,7 +71,7 @@ public class ImageViewerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.layout_fragment_image_viewer, container, false);
         ButterKnife.bind(this, contentView);
-        TouchImageAdapter imageAdapter = new TouchImageAdapter(getContext(), IMAGES_LOC, 100);
+        TouchImageAdapter imageAdapter = new TouchImageAdapter(getContext(), IMAGES_LOC);
         vpImageViewer.setAdapter(imageAdapter);
         imageAdapter.SetonImageStateChangeListener(new TouchImageAdapter.OnImageStateChange() {
 

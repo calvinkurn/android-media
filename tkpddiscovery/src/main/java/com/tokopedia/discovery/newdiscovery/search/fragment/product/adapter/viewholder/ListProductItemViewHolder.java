@@ -15,7 +15,7 @@ public class ListProductItemViewHolder extends GridProductItemViewHolder {
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_list;
 
-    public ListProductItemViewHolder(View itemView, ProductListener itemClickListener) {
-        super(itemView, itemClickListener);
+    public ListProductItemViewHolder(View itemView, ProductListener itemClickListener, String searchQuery) {
+        super(itemView, itemClickListener, searchQuery);
     }
 }

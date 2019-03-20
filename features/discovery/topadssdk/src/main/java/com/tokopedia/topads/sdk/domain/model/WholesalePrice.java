@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -18,10 +19,15 @@ public class WholesalePrice implements Parcelable {
     private static final String KEY_PRICE = "price_format";
 
     @SerializedName(KEY_QUANTITY_MIN)
+    @Expose
     private String quantityMinFormat = "";
+
     @SerializedName(KEY_QUANTITY_MAX)
+    @Expose
     private String quantityMaxFormat = "";
+
     @SerializedName(KEY_PRICE)
+    @Expose
     private String priceFormat = "";
 
     public WholesalePrice(JSONObject object) throws JSONException {
