@@ -138,7 +138,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
                     tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
                     VoucherOrdersItemData voucherOrdersItemData = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData();
-                    String state = voucherOrdersItemData.getState();
+                    String state = voucherOrdersItemData.getMessageData().getState();
                     if (state.equalsIgnoreCase("red")) {
                         tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.FAILED);
                     } else if (state.equalsIgnoreCase("green")) {
@@ -147,7 +147,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                         tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.INACTIVE);
                     }
                     tickerPromoStackingCheckoutView.setDesc(voucherOrdersItemData.getInvoiceDescription());
-                    tickerPromoStackingCheckoutView.setTitle(voucherOrdersItemData.getMessageText());
+                    tickerPromoStackingCheckoutView.setTitle(voucherOrdersItemData.getMessageData().getText());
                 } else {
                     tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
                     tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);

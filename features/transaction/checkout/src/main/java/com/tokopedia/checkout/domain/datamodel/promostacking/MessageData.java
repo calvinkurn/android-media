@@ -11,10 +11,13 @@ public class MessageData implements Parcelable {
     private String color;
     private String text;
 
-    protected MessageData(Parcel in) {
+    private MessageData(Parcel in) {
         state = in.readString();
         color = in.readString();
         text = in.readString();
+    }
+
+    public MessageData() {
     }
 
     @Override

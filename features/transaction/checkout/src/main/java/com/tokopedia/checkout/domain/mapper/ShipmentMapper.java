@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
@@ -20,6 +21,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductChe
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 
@@ -118,8 +120,7 @@ public class ShipmentMapper implements IShipmentMapper {
                         voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
                         voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
-                        voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
-                        voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+                        voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                         voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
@@ -233,7 +234,7 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setCityName(groupShop.getShop().getCityName());
 
                             for (VoucherOrdersItem voucherOrdersItem : shipmentAddressFormDataResponse.getAutoapplyStack().getVoucherOrders()) {
-                                if (voucherOrdersItem.getUniqueId().equals(groupShop.getCartString())) {
+                                // if (voucherOrdersItem.getUniqueId().equals(groupShop.getCartString())) {
                                     VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
                                     voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
                                     voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
@@ -246,11 +247,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                     voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
                                     voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
                                     voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
-                                    voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
-                                    voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+                                    voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                                     voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
                                     shopResult.setVoucherOrdersItemData(voucherOrdersItemData);
-                                }
+                                // }
                             }
                             groupShopResult.setShop(shopResult);
                         }
@@ -456,6 +456,14 @@ public class ShipmentMapper implements IShipmentMapper {
         else if (shop.getGoldMerchant().isGoldBadge())
             return SHOP_TYPE_GOLD_MERCHANT;
         else return SHOP_TYPE_REGULER;
+    }
+
+    private MessageData convertToMessageData(Message message) {
+        MessageData messageData = new MessageData();
+        messageData.setColor(message.getColor());
+        messageData.setState(message.getState());
+        messageData.setText(message.getText());
+        return messageData;
     }
 
 }
