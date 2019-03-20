@@ -144,7 +144,7 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
         if(getCurrentActivity() != null) {
             int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
             if (resourceId > 0) {
-                result = (int) (context.getResources().getDimensionPixelSize(resourceId) / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+                result = (int) (context.getResources().getDimensionPixelSize(resourceId) / context.getResources().getDisplayMetrics().density);
             }
         }
 
