@@ -167,6 +167,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
                 ImageReviewGqlResponse::class.java, imageReviewParams)
 
+        val productPPParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_SHOP_ID to shopId, PARAM_USER_ID to userSessionInterface.userId, PARAM_)
+
         fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {
             val images = SparseArray<ImageReviewGqlResponse.Image>()
             val reviews = SparseArray<ImageReviewGqlResponse.Review>()
