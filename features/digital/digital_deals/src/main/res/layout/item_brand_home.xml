@@ -37,7 +37,7 @@
             android:gravity="center"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:lineSpacingExtra="@dimen/sp_4"
+            android:lineSpacingExtra="2sp"
             tools:text="Carls Jrjkkkgikugugiugugukjkv" />
 
     </LinearLayout>

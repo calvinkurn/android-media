@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
@@ -34,11 +35,11 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
         this.categoryItems = new ArrayList<>();
         this.categoryItems = categoryItems;
         this.categorySelected = categorySelected;
-
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
+        private LinearLayout mainContent;
         private ImageView imageViewCatItem;
         private TextView textViewCatItem;
         private int index;
@@ -46,6 +47,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
+            mainContent = itemView.findViewById(R.id.container);
             imageViewCatItem = itemView.findViewById(R.id.iv_category);
             textViewCatItem = itemView.findViewById(R.id.tv_category);
         }
@@ -54,7 +56,6 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
             textViewCatItem.setText(categoryItem.getTitle());
             itemView.setOnClickListener(this);
             ImageHandler.loadImage(context, imageViewCatItem, categoryItem.getMediaUrl(), R.color.grey_1100, R.color.grey_1100);
-
         }
 
         public void setIndex(int position) {

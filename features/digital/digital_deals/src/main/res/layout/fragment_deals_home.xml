@@ -47,7 +47,6 @@
                         android:id="@+id/tv_location_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Jakarta"
                         android:textColor="#f531353b"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -85,6 +84,7 @@
                     android:orientation="horizontal"
                     android:textColor="#ae31353b"
                     android:padding="@dimen/dp_10"
+                    android:textSize="@dimen/sp_16"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cl_search_view" />
@@ -105,7 +105,7 @@
                 android:layout_height="match_parent">
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/bg_layut"
+                    android:id="@+id/bg_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_12"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/bg_layut">
+                    app:layout_constraintTop_toBottomOf="@+id/bg_layout">
 
                     <TextView
                         android:id="@+id/tv_popular"
@@ -207,7 +207,7 @@
                         android:id="@+id/rv_trending_deals"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_16"
                         android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
                         android:paddingLeft="@dimen/dp_4"

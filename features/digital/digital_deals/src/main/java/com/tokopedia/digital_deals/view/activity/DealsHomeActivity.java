@@ -68,7 +68,7 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     public void replaceFragment(List<ProductItem> trendingDeals, int flag) {
         this.trendingDeals = trendingDeals;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
+        transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         transaction.add(R.id.parent_view, TrendingDealsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();

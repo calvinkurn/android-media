@@ -409,14 +409,16 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         if (listItems != null && listItems.size() > 2) {
             categoryList = new ArrayList<>();
             for (int i = 2; i < listItems.size(); i++) {
-                categoryList.add(listItems.get(i));
-                CategoriesModel categoriesModel = new CategoriesModel();
-                categoriesModel.setName(listItems.get(i).getName());
-                categoriesModel.setTitle(listItems.get(i).getTitle());
-                categoriesModel.setCategoryUrl(listItems.get(i).getCategoryUrl());
-                categoriesModel.setPosition(i - 1);
-                categoriesModel.setCategoryId(listItems.get(i).getCategoryId());
-                categoriesModels.add(categoriesModel);
+                if (listItems.get(i).getIsCard() != 1) {
+                    categoryList.add(listItems.get(i));
+                    CategoriesModel categoriesModel = new CategoriesModel();
+                    categoriesModel.setName(listItems.get(i).getName());
+                    categoriesModel.setTitle(listItems.get(i).getTitle());
+                    categoriesModel.setCategoryUrl(listItems.get(i).getCategoryUrl());
+                    categoriesModel.setPosition(i - 1);
+                    categoriesModel.setCategoryId(listItems.get(i).getCategoryId());
+                    categoriesModels.add(categoriesModel);
+                }
             }
         }
 

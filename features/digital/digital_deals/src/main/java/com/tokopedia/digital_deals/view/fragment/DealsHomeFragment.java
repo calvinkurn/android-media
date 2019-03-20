@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -71,7 +72,7 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener {
+public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
 
 
     private Menu mMenu;
@@ -141,6 +142,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             mPresenter.getDealsList(true);
 
         } else {
+//            mPresenter.getDealsList(false);
             mPresenter.getLocations(true);
         }
 
@@ -179,9 +181,15 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         trendingDeals = view.findViewById(R.id.cl_topDeals);
         rvTrendingDeals.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         rvTrendingDeals.setNestedScrollingEnabled(false);
+        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        dealsCategoryBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
 
         Drawable img = getResources().getDrawable(R.drawable.ic_search_deal);
         setDrawableTint(img);
+
+        Drawable threeDotMenu = ContextCompat.getDrawable(getContext(), R.drawable.ic_three_dot_menu);
+        toolbar.setOverflowIcon(threeDotMenu);
+
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
         toolbar.setNavigationIcon(getActivity().getResources().getDrawable(R.drawable.ic_arrow_back_black));
@@ -441,8 +449,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public RequestParams getParams() {
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
         requestParams.putString(DealsHomePresenter.TAG, location.getSearchName());
         return requestParams;
     }
@@ -567,6 +575,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         } else {
             if (locationUpdated) {
                 isLocationUpdated = locationUpdated;
+                selectLocationFragment.setCanceledOnTouchOutside(true);
                 Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
             }
             mPresenter.getDealsList(true);
@@ -579,15 +588,17 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
-        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this));
+        Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
+        mPresenter.getDealsList(false);
+        selectLocationFragment.setContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this));
         selectLocationFragment.show();
-        selectLocationFragment.setCanceledOnTouchOutside(true);
+        if (isForFirstime) {
+            selectLocationFragment.setCanceledOnTouchOutside(false);
+        }
     }
 
     @Override
     public void startDealsCategoryFragment(List<CategoryItem> categoryItems) {
-        dealsCategoryBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View categoryView = getLayoutInflater().inflate(R.layout.deals_category_bottomsheet_layout, null);
         RecyclerView recyclerView = categoryView.findViewById(R.id.rv_category_items);
         ImageView crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
@@ -622,6 +633,13 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onCancel(DialogInterface dialog) {
         dealsCategoryBottomSheet.dismiss();
         selectLocationFragment.dismiss();
+    }
+
+    @Override
+    public void closeBottomsheet() {
+        if (selectLocationFragment != null) {
+            selectLocationFragment.dismiss();
+        }
     }
 
     public interface OpenTrendingDeals {

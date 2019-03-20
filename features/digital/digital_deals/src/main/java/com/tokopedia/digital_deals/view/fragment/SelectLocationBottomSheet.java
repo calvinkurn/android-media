@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.AlignItems;
@@ -24,14 +25,16 @@ public class SelectLocationBottomSheet extends FrameLayout implements DealsLocat
 
 
     private final DealsLocationAdapter.ActionListener actionListener;
+    private final CloseSelectLocationBottomSheet closeBottomSheetListener;
 
-    public SelectLocationBottomSheet(@NonNull Context context, boolean isForFirstTime, List<Location> locationList, DealsLocationAdapter.ActionListener actionListener) {
+    public SelectLocationBottomSheet(@NonNull Context context, boolean isForFirstTime, List<Location> locationList, DealsLocationAdapter.ActionListener actionListener, String selectedLocation, SelectLocationBottomSheet.CloseSelectLocationBottomSheet closeBottomSheetListener) {
         super(context);
         this.actionListener=actionListener;
-        init(isForFirstTime, locationList);
+        this.closeBottomSheetListener = closeBottomSheetListener;
+        init(isForFirstTime, locationList, selectedLocation);
     }
 
-    private void init(boolean isForFirstTime, List<Location> locationList) {
+    private void init(boolean isForFirstTime, List<Location> locationList, String selectedLocation) {
 
         View locationView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_change_location, this, true);
         RecyclerView rvSearchResults = locationView.findViewById(R.id.rv_search_results);
@@ -47,7 +50,7 @@ public class SelectLocationBottomSheet extends FrameLayout implements DealsLocat
             crossIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    selectLocationFragment.dismiss();
+                    closeBottomSheetListener.closeBottomsheet();
                 }
             });
         }
@@ -57,11 +60,15 @@ public class SelectLocationBottomSheet extends FrameLayout implements DealsLocat
         layoutManager.setAlignItems(AlignItems.CENTER);
         layoutManager.setJustifyContent(JustifyContent.CENTER);
         rvSearchResults.setLayoutManager(layoutManager);
-        rvSearchResults.setAdapter(new DealsLocationAdapter(locationList, this));
+        rvSearchResults.setAdapter(new DealsLocationAdapter(locationList, this, selectedLocation));
     }
 
     @Override
     public void onLocationItemSelected(boolean locationUpdated) {
         actionListener.onLocationItemSelected(locationUpdated);
+    }
+
+    public interface CloseSelectLocationBottomSheet {
+        void closeBottomsheet();
     }
 }

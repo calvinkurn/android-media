@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    app:justifyContent="center"
     android:orientation="vertical">
 
 
@@ -26,10 +23,11 @@
 
         <TextView
             android:id="@+id/location_bottomsheet_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/location_bottomsheet_title"
             android:textColor="#f531353b"
+            android:layout_marginRight="@dimen/dp_16"
             android:textSize="@dimen/sp_16"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_16"

@@ -93,7 +93,7 @@
     <string name="text_available_locations">Tersedia di\u0020%d\u0020Lokasi</string>
     <string name="product_expired">Maaf, Deals yang Anda pilih sudah kadaluwarsa</string>
     <string name="deals_all_indonesia">Seluruh Indonesia</string>
-    <string name="location_bottomsheet_title">Pilih Kota Terdekatmu \n untuk Pengalaman Terbaik</string>
+    <string name="location_bottomsheet_title">Pilih Kota Terdekatmu untuk Pengalaman Terbaik</string>
     <string name="select_location_bottomsheet_title">Ubah Lokasi</string>
     <string name="category_title">Pilih Kategori Kupon</string>
     <string name="sell_all_category">Semua \n Kategori</string>

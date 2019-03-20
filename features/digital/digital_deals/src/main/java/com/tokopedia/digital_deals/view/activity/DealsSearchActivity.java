@@ -48,7 +48,7 @@ import javax.inject.Inject;
 import static com.tokopedia.digital_deals.view.activity.DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY;
 
 public class DealsSearchActivity extends DealsBaseActivity implements
-        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener {
+        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
 
     private final boolean IS_SHORT_LAYOUT = true;
 
@@ -168,7 +168,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
         selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setContentView(new SelectLocationBottomSheet(this, isForFirstTime, locationList, this));
+        selectLocationFragment.setContentView(new SelectLocationBottomSheet(this, isForFirstTime, locationList, this, tvCityName.getText().toString(), this));
         selectLocationFragment.show();
     }
 
@@ -421,6 +421,13 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             }
             if (!TextUtils.isEmpty(searchInputView.getSearchText()))
                 mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+        }
+    }
+
+    @Override
+    public void closeBottomsheet() {
+        if (selectLocationFragment != null) {
+            selectLocationFragment.dismiss();
         }
     }
 }

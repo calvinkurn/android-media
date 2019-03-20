@@ -1,11 +1,14 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.AlignItems;
@@ -31,11 +34,13 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     private ActionListener actionListener;
     private boolean isPopular;
     DealsAnalytics dealsAnalytics;
+    private String selectedLocation;
 
-    public DealsLocationAdapter(List<Location> locations, ActionListener actionListener) {
+    public DealsLocationAdapter(List<Location> locations, ActionListener actionListener, String selectedLocation) {
         this.locations = new ArrayList<>();
         this.locations = locations;
         this.actionListener = actionListener;
+        this.selectedLocation = selectedLocation;
     }
 
     public void updateAdapter(List<Location> locations) {
@@ -46,7 +51,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         this.context = viewGroup.getContext();
-        dealsAnalytics=new DealsAnalytics(context.getApplicationContext());
+        dealsAnalytics = new DealsAnalytics(context.getApplicationContext());
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_item, viewGroup, false));
     }
 
@@ -70,12 +75,14 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
         private TextView locationName;
         private ImageView locImage;
         private View itemView;
+        private CardView mainContent;
         private int index;
         private String name;
 
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
+            mainContent = itemView.findViewById(R.id.mainContent);
             locationName = itemView.findViewById(R.id.tv_location_name);
             locImage = itemView.findViewById(R.id.location_img);
 
@@ -96,6 +103,10 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
         }
 
         public void bindData(Location location) {
+            if (location.getName().equalsIgnoreCase(selectedLocation)) {
+                mainContent.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_green_selected_border));
+            }
+
             locationName.setText(location.getName());
             ImageHandler.loadImage(context, locImage, location.getImageApp(), R.color.grey_1100, R.color.grey_1100);
             itemView.setOnClickListener(this);
