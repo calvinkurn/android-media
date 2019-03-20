@@ -109,6 +109,7 @@ class TabBusinessFragment : BaseDaggerFragment() {
         adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList)
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = homeWidget.tabBusinessList.size
+        viewPager.setCanScrollHorizontal(false)
         addTabLayoutListener(adapter)
     }
 
