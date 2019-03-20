@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
@@ -697,6 +698,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onVoucherCopyClicked(voucherCode: String) {
         analytics.eventVoucherCopyClicked(voucherCode)
+        activity?.run{
+            val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied),
+                    Snackbar.LENGTH_LONG)
+            snackbar.setAction(activity!!.getString(com.tokopedia.merchantvoucher.R.string.close), { snackbar.dismiss() })
+            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.show()
+        }
     }
 
     override fun onVoucherClicked(data: MerchantVoucherViewModel) {
