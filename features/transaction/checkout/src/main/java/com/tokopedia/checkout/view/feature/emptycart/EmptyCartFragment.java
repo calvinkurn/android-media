@@ -534,7 +534,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
             toolbar = toolbarRemoveWithBackView();
         } else {
             toolbar = toolbarRemoveView();
-            if(getContext() != null) {
+            if (getContext() != null) {
                 view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
             } else {
                 // add padding programmatically
