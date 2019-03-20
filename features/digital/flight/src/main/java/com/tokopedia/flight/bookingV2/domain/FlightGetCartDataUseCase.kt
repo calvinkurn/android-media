@@ -26,7 +26,7 @@ class FlightGetCartDataUseCase @Inject constructor(val flightRepository: FlightR
                     it.delay(pollDelay[0].toLong(), TimeUnit.SECONDS)
                     it.flatMap { Observable.timer(pollDelay[0].toLong(), TimeUnit.SECONDS) }
                 }.takeUntil {
-                    (!it.meta.isNeedRefresh) && (numOfAttempts[0] >= it.meta.maxRetry)
+                    (!it.meta.isNeedRefresh) || (numOfAttempts[0] >= it.meta.maxRetry)
                 }.last().map { it }
     }
 
