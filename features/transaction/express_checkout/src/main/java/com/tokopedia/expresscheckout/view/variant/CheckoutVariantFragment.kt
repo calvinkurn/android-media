@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -43,9 +44,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewMod
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.logisticcommon.LogisticCommonConstant
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
@@ -157,7 +156,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_detail_product_page, container, false)
-        tkpdProgressDialog = TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        tkpdProgressDialog = ProgressDialog(getActivity());
         recyclerView = getRecyclerView(view)
         recyclerView.addItemDecoration(itemDecorator)
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -203,7 +202,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showLoadingDialog() {
-        tkpdProgressDialog.showDialog()
+        tkpdProgressDialog.show()
     }
 
     override fun hideLoadingDialog() {

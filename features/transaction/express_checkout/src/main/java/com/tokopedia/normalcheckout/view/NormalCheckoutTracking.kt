@@ -5,6 +5,7 @@ import com.appsflyer.AFInAppEventType
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.track.TrackApp
 
 class NormalCheckoutTracking {
