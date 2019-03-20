@@ -17,6 +17,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -43,9 +44,9 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
     companion object {
         private const val ARGS_SHOW_WARNING = "show_warning"
 
-        fun getInstance(context: Context, selectedImageList: List<MediaModel>,
+        fun getInstance(context: Context, selectedImageList: ArrayList<MediaModel>,
                         maxImage: Int, showWarningDialog: Boolean): Intent {
-            val imagePathList = selectedImageList.map { it.path }
+            val imagePathList = ArrayList(selectedImageList.map { it.path })
             val builder = ImagePickerBuilder(
                     context.getString(R.string.title_af_image_picker),
                     intArrayOf(TYPE_GALLERY, TYPE_CAMERA),
