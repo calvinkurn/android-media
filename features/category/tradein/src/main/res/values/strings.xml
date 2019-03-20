@@ -41,8 +41,4 @@
     <string name="do_ktp">Lanjut Foto KTP</string>
     <string name="harga_tnc_kyc"><![CDATA[Dengan lanjut foto KTP, Kamu menyetujui Syarat & Ketentuan tukar tambah Tokopedia.]]></string>
     <string name="harga_tnc"><![CDATA[Dengan klik beli sekarang, Kamu menyetujui Syarat & Ketentuan tukar tambah Tokopedia.]]></string>
-    <!--<string name="laku6_trade_in_photo_upload_qr_title">2. Cek Fisik</string>-->
-    <!--<string name="laku6_trade_in_automated_test_title">1. Cek Fisik</string>-->
-    <!--<string name="laku6_trade_in_waiting_review_title">Analisa Kondisi</string>-->
-    <!--<string name="laku6_trade_in_waiting_review_limbo_title">Foto Cek Fisik</string>-->
 </resources>

@@ -14,7 +14,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.tradeInCommon)
-    implementation ('com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.6'){
+    implementation ('com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.9'){
         exclude group: 'com.android.support'
         exclude group: 'com.squareup.retrofit2'
         exclude group: 'com.google.firebase'
