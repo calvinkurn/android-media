@@ -87,7 +87,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
         if (saveInstanceCacheManager != null) {
             checkoutDataParameterBuilder = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
-                    CheckoutDataParameter.class, null);
+                    CheckoutDataParameter.Builder.class, null);
         }
 
         presenter.attachView(this);
