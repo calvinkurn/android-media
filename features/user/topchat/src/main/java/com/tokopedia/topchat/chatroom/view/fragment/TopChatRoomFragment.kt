@@ -127,7 +127,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
-        customMessage = customMessage + "&" + getParamString("pdf", arguments, savedInstanceState)
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
