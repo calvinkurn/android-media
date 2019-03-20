@@ -595,7 +595,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun onShopFavoriteClick() {
         val shop = shopInfo ?: return
         activity?.let {
-            //TODO Tracking?
             if (productInfoViewModel.isUserSessionActive()) {
                 productShopView.toggleClickableFavoriteBtn(false)
                 productInfoViewModel.toggleFavorite(shop.shopCore.shopID,
