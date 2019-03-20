@@ -188,8 +188,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if (url.contains("tokopedia://")) {
+        if (RouteManager.isSupportApplink(getActivity(), url)) {
             RouteManager.route(getActivity(), url);
+            return true;
         }
         return false;
     }

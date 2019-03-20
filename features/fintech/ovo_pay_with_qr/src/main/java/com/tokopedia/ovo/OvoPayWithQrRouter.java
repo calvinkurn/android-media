@@ -5,4 +5,8 @@ import android.content.Intent;
 
 public interface OvoPayWithQrRouter {
     Intent getHomeIntent(Context context);
+
+    long getMinAmountFromRemoteConfig();
+
+    long getMaxAmountFromRemoteConfig();
 }

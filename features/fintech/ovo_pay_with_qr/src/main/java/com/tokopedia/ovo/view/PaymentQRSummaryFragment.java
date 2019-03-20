@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.BarcodeResponseData;
@@ -53,8 +54,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     public static final String SUCCESS_STATUS = "success";
     private static final float BUY_BTN_FADE_VISIBILITY = 0.19f;
     private static final float BUY_BTN_COMPLETE_VISIBILITY = 1f;
-    private static final long MIN_AMOUNT = 1000;
-    private static final long MAX_AMOUNT = 10000000;
+    private static long MIN_AMOUNT = 1000;
+    private static long MAX_AMOUNT = 10000000;
     public static final String LOCAL_CACHE_ID = "local_cache_id";
     String id;
     String imeiNumber;
@@ -120,6 +121,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         View view = inflater.inflate(R.layout.oqr_payment_qr_summary_fragment, container, false);
         initViews(view);
         setDataAndListeners();
+        MAX_AMOUNT = ((OvoPayWithQrRouter)getActivity().getApplicationContext()).getMaxAmountFromRemoteConfig();
+        MIN_AMOUNT = ((OvoPayWithQrRouter)getActivity().getApplicationContext()).getMinAmountFromRemoteConfig();
         return view;
     }
 
@@ -306,7 +309,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             } else if (Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) > MAX_AMOUNT) {
                 setErrorMessage(getString(R.string.oqr_max_input_hint));
             } else if (Utils.convertToCurrencyLongFromString(
-                    inputAmount.getText().toString()) > wallet.getRawBalance()) {
+                    inputAmount.getText().toString()) > wallet.getRawCashBalance()) {
                 setErrorMessage(getString(R.string.oqr_balance_exceed_error));
             } else {
                 confirmQrRequest();
