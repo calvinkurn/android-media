@@ -31,7 +31,6 @@ class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener
         loadImageIntoProfileAvatar()
         setBadgesKOLVisibleIfKOL()
         setItemViewOnClickListener()
-        setIconCopyQueryOnClickListener()
     }
 
     private fun setTitle() {
@@ -81,11 +80,5 @@ class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener
             (adapterPosition + 1).toString(),
             boundedProfileSearch.applink
         )
-    }
-
-    private fun setIconCopyQueryOnClickListener() {
-        view.icon_copy_query.setOnClickListener {
-            clickListener.copyTextToSearchView(boundedProfileSearch.keyword)
-        }
     }
 }

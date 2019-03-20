@@ -37,7 +37,6 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
         loadImageIntoProfileAvatar()
         setBadgesKOLVisibleIfKOL()
         setItemViewOnClickListener()
-        setIconCopyQueryOnClickListener()
     }
 
     private fun setSearchQueryStartIndexInKeyword() {
@@ -116,11 +115,5 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
             (adapterPosition + 1).toString(),
             boundedProfileSearch.applink
         )
-    }
-
-    private fun setIconCopyQueryOnClickListener() {
-        view.icon_copy_query.setOnClickListener {
-            clickListener.copyTextToSearchView(boundedProfileSearch.keyword)
-        }
     }
 }

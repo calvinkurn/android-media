@@ -67,7 +67,6 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
         loadImageIntoShopAvatar();
         setBadgesOfficialStoreIfOfficial();
         setItemViewOnClickListener();
-        setIconCopyTextViewOnClickListener();
     }
 
     private void setSearchQueryStartIndexInKeyword() {
@@ -140,9 +139,5 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
             );
             listener.onItemClicked(boundedShopSearch.getApplink(), boundedShopSearch.getUrl());
         });
-    }
-
-    private void setIconCopyTextViewOnClickListener() {
-        iconCopyTextView.setOnClickListener(v -> listener.copyTextToSearchView(boundedShopSearch.getKeyword()));
     }
 }

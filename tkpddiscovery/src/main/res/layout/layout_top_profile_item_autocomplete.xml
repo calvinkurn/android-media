@@ -23,15 +23,6 @@
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 
-    <ImageView
-        android:id="@+id/icon_copy_query"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_diagonal_arrow"/>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
