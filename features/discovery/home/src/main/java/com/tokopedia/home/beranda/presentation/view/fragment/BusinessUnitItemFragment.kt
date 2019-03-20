@@ -21,11 +21,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.Spaci
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import kotlinx.android.synthetic.main.layout_recyclerview_business_widget.*
+import javax.inject.Inject
 
 
 class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, BusinessWidgetTypeFactory>(),
     BusinessUnitItemView {
 
+    @Inject
     lateinit var viewModel: ItemTabBusinessViewModel
 
     private lateinit var itemTab: HomeWidget.TabItem
