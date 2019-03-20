@@ -18,6 +18,9 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -32,7 +35,6 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -55,6 +57,8 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
@@ -89,6 +93,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
+        presenter.sendAuthenticatedEvent(uriData, getScreenName());
     }
 
     @Override
@@ -236,7 +241,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
         if (getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getApplication()).goToProductDetail(this, productPass);
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId());
         }
     }
 

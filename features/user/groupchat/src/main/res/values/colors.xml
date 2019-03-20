@@ -43,12 +43,14 @@
     <color name="play_new_chat">#f531353b</color>
     <color name="play_send">#4fd15a</color>
 
-    <color name="quiz_start">#82ef95</color>
-    <color name="quiz_end">#ffc400</color>
+    <color name="quiz_start">#4fd15a</color>
+    <color name="quiz_end">#ff8b00</color>
 
     <color name="sprint_sale_start">#d6001c</color>
     <color name="sprint_sale_end">#ae31353b</color>
     <color name="charcoal_grey">#f531353b</color>
+    <color name="pinned_chat_message">#ae31353b</color>
+    <color name="eye_color_play">#9fa6b0</color>
 
 
 </resources>

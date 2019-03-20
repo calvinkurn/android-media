@@ -111,6 +111,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -293,7 +294,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
         this.shipmentCostModel = shipmentCostModel;
-        updateEgoldBuyValue();
+
+        if (getEgoldAttributeModel() != null && getEgoldAttributeModel().isEligible()) {
+            updateEgoldBuyValue();
+        }
     }
 
     @Override
@@ -774,7 +778,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (!BuildConfig.DEBUG) {
                         Crashlytics.logException(exception);
                     }
-                    throw exception;
+                    return Unit.INSTANCE;
                 });
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
@@ -796,42 +800,44 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private Map<String, Object> generateCheckoutAnalyticsStep2DataLayer(CheckoutRequest checkoutRequest) {
+        if (checkoutRequest != null) {
+            Map<String, Object> checkoutMapData = new HashMap<>();
+            EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+            enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_2);
+            enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON);
 
-        Map<String, Object> checkoutMapData = new HashMap<>();
-        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
-        enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_2);
-        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON);
-
-        EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
-        for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
-            for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
-                    EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
-                            new EnhancedECommerceProductCartMapData();
-                    enhancedECommerceProductCartMapData.setProductName(productDataCheckoutRequest.getProductName());
-                    enhancedECommerceProductCartMapData.setProductID(String.valueOf(productDataCheckoutRequest.getProductId()));
-                    enhancedECommerceProductCartMapData.setPrice(productDataCheckoutRequest.getProductPrice());
-                    enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
-                    enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
-                    enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
-                    enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
-                    enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
-                    enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
-                    enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
-                    enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
-                    enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
-                    enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
-                    enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
-                    enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+            EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
+            for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
+                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                    for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                                new EnhancedECommerceProductCartMapData();
+                        enhancedECommerceProductCartMapData.setProductName(productDataCheckoutRequest.getProductName());
+                        enhancedECommerceProductCartMapData.setProductID(String.valueOf(productDataCheckoutRequest.getProductId()));
+                        enhancedECommerceProductCartMapData.setPrice(productDataCheckoutRequest.getProductPrice());
+                        enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
+                        enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
+                        enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
+                        enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
+                        enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
+                        enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
+                        enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
+                        enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
+                        enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
+                        enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
+                        enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
+                        enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+                    }
                 }
             }
+            enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+            enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap());
+
+            checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
+
+            return checkoutMapData;
         }
-        enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
-        enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap());
-
-        checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
-
-        return checkoutMapData;
+        return null;
     }
 
     @Override
@@ -953,7 +959,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             );
         }
         EgoldData egoldData = new EgoldData();
-        if (egoldAttributeModel != null) {
+
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             egoldData.setEgold(egoldAttributeModel.isChecked());
             egoldData.setEgoldAmount(egoldAttributeModel.getBuyEgoldValue());
         }
@@ -1252,7 +1259,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         if (!BuildConfig.DEBUG) {
                                             Crashlytics.logException(exception);
                                         }
-                                        throw exception;
+                                        return Unit.INSTANCE;
                                     });
 
                                     resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
@@ -1333,7 +1340,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (!BuildConfig.DEBUG) {
                                         Crashlytics.logException(exception);
                                     }
-                                    throw exception;
+                                    return Unit.INSTANCE;
                                 });
 
                                 getView().hideLoading();
@@ -1371,6 +1378,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (getRecipientAddressModel() != null) {
             cornerId = getRecipientAddressModel().getCornerId();
         }
+
         getCourierRecommendationUseCase.execute(query, counter, cornerId, shippingParam, spId, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
@@ -1464,7 +1472,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 CommonUtils.dumper(e);
-                mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
+                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment);
             }
 
@@ -1473,7 +1481,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().hideLoading();
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
-                    mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
+                    mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
                     processReloadCheckoutPageBecauseOfError(isOneClickShipment);
                     getView().showToastError("");
                 } else if (response.getValidateCheckoutCod().getData() != null &&
@@ -1482,12 +1490,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (TextUtils.isEmpty(data.getErrorMessage())
                             && data.getPriceSummary() != null && data.getPriceSummary().size() > 0) {
                         // validation succeeded, go to cod confirmation page
-                        if (checkoutRequest != null) mTrackerCod.eventEEClickButtonCod(
-                                generateCheckoutAnalyticsStep2DataLayer(checkoutRequest));
-                        getView().navigateToCodConfirmationPage(data);
+                        mTrackerCod.eventClickBayarDiTempatShipmentSuccessEligible();
+                        getView().navigateToCodConfirmationPage(data, checkoutRequest);
                     } else {
                         // show bottomsheet error indicating cod ineligibility
-                        mTrackerCod.eventClickBayarDiTempatShipmentFailed(true);
+                        mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIneligible();
                         getView().showBottomSheetError(data.getErrorMessage());
                     }
                 }

@@ -17,7 +17,7 @@
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true">
 
-        <com.tokopedia.core.customwidget.SquareImageView
+        <com.tokopedia.topads.sdk.view.ImpressedImageView
             android:id="@+id/product_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,50 +25,73 @@
             android:gravity="center"
             android:scaleType="centerCrop"
             tools:src="@color/red_100" />
+
     </android.support.v7.widget.CardView>
 
-    <TextView
-        android:id="@+id/topLabel"
-        style="@style/TextView.Micro.BlackDisabled"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@id/image_card"
         android:layout_alignTop="@id/image_card"
         android:layout_marginLeft="@dimen/dp_6"
         android:layout_marginTop="@dimen/dp_7"
-        android:background="@drawable/quick_filter_item_background_neutral"
-        android:paddingBottom="@dimen/padding_vvs"
-        android:paddingLeft="@dimen/padding_ms"
-        android:paddingRight="@dimen/padding_ms"
-        android:paddingTop="@dimen/padding_vvs" />
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/topads_icon"
+            android:layout_width="24dp"
+            android:layout_height="22dp"
+            android:background="@drawable/bg_preorder_label"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@id/info_topads"
+                android:layout_width="16dp"
+                android:layout_height="10dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_toa" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/topLabel"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:background="@drawable/quick_filter_item_background_neutral"
+            android:paddingLeft="@dimen/padding_ms"
+            android:paddingTop="@dimen/padding_vvs"
+            android:paddingRight="@dimen/padding_ms"
+            android:paddingBottom="@dimen/padding_vvs" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/bottomLabel"
         style="@style/TextView.Micro.Green"
-        android:layout_alignBottom="@id/image_card"
         android:layout_alignLeft="@id/image_card"
-        android:layout_marginBottom="@dimen/dp_7"
+        android:layout_alignBottom="@id/image_card"
         android:layout_marginLeft="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_7"
         android:background="@drawable/quick_filter_item_background_selected"
-        android:paddingBottom="@dimen/padding_vvs"
         android:paddingLeft="@dimen/padding_ms"
+        android:paddingTop="@dimen/padding_vvs"
         android:paddingRight="@dimen/padding_ms"
-        android:paddingTop="@dimen/padding_vvs" />
+        android:paddingBottom="@dimen/padding_vvs" />
 
     <RelativeLayout
         android:id="@id/wishlist_button_container"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="2dp"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="2dp"
+        android:layout_marginRight="2dp"
         android:background="@drawable/circle_white"
         android:visibility="visible">
 
         <View
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:background="@color/white" />
 
         <ImageView
@@ -110,8 +133,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_original_price"
-        android:layout_marginBottom="5dp"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="5dp"
         android:layout_weight="1"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
@@ -126,16 +149,16 @@
         android:id="@+id/text_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/price"
         android:layout_below="@id/text_original_price"
+        android:layout_alignBottom="@id/price"
         android:layout_toEndOf="@id/price"
         android:layout_toRightOf="@id/price"
         android:background="@drawable/bg_rounded_corners_red"
         android:gravity="center"
-        android:paddingBottom="@dimen/margin_vvvs"
         android:paddingLeft="@dimen/padding_vvs"
-        android:paddingRight="@dimen/padding_vvs"
         android:paddingTop="@dimen/margin_vvvs"
+        android:paddingRight="@dimen/padding_vvs"
+        android:paddingBottom="@dimen/margin_vvvs"
         android:textColor="@color/white"
         android:textSize="@dimen/fontvvs"
         android:visibility="gone"
@@ -194,5 +217,23 @@
             android:textSize="@dimen/sp_12" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/new_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rating_review_container"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@drawable/bg_new_label"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_3"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_3"
+        android:text="@string/baru"
+        android:textColor="@color/new_label_color"
+        android:textSize="@dimen/sp_11"
+        android:visibility="gone" />
 
 </RelativeLayout>

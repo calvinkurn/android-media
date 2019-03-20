@@ -51,7 +51,6 @@ import com.tokopedia.discovery.newdiscovery.constant.DiscoveryBaseURL;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight_dbflow.TkpdFlight;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -87,6 +86,7 @@ import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -275,6 +275,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ShopUrl.BASE_ACE_URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         ShopCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
         ShopCommonUrl.BASE_WS_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        ProductDetailConstant.BASE_REST_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         ReputationCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
@@ -362,7 +363,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
-        TkpdFlight.initDatabase(getApplicationContext());
         PushNotification.initDatabase(getApplicationContext());
         Analytics.initDB(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());

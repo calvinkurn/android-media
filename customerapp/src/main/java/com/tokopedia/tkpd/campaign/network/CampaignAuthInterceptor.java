@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.campaign.network;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -21,8 +20,8 @@ public class CampaignAuthInterceptor extends TkpdAuthInterceptor {
 
     Context mContext;
 
-    public CampaignAuthInterceptor(Context context, AbstractionRouter abstractionRouter, UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+    public CampaignAuthInterceptor(Context context, AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
         mContext = context;
     }
 

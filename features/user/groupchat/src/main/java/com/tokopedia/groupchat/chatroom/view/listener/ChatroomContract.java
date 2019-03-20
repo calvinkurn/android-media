@@ -27,7 +27,7 @@ public interface ChatroomContract {
         }
 
         interface VoteAnnouncementViewHolderListener {
-            void onVoteComponentClicked(String type, String name);
+            void onVoteComponentClicked(String type, String name, String voteUrl);
         }
 
         interface SprintSaleViewHolderListener {

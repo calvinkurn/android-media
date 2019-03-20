@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                    xmlns:tools="http://schemas.android.com/tools"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:minWidth="@dimen/dp_160">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="@dimen/dp_8"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardElevation="@dimen/dp_0"
+    >
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
+        android:maxWidth="@dimen/dp_160"
+        >
 
         <android.support.v7.widget.CardView
             android:id="@+id/layout_image"
             android:layout_width="@dimen/dp_44"
             android:layout_height="@dimen/dp_44"
-            app:cardCornerRadius="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_2"
-            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/dp_6"
+            app:cardElevation="@dimen/dp_0"
             app:cardPreventCornerOverlap="false"
             app:cardUseCompatPadding="true"
-            app:contentPadding="0dp"
+            app:contentPadding="@dimen/dp_0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -27,8 +36,8 @@
             <com.tokopedia.design.image.SquareImageView
                 android:id="@+id/iv_image"
                 android:layout_width="match_parent"
-                android:scaleType="centerCrop"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </android.support.v7.widget.CardView>
 
         <ImageView
@@ -39,7 +48,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/layout_image"
             app:layout_constraintRight_toRightOf="@id/layout_image"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -60,7 +69,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/recommendation_from"
-                android:textSize="@dimen/sp_10"/>
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tv_subtitle"
@@ -70,7 +79,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textSize="@dimen/sp_16"
-                tools:text="asdasdasdasdasdasdasd"/>
+                tools:text="asdasdasdasdasdasdasd" />
 
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>

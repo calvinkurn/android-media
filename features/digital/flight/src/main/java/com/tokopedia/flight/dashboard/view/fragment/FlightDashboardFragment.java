@@ -2,15 +2,9 @@ package com.tokopedia.flight.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.widget.NestedScrollView;
@@ -37,8 +31,6 @@ import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.service.GetAirportListJobService;
-import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
@@ -364,28 +356,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void showFormContainer() {
         formContainerLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void startAirportSyncInBackground(long airportVersion) {
-        if (getActivity() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                JobScheduler jobScheduler =
-                        (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                if (jobScheduler == null) return;
-
-                PersistableBundle bundle = new PersistableBundle();
-                bundle.putLong(GetAirportListJobService.AIRPORT_VERSION, airportVersion);
-
-                jobScheduler.schedule(new JobInfo.Builder(101,
-                        new ComponentName(getActivity(), GetAirportListJobService.class))
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setExtras(bundle)
-                        .build());
-            } else {
-                GetAirportListService.startService(getActivity(), airportVersion);
-            }
-        }
     }
 
     @Override

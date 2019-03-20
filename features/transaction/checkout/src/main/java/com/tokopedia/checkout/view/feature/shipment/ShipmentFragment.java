@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConver
 import com.tokopedia.checkout.view.feature.shipment.di.DaggerShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentModule;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierBottomsheet;
@@ -58,7 +60,6 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -75,7 +76,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
@@ -92,6 +92,7 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.CornerAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
@@ -102,6 +103,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.transactiondata.constant.Constant.EXTRA_CHECKOUT_REQUEST;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -137,7 +140,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private TextView tvTotalPayment;
     private TextView tvSelectPaymentMethod;
     private TextView tvSelectCodPayment;
-    private TkpdProgressDialog progressDialogNormal;
+    private ProgressDialog progressDialogNormal;
     // For regular shipment
     private CourierBottomsheet courierBottomsheet;
     // For shipment recommendation
@@ -285,7 +288,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvTotalPayment = view.findViewById(R.id.tv_total_payment);
         tvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         tvSelectCodPayment = view.findViewById(R.id.tv_select_cod);
-        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        progressDialogNormal = new ProgressDialog(getActivity());
+        progressDialogNormal.setMessage(getString(R.string.title_loading));
+        progressDialogNormal.setCancelable(false);
+
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new CartItemDecoration());
 
@@ -371,6 +378,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     tempCod.getMessageLink()
             ));
             mTrackerCod.eventViewBayarDiTempat();
+            mTrackerCod.eventImpressionEligibleCod();
             tvSelectCodPayment.setVisibility(View.VISIBLE);
             tvSelectCodPayment.setOnClickListener(this::proceedCod);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -410,7 +418,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.setCartIds(cartIdsStringBuilder.toString());
 
         shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
-        if (egoldAttributeModel != null) {
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             shipmentAdapter.updateEgold(false);
             shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
         }
@@ -453,12 +461,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void showLoading() {
-        if (!progressDialogNormal.isProgress()) progressDialogNormal.showDialog();
+        if (progressDialogNormal != null && !progressDialogNormal.isShowing())
+            progressDialogNormal.show();
     }
 
     @Override
     public void hideLoading() {
-        if (progressDialogNormal.isProgress()) progressDialogNormal.dismiss();
+        if (progressDialogNormal != null && progressDialogNormal.isShowing())
+            progressDialogNormal.dismiss();
         swipeToRefresh.setEnabled(false);
     }
 
@@ -700,8 +710,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void navigateToCodConfirmationPage(Data data) {
+    public void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest) {
         Intent intent = checkoutModuleRouter.getCodPageIntent(getContext(), data);
+        intent.putExtra(EXTRA_CHECKOUT_REQUEST, checkoutRequest);
         startActivity(intent);
     }
 
@@ -921,7 +932,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentAdapter.RequestData requestData =
                     shipmentAdapter.getRequestData(null, null);
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
-            shipmentPresenter.checkPromoShipment(cartPromo.getPromoCodeSafe(), isOneClickShipment());
+            if (!cartPromo.getPromoCodeSafe().equals("")) {
+                shipmentPresenter.checkPromoShipment(cartPromo.getPromoCodeSafe(), isOneClickShipment());
+            }
 
             shipmentAdapter.notifyDataSetChanged();
         }
@@ -1332,7 +1345,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData) {
         shipmentPresenter.setPromoCodeCartShipmentRequestData(promoRequestData);
         if (shipmentAdapter.getPromoData() != null &&
-                shipmentAdapter.hasAppliedPromoCode()) {
+                shipmentAdapter.hasAppliedPromoCode() && !shipmentAdapter.getPromoData().getPromoCodeSafe().equals("")) {
             shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
         }
     }
@@ -1424,6 +1437,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         } else if (shipmentData != null && !result) {
             sendAnalyticsDropshipperNotComplete();
+            if (requestCode == REQUEST_CODE_COD) {
+                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
+            }
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
@@ -1433,6 +1449,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.notifyItemChanged(errorPosition);
         } else if (shipmentData == null) {
             sendAnalyticsCourierNotComplete();
+            if (requestCode == REQUEST_CODE_COD) {
+                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
+            }
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }

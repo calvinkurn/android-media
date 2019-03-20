@@ -1,10 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.pojo
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 /**
  * @author by StevenFredian .
@@ -55,6 +52,12 @@ class ButtonsPojo() {
         @SerializedName("red_dot")
         @Expose
         var redDot: Boolean = false
+        @SerializedName("tooltip_priority")
+        @Expose
+        var priority: Int = 0
+        @SerializedName("tooltip_duration")
+        @Expose
+        var tooltipDuration: Int = 0
 
     }
 

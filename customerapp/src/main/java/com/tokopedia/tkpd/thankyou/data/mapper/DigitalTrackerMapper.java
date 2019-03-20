@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -125,7 +127,11 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
                 localProduct.put(LinkerConstants.PRICE,String.valueOf(parseStringToInt(product.getPrice())));
                 localProduct.put(LinkerConstants.PRICE_IDR_TO_DOUBLE,String.valueOf(CurrencyFormatHelper.convertRupiahToLong(product.getPrice())));
                 localProduct.put(LinkerConstants.QTY, String.valueOf(product.getQuantity()));
-                localProduct.put(LinkerConstants.CATEGORY, String.valueOf(product.getCategory()));
+                String category = product.getCategory();
+                if(TextUtils.isEmpty(category)){
+                    category = product.getName();
+                }
+                localProduct.put(LinkerConstants.CATEGORY, category);
                 branchIOPayment.setProduct(localProduct);
             }
         }

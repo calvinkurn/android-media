@@ -1,12 +1,11 @@
 package com.tokopedia.payment.fingerprint.domain;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,10 +29,10 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
     public static final String OS = "os";
     public static final String OS_ANDROID_VALUE = "1";
     private FingerprintRepository fingerprintRepository;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public PaymentFingerprintUseCase(FingerprintRepository fingerprintRepository, UserSession userSession) {
+    public PaymentFingerprintUseCase(FingerprintRepository fingerprintRepository, UserSessionInterface userSession) {
         this.fingerprintRepository = fingerprintRepository;
         this.userSession = userSession;
     }
