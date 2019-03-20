@@ -102,7 +102,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onFinishTransactionTimeReached() {
         if (isViewAttached) {
-            onGetCart(false, view.getCurrentCartPassData())
+            onGetCart(false)
         }
     }
 
@@ -219,7 +219,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     }
 
     override fun onRetryGetCartData() {
-        onGetCart(true, view.getCurrentCartPassData())
+        onGetCart(true)
     }
 
     override fun onInsuranceChanges(insurance: FlightInsuranceViewModel, checked: Boolean) {
@@ -266,6 +266,10 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         flightAnalytics.eventInsuranceAnotherBenefit()
     }
 
+    override fun renderUi() {
+        renderUi(view.getCurrentCartPassData(), false)
+    }
+
     override fun renderUi(flightBookingCartData: FlightBookingCartData?, isFromSavedInstance: Boolean) {
         if (flightBookingCartData != null && flightBookingCartData.id != null) {
             view.hideFullPageLoading()
@@ -277,7 +281,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.showAndRenderReturnTripCardDetail(view.getCurrentBookingParamViewModel().searchParam,
                         flightBookingCartData.returnTrip)
             }
-            if (view.getCurrentBookingParamViewModel().passengerViewModels.size == 0) {
+            if (view.getCurrentBookingParamViewModel().passengerViewModels == null ||
+                    view.getCurrentBookingParamViewModel().passengerViewModels.size == 0) {
                 val passengerViewModels = buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
                 view.getCurrentBookingParamViewModel().passengerViewModels = passengerViewModels
                 view.renderPassengersList(passengerViewModels)
@@ -492,7 +497,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                     if (isViewAttached && t != null) {
                                         view.getCurrentBookingParamViewModel().passengerViewModels =
                                                 buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
-                                        onGetCart(true, view.getCurrentCartPassData())
+                                        onGetCart(true)
                                     }
                                 }
 

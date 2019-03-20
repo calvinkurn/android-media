@@ -160,7 +160,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
                     } else {
                         if (data.getBooleanExtra(FlightBookingReviewFragment.EXTRA_NEED_TO_REFRESH, false)) {
                             isCountdownRestarted = true
-                            flightBookingPresenter.onGetCart(false, flightBookingCartData)
+                            flightBookingPresenter.onGetCart(false)
                         }
 
                         if (data.getParcelableExtra<Parcelable>(FlightBookingReviewFragment.EXTRA_COUPON_CHANGED) != null) {

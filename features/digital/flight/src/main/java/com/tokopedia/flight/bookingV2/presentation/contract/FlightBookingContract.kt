@@ -155,6 +155,8 @@ interface FlightBookingContract {
 
         fun onInsuranceBenefitExpanded()
 
+        fun renderUi(flightBookingCartData: FlightBookingCartData?, isFromSavedInstance: Boolean)
+
     }
 
 }

@@ -5,7 +5,6 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice
 import com.tokopedia.flight.booking.view.viewmodel.*
-import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
 import com.tokopedia.flight.bookingV2.domain.FlightGetCartDataUseCase
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBaseBookingContract
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.mapper.FlightBookingCartDataMapper
@@ -42,16 +41,10 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
 
     abstract fun getComboKey(): String
 
-    override fun onGetCart(shouldReRenderUi: Boolean, flightBookingCartData: FlightBookingCartData?) {
+    override fun onGetCart(shouldReRenderUi: Boolean) {
         view.showUpdatePriceLoading()
-        var flightCartData: FlightBookingCartData? = flightBookingCartData
         getCartDataUseCase.createObservable(getCartDataUseCase.createRequestParam(view.getCartId()))
-                .map(object : Func1<GetCartEntity, FlightBookingCartData> {
-                    override fun call(t: GetCartEntity?): FlightBookingCartData {
-                        flightCartData = flightBookingCartDataMapper.transform(flightCartData, t)
-                        return flightCartData as FlightBookingCartData
-                    }
-                })
+                .map { t -> flightBookingCartDataMapper.transform(null, t) }
                 .map(object : Func1<FlightBookingCartData, BaseCartData> {
                     override fun call(t: FlightBookingCartData?): BaseCartData {
                         val baseCartData = cloneViewModel(getCurrentCartData())
@@ -167,7 +160,9 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                                     getInsurances())
                         }
 
-                        renderUi(flightCartData, false)
+                        if (shouldReRenderUi) {
+                            renderUi()
+                        }
                     }
 
                     override fun onCompleted() {}
