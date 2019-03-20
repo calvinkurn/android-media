@@ -11,6 +11,7 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.track.TrackApp;
 
 import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
@@ -35,7 +36,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
     }
 
     private void updateApsFlyerToken(String refreshedToken) {
-        Jordan.init(this.getApplicationContext()).getAFContainer().updateFCMToken(refreshedToken);
+        TrackApp.getInstance().getAppsFlyer().updateFCMToken(refreshedToken);
     }
 
     @Override

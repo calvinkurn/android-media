@@ -111,6 +111,10 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         }
     }
 
+    public void updateFCMToken(String fcmToken) {
+        AppsFlyerLib.getInstance().updateServerUninstallToken(context, fcmToken);
+    }
+
     @Override
     public void sendGeneralEvent(Map<String, Object> value) {
         // no op, only for GTM

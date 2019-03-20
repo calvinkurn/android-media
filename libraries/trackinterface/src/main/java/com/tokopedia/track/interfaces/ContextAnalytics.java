@@ -66,4 +66,6 @@ public abstract class ContextAnalytics implements Analytics {
     public void sendDeeplinkData(Activity activity) {}
 
     public String getUniqueId(){return null;}
+
+    public void updateFCMToken(String fcmToken){}
 }

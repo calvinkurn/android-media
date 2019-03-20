@@ -3,21 +3,7 @@ package com.tokopedia.core.analytics.appsflyer;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.text.TextUtils;
-
-import com.appsflyer.AppsFlyerConversionListener;
-import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tokopedia.core.TkpdCoreRouter;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
-import com.tokopedia.core.analytics.container.AppsflyerContainer;
-import com.tokopedia.core.analytics.container.IAppsflyerContainer;
-
-import java.util.Map;
 
 /**
  * Created by Hafizh Herdi on 2/11/2016.
@@ -60,101 +46,6 @@ public class Jordan {
     public static final String AF_VALUE_PRODUCTGROUPTYPE = "product_group";
     public static final String VALUE_ANDROID = "Android";
     public static final String VALUE_IDR = "IDR";
-    private static boolean isAppsflyerCallbackHandled;
-    private Application context;
-    private Jordan(Context ctx) {
-        Application application = null;
-        if (ctx instanceof Activity) {
-            application = ((Activity) ctx).getApplication();
-        } else if (ctx instanceof Service) {
-            application = ((Service) ctx).getApplication();
-        } else if (ctx instanceof Application) {
-            application = (Application) ctx;
-        }
-        this.context = application;
-    }
 
-    private Jordan(Application application) {
-        this.context = application;
-    }
-
-    public static Jordan init(Context context) {
-        return new Jordan(context);
-    }
-
-    public static Jordan init(Application application) {
-        return new Jordan(application);
-    }
-
-    /**
-     * latest release codes. {@link AppsflyerAnalytics#initialize()}
-     *
-     * @param userID
-     * @return
-     */
-    @Deprecated
-    public AppsflyerContainer runFirstTimeAppsFlyer(String userID) {
-        if (context == null) {
-            return null;
-        }
-        AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
-        CommonUtils.dumper("Appsflyer login userid " + userID);
-
-        AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
-            @Override
-            public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
-                if (isAppsflyerCallbackHandled) return;
-                isAppsflyerCallbackHandled = true;
-
-                try {
-                    //get first launch and deeplink
-                    String isFirstLaunch = conversionData.get("is_first_launch");
-                    String deeplink = conversionData.get("af_dp");
-
-                    if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
-                        //open deeplink
-                        AppsflyerContainer.setDefferedDeeplinkPathIfExists(deeplink);
-                    }
-                } catch (ActivityNotFoundException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onInstallConversionFailure(String s) {
-                // @TODO
-            }
-
-            @Override
-            public void onAppOpenAttribution(Map<String, String> map) {
-
-            }
-
-            @Override
-            public void onAttributionFailure(String s) {
-                // @TODO
-            }
-        };
-
-        try {
-            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(),
-                    PackageManager.GET_META_DATA).metaData;
-            appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
-            ((TkpdCoreRouter) (context.getApplicationContext())).onAppsFlyerInit();
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            CommonUtils.dumper("Error key Appsflyer");
-            appsflyerContainer.initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID, conversionListener);
-        }
-        return appsflyerContainer;
-    }
-
-    public IAppsflyerContainer getAFContainer() {
-        if (context != null)
-            return AppsflyerContainer.newInstance(context);
-        else
-            return null;
-    }
 
 }
