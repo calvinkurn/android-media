@@ -716,7 +716,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     private fun isMandatoryDoB(): Boolean = view.getCurrentCartPassData().isMandatoryDob
 
     private fun validateFields(): Boolean {
-        var isValid = false
+        var isValid = true
         if (view.getContactName().isEmpty()) {
             isValid = false
             view.showContactNameEmptyError(R.string.flight_booking_contact_name_empty_error)
