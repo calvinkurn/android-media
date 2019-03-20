@@ -46,8 +46,8 @@
                 android:id="@+id/badges_kol"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
                 android:layout_gravity="center_vertical"
                 app:srcCompat="@drawable/search_kol_badge"
                 />
