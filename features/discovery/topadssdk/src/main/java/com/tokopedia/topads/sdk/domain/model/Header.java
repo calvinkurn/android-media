@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -13,10 +14,15 @@ import org.json.JSONObject;
  */
 public class Header implements Parcelable {
     @SerializedName(KEY_TOTAL_DATA)
+    @Expose
     private int totalData;
+
     @SerializedName(KEY_PROCESS_TIME)
+    @Expose
     private double processTime;
+
     @SerializedName(KEY_META_DATA)
+    @Expose
     private MetaData metaData = new MetaData();
 
     private static final String KEY_META_DATA = "meta";

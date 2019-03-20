@@ -84,14 +84,20 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                     shippingRecommendationData.setErrorMessage(data.getRatesData().getRatesDetailData().getError().getErrorMessage());
                                     shippingRecommendationData.setErrorId(data.getRatesData().getRatesDetailData().getError().getErrorId());
                                 }
+
+                                // Check if has info
+                                String blackboxInfo = "";
+                                if (data.getRatesData().getRatesDetailData().getInfo() != null &&
+                                        !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo())) {
+                                    blackboxInfo = data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo();
+                                }
+
                                 String ratesId = data.getRatesData().getRatesDetailData().getRatesId();
                                 // Has service / duration list
                                 shippingRecommendationData.setShippingDurationViewModels(
                                         shippingDurationConverter.convertToViewModel(
                                                 data.getRatesData().getRatesDetailData().getServices(),
-                                                shopShipments, selectedSpId, ratesId, selectedServiceId
-                                        )
-                                );
+                                                shopShipments, selectedSpId, ratesId, selectedServiceId, blackboxInfo));
                             }
                         }
                         return shippingRecommendationData;

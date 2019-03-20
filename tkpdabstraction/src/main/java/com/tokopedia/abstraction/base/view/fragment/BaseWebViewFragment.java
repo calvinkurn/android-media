@@ -22,7 +22,7 @@ import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 
 import static android.app.Activity.RESULT_OK;
 
-
+@Deprecated
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int MAX_PROGRESS = 100;
 

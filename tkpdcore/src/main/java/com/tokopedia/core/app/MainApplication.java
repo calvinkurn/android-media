@@ -158,7 +158,6 @@ public abstract class MainApplication extends MainRouterApplication{
         TooLargeTool.startLogging(this);
 
         initBranch();
-        initializeAnalytics();
         NotificationUtils.setNotificationChannel(this);
         upgradeSecurityProvider();
     }
@@ -191,16 +190,6 @@ public abstract class MainApplication extends MainRouterApplication{
     private void init() {
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
-        }
-    }
-
-    protected void initializeAnalytics() {
-        //TODO to be remove, after sellerapp is added Trackapp library
-        if (GlobalConfig.isSellerApp()) {
-            TrackingUtils.runGTMFirstTime(this);
-            TrackingUtils.runAppsFylerFirstTime(this);
-            TrackingUtils.runMoengageFirstTime(this);
-            TrackingUtils.enableDebugging(this, isDebug());
         }
     }
 

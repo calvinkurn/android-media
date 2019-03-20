@@ -77,8 +77,8 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.appIndexing
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.appIndexing
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.playServicesDependencies.maps
 
     implementation rootProject.ext.viewDependencies.appIntro

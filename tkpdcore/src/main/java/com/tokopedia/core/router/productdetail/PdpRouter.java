@@ -6,9 +6,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
@@ -27,30 +26,7 @@ import rx.Observable;
 
 public interface PdpRouter {
 
-    void gotToProductDetail(Context context);
-
-    void goToProductDetail(Context context, String productUrl);
-
-    void goToProductDetail(Context context, ProductPass productPass);
-
-    void goToProductDetail(Context context, LinkerData shareData);
-
-    void goToAddProductDetail(Context context);
-
-    Fragment getProductDetailInstanceDeeplink(Context context, @NonNull ProductPass productPass);
-
-    void goToProductDetailForResult(Fragment fragment,
-                                    String productId,
-                                    int adapterPosition,
-                                    int requestCode);
-
-    void openImagePreview(Context context, ArrayList<String> images, ArrayList<String>
-            imageDesc, int position);
-
     void openImagePreview(Context context, ArrayList<String> images, int position);
-
-    void openImagePreviewFromChat(Context context, ArrayList<String> images,
-                                  ArrayList<String> imageDesc, String title, String date);
 
     Intent getProductReputationIntent(Context context, String productId, String productName);
 
