@@ -357,16 +357,16 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-        setActiveTab(forceSwipeToShop);
+        setActiveTab(forceSwipeToShop, productViewModel.isHasCatalog());
     }
 
-    private void setActiveTab(final boolean swipeToShop) {
+    private void setActiveTab(final boolean swipeToShop, final boolean hasCatalogTab) {
         viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 if (swipeToShop) {
-                    viewPager.setCurrentItem(getShopTabPosition());
+                    viewPager.setCurrentItem(getShopTabPosition(hasCatalogTab));
                 } else {
                     viewPager.setCurrentItem(getActiveTabPosition());
                 }
@@ -374,8 +374,8 @@ public class SearchActivity extends DiscoveryActivity
         });
     }
 
-    private int getShopTabPosition() {
-        return viewPager.getAdapter().getCount() - 1;
+    private int getShopTabPosition(boolean hasCatalogTab) {
+        return hasCatalogTab ? 2 : 1;
     }
 
     private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList,
