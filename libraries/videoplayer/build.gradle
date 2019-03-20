@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'videoplayer'
+    groupId = 'com.tokopedia.videoplayer'
+    versionName = "${tkpdVideoplayerVersion}"
+    artifactName ="videoplayer-release"
+}
+
+dependencies {
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+}
+
+apply from: '../../publish_local.gradle'

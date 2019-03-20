@@ -14,6 +14,7 @@ ext {
     tkpdPushNotifVersion = '2.22'
     tkpdTrackingOptimizerVersion = '2.22'
     tkpdUseCaseVersion = '2.23'
+    tkpdVideoplayerVersion = '2.22'
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
@@ -29,6 +30,7 @@ ext {
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             trackingOptimizer     : "com.tokopedia.trackingoptimizer:trackingoptimizer:${tkpdTrackingOptimizerVersion}",
             usecase               : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
+            videoplayer           : "com.tokopedia.videoplayer:videoplayer:${tkpdVideoplayerVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
     ]
 
@@ -70,6 +72,7 @@ ext {
             webview           : ":libraries:webview",
             websocket         : ":libraries:websocket",
             williamchart      : ":libraries:williamchart",
+            videoplayer       : ":libraries:videoplayer",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil       : ":libraries:youtubeutil",
             core_legacy       : ":libraries:core_legacy",
