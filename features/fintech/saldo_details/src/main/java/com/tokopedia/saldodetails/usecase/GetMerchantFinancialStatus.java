@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class GetMerchantFinancialStatus {
 
         GraphqlRequest graphqlMCLRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_merchant_credit_details),
-                GqlMerchantSaldoDetailsResponse.class,
+                GqlMerchantCreditDetailsResponse.class,
                 variables, false);
 
         graphqlUseCase.addRequest(graphqlMCLRequest);
