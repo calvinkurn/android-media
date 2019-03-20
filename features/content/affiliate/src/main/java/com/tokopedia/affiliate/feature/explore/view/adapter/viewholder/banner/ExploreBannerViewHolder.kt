@@ -21,7 +21,7 @@ class ExploreBannerViewHolder(v: View, private val mainView: ExploreContract.Vie
     companion object {
         @JvmField
         @LayoutRes
-        val LAYOUT = R.layout.item_af_popular_profile
+        val LAYOUT = R.layout.item_af_banner
     }
 
     override fun bind(element: ExploreBannerViewModel?) {

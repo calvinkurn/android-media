@@ -5,9 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.common.widget.ChipView;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 
 import java.util.ArrayList;
@@ -47,8 +48,9 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     private void initView(Holder holder, FilterViewModel filter) {
-        holder.chip.setIconUrl(filter.getImage());
-        holder.chip.setTitle(filter.getName());
+
+//        holder.chip.setIconUrl(filter.getImage());
+//        holder.chip.setTitle(filter.getName());
         holder.itemView.setSelected(filter.isSelected());
     }
 
@@ -73,11 +75,13 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.Holder> {
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        private ChipView chip;
+        private ImageView icon;
+        private TextView title;
 
         Holder(View itemView) {
             super(itemView);
-            chip = itemView.findViewById(R.id.chip);
+            icon = itemView.findViewById(R.id.icon);
+            title = itemView.findViewById(R.id.title);
         }
     }
 

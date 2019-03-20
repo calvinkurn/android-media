@@ -17,5 +17,5 @@
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:reverseLayout="false"
         tools:ignore="RtlSymmetry"
-        tools:listitem="@layout/item_af_popular_profile_child" />
+        tools:listitem="@layout/item_af_banner_child" />
 </LinearLayout>
