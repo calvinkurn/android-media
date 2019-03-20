@@ -43,6 +43,11 @@ public class GqlAnchorListResponse implements Parcelable {
         }
     };
 
+    public GqlAnchorListResponse() {
+
+
+    }
+
     @Override
     public int describeContents() {
         return 0;

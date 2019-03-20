@@ -106,8 +106,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                 mclBlockedStatusTV.setVisibility(View.GONE);
             }
 
-            if (merchantCreditDetails.getAnchorList() != null &&
-                    merchantCreditDetails.getAnchorList().size() > 0) {
+            if (merchantCreditDetails.getAnchorList() != null) {
                 populateAnchorListData();
             } else {
                 mclActionItemTV.setVisibility(View.GONE);
@@ -214,7 +213,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     }
 
     private void populateAnchorListData() {
-        GqlAnchorListResponse gqlAnchorListResponse = merchantCreditDetails.getAnchorList().get(0);
+        GqlAnchorListResponse gqlAnchorListResponse = merchantCreditDetails.getAnchorList();
         if (gqlAnchorListResponse != null) {
             mclActionItemTV.setText(gqlAnchorListResponse.getLabel());
             try {

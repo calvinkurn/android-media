@@ -31,7 +31,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
     private String bodyDesc;
 
     @SerializedName("anchor_list")
-    private ArrayList<GqlAnchorListResponse> anchorList = new ArrayList<>();
+    private GqlAnchorListResponse anchorList = new GqlAnchorListResponse();
 
     @SerializedName("info_list")
     private ArrayList<GqlInfoListResponse> infoList = new ArrayList<>();
@@ -63,7 +63,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
         this.mainRedirectUrl = in.readString();
         this.logoURL = in.readString();
         this.bodyDesc = in.readString();
-        this.anchorList = in.createTypedArrayList(GqlAnchorListResponse.CREATOR);
+        this.anchorList = ((GqlAnchorListResponse) in.readValue((GqlAnchorListResponse.class.getClassLoader())));// in.createTypedArrayList(GqlAnchorListResponse.CREATOR);
         this.infoList = in.createTypedArrayList(GqlInfoListResponse.CREATOR);
         this.showBox = in.readByte() != 0;
         this.boxInfo = ((GqlBoxInfoResponse) in.readValue((GqlBoxInfoResponse.class.getClassLoader())));
@@ -84,7 +84,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
         dest.writeString(mainRedirectUrl);
         dest.writeString(logoURL);
         dest.writeString(bodyDesc);
-        dest.writeList(anchorList);
+        dest.writeValue(anchorList);
         dest.writeList(infoList);
         dest.writeByte((byte) (showBox ? 1 : 0));
         dest.writeValue(boxInfo);
@@ -138,11 +138,11 @@ public class GqlMerchantCreditResponse implements Parcelable {
         this.bodyDesc = bodyDesc;
     }
 
-    public ArrayList<GqlAnchorListResponse> getAnchorList() {
+    public GqlAnchorListResponse getAnchorList() {
         return anchorList;
     }
 
-    public void setAnchorList(ArrayList<GqlAnchorListResponse> anchorList) {
+    public void setAnchorList(GqlAnchorListResponse anchorList) {
         this.anchorList = anchorList;
     }
 
