@@ -270,7 +270,6 @@ public class HeaderHomeView extends BaseCustomView {
                         int verticalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
                         tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_8));
                         tokopointsTextView.setTypeface(null, Typeface.NORMAL);
-                        tokopointsTextView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
                     }
                     tokopointsTextView.setTextColor(getResources().getColor(R.color.white));
                 } else {
