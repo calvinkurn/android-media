@@ -1029,7 +1029,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         otherProductView.renderData(productInfoP2.productOthers)
 
-        productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, productInfoP2.shopInfo, trackerAttribution)
+        productInfo?.run {
+            productDetailTracking.sendScreen(basic.shopID.toString(),
+                shopInfo?.goldOS?.shopTypeString ?:"", productId ?: "")
+            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution)
+            productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
+            productDetailTracking.eventAppsFylerOpenProduct(this)
+        }
 
     }
 
@@ -1259,9 +1265,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onReviewClicked() {
-        productDetailTracking.eventReviewClicked()
-        if (productInfo != null) {
-            //TODO SENT MOENGAGE
+        productInfo?.run {
+            productDetailTracking.eventReviewClicked()
+            productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
             context?.let {
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
                 intent?.run {

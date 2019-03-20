@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.Category
 import com.tokopedia.product.detail.common.data.model.ProductInfo
@@ -13,6 +12,12 @@ import com.tokopedia.track.TrackApp
 import java.util.*
 
 class ProductDetailTracking() {
+
+    fun sendScreen(shopID: String, shopType: String, productId: String) {
+        TrackApp.getInstance()?.gtm?.sendScreenAuthenticated(
+            PRODUCT_DETAIL_SCREEN_NAME,
+            shopID, shopType, "/product", productId)
+    }
 
     fun eventTalkClicked() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
@@ -35,7 +40,7 @@ class ProductDetailTracking() {
     }
 
     private fun eventClickBuyOrAddToCart(productId: String, isVariant: Boolean,
-                                         action:String) {
+                                         action: String) {
         if (productId.isEmpty()) return
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
@@ -375,10 +380,10 @@ class ProductDetailTracking() {
                 "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                 "variant", "none / other",
                 "dimension38", trackerAttribution ?: "none / other"))).apply {
-                    if (trackerListName?.isNotEmpty() == true) {
-                        put("actionField", DataLayer.mapOf("list", trackerListName))
-                    }
-                }),
+            if (trackerListName?.isNotEmpty() == true) {
+                put("actionField", DataLayer.mapOf("list", trackerListName))
+            }
+        }),
             "key", getEnhanceUrl(productInfo?.basic?.url),
             "shopName", shopInfo?.shopCore?.name,
             "shopId", productInfo?.basic?.shopID,
@@ -395,8 +400,16 @@ class ProductDetailTracking() {
     // APPSFYLER START
     ////////////////////////////////////////////////////////////////
     fun eventPDPWishlistAppsFyler(productInfo: ProductInfo) {
+        eventAppsFyler(productInfo, "af_add_to_wishlist")
+    }
+
+    fun eventAppsFylerOpenProduct(productInfo: ProductInfo) {
+        eventAppsFyler(productInfo, "af_content_view")
+    }
+
+    private fun eventAppsFyler(productInfo: ProductInfo, eventName:String) {
         TrackApp.getInstance()?.appsFlyer?.run {
-            sendEvent("af_add_to_wishlist",
+            sendEvent(eventName,
                 mutableMapOf<String, Any>(
                     "advertising_id" to id,
                     "af_description" to "productView",
@@ -435,10 +448,25 @@ class ProductDetailTracking() {
         )
     }
 
+    fun sendMoEngageClickReview(productInfo: ProductInfo, isOfficialStore: Boolean, shopName: String) {
+        sendMoEngage(productInfo, isOfficialStore, shopName, "Clicked_Ulasan_Pdp")
+    }
+
+    fun sendMoEngageOpenProduct(productInfo: ProductInfo, isOfficialStore: Boolean, shopName: String) {
+        sendMoEngage(productInfo, isOfficialStore, shopName, "Product_Page_Opened")
+    }
+
     fun sendMoEngageClickDiskusi(productInfo: ProductInfo, isOfficialStore: Boolean, shopName: String) {
+        sendMoEngage(productInfo, isOfficialStore, shopName, "Clicked_Diskusi_Pdp")
+    }
+
+    private fun sendMoEngage(productInfo: ProductInfo,
+                             isOfficialStore: Boolean,
+                             shopName: String,
+                             eventName: String) {
         productInfo.category.breadcrumbUrl
         TrackApp.getInstance()?.moEngage?.sendEvent(
-            "Clicked_Diskusi_Pdp",
+            eventName,
             mutableMapOf<String, Any>().apply {
                 if (productInfo.category.detail.isNotEmpty()) {
                     put("category", productInfo.category.detail[0].name)
