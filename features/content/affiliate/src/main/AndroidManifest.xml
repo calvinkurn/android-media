@@ -66,6 +66,12 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".feature.createpost.view.activity.CreatePostVideoPickerActivity"
+            android:label="@string/title_af_image_video"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".feature.createpost.view.activity.CreatePostImageEditorActivity"
             android:label="@string/title_af_image_editor"
             android:screenOrientation="portrait"

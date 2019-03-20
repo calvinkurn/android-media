@@ -59,6 +59,7 @@
     <string name="af_add_more_image_to_product">Buat Produk Pilihanmu Lebih Menarik dengan Foto Ala Kamu!</string>
     <string name="af_see_example">Lihat Contoh</string>
     <string name="title_af_image_picker">Tambah Foto</string>
+    <string name="title_af_image_video">Tambah Video</string>
     <string name="title_af_image_editor">Edit</string>
     <string name="title_af_create_post">Create Post</string>
     <string name="title_af_preview">Preview</string>
