@@ -42,6 +42,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
@@ -104,7 +105,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
-        GridPostAdapter.GridItemListener{
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener{
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -239,6 +241,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ProfileTypeFactoryImpl(
+                this,
                 this,
                 this,
                 this,
@@ -802,6 +805,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     redirectLink
             )
         }
+    }
+
+    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, url: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     //end of new feed section

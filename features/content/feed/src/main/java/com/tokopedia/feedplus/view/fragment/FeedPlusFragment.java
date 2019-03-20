@@ -45,6 +45,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
@@ -141,7 +142,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
-        GridPostAdapter.GridItemListener {
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -1915,6 +1917,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     redirectLink
             );
         }
+    }
+
+    @Override
+    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String url) {
+
     }
 
     private void goToContentReport(int contentId) {

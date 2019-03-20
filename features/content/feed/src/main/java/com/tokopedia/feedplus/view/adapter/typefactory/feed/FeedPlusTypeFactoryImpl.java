@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHold
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
@@ -96,6 +97,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
     private final PollAdapter.PollOptionListener pollOptionListener;
     private final GridPostAdapter.GridItemListener gridItemListener;
+    private final VideoViewHolder.VideoViewListener videoViewListener;
     private final FeedAnalytics analytics;
 
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
@@ -114,6 +116,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.youtubePostListener = context;
         this.pollOptionListener = context;
         this.gridItemListener = context;
+        this.videoViewListener = context;
         this.analytics = analytics;
     }
 
@@ -305,7 +308,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
                     imagePostListener,
                     youtubePostListener,
                     pollOptionListener,
-                    gridItemListener
+                    gridItemListener,
+                    videoViewListener
             );
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
