@@ -1481,7 +1481,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             MethodChecker.fromHtml(productInfo!!.basic.name).toString(),
             productInfo!!.basic.priceCurrency,
             productInfo!!.basic.url,
-            "",
+            shopInfo?.shopCore?.url ?: "",
+            shopInfo?.shopCore?.name ?: "",
             productInfo!!.basic.id.toString(),
             productInfo!!.pictures?.getOrNull(0)?.urlOriginal ?: ""
         )
