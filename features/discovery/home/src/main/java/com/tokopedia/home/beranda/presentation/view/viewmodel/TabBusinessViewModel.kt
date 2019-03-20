@@ -64,6 +64,6 @@ class TabBusinessViewModel @Inject constructor(
     }
 
     fun clearJob() {
-        if (isActive) job.cancel()
+//        if (isActive) job.cancel()
     }
 }
