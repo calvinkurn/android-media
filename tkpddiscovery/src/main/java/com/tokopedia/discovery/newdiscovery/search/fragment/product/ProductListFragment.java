@@ -593,7 +593,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public boolean isQuickFilterSelected(Option option) {
-        return filterController.getFlagFilterHelperValue(option.getKey());
+        return filterController.getFlagFilterHelperValue(option.getUniqueId());
     }
 
     @Override
