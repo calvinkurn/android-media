@@ -1,5 +1,5 @@
 query {
-    mcl_getmerchantstatus {
+    mcl_getmclstatus {
         is_eligible
         status
         title

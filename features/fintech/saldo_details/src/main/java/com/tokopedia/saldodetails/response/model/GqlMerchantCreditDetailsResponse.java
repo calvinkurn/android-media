@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class GqlMerchantCreditDetailsResponse implements Parcelable {
 
-    @SerializedName("mcl_getmerchantstatus")
+    @SerializedName("mcl_getmclstatus")
     private GqlMerchantCreditResponse data;
 
     protected GqlMerchantCreditDetailsResponse(Parcel in) {
