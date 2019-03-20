@@ -38,7 +38,7 @@ class ItemTabBusinessViewModel @Inject constructor(
         get() = baseDispatcher + job
 
     fun clearJob() {
-        if (isActive) job.cancel()
+//        if (isActive) job.cancel()
     }
 
     fun getList(rawQuery: String, tabId: Int, listener: BusinessUnitItemView) {
