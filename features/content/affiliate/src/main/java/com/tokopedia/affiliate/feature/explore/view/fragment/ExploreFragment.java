@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -126,11 +125,11 @@ public class ExploreFragment
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
-    private FrameLayout layoutEmpty, layoutProfile;
+    private FrameLayout layoutEmpty;
+    private FrameLayout layoutProfile;
     private BottomActionView bottomActionView;
     private FloatingActionButton btnBackToTop;
     private BadgeView badgeView;
-    private LinearLayout mainView;
 
     private boolean isCanDoAction;
     private boolean isTraceStopped;
@@ -176,7 +175,6 @@ public class ExploreFragment
         ivProfile = view.findViewById(R.id.iv_profile);
         bottomActionView = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
-        mainView = view.findViewById(R.id.main_view);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         return view;
     }
@@ -422,13 +420,17 @@ public class ExploreFragment
 
     @Override
     public void showLoadingScreen() {
-        ViewExtKt.showLoadingTransparent(mainView);
+        if (getView() != null) {
+            ViewExtKt.showLoadingTransparent(getView());
+        }
     }
 
     @Override
     public void hideLoading() {
         adapter.hideLoading();
-        ViewExtKt.hideLoadingTransparent(mainView);
+        if (getView() != null) {
+            ViewExtKt.hideLoadingTransparent(getView());
+        }
     }
 
     @Override
