@@ -26,6 +26,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 
@@ -102,24 +105,35 @@ public class NewOnboardingActivity extends AppIntro {
     }
 
     private void addSlides() {
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_1_title),
-                getString(R.string.nonb_1_desc), "onboarding1.json",
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB1_TTL,
+                getString(R.string.nonb_1_title)),
+                remoteConfig.getString(RemoteConfigKey.NONB1_DESC, getString(R.string.nonb_1_desc)),
+                "onboarding1.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[0]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 0));
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_2_title),
-                getString(R.string.nonb_2_desc), "onboarding2.json",
+        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB2_TTL,
+                getString(R.string.nonb_2_title)),
+                remoteConfig.getString(RemoteConfigKey.NONB2_DESC, getString(R.string.nonb_2_desc)),
+                "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[1]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 1));
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_3_title),
-                getString(R.string.nonb_3_desc), "onboarding3.json",
+        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB3_TTL,
+                getString(R.string.nonb_3_title)),
+                remoteConfig.getString(RemoteConfigKey.NONB3_DESC, getString(R.string.nonb_3_desc)),
+                "onboarding3.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[2]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 2));
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_4_title),
-                getString(R.string.nonb_4_desc), "onboarding4.json",
+        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB4_TTL,
+                getString(R.string.nonb_4_title)),
+                remoteConfig.getString(RemoteConfigKey.NONB4_DESC, getString(R.string.nonb_4_desc)),
+                "onboarding4.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[3]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 3));
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_5_title),
-                getString(R.string.nonb_5_desc), "onboarding5.json",
+        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB5_TTL,
+                getString(R.string.nonb_5_title)),
+                remoteConfig.getString(RemoteConfigKey.NONB5_DESC, getString(R.string.nonb_5_desc)),
+                "onboarding5.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[4]),
                 NewOnBoardingFragment.VIEW_ENDING, 4));
     }
