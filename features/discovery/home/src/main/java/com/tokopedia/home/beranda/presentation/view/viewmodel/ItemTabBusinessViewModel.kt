@@ -37,6 +37,9 @@ class ItemTabBusinessViewModel @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = baseDispatcher + job
 
+    fun clearJob() {
+        if (isActive) job.cancel()
+    }
 
     fun getList(rawQuery: String, tabId: Int) {
         job.children.map { it.cancel() }

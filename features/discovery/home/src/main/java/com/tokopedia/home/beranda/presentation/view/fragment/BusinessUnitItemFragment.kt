@@ -162,6 +162,11 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     override fun onReloadButtonClick() {
         onRetryClicked()
     }
+
+    override fun onDestroy() {
+        viewModel.clearJob()
+        super.onDestroy()
+    }
 }
 
 interface BusinessUnitItemView {
