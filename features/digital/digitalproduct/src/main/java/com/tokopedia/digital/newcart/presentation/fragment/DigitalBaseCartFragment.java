@@ -82,7 +82,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         if (savedInstanceState != null) {
             checkoutDataParameterBuilder = new CheckoutDataParameter.Builder(savedInstanceState.getParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER));
         }
@@ -319,7 +318,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     break;
             }
         } else if (requestCode == REQUEST_CODE_OTP) {
-            if (true) {
+            if (resultCode == Activity.RESULT_OK) {
                 presenter.processPatchOtpCart(cartPassData.getCategoryId());
             } else {
                 closeView();
