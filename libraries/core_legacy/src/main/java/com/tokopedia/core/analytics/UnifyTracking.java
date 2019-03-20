@@ -36,6 +36,9 @@ import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 
 public class UnifyTracking extends TrackingUtils {
 
+    public static void eventClickItemSellerInfo(Context context, String articleName) {
+        eventSellerInfo(context,AppEventTracking.Action.CLICK_ARTICLE, articleName);
+    }
 
     public static void eventClickVariant(Context context, String eventLabel) {
         sendGTMEvent(context, new EventTracking(
