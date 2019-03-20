@@ -121,8 +121,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         View view = inflater.inflate(R.layout.oqr_payment_qr_summary_fragment, container, false);
         initViews(view);
         setDataAndListeners();
-        MAX_AMOUNT = ((OvoPayWithQrRouter)getActivity().getApplicationContext()).getMaxAmountFromRemoteConfig();
-        MIN_AMOUNT = ((OvoPayWithQrRouter)getActivity().getApplicationContext()).getMinAmountFromRemoteConfig();
+        MAX_AMOUNT = ((OvoPayWithQrRouter) getActivity().getApplicationContext()).getMaxAmountFromRemoteConfig();
+        MIN_AMOUNT = ((OvoPayWithQrRouter) getActivity().getApplicationContext()).getMinAmountFromRemoteConfig();
         return view;
     }
 
@@ -274,29 +274,52 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     @Override
     public void afterTextChanged(Editable editable) {
+
         if (!TextUtils.isEmpty(editable)) {
-            inputAmount.removeTextChangedListener(this);
             long amountInLong = Utils.convertToCurrencyLongFromString(editable.toString());
             String formattedString = Utils.convertToCurrencyStringWithoutRp(amountInLong);
-            if (amountInLong > MAX_AMOUNT) {
-                inputAmount.setText(Utils.convertToCurrencyStringWithoutRp(amountInLong / 10));
-            } else {
-                inputAmount.setText(formattedString);
-                inputAmount.addTextChangedListener(this);
-                inputAmount.setSelection(inputAmount.getText().length());
 
-                if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
-                    long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
-                    ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
-                            wallet.getPointBalance()));
-                    ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
-                            String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
-                } else {
-                    ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
-                    ovoPoints.setText(formattedString);
-                }
+            inputAmount.removeTextChangedListener(this);
+            String curren = String.valueOf(amountInLong);
+            if ((curren.length() >= 8 && amountInLong > MAX_AMOUNT)) {
+                amountInLong = amountInLong / 10L;
             }
+            inputAmount.setText(Utils.convertToCurrencyStringWithoutRp(amountInLong));
+            if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
+                long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
+                ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
+                        wallet.getPointBalance()));
+                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
+                        String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
+            } else {
+                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
+                ovoPoints.setText(formattedString);
+            }
+            inputAmount.addTextChangedListener(this);
+            inputAmount.setSelection(inputAmount.getText().length());
+
+
         }
+
+
+//        if (!TextUtils.isEmpty(editable)) {
+//            inputAmount.removeTextChangedListener(this);
+//            inputAmount.setText(formattedString);
+//            inputAmount.addTextChangedListener(this);
+//            inputAmount.setSelection(inputAmount.getText().length());
+//
+//            if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
+//                long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
+//                ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
+//                        wallet.getPointBalance()));
+//                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
+//                        String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
+//            } else {
+//                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
+//                ovoPoints.setText(formattedString);
+//            }
+//
+//        }
     }
 
     @Override
