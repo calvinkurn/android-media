@@ -5,6 +5,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice
 import com.tokopedia.flight.booking.view.viewmodel.*
+import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
 import com.tokopedia.flight.bookingV2.domain.FlightGetCartDataUseCase
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBaseBookingContract
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.mapper.FlightBookingCartDataMapper
@@ -41,10 +42,16 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
 
     abstract fun getComboKey(): String
 
-    override fun onGetCart(shouldReRenderUi: Boolean) {
+    override fun onGetCart(shouldReRenderUi: Boolean, flightBookingCartData: FlightBookingCartData?) {
         view.showUpdatePriceLoading()
+        var flightCartData: FlightBookingCartData? = flightBookingCartData
         getCartDataUseCase.createObservable(getCartDataUseCase.createRequestParam(view.getCartId()))
-                .map { t -> flightBookingCartDataMapper.transform(null, t) }
+                .map(object : Func1<GetCartEntity, FlightBookingCartData> {
+                    override fun call(t: GetCartEntity?): FlightBookingCartData {
+                        flightCartData = flightBookingCartDataMapper.transform(flightCartData, t)
+                        return flightCartData as FlightBookingCartData
+                    }
+                })
                 .map(object : Func1<FlightBookingCartData, BaseCartData> {
                     override fun call(t: FlightBookingCartData?): BaseCartData {
                         val baseCartData = cloneViewModel(getCurrentCartData())

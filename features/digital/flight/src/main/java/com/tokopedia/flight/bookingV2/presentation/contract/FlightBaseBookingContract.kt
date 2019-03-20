@@ -3,6 +3,7 @@ package com.tokopedia.flight.bookingV2.presentation.contract
 import android.support.annotation.StringRes
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
@@ -45,7 +46,7 @@ interface FlightBaseBookingContract {
 
     interface Presenter<T : View>: CustomerPresenter<T> {
 
-        fun onGetCart(shouldReRenderUi: Boolean)
+        fun onGetCart(shouldReRenderUi: Boolean, flightBookingCartData: FlightBookingCartData?)
 
         fun renderUi()
 

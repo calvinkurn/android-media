@@ -102,7 +102,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onFinishTransactionTimeReached() {
         if (isViewAttached) {
-            onGetCart(false)
+            onGetCart(false, view.getCurrentCartPassData())
         }
     }
 
@@ -219,7 +219,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     }
 
     override fun onRetryGetCartData() {
-        onGetCart(true)
+        onGetCart(true, view.getCurrentCartPassData())
     }
 
     override fun onInsuranceChanges(insurance: FlightInsuranceViewModel, checked: Boolean) {
@@ -497,7 +497,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                     if (isViewAttached && t != null) {
                                         view.getCurrentBookingParamViewModel().passengerViewModels =
                                                 buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
-                                        onGetCart(true)
+                                        onGetCart(true, view.getCurrentCartPassData())
                                     }
                                 }
 
