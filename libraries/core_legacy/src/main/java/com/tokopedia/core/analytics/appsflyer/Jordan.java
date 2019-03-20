@@ -16,8 +16,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
-import com.tokopedia.core.analytics.container.IMoengageContainer;
-import com.tokopedia.core.analytics.container.MoEngageContainer;
 
 import java.util.Map;
 
@@ -29,10 +27,41 @@ import java.util.Map;
  */
 public class Jordan {
 
-    private Application context;
     public static final String GCM_PROJECT_NUMBER = "692092518182";
+    public static final String AF_SCREEN_HOME_HOTLIST = "home_hotlist";
+    public static final String AF_SCREEN_HOME_MAIN = "home_beranda";
+    public static final String AF_SCREEN_PRODUCT_FEED = "home_productfeed";
+    public static final String AF_SCREEN_FAVORIT_CACHE_AF_KEY_ALL_PRODUCTS = "home_favorit";
+    public static final String AF_SCREEN_CAT = "productCategory";
+    public static final String AF_SCREEN_PRODUCT = "productView";
+    public static final String AF_SCREEN_WISHLIST = "wishList";
+    public static final String AF_SCREEN_CART = "cart";
+    public static final String AF_SHIPPING_PRICE = "af_shipping_price";
+    public static final String AF_PAYMENT_ID = "af_payment_id";
+    public static final String AF_PURCHASE_SITE = "af_purchase_site";
+    public static final String AF_SHOP_ID = "af_shop_id";
+    public static final String AF_KEY_CATEGORY_ID = "c";
+    public static final String AF_KEY_CATEGORY_NAME = "category";
+    public static final String AF_KEY_PRODUCT_ID = "id";
+    public static final String AF_KEY_OS_TYPE = "os";
+    public static final String AF_KEY_FINALPRICE = "sprc";
+    public static final String AF_KEY_ADS_ID = "advertising_id";
+    public static final String AF_KEY_CRITEO = "criteo_track_transaction";
+    public static final String CACHE_AF_KEY_JSONIDS = "af_json_ids";
+    public static final String CACHE_AF_KEY_QTY = "af_qty";
+    public static final String CACHE_AF_KEY_ALL_PRODUCTS = "af_allprod";
+    public static final String CACHE_AF_KEY_REVENUE = "af_revs";
+    public static final String CACHE_LC_KEY_ALL_PRODUCTS = "lc_allprod";
+    public static final String CACHE_LC_KEY_SHIPPINGRATE = "lc_shippingrate";
+    public static final String CACHE_KEY_DATA_AR_ALLPURCHASE = "cc_purchase";
+    public static final String CACHE_KEY_DATA_CHECKOUT = "cc_checkout";
+    public static final String AF_VALUE_PRODUCTTYPE = "product";
+    public static final String AF_VALUE_PRODUCT_TYPE = "productType";
+    public static final String AF_VALUE_PRODUCTGROUPTYPE = "product_group";
+    public static final String VALUE_ANDROID = "Android";
+    public static final String VALUE_IDR = "IDR";
     private static boolean isAppsflyerCallbackHandled;
-
+    private Application context;
     private Jordan(Context ctx) {
         Application application = null;
         if (ctx instanceof Activity) {
@@ -59,12 +88,13 @@ public class Jordan {
 
     /**
      * latest release codes. {@link AppsflyerAnalytics#initialize()}
+     *
      * @param userID
      * @return
      */
     @Deprecated
-    public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
-        if(context == null){
+    public AppsflyerContainer runFirstTimeAppsFlyer(String userID) {
+        if (context == null) {
             return null;
         }
         AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
@@ -110,7 +140,7 @@ public class Jordan {
             Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(),
                     PackageManager.GET_META_DATA).metaData;
             appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
-            ((TkpdCoreRouter)(context.getApplicationContext())).onAppsFlyerInit();
+            ((TkpdCoreRouter) (context.getApplicationContext())).onAppsFlyerInit();
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -120,54 +150,11 @@ public class Jordan {
         return appsflyerContainer;
     }
 
-    public IAppsflyerContainer getAFContainer(){
-        if(context != null)
+    public IAppsflyerContainer getAFContainer() {
+        if (context != null)
             return AppsflyerContainer.newInstance(context);
         else
             return null;
     }
-
-    public IMoengageContainer getMoEngageContainer() {
-        if(context != null)
-            return MoEngageContainer.getMoEngageContainer(context);
-        else
-            return null;
-    }
-
-    public static final String AF_SCREEN_HOME_HOTLIST = "home_hotlist";
-    public static final String AF_SCREEN_HOME_MAIN = "home_beranda";
-    public static final String AF_SCREEN_PRODUCT_FEED = "home_productfeed";
-    public static final String AF_SCREEN_FAVORIT_CACHE_AF_KEY_ALL_PRODUCTS= "home_favorit";
-    public static final String AF_SCREEN_CAT = "productCategory";
-    public static final String AF_SCREEN_PRODUCT = "productView";
-    public static final String AF_SCREEN_WISHLIST = "wishList";
-    public static final String AF_SCREEN_CART = "cart";
-    public static final String AF_SHIPPING_PRICE = "af_shipping_price";
-    public static final String AF_PAYMENT_ID = "af_payment_id";
-    public static final String AF_PURCHASE_SITE = "af_purchase_site";
-    public static final String AF_SHOP_ID = "af_shop_id";
-
-    public static final String AF_KEY_CATEGORY_ID = "c";
-    public static final String AF_KEY_CATEGORY_NAME = "category";
-    public static final String AF_KEY_PRODUCT_ID = "id";
-    public static final String AF_KEY_OS_TYPE = "os";
-    public static final String AF_KEY_FINALPRICE = "sprc";
-    public static final String AF_KEY_ADS_ID = "advertising_id";
-    public static final String AF_KEY_CRITEO = "criteo_track_transaction";
-
-    public static final String CACHE_AF_KEY_JSONIDS = "af_json_ids";
-    public static final String CACHE_AF_KEY_QTY = "af_qty";
-    public static final String CACHE_AF_KEY_ALL_PRODUCTS = "af_allprod";
-    public static final String CACHE_AF_KEY_REVENUE = "af_revs";
-    public static final String CACHE_LC_KEY_ALL_PRODUCTS = "lc_allprod";
-    public static final String CACHE_LC_KEY_SHIPPINGRATE = "lc_shippingrate";
-    public static final String CACHE_KEY_DATA_AR_ALLPURCHASE = "cc_purchase";
-    public static final String CACHE_KEY_DATA_CHECKOUT = "cc_checkout";
-
-    public static final String AF_VALUE_PRODUCTTYPE = "product";
-    public static final String AF_VALUE_PRODUCT_TYPE = "productType";
-    public static final String AF_VALUE_PRODUCTGROUPTYPE = "product_group";
-    public static final String VALUE_ANDROID ="Android" ;
-    public static final String VALUE_IDR ="IDR" ;
 
 }

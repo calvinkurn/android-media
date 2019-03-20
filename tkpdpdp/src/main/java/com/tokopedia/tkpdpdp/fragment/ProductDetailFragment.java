@@ -48,6 +48,7 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.design.component.TextViewCompat;
@@ -74,6 +75,7 @@ import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -1052,7 +1054,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 if(!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
                     productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
-                    TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
+                    sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
 
                 }
                 executeProductShare(productData);
@@ -1067,6 +1069,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         ((PdpRouter)(getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
                 (ActionUIDelegate<String, String>) getActivity());
 
+    }
+
+    public void sendMoEngagePDPReferralCodeShareEvent(Context context,String channel) {
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.CHANNEL, channel,
+                AppEventTracking.MOENGAGE.SOURCE, AppEventTracking.MOENGAGE.PDP_SHARE
+        );
+        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
     }
 
 

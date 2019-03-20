@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -18,11 +20,14 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -158,7 +163,7 @@ public class BaseDiscoveryActivity
             }
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
-        TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         finish();
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
@@ -181,12 +186,24 @@ public class BaseDiscoveryActivity
             }
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
-        TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }
 
-    @Override
+    public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.KEYWORD, keyword,
+                AppEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
+        );
+        if (category != null) {
+            value.put(AppEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            value.put(AppEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+        }
+        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.SEARCH_ATTEMPT);
+    }
+
+        @Override
     public void onHandleImageSearchResponseError() {
     }
 

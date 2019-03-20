@@ -5,6 +5,10 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 
+import org.json.JSONObject;
+
+import java.util.Map;
+
 public abstract class ContextAnalytics implements Analytics {
     protected final Application context;
 
@@ -36,4 +40,22 @@ public abstract class ContextAnalytics implements Analytics {
     public void initialize() {
 
     }
+
+    /**
+     * used by moenagage
+     * @param medium
+     */
+    public void sendRegistrationStartEvent(String medium){}
+
+    public void sendRegisterEvent(String fullName, String mobileNo){}
+
+    public void setUserData(Map<String, Object> value, final String source){}
+
+    public void sendEvent(JSONObject data, final String eventName){}
+
+    public void sendEvent(Map<String, Object> data, final String eventName){}
+
+    public void logoutEvent(){}
+
+    public void setPushPreference(boolean status) {}
 }

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.appsflyer.AFInAppEventType;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -101,6 +102,7 @@ import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSou
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse;
@@ -525,7 +527,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         pdt.addProduct(product.getProduct());
 
         UnifyTracking.eventPDPDetail(viewListener.getActivityContext(), pdt);
-        TrackingUtils.sendMoEngageOpenProductEvent(viewListener.getActivityContext(), successResult);
+
+
+        sendMoEngageOpenProductEvent(viewListener.getActivityContext(), successResult);
 
         try {
             if (successResult.getShopInfo().getShopIsOfficial() == 1) {
@@ -540,6 +544,48 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             CommonUtils.dumper("GAv4 error " + e.getMessage());
         }
 
+    }
+
+    private void sendMoEngageOpenProductEvent(Context context, ProductDetailData productData){
+        Map<String, Object> value = new HashMap<>();
+        if (productData.getBreadcrumb().size() > 1) {
+            value.put(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+            value.put(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+            value.put(
+                    AppEventTracking.MOENGAGE.CATEGORY,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
+                            .getDepartmentName()
+            );
+            value.put(
+                    AppEventTracking.MOENGAGE.CATEGORY_ID,
+                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
+                            .getDepartmentId()
+            );
+        } else if (productData.getBreadcrumb().size() == 1) {
+            value.put(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+            value.put(AppEventTracking.MOENGAGE.CATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
+        }
+
+        if (productData.getInfo() != null) {
+            value.put(AppEventTracking.MOENGAGE.PRODUCT_NAME, MethodChecker.fromHtml(productData.getInfo().getProductName()).toString());
+            value.put(AppEventTracking.MOENGAGE.PRODUCT_ID, productData.getInfo().getProductId() + "");
+            value.put(AppEventTracking.MOENGAGE.PRODUCT_URL, productData.getInfo().getProductUrl());
+
+            if (productData.getProductImages() != null
+                    && productData.getProductImages().size() > 0
+                    && productData.getProductImages().get(0) != null) {
+                value.put(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, productData.getProductImages().get(0).getImageSrc());
+            }
+            value.put(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPriceUnformatted());
+        }
+
+        if (productData.getShopInfo() != null) {
+            value.put(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, productData.getShopInfo().getShopIsOfficial() == 1);
+            value.put(AppEventTracking.MOENGAGE.SHOP_ID, productData.getShopInfo().getShopId());
+            value.put(AppEventTracking.MOENGAGE.SHOP_NAME, productData.getShopInfo().getShopName());
+        }
+
+        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.OPEN_PRODUCTPAGE);
     }
 
     @Override

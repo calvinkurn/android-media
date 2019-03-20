@@ -11,15 +11,20 @@ import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.track.TrackApp;
+
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,7 +84,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                     @Override
                     public void onClick(View view) {
                         trackingEnhanceEccommerce(view.getContext(), hotListModel);
-                        TrackingUtils.sendMoEngageClickHotListEvent(view.getContext(), hotListModel);
+                        sendMoEngageClickHotListEvent(view.getContext(), hotListModel);
                         hotList.moveToOtherActivity(hotListModel);
                     }
                 });
@@ -88,6 +93,16 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 super.onBindViewHolder(viewHolder, position);
                 break;
         }
+    }
+
+    public void sendMoEngageClickHotListEvent(Context context, HotListModel hotListModel) {
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.LOGIN_STATUS, RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login(),
+                AppEventTracking.MOENGAGE.HOTLIST_NAME, hotListModel.getHotListName(),
+                AppEventTracking.MOENGAGE.HOTLIST_ID, hotListModel.getHotListId()
+        );
+        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.CLICK_HOTLIST);
+
     }
 
     private void trackingEnhanceEccommerce(Context context, HotListModel model) {

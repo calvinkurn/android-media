@@ -22,8 +22,10 @@ import android.view.MotionEvent;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.moe.pushlibrary.PayloadBuilder;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -84,6 +86,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -136,6 +139,7 @@ import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.DataMapper;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -480,6 +484,21 @@ import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_UNIQUE_ID;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_BDAY;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_EMAIL;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_FIRST_NAME;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_MOBILE;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_NAME;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_ID;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_NAME;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_SCORE;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.TOPADS_AMT;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
@@ -1007,7 +1026,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void setPromoPushPreference(Boolean newValue) {
-        TrackingUtils.setMoEngagePushPreference(this, newValue);
+        TrackApp.getInstance().getMoEngage().setPushPreference(newValue);
     }
 
     @Override
@@ -1862,7 +1881,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendMoEngageOpenShopEventTracking(String screenName) {
-        TrackingUtils.sendMoEngageCreateShopEvent(ConsumerRouterApplication.this, screenName);
+        Map<String, Object> value = DataLayer.mapOf(AppEventTracking.MOENGAGE.SCREEN_NAME, screenName,
+                AppEventTracking.MOENGAGE.USER_ID, legacySessionHandler().getLoginID(),
+                AppEventTracking.MOENGAGE.EMAIL, legacySessionHandler().getEmail(),
+                AppEventTracking.MOENGAGE.MOBILE_NUM, legacySessionHandler().getPhoneNumber(),
+                AppEventTracking.MOENGAGE.APP_VERSION, String.valueOf(com.tokopedia.abstraction.common.utils.GlobalConfig.VERSION_CODE),
+                AppEventTracking.MOENGAGE.PLATFORM, "android"
+        );
+        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.OPEN_SHOP_SCREEN);
     }
 
     @Override
@@ -3037,7 +3063,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendOpenHomeEvent() {
-        TrackingUtils.sendMoEngageOpenHomeEvent(getAppContext());
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.LOGIN_STATUS, legacySessionHandler().isV4Login()
+        );
+        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
     }
 
     @Override
@@ -3047,7 +3076,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendMoEngageOpenFeedEvent(boolean isEmptyFeed) {
-        TrackingUtils.sendMoEngageOpenFeedEvent(getAppContext(), isEmptyFeed);
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.LOGIN_STATUS, legacySessionHandler().isV4Login(),
+                AppEventTracking.MOENGAGE.IS_FEED_EMPTY, isEmptyFeed
+        );
+        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.OPEN_FEED);
     }
 
     @Override
@@ -3074,7 +3107,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new GlobalCacheManager().deleteAll();
         Router.clearEtalase(activity);
         DbManagerImpl.getInstance().removeAllEtalase();
-        TrackingUtils.eventMoEngageLogoutUser(activity);
+        TrackApp.getInstance().getMoEngage().logoutEvent();
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
         notif.dismissAllActivedNotifications();
@@ -3157,7 +3190,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
-            TrackingUtils.eventMoEngageLogoutUser(this);
+            TrackApp.getInstance().getMoEngage().logoutEvent();
             SessionHandler.clearUserData(activity);
             NotificationModHandler notif = new NotificationModHandler(activity);
             notif.dismissAllActivedNotifications();
@@ -3219,7 +3252,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendMoengageEvents(String eventName, Map<String, Object> values) {
-        TrackingUtils.sendMoEngageEvents(this, eventName, values);
+        PayloadBuilder builder = new PayloadBuilder();
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            builder.putAttrObject(entry.getKey(), entry.getValue());
+        }
+        TrackApp.getInstance().getMoEngage().sendEvent(builder.build(), eventName);
     }
 
     @Override
@@ -3365,27 +3402,30 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                           String phoneNumber, boolean isGoldMerchant,
                                           String shopName, String shopId, boolean hasShop,
                                           String loginMethod) {
-        TrackingUtils.setMoEUserAttributesLogin(getAppContext(),
-                userId,
-                name,
-                email,
-                phoneNumber,
-                isGoldMerchant,
-                shopName,
-                shopId,
-                hasShop,
-                loginMethod
-        );
+
+        Map<String, Object> value = new HashMap<>();
+        value.put(USER_ATTRIBUTE_UNIQUE_ID, userId);
+        value.put(USER_ATTRIBUTE_USER_NAME, name);
+        value.put(USER_ATTRIBUTE_USER_EMAIL, email);value.put(IS_GOLD_MERCHANT, isGoldMerchant);
+        value.put(SHOP_NAME, shopName);
+        value.put(SHOP_ID, shopId);
+        TrackApp.getInstance().getMoEngage().setUserData(value, "LOGIN");
+
+        Map<String, Object> value2 = new HashMap<>();
+        value.put(AppEventTracking.MOENGAGE.USER_ID, userId);
+        value.put(AppEventTracking.MOENGAGE.MEDIUM, loginMethod);
+        value.put(AppEventTracking.MOENGAGE.EMAIL, email);
+        TrackApp.getInstance().getMoEngage().sendEvent(value2, AppEventTracking.EventMoEngage.LOGIN);
     }
 
     @Override
     public void eventMoRegistrationStart(String label) {
-        UnifyTracking.eventMoRegistrationStart(getAppContext(), label);
+        TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(label);
     }
 
     @Override
     public void eventMoRegister(String name, String phone) {
-        UnifyTracking.eventMoRegister(getAppContext(), name, phone);
+        TrackApp.getInstance().getMoEngage().sendRegisterEvent(name, phone);
     }
 
     @Override
@@ -3579,7 +3619,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendMoEngageReferralScreenOpen(Context context, String screenName) {
-        TrackingUtils.sendMoEngageReferralScreenOpen(context, screenName);
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.SCREEN_NAME, screenName
+        );
+        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SCREEN_LAUNCHED);
     }
 
     @Override

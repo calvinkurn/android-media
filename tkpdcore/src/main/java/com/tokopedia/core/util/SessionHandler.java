@@ -41,6 +41,10 @@ import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 @Deprecated
 /**
@@ -615,7 +619,7 @@ public class SessionHandler {
     public void forceLogout() {
         if(context != null) {
             PasswordGenerator.clearTokenStorage(context);
-            TrackingUtils.eventMoEngageLogoutUser(context);
+            TrackApp.getInstance().getMoEngage().logoutEvent();
         }
         clearUserData();
     }
