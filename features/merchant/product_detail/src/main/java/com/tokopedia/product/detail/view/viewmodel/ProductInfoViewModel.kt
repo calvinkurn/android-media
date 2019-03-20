@@ -30,10 +30,7 @@ import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.review.Review
-import com.tokopedia.product.detail.data.model.shop.ShopBadge
-import com.tokopedia.product.detail.data.model.shop.ShopCodStatus
-import com.tokopedia.product.detail.data.model.shop.ShopCommitment
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.product.detail.data.model.shop.*
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
@@ -167,7 +164,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
                 ImageReviewGqlResponse::class.java, imageReviewParams)
 
-        val productPPParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_SHOP_ID to shopId, PARAM_USER_ID to userSessionInterface.userId, PARAM_)
+        //TODO add more request params if required
+        val productPPParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_SHOP_ID to shopId,
+                PARAM_USER_ID to userSessionInterface.userId, PARAM_CONDITION to "new")
+        val productPurchaseProtectionRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_PP],
+                ProductPurchaseProtectionInfo::class.java, productPPParams)
 
         fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {
             val images = SparseArray<ImageReviewGqlResponse.Image>()
@@ -207,7 +208,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         val requests = mutableListOf(shopRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
-                helpfulReviewRequest, latestTalkRequest, otherProductRequest, shopCodRequest)
+                helpfulReviewRequest, latestTalkRequest, otherProductRequest, shopCodRequest, productPurchaseProtectionRequest)
 
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
@@ -460,6 +461,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         private const val PARAM_PAGE = "page"
         private const val PARAM_USER_ID = "user_id"
         private const val PARAM_TOTAL = "total"
+        private const val PARAM_CONDITION = "condition"
 
         private const val DEFAULT_NUM_VOUCHER = 3
         private const val DEFAULT_NUM_IMAGE_REVIEW = 4
