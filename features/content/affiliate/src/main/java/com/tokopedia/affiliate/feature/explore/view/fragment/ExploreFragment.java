@@ -421,6 +421,7 @@ public class ExploreFragment
         dropKeyboard();
         searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
+        bottomActionView.show(false);
         populateLocalDataToAdapter();
     }
 
@@ -630,6 +631,7 @@ public class ExploreFragment
     @Override
     public void onSuccessGetData(List<Visitable<?>> products, String cursor, boolean isSearch) {
         exploreParams.setLoading(false);
+        bottomActionView.show(false);
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -698,6 +700,7 @@ public class ExploreFragment
     @Override
     public void onButtonEmptySearchClicked() {
         presenter.unsubscribeAutoComplete();
+        bottomActionView.show();
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
@@ -709,6 +712,7 @@ public class ExploreFragment
     @Override
     public void onEmptySearchResult() {
         presenter.unsubscribeAutoComplete();
+        bottomActionView.hide();
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
