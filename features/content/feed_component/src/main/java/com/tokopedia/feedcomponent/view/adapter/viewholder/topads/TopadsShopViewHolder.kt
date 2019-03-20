@@ -35,8 +35,13 @@ class TopadsShopViewHolder(v: View,
         itemView.topadsShop.bind(element.dataList)
         itemView.topadsShop.setItemClickListener(this)
 
-        itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
-        itemView.cardTitle.listener = cardTitleListener
+        if (element.title.text.isNotEmpty()) {
+            itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
+            itemView.cardTitle.listener = cardTitleListener
+        } else{
+            itemView.cardTitle.visibility = View.GONE
+        }
+
     }
 
     override fun bind(element: TopadsShopViewModel?, payloads: MutableList<Any>) {
