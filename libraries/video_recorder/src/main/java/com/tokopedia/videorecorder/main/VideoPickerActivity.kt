@@ -175,7 +175,8 @@ class VideoPickerActivity: BaseSimpleActivity(),
 
                     override fun onProgress(message: String?) {
                         super.onProgress(message)
-                        //showing progress dialog
+                        //@TODO(showing progress dialog)
+                        showToast(applicationContext, "loading...${message.toString()}")
                     }
                 })
             }
