@@ -5,6 +5,7 @@ import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
 import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel
 import com.tokopedia.affiliate.feature.explore.SECTION_ANNOUNCEMENT
 import com.tokopedia.affiliate.feature.explore.SECTION_FILTER
+import com.tokopedia.affiliate.feature.explore.SECTION_POPULAR
 import com.tokopedia.affiliate.feature.explore.SECTION_RECOMMENDATION
 import com.tokopedia.affiliate.feature.explore.data.pojo.section.ExplorePageSection
 import com.tokopedia.affiliate.feature.explore.data.pojo.section.ExploreSectionResponse
@@ -26,6 +27,7 @@ class ExploreSectionMapper @Inject constructor() : Func1<GraphqlResponse, List<V
                 SECTION_ANNOUNCEMENT -> sections.add(mapAnnouncement(it))
                 SECTION_FILTER -> sections.add(mapFilter(it))
                 SECTION_RECOMMENDATION -> sections.add(mapRecommendation(it))
+                SECTION_POPULAR -> sections.add(mapPopularProfile(it))
             }
         }
         return sections
@@ -65,5 +67,13 @@ class ExploreSectionMapper @Inject constructor() : Func1<GraphqlResponse, List<V
                 recommendationList,
                 ExploreTitleViewModel(section.title, section.subtitle)
         )
+    }
+
+    private fun mapPopularProfile(section: ExplorePageSection): PopularProfileViewModel {
+        val filters: MutableList<PopularProfileChildViewModel> = arrayListOf()
+        section.items.forEach {
+            filters.add(PopularProfileChildViewModel(it.title, it.image, it.appLink))
+        }
+        return PopularProfileViewModel(filters, ExploreTitleViewModel(section.title, section.subtitle))
     }
 }

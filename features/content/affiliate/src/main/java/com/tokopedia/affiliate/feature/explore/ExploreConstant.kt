@@ -6,4 +6,4 @@ package com.tokopedia.affiliate.feature.explore
 const val SECTION_ANNOUNCEMENT = "announcement"
 const val SECTION_FILTER = "filter"
 const val SECTION_RECOMMENDATION = "recommendation"
-const val SECTION_POPULAR = "popular_curation"
+const val SECTION_POPULAR = "popular_curator"
