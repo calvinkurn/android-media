@@ -439,7 +439,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         addToCart(true, onFinish = {
             onFinishAddToCart(it)
             activity?.run {
-                val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build()))
+                val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
                 startActivity(intent)
             }
         }, onRetryWhenError = {
