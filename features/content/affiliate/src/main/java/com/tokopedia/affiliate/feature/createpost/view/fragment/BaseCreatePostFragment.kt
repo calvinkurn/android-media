@@ -341,7 +341,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun goToVideoPicker() {
         activity?.let {
             startActivityForResult(
-                    CreatePostVideoPickerActivity.getInstance(it),
+                    CreatePostVideoPickerActivity.getInstance(it,
+                            viewModel.fileImageList.isNotEmpty()),
                     REQUEST_VIDEO_PICKER)
         }
     }
