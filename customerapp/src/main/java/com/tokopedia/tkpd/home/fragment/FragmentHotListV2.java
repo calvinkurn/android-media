@@ -328,9 +328,8 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
         } else {
             Context context = getActivity();
             if (context != null) {
-                RouteManager.route(context,
-                        UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
-                                urlParser.getDepIDfromURI(context)));
+                RouteManager.route(context,ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                                urlParser.getDepIDfromURI(context));
             }
 
         }

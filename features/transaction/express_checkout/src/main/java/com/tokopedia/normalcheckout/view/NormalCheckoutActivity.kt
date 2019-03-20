@@ -23,6 +23,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
         const val EXTRA_PRODUCT_IMAGE = "product_image"
         const val EXTRA_ACTION = "action"
+        const val EXTRA_SHOP_TYPE = "shop_type"
+        const val EXTRA_SHOP_NAME = "shop_name"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
 
@@ -38,7 +40,9 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
                       @ProductAction action: Int = ATC_AND_BUY,
                       placeholderProductImage: String? = "",
                       trackerAttribution: String? = "",
-                      trackerListName: String? = ""): Intent {
+                      trackerListName: String? = "",
+                      shopType:String? = "",
+                      shopName:String? = ""): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(EXTRA_SHOP_ID, shopId)
                 putExtra(EXTRA_PRODUCT_ID, productId)
@@ -49,6 +53,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
                 putExtra(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
                 putExtra(TRACKER_ATTRIBUTION, trackerAttribution)
                 putExtra(TRACKER_LIST_NAME, trackerListName)
+                putExtra(EXTRA_SHOP_TYPE, shopType)
+                putExtra(EXTRA_SHOP_NAME, shopName)
             }
         }
     }
@@ -70,7 +76,9 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
                 getInt(EXTRA_ACTION),
                 getString(EXTRA_PRODUCT_IMAGE),
                 getString(TRACKER_ATTRIBUTION),
-                getString(TRACKER_LIST_NAME))
+                getString(TRACKER_LIST_NAME),
+                getString(EXTRA_SHOP_TYPE),
+                getString(EXTRA_SHOP_NAME))
         }
         return Fragment()
     }

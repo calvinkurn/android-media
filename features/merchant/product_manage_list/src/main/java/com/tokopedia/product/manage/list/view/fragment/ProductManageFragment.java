@@ -462,8 +462,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
      */
     private void goToPDP(String productId) {
         if (getContext() != null){
-            RouteManager.route(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }
 

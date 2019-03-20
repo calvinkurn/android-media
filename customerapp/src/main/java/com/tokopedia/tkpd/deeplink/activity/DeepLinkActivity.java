@@ -241,8 +241,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
         if (getApplication() instanceof PdpRouter) {
-            RouteManager.route(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId()));
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId());
         }
     }
 

@@ -118,9 +118,8 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
         if (pathSegmentList.size() > 1) {
             String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
             String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
-            Intent intent = RouteManager.getIntent(this,
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
-                            shopDomain, productKey));
+            Intent intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                    shopDomain, productKey);
             if (intent != null) {
                 startActivity(intent);
             } else {

@@ -31,7 +31,7 @@ object RestUtil {
         }
 
         return Retrofit.Builder()
-                .baseUrl("http://tokopedia.com/")
+                .baseUrl("https://tokopedia.com/")
                 .addConverterFactory(StringResponseConverter())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())

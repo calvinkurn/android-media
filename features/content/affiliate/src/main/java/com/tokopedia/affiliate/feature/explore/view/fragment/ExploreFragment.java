@@ -57,7 +57,7 @@ import com.tokopedia.affiliate.util.AffiliateHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -430,10 +430,9 @@ public class ExploreFragment
         if (isCanDoAction) {
             isCanDoAction = false;
             if (getContext()!= null) {
-                RouteManager.route(
-                        getContext(),
-                        UriUtil.buildUri(ApplinkConst.AFFILIATE_PRODUCT, model.getProductId())
-                );
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId());
+                intent.putExtra("is_from_explore_affiliate", true);
+                startActivity(intent);
             }
         }
     }

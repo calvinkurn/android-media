@@ -131,8 +131,7 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
 
         private Intent getProductIntent(String productId){
             if (itemView.getContext() != null) {
-                return RouteManager.getIntent(itemView.getContext(),
-                        UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+                return RouteManager.getIntent(itemView.getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
             } else {
                 return null;
             }
