@@ -70,11 +70,6 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     @Override
-    public String getId() {
-        return "";
-    }
-
-    @Override
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         PayloadBuilder builder = new PayloadBuilder();
         for (Map.Entry<String, Object> entry : eventValue.entrySet()) {
