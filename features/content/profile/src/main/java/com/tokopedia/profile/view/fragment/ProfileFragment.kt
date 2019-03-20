@@ -638,26 +638,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
-        if (context != null) {
-            val menus = Menus(context!!)
-            val menusList = ArrayList<Menus.ItemMenus>()
-            if (reportable) {
-                menusList.add(
-                        Menus.ItemMenus(
-                                getString(R.string.profile_feed_report),
-                                -1
-                        )
-                )
-            }
-            menus.itemMenuList = menusList
-            menus.setActionText(getString(R.string.profile_feed_cancel))
-            menus.setOnActionClickListener { v -> menus.dismiss() }
-            menus.setOnItemMenuClickListener { itemMenus, pos ->
-                if (itemMenus.title == getString(R.string.profile_feed_report)) {
+        context?.let {
+            val menus = createBottomMenu(it, deletable, reportable, false, object: PostMenuListener{
+                override fun onDeleteClicked() {
+                    createDeleteDialog(postId, postId).show()
+                }
+
+                override fun onReportClick() {
                     goToContentReport(postId)
                 }
-                menus.dismiss()
-            }
+
+                override fun onEditClick() {
+
+                }
+            })
             menus.show()
         }
     }
@@ -921,10 +915,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
-                    toolbar.visibility = View.VISIBLE
-                } else {
-                    toolbar.visibility = View.GONE
+                try {
+                    toolbar.let {
+                        if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+                            it.visibility = View.VISIBLE
+                        } else {
+                            it.visibility = View.GONE
+                        }
+                    }
+                } catch (e: IllegalStateException) {
+
                 }
             }
         })
@@ -935,7 +935,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (!selfProfile) {
             iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
             iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
-            action = shareLinkClickListener(element.link, SOURCE_PROFILE_FOOTER)
+            action = shareLinkClickListener(element.link, SOURCE_PROFILE_HEADER)
         } else {
             iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
             iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
@@ -1170,9 +1170,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         )
         when (source) {
             SOURCE_PROFILE_FOOTER ->
-                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-            SOURCE_PROFILE_HEADER ->
                 profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+            SOURCE_PROFILE_HEADER ->
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
         }
     }
 
@@ -1337,11 +1337,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToContentReport(contentId: Int) {
         if (context != null) {
-            val intent = ContentReportActivity.createIntent(
-                    context!!,
-                    contentId
-            )
-            startActivityForResult(intent, OPEN_CONTENT_REPORT)
+            if (userSession.isLoggedIn) {
+                val intent = ContentReportActivity.createIntent(
+                        context!!,
+                        contentId
+                )
+                startActivityForResult(intent, OPEN_CONTENT_REPORT)
+            } else {
+                goToLogin()
+            }
         }
     }
 
