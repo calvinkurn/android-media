@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -72,7 +73,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 deviceAttr.setRam(diagnostics.getRam());
                 deviceAttr.setStorage(diagnostics.getStorage());
                 deviceDiagInput.setDeviceAttr(deviceAttr);
-                deviceDiagInput.setDeviceId(activityWeakReference.get().getIntent().getStringExtra(TradeInParams.PARAM_DEVICE_ID));
+                deviceDiagInput.setDeviceId(diagnostics.getImei());
                 deviceDiagInput.setDeviceReview(diagnostics.getReviewDetails());
                 deviceDiagInput.setNewPrice(activityWeakReference.get().getIntent().getIntExtra(TradeInParams.PARAM_NEW_PRICE, 0));
                 deviceDiagInput.setOldPrice(diagnostics.getTradeInPrice());
@@ -100,6 +101,14 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                                 Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
                                 finalPriceIntent.putExtras(inData);
                                 activityWeakReference.get().startActivityForResult(finalPriceIntent, 10101);
+                            }
+                            else{
+                                List<GraphqlError> errors = graphqlResponse.getError(DeviceDiagInputResponse.class);
+                                if(errors.get(0).getMessage().contains("duplicate key value")){
+                                    Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
+                                    finalPriceIntent.putExtras(inData);
+                                    activityWeakReference.get().startActivityForResult(finalPriceIntent, 10101);
+                                }
                             }
                         }
 

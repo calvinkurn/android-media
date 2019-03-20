@@ -76,7 +76,7 @@ public class FinalPriceViewModel extends ViewModel implements LifecycleObserver 
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
