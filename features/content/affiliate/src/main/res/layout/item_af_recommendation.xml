@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_24"
     android:orientation="vertical">
 
     <com.tokopedia.affiliate.common.widget.ExploreTitleView
@@ -15,8 +16,11 @@
         android:id="@+id/cardsRv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:orientation="horizontal"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:reverseLayout="false"
-        tools:listitem="@layout/item_af_recommendation_child"/>
+        tools:listitem="@layout/item_af_recommendation_child" />
 </LinearLayout>

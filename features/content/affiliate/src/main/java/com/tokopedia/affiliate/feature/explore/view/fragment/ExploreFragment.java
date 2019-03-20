@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.explore.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -227,6 +228,7 @@ public class ExploreFragment
         });
         rvExplore.setLayoutManager(layoutManager);
         rvExplore.addOnScrollListener(getScrollListener());
+        rvExplore.addItemDecoration(getItemDecoration());
 
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         rvExplore.setAdapter(adapter);
@@ -360,6 +362,25 @@ public class ExploreFragment
                     btnBackToTop.hide();
                 }
 
+            }
+        };
+    }
+
+    private RecyclerView.ItemDecoration getItemDecoration() {
+        return new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                       RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = parent.getChildAdapterPosition(view);
+                Visitable visitable = adapter.getData().get(position);
+                if (visitable instanceof ExploreProductViewModel) {
+                    if (position % 2 == 0) {
+                        outRect.left = (int) getResources().getDimension(R.dimen.dp_4);
+                    } else {
+                        outRect.right = (int) getResources().getDimension(R.dimen.dp_4);
+                    }
+                }
             }
         };
     }
