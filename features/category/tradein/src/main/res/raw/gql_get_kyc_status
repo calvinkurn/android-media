@@ -1,5 +1,5 @@
-query kycStatus($arguments:Int){
-  kycStatus(projectID:$arguments){
+query kycStatus($projectID:Int){
+  kycStatus(projectID:$projectID){
     Message
     Detail{
       IsSuccess
