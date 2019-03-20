@@ -1573,27 +1573,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartPromoUseVoucherMerchantPromoClicked(String shopId) {
-        /*if (getFragmentManager() != null) {
-            MerchantVoucherListBottomsheetParamData data = new MerchantVoucherListBottomsheetParamData.BundleBuilder()
-                    .shopId(shopId)
-                    .checkoutType("ocs")
-                    .build();
-            MerchantVoucherListBottomSheetFragment.newInstance(data)
-                    .show(getFragmentManager(), null);
-        }*/
-    }
-
-    /*@Override
-    public void onCartPromoCancelVoucherPromoClicked(PromoData cartPromo,
-                                                     int position) {
-        shipmentPresenter.cancelAutoApplyCoupon();
-        if (isToogleYearEndPromoOn()) {
-            shipmentAdapter.cancelAllCourierPromo();
-        }
-    }*/
-
-    @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
         shipmentPresenter.cancelAutoApplyCoupon("");
         if (isToogleYearEndPromoOn()) {

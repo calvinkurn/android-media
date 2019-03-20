@@ -25,7 +25,7 @@ class CheckPromoStackingCodeUseCase @Inject constructor (@ApplicationContext pri
         checkPromoParam.promo = checkPromoFirstStepParam
         val jsonTreeCheckoutRequest = Gson().toJsonTree(checkPromoParam)
         val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
-        variables.put("param", jsonObjectCheckoutRequest)
+        variables.put("params", jsonObjectCheckoutRequest)
     }
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {

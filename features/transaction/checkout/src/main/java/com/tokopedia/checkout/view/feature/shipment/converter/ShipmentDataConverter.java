@@ -82,10 +82,6 @@ public class ShipmentDataConverter {
         return recipientAddress;
     }
 
-    private PromoStackingData createPromoStackingDataMerchantModel() {
-
-    }
-
     public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
@@ -101,6 +97,14 @@ public class ShipmentDataConverter {
                     shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                     shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                             .get(addressIndex).getUserAddress().getAddressId());
+
+
+                    for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
+                        if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
+                            shipmentCartItemModel.setPromoMerchantData(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                        }
+                    }
+
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop,
                             cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
@@ -117,14 +121,6 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                 shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                         .get(0).getUserAddress().getAddressId());
-                List<VoucherOrdersItemUiModel> listVoucherOrdersItem = cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders();
-                for (VoucherOrdersItemData voucherOrdersItemData : listVoucherOrdersItem) {
-                    if (voucherOrdersItemData.getType().equalsIgnoreCase("merchant_voucher")) {
-                        shipmentCartItemModel.setPromoMerchantData(voucherOrdersItemData);
-                    }
-                }
-
-                shipmentCartItemModel.setPromoMerchantData(cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders());
 
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);

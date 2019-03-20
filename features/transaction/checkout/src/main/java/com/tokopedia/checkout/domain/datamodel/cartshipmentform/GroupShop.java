@@ -26,6 +26,8 @@ public class GroupShop implements Parcelable {
     private String dropshipperName;
     private String dropshipperPhone;
     private boolean useInsurance;
+    private String cartString;
+    private boolean hasPromoList;
 
     public Shop getShop() {
         return shop;
@@ -123,6 +125,14 @@ public class GroupShop implements Parcelable {
         this.useInsurance = useInsurance;
     }
 
+    public String getCartString() { return cartString; }
+
+    public void setCartString(String cartString) { this.cartString = cartString; }
+
+    public boolean isHasPromoList() { return hasPromoList; }
+
+    public void setHasPromoList(boolean hasPromoList) { this.hasPromoList = hasPromoList; }
+
     public GroupShop() {
     }
 
@@ -145,6 +155,8 @@ public class GroupShop implements Parcelable {
         dest.writeString(dropshipperName);
         dest.writeString(dropshipperPhone);
         dest.writeByte(this.useInsurance ? (byte) 1 : (byte) 0);
+        dest.writeString(cartString);
+        dest.writeByte(this.hasPromoList ? (byte) 1 : (byte) 0);
     }
 
     protected GroupShop(Parcel in) {
@@ -160,6 +172,8 @@ public class GroupShop implements Parcelable {
         this.dropshipperName = in.readString();
         this.dropshipperPhone = in.readString();
         this.useInsurance = in.readByte() != 0;
+        this.cartString = in.readString();
+        this.hasPromoList = in.readByte() != 0;
     }
 
     public static final Creator<GroupShop> CREATOR = new Creator<GroupShop>() {
