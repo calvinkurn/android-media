@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlResponse, ResponseGetPromoStackFirstUiModel> {
     private val STATUS_OK = "OK"
+    private val STATUS_ERROR = "ERROR"
 
     override fun call(t: GraphqlResponse?): ResponseGetPromoStackFirstUiModel {
         var status = ""
@@ -15,12 +16,11 @@ class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlResponse
         val response = t?.getData<ResponseGetPromoStackFirst?>(ResponseGetPromoStackFirst::class.java)
         response?.let { responseGetPromoStackFirst ->
             responseGetPromoStackFirst.getPromoStackFirst.let {
+                status = it?.status ?: STATUS_ERROR
                 when (it?.status) {
                     STATUS_OK -> {
-                        status = it.status
                         data = mapData(it.data)
                     }
-                    else -> println("not succeed")
                 }
             }
         }

@@ -57,6 +57,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
@@ -73,6 +74,7 @@ import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackFirstUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -596,11 +598,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
 
         if (getFragmentManager() != null) {
-            MerchantVoucherListBottomSheetFragment.newInstance(
+            showMerchantVoucherListBottomsheet(
                     Integer.parseInt(shopGroupDataList.get(shopPosition).getShopId()),
                     shopGroupDataList.get(shopPosition).getCartString(),
                     checkPromoFirstStepParam
-            ).show(getFragmentManager(), null);
+            );
 
             // test clash bottomsheet
             /*ClashBottomSheetFragment bottomSheet = ClashBottomSheetFragment.newInstance();
@@ -1863,13 +1865,32 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
     }
 
+    private void showMerchantVoucherListBottomsheet(int shopId, String cartString, CheckPromoFirstStepParam checkPromoFirstStepParam) {
+        MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, checkPromoFirstStepParam);
+        merchantVoucherListBottomSheetFragment.setActionListener(this);
+        merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
+    }
+
     @Override
     public void onClashCheckPromoFirstStep() {
         // Todo : Show clash bottomsheet
     }
 
     @Override
-    public void onSuccessCheckPromoFirstStep() {
-        // Todo : update cart item
+    public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackFirstUiModel responseGetPromoStackFirstUiModel) {
+        // Todo : check promo state of each shop group, check global state
+        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
+        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
+
+    }
+
+    @Override
+    public void onErrorCheckPromoFirstStep(@NonNull String message) {
+        if (TextUtils.isEmpty(message)) {
+            message = "Terjadi kesalahan. Ulangi beberapa saat lagi.";
+        }
+        if (getView() != null) {
+            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
+        }
     }
 }

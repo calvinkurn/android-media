@@ -1,5 +1,6 @@
 package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -81,8 +82,9 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                     if (isViewAttached) {
                         view.hideProgressLoading()
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
-                        if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                            view.onErrorCheckPromoFirstStep(responseGetPromoStack.data.message.text)
+                        if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                            var message = responseGetPromoStack.data.message.text
+                            view.onErrorCheckPromoFirstStep(message)
                         } else {
                             view.onSuccessCheckPromoFirstStep(responseGetPromoStack)
                         }
