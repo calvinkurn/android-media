@@ -50,10 +50,12 @@ class ItemTabBusinessViewModel @Inject constructor(
                 val graphqlRequest = GraphqlRequest(
                         rawQuery,
                         HomeWidget.Data::class.java,
-                        params,
+                        params
+                )
+                graphqlRepository.getReseponse(
+                        listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 )
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }
 
             if (data.getError(HomeWidget.Data::class.java) == null ||
