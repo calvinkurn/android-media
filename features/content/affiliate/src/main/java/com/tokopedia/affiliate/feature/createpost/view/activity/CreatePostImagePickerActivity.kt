@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaModel
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -42,8 +43,9 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
     companion object {
         private const val ARGS_SHOW_WARNING = "show_warning"
 
-        fun getInstance(context: Context, selectedImageList: ArrayList<String>,
+        fun getInstance(context: Context, selectedImageList: List<MediaModel>,
                         maxImage: Int, showWarningDialog: Boolean): Intent {
+            val imagePathList = selectedImageList.map { it.path }
             val builder = ImagePickerBuilder(
                     context.getString(R.string.title_af_image_picker),
                     intArrayOf(TYPE_GALLERY, TYPE_CAMERA),
@@ -56,7 +58,7 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
                             intArrayOf(ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE),
                             false,
                             null),
-                    ImagePickerMultipleSelectionBuilder(selectedImageList, null, 0, maxImage))
+                    ImagePickerMultipleSelectionBuilder(imagePathList, null, 0, maxImage))
             val intent = Intent(context, CreatePostImagePickerActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(ImagePickerActivity.EXTRA_IMAGE_PICKER_BUILDER, builder)

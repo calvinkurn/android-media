@@ -27,6 +27,8 @@ import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAda
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaModel
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -119,8 +121,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
+                val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
+
                 viewModel.fileImageList.clear()
-                viewModel.fileImageList.addAll(imageList)
+                viewModel.fileImageList.addAll(images)
 
                 if (imageList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
@@ -131,8 +135,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
             REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
+                val videos = videoList.map { MediaModel(it, MediaType.VIDEO) }
+
                 viewModel.fileImageList.clear()
-                viewModel.fileImageList.addAll(videoList)
+                viewModel.fileImageList.addAll(videos)
 
                 if (videoList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
@@ -175,7 +181,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
             feedContentForm.media.media.forEach {
-                viewModel.urlImageList.add(it.mediaUrl)
+                viewModel.urlImageList.add(MediaModel(it.mediaUrl, MediaType.IMAGE))
             }
         }
 
@@ -249,7 +255,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.productIdList.removeAll { it == relatedProductItem.id }
         }
 
-        viewModel.urlImageList.removeAll { it == relatedProductItem.image }
+        viewModel.urlImageList.removeAll { it.path == relatedProductItem.image }
 
         updateThumbnail()
         updateButton()
@@ -418,7 +424,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            thumbnail.loadImageRounded(viewModel.completeImageList.first(), 25f)
+            thumbnail.loadImageRounded(viewModel.completeImageList.first().path?: "", 25f)
             carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
         } else {
             thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)

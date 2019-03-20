@@ -14,19 +14,22 @@ import com.tokopedia.videorecorder.main.VideoPickerActivity
 class CreatePostVideoPickerActivity: VideoPickerActivity() {
 
     override fun onVideoDoneClicked() {
-        val isImageExist = intent?.getBooleanExtra(CreatePostVideoPickerActivity.IMAGE_EXIST, false)?: false
+        val isImageExist = intent?.getBooleanExtra(
+                CreatePostVideoPickerActivity.IMAGE_EXIST,
+                false)?: false
+
         if (isImageExist) {
             val dialog = Dialog(this, Dialog.Type.PROMINANCE)
             dialog.setTitle(getString(R.string.af_title_update_post))
             dialog.setDesc(getString(R.string.af_message_update_post))
-            dialog.setBtnOk(getString(R.string.cancel))
-            dialog.setBtnCancel(getString(R.string.af_continue))
+            dialog.setBtnCancel(getString(R.string.cancel))
+            dialog.setBtnOk(getString(R.string.af_continue))
             dialog.setOnOkClickListener{
                 dialog.dismiss()
+                super.onVideoDoneClicked()
             }
             dialog.setOnCancelClickListener{
                 dialog.dismiss()
-                super.onVideoDoneClicked()
             }
             dialog.setCancelable(true)
             dialog.show()

@@ -12,20 +12,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.tokopedia.design.viewpager.WrapContentViewPager
-            android:id="@+id/mediaViewPager"
+        <RelativeLayout
+            android:id="@+id/mediaContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/btnPlay"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+            <com.tokopedia.design.viewpager.WrapContentViewPager
+                android:id="@+id/mediaViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
-            app:layout_constraintBottom_toBottomOf="@+id/mediaViewPager"
+            app:layout_constraintBottom_toBottomOf="@+id/mediaContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:tabBackground="@drawable/affiliate_tab_selector"
@@ -40,8 +55,8 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:src="@drawable/ic_system_action_delete_grayscale_32"
-            app:layout_constraintEnd_toEndOf="@+id/mediaViewPager"
-            app:layout_constraintTop_toTopOf="@+id/mediaViewPager" />
+            app:layout_constraintEnd_toEndOf="@+id/mediaContainer"
+            app:layout_constraintTop_toTopOf="@+id/mediaContainer" />
 
         <TextView
             android:id="@+id/mainImageText"
@@ -60,7 +75,7 @@
             app:layout_constraintEnd_toStartOf="@+id/mainImageIcon"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mediaViewPager"
+            app:layout_constraintTop_toBottomOf="@+id/mediaContainer"
             tools:textColor="@color/black_38" />
 
         <ImageView

@@ -15,14 +15,14 @@ data class CreatePostViewModel(
         var allowVideo: Boolean = false,
         val productIdList: MutableList<String> = arrayListOf(),
         val adIdList: MutableList<String> = arrayListOf(),
-        val fileImageList: MutableList<String> = arrayListOf(),
-        val urlImageList: MutableList<String> = arrayListOf(),
+        val fileImageList: MutableList<MediaModel> = arrayListOf(),
+        val urlImageList: MutableList<MediaModel> = arrayListOf(),
         val relatedProducts: MutableList<RelatedProductItem> = arrayListOf(),
         var videoPath : String = ""
 ) : Parcelable {
-    val completeImageList: ArrayList<String>
+    val completeImageList: ArrayList<MediaModel>
         get() {
-            val completeImageList = ArrayList<String>()
+            val completeImageList = ArrayList<MediaModel>()
             completeImageList.addAll(fileImageList)
             completeImageList.addAll(urlImageList)
             return completeImageList
@@ -39,8 +39,8 @@ data class CreatePostViewModel(
             1 == source.readInt(),
             source.createStringArrayList() ?: arrayListOf(),
             source.createStringArrayList() ?: arrayListOf(),
-            source.createStringArrayList() ?: arrayListOf(),
-            source.createStringArrayList() ?: arrayListOf(),
+            source.createTypedArrayList(MediaModel.CREATOR) ?: arrayListOf(),
+            source.createTypedArrayList(MediaModel.CREATOR) ?: arrayListOf(),
             source.createTypedArrayList(RelatedProductItem.CREATOR) ?: arrayListOf(),
             source.readString() ?: ""
 
@@ -59,8 +59,8 @@ data class CreatePostViewModel(
         writeInt((if (allowVideo) 1 else 0))
         writeStringList(productIdList)
         writeStringList(adIdList)
-        writeStringList(fileImageList)
-        writeStringList(urlImageList)
+        writeList(fileImageList)
+        writeList(urlImageList)
         writeTypedList(relatedProducts)
         writeString(videoPath)
 
