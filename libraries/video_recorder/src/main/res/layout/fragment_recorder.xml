@@ -49,7 +49,7 @@
                 android:layout_margin="6dp"
                 android:textColor="@android:color/white"
                 tools:text="01:00"
-                android:text="@string/duration_default" />
+                android:text="@string/vidpick_duration_default" />
 
         </LinearLayout>
 
