@@ -33,9 +33,6 @@ import java.util.concurrent.TimeUnit;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
-/**
- * formerly {@link GTMContainer}
- */
 public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
