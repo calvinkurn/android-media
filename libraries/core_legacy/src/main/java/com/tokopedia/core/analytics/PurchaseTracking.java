@@ -7,6 +7,7 @@ import com.appsflyer.AFInAppEventType;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +93,7 @@ public class PurchaseTracking extends TrackingUtils {
             afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         }
 
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
-        getAFEngine(context).sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 }

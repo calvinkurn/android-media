@@ -58,4 +58,12 @@ public abstract class ContextAnalytics implements Analytics {
     public void logoutEvent(){}
 
     public void setPushPreference(boolean status) {}
+
+    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {}
+
+    public void getAdsID(final AFAdsIDCallback callback) {}
+
+    public void sendDeeplinkData(Activity activity) {}
+
+    public String getUniqueId(){return null;}
 }

@@ -59,7 +59,7 @@ public class TrackingUtils extends TrackingConfig {
         if (tag.equals(AppScreen.IDENTIFIER_HOME_ACTIVITY)) {
             afValue.put(AFInAppEventParameterName.PARAM_1, CommonUtils.getUniqueDeviceID(context));
         }
-        getAFEngine(context).sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
     }
 
     public static String getNetworkSpeed(Context context) {
@@ -140,7 +140,7 @@ public class TrackingUtils extends TrackingConfig {
             afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
         }
 
-        getAFEngine(context).sendTrackEvent(AppScreen.convertAFFragmentEvent(tag), afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFFragmentEvent(tag), afValue);
     }
 
     public static void eventError(Context context,String className, String errorMessage) {
@@ -176,7 +176,7 @@ public class TrackingUtils extends TrackingConfig {
             listViewEvent.put(AFInAppEventParameterName.SUCCESS, "fail");
         }
 
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.SEARCH, listViewEvent);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.SEARCH, listViewEvent);
     }
 
     public static void sendGTMEvent(Context context, Map<String, Object> dataLayers) {
@@ -184,7 +184,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void sendAppsFlyerDeeplink(Activity activity) {
-        getAFEngine(activity).sendDeeplinkData(activity);
+        TrackApp.getInstance().getAppsFlyer().sendDeeplinkData(activity);
     }
 
     public static String getClientID(Context context) {
@@ -192,7 +192,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static String getAfUniqueId(Context context) {
-        return getAFEngine(context).getUniqueId();
+        return TrackApp.getInstance().getAppsFlyer().getUniqueId();
     }
 
     public static void eventClickHotlistProductFeatured(Context context, Hotlist hotlist) {

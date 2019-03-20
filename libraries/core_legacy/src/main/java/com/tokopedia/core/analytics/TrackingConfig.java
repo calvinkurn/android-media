@@ -2,9 +2,7 @@ package com.tokopedia.core.analytics;
 
 import android.content.Context;
 
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.GTMContainer;
-import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
 
 /**
@@ -20,14 +18,5 @@ public abstract class TrackingConfig {
      */
     static IGTMContainer getGTMEngine(Context context) {
         return GTMContainer.newInstance(context);
-    }
-
-    /**
-     * Get Appsflyer Container Instance
-     *
-     * @return Appsflyer Instance
-     */
-    static IAppsflyerContainer getAFEngine(Context context) {
-        return Jordan.init(context).getAFContainer();
     }
 }

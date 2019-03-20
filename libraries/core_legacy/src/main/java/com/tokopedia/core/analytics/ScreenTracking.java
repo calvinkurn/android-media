@@ -17,6 +17,8 @@ import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.AFAdsIDCallback;
 //import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
 import java.util.HashMap;
@@ -76,7 +78,7 @@ public class ScreenTracking extends TrackingUtils {
     public static void sendAFGeneralScreenEvent(Context context, String screenName) {
         Map<String, Object> afValue = new HashMap<>();
         afValue.put(AFInAppEventParameterName.DESCRIPTION, screenName);
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.CONTENT_VIEW, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, afValue);
     }
 
     public static void eventAuthScreen(Context context, Map<String, String> customDimension, String screenName) {
@@ -91,7 +93,7 @@ public class ScreenTracking extends TrackingUtils {
         if (appContext instanceof AbstractionRouter) {
             CacheManager cacheManager = ((AbstractionRouter) appContext).getGlobalCacheManager();
             final AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(cacheManager);
-            getAFEngine(appContext).getAdsID(new AppsflyerContainer.AFAdsIDCallback() {
+            TrackApp.getInstance().getAppsFlyer().getAdsID(new AFAdsIDCallback() {
                 @Override
                 public void onGetAFAdsID(String adsID) {
                     String productID = data.getInfo().getProductId() + "";
@@ -118,7 +120,7 @@ public class ScreenTracking extends TrackingUtils {
                     }
 
                     CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
-                    getAFEngine(appContext).sendTrackEvent(eventName, values);
+                    TrackApp.getInstance().getAppsFlyer().sendTrackEvent(eventName, values);
                 }
 
                 @Override

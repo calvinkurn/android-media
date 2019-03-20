@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
 
@@ -685,7 +686,7 @@ public class UnifyTracking extends TrackingUtils {
         eventVal.put("os", "Android");
         eventVal.put(CUSTOMER_USER_ID,userId);
         eventVal.put(REGSITRATION_METHOD,methodName);
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
     }
 
     public static void eventClickAddProduct(Context context, String eventCategory, String eventLabel) {

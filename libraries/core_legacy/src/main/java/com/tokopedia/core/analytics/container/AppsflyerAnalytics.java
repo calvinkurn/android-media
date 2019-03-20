@@ -19,6 +19,7 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.io.IOException;
@@ -162,7 +163,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().sendDeepLinkData(activity);
     }
 
-    public void getAdsID(final AppsflyerContainer.AFAdsIDCallback callback) {
+    public void getAdsID(final AFAdsIDCallback callback) {
             AdvertisingIdClient.Info adInfo = null;
             try {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());

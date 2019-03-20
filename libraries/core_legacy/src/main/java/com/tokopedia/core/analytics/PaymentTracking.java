@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
 
@@ -50,12 +51,12 @@ public class PaymentTracking extends TrackingUtils {
             afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         }
 
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
-        getAFEngine(context).sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 
     public static void atcAF(Context context,Map<String, Object> values) {
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.ADD_TO_CART, values);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.ADD_TO_CART, values);
     }
 
     public static void checkoutEventAppsflyer(Context context,ProductCartPass param) {
@@ -67,7 +68,7 @@ public class PaymentTracking extends TrackingUtils {
         values.put(AFInAppEventParameterName.QUANTITY, param.getOrderQuantity());
         values.put(AFInAppEventParameterName.PRICE, param.getPrice());
         values.put(Jordan.AF_SHOP_ID,param.getShopId());
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
     }
 
     public static void eventCartCheckoutStep1(Context context,Checkout checkout) {
