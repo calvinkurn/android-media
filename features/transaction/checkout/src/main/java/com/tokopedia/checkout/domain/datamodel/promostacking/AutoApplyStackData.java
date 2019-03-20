@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.datamodel.cartlist;
+package com.tokopedia.checkout.domain.datamodel.promostacking;
 
 import android.os.Parcel;
 import android.os.Parcelable;

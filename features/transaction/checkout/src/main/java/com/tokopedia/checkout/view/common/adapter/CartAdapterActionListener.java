@@ -1,12 +1,10 @@
 package com.tokopedia.checkout.view.common.adapter;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
+import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
-import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -24,7 +22,7 @@ public interface CartAdapterActionListener {
 
     // void onCartPromoUseVoucherMerchantPromoClicked(PromoDataMerchant cartPromoMerchant, int position);
 
-    void onCartPromoUseVoucherMerchantPromoClickedTest();
+    void onCartPromoUseVoucherMerchantPromoClickedTest(int position);
 
     void onCartPromoUseVoucherMerchantPromoClicked(String shopId);
 

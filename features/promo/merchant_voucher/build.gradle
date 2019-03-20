@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
 
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
     
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

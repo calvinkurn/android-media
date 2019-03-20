@@ -6,7 +6,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.*
 import rx.functions.Func1
 import javax.inject.Inject
 
-class CheckPromoStackingCodeMapper@Inject constructor() : Func1<GraphqlResponse, ResponseGetPromoStackFirstUiModel> {
+class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlResponse, ResponseGetPromoStackFirstUiModel> {
     private val STATUS_OK = "OK"
 
     override fun call(t: GraphqlResponse?): ResponseGetPromoStackFirstUiModel {
@@ -145,7 +145,7 @@ class CheckPromoStackingCodeMapper@Inject constructor() : Func1<GraphqlResponse,
     }
 
     fun mapClashing(clash: ClashingInfoDetail): ClashingInfoDetailUiModel {
-        val listOptions = ArrayList<Any>()
+        val listOptions = ArrayList<VoucherOrdersItemUiModel>()
         var clashingInfoDetailUiModel = ClashingInfoDetailUiModel()
         clash.isClashedPromos?.let { isClashed ->
             clash.clashMessage?.let { clashMessage ->
@@ -153,7 +153,7 @@ class CheckPromoStackingCodeMapper@Inject constructor() : Func1<GraphqlResponse,
                     clash.option.let { options ->
                         options?.forEach {
                             if (it != null) {
-                                listOptions.add(it)
+                                mapVoucherOrders(it)
                             }
                         }
                         clashingInfoDetailUiModel = ClashingInfoDetailUiModel(

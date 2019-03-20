@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 
@@ -24,10 +25,13 @@ import retrofit2.Converter;
 public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            boolean couponActive, String additionalStringData, int pageTracking);
+            boolean couponActive, String additionalStringData, int pageTracking,
+            String cartString, CheckPromoFirstStepParam checkPromoFirstStepParam
+    );
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking);
+            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking,
+            CheckPromoFirstStepParam checkPromoFirstStepParam);
 
     Intent checkoutModuleRouterGetProductDetailIntent(String productId);
 
@@ -67,9 +71,10 @@ public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetRecentViewIntent();
 
-    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
+    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, CheckPromoFirstStepParam checkPromoFirstStepParam);
 
-    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
+    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking,
+                                              CheckPromoFirstStepParam checkPromoFirstStepParam);
 
     Intent getCodPageIntent(Context context, Data data);
 

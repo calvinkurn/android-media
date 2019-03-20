@@ -41,6 +41,7 @@ import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
+import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -524,13 +525,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         tvShopName.setText(shipmentCartItemModel.getShopName());
 
-        int shopId = shipmentCartItemModel.getShopId();
         tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
             @Override
             public void onClickUsePromo() {
                 // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
-                // mActionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
-                mActionListener.onCartPromoUseVoucherMerchantPromoClicked(shopId+"");
+                mActionListener.onCartPromoUseVoucherMerchantPromoClickedTest(getAdapterPosition());
             }
 
             @Override
@@ -552,10 +551,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         /*if(promoDataMerchant.getState() != TickerMerchantPromoCheckoutView.State.FAILED){
             actionListener.onCartPromoMerchantTrackingImpression(promoDataMerchant, position);
         }*/
-        // tickerMerchantPromoCheckoutView.setState(promoDataMerchant.getState());
-        // tickerMerchantPromoCheckoutView.setDesc(promoDataMerchant.getDescription());
-        // tickerMerchantPromoCheckoutView.setTitle(promoDataMerchant.getTitle());
-
+        tickerPromoStackingCheckoutView.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(shipmentCartItemModel.getPromoMerchantData().getMessage().getState()));
+        tickerPromoStackingCheckoutView.setDesc(shipmentCartItemModel.getPromoMerchantData().getInvoiceDescription());
+        tickerPromoStackingCheckoutView.setTitle(shipmentCartItemModel.getPromoMerchantData().getMessage().getText());
         tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
         tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
     }

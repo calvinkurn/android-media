@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.datamodel.cartlist;
+package com.tokopedia.checkout.domain.datamodel.promostacking;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -23,8 +23,53 @@ public class VoucherOrdersItemData implements Parcelable {
     private String messageText;
     private String variant;
     private String titleDescription;
+    private MessageData messageData;
 
     public VoucherOrdersItemData() {
+    }
+
+    protected VoucherOrdersItemData(Parcel in) {
+        code = in.readString();
+        success = in.readByte() != 0;
+        uniqueId = in.readString();
+        cartId = in.readInt();
+        shopId = in.readInt();
+        isPO = in.readInt();
+        addressId = in.readInt();
+        type = in.readString();
+        cashbackWalletAmount = in.readInt();
+        discountAmount = in.readInt();
+        invoiceDescription = in.readString();
+        state = in.readString();
+        messageText = in.readString();
+        variant = in.readString();
+        titleDescription = in.readString();
+        messageData = in.readParcelable(MessageData.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(code);
+        dest.writeByte((byte) (success ? 1 : 0));
+        dest.writeString(uniqueId);
+        dest.writeInt(cartId);
+        dest.writeInt(shopId);
+        dest.writeInt(isPO);
+        dest.writeInt(addressId);
+        dest.writeString(type);
+        dest.writeInt(cashbackWalletAmount);
+        dest.writeInt(discountAmount);
+        dest.writeString(invoiceDescription);
+        dest.writeString(state);
+        dest.writeString(messageText);
+        dest.writeString(variant);
+        dest.writeString(titleDescription);
+        dest.writeParcelable(messageData, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<VoucherOrdersItemData> CREATOR = new Creator<VoucherOrdersItemData>() {
@@ -155,45 +200,11 @@ public class VoucherOrdersItemData implements Parcelable {
         this.titleDescription = titleDescription;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public MessageData getMessageData() {
+        return messageData;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(code);
-        dest.writeByte((byte) (success ? 1 : 0));
-        dest.writeString(uniqueId);
-        dest.writeInt(cartId);
-        dest.writeInt(shopId);
-        dest.writeInt((isPO));
-        dest.writeInt(addressId);
-        dest.writeString(type);
-        dest.writeInt(cashbackWalletAmount);
-        dest.writeInt(discountAmount);
-        dest.writeString(invoiceDescription);
-        dest.writeString(state);
-        dest.writeString(messageText);
-        dest.writeString(variant);
-        dest.writeString(titleDescription);
-    }
-
-    protected VoucherOrdersItemData(Parcel in) {
-        code = in.readString();
-        success = in.readByte() != 0;
-        uniqueId = in.readString();
-        cartId = in.readInt();
-        shopId = in.readInt();
-        isPO = in.readInt();
-        addressId = in.readInt();
-        type = in.readString();
-        cashbackWalletAmount = in.readInt();
-        discountAmount = in.readInt();
-        invoiceDescription = in.readString();
-        state = in.readString();
-        messageText = in.readString();
-        variant = in.readString();
-        titleDescription = in.readString();
+    public void setMessageData(MessageData messageData) {
+        this.messageData = messageData;
     }
 }

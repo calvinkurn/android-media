@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem;
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
@@ -126,7 +125,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         shopBadge = in.readString();
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
-        promoMerchantData = in.readParcelable(VoucherOrdersItemUiModel.class.getClassLoader());
+        promoMerchantData = in.readParcelable(VoucherOrdersItem.class.getClassLoader());
     }
 
     @Override
@@ -234,7 +233,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
-        newShipmentCartItemModel.setPromoStackingData(shipmentCartItemModel.getPromoStackingData());
+        newShipmentCartItemModel.setPromoMerchantData(shipmentCartItemModel.getPromoMerchantData());
 
         return newShipmentCartItemModel;
     }
@@ -567,11 +566,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.addressId = addressId;
     }
 
-    public PromoStackingData getPromoMerchantData() {
+    public VoucherOrdersItemUiModel getPromoMerchantData() {
         return promoMerchantData;
     }
 
-    public void setPromoMerchantData(PromoStackingData promoMerchantData) {
+    public void setPromoMerchantData(VoucherOrdersItemUiModel promoMerchantData) {
         this.promoMerchantData = promoMerchantData;
     }
 

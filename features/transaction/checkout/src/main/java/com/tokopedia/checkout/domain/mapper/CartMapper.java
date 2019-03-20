@@ -4,8 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyStackData;
+import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -15,9 +14,8 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
+import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
-import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
@@ -107,21 +105,16 @@ public class CartMapper implements ICartMapper {
             shopGroupData.setCartString(shopGroup.getCartString());
             shopGroupData.setHasPromoList(shopGroup.getHasPromoList());
 
-            VoucherOrdersItemData voucherOrdersItemData;
-            // for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
-                // kasi kondisi if unique_id == cart_string
-
-            if (cartDataListResponse.getAutoapplyStack() != null) {
-                if (cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
-                    if (cartDataListResponse.getAutoapplyStack().getVoucherOrders().size() > 0) {
-                        VoucherOrdersItem voucherOrdersItem = cartDataListResponse.getAutoapplyStack().getVoucherOrders().get(0);
-                        voucherOrdersItemData = new VoucherOrdersItemData();
+            if (cartDataListResponse.getAutoapplyStack() != null && cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
+                for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
+                    if (voucherOrdersItem.getUniqueId().equals(shopGroup.getCartString())) {
+                        VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
                         voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
                         voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
                         voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
                         voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
-                        // voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
-                        voucherOrdersItemData.setShopId(shopGroup.getShop().getShopId());
+                        voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
+//                        voucherOrdersItemData.setShopId(shopGroup.getShop().getShopId());
                         voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
                         voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
                         voucherOrdersItemData.setType(voucherOrdersItem.getType());
@@ -132,6 +125,7 @@ public class CartMapper implements ICartMapper {
                         voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
                         voucherOrdersItemData.setVariant(voucherOrdersItem.getType());
                         shopGroupData.setVoucherOrdersItemData(voucherOrdersItemData);
+                        break;
                     }
                 }
             }

@@ -3,9 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartData;
-import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 
 import java.util.ArrayList;
 import java.util.List;

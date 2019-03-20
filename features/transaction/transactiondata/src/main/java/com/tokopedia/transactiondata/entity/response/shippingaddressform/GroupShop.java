@@ -38,6 +38,12 @@ public class GroupShop {
     @SerializedName("is_insurance")
     @Expose
     private boolean isInsurance;
+    @SerializedName("cart_string")
+    @Expose
+    private String cartString;
+    @SerializedName("has_promo_list")
+    @Expose
+    private boolean hasPromoList;
 
     public List<String> getErrors() {
         return errors;
@@ -74,4 +80,8 @@ public class GroupShop {
     public boolean isInsurance() {
         return isInsurance;
     }
+
+    public String getCartString() { return cartString; }
+
+    public boolean isHasPromoList() { return hasPromoList; }
 }
