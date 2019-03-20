@@ -430,7 +430,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                             override fun call(viewModel: FlightJourneyViewModel?): FlightBookingCartData {
                                 val flightBookingCartData = FlightBookingCartData()
                                 val flightDetailViewModel = FlightDetailViewModel().build(viewModel)
-                                flightDetailViewModel.build(view.getCurrentBookingParamViewModel().getSearchParam())
+                                flightDetailViewModel.build(view.getCurrentBookingParamViewModel().searchParam)
                                 val priceViewModel = view.getPriceViewModel()
 
                                 if (priceViewModel.comboKey != null && priceViewModel.comboKey.isNotEmpty()) {
@@ -563,8 +563,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                         return Observable.just(it).zipWith(flightSearchJourneyByIdUseCase.createObservable(
                                 flightSearchJourneyByIdUseCase.createRequestParams(view.getReturnTripId())),
                                 object : Func2<FlightBookingCartData, FlightJourneyViewModel, FlightBookingCartData> {
-                                    override fun call(t1: FlightBookingCartData?, t2: FlightJourneyViewModel?): FlightBookingCartData {
-                                        val flightDetailViewModel = FlightDetailViewModel()
+                                    override fun call(t1: FlightBookingCartData, t2: FlightJourneyViewModel): FlightBookingCartData {
+
+                                        val flightDetailViewModel = FlightDetailViewModel().build(t2)
                                         flightDetailViewModel.build(view.getCurrentBookingParamViewModel().searchParam)
                                         val priceViewModel = view.getPriceViewModel()
                                         if (priceViewModel.comboKey != null && priceViewModel.comboKey.isNotEmpty()) {
