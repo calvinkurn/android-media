@@ -44,8 +44,7 @@ public class RouteManager {
     public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
         // Temporary solution: Only internal scheme to build internal Uri
         String applink = UriUtil.buildUri(applinkPattern, parameter);
-        Uri uri = Uri.parse(applink);
-        if (!ApplinkConstInternal.INTERNAL_SCHEME.equals(uri.getScheme())) {
+        if (!applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME)) {
             // this will bring user to DeeplinkHandlerActivity
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
         } else {
