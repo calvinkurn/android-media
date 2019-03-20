@@ -64,12 +64,14 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         baseCartData.id = view.getCurrentCartPassData().id
         baseCartData.newFarePrices = view.getCurrentCartPassData().newFarePrices
         val amenityViewModels = arrayListOf<FlightBookingAmenityViewModel>()
-        for (passenger in view.getCurrentBookingParamViewModel().passengerViewModels) {
-            for (luggageAmenities in passenger.flightBookingLuggageMetaViewModels) {
-                amenityViewModels.addAll(luggageAmenities.amenities)
-            }
-            for (mealAmenities in passenger.flightBookingMealMetaViewModels) {
-                amenityViewModels.addAll(mealAmenities.amenities)
+        if (view.getCurrentBookingParamViewModel().passengerViewModels != null) {
+            for (passenger in view.getCurrentBookingParamViewModel().passengerViewModels) {
+                for (luggageAmenities in passenger.flightBookingLuggageMetaViewModels) {
+                    amenityViewModels.addAll(luggageAmenities.amenities)
+                }
+                for (mealAmenities in passenger.flightBookingMealMetaViewModels) {
+                    amenityViewModels.addAll(mealAmenities.amenities)
+                }
             }
         }
         baseCartData.amenities = amenityViewModels
