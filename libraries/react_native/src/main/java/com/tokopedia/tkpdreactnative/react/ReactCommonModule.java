@@ -141,7 +141,7 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getStatusBarHeight(Promise promise) {
         int result = 25;
-        if(getCurrentActivity() != null) {
+        if (getCurrentActivity() != null) {
             int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 result = (int) (context.getResources().getDimensionPixelSize(resourceId) / context.getResources().getDisplayMetrics().density);
