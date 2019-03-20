@@ -3,7 +3,6 @@ package com.tokopedia.sellerapp.dashboard.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
@@ -43,9 +42,8 @@ public class SellerDashboardGMCommonModule {
 
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                                      AbstractionRouter abstractionRouter,
-                                                      UserSession userSession) {
-        return new GMAuthInterceptor(context, abstractionRouter, userSession);
+                                                      AbstractionRouter abstractionRouter) {
+        return new GMAuthInterceptor(context, abstractionRouter);
     }
 
     @SellerDashboardGMQualifier
