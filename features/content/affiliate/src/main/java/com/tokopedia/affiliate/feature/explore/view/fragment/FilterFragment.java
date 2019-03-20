@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.explore.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -76,6 +77,14 @@ public class FilterFragment extends BaseDaggerFragment {
         adapter = new FilterAdapter(getFilterClickListener(), R.layout.item_explore_filter_detail);
         rvFilter.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         rvFilter.setAdapter(adapter);
+        rvFilter.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                       RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                outRect.bottom = (int) getResources().getDimension(R.dimen.dp_4);
+            }
+        });
         adapter.setList(filterList);
     }
 

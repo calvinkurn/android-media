@@ -15,7 +15,8 @@ import java.util.*
 /**
  * @author by yfsx on 07/01/19.
  */
-class FilterAdapter(private val filterClickedListener: OnFilterClickedListener, private val layout: Int) : RecyclerView.Adapter<FilterAdapter.Holder>() {
+class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
+                    private val layout: Int) : RecyclerView.Adapter<FilterAdapter.Holder>() {
 
     private var allFilterList: List<FilterViewModel> = ArrayList()
 
@@ -46,7 +47,8 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener, 
     }
 
     override fun getItemCount(): Int {
-        return if (layout == R.layout.item_explore_filter_child && allFilterList.size > MAX_CHIP) MAX_CHIP else allFilterList.size
+        return if (isFilterDetail() && allFilterList.size > MAX_CHIP) MAX_CHIP
+        else allFilterList.size
     }
 
     fun clearAllData() {
@@ -111,6 +113,10 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener, 
             }
         }
         return sortedList
+    }
+
+    private fun isFilterDetail(): Boolean {
+        return layout == R.layout.item_explore_filter_child
     }
 
     companion object {
