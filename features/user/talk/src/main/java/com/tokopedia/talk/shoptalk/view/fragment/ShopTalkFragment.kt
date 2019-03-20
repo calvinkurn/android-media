@@ -401,8 +401,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     private fun getProductIntent(productId: String): Intent? {
         return if (context != null) {
-            RouteManager.getIntent(context!!,
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId))
+            RouteManager.getIntent(context!!,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         } else {
             null
         }

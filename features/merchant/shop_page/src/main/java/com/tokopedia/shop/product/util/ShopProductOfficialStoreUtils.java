@@ -74,8 +74,7 @@ public class ShopProductOfficialStoreUtils {
                     break;
                 case URL_PATH_PRODUCT:
                     String productId = uri.getLastPathSegment();
-                    RouteManager.route(activity,
-                            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+                    RouteManager.route(activity,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
                     break;
                 case URL_PATH_PAGE:
                     params = getShopProductRequestModel(uri);

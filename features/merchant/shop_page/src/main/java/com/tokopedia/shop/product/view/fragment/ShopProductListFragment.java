@@ -557,9 +557,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             Bundle bundle = new Bundle();
             bundle.putString("tracker_attribution", attribution);
             bundle.putString("tracker_list_name", listNameOfProduct);
-            Intent intent = RouteManager.getIntent(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
-            return intent;
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }

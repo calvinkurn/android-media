@@ -21,7 +21,7 @@ public class UriUtil {
     public static String buildUri(@NonNull String uriPattern,
                                   String... parameter) {
         String result = uriPattern;
-        if (parameter != null) {
+        if (parameter != null && parameter.length > 0) {
             Pattern p = Pattern.compile("\\{(.*?)\\}");
             Matcher m = p.matcher(uriPattern);
             int i = 0;

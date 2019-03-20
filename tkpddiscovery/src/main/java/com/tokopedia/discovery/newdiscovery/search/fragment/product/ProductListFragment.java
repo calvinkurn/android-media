@@ -478,8 +478,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private Intent getProductIntent(String productId){
         if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }

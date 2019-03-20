@@ -43,6 +43,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewMod
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.logisticcommon.LogisticCommonConstant
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
@@ -109,7 +110,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var recyclerView: RecyclerView
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
-    private lateinit var tkpdProgressDialog: TkpdProgressDialog
+    private lateinit var tkpdProgressDialog: ProgressDialog
     private var trackerAttribution: String? = ""
     private var trackerListName: String? = ""
 

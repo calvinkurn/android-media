@@ -193,8 +193,7 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
 
         override fun onClick(v: View) {
             if (!GlobalConfig.isSellerApp()) {
-                RouteManager.route(context,
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, categoryId))
+                RouteManager.route(context,ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, categoryId)
             }
         }
     }

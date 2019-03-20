@@ -64,8 +64,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
             for (int i = 2; i < uriSegments.size(); i++) {
                 iden = iden + "_" + uriSegments.get(i);
             }
-            Intent moveIntent = RouteManager.getIntent(context,
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,iden));
+            Intent moveIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,iden);
             viewListener.navigateToActivity(moveIntent);
         }
     }

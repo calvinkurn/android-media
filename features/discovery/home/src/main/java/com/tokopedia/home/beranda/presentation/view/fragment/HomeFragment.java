@@ -1146,9 +1146,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (pathSegmentList.size() > 1) {
                 String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
                 String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
-                Intent intent = RouteManager.getIntent(context,
-                        UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
-                                shopDomain, productKey));
+                Intent intent = RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                                shopDomain, productKey);
                 if (intent != null) {
                     startActivity(intent);
                 } else {
@@ -1271,8 +1270,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private Intent getProductIntent(String productId) {
         if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }

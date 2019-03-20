@@ -41,8 +41,7 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouteManager.route(itemView.getContext(),
-                        UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(productId)));
+                RouteManager.route(itemView.getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(productId));
             }
         });
 

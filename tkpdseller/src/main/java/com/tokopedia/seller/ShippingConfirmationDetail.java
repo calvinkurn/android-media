@@ -168,8 +168,7 @@ ShippingConfirmationDetail extends TActivity {
     }
 
     private Intent getProductIntent(String productId){
-        return RouteManager.getIntent(this,
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+        return RouteManager.getIntent(this,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     private void initView(){

@@ -33,6 +33,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
                                                       private val activity: Activity? = null){
 
     var shopInfo: ShopInfo? = null
+    var productInfo: ProductInfo? = null
 
     companion object {
         private const val MAX_CHAR = 300
@@ -45,19 +46,16 @@ class PartialProductDescrFullView private constructor(private val view: View,
                 LinearLayoutManager.HORIZONTAL, false)
         view.youtube_scroll.addItemDecoration(SpaceItemDecoration(view.context.resources.getDimensionPixelSize(R.dimen.dp_16),
                 LinearLayoutManager.HORIZONTAL))
+        view.youtube_scroll.adapter = YoutubeThumbnailAdapter(productInfo?.videos?.toMutableList() ?: mutableListOf()){
+            _, index -> productInfo?.videos?.run { gotoVideoPlayer(this, index)}
+        }
     }
 
     fun renderData(data: ProductInfo){
         with(view){
-            if (data.videos.isNotEmpty()) {
-                youtube_scroll.adapter = YoutubeThumbnailAdapter(data.videos.toMutableList()){
-                    _, index -> gotoVideoPlayer(data.videos, index)
-                }
-                youtube_scroll.visibility = View.VISIBLE
-            } else {
-                youtube_scroll.visibility = View.GONE
-            }
-
+            productInfo = data
+            youtube_scroll.adapter.notifyDataSetChanged()
+            
             txt_weight.text = context.getString(R.string.template_weight, data.basic.weight.numberFormatted(),
                     if (data.basic.weightUnit.toLowerCase() == KG) LABEL_KG else LABEL_GRAM )
             txt_success_rate.text = String.format("%s%%", data.txStats.successRate.numberFormatted())
@@ -128,8 +126,8 @@ class PartialProductDescrFullView private constructor(private val view: View,
     private fun openCategory(category: Category.Detail) {
         if (GlobalConfig.isCustomerApp()) {
             RouteManager.route(view.context,
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
-                category.id))
+                ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                category.id)
         }
     }
 

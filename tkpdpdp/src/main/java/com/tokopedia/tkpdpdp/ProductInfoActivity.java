@@ -72,7 +72,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Deprecated
-    //@DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
     public static Intent getAffiliateIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         extras.putBoolean(KEY_FROM_EXPLORE_AFFILIATE, true);
@@ -90,7 +89,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
      * @param extras
      * @return
      */
-    //@DeepLink(Constants.Applinks.PRODUCT_INFO)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 

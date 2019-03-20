@@ -17,20 +17,26 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
  */
 open class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
 
+    lateinit var atcRequestParam:AtcRequestParam
+    var trackerAttribution:String? = null
+    var trackerListName:String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val extra = intent.extras
+        if (extra == null) {
+            finish()
+            return
+        }
+        atcRequestParam = extra.getParcelable(EXTRA_ATC_REQUEST) ?: AtcRequestParam()
+        trackerAttribution = extra.getString(TRACKER_ATTRIBUTION)
+        trackerListName = extra.getString(TRACKER_LIST_NAME)
         super.onCreate(savedInstanceState)
         val actionBar = supportActionBar
         actionBar?.setHomeAsUpIndicator(R.drawable.ic_close)
     }
 
     override fun getNewFragment(): Fragment {
-        val extra = intent.extras
-        if (extra!= null) {
-            return CheckoutVariantFragment.createInstance(extra[EXTRA_ATC_REQUEST] as AtcRequestParam,
-                extra.getString(TRACKER_ATTRIBUTION),extra.getString(TRACKER_LIST_NAME))
-        } else {
-            return Fragment()
-        }
+        return CheckoutVariantFragment.createInstance(atcRequestParam, trackerAttribution,trackerListName)
     }
 
     override fun finishWithResult(messages: String) {

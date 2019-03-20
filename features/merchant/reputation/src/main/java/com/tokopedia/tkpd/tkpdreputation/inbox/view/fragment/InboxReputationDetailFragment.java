@@ -447,8 +447,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetail(String productId, String productAvatar, String productName) {
         if (getContext()!= null) {
-            Intent intent = RouteManager.getIntent(getContext(),
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId));
+            Intent intent = RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
             getContext().startActivity(intent);
         }
     }

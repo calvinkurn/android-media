@@ -78,14 +78,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
+            val cacheStrategy = GraphqlCacheStrategy
+                .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             val data = withContext(Dispatchers.IO) {
                 val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
                     PARAM_SHOP_DOMAIN to productParams.shopDomain,
                     PARAM_PRODUCT_KEY to productParams.productName)
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO],
                     ProductInfo.Response::class.java, paramsInfo)
-                val cacheStrategy = GraphqlCacheStrategy
-                        .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             val productInfoP1 = ProductInfoP1()
@@ -102,14 +102,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 try {
                     val paramsVariant = mapOf(PARAM_PRODUCT_ID to productInfoP1.productInfo.basic.id.toString())
                     val graphqlVariantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT], ProductDetailVariantResponse::class.java, paramsVariant)
-                    val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                     graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy).getSuccessData<ProductDetailVariantResponse>()
                 } catch (t: Throwable) {
                     t
                 }
             }
-
-
 
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
                 productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price, forceRefresh)
