@@ -115,7 +115,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         //set default value
         progressBar.progress = 0
         var countDownMills = DURATION_MAX.toLong()
-        txtDuration.text = getString(R.string.duration_default)
+        txtDuration.text = getString(R.string.vidpick_duration_default)
 
         if (cameraView.isTakingVideo) {
             vwRecord.hide()
@@ -136,7 +136,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
                             activity?.runOnUiThread {
                                 val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
                                 val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
-                                txtDuration.text = getString(R.string.duration_format, formatter(minutes), formatter(seconds))
+                                txtDuration.text = getString(R.string.vidpick_duration_format, formatter(minutes), formatter(seconds))
                                 progressBar.progress += 1000
                                 countDownMills -= 1000
                             }

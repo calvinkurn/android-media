@@ -2,6 +2,7 @@ package com.tokopedia.videorecorder.main
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -64,6 +65,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     //ffmpeg
     private lateinit var ffmpeg: FFmpeg
 
+    private lateinit var progressDialog: ProgressDialog
+
     override fun getLayoutRes(): Int = R.layout.activity_video_picker
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +75,9 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         runtimePermission = RuntimePermission(this)
         runtimePermission.requestPermissionForRecord()
 
+        //init progress dialog
+        progressDialog = ProgressDialog(this)
+
         //init ffmpeg instance
         ffmpeg = FFmpeg.getInstance(this)
         ffmpeg.loadBinary(object : LoadBinaryResponseHandler() {})
@@ -79,7 +85,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         //support actionbar
         setSupportActionBar(toolbarVideoPicker)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.videopicker_title)
+        supportActionBar?.title = getString(R.string.vidpick_title)
 
         //initial of adapter for viewPager and tabPicker
         setupViewPager()
@@ -128,8 +134,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
                 supportMultipleSelection,
                 minImageResolution)
 
-        adapter.addFragment(videoPickerGallery, getString(R.string.menu_video_picker))
-        adapter.addFragment(VideoRecorderFragment(), getString(R.string.menu_recorder))
+        adapter.addFragment(videoPickerGallery, getString(R.string.vidpick_menu_video_picker))
+        adapter.addFragment(VideoRecorderFragment(), getString(R.string.vidpick_menu_recorder))
         return adapter
     }
 
@@ -165,18 +171,25 @@ open class VideoPickerActivity: BaseSimpleActivity(),
                 ffmpeg.execute(trimQuery, object : ExecuteBinaryResponseHandler() {
                     override fun onSuccess(message: String?) {
                         super.onSuccess(message)
+                        if (progressDialog.isShowing) {
+                            progressDialog.dismiss()
+                        }
                         onFinishPicked(resultFile)
                     }
 
                     override fun onFailure(message: String?) {
                         super.onFailure(message)
-                        showToast(applicationContext, getString(R.string.videopicker_error_message))
+                        if (progressDialog.isShowing) {
+                            progressDialog.dismiss()
+                        }
+                        showToast(applicationContext, getString(R.string.vidpick_error_message))
                     }
 
                     override fun onProgress(message: String?) {
                         super.onProgress(message)
                         //@TODO(showing progress dialog)
-                        showToast(applicationContext, "loading...${message.toString()}")
+                        progressDialog.setMessage(getString(R.string.vidpick_progress_loader))
+                        progressDialog.show()
                     }
                 })
             }
@@ -216,9 +229,9 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         tabPicker.hide()
         btnDone.show()
         if (isVideoSourcePicker) {
-            btnDeleteVideo.text = getString(R.string.videopicker_btn_back)
+            btnDeleteVideo.text = getString(R.string.vidpick_btn_back)
         } else {
-            btnDeleteVideo.text = getString(R.string.videopicker_btn_delete)
+            btnDeleteVideo.text = getString(R.string.vidpick_btn_delete)
         }
     }
 
