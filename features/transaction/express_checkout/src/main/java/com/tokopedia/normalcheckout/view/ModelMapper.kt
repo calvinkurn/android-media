@@ -131,21 +131,15 @@ object ModelMapper {
             else -> MAX_QUANTITY
         }
         productViewModel.productPrice = if (multiorigin != null && multiorigin.warehouseInfo.id.isNotBlank()){
-            if (productInfo.hasActiveCampaign && productInfo.campaign.discountedPrice > 0) {
-                ((100 - productInfo.campaign.percentage) * multiorigin.price).roundToInt()
-            } else {
-                multiorigin.price
-            }
+            multiorigin.price
+        } else if (productInfo.hasActiveCampaign && productInfo.campaign.discountedPrice > 0) {
+            productInfo.campaign.discountedPrice.roundToInt()
         } else {
-            if (productInfo.hasActiveCampaign && productInfo.campaign.discountedPrice > 0) {
-                productInfo.campaign.discountedPrice.roundToInt()
-            } else {
-                productInfo.basic.price.roundToInt()
-            }
+            productInfo.basic.price.roundToInt()
         }
 
         productViewModel.originalPrice = if (multiorigin != null && multiorigin.warehouseInfo.id.isNotBlank()){
-            multiorigin.price
+            productInfo.basic.price.roundToInt()
         } else if (productInfo.hasActiveCampaign && productInfo.campaign.originalPrice > 0) {
             productInfo.campaign.originalPrice.roundToInt()
         } else {

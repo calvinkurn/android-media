@@ -282,7 +282,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         var totalString = ""
         if (productInfo.campaign.activeAndHasId) {
             val discountedPrice = if (selectedwarehouse != null && selectedwarehouse.warehouseInfo.id.isNotBlank()){
-                ((100 - productInfo.campaign.percentage) * selectedwarehouse.price)
+                selectedwarehouse.price.toFloat()
             } else productInfo.campaign.discountedPrice
 
             totalString = CurrencyFormatUtil.convertPriceValueToIdrFormat(
