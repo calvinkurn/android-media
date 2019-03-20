@@ -538,6 +538,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         fetchFlightSearchData()
     }
 
+    fun refreshData() {
+        flightSearchPresenter.initialize(true)
+        resetDateAndReload()
+    }
+
     private fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
         val emptyResultViewModel = EmptyResultViewModel()
         emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
