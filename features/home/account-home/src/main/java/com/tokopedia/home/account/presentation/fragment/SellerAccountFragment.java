@@ -3,7 +3,6 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,9 +49,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Inject
     SellerAccount.Presenter presenter;
     private boolean isLoaded = false;
+//    private RemoteConfig remoteConfig;
 
-    public static Fragment newInstance() {
-        Fragment fragment = new SellerAccountFragment();
+    public static SellerAccountFragment newInstance() {
+        SellerAccountFragment fragment = new SellerAccountFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
@@ -100,9 +100,12 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         }
     }
 
+
     private void getData() {
+        String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                .new_query_saldo_balance);
         presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
-                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit));
+                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit), saldoQuery);
     }
 
     @Override

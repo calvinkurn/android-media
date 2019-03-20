@@ -6,7 +6,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -31,6 +30,10 @@ import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
 import com.tokopedia.imageuploader.domain.GenerateHostRepository;
 import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -64,9 +67,23 @@ public class ImageUploaderModule {
         this.progressListener = progressListener;
     }
 
+    @Provides
+    @ImageUploaderQualifier
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return ((NetworkRouter) context);
+    }
+
+    @Provides
+    @ImageUploaderQualifier
+    public FingerprintInterceptor provideFingerprintInterceptor(@ImageUploaderQualifier NetworkRouter networkRouter,
+                                                                @ImageUploaderQualifier UserSessionInterface userSessionInterface) {
+        return new FingerprintInterceptor(networkRouter, userSessionInterface);
+    }
+
     @ImageUploaderQualifier
     @Provides
     public OkHttpClient provideOkHttpClient(@ImageUploaderQualifier TkpdAuthInterceptor tkpdAuthInterceptor,
+                                            @ImageUploaderQualifier FingerprintInterceptor fingerprintInterceptor,
                                             @ImageUploaderQualifier OkHttpRetryPolicy retryPolicy,
                                             @ImageUploaderChuckQualifier Interceptor chuckInterceptor,
                                             @ImageUploaderQualifier HttpLoggingInterceptor loggingInterceptor,
@@ -74,6 +91,7 @@ public class ImageUploaderModule {
                                             @ImageUploaderQualifier CacheApiInterceptor cacheApiInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(tkpdAuthInterceptor);
+        builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(cacheApiInterceptor);
         builder.addInterceptor(errorHandlerInterceptor);
 
@@ -110,9 +128,8 @@ public class ImageUploaderModule {
     @ImageUploaderQualifier
     @Provides
     public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ImageUploaderQualifier Context context,
-                                                          @ImageUploaderQualifier AbstractionRouter abstractionRouter,
-                                                          @ImageUploaderQualifier UserSession userSession) {
-        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+                                                          @ImageUploaderQualifier AbstractionRouter abstractionRouter) {
+        return new TkpdAuthInterceptor(context, abstractionRouter);
     }
 
     @ImageUploaderQualifier
@@ -126,8 +143,8 @@ public class ImageUploaderModule {
 
     @ImageUploaderQualifier
     @Provides
-    public UserSession provideUserSession(@ImageUploaderQualifier AbstractionRouter abstractionRouter) {
-        return abstractionRouter.getSession();
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @ImageUploaderQualifier
@@ -144,6 +161,7 @@ public class ImageUploaderModule {
         }
         throw new RuntimeException("App should implement " + ImageUploaderRouter.class.getSimpleName());
     }
+
     @ImageUploaderAuthInterceptorQualifier
     @Provides
     public Interceptor provideAuthInterceptor(@ImageUploaderQualifier Context context) {
@@ -193,7 +211,7 @@ public class ImageUploaderModule {
     @Provides
     @ImageUploaderQualifier
     GenerateHostCloud provideGenerateHostCloud(@ImageUploaderQualifier GenerateHostApi generateHostApi,
-                                               @ImageUploaderQualifier UserSession userSession) {
+                                               @ImageUploaderQualifier UserSessionInterface userSession) {
         return new GenerateHostCloud(generateHostApi, userSession);
     }
 
@@ -212,8 +230,8 @@ public class ImageUploaderModule {
 
     @Provides
     @ImageUploaderQualifier
-    UploadImageDataSourceCloud provideUploadImageDataSourceCloud(@ImageUploaderQualifier Retrofit.Builder retrofit, @ImageUploaderQualifier OkHttpClient okHttpClient, @ImageUploaderQualifier UserSession userSession) {
-        return new UploadImageDataSourceCloud(retrofit, okHttpClient, userSession);
+    UploadImageDataSourceCloud provideUploadImageDataSourceCloud(@ImageUploaderQualifier Retrofit.Builder retrofit, @ImageUploaderQualifier OkHttpClient okHttpClient) {
+        return new UploadImageDataSourceCloud(retrofit, okHttpClient);
     }
 
     @Provides
@@ -230,7 +248,7 @@ public class ImageUploaderModule {
 
     @Provides
     @ImageUploaderQualifier
-    ImageUploaderUtils provideImageUploaderUtils(@ImageUploaderQualifier UserSession userSession) {
+    ImageUploaderUtils provideImageUploaderUtils(@ImageUploaderQualifier UserSessionInterface userSession) {
         return new ImageUploaderUtils(userSession);
     }
 

@@ -78,6 +78,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
 
         setRefundableInfo(flightJourneyViewModel);
         setSavingPrice(flightJourneyViewModel);
+        setDiscountPriceTag(flightJourneyViewModel);
         setArrivalAddDay(flightJourneyViewModel);
         setBestPairingPrice(flightJourneyViewModel);
         itemView.setOnClickListener(view -> onFlightSearchListener.onItemClicked(flightJourneyViewModel, getAdapterPosition()));
@@ -136,11 +137,18 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         if (flightJourneyViewModel.getBeforeTotal() != null &&
                 flightJourneyViewModel.getBeforeTotal().length() > 0) {
             savingPrice.setVisibility(View.VISIBLE);
-            discountTag.setVisibility(View.VISIBLE);
             savingPrice.setText(flightJourneyViewModel.getBeforeTotal());
         } else {
-            discountTag.setVisibility(View.GONE);
             savingPrice.setVisibility(View.GONE);
+        }
+    }
+
+    private void setDiscountPriceTag(FlightJourneyViewModel flightJourneyViewModel) {
+        if (flightJourneyViewModel.isShowSpecialPriceTag()) {
+            discountTag.setVisibility(View.VISIBLE);
+            discountTag.setText(flightJourneyViewModel.getSpecialTagText());
+        } else {
+            discountTag.setVisibility(View.GONE);
         }
     }
 

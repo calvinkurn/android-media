@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.product.detail.view.widget.SquareCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_0"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image_review"
+            tools:src="@color/grey_300"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"/>
+
+        <View android:id="@+id/overlay_see_all"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/light_primary"
+            android:visibility="gone"
+            android:alpha="0.7"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_see_all"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="wrap_content"
+            android:text="@string/label_see_all"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:weight="medium"
+            app:fontSize="micro"
+            app:textViewTheme="darkPrimary"/>
+
+    </FrameLayout>
+
+</com.tokopedia.product.detail.view.widget.SquareCardView>

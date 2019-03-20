@@ -15,8 +15,6 @@ import java.util.Map;
 
 public interface ShopModuleRouter {
 
-    Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
-
     Fragment getKolPostShopFragment(String shopId, String createPostUrl);
 
     void goToEditShop(Context context);
@@ -33,11 +31,7 @@ public interface ShopModuleRouter {
 
     void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel);
 
-    void goToProductDetail(Context context, String productId, String name, String displayedPrice, String imageUrl, String attribution, String listNameOfProduct);
-
     void goToWebview(Context context, String url);
-
-    void goToProductDetailById(Context activity, String productId);
 
     void goToProfileShop(Context context, String userId);
 

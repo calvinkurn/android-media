@@ -43,12 +43,13 @@ class PlaySprintSaleAnnouncementViewHolder(itemView: View, var listener: Chatroo
 
     override fun bind(element: SprintSaleAnnouncementViewModel) {
         val type = element.sprintSaleType.toLowerCase()
+
         ImageHandler.loadImageWithId(icon, getIcon(type))
 
         title.text = getTitle(type)
         title.setTextColor(getTitleTextColor(type))
 
-        if(element.listProducts.size == 0) {
+        if (element.listProducts.size == 0) {
             return
         }
 
@@ -62,25 +63,25 @@ class PlaySprintSaleAnnouncementViewHolder(itemView: View, var listener: Chatroo
     }
 
     private fun getIcon(voteType: String?): Int {
-        return when (voteType){
+        return when (voteType) {
             SprintSaleViewModel.TYPE_ACTIVE -> R.drawable.ic_sprint_sale_active
             SprintSaleViewModel.TYPE_FINISHED -> R.drawable.ic_sprint_sale_inactive
-            else -> 0
+            else -> R.drawable.ic_sprint_sale_inactive
         }
     }
 
     private fun getTitle(voteType: String?): CharSequence? {
-        return when (voteType){
+        return when (voteType) {
             SprintSaleViewModel.TYPE_ACTIVE -> itemView.context.getString(R.string.title_sprintsale_started)
-            SprintSaleViewModel.TYPE_FINISHED-> itemView.context.getString(R.string.title_sprintsale_finished)
+            SprintSaleViewModel.TYPE_FINISHED -> itemView.context.getString(R.string.title_sprintsale_finished)
             else -> null
         }
     }
 
     private fun getTitleTextColor(voteType: String?): Int {
-        return when (voteType){
+        return when (voteType) {
             SprintSaleViewModel.TYPE_ACTIVE -> ContextCompat.getColor(itemView.context, R.color.sprint_sale_start)
-            SprintSaleViewModel.TYPE_FINISHED-> ContextCompat.getColor(itemView.context, R.color.sprint_sale_end)
+            SprintSaleViewModel.TYPE_FINISHED -> ContextCompat.getColor(itemView.context, R.color.sprint_sale_end)
             else -> 0
         }
     }

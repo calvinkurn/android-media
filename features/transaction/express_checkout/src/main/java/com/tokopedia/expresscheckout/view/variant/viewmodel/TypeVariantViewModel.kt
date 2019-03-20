@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -17,7 +18,11 @@ data class TypeVariantViewModel(
         var variantOptions: ArrayList<OptionVariantViewModel>
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
-    constructor(parcel: Parcel?) : this(
+    fun getSelectedOption(): Int? {
+        return variantOptions.find { it.currentState == STATE_SELECTED }?.optionId
+    }
+
+    constructor(parcel: Parcel? = null) : this(
             parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",

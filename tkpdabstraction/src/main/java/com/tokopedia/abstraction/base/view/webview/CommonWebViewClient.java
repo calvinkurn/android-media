@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import static android.app.Activity.RESULT_OK;
-
+@Deprecated
 public class CommonWebViewClient extends WebChromeClient {
 
     public static final int PROGRESS_COMPLETED = 100;

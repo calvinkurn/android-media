@@ -7,12 +7,32 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Author errysuprayogi on 24,January,2019
  */
 public class TopAdsGtmTracker {
+
+    private List<Object> dataLayerList;
+    private static volatile TopAdsGtmTracker topAdsGtmTracker = new TopAdsGtmTracker();
+
+    public TopAdsGtmTracker() {
+        dataLayerList = new ArrayList<>();
+    }
+
+    public static TopAdsGtmTracker getInstance() {
+        return topAdsGtmTracker;
+    }
+
+    public void clearDataLayerList() {
+        dataLayerList.clear();
+    }
 
     public static AnalyticTracker getTracker(Context context) {
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -66,26 +86,60 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public static void eventSearchResultProductView(Context context, String keyword, Product product, int position) {
-        AnalyticTracker tracker = getTracker(context);
-        if (tracker != null) {
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword) {
+        if (!dataLayerList.isEmpty()) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
                     "eventCategory", "search result",
                     "eventAction", "impression - product - topads",
                     "eventLabel", keyword,
                     "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
-                            "impressions", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
-                                    "id", product.getId(),
-                                    "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
-                                    "brand", "none/other",
-                                    "varian", "none/other",
-                                    "category", product.getCategory().getId(),
-                                    "list", "/searchproduct - topads  productlist",
-                                    "position", position + 1)))
-            );
-            tracker.sendEnhancedEcommerce(map);
+                            "impressions", DataLayer.listOf(
+                                    dataLayerList.toArray(new Object[dataLayerList.size()])
+                            )
+                    ));
+            trackingQueue.putEETracking((HashMap<String, Object>) map);
+            clearDataLayerList();
         }
+    }
+
+    public void addSearchResultProductViewImpressions(Product product, int position) {
+        this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
+                "id", product.getId(),
+                "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
+                "brand", "none/other",
+                "varian", "none/other",
+                "category", product.getCategory().getId(),
+                "list", "/searchproduct - topads  productlist",
+                "position", position));
+    }
+
+    public void eventInboxProductView(TrackingQueue trackingQueue) {
+        if (!dataLayerList.isEmpty()) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "inbox",
+                    "eventAction", "impression on topads product",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    dataLayerList.toArray(new Object[dataLayerList.size()])
+                            )
+                    ));
+            trackingQueue.putEETracking((HashMap<String, Object>) map);
+            clearDataLayerList();
+        }
+    }
+
+    public void  addInboxProductViewImpressions(Product product, int position) {
+        this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
+                "id", product.getId(),
+                "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
+                "brand", "none/other",
+                "varian", "none/other",
+                "category", product.getCategory().getId(),
+                "list", "/inbox - topads rekomendasi untuk anda",
+                "position", position + 1));
     }
 
     public static void eventSearchResultPromoView(Context context, CpmData cpm, int position) {
@@ -164,6 +218,30 @@ public class TopAdsGtmTracker {
                     "eventLabel", keyword,
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads  productlist"),
+                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                            "name", product.getName(),
+                                            "id", product.getId(),
+                                            "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
+                                            "brand", "none/other",
+                                            "category", product.getCategory().getId(),
+                                            "varian", "none/other",
+                                            "position", position))))
+            );
+            tracker.sendEnhancedEcommerce(map);
+        }
+    }
+
+    public void eventInboxProductClick(Context context, Product product, int position) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productClick",
+                    "eventCategory", "inbox",
+                    "eventAction", "click on topads product",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "click", DataLayer.mapOf("actionField",
+                                    DataLayer.mapOf("list", "/inbox - topads - rekomendasi untuk anda"),
                                     "product", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
@@ -260,7 +338,7 @@ public class TopAdsGtmTracker {
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
-                                                    "name", "/hot topads headline/"+hotlistKey+" - hotlist lainnya",
+                                                    "name", "/hot topads headline/" + hotlistKey + " - hotlist lainnya",
                                                     "creative", cpm.getRedirect(),
                                                     "position", position + 1))
                             ))
@@ -326,7 +404,7 @@ public class TopAdsGtmTracker {
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
-                                                    "name", "/hot topads headline shop/"+hotlistKey+" - hotlist lainnya",
+                                                    "name", "/hot topads headline shop/" + hotlistKey + " - hotlist lainnya",
                                                     "creative", cpm.getRedirect(),
                                                     "position", position + 1))
                             ))
@@ -342,13 +420,13 @@ public class TopAdsGtmTracker {
                     "event", "promoClick",
                     "eventCategory", "hotlist page",
                     "eventAction", "topads headline product click",
-                    "eventLabel", "keyword: "+keyword+" - applink: "+cpm.getApplinks(),
+                    "eventLabel", "keyword: " + keyword + " - applink: " + cpm.getApplinks(),
                     "ecommerce", DataLayer.mapOf(
                             "promoView", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
-                                                    "name", "/hot topads headline product/"+hotlistKey+" - hotlist lainnya",
+                                                    "name", "/hot topads headline product/" + hotlistKey + " - hotlist lainnya",
                                                     "creative", cpm.getRedirect(),
                                                     "position", position + 1))
                             ))
@@ -537,7 +615,7 @@ public class TopAdsGtmTracker {
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
                                     "varian", "none/other",
-                                    "list", "/category/"+product.getCategory().getId()+" - topads",
+                                    "list", "/category/" + product.getCategory().getId() + " - topads",
                                     "position", position + 1)))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -582,7 +660,7 @@ public class TopAdsGtmTracker {
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
-                                                    "name", categoryName+" - topads headline - subcategory",
+                                                    "name", categoryName + " - topads headline - subcategory",
                                                     "creative", cpm.getCpm().getName(),
                                                     "creative_url", cpm.getRedirect(),
                                                     "position", position + 1))
@@ -599,13 +677,13 @@ public class TopAdsGtmTracker {
                     "event", "promoClick",
                     "eventCategory", "category page",
                     "eventAction", "topads headline product click",
-                    "eventLabel", "keyword: "+categoryName+" url: "+cpm.getRedirect(),
+                    "eventLabel", "keyword: " + categoryName + " url: " + cpm.getRedirect(),
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
-                                                    "name", categoryName+" - topads headline product - subcategory",
+                                                    "name", categoryName + " - topads headline product - subcategory",
                                                     "creative", cpm.getCpm().getName(),
                                                     "creative_url", cpm.getRedirect(),
                                                     "position", position + 1))
@@ -622,13 +700,13 @@ public class TopAdsGtmTracker {
                     "event", "promoClick",
                     "eventCategory", "category page",
                     "eventAction", "topads headline shop click",
-                    "eventLabel", "keyword: "+categoryName+" url: "+cpm.getRedirect(),
+                    "eventLabel", "keyword: " + categoryName + " url: " + cpm.getRedirect(),
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
                                                     "id", cpm.getId(),
-                                                    "name", categoryName+" - topads headline shop - subcategory",
+                                                    "name", categoryName + " - topads headline shop - subcategory",
                                                     "creative", cpm.getCpm().getName(),
                                                     "creative_url", cpm.getRedirect(),
                                                     "position", position + 1))

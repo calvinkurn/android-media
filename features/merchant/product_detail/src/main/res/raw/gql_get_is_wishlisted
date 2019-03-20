@@ -1,0 +1,3 @@
+query getProductIsWishlisted($productID: String!){
+    ProductWishlistQuery(productID: $productID)
+}

@@ -23,13 +23,29 @@
             app:cardUseCompatPadding="true"
             app:cardElevation="0dp">
 
-            <com.tokopedia.core.customwidget.SquareImageView
+            <com.tokopedia.topads.sdk.view.ImpressedImageView
                 android:id="@+id/product_image"
                 android:layout_width="@dimen/dp_100"
                 android:layout_height="@dimen/dp_100"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 app:srcCompat="@drawable/loading_page" />
+
+            <RelativeLayout
+                android:id="@+id/topads_icon"
+                android:layout_width="24dp"
+                android:layout_height="22dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_preorder_label"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@id/info_topads"
+                    android:layout_width="16dp"
+                    android:layout_height="10dp"
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/ic_toa" />
+            </RelativeLayout>
         </android.support.v7.widget.CardView>
 
         <LinearLayout
@@ -172,6 +188,24 @@
                     android:paddingTop="@dimen/padding_vvs"
                     android:paddingBottom="@dimen/padding_vvs"
                     android:background="@drawable/quick_filter_item_background_selected"/>
+
+                <TextView
+                    android:id="@+id/new_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rating_review_container"
+                    android:background="@drawable/bg_new_label"
+                    android:textColor="@color/new_label_color"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/dp_3"
+                    android:text="@string/baru"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_3"
+                    android:paddingBottom="@dimen/dp_3"
+                    android:textSize="@dimen/sp_11"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
