@@ -296,13 +296,12 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     public void onClick(View view) {
         if (view.getId() == R.id.bayar_btn) {
             hideKeyboard(getView(), getActivity());
-            if (TextUtils.isEmpty(inputAmount.getText()) || (inputAmount.getText() != null
-                    && Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) < MIN_AMOUNT)) {
+            if (TextUtils.isEmpty(inputAmount.getText())
+                    || Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) < MIN_AMOUNT) {
                 setErrorMessage(getString(R.string.oqr_min_input_hint));
-            } else if (!TextUtils.isEmpty(inputAmount.getText()) && Utils.convertToCurrencyLongFromString(
-                    inputAmount.getText().toString()) > MAX_AMOUNT) {
+            } else if (Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) > MAX_AMOUNT) {
                 setErrorMessage(getString(R.string.oqr_max_input_hint));
-            } else if (inputAmount.getText() != null && Utils.convertToCurrencyLongFromString(
+            } else if (Utils.convertToCurrencyLongFromString(
                     inputAmount.getText().toString()) > wallet.getRawBalance()) {
                 setErrorMessage(getString(R.string.oqr_balance_exceed_error));
             } else {
