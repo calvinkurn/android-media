@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -23,8 +22,6 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_recyclerview_business_widget.*
 import javax.inject.Inject
 
@@ -123,7 +120,8 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
                             activity?.resources,
                             R.raw.query_content_tab_business_widget
                     ),
-                    itemTab.id
+                    itemTab.id,
+                    this
             )
         }
     }
@@ -144,11 +142,11 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.homeWidget.observe(
-                this, Observer { when (it) {
-            is Success -> onSuccessGetList(it.data)
-            is Fail -> onErrorGetList(it.throwable)
-        } })
+//        viewModel.homeWidget.observe(
+//                this, Observer { when (it) {
+//            is Success -> onSuccessGetList(it.data)
+//            is Fail -> onErrorGetList(it.throwable)
+//        } })
     }
 
     private fun onSuccessGetList(data: HomeWidget) {
@@ -163,6 +161,14 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         onRetryClicked()
     }
 
+    override fun onSuccessGetData(data: HomeWidget) {
+        renderList(data.contentItemTabList, false)
+    }
+
+    override fun onErrorGetData(throwable: Throwable) {
+        onGetListErrorWithEmptyData(throwable)
+    }
+
     override fun onDestroy() {
         viewModel.clearJob()
         super.onDestroy()
@@ -171,4 +177,6 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
 interface BusinessUnitItemView {
     fun onReloadButtonClick()
+    fun onSuccessGetData(data: HomeWidget)
+    fun onErrorGetData(throwable: Throwable)
 }

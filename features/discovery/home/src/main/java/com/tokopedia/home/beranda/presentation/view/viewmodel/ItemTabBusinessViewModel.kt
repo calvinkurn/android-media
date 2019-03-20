@@ -3,14 +3,14 @@ package com.tokopedia.home.beranda.presentation.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemFragment
+import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -41,7 +41,7 @@ class ItemTabBusinessViewModel @Inject constructor(
         if (isActive) job.cancel()
     }
 
-    fun getList(rawQuery: String, tabId: Int) {
+    fun getList(rawQuery: String, tabId: Int, listener: BusinessUnitItemView) {
         job.children.map { it.cancel() }
         val params = mapOf(PARAM_TAB_ID to tabId)
 
@@ -61,17 +61,21 @@ class ItemTabBusinessViewModel @Inject constructor(
             if (data.getError(HomeWidget.Data::class.java) == null ||
                     data.getError(HomeWidget.Data::class.java).isEmpty()) {
                 if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
-                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+//                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+                    listener.onSuccessGetData(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
                 } else {
-                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
+//                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
+                    listener.onErrorGetData(ResponseErrorException("local handling error"))
                 }
             } else {
                 val message = data.getError(HomeWidget.Data::class.java)[0].message
-                homeWidget.value = Fail(ResponseErrorException(message))
+//                homeWidget.value = Fail(ResponseErrorException(message))
+                listener.onErrorGetData(ResponseErrorException(message))
             }
 
         }){
-            homeWidget.value = Fail(it)
+//            homeWidget.value = Fail(it)
+            listener.onErrorGetData(it)
         }
     }
 
