@@ -50,6 +50,7 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
@@ -1161,9 +1162,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData.getInfo().getHasVariant()
                 && productVariant != null
                 && variantLevel1 != null) {
-            UnifyTracking.eventClickVariant(getActivity(), generateVariantString());
+            eventClickVariant(getActivity(), generateVariantString());
         }
 
+    }
+
+    public void eventClickVariant(Context context, String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_VARIANTS,
+                eventLabel
+        ).getEvent());
     }
 
     @Override

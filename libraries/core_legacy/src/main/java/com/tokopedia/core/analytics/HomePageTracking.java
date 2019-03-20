@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
+import com.tokopedia.track.TrackApp;
 
 import java.util.Map;
 
@@ -24,13 +25,11 @@ public class HomePageTracking extends TrackingUtils {
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
     public static void eventPromoImpression(Context context, Promotion promotion) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventTrackingEnhancedEcommerce(promotion.getImpressionDataLayer());
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(promotion.getImpressionDataLayer());
     }
 
     public static void eventPromoClick(Context context, Promotion promotion) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventTrackingEnhancedEcommerce(promotion.getClickDataLayer());
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(promotion.getClickDataLayer());
     }
 
     public static void eventClickViewAllPromo(Context context) {

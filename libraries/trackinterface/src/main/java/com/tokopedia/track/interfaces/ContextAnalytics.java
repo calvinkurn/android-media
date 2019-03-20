@@ -68,4 +68,14 @@ public abstract class ContextAnalytics implements Analytics {
     public String getUniqueId(){return null;}
 
     public void updateFCMToken(String fcmToken){}
+
+    public String getClientIDString(){return null;}
+
+    public void pushUserId(String userId){}
+
+    public void eventOnline(String uid) {}
+    public void eventError(String screenName, String errorDesc) {}
+    public void clearEnhanceEcommerce() {}
+
+
 }

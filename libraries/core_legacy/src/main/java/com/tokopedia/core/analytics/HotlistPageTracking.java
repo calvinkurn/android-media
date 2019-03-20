@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,7 @@ import java.util.Map;
 public class HotlistPageTracking extends TrackingUtils {
 
     public static void eventEnhance(Context context, Map<String, Object> dataLayer) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventTrackingEnhancedEcommerce(dataLayer);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(dataLayer);
     }
 
     public static void eventHotlistSort(Context context, String sortValue) {

@@ -1684,8 +1684,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventTracking(Map<String, Object> eventTracking) {
-        UnifyTracking.eventClearEnhanceEcommerce(this);
-        UnifyTracking.sendGTMEvent(this, eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
     }
 
     @Override

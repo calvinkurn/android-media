@@ -84,18 +84,6 @@ public class TrackingUtils extends TrackingConfig {
         return firstSegment;
     }
 
-    private static String getFirstName(String name) {
-        String firstName = name;
-        if (!TextUtils.isEmpty(name)) {
-            String token[] = name.split(" ");
-            if (token.length > 1) {
-                firstName = token[0];
-            }
-        }
-
-        return firstName;
-    }
-
     public static String normalizePhoneNumber(String phoneNum) {
         if (!TextUtils.isEmpty(phoneNum))
             return phoneNum.replaceFirst("^0(?!$)", "62");
@@ -144,7 +132,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void eventError(Context context,String className, String errorMessage) {
-        getGTMEngine(context)
+        TrackApp.getInstance().getGTM()
                 .eventError(className, errorMessage);
     }
 
@@ -152,7 +140,7 @@ public class TrackingUtils extends TrackingConfig {
      * SessionHandler.getGTMLoginID(MainApplication.getAppContext())
      */
     public static void eventOnline(Context context,String uid) {
-        getGTMEngine(context)
+        TrackApp.getInstance().getGTM()
                 .eventOnline(uid);
     }
 
@@ -160,7 +148,7 @@ public class TrackingUtils extends TrackingConfig {
      * SessionHandler.getGTMLoginID(MainApplication.getAppContext())
      */
     public static void eventPushUserID(Context context,String userId) {
-        getGTMEngine(context)
+        TrackApp.getInstance().getGTM()
                 .pushUserId(userId);
     }
 
@@ -180,7 +168,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void sendGTMEvent(Context context, Map<String, Object> dataLayers) {
-        getGTMEngine(context).sendEvent(dataLayers);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(dataLayers);
     }
 
     public static void sendAppsFlyerDeeplink(Activity activity) {
@@ -188,7 +176,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static String getClientID(Context context) {
-        return getGTMEngine(context).getClientIDString();
+        return TrackApp.getInstance().getGTM().getClientIDString();
     }
 
     public static String getAfUniqueId(Context context) {
@@ -196,52 +184,136 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void eventClickHotlistProductFeatured(Context context, Hotlist hotlist) {
-        getGTMEngine(context).eventClickHotlistProductFeatured(hotlist);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
+                        "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
+                        "eventLabel", String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
+                                "ecommerce", DataLayer.mapOf(
+                                        "click", DataLayer.mapOf(
+                                                "actionField", DataLayer.mapOf(
+                                                        "list", "hotlist"),
+                                                "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
+                                        )
+                                )
+                        )
+                ));
     }
 
     public static void eventImpressionHotlistProductFeatured(Context context, Hotlist hotlist) {
-        getGTMEngine(context).eventImpressionHotlistProductFeatured(hotlist);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "ecommerce", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", "hotlist"),
+                                "impressions",
+                                DataLayer.listOf(
+                                        hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
+                        )
+                )
+        );
     }
 
     public static void impressionHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
-        getGTMEngine(context).impressionHotlistTracking(hotlistName, promoName, promoCode);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo impression",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
     }
 
     public static void clickCopyButtonHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
-        getGTMEngine(context).clickCopyButtonHotlistPromo(hotlistName, promoName, promoCode);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click salin kode",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
     }
 
     public static void clickTnCButtonHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
-        getGTMEngine(context).clickTncButtonHotlistPromo(hotlistName, promoName, promoCode);
-    }
-
-    public static void eventClearEnhanceEcommerce(Context context) {
-        getGTMEngine(context).clearEnhanceEcommerce();
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click syarat ketentuan",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
     }
 
     public static void eventTrackingEnhancedEcommerce(Context context, Map<String, Object> trackingData) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventTrackingEnhancedEcommerce(trackingData);
-
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(trackingData);
     }
 
     public static void eventImpressionPromoList(Context context, List<Object> list, String promoName) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventImpressionPromoList(list, promoName);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
     }
 
     public static void eventClickPromoListItem(Context context, List<Object> list, String promoName) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventClickPromoListItem(list, promoName);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
     }
 
 
     public static void eventCategoryLifestyleImpression(Context context, List<Object> list) {
-        getGTMEngine(context).eventImpressionCategoryLifestyle(list);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf("event", "promoView",
+                        "eventCategory", "category page",
+                        "eventAction", "subcategory impression",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
+                )
+        );
     }
 
     public static void eventCategoryLifestyleClick(Context context, String categoryUrl, List<Object> list) {
-        getGTMEngine(context).eventClickCategoryLifestyle(categoryUrl, list);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf("event", "promoClick",
+                        "eventCategory", "category page",
+                        "eventAction", "click subcategory",
+                        "eventLabel", categoryUrl,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()])))),
+                        "destinationURL", categoryUrl
+                )
+        );
     }
 }
 

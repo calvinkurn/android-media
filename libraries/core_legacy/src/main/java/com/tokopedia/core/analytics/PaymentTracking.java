@@ -21,12 +21,6 @@ import java.util.Map;
 
 public class PaymentTracking extends TrackingUtils {
 
-    public static void eventTransactionGTM(Context context, Purchase purchase) {
-        getGTMEngine(context).eventTransaction(purchase);
-        getGTMEngine(context).sendScreen(AppScreen.SCREEN_FINISH_TX_OLD);
-        getGTMEngine(context).clearTransactionDataLayer(purchase);
-    }
-
     /* new from TopPayActivity revamped*/
     public static void eventTransactionAF(Context context,
                                           String paymentId,
@@ -69,20 +63,6 @@ public class PaymentTracking extends TrackingUtils {
         values.put(AFInAppEventParameterName.PRICE, param.getPrice());
         values.put(Jordan.AF_SHOP_ID,param.getShopId());
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
-    }
-
-    public static void eventCartCheckoutStep1(Context context,Checkout checkout) {
-        getGTMEngine(context)
-                .eventCheckout(checkout)
-                .sendScreen(AppScreen.SCREEN_CART_PAGE)
-                .clearCheckoutDataLayer();
-    }
-
-    public static void eventCartCheckoutStep2(Context context,Checkout checkout, String paymentId) {
-        getGTMEngine(context)
-                .eventCheckout(checkout, paymentId)
-                .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)
-                .clearCheckoutDataLayer();
     }
 
 }

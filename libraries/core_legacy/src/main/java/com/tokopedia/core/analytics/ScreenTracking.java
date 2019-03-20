@@ -72,7 +72,7 @@ public class ScreenTracking extends TrackingUtils {
         if (TextUtils.isEmpty(screen)) {
             return;
         }
-        getGTMEngine(context).sendScreen(screen);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screen);
     }
 
     public static void sendAFGeneralScreenEvent(Context context, String screenName) {
@@ -82,8 +82,7 @@ public class ScreenTracking extends TrackingUtils {
     }
 
     public static void eventAuthScreen(Context context, Map<String, String> customDimension, String screenName) {
-        getGTMEngine(context)
-                .sendScreenAuthenticated(screenName, customDimension);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
     }
 
     public static void sendAFPDPEvent(Context context, final ProductDetailData data, final String eventName) {
@@ -133,20 +132,16 @@ public class ScreenTracking extends TrackingUtils {
 
     public static void eventDiscoveryScreenAuth(Context context, String departmentId) {
         if (!TextUtils.isEmpty(departmentId)) {
-            getGTMEngine(context).sendScreenAuthenticated(
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(
                     AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY + departmentId
             );
         }
     }
 
     public static void eventOfficialStoreScreenAuth(Context context, String shopID, String shopType, String pageType, String productId) {
-        getGTMEngine(context).sendScreenAuthenticated(
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(
                 AppScreen.SCREEN_PRODUCT_INFO, shopID, shopType, pageType, productId
         );
-    }
-
-    public static void eventCustomScreen(Context context, String screenName, String shopID, String shopType, String pageType, String productId) {
-        getGTMEngine(context).sendScreenAuthenticated(screenName, shopID, shopType, pageType, productId);
     }
 
 }

@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics;
 import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 import java.util.Map;
@@ -93,8 +94,7 @@ public class FeedTracking extends TrackingUtils {
     }
 
     private static void eventTrackingEnhanceFeed(Context context, Map<String, Object> trackingData) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventTrackingEnhancedEcommerce(trackingData);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(trackingData);
     }
 
     private static void eventImpressionFeedProductItem(Context context, List<Object> list, String eventLabel) {
