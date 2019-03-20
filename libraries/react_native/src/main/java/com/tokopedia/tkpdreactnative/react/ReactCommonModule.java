@@ -141,8 +141,8 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     public void getStatusBarHeight(Promise promise) {
         if(getCurrentActivity() != null) {
             promise.resolve(DisplayMetricUtils.getStatusBarHeight(getCurrentActivity()));
+        } else {
+            promise.reject(new RuntimeException("Context is null"));
         }
-
-        promise.reject(new RuntimeException("Context is null"));
     }
 }
