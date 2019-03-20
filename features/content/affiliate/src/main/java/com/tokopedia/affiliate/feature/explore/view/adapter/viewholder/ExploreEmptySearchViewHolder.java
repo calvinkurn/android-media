@@ -24,22 +24,20 @@ public class ExploreEmptySearchViewHolder extends AbstractViewHolder<ExploreEmpt
     public ExploreEmptySearchViewHolder(View itemView, ExploreContract.View mainView) {
         super(itemView);
         this.mainView = mainView;
-        searchButton = (Button) itemView.findViewById(R.id.btn_search);
+        searchButton = itemView.findViewById(R.id.btn_search);
     }
 
     @Override
     public void bind(ExploreEmptySearchViewModel element) {
-        initView(element);
-        initViewListener(element);
+        initView();
+        initViewListener();
     }
 
-    private void initView(ExploreEmptySearchViewModel element) {
+    private void initView() {
 
     }
 
-    private void initViewListener(ExploreEmptySearchViewModel element) {
-        searchButton.setOnClickListener(view -> {
-            mainView.onButtonEmptySearchClicked();
-        });
+    private void initViewListener() {
+        searchButton.setOnClickListener(view -> mainView.onButtonEmptySearchClicked());
     }
 }

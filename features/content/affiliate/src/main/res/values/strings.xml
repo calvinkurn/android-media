@@ -22,9 +22,9 @@
 
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Produk di By Me</string>
-    <string name="text_empty_search_title">Oops, Produk Tidak Ditemukan</string>
-    <string name="text_empty_search_desc">Coba lakukan pencarian dengan kata kunci baru</string>
-    <string name="text_empty_search_btn">Lakukan Pencarian Baru</string>
+    <string name="text_empty_search_title">Duh, kami gak nemu yang kamu cari.</string>
+    <string name="text_empty_search_desc">Bisa coba pakai kata kunci lain, ya.</string>
+    <string name="text_empty_search_btn">Cari Lagi</string>
     <string name="text_product_not_found">Produk Tidak Ditemukan</string>
     <string name="text_full_affiliate_title">Jatah Kurasimu Habis</string>
     <string name="text_full_affiliate">Kamu hanya bisa membuat kurasi untuk 15 produk. Atur kurasimu untuk menambah yang baru</string>
