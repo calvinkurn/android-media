@@ -16,5 +16,5 @@ data class ClashingInfoDetail(
 	val clashMessage: String? = null,
 
 	@field:SerializedName("option")
-	val option: List<Any?>? = null
+	val option: List<VoucherOrdersItem?>? = null
 )

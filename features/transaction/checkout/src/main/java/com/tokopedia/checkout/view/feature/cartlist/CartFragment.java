@@ -103,7 +103,7 @@ import javax.inject.Inject;
 public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
-        ToolbarRemoveView.OnToolbarRemoveAllCartListener {
+        ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener {
 
     private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
 
@@ -657,7 +657,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
-        // nanti ganti cancel autoapply nya
+        // todo : nanti ganti cancel autoapply nya
         dPresenter.processCancelAutoApply();
     }
 
@@ -1861,5 +1861,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() instanceof CartNotifyListener) {
             ((CartNotifyListener) getActivity()).onNotifyCart();
         }
+    }
+
+    @Override
+    public void onClashCheckPromoFirstStep() {
+        // Todo : Show clash bottomsheet
+    }
+
+    @Override
+    public void onSuccessCheckPromoFirstStep() {
+        // Todo : update cart item
     }
 }

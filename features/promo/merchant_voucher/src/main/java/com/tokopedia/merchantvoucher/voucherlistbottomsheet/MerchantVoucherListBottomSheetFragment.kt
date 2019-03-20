@@ -1,6 +1,8 @@
 package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -20,6 +22,8 @@ import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackFirstUiModel
 import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
 
@@ -43,6 +47,11 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     @Inject
     lateinit var presenter: MerchantVoucherListBottomsheetPresenter
+
+    interface ActionListener {
+        fun onClashCheckPromoFirstStep()
+        fun onSuccessCheckPromoFirstStep()
+    }
 
     companion object {
         val ARGUMENT_SHOP_ID = "ARGUMENT_SHOP_ID"
@@ -162,36 +171,37 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
     }
 
+    override fun getActivityContext(): Context? {
+        return context
+    }
+
     override fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>) {
-        /*if (merchantVoucherViewModelList.size == 0) {
-            merchantVoucherListWidget?.setData(null)
-            return
-        }
-        merchantVoucherListWidget?.setData(merchantVoucherViewModelList)
-        promoContainer.visibility = View.VISIBLE*/
-
-        /*adapter.clearAllElements()
-        super.renderList(merchantVoucherViewModelList, false)*/
-
         merchantVoucherListBottomSheetAdapter.setViewModelList(merchantVoucherViewModelList)
 
         val linearLayoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false)
         rvVoucherList.layoutManager = linearLayoutManager
         rvVoucherList.adapter = merchantVoucherListBottomSheetAdapter
-//        promoContainer.visibility = View.VISIBLE
         updateHeight()
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
-        /*adapter.errorNetworkModel = ErrorNetworkModel().apply {
-            errorMessage = ErrorHandler.getErrorMessage(context, e)
-            onRetryListener = ErrorNetworkModel.OnRetryListener {
-                presenter.clearCache()
-                presenter.getVoucherList(shopId)
-            }
-        }
-        super.showGetListError(e)*/
+    }
+
+    override fun onErrorCheckPromoFirstStep(message: String) {
+        // Todo : show snackbar red
+    }
+
+    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackFirstUiModel) {
+        // Todo : close merchant voucher bottomsheet, navigate to cart fragment to update view
+        val intent = Intent()
+        intent.putExtra(EXTRA_PROMO_DATA, model)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    override fun onClashCheckPromoFirstStep() {
+        // Todo : close merchant voucher bottomsheet, show clash bottomsheet
     }
 
 }
