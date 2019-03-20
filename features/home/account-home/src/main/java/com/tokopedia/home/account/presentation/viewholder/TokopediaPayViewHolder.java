@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
+import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -9,6 +10,10 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.TokopediaPayCardView;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
+
+import java.util.ArrayList;
 
 /**
  * @author okasurya on 7/19/18.
