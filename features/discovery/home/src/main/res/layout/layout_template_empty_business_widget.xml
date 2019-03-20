@@ -11,8 +11,6 @@
         android:layout_width="@dimen/dp_288"
         android:layout_height="@dimen/dp_112"
         app:cardCornerRadius="@dimen/dp_8"
-        app:cardElevation="@dimen/dp_8"
-        app:cardMaxElevation="@dimen/dp_14"
         android:layout_gravity="center">
 
         <RelativeLayout
