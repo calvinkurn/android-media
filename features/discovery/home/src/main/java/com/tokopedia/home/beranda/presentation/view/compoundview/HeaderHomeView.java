@@ -131,7 +131,6 @@ public class HeaderHomeView extends BaseCustomView {
             View container = view.findViewById(R.id.container_nonlogin);
             AppCompatImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
 
-            int radius = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
 
             Glide.with(getContext())
                     .load(BG_CONTAINER_URL)
