@@ -8,8 +8,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.MenuItem
-import android.widget.MediaController
-import android.widget.Toast
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler
 import com.tokopedia.videorecorder.R
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
@@ -17,10 +18,7 @@ import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
-import com.tokopedia.videorecorder.utils.FileUtils
-import com.tokopedia.videorecorder.utils.RuntimePermission
-import com.tokopedia.videorecorder.utils.hide
-import com.tokopedia.videorecorder.utils.show
+import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.activity_video_picker.*
 import java.io.File
 import java.util.ArrayList
@@ -38,7 +36,8 @@ class VideoPickerActivity: BaseSimpleActivity(),
         //video recorder const
         const val VIDEOS_RESULT = "video_result"
         const val VIDEO_MAX_SIZE = 50000L //50 mb
-        const val VIDEO_MAX_DURATION = 60000 //ms = 1 minute
+        const val VIDEO_MAX_DURATION_MS = 60000 //ms = 1 minute
+        const val VIDEO_MAX_DURATION_SECOND = 60
 
         //flag
         var isVideoSourcePicker = false
@@ -63,6 +62,8 @@ class VideoPickerActivity: BaseSimpleActivity(),
     //runtime permission handle
     private lateinit var runtimePermission: RuntimePermission
 
+    private lateinit var ffmpeg: FFmpeg
+
     override fun getLayoutRes(): Int = R.layout.activity_video_picker
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +71,10 @@ class VideoPickerActivity: BaseSimpleActivity(),
         //init runtime permission
         runtimePermission = RuntimePermission(this)
         runtimePermission.requestPermissionForRecord()
+
+        //init ffmpeg instance
+        ffmpeg = FFmpeg.getInstance(this)
+        ffmpeg.loadBinary(object : LoadBinaryResponseHandler() {})
 
         //support actionbar
         setSupportActionBar(toolbarVideoPicker)
@@ -151,12 +156,37 @@ class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     private fun onVideoPicked() {
-        if (videoPreview.duration > VIDEO_MAX_DURATION) {
-            //@TODO(trim video startPosition 0 into endPosition 60 with ffmpeg
-        }
+        if (videoPreview.duration > VIDEO_MAX_DURATION_MS) {
+            //prepared
+            val resultFile = FileUtils.videoPath(FileUtils.RESULT_DIR).absolutePath
+            val trimQuery = VideoUtils.ffmegCommand(VIDEO_MAX_DURATION_SECOND, videoPath, resultFile)
 
+            exceptionHandler {
+                ffmpeg.execute(trimQuery, object : ExecuteBinaryResponseHandler() {
+                    override fun onSuccess(message: String?) {
+                        super.onSuccess(message)
+                        onFinishPicked(resultFile)
+                    }
+
+                    override fun onFailure(message: String?) {
+                        super.onFailure(message)
+                        showToast(applicationContext, getString(R.string.videopicker_error_message))
+                    }
+
+                    override fun onProgress(message: String?) {
+                        super.onProgress(message)
+                        //showing progress dialog
+                    }
+                })
+            }
+        } else {
+            onFinishPicked(videoPath)
+        }
+    }
+
+    private fun onFinishPicked(file: String) {
         val videos = arrayListOf<String>()
-        videos.add(videoPath)
+        videos.add(file)
 
         val intent = Intent()
         intent.putStringArrayListExtra(VIDEOS_RESULT, videos)
