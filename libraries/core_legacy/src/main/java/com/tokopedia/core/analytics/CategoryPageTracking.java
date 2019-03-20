@@ -2,6 +2,8 @@ package com.tokopedia.core.analytics;
 
 import android.content.Context;
 
+import com.tokopedia.track.TrackApp;
+
 import java.util.Map;
 
 /**
@@ -11,8 +13,7 @@ import java.util.Map;
 public class CategoryPageTracking extends TrackingUtils {
 
     public static void eventEnhance(Context context, Map<String, Object> dataLayer) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventTrackingEnhancedEcommerce(dataLayer);
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(dataLayer);
     }
 
 }

@@ -65,28 +65,10 @@ public class GTMContainer implements IGTMContainer {
      *
      * @return
      */
-    @Override
     public TagManager getTagManager() {
         return TagManager.getInstance(context);
     }
 
-    /**
-     * {@link GTMAnalytics#getClientIDString()}
-     *
-     * @return
-     */
-    @Override
-    public String getClientIDString() {
-        try {
-            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
-            String clientID = GoogleAnalytics.getInstance(context).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
-
-            return clientID;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
 
     public void loadContainer() {
         try {
@@ -105,161 +87,6 @@ public class GTMContainer implements IGTMContainer {
         return getTagManager().getDataLayer();
     }
 
-    /**
-     * {@link GTMAnalytics#sendScreen(String)}
-     *
-     * @return
-     */
-    @Override
-    public GTMContainer sendScreen(String screenName) {
-        sendScreen(screenName, null);
-        return this;
-    }
-
-    @Override
-    public GTMContainer sendScreen(String screenName, Map<String, String> customDimension) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Screen Event");
-        Map<String, Object> map = DataLayer.mapOf("screenName", screenName);
-        if (customDimension != null && customDimension.size() > 0) {
-            map.putAll(customDimension);
-        }
-        GTMDataLayer.pushEvent(context,
-                "openScreen", map);
-
-        return this;
-    }
-
-    @Override
-    public GTMContainer sendCampaign(Campaign campaign) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Campaign Event");
-        GTMDataLayer.pushEvent(context, "campaignTrack", campaign.getCampaign());
-        return this;
-    }
-
-    @Override
-    public GTMContainer clearCampaign(Campaign campaign) {
-        Log.i("Tag Manager", "UA-9801603-15: Clear Campaign Event " + campaign.getNullCampaignMap());
-        GTMDataLayer.pushGeneral(context, campaign.getNullCampaignMap());
-        return this;
-    }
-
-    @Override
-    public GTMContainer eventCheckout(Checkout checkout, String paymentId) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
-        Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
-
-        GTMDataLayer.pushGeneral(context,
-                DataLayer.mapOf(
-                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
-                        AppEventTracking.PAYMENT_ID, paymentId,
-                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
-                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
-                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
-                        )));
-
-        return this;
-    }
-
-    @Override
-    public GTMContainer eventCheckout(Checkout checkout) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Checkout Event");
-        Log.i("Tag Manager", "UA-9801603-15: MAP: " + checkout.getCheckoutMap().toString());
-
-        GTMDataLayer.pushGeneral(context,
-                DataLayer.mapOf(
-                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
-                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
-                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
-                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
-                        )));
-
-        return this;
-    }
-
-    @Override
-    public void clearCheckoutDataLayer() {
-        GTMDataLayer.pushGeneral(context, DataLayer.mapOf("step", null, "products", null,
-                "currencyCode", null, "actionField", null, "ecommerce", null));
-    }
-
-    @Override
-    public GTMContainer sendScreenAuthenticated(String screenName) {
-        eventAuthenticate();
-        sendScreen(screenName);
-        return this;
-    }
-
-    @Override
-    public GTMContainer sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
-        eventAuthenticate(customDimension);
-        sendScreen(screenName, customDimension);
-        return this;
-    }
-
-    @Override
-    public GTMContainer sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
-        Map<String, String> customDimension = new HashMap<>();
-        customDimension.put(Authenticated.KEY_SHOP_ID_SELLER, shopID);
-        customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);
-        customDimension.put(Authenticated.KEY_SHOP_TYPE, shopType);
-        customDimension.put(Authenticated.KEY_PRODUCT_ID, productId);
-        eventAuthenticate(customDimension);
-        sendScreen(screenName, customDimension);
-        return this;
-    }
-
-    @Override
-    public GTMContainer eventAuthenticate() {
-        return eventAuthenticate(null);
-    }
-
-    @Override
-    public GTMContainer eventAuthenticate(Map<String, String> customDimension) {
-        String afUniqueId = getAfUniqueId(context);
-        Map<String, Object> map = DataLayer.mapOf(
-                Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
-                        Authenticated.KEY_USER_SELLER, (sessionHandler.isUserHasShop() ? 1 : 0),
-                        Authenticated.KEY_USER_FULLNAME, sessionHandler.getLoginName(),
-                        Authenticated.KEY_USER_ID, sessionHandler.getGTMLoginID(),
-                        Authenticated.KEY_SHOP_ID, sessionHandler.getShopID(),
-                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none"),
-                        Authenticated.KEY_USER_EMAIL, sessionHandler.getEmail()
-                ),
-                Authenticated.ANDROID_ID, sessionHandler.getAndroidId(),
-                Authenticated.ADS_ID, sessionHandler.getAdsId(),
-                Authenticated.GA_CLIENT_ID, getClientIDString()
-        );
-        if (customDimension != null && customDimension.size() > 0) {
-            map.putAll(customDimension);
-        }
-        GTMDataLayer.pushEvent(context, Authenticated.KEY_CD_NAME, map);
-        return this;
-    }
-    @Override
-    public GTMContainer eventDetail(ProductDetail detail) {
-        Log.i("Tag Manager", "UA-9801603-15: Send Deatil Event");
-        Log.i("Tag Manager", "UA-9801603-15: GAv4 MAP: " + detail.getDetailMap().toString());
-        GTMDataLayer.pushGeneral(context, DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "detail", detail.getDetailMap()
-        )));
-
-        return this;
-    }
-
-    @Override
-    public GTMContainer sendEvent(Map<String, Object> events) {
-        GTMDataLayer.pushGeneral(context, events);
-        return this;
-    }
-
-    public void event(String name, Map<String, Object> data) {
-        GTMDataLayer.pushEvent(context, name, data);
-    }
-
 
     private void clearEventTracking() {
         GTMDataLayer.pushGeneral(
@@ -272,47 +99,5 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    @Override
-    public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
-        GTMDataLayer.pushGeneral(context, trackingData);
 
-    }
-
-    @Override
-    public void clearEnhanceEcommerce() {
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", null,
-                        "eventCategory", null,
-                        "eventAction", null,
-                        "eventLabel", null,
-                        "products", null,
-                        "promotions", null,
-                        "ecommerce", null,
-                        "currentSite", null
-                )
-        );
-    }
-
-    @Override
-    public void eventPurchaseDigital(Purchase purchase) {
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf(
-                        AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
-                        AppEventTracking.EVENT_CATEGORY, "digital - thanks",
-                        AppEventTracking.EVENT_ACTION, "view purchase attempt",
-                        AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
-                        Purchase.SHOP_ID, purchase.getShopId(),
-                        Purchase.PAYMENT_ID, purchase.getPaymentId(),
-                        Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
-                        Purchase.USER_ID, purchase.getUserId(),
-                        Purchase.PAYMENT_STATUS, purchase.getPaymentStatus(),
-                        Purchase.CURRENT_SITE, purchase.getCurrentSite(),
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                Purchase.PURCHASE, purchase.getPurchase()
-                        )
-                )
-        );
-    }
 }

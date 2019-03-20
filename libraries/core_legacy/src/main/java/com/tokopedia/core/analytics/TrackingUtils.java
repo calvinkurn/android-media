@@ -46,12 +46,11 @@ import java.util.Map;
  */
 
 @Deprecated
-public class TrackingUtils extends TrackingConfig {
+public class TrackingUtils{
     public static void eventCampaign(Context context, Campaign campaign) {
         Campaign temp = new Campaign(campaign);
-        getGTMEngine(context)
-                .sendCampaign(temp)
-                .clearCampaign(campaign);
+        TrackApp.getInstance().getGTM().pushEvent("campaignTrack", campaign.getCampaign());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(campaign.getNullCampaignMap());
     }
 
     public static void activityBasedAFEvent(Context context, String tag) {

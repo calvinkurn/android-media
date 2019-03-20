@@ -76,6 +76,7 @@ public abstract class ContextAnalytics implements Analytics {
     public void eventOnline(String uid) {}
     public void eventError(String screenName, String errorDesc) {}
     public void clearEnhanceEcommerce() {}
+    public void pushEvent(String eventName, Map<String, Object> values){}
 
 
 }

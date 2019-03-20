@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.appsflyer.AFInAppEventType;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.legacy.MethodChecker;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
@@ -659,8 +660,9 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventPDPDetail(Context context, ProductDetail productDetail) {
-        getGTMEngine(context)
-                .eventDetail(productDetail);
+        TrackApp.getInstance().getAppsFlyer().sendGeneralEvent( DataLayer.mapOf("ecommerce", DataLayer.mapOf(
+                "detail", productDetail.getDetailMap()
+        )));
     }
 
     public static void sendAFCompleteRegistrationEvent(Context context, int userId, String methodName) {
