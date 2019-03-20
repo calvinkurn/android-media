@@ -642,32 +642,36 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             viewModels.add(viewModel)
             passengerNumber++
         }
-        for (i in 1..passData.flightPassengerViewModel.children) {
-            val viewModel = FlightBookingPassengerViewModel()
-            viewModel.passengerLocalId = passengerNumber
-            viewModel.type = FlightBookingPassenger.CHILDREN
-            viewModel.headerTitle = formatPassengerHeader(
-                    view.getString(R.string.flight_booking_prefix_passenger),
-                    passengerNumber,
-                    view.getString(R.string.flight_booking_postfix_children_passenger))
-            viewModel.flightBookingMealMetaViewModels = ArrayList()
-            viewModel.flightBookingLuggageMetaViewModels = ArrayList()
-            viewModels.add(viewModel)
-            passengerNumber++
+        if (passData.flightPassengerViewModel.children > 0) {
+            for (i in 1..passData.flightPassengerViewModel.children) {
+                val viewModel = FlightBookingPassengerViewModel()
+                viewModel.passengerLocalId = passengerNumber
+                viewModel.type = FlightBookingPassenger.CHILDREN
+                viewModel.headerTitle = formatPassengerHeader(
+                        view.getString(R.string.flight_booking_prefix_passenger),
+                        passengerNumber,
+                        view.getString(R.string.flight_booking_postfix_children_passenger))
+                viewModel.flightBookingMealMetaViewModels = ArrayList()
+                viewModel.flightBookingLuggageMetaViewModels = ArrayList()
+                viewModels.add(viewModel)
+                passengerNumber++
+            }
         }
-        for (i in 1..passData.flightPassengerViewModel.infant) {
-            val viewModel = FlightBookingPassengerViewModel()
-            viewModel.passengerLocalId = passengerNumber
-            viewModel.type = FlightBookingPassenger.INFANT
-            viewModel.headerTitle = formatPassengerHeader(
-                    view.getString(R.string.flight_booking_prefix_passenger),
-                    passengerNumber,
-                    view.getString(R.string.flight_booking_postfix_infant_passenger))
+        if (passData.flightPassengerViewModel.infant > 0) {
+            for (i in 1..passData.flightPassengerViewModel.infant) {
+                val viewModel = FlightBookingPassengerViewModel()
+                viewModel.passengerLocalId = passengerNumber
+                viewModel.type = FlightBookingPassenger.INFANT
+                viewModel.headerTitle = formatPassengerHeader(
+                        view.getString(R.string.flight_booking_prefix_passenger),
+                        passengerNumber,
+                        view.getString(R.string.flight_booking_postfix_infant_passenger))
 
-            viewModel.flightBookingLuggageMetaViewModels = ArrayList()
-            viewModel.flightBookingMealMetaViewModels = ArrayList()
-            viewModels.add(viewModel)
-            passengerNumber++
+                viewModel.flightBookingLuggageMetaViewModels = ArrayList()
+                viewModel.flightBookingMealMetaViewModels = ArrayList()
+                viewModels.add(viewModel)
+                passengerNumber++
+            }
         }
 
         return viewModels
