@@ -109,5 +109,5 @@
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
     <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
     <string name="service_by_tokopedia">Dilayani oleh Tokopedia</string>
-    <string name="multiorigin_desc">Barang lebih cepat tiba karena dikirim dari gudang terdekat</string>
+    <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
 </resources>
