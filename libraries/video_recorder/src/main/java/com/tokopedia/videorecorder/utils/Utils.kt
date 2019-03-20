@@ -23,5 +23,5 @@ internal fun formatter(num: Long): String {
 }
 
 fun showToast(context: Context, message: String) {
-    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

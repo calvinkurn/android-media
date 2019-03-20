@@ -126,7 +126,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
             btnFlip.hide()
             vwRecord.show()
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
-            cameraView.takeVideo(file, DURATION_MAX)
+            cameraView.takeVideoSnapshot(file, DURATION_MAX)
             //progress and duration countdown
             timer = Timer()
             timer.schedule(object : TimerTask() {

@@ -216,9 +216,9 @@ class VideoPickerActivity: BaseSimpleActivity(),
         tabPicker.hide()
         btnDone.show()
         if (isVideoSourcePicker) {
-            btnDone.text = getString(R.string.videopicker_btn_back)
+            btnDeleteVideo.text = getString(R.string.videopicker_btn_back)
         } else {
-            btnDone.text = getString(R.string.videopicker_btn_delete)
+            btnDeleteVideo.text = getString(R.string.videopicker_btn_delete)
         }
     }
 
