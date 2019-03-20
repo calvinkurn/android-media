@@ -1,6 +1,10 @@
 package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import android.util.Patterns
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
@@ -44,6 +48,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                                  val flightAnalytics: FlightAnalytics,
                                                  val userSession: UserSessionInterface,
                                                  val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
+                                                 private val travelTickerUseCase: TravelTickerUseCase,
                                                  flightGetCartDataUseCase: FlightGetCartDataUseCase,
                                                  flightBookingCartDataMapper: FlightBookingCartDataMapper)
     : FlightBaseBookingPresenter<FlightBookingContract.View>(flightGetCartDataUseCase, flightBookingCartDataMapper), FlightBookingContract.Presenter {
@@ -361,6 +366,26 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         } else {
             initialize()
         }
+    }
+
+    override fun fetchTickerData() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.BOOK),
+                object : Subscriber<TravelTickerViewModel>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(travelTickerViewModel: TravelTickerViewModel) {
+                        if (travelTickerViewModel.message.isNotEmpty()) {
+                            view.renderTickerView(travelTickerViewModel)
+                        }
+                    }
+                })
     }
 
     override fun onDestroyView() {

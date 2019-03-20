@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.travel.ticker.TravelTickerUtils
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.FlightModuleRouter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
@@ -458,6 +460,10 @@ class FlightBookingFragment : BaseDaggerFragment(),
         bookingCartId = id
         flightBookingCartData.id = id
         getCurrentBookingParamViewModel().id = id
+    }
+
+    override fun renderTickerView(travelTickerViewModel: TravelTickerViewModel) {
+        TravelTickerUtils.buildTravelTicker(context, travelTickerViewModel, flight_ticker_view)
     }
 
     override fun showSoldOutDialog() {

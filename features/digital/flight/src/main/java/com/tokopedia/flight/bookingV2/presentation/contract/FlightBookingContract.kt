@@ -1,6 +1,7 @@
 package com.tokopedia.flight.bookingV2.presentation.contract
 
 import android.support.annotation.StringRes
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
@@ -119,6 +120,8 @@ interface FlightBookingContract {
 
         fun setCartId(id: String)
 
+        fun renderTickerView(travelTickerViewModel: TravelTickerViewModel)
+
     }
 
     interface Presenter : FlightBaseBookingContract.Presenter<View> {
@@ -156,6 +159,8 @@ interface FlightBookingContract {
         fun onInsuranceBenefitExpanded()
 
         fun renderUi(flightBookingCartData: FlightBookingCartData?, isFromSavedInstance: Boolean)
+
+        fun fetchTickerData()
 
     }
 
