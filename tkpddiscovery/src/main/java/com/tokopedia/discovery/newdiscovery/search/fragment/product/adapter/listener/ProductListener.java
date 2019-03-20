@@ -24,4 +24,6 @@ public interface ProductListener extends EmptyStateListener {
     void onQuickFilterSelected(Option option);
 
     boolean isQuickFilterSelected(Option option);
+
+    void onProductImpressed(ProductItem item, int adapterPosition);
 }
