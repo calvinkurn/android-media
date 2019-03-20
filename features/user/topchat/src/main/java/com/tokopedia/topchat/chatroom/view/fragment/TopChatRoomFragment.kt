@@ -37,6 +37,9 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
+import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -692,8 +695,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun onVoucherClicked(voucherCode: String) {
+    override fun onVoucherCopyClicked(voucherCode: String) {
         analytics.eventVoucherCopyClicked(voucherCode)
+    }
+
+    override fun onVoucherClicked(data: MerchantVoucherViewModel) {
+        analytics.eventVoucherThumbnailClicked()
+        activity?.let {
+            val intent = MerchantVoucherDetailActivity.createIntent(it, data.voucherId,
+                    data, shopId.toString())
+            startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
+        }
     }
 
     override fun onGoToSecurityInfo(url: String) {

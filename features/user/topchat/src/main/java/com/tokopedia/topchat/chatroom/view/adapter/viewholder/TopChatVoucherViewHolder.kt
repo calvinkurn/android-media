@@ -30,6 +30,11 @@ class TopChatVoucherViewHolder(itemView: View, var voucherListener: TopChatVouch
         itemView.findViewById<MerchantVoucherView>(R.id.merchantVoucherView).setData(data)
 
         setupChatBubbleAlignment(isOwner, viewModel)
+
+
+        itemView.setOnClickListener {
+            voucherListener.onVoucherClicked(data)
+        }
     }
 
     private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherViewModel){
@@ -73,7 +78,7 @@ class TopChatVoucherViewHolder(itemView: View, var voucherListener: TopChatVouch
         return isOwner
     }
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        voucherListener.onVoucherClicked(merchantVoucherViewModel.voucherCode)
+        voucherListener.onVoucherCopyClicked(merchantVoucherViewModel.voucherCode)
     }
 
     companion object {
