@@ -15,6 +15,8 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
@@ -143,6 +145,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
                         } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
                             list.add(mappingDynamicTopAds(channel));
+                        } else if(channel.getLayout().equals("home_widget")) {
+                            list.add(new BusinessUnitViewModel(context.getString(R.string.digital_widget_title)));
                         } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
                             list.add(mappingSpotlight(homeData.getSpotlight()));
                         } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)

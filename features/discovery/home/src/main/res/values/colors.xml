@@ -18,4 +18,8 @@
     <color name="home_ticker_text_color">#ae31353b</color>
     <color name="home_ticker_info_lengkap_color">#03ac0e</color>
     <color name="home_banner_lihat_semua_color">#03ac0e</color>
+    <color name="label_yellow">#ff8b00</color>
+    <color name="label_pink">#ef164c</color>
+    <color name="label_green">#03ac0e</color>
+    <color name="label_blue">#009bff</color>
 </resources>

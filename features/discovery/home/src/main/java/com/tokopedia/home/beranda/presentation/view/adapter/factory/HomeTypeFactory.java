@@ -4,6 +4,8 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
@@ -31,6 +33,9 @@ public interface HomeTypeFactory {
 
     int type(DigitalsViewModel digitalsViewModel);
 
+    int type(BusinessUnitViewModel businessUnitViewModel);
+
+    int type(CategorySectionViewModel categorySectionViewModel);
     int type(UseCaseIconSectionViewModel useCaseIconSectionViewModel);
 
     int type(DynamicIconSectionViewModel dynamicIconSectionViewModel);

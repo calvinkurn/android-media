@@ -516,6 +516,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     public void getFeedTabData() {
-        getFeedTabUseCase.execute(new GetFeedTabsSubscriber(getView()));
+//        getFeedTabUseCase.execute(new GetFeedTabsSubscriber(getView()));
     }
 }

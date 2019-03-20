@@ -29,11 +29,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.ThreeGrid
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsDynamicChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessUnitViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
@@ -86,7 +89,12 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
 
     @Override
     public int type(DigitalsViewModel digitalsViewModel) {
-        return DigitalsViewHolder.LAYOUT;
+        return DigitalsViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(BusinessUnitViewModel businessUnitViewModel) {
+        return BusinessUnitViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -164,8 +172,12 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new BannerViewHolder(view, listener);
         else if (type == TickerViewHolder.LAYOUT)
             viewHolder = new TickerViewHolder(view, listener);
-        else if (type == DigitalsViewHolder.LAYOUT)
+        else if (type == DigitalsViewHolder.Companion.getLAYOUT())
             viewHolder = new DigitalsViewHolder(listener, fragmentManager, view);
+        else if (type == BusinessUnitViewHolder.Companion.getLAYOUT())
+            viewHolder = new BusinessUnitViewHolder(fragmentManager, view);
+        else if (type == CategorySectionViewHolder.LAYOUT)
+            viewHolder = new CategorySectionViewHolder(view, listener);
         else if (type == UseCaseIconSectionViewHolder.LAYOUT)
             viewHolder = new UseCaseIconSectionViewHolder(view, listener);
         else if (type == DynamicIconSectionViewHolder.LAYOUT)
