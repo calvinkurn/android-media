@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -139,10 +140,14 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getStatusBarHeight(Promise promise) {
+        int result = 25;
         if(getCurrentActivity() != null) {
-            promise.resolve(DisplayMetricUtils.getStatusBarHeight(getCurrentActivity()));
-        } else {
-            promise.reject(new RuntimeException("Context is null"));
+            int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                result = (int) (context.getResources().getDimensionPixelSize(resourceId) / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+            }
         }
+
+        promise.resolve(result);
     }
 }
