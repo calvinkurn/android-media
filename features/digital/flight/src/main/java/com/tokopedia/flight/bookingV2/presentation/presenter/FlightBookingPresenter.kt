@@ -233,7 +233,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
         if (checked) {
             val index = insurances.indexOf(insurance)
-            if (index != -1) {
+            if (index == -1) {
                 insurances.add(insurance)
             }
         } else {
