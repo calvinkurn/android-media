@@ -411,7 +411,6 @@ class ProductDetailTracking() {
         TrackApp.getInstance()?.appsFlyer?.run {
             sendEvent(eventName,
                 mutableMapOf<String, Any>(
-                    "advertising_id" to id,
                     "af_description" to "productView",
                     "af_content_id" to productInfo.basic.id,
                     "af_content_type" to "product",
