@@ -222,14 +222,12 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickDynamicIcons(Context context, String title) {
+    public static void eventEnhancedClickDynamicIconHomePage(Context context,
+                                                                Map<String, Object> data) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_DYNAMIC_ICONS,
-                    title
+            tracker.sendEnhancedEcommerce(
+                    data
             );
         }
     }
@@ -288,6 +286,14 @@ public class HomePageTracking {
 
     public static void eventEnhancedImpressionDynamicChannelHomePage(Context context,
                                                                      Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventEnhancedImpressionDynamicIconHomePage(Context context,
+                                                                  Map<String, Object> data) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEnhancedEcommerce(data);
