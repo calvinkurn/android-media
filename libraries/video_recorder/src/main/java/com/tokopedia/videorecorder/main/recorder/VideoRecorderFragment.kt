@@ -119,9 +119,11 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
         if (cameraView.isTakingVideo) {
             vwRecord.hide()
+            btnFlip.show()
             cameraView.stopVideo()
             timer.cancel()
         } else {
+            btnFlip.hide()
             vwRecord.show()
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
             cameraView.takeVideo(file, DURATION_MAX)

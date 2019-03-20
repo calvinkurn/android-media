@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.MenuItem
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg
@@ -37,7 +38,6 @@ class VideoPickerActivity: BaseSimpleActivity(),
         const val VIDEOS_RESULT = "video_result"
         const val VIDEO_MAX_SIZE = 50000L //50 mb
         const val VIDEO_MAX_DURATION_MS = 60000 //ms = 1 minute
-        const val VIDEO_MAX_DURATION_SECOND = 60
 
         //flag
         var isVideoSourcePicker = false
@@ -159,7 +159,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
         if (videoPreview.duration > VIDEO_MAX_DURATION_MS) {
             //prepared
             val resultFile = FileUtils.videoPath(FileUtils.RESULT_DIR).absolutePath
-            val trimQuery = VideoUtils.ffmegCommand(VIDEO_MAX_DURATION_SECOND, videoPath, resultFile)
+            val trimQuery = VideoUtils.ffmegCommand(videoPath, resultFile)
 
             exceptionHandler {
                 ffmpeg.execute(trimQuery, object : ExecuteBinaryResponseHandler() {
@@ -214,6 +214,11 @@ class VideoPickerActivity: BaseSimpleActivity(),
         vpVideoPicker.hide()
         tabPicker.hide()
         btnDone.show()
+        if (isVideoSourcePicker) {
+            btnDone.text = getString(R.string.videopicker_btn_back)
+        } else {
+            btnDone.text = getString(R.string.videopicker_btn_delete)
+        }
     }
 
     override fun onVideoVisible() {

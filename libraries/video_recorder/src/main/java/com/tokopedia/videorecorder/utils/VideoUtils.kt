@@ -22,12 +22,16 @@ object VideoUtils {
         )
     }
 
-    fun ffmegCommand(duration: Int?, sourceFile: String, resultFile: String): Array<String> {
+    fun ffmegCommand(sourceFile: String, resultFile: String): Array<String> {
         return arrayOf(
+                "-ss",
+                "00:00:00",
                 "-i",
                 sourceFile,
-                "-vf",
-                "trim=0:$duration",
+                "-to",
+                "00:01:00",
+                "-c",
+                "copy",
                 resultFile
         )
     }

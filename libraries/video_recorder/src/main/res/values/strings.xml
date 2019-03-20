@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Video Recorder</string>
     <string name="title_record_duration">Durasi Merekam</string>
-    <string name="delete_recording">Hapus Rekaman</string>
     <string name="menu_video_picker">Ambil Video</string>
     <string name="menu_recorder">Recorder</string>
     <string name="duration_default">01:00</string>
     <string name="duration_format">%1$s:%2$s</string>
     <string name="videopicker_title">Tambah Video</string>
     <string name="videopicker_error_message">Terjadi Kesalahan. Silahkan coba lagi.</string>
+    <string name="videopicker_btn_back">Kembali</string>
+    <string name="videopicker_btn_delete">Hapus Rekaman</string>
 </resources>
