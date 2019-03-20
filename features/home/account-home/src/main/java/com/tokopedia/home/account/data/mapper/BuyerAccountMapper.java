@@ -111,6 +111,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_ELIGIBLE)) {
 
+            //TODO milhamj
 //            tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
 //            tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
 //            tokopediaPayViewModel.setRightSaldo(true);
