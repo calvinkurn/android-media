@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.viewmodel.NotifItemViewModel
+import kotlinx.android.synthetic.main.item_notif_center.view.*
 
 /**
  * @author by milhamj on 30/08/18.

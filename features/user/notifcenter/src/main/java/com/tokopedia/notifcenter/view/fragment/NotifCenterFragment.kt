@@ -23,6 +23,7 @@ import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.presenter.NotifCenterPresenter
 import com.tokopedia.notifcenter.view.viewmodel.NotifFilterViewModel
 import com.tokopedia.notifcenter.view.viewmodel.NotifItemViewModel
+import kotlinx.android.synthetic.main.fragment_notif_center.*
 import javax.inject.Inject
 
 /**
