@@ -69,7 +69,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-        val imageList = viewModel.completeImageList.map { it.path?: "" }
+        val imageList = ArrayList(viewModel.completeImageList.map { it.path?: "" })
 
         if (viewModel.completeImageList.first().type == MediaType.VIDEO) {
             btnPlay.visibility = View.VISIBLE

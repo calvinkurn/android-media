@@ -5,7 +5,6 @@ import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by hendry on 24/05/18.
@@ -20,11 +19,11 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
 
     // to show initial selected image onlist;
     // for example: ("sdcard/image.jpg", "sdcard/image2.jpg"}
-    private List<String> initialSelectedImagePathList;
+    private ArrayList<String> initialSelectedImagePathList;
 
     // show the placeholder when the image is not selected.
     // for ex: (R.drawable.primary_example, R.drawable.product_in_use}
-    private List<Integer> placeholderImagePathResList;
+    private ArrayList<Integer> placeholderImagePathResList;
 
     public static ImagePickerMultipleSelectionBuilder getDefaultBuilder(){
         return new ImagePickerMultipleSelectionBuilder(
@@ -34,7 +33,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
                 DEFAULT_MAXIMUM_NO_PICK);
     }
 
-    public ImagePickerMultipleSelectionBuilder(List<String> initialSelectedImagePathList,
+    public ImagePickerMultipleSelectionBuilder(ArrayList<String> initialSelectedImagePathList,
                                                @DrawableRes ArrayList<Integer> placeholderImagePathResList,
                                                int primaryImageStringRes,
                                                int maximumNoPick) {
@@ -57,7 +56,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         return canReorder;
     }
 
-    private void setInitialSelectedImagePathList(List<String> initialSelectedImagePathList){
+    private void setInitialSelectedImagePathList(ArrayList<String> initialSelectedImagePathList){
         if (initialSelectedImagePathList == null) {
             this.initialSelectedImagePathList = new ArrayList<>();
         } else {
@@ -69,7 +68,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         return maximumNoPick;
     }
 
-    public List<String> getInitialSelectedImagePathList() {
+    public ArrayList<String> getInitialSelectedImagePathList() {
         return initialSelectedImagePathList;
     }
 
@@ -77,7 +76,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         return primaryImageStringRes;
     }
 
-    public List<Integer> getPlaceholderImagePathResList() {
+    public ArrayList<Integer> getPlaceholderImagePathResList() {
         return placeholderImagePathResList;
     }
 

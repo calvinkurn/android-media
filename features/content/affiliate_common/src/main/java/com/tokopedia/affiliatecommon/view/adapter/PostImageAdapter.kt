@@ -60,7 +60,7 @@ class PostImageAdapter(var clickListener: ImageClickListener?) : PagerAdapter() 
 
     override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
 
-    fun setList(imageList: List<String>) {
+    fun setList(imageList: ArrayList<String>) {
         this.imageList.clear()
         this.imageList.addAll(imageList)
         notifyDataSetChanged()
