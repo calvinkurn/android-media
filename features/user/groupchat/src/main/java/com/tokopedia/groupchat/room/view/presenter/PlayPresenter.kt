@@ -135,10 +135,12 @@ class PlayPresenter @Inject constructor(
         var settings = settingGroupChat ?: SettingGroupChat()
         processUrl(userSession, channelId, groupChatToken, settings)
         connectWebSocket(userSession.userId, userSession.deviceId, userSession.accessToken, settings, groupChatToken)
+        Log.d("connectev", groupChatToken)
     }
 
     private fun connectWebSocket(userId: String?, deviceId: String?, accessToken: String, settings: SettingGroupChat, groupChatToken: String) {
 
+        mSubscription?.clear()
         if (mSubscription == null || mSubscription!!.isUnsubscribed) {
             mSubscription = CompositeSubscription()
         }
