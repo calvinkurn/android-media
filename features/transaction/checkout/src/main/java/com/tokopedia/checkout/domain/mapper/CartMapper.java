@@ -107,21 +107,16 @@ public class CartMapper implements ICartMapper {
             shopGroupData.setCartString(shopGroup.getCartString());
             shopGroupData.setHasPromoList(shopGroup.getHasPromoList());
 
-            VoucherOrdersItemData voucherOrdersItemData;
-            // for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
-                // kasi kondisi if unique_id == cart_string
-
-            if (cartDataListResponse.getAutoapplyStack() != null) {
-                if (cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
-                    if (cartDataListResponse.getAutoapplyStack().getVoucherOrders().size() > 0) {
-                        VoucherOrdersItem voucherOrdersItem = cartDataListResponse.getAutoapplyStack().getVoucherOrders().get(0);
-                        voucherOrdersItemData = new VoucherOrdersItemData();
+            if (cartDataListResponse.getAutoapplyStack() != null && cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
+                for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
+                    if (voucherOrdersItem.getUniqueId().equals(shopGroup.getCartString())) {
+                        VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
                         voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
                         voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
                         voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
                         voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
-                        // voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
-                        voucherOrdersItemData.setShopId(shopGroup.getShop().getShopId());
+                        voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
+//                        voucherOrdersItemData.setShopId(shopGroup.getShop().getShopId());
                         voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
                         voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
                         voucherOrdersItemData.setType(voucherOrdersItem.getType());
