@@ -300,26 +300,6 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
 
         }
-
-
-//        if (!TextUtils.isEmpty(editable)) {
-//            inputAmount.removeTextChangedListener(this);
-//            inputAmount.setText(formattedString);
-//            inputAmount.addTextChangedListener(this);
-//            inputAmount.setSelection(inputAmount.getText().length());
-//
-//            if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
-//                long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
-//                ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
-//                        wallet.getPointBalance()));
-//                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
-//                        String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
-//            } else {
-//                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
-//                ovoPoints.setText(formattedString);
-//            }
-//
-//        }
     }
 
     @Override
