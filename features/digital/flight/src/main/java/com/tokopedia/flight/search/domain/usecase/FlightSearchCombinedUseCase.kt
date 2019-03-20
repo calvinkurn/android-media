@@ -30,7 +30,7 @@ class FlightSearchCombinedUseCase @Inject constructor(
             o.delay(pollDelay[0].toLong(), TimeUnit.SECONDS)
             o.flatMap { Observable.timer(pollDelay[0].toLong(), TimeUnit.SECONDS) }
         }.takeUntil {
-            (!it.isNeedRefresh) || (numOfAttempts[0] >= it.maxRetry)
+            (!it.isNeedRefresh) && (numOfAttempts[0] >= it.maxRetry)
         }.last().map { true }
     }
 
