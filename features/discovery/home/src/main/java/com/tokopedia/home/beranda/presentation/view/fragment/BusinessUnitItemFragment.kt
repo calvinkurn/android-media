@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -22,6 +22,8 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_recyclerview_business_widget.*
 import javax.inject.Inject
 
@@ -30,6 +32,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
     lateinit var viewModel: ItemTabBusinessViewModel
 
     lateinit var itemTab: HomeWidget.TabItem
@@ -142,11 +145,11 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-//        viewModel.homeWidget.observe(
-//                this, Observer { when (it) {
-//            is Success -> onSuccessGetList(it.data)
-//            is Fail -> onErrorGetList(it.throwable)
-//        } })
+        viewModel.homeWidget.observe(
+                this, Observer { when (it) {
+            is Success -> onSuccessGetList(it.data)
+            is Fail -> onErrorGetList(it.throwable)
+        } })
     }
 
     private fun onSuccessGetList(data: HomeWidget) {

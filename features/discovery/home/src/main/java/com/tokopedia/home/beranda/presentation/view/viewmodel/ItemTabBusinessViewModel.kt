@@ -61,21 +61,21 @@ class ItemTabBusinessViewModel @Inject constructor(
             if (data.getError(HomeWidget.Data::class.java) == null ||
                     data.getError(HomeWidget.Data::class.java).isEmpty()) {
                 if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
-//                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
-                    listener.onSuccessGetData(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+//                    listener.onSuccessGetData(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
                 } else {
-//                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
-                    listener.onErrorGetData(ResponseErrorException("local handling error"))
+                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
+//                    listener.onErrorGetData(ResponseErrorException("local handling error"))
                 }
             } else {
                 val message = data.getError(HomeWidget.Data::class.java)[0].message
-//                homeWidget.value = Fail(ResponseErrorException(message))
-                listener.onErrorGetData(ResponseErrorException(message))
+                homeWidget.value = Fail(ResponseErrorException(message))
+//                listener.onErrorGetData(ResponseErrorException(message))
             }
 
         }){
-//            homeWidget.value = Fail(it)
-            listener.onErrorGetData(it)
+            homeWidget.value = Fail(it)
+//            listener.onErrorGetData(it)
         }
     }
 
