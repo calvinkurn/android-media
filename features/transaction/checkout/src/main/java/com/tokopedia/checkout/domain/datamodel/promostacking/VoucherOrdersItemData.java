@@ -19,8 +19,6 @@ public class VoucherOrdersItemData implements Parcelable {
     private int cashbackWalletAmount;
     private int discountAmount;
     private String invoiceDescription;
-    private String state;
-    private String messageText;
     private String variant;
     private String titleDescription;
     private MessageData messageData;
@@ -40,8 +38,6 @@ public class VoucherOrdersItemData implements Parcelable {
         cashbackWalletAmount = in.readInt();
         discountAmount = in.readInt();
         invoiceDescription = in.readString();
-        state = in.readString();
-        messageText = in.readString();
         variant = in.readString();
         titleDescription = in.readString();
         messageData = in.readParcelable(MessageData.class.getClassLoader());
@@ -60,8 +56,6 @@ public class VoucherOrdersItemData implements Parcelable {
         dest.writeInt(cashbackWalletAmount);
         dest.writeInt(discountAmount);
         dest.writeString(invoiceDescription);
-        dest.writeString(state);
-        dest.writeString(messageText);
         dest.writeString(variant);
         dest.writeString(titleDescription);
         dest.writeParcelable(messageData, flags);
@@ -170,22 +164,6 @@ public class VoucherOrdersItemData implements Parcelable {
 
     public void setInvoiceDescription(String invoiceDescription) {
         this.invoiceDescription = invoiceDescription;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getMessageText() {
-        return messageText;
-    }
-
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
     }
 
     public String getVariant() { return variant; }

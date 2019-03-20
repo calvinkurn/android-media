@@ -14,11 +14,13 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
+import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.CartDetail;
@@ -121,9 +123,8 @@ public class CartMapper implements ICartMapper {
                         voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
                         voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
-                        voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
-                        voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
                         voucherOrdersItemData.setVariant(voucherOrdersItem.getType());
+                        voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                         shopGroupData.setVoucherOrdersItemData(voucherOrdersItemData);
                         break;
                     }
@@ -318,8 +319,7 @@ public class CartMapper implements ICartMapper {
                         voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
                         voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
-                        voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
-                        voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+                        voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
                     autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
@@ -336,6 +336,8 @@ public class CartMapper implements ICartMapper {
 
         return cartListData;
     }
+
+
 
     @Override
     public CartListData convertToCartItemDataList(Context context, CartMultipleAddressDataListResponse cartDataListResponse) {
@@ -522,8 +524,7 @@ public class CartMapper implements ICartMapper {
             voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
             voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
             voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
-            voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
-            voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+            voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
             voucherOrdersItemDataList.add(voucherOrdersItemData);
         }
         autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
@@ -575,5 +576,14 @@ public class CartMapper implements ICartMapper {
         UpdateAndRefreshCartListData updateAndRefreshCartListData = new UpdateAndRefreshCartListData();
         updateAndRefreshCartListData.setUpdateCartData(updateCartData);
         return null;
+    }
+
+    @Override
+    public MessageData convertToMessageData(Message message) {
+        MessageData messageData = new MessageData();
+        messageData.setColor(message.getColor());
+        messageData.setState(message.getState());
+        messageData.setText(message.getText());
+        return messageData;
     }
 }
