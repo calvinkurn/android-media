@@ -21,6 +21,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 
 import rx.subscriptions.CompositeSubscription;
@@ -135,9 +136,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
             } else {
                 tickerPromoStackingCheckoutView.enableView();
+                int shopId = 0;
                 if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
                     tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
                     VoucherOrdersItemData voucherOrdersItemData = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData();
+                    shopId = voucherOrdersItemData.getShopId();
                     String state = voucherOrdersItemData.getState();
                     if (state.equalsIgnoreCase("red")) {
                         tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.FAILED);
@@ -153,25 +156,27 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
                     tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
                 }
+                int finalShopId = shopId;
                 tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
                     @Override
                     public void onClickUsePromo() {
                         // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
-                        actionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
+                        // actionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
+                        actionListener.onCartPromoUseVoucherMerchantPromoClicked(finalShopId +"");
                     }
 
                     @Override
                     public void onResetPromoDiscount() {
                         // actionListener.onCartPromoCancelVoucherPromoMerchantClicked(voucherOrdersItemData, position);
 
-                        actionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
+                        // actionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
                         // actionListener.onCartPromoMerchantTrackingCancelled(promoDataMerchant, position);
                     }
 
                     @Override
                     public void onClickDetailPromo() {
                         // actionListener.onClickDetailPromoMerchant(promoDataMerchant, position);
-                        actionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
+                        // actionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
                     }
 
                     @Override

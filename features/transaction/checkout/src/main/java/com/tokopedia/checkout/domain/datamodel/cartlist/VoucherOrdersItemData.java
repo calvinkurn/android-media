@@ -22,6 +22,7 @@ public class VoucherOrdersItemData implements Parcelable {
     private String state;
     private String messageText;
     private String variant;
+    private String titleDescription;
 
     public VoucherOrdersItemData() {
     }
@@ -146,6 +147,14 @@ public class VoucherOrdersItemData implements Parcelable {
 
     public void setVariant(String variant) { this.variant = variant; }
 
+    public String getTitleDescription() {
+        return titleDescription;
+    }
+
+    public void setTitleDescription(String titleDescription) {
+        this.titleDescription = titleDescription;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -167,6 +176,7 @@ public class VoucherOrdersItemData implements Parcelable {
         dest.writeString(state);
         dest.writeString(messageText);
         dest.writeString(variant);
+        dest.writeString(titleDescription);
     }
 
     protected VoucherOrdersItemData(Parcel in) {
@@ -184,5 +194,6 @@ public class VoucherOrdersItemData implements Parcelable {
         state = in.readString();
         messageText = in.readString();
         variant = in.readString();
+        titleDescription = in.readString();
     }
 }

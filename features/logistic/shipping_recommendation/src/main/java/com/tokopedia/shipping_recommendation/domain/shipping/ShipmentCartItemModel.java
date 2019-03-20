@@ -3,6 +3,7 @@ package com.tokopedia.shipping_recommendation.domain.shipping;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -76,6 +77,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean isBlackbox;
     private int addressId;
 
+    private PromoStackingData promoStackingData;
+
     public ShipmentCartItemModel() {
     }
 
@@ -121,6 +124,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         shopBadge = in.readString();
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
+        promoStackingData = in.readParcelable(PromoStackingData.class.getClassLoader());
     }
 
     @Override
@@ -166,6 +170,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(shopBadge);
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
+        dest.writeParcelable(promoStackingData, flags);
     }
 
     @Override
@@ -227,6 +232,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
+        newShipmentCartItemModel.setPromoStackingData(shipmentCartItemModel.getPromoStackingData());
 
         return newShipmentCartItemModel;
     }
@@ -559,6 +565,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.addressId = addressId;
     }
 
+    public PromoStackingData getPromoStackingData() {
+        return promoStackingData;
+    }
+
+    public void setPromoStackingData(PromoStackingData promoStackingData) {
+        this.promoStackingData = promoStackingData;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -593,6 +607,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .append(getIsBlackbox(), that.getIsBlackbox())
                 .append(getAddressId(), that.getAddressId())
+                .append(getPromoStackingData(), that.getPromoStackingData())
                 .isEquals();
     }
 
@@ -624,6 +639,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isUseCourierRecommendation())
                 .append(getIsBlackbox())
                 .append(getAddressId())
+                .append(getPromoStackingData())
                 .toHashCode();
     }
 }

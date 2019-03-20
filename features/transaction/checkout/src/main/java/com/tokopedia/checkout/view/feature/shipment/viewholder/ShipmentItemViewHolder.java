@@ -524,11 +524,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         tvShopName.setText(shipmentCartItemModel.getShopName());
 
+        int shopId = shipmentCartItemModel.getShopId();
         tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
             @Override
             public void onClickUsePromo() {
                 // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
-                mActionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
+                // mActionListener.onCartPromoUseVoucherMerchantPromoClickedTest();
+                mActionListener.onCartPromoUseVoucherMerchantPromoClicked(shopId+"");
             }
 
             @Override
@@ -553,6 +555,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         // tickerMerchantPromoCheckoutView.setState(promoDataMerchant.getState());
         // tickerMerchantPromoCheckoutView.setDesc(promoDataMerchant.getDescription());
         // tickerMerchantPromoCheckoutView.setTitle(promoDataMerchant.getTitle());
+
         tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
         tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
     }

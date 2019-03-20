@@ -589,6 +589,26 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onCartPromoUseVoucherMerchantPromoClicked(String shopId) {
+        if (getFragmentManager() != null) {
+            MerchantVoucherListBottomsheetParamData data = new MerchantVoucherListBottomsheetParamData.BundleBuilder()
+                    .shopId(shopId)
+                    .checkoutType("ocs")
+                    .build();
+            MerchantVoucherListBottomSheetFragment.newInstance(data)
+                    .show(getFragmentManager(), null);
+
+            // test clash bottomsheet
+            /*ClashBottomSheetFragment bottomSheet = ClashBottomSheetFragment.newInstance();
+            bottomSheet.show(getFragmentManager(), null);*/
+
+            // test totalbenefit bottomsheet
+            /*TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
+            bottomSheet.show(getFragmentManager(), null);*/
+        }
+    }
+
+    @Override
     public void onCartPromoUseVoucherMerchantPromoClickedTest() {
         if (getFragmentManager() != null) {
             MerchantVoucherListBottomsheetParamData data = new MerchantVoucherListBottomsheetParamData.BundleBuilder()

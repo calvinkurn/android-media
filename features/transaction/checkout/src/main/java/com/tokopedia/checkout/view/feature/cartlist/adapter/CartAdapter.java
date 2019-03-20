@@ -121,8 +121,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (getItemViewType(position) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             final CartShopViewHolder holderView = (CartShopViewHolder) holder;
             final CartShopHolderData data = (CartShopHolderData) cartDataList.get(position);
-            // final PromoDataMerchant dataMerchant = (PromoDataMerchant) cartDataList.get(position);
-            // holderView.bindData(dataMerchant, data, position);
             holderView.bindData(data, position);
         } else if (getItemViewType(position) == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             final CartPromoSuggestionViewHolder holderView = (CartPromoSuggestionViewHolder) holder;

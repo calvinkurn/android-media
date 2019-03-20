@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtecti
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
@@ -75,6 +76,10 @@ public class ShipmentDataConverter {
         recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
 
         return recipientAddress;
+    }
+
+    private PromoStackingData createPromoStackingDataMerchantModel() {
+
     }
 
     public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData) {

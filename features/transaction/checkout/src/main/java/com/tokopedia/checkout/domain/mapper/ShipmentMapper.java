@@ -121,6 +121,7 @@ public class ShipmentMapper implements IShipmentMapper {
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                         voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
                         voucherOrdersItemData.setState(voucherOrdersItem.getMessage().getState());
+                        voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
                     autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);

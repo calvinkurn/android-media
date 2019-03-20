@@ -3,8 +3,8 @@ package com.tokopedia.merchantvoucher.common.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailFragment
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
-import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
+import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment
 import com.tokopedia.shop.common.di.ShopCommonModule
 import dagger.Component
 

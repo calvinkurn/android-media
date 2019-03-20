@@ -4,14 +4,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 
 /**
  * Created by fwidjaja on 10/03/19.
  */
-class MerchantVoucherListBottomSheetAdapter(onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MerchantVoucherListBottomSheetAdapter(onMerchantVoucherViewListener: MerchantVoucherViewUsed.OnMerchantVoucherViewListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener? = null
+    private var onMerchantVoucherViewListener: MerchantVoucherViewUsed.OnMerchantVoucherViewListener? = null
     private var merchantBottomSheetViewModelList = ArrayList<MerchantVoucherViewModel>()
 
     init {

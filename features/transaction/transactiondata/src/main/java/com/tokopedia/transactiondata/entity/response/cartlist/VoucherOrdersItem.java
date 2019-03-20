@@ -42,6 +42,9 @@ public class VoucherOrdersItem{
 	@SerializedName("message")
 	private Message message;
 
+	@SerializedName("title_description")
+	private String titleDescription;
+
 	public void setCartId(int cartId){
 		this.cartId = cartId;
 	}
@@ -138,6 +141,14 @@ public class VoucherOrdersItem{
 		return message;
 	}
 
+	public String getTitleDescription() {
+		return titleDescription;
+	}
+
+	public void setTitleDescription(String titleDescription) {
+		this.titleDescription = titleDescription;
+	}
+
 	@Override
  	public String toString(){
 		return 
@@ -153,7 +164,8 @@ public class VoucherOrdersItem{
 			",is_po = '" + isPo + '\'' + 
 			",invoice_description = '" + invoiceDescription + '\'' + 
 			",type = '" + type + '\'' + 
-			",message = '" + message + '\'' + 
+			",message = '" + message + '\'' +
+			",titleDescription = '" + titleDescription + '\'' +
 			"}";
 		}
 }
