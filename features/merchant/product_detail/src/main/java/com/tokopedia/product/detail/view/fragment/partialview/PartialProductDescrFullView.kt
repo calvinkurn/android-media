@@ -46,16 +46,22 @@ class PartialProductDescrFullView private constructor(private val view: View,
                 LinearLayoutManager.HORIZONTAL, false)
         view.youtube_scroll.addItemDecoration(SpaceItemDecoration(view.context.resources.getDimensionPixelSize(R.dimen.dp_16),
                 LinearLayoutManager.HORIZONTAL))
-        view.youtube_scroll.adapter = YoutubeThumbnailAdapter(productInfo?.videos?.toMutableList() ?: mutableListOf()){
-            _, index -> productInfo?.videos?.run { gotoVideoPlayer(this, index)}
-        }
     }
 
     fun renderData(data: ProductInfo){
         with(view){
             productInfo = data
-            youtube_scroll.adapter.notifyDataSetChanged()
-            
+            if (productInfo?.videos?.isNotEmpty() == true) {
+                view.youtube_scroll.visible()
+                view.youtube_scroll.adapter = YoutubeThumbnailAdapter(productInfo?.videos?.toMutableList()
+                    ?: mutableListOf()) { _, index ->
+                    productInfo?.videos?.run { gotoVideoPlayer(this, index) }
+                }
+                view.youtube_scroll.adapter.notifyDataSetChanged()
+            } else {
+                view.youtube_scroll.gone()
+            }
+
             txt_weight.text = context.getString(R.string.template_weight, data.basic.weight.numberFormatted(),
                     if (data.basic.weightUnit.toLowerCase() == KG) LABEL_KG else LABEL_GRAM )
             txt_success_rate.text = String.format("%s%%", data.txStats.successRate.numberFormatted())
