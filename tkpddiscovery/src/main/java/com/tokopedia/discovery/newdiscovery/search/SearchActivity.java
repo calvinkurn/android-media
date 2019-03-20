@@ -151,6 +151,24 @@ public class SearchActivity extends DiscoveryActivity
     protected void onResume() {
         super.onResume();
         unregisterShake();
+
+        if(!hasSearchData()) {
+            showAutoCompleteOnResume();
+        }
+    }
+
+    private boolean hasSearchData() {
+        return searchSectionPagerAdapter != null
+                && searchSectionPagerAdapter.getCount() > 0;
+    }
+
+    private void showAutoCompleteOnResume() {
+        if(searchView.isSearchOpen()) {
+            searchView.searchQueryTextViewRequestFocus();
+        }
+        else {
+            searchView.showSearch(true, false);
+        }
     }
 
     public static Intent newInstance(Context context, Bundle bundle) {

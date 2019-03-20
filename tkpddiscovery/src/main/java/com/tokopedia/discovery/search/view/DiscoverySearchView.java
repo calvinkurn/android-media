@@ -727,8 +727,8 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         //Request Focus
         mSearchSrcTextView.setText(lastQuery);
-        mSearchSrcTextView.requestFocus();
-        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
+        searchQueryTextViewRequestFocus();
+
         if (animate) {
             setVisibleWithAnimation();
 
@@ -740,6 +740,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         mIsSearchOpen = true;
+    }
+
+    public void searchQueryTextViewRequestFocus() {
+        mSearchSrcTextView.requestFocus();
+        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
     }
 
     public void showSearch(boolean animate, int tab) {
