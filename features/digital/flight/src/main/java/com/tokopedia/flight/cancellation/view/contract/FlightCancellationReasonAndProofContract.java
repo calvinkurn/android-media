@@ -55,12 +55,6 @@ public interface FlightCancellationReasonAndProofContract {
 
         void renderAttachment();
 
-        void setUploadingPosition(int position);
-
-        int getUploadingPosition();
-
-        void updateUploadingProgress(long percentage);
-
         void disableNextButton();
 
         void enableNextButton();

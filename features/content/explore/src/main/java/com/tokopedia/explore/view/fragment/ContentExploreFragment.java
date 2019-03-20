@@ -104,7 +104,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE);
     }
 
     @Nullable
@@ -201,6 +200,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private void loadData() {
         if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null) {
             if (!hasLoadedOnce) {
+                performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE);
                 presenter.getExploreData(true);
                 hasLoadedOnce = !hasLoadedOnce;
             }

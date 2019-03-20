@@ -228,7 +228,7 @@
             android:id="@+id/iv_official"
             android:layout_width="@dimen/med_dp"
             android:layout_height="@dimen/med_dp"
-            app:srcCompat="@drawable/ic_official_store_pdp"
+            android:src="@drawable/ic_badge_shop_official"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 
