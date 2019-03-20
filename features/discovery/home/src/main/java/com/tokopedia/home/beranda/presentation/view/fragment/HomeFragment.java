@@ -62,6 +62,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
@@ -242,6 +243,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         setStatusBarAlpha(0f);
 
         recyclerView = view.findViewById(R.id.list);
+        if (recyclerView.getItemDecorationCount() == 0) {
+            recyclerView.addItemDecoration(new HomeRecyclerDecoration(
+                    getResources().getDimensionPixelSize(R.dimen.dp_8)
+            ));
+        }
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
@@ -501,16 +507,24 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     setStatusBarAlpha(alpha);
                 }
 
+                int positiveOffset = offset*-1;
+                int offsetBeforeHide = (appBarLayout.getTotalScrollRange()-
+                        getResources().getDimensionPixelSize(R.dimen.dp_36));
+                if (positiveOffset >= offsetBeforeHide) {
+                    homeMainToolbar.hideShadow();
+                }
+
                 if (isAppBarFullyCollapsed(offset) &&
                         homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
-                    homeMainToolbar.hideShadow();
+//                    homeMainToolbar.hideShadow();
                     viewFeedShadow.setVisibility(View.VISIBLE);
                 }
 
                 if (!isAppBarFullyCollapsed(offset) &&
-                        homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
+                        homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE() &&
+                        positiveOffset <= offsetBeforeHide) {
                     homeMainToolbar.showShadow();
-                    viewFeedShadow.setVisibility(View.INVISIBLE);
+                    viewFeedShadow.setVisibility(View.GONE);
                 }
 
                 if (isAppBarFullyExpanded(offset)) {
