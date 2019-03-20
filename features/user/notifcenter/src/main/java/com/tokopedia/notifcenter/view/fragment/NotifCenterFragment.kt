@@ -23,7 +23,6 @@ import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.presenter.NotifCenterPresenter
 import com.tokopedia.notifcenter.view.viewmodel.NotifFilterViewModel
 import com.tokopedia.notifcenter.view.viewmodel.NotifItemViewModel
-import kotlinx.android.synthetic.main.fragment_notif_center.*
 import javax.inject.Inject
 
 /**
@@ -135,8 +134,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         filterBtn.show()
     }
 
-    override fun openRedirectUrl(url: String) {
-        analytics.trackClickList()
+    override fun openRedirectUrl(url: String, notifId: String) {
+        analytics.trackClickList(notifId)
         activity?.let {
             notifCenterRouter.openRedirectUrl(it, url)
         }
