@@ -32,6 +32,7 @@ import com.tokopedia.broadcast.message.view.activity.BroadcastMessageCreateActiv
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageListView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageListPresenter
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.track.TrackApp
 import kotlinx.android.synthetic.main.fragment_broadcast_message_list.*
 import javax.inject.Inject
 
@@ -121,13 +122,9 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
     }
 
     private fun gotoCreateBroadcast() {
-        activity?.application?.let {
-            if (it is BroadcastMessageRouter){
-                it.sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CREATE_CLICK,"")
-            }
-        }
         context?.let {
             startActivityForResult(BroadcastMessageCreateActivity.createIntent(it),
                 REQUEST_ADD_BROADCAST_MESSAGE) }

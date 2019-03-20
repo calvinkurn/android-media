@@ -68,6 +68,7 @@ import com.tokopedia.sessioncommon.data.model.SecurityPojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
@@ -631,18 +632,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
 
         analytics.trackEventSuccessLoginSosmed(loginMethod)
-        if (activity != null) {
-            (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    loginMethod
-            )
-        }
+        TrackApp.getInstance()?.moEngage?.setMoEUserAttributesLogin(
+            userSession.userId,
+            userSession.name,
+            userSession.email,
+            userSession.phoneNumber,
+            userSession.isGoldMerchant,
+            userSession.shopName,
+            userSession.shopId,
+            userSession.hasShop(),
+            loginMethod
+        )
         onSuccessLogin()
     }
 
@@ -652,18 +652,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         analytics.trackLoginPhoneNumberSuccess()
         analytics.eventSuccessLogin(actionLoginMethod)
-        if (activity != null) {
-            (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    actionLoginMethod
-            )
-        }
+
+        TrackApp.getInstance()?.moEngage?.setMoEUserAttributesLogin(
+            userSession.userId,
+            userSession.name,
+            userSession.email,
+            userSession.phoneNumber,
+            userSession.isGoldMerchant,
+            userSession.shopName,
+            userSession.shopId,
+            userSession.hasShop(),
+            actionLoginMethod
+        )
         onSuccessLogin()
     }
 
@@ -803,18 +803,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         analytics.eventSuccessLoginEmail()
         analytics.trackClickOnLoginButtonSuccess()
-        if (activity != null) {
-            (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    LoginRegisterAnalytics.LABEL_EMAIL
-            )
-        }
+        TrackApp.getInstance()?.moEngage?.setMoEUserAttributesLogin(
+            userSession.userId,
+            userSession.name,
+            userSession.email,
+            userSession.phoneNumber,
+            userSession.isGoldMerchant,
+            userSession.shopName,
+            userSession.shopId,
+            userSession.hasShop(),
+            LoginRegisterAnalytics.LABEL_EMAIL
+        )
 
         onSuccessLogin()
     }

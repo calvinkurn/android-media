@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 project.ext {
@@ -31,6 +31,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.seller)
@@ -39,20 +41,20 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.parcelerApi
-    annotationProcessor  rootProject.ext.miscDependencies.parceler
+    kapt  rootProject.ext.miscDependencies.parceler
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"

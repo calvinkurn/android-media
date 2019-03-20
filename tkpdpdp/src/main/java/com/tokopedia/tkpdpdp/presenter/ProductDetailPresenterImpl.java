@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.appsflyer.AFInAppEventType;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -31,11 +30,9 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
@@ -585,7 +582,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             value.put(AppEventTracking.MOENGAGE.SHOP_NAME, productData.getShopInfo().getShopName());
         }
 
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.OPEN_PRODUCTPAGE);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_PRODUCTPAGE);
     }
 
     @Override

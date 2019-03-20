@@ -71,6 +71,7 @@ import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -273,8 +274,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             registerButton.setImageResource(R.drawable.ic_email);
             registerButton.setOnClickListener(v -> {
                 analytics.eventClickRegisterEmail();
-                ((LoginRegisterRouter) getActivity().getApplicationContext())
-                        .eventMoRegistrationStart(LoginRegisterAnalytics.LABEL_EMAIL);
+                TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL);
                 goToRegisterEmailPage();
 
             });
@@ -573,9 +573,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private void onRegisterFacebookClick() {
         if (getActivity() != null) {
             analytics.eventClickRegisterFacebook(getActivity().getApplicationContext());
-            ((LoginRegisterRouter) getActivity().getApplicationContext())
-                    .eventMoRegistrationStart(LoginRegisterAnalytics.LABEL_FACEBOOK);
-
+            TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK);
             presenter.getFacebookCredential(this, callbackManager);
         }
 
@@ -584,9 +582,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private void onRegisterGooglelick() {
         if (getActivity() != null) {
             analytics.eventClickRegisterGoogle(getActivity().getApplicationContext());
-            ((LoginRegisterRouter) getActivity().getApplicationContext())
-                    .eventMoRegistrationStart(LoginRegisterAnalytics.LABEL_GMAIL);
-
+            TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL);
             Intent intent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(intent, REQUEST_LOGIN_GOOGLE);
         }
@@ -597,8 +593,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         if (getActivity() != null) {
             if (getFragmentManager() != null) {
                 analytics.eventClickRegisterWebview(getActivity().getApplicationContext(), discoverItemViewModel.getName());
-                ((LoginRegisterRouter) getActivity().getApplicationContext())
-                        .eventMoRegistrationStart(LoginRegisterAnalytics.LABEL_WEBVIEW);
+                TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_WEBVIEW);
                 WebViewLoginFragment webViewLoginFragment = WebViewLoginFragment.createInstance(
                         discoverItemViewModel.getUrl(), discoverItemViewModel.getName());
                 webViewLoginFragment.setTargetFragment(RegisterInitialFragment.this, REQUEST_REGISTER_WEBVIEW);

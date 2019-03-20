@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import org.json.JSONObject;
 
@@ -41,19 +42,23 @@ public abstract class ContextAnalytics implements Analytics {
 
     }
 
+    public void setMoEUserAttributesLogin(@Nullable String userId,@Nullable String name,@Nullable String email,
+                                          @Nullable String phoneNumber, boolean isGoldMerchant,
+                                          @Nullable String shopName,@Nullable  String shopId, boolean hasShop,
+                                          @Nullable String loginMethod) {}
+
     /**
      * used by moenagage
      * @param medium
      */
     public void sendRegistrationStartEvent(String medium){}
 
-    public void sendRegisterEvent(String fullName, String mobileNo){}
+    public void sendMoengageRegisterEvent(String fullName, String mobileNo){}
+    public void sendAppsflyerRegisterEvent(String userId, String method){}
 
     public void setUserData(Map<String, Object> value, final String source){}
 
-    public void sendEvent(JSONObject data, final String eventName){}
-
-    public void sendEvent(Map<String, Object> data, final String eventName){}
+    public void sendTrackEvent(Map<String, Object> data, final String eventName){}
 
     public void logoutEvent(){}
 

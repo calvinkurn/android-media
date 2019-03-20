@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by nisie on 10/2/18.
@@ -540,10 +538,8 @@ public class LoginRegisterAnalytics {
                 LABEL_EMAIL
         ));
 
-        ((LoginRegisterRouter) applicationContext)
-                .sendAFCompleteRegistrationEvent(userId, "Email");
-
-        ((LoginRegisterRouter) applicationContext).eventMoRegister(name, phone);
+        TrackApp.getInstance().getAppsFlyer().sendAppsflyerRegisterEvent(String.valueOf(userId), "Email");
+        TrackApp.getInstance().getMoEngage().sendMoengageRegisterEvent(name, phone);
         ((LoginRegisterRouter) applicationContext).sendBranchRegisterEvent(email, phone);
 
     }

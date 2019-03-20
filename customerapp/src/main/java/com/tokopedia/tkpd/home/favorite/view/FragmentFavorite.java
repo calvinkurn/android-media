@@ -15,20 +15,17 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
@@ -245,7 +242,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                 AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(getActivity()),
                 AppEventTracking.MOENGAGE.IS_FAVORITE_EMPTY, dataFavorite.size() == 0
         );
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.OPEN_FAVORITE);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_FAVORITE);
     }
 
     @Override

@@ -8,12 +8,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
+import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcastMessageComponent
 import com.tokopedia.broadcast.message.view.fragment.BroadcastMessageCreateFragment
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.track.TrackApp
 
-class BroadcastMessageCreateActivity: BaseSimpleActivity(), HasComponent<BroadcastMessageComponent> {
+class BroadcastMessageCreateActivity : BaseSimpleActivity(), HasComponent<BroadcastMessageComponent> {
     private val router: BroadcastMessageRouter? by lazy {
         application as? BroadcastMessageRouter
     }
@@ -25,10 +27,10 @@ class BroadcastMessageCreateActivity: BaseSimpleActivity(), HasComponent<Broadca
     override fun getNewFragment() = BroadcastMessageCreateFragment()
 
     override fun getComponent() = DaggerBroadcastMessageComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).getBaseAppComponent()).build()
+        (application as BaseMainApplication).getBaseAppComponent()).build()
 
     override fun onBackPressed() {
-        if (fragment is BroadcastMessageCreateFragment && (fragment as BroadcastMessageCreateFragment).isShowDialogWhenBack){
+        if (fragment is BroadcastMessageCreateFragment && (fragment as BroadcastMessageCreateFragment).isShowDialogWhenBack) {
             Dialog(this, Dialog.Type.PROMINANCE).apply {
                 this.setTitle(getString(R.string.dialog_title_cancel_create_bm))
                 setDesc(getString(R.string.dialog_descr_cancel_create_bm))
@@ -45,12 +47,11 @@ class BroadcastMessageCreateActivity: BaseSimpleActivity(), HasComponent<Broadca
     }
 
     fun sendGTM(isOk: Boolean) {
-        router?.run {
-            sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CANCEL,
-                    if (isOk) BroadcastMessageConstant.VALUE_GTM_EVENT_LABEL_CANCEL_YES
-                    else BroadcastMessageConstant.VALUE_GTM_EVENT_LABEL_CANCEL_NO)
-        }
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+            BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
+            BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
+            BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CANCEL,
+            if (isOk) BroadcastMessageConstant.VALUE_GTM_EVENT_LABEL_CANCEL_YES
+            else BroadcastMessageConstant.VALUE_GTM_EVENT_LABEL_CANCEL_NO)
     }
 }

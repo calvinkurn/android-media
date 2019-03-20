@@ -17,13 +17,11 @@ import com.tokopedia.abstraction.common.network.exception.ResponseDataNullExcept
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.feedplus.data.pojo.TopAd;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
@@ -575,7 +573,7 @@ public class WishListImpl implements WishList {
             if (data.getShop() != null) {
                 value.put(AppEventTracking.MOENGAGE.SHOP_ID, data.getShop().getId());
             }
-            TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.PRODUCT_REMOVED_FROM_WISHLIST);
+            TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.PRODUCT_REMOVED_FROM_WISHLIST);
         }
     }
 

@@ -6,20 +6,25 @@ import android.text.TextUtils;
 
 import com.moe.pushlibrary.MoEHelper;
 import com.moe.pushlibrary.PayloadBuilder;
-import com.moe.pushlibrary.utils.MoEHelperConstants;
 import com.moengage.core.MoEngage;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
+
 import static com.moe.pushlibrary.utils.MoEHelperConstants.*;
-import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.*;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_ID;
+import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_NAME;
 
 public class MoengageAnalytics extends ContextAnalytics {
     public MoengageAnalytics(Context context) {
@@ -41,6 +46,24 @@ public class MoengageAnalytics extends ContextAnalytics {
                         .optOutTokenRegistration()
                         .build();
         MoEngage.initialise(moEngage);
+    }
+
+    @Override
+    public void setMoEUserAttributesLogin(String userId, String name, String email, String phoneNumber, boolean isGoldMerchant, String shopName, String shopId, boolean hasShop, String loginMethod) {
+        Map<String, Object> value = new HashMap<>();
+        value.put(USER_ATTRIBUTE_UNIQUE_ID, userId);
+        value.put(USER_ATTRIBUTE_USER_NAME, name);
+        value.put(USER_ATTRIBUTE_USER_EMAIL, email);
+        value.put(IS_GOLD_MERCHANT, isGoldMerchant);
+        value.put(SHOP_NAME, shopName);
+        value.put(SHOP_ID, shopId);
+        setUserData(value, "LOGIN");
+
+        Map<String, Object> value2 = new HashMap<>();
+        value.put(AppEventTracking.MOENGAGE.USER_ID, userId);
+        value.put(AppEventTracking.MOENGAGE.MEDIUM, loginMethod);
+        value.put(AppEventTracking.MOENGAGE.EMAIL, email);
+        sendTrackEvent(value2, AppEventTracking.EventMoEngage.LOGIN);
     }
 
     @Override
@@ -80,16 +103,16 @@ public class MoengageAnalytics extends ContextAnalytics {
 
     /**
      * will be eliminate soon
-     *
+     * refer to setUserProfile(String... customerWrapper)
      * @param customerWrapper
      */
     @Deprecated
     public void setUserProfile(CustomerWrapper customerWrapper) {
-        setUserProfile(customerWrapper.getCustomerId(), customerWrapper.getFullName(), customerWrapper.getEmailAddress());
+        setMoengageUserProfile(customerWrapper.getCustomerId(), customerWrapper.getFullName(), customerWrapper.getEmailAddress());
     }
 
     @SuppressWarnings("RestrictedApi")
-    public void setUserProfile(String... customerWrapper) {
+    public void setMoengageUserProfile(String... customerWrapper) {
         Preconditions.checkArrayElementsNotNull(customerWrapper, "please pass 3 value, customerId, fullName, emailAddress");
 
         final String customerId = customerWrapper[0];
@@ -106,28 +129,20 @@ public class MoengageAnalytics extends ContextAnalytics {
 
     @Override
     public void sendRegistrationStartEvent(String medium) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium);
-        sendEvent(
-                new PayloadBuilder()
-                        .putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium)
-                        .build()
-                , AppEventTracking.EventMoEngage.REG_START
-        );
+        Map<String, Object> map = new HashMap<>();
+        map.put(AppEventTracking.MOENGAGE.MEDIUM, medium);
+        sendTrackEvent(map, AppEventTracking.EventMoEngage.REG_START);
     }
 
-    public void sendRegisterEvent(String fullName, String mobileNo) {
+    public void sendMoengageRegisterEvent(String fullName, String mobileNo) {
         CommonUtils.dumper("MoEngage check user " + fullName);
-        sendEvent(
-                new PayloadBuilder()
-                        .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
-                        .putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo)
-                        .build()
-                , AppEventTracking.EventMoEngage.REG_COMPL
-        );
+        Map<String, Object> map = new HashMap<>();
+        map.put(AppEventTracking.MOENGAGE.NAME, fullName);
+        map.put(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo);
+        sendTrackEvent(map, AppEventTracking.EventMoEngage.REG_COMPL);
     }
 
-    public void setUserData(Map<String, Object> value, final String source){
+    public void setUserData(Map<String, Object> value, final String source) {
         MoEHelper helper = MoEHelper.getInstance(getContext());
 
         if (checkNull(value.get(USER_ATTRIBUTE_USER_NAME)))
@@ -137,41 +152,41 @@ public class MoengageAnalytics extends ContextAnalytics {
             helper.setFirstName((String) value.get(USER_ATTRIBUTE_USER_FIRST_NAME));
 
         if (checkNull(value.get(USER_ATTRIBUTE_UNIQUE_ID)))
-            helper.setUniqueId((String)value.get(USER_ATTRIBUTE_UNIQUE_ID));
+            helper.setUniqueId((String) value.get(USER_ATTRIBUTE_UNIQUE_ID));
 
         if (checkNull(value.get(USER_ATTRIBUTE_USER_EMAIL)))
-            helper.setEmail((String)value.get(USER_ATTRIBUTE_USER_EMAIL));
+            helper.setEmail((String) value.get(USER_ATTRIBUTE_USER_EMAIL));
 
         if (checkNull(value.get(USER_ATTRIBUTE_USER_MOBILE)))
-            helper.setNumber((String)value.get(USER_ATTRIBUTE_USER_MOBILE));
+            helper.setNumber((String) value.get(USER_ATTRIBUTE_USER_MOBILE));
 
-        if (!TextUtils.isEmpty((String)value.get(USER_ATTRIBUTE_USER_BDAY))) {
-            helper.setBirthDate((String)value.get(USER_ATTRIBUTE_USER_BDAY));
+        if (!TextUtils.isEmpty((String) value.get(USER_ATTRIBUTE_USER_BDAY))) {
+            helper.setBirthDate((String) value.get(USER_ATTRIBUTE_USER_BDAY));
         }
 
         if (checkNull(value.get(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT)))
             helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.get(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT)));
 
         if (checkNull(value.get(AppEventTracking.MOENGAGE.SHOP_ID)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, (String)value.get(AppEventTracking.MOENGAGE.SHOP_ID));
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, (String) value.get(AppEventTracking.MOENGAGE.SHOP_ID));
 
         if (checkNull(value.get(AppEventTracking.MOENGAGE.SHOP_NAME)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, (String)value.get(AppEventTracking.MOENGAGE.SHOP_NAME));
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, (String) value.get(AppEventTracking.MOENGAGE.SHOP_NAME));
 
         if (checkNull(value.get(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, (String)value.get(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM));
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, (String) value.get(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM));
 
         if (checkNull(value.get(AppEventTracking.MOENGAGE.TOPADS_AMT)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, (String)value.get(AppEventTracking.MOENGAGE.TOPADS_AMT));
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, (String) value.get(AppEventTracking.MOENGAGE.TOPADS_AMT));
 
         if (checkNull(value.get(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, (boolean)value.get(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE));
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, (boolean) value.get(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE));
 
         if (checkNull(value.get(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, (String)value.get(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE));
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, (String) value.get(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE));
 
         if (checkNull(value.get(AppEventTracking.MOENGAGE.SHOP_SCORE)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, (String)value.get(AppEventTracking.MOENGAGE.SHOP_SCORE));
+            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, (String) value.get(AppEventTracking.MOENGAGE.SHOP_SCORE));
 
         if (checkNull(value.get(USER_ATTRIBUTE_USER_GENDER)))
             helper.setGender(value.get(USER_ATTRIBUTE_USER_GENDER).equals("1") ? "male" : "female");
@@ -232,22 +247,33 @@ public class MoengageAnalytics extends ContextAnalytics {
         MoEHelper.getInstance(getContext()).setUserAttribute("push_preference", status);
     }
 
-    public void sendEvent(JSONObject data, final String eventName) {
+    private void sendTrackEvent(JSONObject data, final String eventName) {
         MoEHelper.getInstance(getContext()).trackEvent(eventName, data);
     }
 
-    public void sendEvent(Map<String, Object> data, final String eventName){
+    public void sendTrackEvent(Map<String, Object> data, final String eventName) {
         PayloadBuilder builder = new PayloadBuilder();
-        for(Map.Entry<String, Object> entry : data.entrySet()){
+        if (data.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
             Object value = entry.getValue();
 
-            if(value instanceof JSONArray){
+            if (value instanceof JSONArray) {
                 builder.putAttrJSONArray(entry.getKey(), (JSONArray) entry.getValue());
-            }else {
+            } else {
                 builder.putAttrString(entry.getKey(), String.valueOf(entry.getValue()));
             }
         }
-        sendEvent(builder.build(), eventName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        builder.putAttrString(AppEventTracking.MOENGAGE.PLATFORM, "android");
+        sendTrackEvent(builder.build(), eventName);
+    }
+
+    //just aliasing
+    @Override
+    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
+        sendTrackEvent(eventValue, eventName);
     }
 
     private boolean checkNull(Object o) {

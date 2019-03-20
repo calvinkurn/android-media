@@ -1,6 +1,7 @@
 package com.tokopedia.trackingoptimizer
 
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_ACTION
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_CATEGORY
@@ -30,7 +31,6 @@ fun decreaseCounter() {
 }
 
 fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingRepository,
-              trackingOptimizerRouter: TrackingOptimizerRouter?,
               onFinished: (() -> Unit)) {
     atomicInteger.getAndIncrement()
     coroutineScope.launch {
@@ -40,7 +40,7 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
         }
         eeFullModelList?.run {
             map {
-                sendTrack(trackingOptimizerRouter, it)
+                sendTrack(it)
             }
         }
         val eeModelList = trackingRepository.getAllEE()
@@ -49,7 +49,7 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
         }
         eeModelList?.run {
             map {
-                sendTrack(trackingOptimizerRouter, it)
+                sendTrack(it)
             }
         }
 
@@ -60,10 +60,7 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
     }
 }
 
-fun sendTrack(trackingOptimizerRouter: TrackingOptimizerRouter?, it: TrackingDbModel) {
-    if (trackingOptimizerRouter == null) {
-        return
-    }
+fun sendTrack(it: TrackingDbModel) {
     var hasSent = false
     val map = mutableMapOf<String, Any?>()
     val eventModel: EventModel = GsonSingleton.instance.fromJson(it.event,
@@ -86,11 +83,11 @@ fun sendTrack(trackingOptimizerRouter: TrackingOptimizerRouter?, it: TrackingDbM
         }
         if (enhanceECommerceMap != null && enhanceECommerceMap.isNotEmpty()) {
             map.putAll(enhanceECommerceMap)
-            trackingOptimizerRouter.sendEnhanceECommerceTracking(map)
+            TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(map)
             hasSent = true
         }
     }
     if (!hasSent) {
-        trackingOptimizerRouter.sendEventTracking(map)
+        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(map)
     }
 }

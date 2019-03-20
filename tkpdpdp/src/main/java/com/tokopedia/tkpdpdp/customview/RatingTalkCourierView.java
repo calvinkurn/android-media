@@ -1,22 +1,18 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.tkpdpdp.DescriptionActivityNew;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
@@ -196,7 +192,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
            value.put(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, data.getProductImages().get(0).getImageSrc());
         }
 
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.CLICKED_DISKUSI_PDP);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.CLICKED_DISKUSI_PDP);
     }
 
     private class ClickReview implements OnClickListener {
@@ -249,6 +245,6 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
                 && data.getProductImages().get(0) != null) {
             value.put(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, data.getProductImages().get(0).getImageSrc());
         }
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.CLICKED_ULASAN_PDP);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.CLICKED_ULASAN_PDP);
     }
 }

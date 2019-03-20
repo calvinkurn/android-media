@@ -42,19 +42,16 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListener;
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
@@ -89,7 +86,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
@@ -1077,7 +1073,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 AppEventTracking.MOENGAGE.CHANNEL, channel,
                 AppEventTracking.MOENGAGE.SOURCE, AppEventTracking.MOENGAGE.PDP_SHARE
         );
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
     }
 
 

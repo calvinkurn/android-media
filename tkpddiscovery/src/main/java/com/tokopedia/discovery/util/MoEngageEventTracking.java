@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.track.TrackApp;
 
@@ -52,6 +51,6 @@ public class MoEngageEventTracking {
                 AppEventTracking.MOENGAGE.SUBCATEGORY_ID, subCategoryId,
                 AppEventTracking.MOENGAGE.SUBCATEGORY, subCategoryName
         );
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.CAT_SCREEN_OPEN);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.CAT_SCREEN_OPEN);
     }
 }

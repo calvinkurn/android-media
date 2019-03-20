@@ -2,40 +2,20 @@ package com.tokopedia.core.analytics;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.perf.metrics.Trace;
-import com.moe.pushlibrary.PayloadBuilder;
-import com.moengage.push.PushManager;
 import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.model.Hotlist;
-import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.utils.RouterUtils;
-import com.tokopedia.core.home.model.HotListModel;
-import com.tokopedia.core.network.entity.wishlist.Wishlist;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.model.AccountsParameter;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +74,7 @@ public class TrackingUtils{
         Map<String, Object> value = DataLayer.mapOf(
                 AppEventTracking.MOENGAGE.CATEGORY, categoryName
         );
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.CLICK_MAIN_CATEGORY_ICON);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.CLICK_MAIN_CATEGORY_ICON);
     }
 
     public static void sendMoEngageFavoriteEvent(Context context, String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
@@ -105,7 +85,7 @@ public class TrackingUtils{
                 AppEventTracking.MOENGAGE.SHOP_URL_SLUG, shopDomain,
                 AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, isShopOfficaial
         );
-        TrackApp.getInstance().getMoEngage().sendEvent(value,
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value,
                 isFollowed ?
                         AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
                         AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE);
@@ -115,7 +95,7 @@ public class TrackingUtils{
         Map<String, Object> value = DataLayer.mapOf(
                 AppEventTracking.MOENGAGE.CHANNEL, channel
         );
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
     }
 
     public static void fragmentBasedAFEvent(Context context,String tag) {

@@ -26,6 +26,7 @@ import com.tokopedia.broadcast.message.view.widget.PreviewProductWidget
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.track.TrackApp
 import kotlinx.android.synthetic.main.fragment_broadcast_message_preview.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -100,11 +101,9 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
     private fun getTimeNow() = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
     private fun submitMessage() {
-        router?.run {
-            sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_SUBMIT, "")
-        }
         mutationModel?.let {presenter.sendBlastMessage(it)}
     }
 

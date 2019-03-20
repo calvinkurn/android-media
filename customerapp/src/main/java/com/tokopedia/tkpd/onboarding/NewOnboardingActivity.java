@@ -1,18 +1,13 @@
 package com.tokopedia.tkpd.onboarding;
 
-import android.content.Context;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -20,16 +15,11 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import com.appsflyer.AppsFlyerConversionListener;
-import com.appsflyer.AppsFlyerLib;
+
 import com.google.android.gms.tagmanager.DataLayer;
-import com.moe.pushlibrary.PayloadBuilder;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 
 import com.github.paolorotolo.appintro.AppIntro;
@@ -89,7 +79,7 @@ public class NewOnboardingActivity extends AppIntro {
             Map<String, Object> value = DataLayer.mapOf(
                     AppEventTracking.MOENGAGE.PARTNER_SOURCE, "source_apk"
             );
-            TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.PARTNER_REFERRAL);
+            TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.PARTNER_REFERRAL);
         }
     }
 

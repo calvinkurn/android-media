@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.gcm.utils.RouterUtils;
@@ -25,9 +24,6 @@ import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 import java.util.Map;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by m.normansyah on 28/10/2015.
@@ -101,7 +97,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 AppEventTracking.MOENGAGE.HOTLIST_NAME, hotListModel.getHotListName(),
                 AppEventTracking.MOENGAGE.HOTLIST_ID, hotListModel.getHotListId()
         );
-        TrackApp.getInstance().getMoEngage().sendEvent(value, AppEventTracking.EventMoEngage.CLICK_HOTLIST);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.CLICK_HOTLIST);
 
     }
 

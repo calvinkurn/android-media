@@ -34,6 +34,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import kotlinx.android.synthetic.main.fragment_broadcast_message_create.*
@@ -105,11 +106,9 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         list_product_upload.adapter = productAdapter
         list_product_upload.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         switch_upload_product.setOnCheckedChangeListener { _, isChecked ->
-            router?.run {
-                sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+            TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_TOGGLE_ATTACH_PRODUCT, "")
-            }
             isShowDialogWhenBack = true
             list_product_upload.visibility = if (isChecked) View.VISIBLE else View.GONE
             needEnabledSubmitButton()
@@ -129,12 +128,10 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
             if (switch_upload_product.isChecked && productIds.isEmpty()){
                 ToasterError.make(view, getString(R.string.empty_attached_product),
                         BaseToaster.LENGTH_INDEFINITE).setAction(R.string.OK){
-                    router?.run {
-                        sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
+                    TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_ERROR_ATTACH_PRODUCT,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_LABEL_ERROR_OK)
-                    }
                 }.show()
             } else {
                 moveToPreview()
@@ -168,11 +165,9 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     }
 
     private fun openImagePicker() {
-        router?.run {
-            sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CLICK_IMG_UPLOAD, "")
-        }
         context?.let {
             val builder = ImagePickerBuilder(getString(R.string.bm_choose_picture),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_INSTAGRAM),
@@ -191,11 +186,9 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null){
             if (requestCode == REQUEST_CODE_IMAGE) {
-                router?.run {
-                    sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+                TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                             BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                             BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_PICK_IMG, "")
-                }
 
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {

@@ -21,5 +21,4 @@ public interface SessionRouter {
 
     boolean isLoginInactivePhoneLinkEnabled();
 
-    void sendAFCompleteRegistrationEvent(int userId,String methodName);
 }

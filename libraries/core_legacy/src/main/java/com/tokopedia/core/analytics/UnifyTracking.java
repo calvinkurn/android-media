@@ -665,15 +665,6 @@ public class UnifyTracking extends TrackingUtils {
         )));
     }
 
-    public static void sendAFCompleteRegistrationEvent(Context context, int userId, String methodName) {
-        Map<String, Object> eventVal = new HashMap<>();
-        eventVal.put("custom_prop1", "registration");
-        eventVal.put("os", "Android");
-        eventVal.put(CUSTOMER_USER_ID, userId);
-        eventVal.put(REGSITRATION_METHOD, methodName);
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
-    }
-
     public static void eventClickAddProduct(Context context, String eventCategory, String eventLabel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_ADD_PRODUCT,
@@ -693,15 +684,6 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventPersonalizedClicked(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
-                AppEventTracking.Category.PUSH_NOTIFICATION,
-                AppEventTracking.Action.OPEN,
-                label
-        ).getEvent());
-    }
-
-    public static void eventOpenTopadsPushNotification(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
@@ -819,39 +801,6 @@ public class UnifyTracking extends TrackingUtils {
                 action,
                 eventLabel
         ).getEvent());
-    }
-
-    public static void eventTopAds(Context context, String category, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.TOP_ADS_SELLER_APP,
-                category,
-                AppEventTracking.Action.CLICK,
-                eventLabel
-        ).getEvent());
-    }
-
-    public static void eventTopAdsProduct(Context context, String eventLabel) {
-        eventTopAds(context, AppEventTracking.Category.TOP_ADS_PRODUCT, eventLabel);
-    }
-
-    public static void eventTopAdsShop(Context context, String eventLabel) {
-        eventTopAds(context, AppEventTracking.Category.TOP_ADS_SHOP, eventLabel);
-    }
-
-    public static void eventTopAdsProductShop(Context context, String eventLabel) {
-        eventTopAds(context, AppEventTracking.Category.TOP_ADS_PRODUCT_SHOP, eventLabel);
-    }
-
-    public static void eventTopAdsProductAddBalance(Context context) {
-        eventTopAdsProductShop(context, AppEventTracking.EventLabel.ADD_BALANCE);
-    }
-
-    public static void eventTopAdsShopDatePeriod(Context context, String periodOption) {
-        eventTopAdsProduct(context, AppEventTracking.EventLabel.PERIOD_OPTION + periodOption);
-    }
-
-    public static void eventTopAdsShopChooseDateCustom(Context context) {
-        eventTopAdsProduct(context, AppEventTracking.EventLabel.DATE_CUSTOM);
     }
 
     public static void eventCheckoutGoldMerchant(Context context, String eventCategory, String eventLabel) {
@@ -1197,11 +1146,4 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
-    public static void eventTopAdsProductStatisticBar(Context context, String statisticOption) {
-        eventTopAdsProduct(context, AppEventTracking.EventLabel.STATISTIC_BAR + statisticOption);
-    }
-
-    public static void eventTopAdsShopStatisticBar(Context context, String statisticOption) {
-        eventTopAdsShop(context, AppEventTracking.EventLabel.STATISTIC_BAR + statisticOption);
-    }
 }
