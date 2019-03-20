@@ -27,7 +27,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     private int transactionId;
 
     @DeepLink(OVO_THANKS_TRANSACTION_URL)
-    public static Intent getContactUsIntent(Context context, Bundle bundle) {
+    public static Intent getOvoPayQrIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, QrOvoPayTxDetailActivity.class)
                 .setData(uri.build())
@@ -36,22 +36,24 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (getIntent().getStringExtra(TRANSFER_ID) != null
-                && getIntent().getStringExtra(TRANSACTION_ID) != null) {
-            transferId = Integer.parseInt(getIntent().getStringExtra(TRANSFER_ID));
+        LocalCacheHandler localCache = new LocalCacheHandler(getApplicationContext(), LOCAL_CACHE_ID);
+        String saveInstanceCacheId = localCache.getString(CACHE_ID);
+        SaveInstanceCacheManager saveInstanceCacheManager = new SaveInstanceCacheManager(
+                getApplicationContext(), savedInstanceState);
+        if (savedInstanceState == null)
+            saveInstanceCacheManager = new SaveInstanceCacheManager(getApplicationContext(), saveInstanceCacheId);
+        String txnId = saveInstanceCacheManager.get(TRANSACTION_ID, String.class);
+        String tfId = saveInstanceCacheManager.get(TRANSFER_ID, String.class);
+        if (txnId != null)
+            transactionId = Integer.parseInt(txnId);
+        else if(getIntent().getStringExtra(TRANSACTION_ID) != null){
             transactionId = Integer.parseInt(getIntent().getStringExtra(TRANSACTION_ID));
+        }
+        if (getIntent().getStringExtra(TRANSFER_ID) != null) {
+            transferId = Integer.parseInt(getIntent().getStringExtra(TRANSFER_ID));
         } else {
-            LocalCacheHandler localCache = new LocalCacheHandler(getApplicationContext(), LOCAL_CACHE_ID);
-            String saveInstanceCacheId = localCache.getString(CACHE_ID);
-            SaveInstanceCacheManager saveInstanceCacheManager = new SaveInstanceCacheManager(
-                    getApplicationContext(), savedInstanceState);
-            if (savedInstanceState == null)
-                saveInstanceCacheManager = new SaveInstanceCacheManager(getApplicationContext(), saveInstanceCacheId);
-
-            if (saveInstanceCacheManager.getString(TRANSFER_ID, null) != null)
-                transferId = Integer.parseInt(saveInstanceCacheManager.getString(TRANSFER_ID, null));
-            if (saveInstanceCacheManager.getString(TRANSACTION_ID, null) != null)
-                transactionId = Integer.parseInt(saveInstanceCacheManager.getString(TRANSACTION_ID, null));
+            if (tfId != null)
+                transferId = Integer.parseInt(tfId);
         }
 
         super.onCreate(savedInstanceState);
@@ -72,7 +74,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
 
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent().getIntExtra(CODE, -1) == SUCCESS) {
+        if (getIntent().getIntExtra(CODE, SUCCESS) == SUCCESS) {
             updateTitle(getString(R.string.oqr_success_transaction));
             return QrTxSuccessDetailFragment.createInstance(transferId, transactionId);
         } else {

@@ -84,4 +84,5 @@ public class RemoteConfigKey {
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
 
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
+    public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
 }

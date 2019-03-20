@@ -26,6 +26,9 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.ovo.model.BarcodeResponseData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
@@ -117,6 +120,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         } else {
             moveToLoginPage(REQUEST_PAY_WITH_QR);
         }
+    }
+
+    @Override
+    public boolean getRemoteConfigForOvoPay() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        return remoteConfig.getBoolean(RemoteConfigKey.OVO_ENABLE_FLAG, false);
     }
 
     private void moveToLoginPage(int requestCode) {

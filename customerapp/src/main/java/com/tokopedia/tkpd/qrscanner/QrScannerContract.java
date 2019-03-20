@@ -41,6 +41,8 @@ public interface QrScannerContract {
         void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash);
 
         void goToPaymentPage(String imeiNumber, BarcodeResponseData barcodeData);
+
+        boolean getRemoteConfigForOvoPay();
     }
 
     interface Presenter extends CustomerPresenter<View> {

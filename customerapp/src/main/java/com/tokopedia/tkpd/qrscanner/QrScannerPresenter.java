@@ -86,7 +86,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     public void onBarCodeScanComplete(String barcodeData) {
         Uri uri = Uri.parse(barcodeData);
         String host = uri.getHost();
-
+        boolean isOvoPayQrEnabled = getView().getRemoteConfigForOvoPay();
         if (host != null && uri.getPathSegments() != null) {
             if (host.equals(QrScannerTypeDef.PAYMENT_QR_CODE)) {
                 onScanCompleteGetInfoQrPayment(uri.getPathSegments().get(0));
@@ -99,7 +99,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
-        } else if (barcodeData.toLowerCase().contains(OVO_TEXT)
+        } else if (isOvoPayQrEnabled && barcodeData.toLowerCase().contains(OVO_TEXT)
                 || barcodeData.toLowerCase().contains(GPNR_TEXT)) {
             checkBarCode(barcodeData);
         } else {

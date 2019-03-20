@@ -199,16 +199,16 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             setProgressButton();
             if (response.getStatus().equalsIgnoreCase(PENDING_STATUS)) {
                 try {
-                    Intent intent = OvoWebViewActivity
-                            .getWebViewIntent(getActivity(), URLDecoder.decode(
-                                    response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
-
                     LocalCacheHandler localCacheHandler = new LocalCacheHandler(
                             getActivity().getApplicationContext(), LOCAL_CACHE_ID);
                     cacheManager.put(TRANSACTION_ID, response.getTransactionId());
                     cacheManager.put(TRANSFER_ID, response.getTransferId());
                     localCacheHandler.putString(CACHE_ID, cacheManager.getId());
                     localCacheHandler.applyEditor();
+                    Intent intent = OvoWebViewActivity
+                            .getWebViewIntent(getActivity(), URLDecoder.decode(
+                                    response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
+
                     startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -275,19 +275,23 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             inputAmount.removeTextChangedListener(this);
             long amountInLong = Utils.convertToCurrencyLongFromString(editable.toString());
             String formattedString = Utils.convertToCurrencyStringWithoutRp(amountInLong);
-            inputAmount.setText(formattedString);
-            inputAmount.addTextChangedListener(this);
-            inputAmount.setSelection(inputAmount.getText().length());
-
-            if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
-                long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
-                ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
-                        wallet.getPointBalance()));
-                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
-                        String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
+            if (amountInLong > MAX_AMOUNT) {
+                inputAmount.setText(Utils.convertToCurrencyStringWithoutRp(amountInLong / 10));
             } else {
-                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
-                ovoPoints.setText(formattedString);
+                inputAmount.setText(formattedString);
+                inputAmount.addTextChangedListener(this);
+                inputAmount.setSelection(inputAmount.getText().length());
+
+                if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
+                    long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
+                    ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
+                            wallet.getPointBalance()));
+                    ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
+                            String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
+                } else {
+                    ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
+                    ovoPoints.setText(formattedString);
+                }
             }
         }
     }
