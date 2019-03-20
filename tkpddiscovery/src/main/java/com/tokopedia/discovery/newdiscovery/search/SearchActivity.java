@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
@@ -164,11 +165,16 @@ public class SearchActivity extends DiscoveryActivity
 
     private void showAutoCompleteOnResume() {
         if(searchView.isSearchOpen()) {
-            searchView.searchQueryTextViewRequestFocus();
+            forceShowKeyBoard();
         }
         else {
             searchView.showSearch(true, false);
         }
+    }
+
+    private void forceShowKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     public static Intent newInstance(Context context, Bundle bundle) {
