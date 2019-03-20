@@ -165,6 +165,8 @@ public class SearchActivity extends DiscoveryActivity
 
     private void showAutoCompleteOnResume() {
         if(searchView.isSearchOpen()) {
+            searchView.searchTextViewRequestFocus();
+            searchView.searchTextViewSetCursorSelectionAtTextEnd();
             forceShowKeyBoard();
         }
         else {
