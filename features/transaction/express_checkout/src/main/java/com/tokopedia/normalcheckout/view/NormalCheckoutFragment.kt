@@ -51,6 +51,7 @@ import com.tokopedia.product.detail.common.data.model.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
@@ -438,7 +439,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         addToCart(true, onFinish = {
             onFinishAddToCart(it)
             activity?.run {
-                val intent = router.getCheckoutIntent(this)
+                val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build()))
                 startActivity(intent)
             }
         }, onRetryWhenError = {
