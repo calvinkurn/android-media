@@ -1,6 +1,6 @@
 {
   ratesV3 (input: {
-      spids:"$spids,999"
+      spids:"$spids"
       shop_id:"$shop_id"
       origin:"$origin"
       destination:"$destination"
