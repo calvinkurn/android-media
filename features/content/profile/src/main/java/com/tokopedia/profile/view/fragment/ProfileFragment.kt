@@ -1337,11 +1337,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToContentReport(contentId: Int) {
         if (context != null) {
-            val intent = ContentReportActivity.createIntent(
-                    context!!,
-                    contentId
-            )
-            startActivityForResult(intent, OPEN_CONTENT_REPORT)
+            if (userSession.isLoggedIn) {
+                val intent = ContentReportActivity.createIntent(
+                        context!!,
+                        contentId
+                )
+                startActivityForResult(intent, OPEN_CONTENT_REPORT)
+            } else {
+                goToLogin()
+            }
         }
     }
 
