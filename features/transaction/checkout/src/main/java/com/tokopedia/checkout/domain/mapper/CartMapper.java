@@ -127,6 +127,7 @@ public class CartMapper implements ICartMapper {
                         voucherOrdersItemData.setMessageText(voucherOrdersItem.getMessage().getText());
                         voucherOrdersItemData.setVariant(voucherOrdersItem.getType());
                         shopGroupData.setVoucherOrdersItemData(voucherOrdersItemData);
+                        break;
                     }
                 }
             }
