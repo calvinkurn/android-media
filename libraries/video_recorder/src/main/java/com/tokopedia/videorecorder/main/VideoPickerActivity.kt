@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
-import android.util.Log
 import android.view.MenuItem
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg
@@ -29,7 +28,7 @@ import java.util.ArrayList
  * github: @isfaaghyth
  * imagePickerGallery: henry
  */
-class VideoPickerActivity: BaseSimpleActivity(),
+open class VideoPickerActivity: BaseSimpleActivity(),
         VideoPickerCallback,
         ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
@@ -62,6 +61,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
     //runtime permission handle
     private lateinit var runtimePermission: RuntimePermission
 
+    //ffmpeg
     private lateinit var ffmpeg: FFmpeg
 
     override fun getLayoutRes(): Int = R.layout.activity_video_picker
@@ -89,7 +89,7 @@ class VideoPickerActivity: BaseSimpleActivity(),
         btnDeleteVideo.setOnClickListener { cancelVideo() }
 
         //video picked
-        btnDone.setOnClickListener { onVideoPicked() }
+        btnDone.setOnClickListener { onVideoDoneClicked() }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -155,8 +155,8 @@ class VideoPickerActivity: BaseSimpleActivity(),
         }
     }
 
-    private fun onVideoPicked() {
-        if (videoPreview.duration > VIDEO_MAX_DURATION_MS) {
+    protected open fun onVideoDoneClicked() {
+        if (!isVideoSourcePicker && videoPreview.duration > VIDEO_MAX_DURATION_MS) {
             //prepared
             val resultFile = FileUtils.videoPath(FileUtils.RESULT_DIR).absolutePath
             val trimQuery = VideoUtils.ffmegCommand(videoPath, resultFile)

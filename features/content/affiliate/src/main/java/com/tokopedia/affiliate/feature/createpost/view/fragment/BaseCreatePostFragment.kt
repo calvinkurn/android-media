@@ -21,6 +21,7 @@ import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity
+import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostVideoPickerActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
@@ -33,7 +34,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videorecorder.main.VideoPickerActivity
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.concurrent.TimeUnit
@@ -131,10 +131,15 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
             REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
-                for (path: String in videoList) {
-                    viewModel.videoPath = path
-                    Toast.makeText(context, path, Toast.LENGTH_SHORT).show()
+                viewModel.fileImageList.clear()
+                viewModel.fileImageList.addAll(videoList)
+
+                if (videoList.isNotEmpty()) {
+                    viewModel.urlImageList.clear()
                 }
+
+                updateThumbnail()
+                updateButton()
             }
             REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
                 val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
@@ -336,7 +341,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun goToVideoPicker() {
         activity?.let {
             startActivityForResult(
-                    Intent(it, VideoPickerActivity::class.java),
+                    CreatePostVideoPickerActivity.getInstance(it),
                     REQUEST_VIDEO_PICKER)
         }
     }
