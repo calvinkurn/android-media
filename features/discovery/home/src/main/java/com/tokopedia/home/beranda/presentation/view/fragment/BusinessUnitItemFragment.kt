@@ -1,9 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.Lifecycle.Event
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -24,30 +20,13 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_recyclerview_business_widget.*
-import javax.inject.Inject
-import android.arch.lifecycle.LifecycleRegistry
-import android.arch.lifecycle.LifecycleOwner
-
 
 
 class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, BusinessWidgetTypeFactory>(),
     BusinessUnitItemView {
 
-    class ViewLifecycleOwner : LifecycleOwner {
-        private val lifecycleRegistry = LifecycleRegistry(this)
-
-        override fun getLifecycle(): LifecycleRegistry {
-            return lifecycleRegistry
-        }
-    }
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: ItemTabBusinessViewModel
-    private var viewLifecycleOwner : ViewLifecycleOwner? = null
 
     private lateinit var itemTab: HomeWidget.TabItem
 
@@ -68,30 +47,9 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         arguments.let {
             itemTab = it?.getParcelable(ITEM_EXTRAS)!!
         }
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            viewModel = viewModelProvider.get(ItemTabBusinessViewModel::class.java)
-            viewLifecycleOwner = ViewLifecycleOwner()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewLifecycleOwner?.lifecycle?.handleLifecycleEvent(Event.ON_RESUME)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewLifecycleOwner?.lifecycle?.handleLifecycleEvent(Event.ON_PAUSE)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        viewLifecycleOwner?.lifecycle?.handleLifecycleEvent(Event.ON_STOP)
     }
 
     override fun onStart() {
-        viewLifecycleOwner?.lifecycle?.handleLifecycleEvent(Event.ON_START)
         context?.let {
             GraphqlClient.init(it)
         }
@@ -162,7 +120,6 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewLifecycleOwner?.lifecycle?.handleLifecycleEvent(Event.ON_CREATE)
         getRecyclerView(view).addItemDecoration(
                 SpacingItemDecoration(
                         convertDpToPixel(8.toFloat(), activity),
@@ -175,23 +132,6 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, i, r?.displayMetrics).toInt()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.homeWidget.observe(
-                this.viewLifecycleOwner!!, Observer { when (it) {
-            is Success -> onSuccessGetList(it.data)
-            is Fail -> onErrorGetList(it.throwable)
-        } })
-    }
-
-    private fun onSuccessGetList(data: HomeWidget) {
-        renderList(data.contentItemTabList, false)
-    }
-
-    private fun onErrorGetList(throwable: Throwable) {
-        onGetListErrorWithEmptyData(throwable)
-    }
-
     override fun onReloadButtonClick() {
         onRetryClicked()
     }
@@ -202,13 +142,6 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     override fun onErrorGetData(throwable: Throwable) {
         onGetListErrorWithEmptyData(throwable)
-    }
-
-    override fun onDestroy() {
-        viewModel.clearJob()
-        viewLifecycleOwner?.lifecycle?.handleLifecycleEvent(Event.ON_DESTROY)
-        viewLifecycleOwner = null
-        super.onDestroy()
     }
 
 }

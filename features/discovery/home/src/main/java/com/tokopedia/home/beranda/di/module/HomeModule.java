@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -156,4 +157,9 @@ public class HomeModule {
         return Dispatchers.getMain();
     }
 
+    @Provides
+    @HomeScope
+    protected ItemTabBusinessViewModel provideItemTabBusinessViewModel(GraphqlUseCase graphqlUseCase) {
+        return new ItemTabBusinessViewModel(graphqlUseCase);
+    }
 }

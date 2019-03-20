@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.TabBusinessViewModel
 import dagger.Binds
 import dagger.Module
@@ -22,10 +21,5 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TabBusinessViewModel::class)
     internal abstract fun tabBusinessViewModel(viewModel: TabBusinessViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ItemTabBusinessViewModel::class)
-    internal abstract fun itemTabBusinessViewModel(viewModel: ItemTabBusinessViewModel): ViewModel
 
 }
