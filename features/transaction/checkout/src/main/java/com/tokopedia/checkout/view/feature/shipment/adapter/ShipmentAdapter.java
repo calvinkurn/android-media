@@ -71,7 +71,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     // private PromoData promoData;
     private PromoStackingData promoStackingData;
-    private List<PromoStackingData> listPromoStackingMerchantData;
+    private List<PromoStackingData.Builder> listPromoStackingMerchantData;
     private CartPromoSuggestion cartPromoSuggestion;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -267,13 +267,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (promoStackingData != null) {
             this.promoStackingData = promoStackingData;
             shipmentDataList.add(promoStackingData);
-        }
-    }
-
-    public void addListPromoStackingMerchantVoucherData(List<PromoStackingData> listPromoStackingMerchantData) {
-        if (listPromoStackingMerchantData != null) {
-            this.listPromoStackingMerchantData = listPromoStackingMerchantData;
-            shipmentDataList.add(listPromoStackingMerchantData);
         }
     }
 

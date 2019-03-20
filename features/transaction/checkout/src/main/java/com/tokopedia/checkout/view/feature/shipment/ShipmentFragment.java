@@ -840,21 +840,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     .build();
             sendAnalyticsOnViewPromoAutoApply();
 
-            if (autoApplyStackData.getVoucherOrders() != null) {
-                List<PromoStackingData> listPromoStackingMerchantData = new ArrayList<>();
+            /*if (autoApplyStackData.getVoucherOrders() != null) {
+                List<PromoStackingData.Builder> listPromoStackingMerchantData = new ArrayList<>();
                 if (autoApplyStackData.getVoucherOrders().size() > 0) {
                     for (int i=0; i<autoApplyStackData.getVoucherOrders().size(); i++) {
                         VoucherOrdersItemData voucherOrdersItemData = autoApplyStackData.getVoucherOrders().get(i);
                         PromoStackingData.Builder merchantBuilder = new PromoStackingData.Builder();
                         merchantBuilder.description(voucherOrdersItemData.getMessageText())
+                                .description(voucherOrdersItemData.getMessageText())
                                 .amount(voucherOrdersItemData.getCashbackWalletAmount())
                                 .promoCode(voucherOrdersItemData.getCode())
                                 .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemData.getState()))
-                                .title(voucherOrdersItemData.getType())
-
+                                .title(voucherOrdersItemData.getTitleDescription())
+                                .build();
+                        listPromoStackingMerchantData.add(merchantBuilder);
                     }
                 }
-            }
+                shipmentAdapter.addListPromoStackingMerchantVoucherData(listPromoStackingMerchantData);
+            }*/
         } else {
             builder.state(TickerPromoStackingCheckoutView.State.EMPTY);
         }

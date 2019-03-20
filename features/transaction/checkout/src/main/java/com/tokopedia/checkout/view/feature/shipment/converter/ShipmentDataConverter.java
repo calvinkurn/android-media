@@ -3,6 +3,8 @@ package com.tokopedia.checkout.view.feature.shipment.converter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartlist.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -113,6 +115,15 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                 shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                         .get(0).getUserAddress().getAddressId());
+                List<VoucherOrdersItemData> listVoucherOrdersItem = cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders();
+                for (VoucherOrdersItemData voucherOrdersItemData : listVoucherOrdersItem) {
+                    if (voucherOrdersItemData.getType().equalsIgnoreCase("merchant_voucher")) {
+                        shipmentCartItemModel.setPromoMerchantData(voucherOrdersItemData);
+                    }
+                }
+
+                shipmentCartItemModel.setPromoMerchantData(cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders());
+
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
                 setCartItemModelError(shipmentCartItemModel);
@@ -168,6 +179,9 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setProductFcancelPartial(fobject.isFcancelPartial() == 1);
         shipmentCartItemModel.setCartItemModels(cartItemModels);
         shipmentCartItemModel.setProductIsPreorder(fobject.isPreOrder() == 1);
+
+        // set promo merchant
+
 
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));

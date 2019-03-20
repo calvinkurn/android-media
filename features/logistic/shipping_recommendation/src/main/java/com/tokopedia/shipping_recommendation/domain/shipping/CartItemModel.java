@@ -53,6 +53,7 @@ public class CartItemModel implements Parcelable {
     private boolean protectionOptIn;
     private String preOrderInfo;
 
+
     public String getPreOrderInfo() {
         return preOrderInfo;
     }
