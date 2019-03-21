@@ -447,10 +447,10 @@ public class SearchTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
 
         tracker.sendEventTracking(
-                AppEventTracking.Event.NO_RESULT,
+                EVENT_VIEW_TOP_NAV,
                 AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.NO_SEARCH_RESULT,
-                "keyword: " + keyword + " - tab: " + screenName + " - param: " + generateFilterEventLabel(selectedFilter)
+                String.format("keyword: %s - tab: %s - param: %s", keyword, screenName, generateFilterEventLabel(selectedFilter))
         );
     }
 
@@ -557,7 +557,7 @@ public class SearchTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
 
         tracker.sendEventTracking(
-                EVENT_VIEW_TOP_NAV,
+                EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_EMPTY_SEARCH,
                 EVENT_ACTION_CLICK_NEW_SEARCH,
                 String.format("tab: %s", screenName)
