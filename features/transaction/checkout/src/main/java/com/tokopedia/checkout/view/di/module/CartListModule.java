@@ -26,6 +26,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
@@ -103,13 +104,15 @@ public class CartListModule {
                                                  RemoveWishListUseCase removeWishListUseCase,
                                                  UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                                                  UserSessionInterface userSessionInterface,
-                                                 TopAdsGqlUseCase topAdsGqlUseCase) {
+                                                 TopAdsGqlUseCase topAdsGqlUseCase,
+                                                 ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase, addWishListUseCase,
-                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase);
+                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
+                clearCacheAutoApplyStackUseCase);
     }
 
     @Provides

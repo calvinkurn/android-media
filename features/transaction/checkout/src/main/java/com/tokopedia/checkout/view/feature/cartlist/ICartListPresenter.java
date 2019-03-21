@@ -44,7 +44,7 @@ public interface ICartListPresenter {
 
     void processCancelAutoApply();
 
-    void processCancelAutoApplyStackMerchant(int shopId, int position);
+    void processCancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse);
 
     Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction);
 

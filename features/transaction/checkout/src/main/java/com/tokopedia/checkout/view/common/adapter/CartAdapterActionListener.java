@@ -22,13 +22,13 @@ public interface CartAdapterActionListener {
 
     // void onCartPromoUseVoucherMerchantPromoClicked(PromoDataMerchant cartPromoMerchant, int position);
 
-    void onCartPromoUseVoucherMerchantPromoClickedTest(int position);
+    void onVoucherMerchantPromoClicked(int position);
 
     // void onCartPromoCancelVoucherPromoClicked(PromoData cartPromo, int position);
 
     void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position);
 
-    void onCartPromoCancelVoucherPromoMerchantClicked(VoucherOrdersItemData voucherOrdersItemData, int position);
+    void onCancelVoucherMerchantClicked(VoucherOrdersItemData voucherOrdersItemData, int position, boolean ignoreAPIResponse);
 
     // void onCartPromoTrackingImpression(PromoData cartPromo, int position);
 

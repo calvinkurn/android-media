@@ -1,24 +1,22 @@
 package com.tokopedia.promocheckout.common.domain
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
-import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStack
+import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.HashMap
 import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 18/03/19.
  */
 
-class ClearAutoApplyPromoUseCase @Inject constructor(@ApplicationContext val context: Context) : GraphqlUseCase() {
+class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext val context: Context) : GraphqlUseCase() {
 
     var queryString: String = ""
 
@@ -39,7 +37,7 @@ class ClearAutoApplyPromoUseCase @Inject constructor(@ApplicationContext val con
     }
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
-        val graphqlRequest = GraphqlRequest(queryString, ClearCacheAutoApplyStack::class.java)
+        val graphqlRequest = GraphqlRequest(queryString, ClearCacheAutoApplyStackResponse::class.java)
         clearRequest()
         addRequest(graphqlRequest)
 

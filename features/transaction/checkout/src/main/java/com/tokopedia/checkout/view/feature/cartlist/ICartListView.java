@@ -128,4 +128,8 @@ public interface ICartListView extends IBaseView {
     void stopTrace();
 
     void renderAppliedPromoStacking();
+
+    void onSuccessClearPromoStack(int shopIndex);
+
+    void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex);
 }

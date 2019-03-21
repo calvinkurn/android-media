@@ -563,6 +563,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return null;
     }
 
+    public CartShopHolderData getCartShopHolderDataByIndex(int index) {
+        if (cartDataList.get(index) instanceof CartShopHolderData) {
+            return (CartShopHolderData) cartDataList.get(index);
+        }
+        return null;
+    }
+
     public void mappingTopAdsModel(TopAdsModel adsModel) {
         cartDataList.add(adsModel);
     }

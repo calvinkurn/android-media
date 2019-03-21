@@ -83,7 +83,6 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
 
     private fun setActionListener() {
         imageCloseGlobal?.setOnClickListener {
-            resetView()
             actionListener?.onResetPromoDiscount()
         }
         layoutUsePromoGlobal?.setOnClickListener {

@@ -1559,7 +1559,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartPromoUseVoucherMerchantPromoClickedTest(int position) {
+    public void onVoucherMerchantPromoClicked(int position) {
         if (getFragmentManager() != null) {
             // Todo : Handle this
 //            MerchantVoucherListBottomsheetParamData data = new MerchantVoucherListBottomsheetParamData.BundleBuilder()
@@ -1581,7 +1581,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartPromoCancelVoucherPromoMerchantClicked(VoucherOrdersItemData voucherOrdersItemData, int position) {
+    public void onCancelVoucherMerchantClicked(VoucherOrdersItemData voucherOrdersItemData, int position, boolean ignoreAPIResponse) {
         shipmentPresenter.cancelAutoApplyCoupon(voucherOrdersItemData.getVariant());
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
