@@ -31,6 +31,10 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
+
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation 'io.reactivex:rxkotlin:0.60.0'
 }
 
 apply from: '../../publish_local.gradle'

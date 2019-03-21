@@ -106,6 +106,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.videoplayer.view.activity.VideoPlayerActivity;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -1921,7 +1922,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String url) {
-
+        startActivity(VideoPlayerActivity.Companion.getInstance(getActivity(), url));
     }
 
     private void goToContentReport(int contentId) {

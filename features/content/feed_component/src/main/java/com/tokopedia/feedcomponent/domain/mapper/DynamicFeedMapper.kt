@@ -49,7 +49,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
         private const val CONTENT_IMAGE = "image"
         private const val CONTENT_YOUTUBE = "youtube"
-        private const val CONTENT_VIDEO = "video"
+        private const val CONTENT_VIDEO = "videos"
         private const val CONTENT_VOTE = "vote"
         private const val CONTENT_GRID = "productgrid"
 

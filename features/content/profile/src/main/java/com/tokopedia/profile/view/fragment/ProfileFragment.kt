@@ -87,6 +87,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.videoplayer.view.activity.VideoPlayerActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 import javax.inject.Inject
@@ -808,7 +809,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, url: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        startActivity(VideoPlayerActivity.getInstance(activity!!, url))
     }
 
     //end of new feed section

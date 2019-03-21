@@ -7,7 +7,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 /**
  * @author by yfsx on 20/03/19.
  */
-class VideoPlayer @JvmOverloads constructor(
+class VideoPlayerView @JvmOverloads constructor(
         context: Context, attributeSet: AttributeSet? = null, defStyleAttr: Int = 0
 ): PlayerView(context, attributeSet, defStyleAttr) {
 
