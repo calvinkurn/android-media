@@ -442,19 +442,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
-        open_shop.setOnClickListener {
-            activity?.let {
-                if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
-                    val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
-                        ?: return@let
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                } else {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
-                }
-            }
-        }
         loadProductData()
     }
 
