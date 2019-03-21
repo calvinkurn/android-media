@@ -65,7 +65,7 @@ class TabBusinessFragment : BaseDaggerFragment() {
         temporayPlaceHolders.visibility = View.VISIBLE
 
         getTabBusinessUnit()
-        buttonTryAgain.setOnClickListener {
+        buttonReload.setOnClickListener {
             errorView.visibility = View.GONE
             container.visibility = View.GONE
             temporayPlaceHolders.visibility = View.VISIBLE

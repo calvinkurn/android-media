@@ -55,4 +55,5 @@
     <string name="konten_gagal_ditampilkan">messsage_error_general_bu_widget</string>
     <string name="message_empty_business_widget">Tab belum ada kontennya nih…</string>
     <string name="message_business_widget_empty_2">Coba cek tab lain aja!</string>
+    <string name="widget_gagal_ditampilkan">Widget gagal ditampilkan</string>
 </resources>

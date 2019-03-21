@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_120"
         android:orientation="vertical"
+        tools:visibility="gone"
         android:padding="@dimen/dp_10">
 
         <TextView
@@ -41,6 +42,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
+        tools:visibility="gone"
         android:visibility="gone">
 
         <android.support.design.widget.TabLayout
@@ -68,48 +70,84 @@
     </LinearLayout>
 
 
-
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:id="@+id/errorView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="@dimen/dp_16"
-        android:visibility="gone">
+        android:layout_width="@dimen/dp_288"
+        android:layout_height="@dimen/dp_96"
+        app:cardCornerRadius="@dimen/dp_8"
+        tools:visibility="gone"
+        android:layout_gravity="center">
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            app:srcCompat="@drawable/ic_network_error" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/dp_288"
+                android:layout_height="58dp"
+                android:src="@drawable/bg_business_widget_error"
+                />
+
+            <FrameLayout
+                android:id="@+id/buttonReload"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:background="@drawable/circle"
+                android:elevation="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                tools:targetApi="lollipop">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_reload_yellow_32dp"
+                    />
+
+            </FrameLayout>
 
             <TextView
-                android:id="@+id/textErrorMessage"
-                style="@style/TextView.Small.Bold"
-                android:layout_width="wrap_content"
+                android:id="@+id/title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Terjadi Kendala pada Server" />
+                android:layout_marginTop="@dimen/dp_27"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_toLeftOf="@id/buttonReload"
+                android:layout_toStartOf="@id/buttonReload"
+                android:text="@string/widget_gagal_ditampilkan"
+                android:textStyle="bold"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:textSize="@dimen/sp_16"
+                android:textColor="#f531353b"
+                tools:text="Widget gagal ditampilkan"
+                />
 
-            <Button
-                android:id="@+id/buttonTryAgain"
-                style="@style/Button.Submit.Green"
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_32"
-                android:layout_marginStart="0dp"
-                android:layout_marginLeft="0dp"
-                android:text="@string/try_again_btn" />
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginBottom="@dimen/dp_27"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_toLeftOf="@id/buttonReload"
+                android:layout_toStartOf="@id/buttonReload"
+                android:text="@string/message_retry_general_bu_widget"
+                android:textSize="@dimen/sp_12"
+                android:textColor="#ae31353b"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:layout_below="@id/title"
+                tools:text="Klik ikon untuk coba lagi"
+                />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>
