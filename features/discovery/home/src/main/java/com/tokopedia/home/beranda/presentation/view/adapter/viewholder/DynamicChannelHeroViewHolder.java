@@ -53,10 +53,10 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     }
 
     private void findViews(View itemView) {
-        channelTitle = (TextView) itemView.findViewById(R.id.channel_title);
+        channelTitle = itemView.findViewById(R.id.channel_title);
         channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
-        channelHeroImage = (ImageView) itemView.findViewById(R.id.channel_hero_image);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        channelHeroImage = itemView.findViewById(R.id.channel_hero_image);
+        seeAllButton = itemView.findViewById(R.id.see_all_button);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));

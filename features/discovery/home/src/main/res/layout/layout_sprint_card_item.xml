@@ -14,61 +14,74 @@
         android:adjustViewBounds="true" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/header"
+        android:id="@+id/channel_title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/dp_16">
+        android:background="@color/white"
+        android:padding="@dimen/page_margin">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/channel_title"
+            android:layout_width="0dp"
             style="@style/TextView.Title"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:maxEms="12"
             android:textSize="@dimen/sp_18"
+            app:layout_constraintEnd_toStartOf="@+id/count_down"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Lucky Hour" />
+            app:layout_constraintWidth_default="wrap"
+            tools:text="Hypebeast Banget Pokoknya" />
 
         <com.tokopedia.design.countdown.CountDownView
             android:id="@+id/count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_toRightOf="@+id/title"
-            app:coundDownBackgroud="@drawable/background_countdown_white"
-            app:countDownSparatorColor="@color/white"
-            app:countDownTxtColor="@color/black_70"
-            app:layout_constraintBottom_toBottomOf="@+id/title"
-            app:layout_constraintStart_toEndOf="@+id/title"
-            app:layout_constraintTop_toTopOf="@+id/title"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@id/channel_title"
+            app:coundDownBackgroud="@drawable/background_countdown"
+            app:layout_constraintBottom_toBottomOf="@+id/channel_title"
+            app:layout_constraintEnd_toStartOf="@+id/see_all_button"
+            app:layout_constraintStart_toEndOf="@id/channel_title"
+            app:layout_constraintTop_toTopOf="@+id/channel_title"
             tools:layout_height="40dp"
-            tools:layout_width="100dp" />
+            tools:layout_width="100dp"
+            tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/see_more"
+            android:id="@+id/see_all_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:fontFamily="sans-serif-medium"
-            android:gravity="center_vertical"
-            android:lineSpacingExtra="4sp"
+            android:gravity="end"
+            android:lineSpacingExtra="3sp"
             android:text="@string/lihat_semua"
-            android:textColor="#399c3f"
-            android:textSize="12sp"
+            android:textColor="@color/medium_green"
+            android:textSize="13sp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/title"
-            app:layout_constraintEnd_toEndOf="parent" />
-
+            app:layout_constraintBottom_toBottomOf="@+id/channel_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/channel_title" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
+        android:layout_below="@+id/channel_title_container"
         android:descendantFocusability="afterDescendants" />
 </RelativeLayout>

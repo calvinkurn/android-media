@@ -86,6 +86,7 @@
                 android:id="@+id/tab_layout_home_feeds"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tab_home_feed_max_height"
+                app:tabBackground="@android:color/transparent"
                 app:tabPaddingStart="0dp"
                 app:tabPaddingEnd="0dp"
                 app:tabMode="scrollable"

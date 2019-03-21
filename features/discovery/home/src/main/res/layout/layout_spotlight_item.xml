@@ -2,8 +2,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/spotlightContainer"
-    android:layout_marginBottom="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_16"
     android:layout_width="@dimen/spotlight_width"
     android:layout_height="@dimen/spotlight_height">
 

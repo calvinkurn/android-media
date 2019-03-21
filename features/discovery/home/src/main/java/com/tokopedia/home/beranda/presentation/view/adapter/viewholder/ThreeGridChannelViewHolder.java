@@ -57,9 +57,9 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
 
     private void findViews(View itemView) {
         recyclerView = itemView.findViewById(R.id.recycleList);
-        channelTitle = (TextView) itemView.findViewById(R.id.channel_title);
+        channelTitle = itemView.findViewById(R.id.channel_title);
         channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        seeAllButton = itemView.findViewById(R.id.see_all_button);
         countDownView = itemView.findViewById(R.id.count_down);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,

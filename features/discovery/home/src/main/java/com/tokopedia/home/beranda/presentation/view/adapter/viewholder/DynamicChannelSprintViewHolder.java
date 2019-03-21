@@ -65,8 +65,8 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     }
 
     private void findViews(View itemView) {
-        homeChannelTitle = (TextView) itemView.findViewById(R.id.home_channel_title);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        homeChannelTitle = itemView.findViewById(R.id.channel_title);
+        seeAllButton = itemView.findViewById(R.id.see_all_button);
         countDownView = itemView.findViewById(R.id.count_down);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,

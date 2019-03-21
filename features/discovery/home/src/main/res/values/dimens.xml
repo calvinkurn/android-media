@@ -46,4 +46,5 @@
     <dimen name="spotlight_height">80dp</dimen>
     <dimen name="use_case_and_dynamic_image_size">48dp</dimen>
     <dimen name="use_case_and_dynamic_icon_size">56dp</dimen>
+    <dimen name="home_searchbar_transition_range">50dp</dimen>
 </resources>

@@ -13,6 +13,8 @@ public class HomeRecyclerDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.bottom = spacing;
+        if (parent.getLayoutManager().getPosition(view) > 1) {
+            outRect.bottom = spacing;
+        }
     }
 }

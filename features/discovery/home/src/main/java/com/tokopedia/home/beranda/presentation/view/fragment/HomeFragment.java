@@ -160,6 +160,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private View statusBarBackground;
 
+    int startToMainToolbarShadowTransition = 0;
+
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -485,47 +487,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     return;
                 }
 
-                //searchbar transparent behaviour
-                float offsetAlpha = (appBarLayout.getY() / 100) * -1;
-
-                //2.5 is maximum
-                offsetAlpha-=2.5;
-                if (offsetAlpha < 0) {
-                    offsetAlpha = 0;
-                }
-
-                if (offsetAlpha >= 2.55) {
-                    offsetAlpha = 2.55f;
-                    homeMainToolbar.switchToDarkToolbar();
-                } else {
-                    homeMainToolbar.switchToLightToolbar();
-                }
-
-                if (offsetAlpha >= 0 && offsetAlpha <= 2.55) {
-                    float alpha = offsetAlpha*100;
-                    homeMainToolbar.setBackgroundAlpha(alpha);
-                    setStatusBarAlpha(alpha);
-                }
-
-                int positiveOffset = offset*-1;
-                int offsetBeforeHide = (appBarLayout.getTotalScrollRange()-
-                        getResources().getDimensionPixelSize(R.dimen.dp_36));
-                if (positiveOffset >= offsetBeforeHide) {
-                    homeMainToolbar.hideShadow();
-                }
-
-                if (isAppBarFullyCollapsed(offset) &&
-                        homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
-//                    homeMainToolbar.hideShadow();
-                    viewFeedShadow.setVisibility(View.VISIBLE);
-                }
-
-                if (!isAppBarFullyCollapsed(offset) &&
-                        homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE() &&
-                        positiveOffset <= offsetBeforeHide) {
-                    homeMainToolbar.showShadow();
-                    viewFeedShadow.setVisibility(View.GONE);
-                }
+                calculateSearchbarView(offset);
 
                 if (isAppBarFullyExpanded(offset)) {
                     refreshLayout.setCanChildScrollUp(false);
@@ -549,6 +511,54 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 lastOffset = offset;
             }
         });
+    }
+
+    private void calculateSearchbarView(int offset) {
+        int positiveOffset = offset*-1;
+
+        int searchBarTransitionRange =
+                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
+        int startToTransitionOffset =
+                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
+        int endTransitionOffset =
+                startToTransitionOffset + searchBarTransitionRange;
+        int maxTransitionOffset = endTransitionOffset - startToTransitionOffset;
+
+        //mapping alpha to be rendered per pixel for x height
+        float offsetAlpha =
+                (255f / maxTransitionOffset) * (positiveOffset - startToTransitionOffset);
+        //2.5 is maximum
+        if (offsetAlpha < 0) {
+            offsetAlpha = 0;
+        }
+
+        if (offsetAlpha >= 255) {
+            offsetAlpha = 255;
+            homeMainToolbar.switchToDarkToolbar();
+        } else {
+            homeMainToolbar.switchToLightToolbar();
+        }
+
+        if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+            homeMainToolbar.setBackgroundAlpha(offsetAlpha);
+            setStatusBarAlpha(offsetAlpha);
+        }
+
+        if (positiveOffset >= startToMainToolbarShadowTransition) {
+            homeMainToolbar.hideShadow();
+        }
+
+        if (isAppBarFullyCollapsed(offset) &&
+                homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
+            viewFeedShadow.setVisibility(View.VISIBLE);
+        }
+
+        if (!isAppBarFullyCollapsed(offset) &&
+                homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE() &&
+                positiveOffset <= startToMainToolbarShadowTransition) {
+            homeMainToolbar.showShadow();
+            viewFeedShadow.setVisibility(View.GONE);
+        }
     }
 
     private void setStatusBarAlpha(float alpha) {
@@ -883,6 +893,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setItems(List<Visitable> items) {
         adapter.setItems(items);
+        startToMainToolbarShadowTransition = (appBarLayout.getTotalScrollRange()-
+                getResources().getDimensionPixelSize(R.dimen.dp_36));
     }
 
     @Override
@@ -895,6 +907,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
             adapter.getItems().set(1, headerViewModel);
             adapter.notifyItemChanged(1);
+        } else if (adapter.getItemCount() > 2 && adapter.getItem(2) instanceof HeaderViewModel) {
+            adapter.getItems().set(2, headerViewModel);
+            adapter.notifyItemChanged(2);
         }
     }
 
