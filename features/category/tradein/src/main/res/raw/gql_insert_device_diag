@@ -1,4 +1,4 @@
-mutation getTradeInDeviceDiag($params:TradeInInsertDeviceDiagInput){
+mutation getTradeInDeviceDiag($params:TradeInInsertDeviceDiagInput!){
  insertTradeInDeviceDiag(params:$params)
  {
     	IsEligible

@@ -1,4 +1,4 @@
-query getTradeInDeviceDiag($params:TradeInDeviceDiagInput){
+query getTradeInDeviceDiag($params:TradeInDeviceDiagInput!){
  getTradeInDeviceDiag(params:$params)
  {
      IsEligible

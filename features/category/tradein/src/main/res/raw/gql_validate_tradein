@@ -1,4 +1,4 @@
-query validateTradeInPDP($params:TradeInValidationInput){
+query validateTradeInPDP($params:TradeInValidationInput!){
  validateTradeInPDP(params:$params) {
    IsEligible
    IsDiagnosed
