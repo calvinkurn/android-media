@@ -13,8 +13,13 @@ data class ExploreCardViewModel(
         val imageUrl: String = "",
         val redirectLink: String = "",
         val adId: String = "",
-        val productId: String = ""
+        val productId: String = "",
+        val sectionName: String = "",
+        val commissionValue: Int = 0
 ) : Parcelable {
+
+    var position: Int = 0
+
     constructor(source: Parcel) : this(
             source.readString() ?: "",
             source.readString() ?: "",

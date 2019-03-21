@@ -59,7 +59,9 @@ class ExploreSectionMapper @Inject constructor() : Func1<GraphqlResponse, List<V
                     it.image,
                     it.appLink,
                     it.adId.toString(),
-                    it.productId.toString()
+                    it.productId.toString(),
+                    section.title,
+                    it.commissionValue.toInt()
             ))
         }
 

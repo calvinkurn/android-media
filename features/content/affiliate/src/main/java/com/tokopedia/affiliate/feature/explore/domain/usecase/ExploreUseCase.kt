@@ -73,7 +73,9 @@ class ExploreUseCase @Inject constructor(
                             it.image,
                             "",
                             it.adId,
-                            it.productId
+                            it.productId,
+                            context.getString(R.string.af_product_title),
+                            0
                     ))
             )
         }
