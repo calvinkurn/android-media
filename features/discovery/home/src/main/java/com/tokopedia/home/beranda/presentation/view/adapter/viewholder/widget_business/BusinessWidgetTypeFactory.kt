@@ -40,6 +40,7 @@ class BusinessWidgetTypeFactory(private val listener: BusinessUnitItemView) : Ba
             SizeLargeBusinessViewHolder.LAYOUT -> SizeLargeBusinessViewHolder(parent)
             DefaultBusinessViewHolder.LAYOUT -> DefaultBusinessViewHolder(parent)
             ErrorBusinessViewHolder.LAYOUT -> ErrorBusinessViewHolder(parent, listener)
+            LoadingBusinessViewHolder.LAYOUT -> LoadingBusinessViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
