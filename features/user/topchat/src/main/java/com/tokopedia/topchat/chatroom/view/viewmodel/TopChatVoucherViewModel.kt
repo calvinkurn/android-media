@@ -39,7 +39,9 @@ class TopChatVoucherViewModel
         isRead: Boolean,
         isDummy: Boolean,
         isSender: Boolean,
-        var voucherModel: MerchantVoucherModel
+        var voucherModel: MerchantVoucherModel,
+        var replyId: String,
+        var blastId: String
 ) : SendableViewModel(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, "", isRead, isDummy, isSender, message), Visitable<TopChatTypeFactory> {
 
     override fun type(typeFactory: TopChatTypeFactory): Int {

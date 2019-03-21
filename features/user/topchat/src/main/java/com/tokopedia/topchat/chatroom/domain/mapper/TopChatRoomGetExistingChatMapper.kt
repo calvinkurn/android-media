@@ -51,7 +51,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
         var voucherAmount = MerchantVoucherAmount(voucher.amountType, voucher.amount)
-        var voucherOwner = MerchantVoucherOwner(identifier = voucher.identifier)
+        var voucherOwner = MerchantVoucherOwner(identifier = voucher.identifier, ownerId = voucher.ownerId)
         var voucherBanner = MerchantVoucherBanner(mobileUrl = voucher.mobileUrl)
         var voucherModel = MerchantVoucherModel(voucherId = voucher.voucherId,
                 voucherName = voucher.voucherName,
@@ -78,8 +78,9 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 item.isRead,
                 false,
                 !item.isOpposite,
-                voucherModel
-
+                voucherModel,
+                item.replyId.toString(),
+                item.blastId.toString()
         )
     }
 

@@ -20,9 +20,11 @@ class TopChatVoucherViewHolder(itemView: View, var voucherListener: TopChatVouch
 
     private var chatStatus: ImageView = itemView.findViewById<ImageView>(R.id.chat_status)
     private var isOwner: Boolean = false
+    private lateinit var model: TopChatVoucherViewModel
 
     override fun bind(viewModel: TopChatVoucherViewModel) {
         super.bind(viewModel)
+        model = viewModel
         val element = viewModel.voucherModel
         val data = MerchantVoucherViewModel(element)
         isOwner = viewModel.isSender
@@ -30,7 +32,6 @@ class TopChatVoucherViewHolder(itemView: View, var voucherListener: TopChatVouch
         itemView.findViewById<MerchantVoucherView>(R.id.merchantVoucherView).setData(data)
 
         setupChatBubbleAlignment(isOwner, viewModel)
-
 
         itemView.setOnClickListener {
             voucherListener.onVoucherClicked(data)
@@ -78,7 +79,9 @@ class TopChatVoucherViewHolder(itemView: View, var voucherListener: TopChatVouch
         return isOwner
     }
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        voucherListener.onVoucherCopyClicked(merchantVoucherViewModel.voucherCode)
+        voucherListener.onVoucherCopyClicked(merchantVoucherViewModel.voucherCode
+                , model.messageId, model.replyId
+                , model.blastId, model.attachmentId, model.replyTime, model.fromUid)
     }
 
     companion object {

@@ -44,4 +44,7 @@ class Voucher {
     @SerializedName("voucher_type")
     @Expose
     var voucherType: Int = 0
+    @SerializedName("owner_id")
+    @Expose
+    var ownerId: Int = 0
 }

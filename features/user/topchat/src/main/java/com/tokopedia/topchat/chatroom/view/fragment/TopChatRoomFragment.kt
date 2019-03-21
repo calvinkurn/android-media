@@ -696,8 +696,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun onVoucherCopyClicked(voucherCode: String) {
+    override fun onVoucherCopyClicked(voucherCode: String, messageId: String, replyId: String, blastId: String, attachmentId: String, replyTime: String?, fromUid: String?) {
         analytics.eventVoucherCopyClicked(voucherCode)
+        presenter.copyVoucherCode(fromUid, replyId, blastId, attachmentId, replyTime)
         activity?.run{
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
