@@ -65,7 +65,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
     private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
     private static final int MAX_DATE_ADDITION_YEAR = 1;
-    private static final String FLIGHT_AIRPORT = "flight_airport";
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
