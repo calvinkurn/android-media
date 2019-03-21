@@ -21,7 +21,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -84,7 +83,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     public static final int ERROR_RESULT_CODE = 999;
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
-    private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 418;
     private static final String ADDRESS = "district_recommendation_address";
     private static final double MONAS_LATITUDE = -6.175794;
@@ -106,8 +104,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     private EditText receiverPhoneEditText;
     private View chooseLocation;
     private EditText locationEditText;
-    private TextInputLayout passwordLayout;
-    private EditText passwordEditText;
     private TextView saveButton;
     private TextView addressLabel;
     private TextInputLayout districtLayout;
@@ -116,15 +112,10 @@ public class AddAddressFragment extends BaseDaggerFragment
     private AutoCompleteTextView zipCodeTextView;
     private TextInputLayout postCodeLayout;
     private EditText postCodeEditText;
-    private LinearLayout addressSpinerLayout;
     private Spinner spinnerProvince;
     private TextView provinceError;
-    private TextView regencyTitle;
-    private ProgressBar progressRegency;
     private Spinner spinnerRegency;
     private TextView regencyError;
-    private TextView districtTitle;
-    private ProgressBar progressDistrict;
     private Spinner spinnerSubDistrict;
     private TextView subDistrictError;
     private ProgressBar mProgressBar;
@@ -138,13 +129,9 @@ public class AddAddressFragment extends BaseDaggerFragment
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject
-    AddAddressContract.Presenter mPresenter;
-    @Inject
-    @LogisticUserSessionQualifier
-    UserSessionInterface userSession;
-    @Inject
-    PerformanceMonitoring performanceMonitoring;
+    @Inject AddAddressContract.Presenter mPresenter;
+    @Inject @LogisticUserSessionQualifier UserSessionInterface userSession;
+    @Inject PerformanceMonitoring performanceMonitoring;
 
     private int instanceType;
 
@@ -327,11 +314,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public String getPassword() {
-        return passwordEditText.getText().toString();
-    }
-
-    @Override
     public void showLoading() {
         mProgressBar.setVisibility(View.VISIBLE);
     }
@@ -339,15 +321,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public boolean isValidAddress() {
         boolean isValid = true;
-
-        // Check password validity
-        if (isEdit() && getPassword().length() == 0) {
-            String errorMessage = getString(R.string.error_field_required);
-            passwordLayout.setError(errorMessage);
-            passwordLayout.requestFocus();
-            isValid = false;
-            sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
-        }
 
         // Check receiver phone validity
         int phoneLength = receiverPhoneEditText.getText().length();
@@ -726,8 +699,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         receiverPhoneEditText = view.findViewById(R.id.receiver_phone);
         chooseLocation = view.findViewById(R.id.layout_value_location);
         locationEditText = view.findViewById(R.id.value_location);
-        passwordLayout = view.findViewById(R.id.password_layout);
-        passwordEditText = view.findViewById(R.id.password);
         saveButton = view.findViewById(R.id.save_button);
         addressLabel = view.findViewById(R.id.address_label_watcher);
 
@@ -738,15 +709,10 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         postCodeLayout = view.findViewById(R.id.post_code_layout);
         postCodeEditText = view.findViewById(R.id.post_code);
-        addressSpinerLayout = view.findViewById(R.id.address_spinner_layout);
         spinnerProvince = view.findViewById(R.id.provinsi);
         provinceError = view.findViewById(R.id.province_error);
-        regencyTitle = view.findViewById(R.id.regency_title);
-        progressRegency = view.findViewById(R.id.regency_progress);
         spinnerRegency = view.findViewById(R.id.regency);
         regencyError = view.findViewById(R.id.regency_error);
-        districtTitle = view.findViewById(R.id.district_title);
-        progressDistrict = view.findViewById(R.id.district_progress);
         spinnerSubDistrict = view.findViewById(R.id.sub_district);
         subDistrictError = view.findViewById(R.id.sub_district_error);
 
@@ -758,8 +724,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
-
-        passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
     }
 
     protected void initialVar() {
@@ -793,7 +757,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         addressEditText.addTextChangedListener(characterWatcher(addressLabel));
         addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
         receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
-        passwordEditText.addTextChangedListener(watcher(passwordLayout));
 
         districtEditText.addTextChangedListener(watcher(districtLayout));
         zipCodeTextView.addTextChangedListener(watcher(zipCodeLayout));
