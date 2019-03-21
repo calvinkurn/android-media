@@ -374,8 +374,10 @@ public class ExploreFragment
                 super.getItemOffsets(outRect, view, parent, state);
                 int position = parent.getChildAdapterPosition(view);
                 Visitable visitable = adapter.getData().get(position);
-                if (visitable instanceof ExploreProductViewModel) {
-                    if (position % 2 == 0) {
+                if (visitable instanceof ExploreProductViewModel
+                        && view.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
+                    int spanIndex = ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
+                    if (spanIndex == 0) {
                         outRect.left = (int) getResources().getDimension(R.dimen.dp_4);
                     } else {
                         outRect.right = (int) getResources().getDimension(R.dimen.dp_4);
