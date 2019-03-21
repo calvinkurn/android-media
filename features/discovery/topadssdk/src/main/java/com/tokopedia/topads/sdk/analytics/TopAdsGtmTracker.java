@@ -131,6 +131,63 @@ public class TopAdsGtmTracker {
         }
     }
 
+    public void eventRecomendationProductClick(Context context, Product product,
+                                               String tabName, String recomType,
+                                               String categoryBreadcrumbs, boolean isLogin,
+                                               int position) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "product recommendation click "+(isLogin?"-":"- non login -")+" topads",
+                    "eventLabel", tabName,
+                    "ecommerce", DataLayer.mapOf(
+                            "click", DataLayer.mapOf("actionField",
+                                    DataLayer.mapOf("list", "/ - p2 - "+tabName+" - rekomendasi untuk anda - "+recomType+" - product topads"),
+                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                            "name", product.getName(),
+                                            "id", product.getId(),
+                                            "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
+                                            "brand", "none/other",
+                                            "category", categoryBreadcrumbs,
+                                            "varian", "none/other",
+                                            "position", position + 1))))
+            );
+            tracker.sendEnhancedEcommerce(map);
+        }
+    }
+
+    public void eventRecomendationProductView(TrackingQueue trackingQueue, String tabName, boolean isLogin) {
+        if (!dataLayerList.isEmpty()) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "homepage",
+                    "eventAction", "product recommendation impression "+(isLogin?"-":"- non login -")+" topads",
+                    "eventLabel", tabName,
+                    "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    dataLayerList.toArray(new Object[dataLayerList.size()])
+                            )
+                    ));
+            trackingQueue.putEETracking((HashMap<String, Object>) map);
+            clearDataLayerList();
+        }
+    }
+
+    public void  addRecomendationProductViewImpressions(Product product, String categoryBreadcrumbs,
+                                                        String tabName, String recomendationType,
+                                                        int position) {
+        this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
+                "id", product.getId(),
+                "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
+                "brand", "none/other",
+                "varian", "none/other",
+                "category", categoryBreadcrumbs,
+                "list", "/ - p2 - "+tabName+" rekomendasi untuk anda "+recomendationType+" - product topads",
+                "position", position + 1));
+    }
+
     public void  addInboxProductViewImpressions(Product product, int position) {
         this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
                 "id", product.getId(),
