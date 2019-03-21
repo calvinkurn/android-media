@@ -24,18 +24,18 @@ class GMTracking(){
 
 
     fun sendClickHamburgerMenuEvent(menuName: String){
-        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(CLICK_HAMBURGER_MENU_EVENT,
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(CLICK_HAMBURGER_MENU_EVENT,
                 CLICK_HAMBURGER_MENU_CATEGORY, "$CLICK_HAMBURGER_MENU_ACTION - $menuName",
                 null))
     }
 
     fun sendClickManageProductDialogEvent(isSubscribing: Boolean){
-        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(CLICK_GM_EVENT, CLICK_GM_CATEGORY,
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(CLICK_GM_EVENT, CLICK_GM_CATEGORY,
                 if (isSubscribing) CLICK_GM_SUBSCRIBE_ACTION else CLICK_GM_CANCEL_ACTION,null))
     }
 
     fun sendClickGMSubscribingEvent(isFromFeatured: Boolean) {
-        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(CLICK_GM_EVENT, CLICK_GM_CATEGORY,
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(CLICK_GM_EVENT, CLICK_GM_CATEGORY,
                 CLICK_GM_PACKAGE_SUBSCRIBE_ACTION, if (isFromFeatured) CLICK_GM_PACKAGE_SUBSCRIBE_FEATURED_LABEL
         else CLICK_GM_PACKAGE_SUBSCRIBE_HOME_LABEL))
     }

@@ -14,7 +14,7 @@ class NotifCenterAnalytics @Inject constructor() {
     val CATEGORY_NOTIF_CENTER = "notif center"
 
     fun trackClickList() {
-        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_NOTIF_CENTER,
                 CATEGORY_NOTIF_CENTER,
                 "click on notif list",
@@ -23,7 +23,7 @@ class NotifCenterAnalytics @Inject constructor() {
     }
 
     fun trackClickFilter(filterName: String) {
-        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_NOTIF_CENTER,
                 CATEGORY_NOTIF_CENTER,
                 "click on filter request",
@@ -32,7 +32,7 @@ class NotifCenterAnalytics @Inject constructor() {
     }
 
     fun trackScrollToBottom() {
-        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_NOTIF_CENTER,
                 CATEGORY_NOTIF_CENTER,
                 "scroll to bottom",

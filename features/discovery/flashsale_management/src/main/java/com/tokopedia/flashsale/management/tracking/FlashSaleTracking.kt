@@ -11,7 +11,7 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 class FlashSaleTracking() {
 
     private fun sendScreenName(activity: Activity, screenName: String) {
-        TrackApp.getInstance().gtm..sendScreenAuthenticated(screenName)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
     companion object {
@@ -39,7 +39,7 @@ class FlashSaleTracking() {
 
     fun sendFlashSaleEvent(action: String, label: String, shopId: String? = null) {
         val eventMap = createFlashSaleMap(action, label, shopId)
-        TrackApp.getInstance().gtm..sendEnhanceECommerceEvent(eventMap)
+        TrackApp.getInstance().gtm.sendEnhanceECommerceEvent(eventMap)
     }
 
     fun createFlashSaleMap(action: String, label: String, shopId: String? = null): MutableMap<String, Any> {

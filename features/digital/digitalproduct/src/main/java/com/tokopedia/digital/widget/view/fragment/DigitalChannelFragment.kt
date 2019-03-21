@@ -150,7 +150,7 @@ class DigitalChannelFragment : BaseDaggerFragment(), DigitalChannelContract.View
                 "recommendation - ${recommendation.position} - ${recommendation.categoryName.toLowerCase()}"
             }
 
-            TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                             DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
                             DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                             DigitalEventTracking.Action.CLICK_RECOMMENDATION_WIDGET,
