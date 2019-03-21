@@ -77,13 +77,15 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
+        saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
-            checkoutDataParameterBuilder = new CheckoutDataParameter.Builder(savedInstanceState.getParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER));
+            checkoutDataParameterBuilder = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
+                    CheckoutDataParameter.Builder.class, null);
         }
         setupView(view);
         presenter.attachView(this);
@@ -92,7 +94,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, checkoutDataParameterBuilder.build());
+        saveInstanceCacheManager.onSave(outState);
+        saveInstanceCacheManager.put(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, checkoutDataParameterBuilder);
     }
 
     protected abstract void setupView(View view);
@@ -318,7 +321,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     break;
             }
         } else if (requestCode == REQUEST_CODE_OTP) {
-            if (resultCode == Activity.RESULT_OK) {
+            if (true) {
                 presenter.processPatchOtpCart(cartPassData.getCategoryId());
             } else {
                 closeView();
