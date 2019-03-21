@@ -325,7 +325,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
 
                 }
-//                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(TapTapConstants.EXTRA_APPLINK_CATEGORY));
+//                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         }
         finish();
