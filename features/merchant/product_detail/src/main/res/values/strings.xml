@@ -103,8 +103,9 @@
     <string name="template_installment">Min. Pembelanjaan %1$s</string>
     <string name="label_bb_info_desc">Durasi dihitung sejak barang diserahkan kekurir</string>
     <string name="template_rates_estimate_start_price">Ongkos Kirim mulai dari %1$s</string>
-    <string name="from">dari %1$s</string>
-    <string name="to">ke %1$s</string>
+    <string name="from_x">dari %1$s</string>
+    <string name="to_x">ke %1$s</string>
     <string name="open_shop">Buka Toko GRATIS</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
+    <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
 </resources>
