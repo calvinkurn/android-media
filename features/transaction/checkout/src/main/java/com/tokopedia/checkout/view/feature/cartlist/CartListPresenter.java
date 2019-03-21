@@ -48,6 +48,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -78,8 +79,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -235,7 +239,7 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
         );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
-                /*.flatMap(new Func1<CartListData, Observable<CartListData>>() {
+                .flatMap(new Func1<CartListData, Observable<CartListData>>() {
                     @Override
                     public Observable<CartListData> call(CartListData cartListData) {
                         RequestParams adsParam = RequestParams.create();
@@ -250,7 +254,7 @@ public class CartListPresenter implements ICartListPresenter {
                                     }
                                 });
                     }
-                })*/
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -334,7 +338,7 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(paramGetList));
 
         compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
-                /*.flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
+                .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
                     @Override
                     public Observable<DeleteAndRefreshCartListData> call(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
                         RequestParams adsParam = RequestParams.create();
@@ -350,7 +354,7 @@ public class CartListPresenter implements ICartListPresenter {
                                     }
                                 });
                     }
-                })*/
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())

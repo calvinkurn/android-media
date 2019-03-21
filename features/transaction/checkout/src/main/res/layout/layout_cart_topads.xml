@@ -6,12 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/topads_divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_5"
-        android:background="@color/separator_color" />
-
     <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
         android:id="@+id/topads"
         android:layout_width="match_parent"
