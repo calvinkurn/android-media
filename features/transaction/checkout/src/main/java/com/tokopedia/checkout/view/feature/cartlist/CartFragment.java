@@ -109,7 +109,8 @@ import javax.inject.Inject;
 public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
-        ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener {
+        ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
+        ClashBottomSheetFragment.ActionListener {
 
     private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
 
@@ -1876,8 +1877,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel) {
+    public void onClashCheckPromo(@NonNull ClashingInfoDetailUiModel clashingInfoDetailUiModel) {
         ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
+        clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
+        clashBottomSheetFragment.setActionListener(this);
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
