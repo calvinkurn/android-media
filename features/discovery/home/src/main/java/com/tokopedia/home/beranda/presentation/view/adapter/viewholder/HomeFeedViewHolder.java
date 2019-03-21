@@ -1,18 +1,12 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
-import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.productcard.ProductCardView;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
@@ -21,9 +15,11 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
     public static final int LAYOUT = R.layout.home_feed_item;
 
     private ProductCardView productCardView;
+    private final HomeFeedContract.View homeFeedview;
 
-    public HomeFeedViewHolder(View itemView) {
+    public HomeFeedViewHolder(View itemView, HomeFeedContract.View homeFeedview) {
         super(itemView);
+        this.homeFeedview = homeFeedview;
         productCardView = itemView.findViewById(R.id.productCardView);
     }
 
@@ -37,7 +33,7 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
             productCardView.imageView.setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
                 @Override
                 public void onViewHint() {
-                    new ImpresionTask().execute(element.getTrackerImageUrl());
+                    homeFeedview.onProductImpression(element, getAdapterPosition());
                 }
             });
         }
