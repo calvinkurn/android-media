@@ -21,6 +21,7 @@ public interface AffiliateEventTracking {
         String AFFILIATE_VIEW = "viewAffiliate";
         String PROFILE_CLICK = "clickProfile";
         String PRODUCT_VIEW = "productView";
+        String PRODUCT_CLICK = "productClick";
     }
 
     interface Category {

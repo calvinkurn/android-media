@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -54,6 +55,25 @@ public class AffiliateAnalytics {
         HashMap<String, Object> mapEvent = setDefaultData(screenName, event, category, action, label);
         mapEvent.put(PARAM_USER_ID, userSession.getUserId());
         return mapEvent;
+    }
+
+    private HashMap<String, Object> getEnhancedEcommerce(String ecommerceType, String productName,
+                                                         String productId, int productComission,
+                                                         String sectionName, int position) {
+        HashMap<String, Object> ecommerceItem = new HashMap<>();
+        ecommerceItem.put("name", productName);
+        ecommerceItem.put("id", productId);
+        ecommerceItem.put("price", productComission);
+        ecommerceItem.put("list", String.format("/explore page byme - %s", sectionName));
+        ecommerceItem.put("position", position);
+
+        ArrayList<Object> listEcommerce = new ArrayList<>();
+        listEcommerce.add(ecommerceItem);
+
+        HashMap<String, Object> ecommerce = new HashMap<>();
+        ecommerce.put("currencyCode", "IDR");
+        ecommerce.put(ecommerceType, listEcommerce);
+        return ecommerce;
     }
 
     public AnalyticTracker getAnalyticTracker() {
@@ -126,31 +146,39 @@ public class AffiliateAnalytics {
     }
 
 //    9
-    public void onProductImpression(String productId) {
-        //TODO milhamj
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_EXPLORE,
-                        AffiliateEventTracking.Event.PRODUCT_VIEW,
-                        AffiliateEventTracking.Category.BYME_EXPLORE,
-                        "",
-                        productId
-                )
+    public void onProductImpression(String productName, String productId, int productComission,
+                                    String sectionName, int position) {
+        HashMap<String, Object> data = setDefaultDataWithUserId(
+                AffiliateEventTracking.Screen.BYME_EXPLORE,
+                AffiliateEventTracking.Event.PRODUCT_VIEW,
+                AffiliateEventTracking.Category.BYME_EXPLORE,
+                "impression product affiliate",
+                String.format("%s-%s", sectionName, productName)
         );
+        data.put(
+                "ecommerce",
+                getEnhancedEcommerce("impressions", productName, productId,
+                        productComission, sectionName, position)
+        );
+        getAnalyticTracker().sendEnhancedEcommerce(data);
     }
 
 //    10
-    public void onProductClicked(String productId) {
-        //TODO milhamj
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_EXPLORE,
-                        AffiliateEventTracking.Event.PRODUCT_VIEW,
-                        AffiliateEventTracking.Category.BYME_EXPLORE,
-                        "",
-                        productId
-                )
+    public void onProductClicked(String productName, String productId, int productComission,
+                                 String sectionName, int position) {
+        HashMap<String, Object> data = setDefaultDataWithUserId(
+                AffiliateEventTracking.Screen.BYME_EXPLORE,
+                AffiliateEventTracking.Event.PRODUCT_CLICK,
+                AffiliateEventTracking.Category.BYME_EXPLORE,
+                "click product affiliate",
+                String.format("%s-%s", sectionName, productName)
         );
+        data.put(
+                "ecommerce",
+                getEnhancedEcommerce("click", productName, productId,
+                        productComission, sectionName, position)
+        );
+        getAnalyticTracker().sendEventTracking(data);
     }
 
 //    11
