@@ -57,6 +57,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -103,7 +104,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private static final int MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT = 12;
 
     public int spanCount;
-
+    private TrackingQueue trackingQueue;
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
 
 
@@ -125,6 +126,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             loadDataFromArguments();
         }
         gcmHandler = new GCMHandler(getContext());
+        trackingQueue = new TrackingQueue(getContext());
     }
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
@@ -252,7 +254,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.eventSearchResultProductView(getContext(), getQueryKey(), product, position);
+                TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, position);
             }
         });
     }
@@ -427,6 +429,13 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey());
+        trackingQueue.sendAll();
+    }
+
+    @Override
     public void disableWishlistButton(String productId) {
         adapter.setWishlistButtonEnabled(productId, false);
     }
@@ -598,6 +607,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         sendItemClickTrackingEvent(item);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    @Override
+    public void onProductImpressed(ProductItem item, int adapterPosition) {
+
     }
 
     public void onLongClick(ProductItem item, int adapterPosition) {

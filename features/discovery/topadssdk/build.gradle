@@ -38,6 +38,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.dagger
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
 

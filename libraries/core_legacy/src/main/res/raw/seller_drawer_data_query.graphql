@@ -34,9 +34,9 @@ query SellerDrawerData($userID: Int!) {
     profile_picture
     completion
   }
-  saldo {
-    deposit_fmt
-    deposit
+  balance {
+    buyer_usable
+    seller_usable
   }
   notifications {
     total_cart
