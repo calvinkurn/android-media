@@ -1,0 +1,97 @@
+   {
+     "get_promo_stack_first": {
+       "status": "OK",
+       "data": {
+         "global_success":false,
+"success":false,
+"message":{
+"state":"red",
+"color":"#ea212d",
+"text":"Promo diatas tidak dapat digunakan bersamaan dengan promo dibawah"
+},
+"codes":[
+"RED"
+],
+"promo_code_id":0,
+"title_description":"",
+"discount_amount":0,
+"cashback_wallet_amount":0,
+"cashback_voucher_amount":0,
+"cashback_advocate_referral_amount":0,
+"clashing_info_detail":{
+"is_clashed_promos":true,
+"clash_reason":"payment method",
+"clash_message":"Promo berikut tidak dapat digunakan bersamaan dengan promo dibawah",
+"options":[
+{
+"voucher_orders":[
+{
+"code":"JNE100",
+"unique_id":"12345-12345-12345-12",
+"cart_id":12345,
+"promo_name":"Promo gratis Ongkir max 20ribu",
+"potential_benefit":20000
+},
+{
+"code":"VOUCHERTOKO10",
+"unique_id":"12345-12345-12345-12",
+"cart_id":12345,
+"promo_name":"Promo Ongkir max 30ribu",
+"potential_benefit":30000
+}
+]
+},
+{
+"voucher_orders":[
+{
+"code":"RED",
+"unique_id":"12345-12345-12345-13",
+"cart_id":12346,
+"promo_name":"Promo cashback 30 ribu",
+"potential_benefit":30000
+}
+]
+}
+]
+},
+"extra_amount":0,
+"cashback_voucher_description":"",
+"gateway_id":"",
+"promo_id":0,
+"is_coupon":0,
+"coupon_description":"",
+"voucher_orders":[
+{
+"code":"VOUCHERTOKO10",
+"success":true,
+"unique_id":"12345-12345-12345-12",
+"cart_id":12345,
+"type":"merchant_voucher",
+"cashback_wallet_amount":1000,
+"discount_amount":0,
+"invoice_description":"JNE100",
+"message":{
+"state":"green",
+"color":"#ade3af",
+"text":"Gratis Ongkir sebesar Rp20.000"
+}
+},
+{
+"code":"JNE100",
+"success":false,
+"unique_id":"12345-12345-12345-12",
+"cart_id":12345,
+"type":"logistic_voucher",
+"cashback_wallet_amount":0,
+"discount_amount":20000,
+"invoice_description":"JNE100",
+"message":{
+"state":"red",
+"color":"#ea212d",
+"text":"Promo belum memenuhi minimum pembelian Rp10.000"
+}
+}
+]
+}
+     }
+   }

@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.common.domain.mapper
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.*
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ClashingInfoDetail
 import com.tokopedia.promocheckout.common.view.uimodel.*
 import rx.functions.Func1
 import javax.inject.Inject
@@ -14,6 +15,26 @@ class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlResponse
         var status = ""
         var data = DataUiModel()
         val response = t?.getData<ResponseGetPromoStackFirst?>(ResponseGetPromoStackFirst::class.java)
+        response?.let { responseGetPromoStackFirst ->
+            responseGetPromoStackFirst.getPromoStackFirst.let {
+                status = it?.status ?: STATUS_ERROR
+                when (it?.status) {
+                    STATUS_OK -> {
+                        data = mapData(it.data)
+                    }
+                }
+            }
+        }
+
+        return ResponseGetPromoStackFirstUiModel(
+                status,
+                data
+        )
+    }
+
+    fun callDummy(response: ResponseGetPromoStackFirst): ResponseGetPromoStackFirstUiModel {
+        var status = ""
+        var data = DataUiModel()
         response?.let { responseGetPromoStackFirst ->
             responseGetPromoStackFirst.getPromoStackFirst.let {
                 status = it?.status ?: STATUS_ERROR
@@ -145,22 +166,22 @@ class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlResponse
     }
 
     fun mapClashing(clash: ClashingInfoDetail): ClashingInfoDetailUiModel {
-        val listOptions = ArrayList<VoucherOrdersItemUiModel>()
+        val listOptions = ArrayList<ClashingVoucherOptionUiModel>()
         var clashingInfoDetailUiModel = ClashingInfoDetailUiModel()
         clash.isClashedPromos?.let { isClashed ->
             clash.clashMessage?.let { clashMessage ->
                 clash.clashReason?.let { clashReason ->
-                    clash.option.let { options ->
-                        options?.forEach {
+                    clash.options?.let { options ->
+                        options.forEach {
                             if (it != null) {
-                                mapVoucherOrders(it)
+                                listOptions.add(mapClashingVoucherOption(it))
                             }
                         }
                         clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
                                 isClashedPromos = isClashed,
                                 clashMessage = clashMessage,
                                 clashReason = clashReason,
-                                option = listOptions
+                                options = listOptions
                         )
                     }
                 }
@@ -168,5 +189,32 @@ class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlResponse
         }
 
         return clashingInfoDetailUiModel
+    }
+
+    fun mapClashingVoucherOption(clashingVoucherOption: ClashingVoucherOption): ClashingVoucherOptionUiModel {
+        var clashingVoucherOptionUiModel = ClashingVoucherOptionUiModel()
+        val clashingVoucherOrderUiModelList = ArrayList<ClashingVoucherOrderUiModel>()
+        for (clashingVoucherOrder: ClashingVoucherOrder in clashingVoucherOption.voucherOrders) {
+            val clashingVoucherOrderUiModel = mapClashingVoucherOrder(clashingVoucherOrder)
+            clashingVoucherOrderUiModelList.add(clashingVoucherOrderUiModel)
+        }
+        clashingVoucherOptionUiModel.voucherOrders = clashingVoucherOrderUiModelList
+
+        return clashingVoucherOptionUiModel
+    }
+
+    fun mapClashingVoucherOrder(clashingVoucherOrder: ClashingVoucherOrder): ClashingVoucherOrderUiModel {
+        var clashingVoucherOrderUiModel = ClashingVoucherOrderUiModel()
+        clashingVoucherOrder.let {
+            clashingVoucherOrderUiModel = ClashingVoucherOrderUiModel(
+                    clashingVoucherOrder.code,
+                    clashingVoucherOrder.uniqueId,
+                    clashingVoucherOrder.cartId,
+                    clashingVoucherOrder.promoName,
+                    clashingVoucherOrder.potentialBenefit
+            )
+        }
+
+        return clashingVoucherOrderUiModel
     }
 }

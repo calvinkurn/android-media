@@ -15,11 +15,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -27,7 +27,11 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
+import com.tokopedia.merchantvoucher.FileUtils
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackFirstUiModel
 import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
@@ -62,7 +66,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     lateinit var actionListener: ActionListener
 
     interface ActionListener {
-        fun onClashCheckPromoFirstStep()
+        fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel)
         fun onSuccessCheckPromoFirstStep(promoData: ResponseGetPromoStackFirstUiModel)
     }
 
@@ -234,23 +238,33 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun onErrorCheckPromoFirstStep(message: String) {
-        var messageInfo = message
-        if (TextUtils.isEmpty(messageInfo)) {
-            messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
-        }
-        ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+//        var messageInfo = message
+//        if (TextUtils.isEmpty(messageInfo)) {
+//            messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
+//        }
+//        ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+        showClashingDummy()
     }
 
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackFirstUiModel) {
         // Close merchant voucher bottomsheet, navigate to cart fragment to update view
-        dismiss()
-        actionListener.onSuccessCheckPromoFirstStep(model)
+//        dismiss()
+//        actionListener.onSuccessCheckPromoFirstStep(model)
+        showClashingDummy()
     }
 
     override fun onClashCheckPromoFirstStep() {
         // Close merchant voucher bottomsheet, show clash bottomsheet
-        dismiss()
-        actionListener.onClashCheckPromoFirstStep()
+//        dismiss()
+        showClashingDummy()
+    }
+
+    private fun showClashingDummy() {
+        val mapper = CheckPromoStackingCodeMapper()
+        val gson = Gson()
+        var responseGetPromoStackFirst = gson.fromJson(FileUtils().readRawTextFile(activity, R.raw.dummy_clashing_response), ResponseGetPromoStackFirst::class.java)
+        val uiData = mapper.callDummy(responseGetPromoStackFirst)
+        actionListener.onClashCheckPromo(uiData.data.clashings)
     }
 
 }
