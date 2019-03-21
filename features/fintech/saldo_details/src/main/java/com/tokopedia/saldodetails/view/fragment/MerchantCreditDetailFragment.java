@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -51,6 +52,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     private RelativeLayout mclBoxLayout;
     private TextView mclboxTitleTV;
     private TextView mclBoxDescTV;
+    private CardView mclParentCardView;
 
     private TextView mclBlockedStatusTV;
 
@@ -75,6 +77,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
         mclboxTitleTV = view.findViewById(R.id.mcl_box_title);
         mclBoxDescTV = view.findViewById(R.id.mcl_box_Desc);
         mclBlockedStatusTV = view.findViewById(R.id.mcl_blocked_status);
+        mclParentCardView = view.findViewById(R.id.mcl_card_view);
     }
 
     @Override
@@ -133,6 +136,13 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
             } else {
                 mclBoxLayout.setVisibility(View.GONE);
             }
+
+            mclParentCardView.setOnClickListener(v -> {
+                if (!TextUtils.isEmpty(merchantCreditDetails.getMainRedirectUrl())) {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                            merchantCreditDetails.getMainRedirectUrl()));
+                }
+            });
         }
     }
 
