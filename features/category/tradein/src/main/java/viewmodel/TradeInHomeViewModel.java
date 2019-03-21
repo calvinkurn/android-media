@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
@@ -74,6 +73,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 deviceAttr.setStorage(diagnostics.getStorage());
                 deviceDiagInput.setDeviceAttr(deviceAttr);
                 deviceDiagInput.setDeviceId(diagnostics.getImei());
+                inData.putString(TradeInParams.PARAM_DEVICE_ID, diagnostics.getImei());
                 deviceDiagInput.setDeviceReview(diagnostics.getReviewDetails());
                 deviceDiagInput.setNewPrice(activityWeakReference.get().getIntent().getIntExtra(TradeInParams.PARAM_NEW_PRICE, 0));
                 deviceDiagInput.setOldPrice(diagnostics.getTradeInPrice());
@@ -82,7 +82,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 gqlDeviceDiagInput.clearRequest();
                 gqlDeviceDiagInput.addRequest(new
                         GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
-                        R.raw.gql_insert_device_diag), DeviceDiagInputResponse.class, variables));
+                        R.raw.gql_insert_device_diag), DeviceDiagInputResponse.class, variables,false));
                 gqlDeviceDiagInput.execute(new Subscriber<GraphqlResponse>() {
                     @Override
                     public void onCompleted() {
@@ -101,10 +101,9 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                                 Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
                                 finalPriceIntent.putExtras(inData);
                                 activityWeakReference.get().startActivityForResult(finalPriceIntent, 10101);
-                            }
-                            else{
+                            } else {
                                 List<GraphqlError> errors = graphqlResponse.getError(DeviceDiagInputResponse.class);
-                                if(errors.get(0).getMessage().contains("duplicate key value")){
+                                if (errors.get(0).getMessage().contains("duplicate key value")) {
                                     Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
                                     finalPriceIntent.putExtras(inData);
                                     activityWeakReference.get().startActivityForResult(finalPriceIntent, 10101);

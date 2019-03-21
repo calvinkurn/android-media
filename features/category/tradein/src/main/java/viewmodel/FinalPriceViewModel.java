@@ -59,13 +59,13 @@ public class FinalPriceViewModel extends ViewModel implements LifecycleObserver 
         gqlDeviceDiagInput.clearRequest();
         gqlDeviceDiagInput.addRequest(new
                 GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
-                R.raw.gql_get_device_diag), DeviceDiagGQL.class, variables1));
+                R.raw.gql_get_device_diag), DeviceDiagGQL.class, variables1,false));
         if (tradeIn.getBoolean(TradeInParams.PARAM_USE_KYC)) {
             Map<String, Object> variables2 = new HashMap<>();
             variables2.put("projectID", 4);
             gqlDeviceDiagInput.addRequest(new
                     GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
-                    R.raw.gql_get_kyc_status), KYCDetailGQL.class, variables2));
+                    R.raw.gql_get_kyc_status), KYCDetailGQL.class, variables2,false));
         }
 
         gqlDeviceDiagInput.execute(new Subscriber<GraphqlResponse>() {

@@ -79,6 +79,13 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         viewArrayList.add(mTvButtonPayOrKtp);
         mTvTnc = findViewById(R.id.tv_tnc);
         viewArrayList.add(mTvTnc);
+        viewArrayList.add(findViewById(R.id.carc_background_white));
+        viewArrayList.add(findViewById(R.id.tv_model));
+        viewArrayList.add(findViewById(R.id.tv_exchange));
+        viewArrayList.add(findViewById(R.id.tv_final_price));
+        viewArrayList.add(findViewById(R.id.tv_title));
+        viewArrayList.add(findViewById(R.id.divider1));
+        viewArrayList.add(findViewById(R.id.divider2));
     }
 
     @Override
