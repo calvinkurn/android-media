@@ -187,6 +187,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FLAG_ACTIVITY_KYC_FORM) {
             if (resultCode == Activity.RESULT_OK) {
+                setbuttonCheckout();
                 goToCheckout();
             }
         }
