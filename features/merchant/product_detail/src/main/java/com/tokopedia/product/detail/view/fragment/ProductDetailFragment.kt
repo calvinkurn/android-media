@@ -435,7 +435,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 if (productInfoViewModel.isUserSessionActive()) {
                     val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
                         ?: return@let
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 } else {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1126,7 +1125,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (label_desc_installment.isVisible) base_view_wholesale.visibility = View.VISIBLE
             else base_view_wholesale.gone()
         }
-        if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
+        if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isUserHasShop) {
             open_shop.visible()
         } else {
             open_shop.gone()
