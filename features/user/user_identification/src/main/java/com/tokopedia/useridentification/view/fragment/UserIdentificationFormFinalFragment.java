@@ -106,10 +106,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_identification_final, container, false);
-        if (projectId == 4) //TradeIn project Id
-            uploadButton.setText(R.string.upload_button_tradein);
         initView(view);
         setContentView();
+        if (projectId == 4) //TradeIn project Id
+            uploadButton.setText(R.string.upload_button_tradein);
         return view;
     }
 

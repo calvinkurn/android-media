@@ -101,7 +101,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
 
     @Override
     int getMenuRes() {
-        return 0;
+        return -1;
     }
 
     @Override
