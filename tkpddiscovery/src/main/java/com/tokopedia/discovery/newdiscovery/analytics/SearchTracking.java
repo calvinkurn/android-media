@@ -39,6 +39,7 @@ public class SearchTracking {
     public static final String VALUE_FOLLOW = "follow";
     public static final String VALUE_UNFOLLOW = "unfollow";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
+    public static final String EVENT_VIEW_TOP_NAV = "viewTopNav";
     public static final String EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE = "click - %s profile";
     public static final String EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru";
     public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
@@ -556,7 +557,7 @@ public class SearchTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
 
         tracker.sendEventTracking(
-                EVENT_CLICK_SEARCH_RESULT,
+                EVENT_VIEW_TOP_NAV,
                 EVENT_CATEGORY_EMPTY_SEARCH,
                 EVENT_ACTION_CLICK_NEW_SEARCH,
                 String.format("tab: %s", screenName)
