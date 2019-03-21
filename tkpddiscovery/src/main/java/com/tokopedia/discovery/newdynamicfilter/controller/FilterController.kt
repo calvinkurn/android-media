@@ -448,7 +448,7 @@ class FilterController() : Parcelable {
     }
 
     private fun isCustomOptionDisplayed(option: Option) : Boolean {
-        return java.lang.Boolean.TRUE == getFlagFilterHelperValue(option.uniqueId)
+        return java.lang.Boolean.TRUE == getFilterViewStateValue(option.uniqueId)
     }
 
     private fun isIncludePopularOption(popularOptionList: List<Option>, option: Option) : Boolean {
@@ -463,7 +463,7 @@ class FilterController() : Parcelable {
         return filterParameter[key] ?: ""
     }
 
-    fun getFlagFilterHelperValue(key: String) : Boolean {
+    fun getFilterViewStateValue(key: String) : Boolean {
         return filterViewState[key] ?: false
     }
 

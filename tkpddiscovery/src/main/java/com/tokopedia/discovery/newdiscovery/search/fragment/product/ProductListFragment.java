@@ -593,7 +593,13 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public boolean isQuickFilterSelected(Option option) {
-        return filterController.getFlagFilterHelperValue(option.getUniqueId());
+        return option.isCategoryOption() ?
+                getFilterViewStateForCategory(option) :
+                filterController.getFilterViewStateValue(option.getUniqueId());
+    }
+
+    private boolean getFilterViewStateForCategory(Option option) {
+        return filterController.getFilterValue(option.getKey()).equals(option.getValue());
     }
 
     @Override
@@ -611,7 +617,8 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void setFilterToController(Option option, boolean isQuickFilterSelected) {
         if (option.isCategoryOption()) {
-            filterController.setFilterValue(option, String.valueOf(isQuickFilterSelected));
+            String categoryValue = isQuickFilterSelected ? option.getValue() : "";
+            filterController.setFilterValue(option, categoryValue);
         } else {
             filterController.setFilterValueExpandableItem(option, isQuickFilterSelected);
         }

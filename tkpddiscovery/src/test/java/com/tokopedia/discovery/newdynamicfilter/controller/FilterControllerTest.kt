@@ -233,7 +233,7 @@ class FilterControllerTest {
     private fun assertFlagFilterHelperCorrect(filterController: FilterController, isOptionShown: (Option) -> Boolean) {
         for(filter in filterController.getFilterList()) {
             for(option in filter.options) {
-                val actualShown = filterController.getFlagFilterHelperValue(option.uniqueId)
+                val actualShown = filterController.getFilterViewStateValue(option.uniqueId)
                 val expectedShown = isOptionShown(option)
 
                 assert(actualShown == expectedShown) {

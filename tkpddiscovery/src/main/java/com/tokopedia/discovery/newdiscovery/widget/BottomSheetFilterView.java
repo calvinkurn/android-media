@@ -249,7 +249,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private void enrichWithInputState(Filter filter) {
         for (Option option : filter.getOptions()) {
             option.setInputState(
-                    String.valueOf(filterController.getFlagFilterHelperValue(option.getUniqueId()))
+                    String.valueOf(filterController.getFilterViewStateValue(option.getUniqueId()))
             );
         }
     }
@@ -380,7 +380,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public boolean getFlagFilterHelperValue(String key) {
-        return filterController.getFlagFilterHelperValue(key);
+        return filterController.getFilterViewStateValue(key);
     }
 
     @Override

@@ -291,7 +291,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     private void enrichWithInputState(Filter filter) {
         for (Option option : filter.getOptions()) {
             option.setInputState(
-                    String.valueOf(filterController.getFlagFilterHelperValue(option.getUniqueId()))
+                    String.valueOf(filterController.getFilterViewStateValue(option.getUniqueId()))
             );
         }
     }
@@ -527,7 +527,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     @Override
     public boolean getFlagFilterHelperValue(String key) {
-        return filterController.getFlagFilterHelperValue(key);
+        return filterController.getFilterViewStateValue(key);
     }
 
     @Override
