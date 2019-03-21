@@ -74,11 +74,11 @@ class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener
 
     private fun getFormattedStringForAutoCompleteTracking() : String {
         return String.format(
-            "keyword: %s - top profile: %s - position: %s - page: %s",
+            "keyword: %s - profile: %s - profile id: %s - po: %s",
             boundedProfileSearch.searchTerm,
             boundedProfileSearch.keyword,
-            (adapterPosition + 1).toString(),
-            boundedProfileSearch.applink
+            boundedProfileSearch.peopleId,
+            (adapterPosition + 1).toString()
         )
     }
 }

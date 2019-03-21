@@ -12,21 +12,24 @@ import java.util.Map;
 public class AutoCompleteTracking {
 
 
-    public static final String CLICK_TOP_NAV = "clickTopNav";
-    public static final String TOP_NAV = "top nav";
+    public static final String EVENT = "event";
+    public static final String EVENT_CLICK_TOP_NAV = "clickTopNav";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
+    public static final String EVENT_CLICK_SEARCH = "clickSearch";
+    public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
+
+    public static final String EVENTCATEGORY_TOP_NAV = "top nav";
+
     public static final String CLICK_POPULAR_SEARCH = "click - popular search";
     public static final String CLICK_RECENT_SEARCH = "click - recent search";
     public static final String CLICK_DIGITAL_PRODUCT_SUGGESTION = "click - digital product suggestion";
     public static final String CLICK_CATEGORY_SUGGESTION = "click - category suggestion";
     public static final String CLICK_SEARCH = "click - search";
-    public static final String CLICK_PROFILE_SUGGESTION = "click - profile suggestion";
-    public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - top profile suggestion";
-    public static final String EVENT_CLICK_SEARCH = "clickSearch";
-    public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
-    public static final String EVENT = "event";
-    public static final String EVENT_CATEGORY = "eventCategory";
-    public static final String EVENT_ACTION = "eventAction";
-    public static final String EVENT_LABEL = "eventLabel";
+    public static final String CLICK_PROFILE_SUGGESTION = "click - profile autocomplete on suggestion list";
+    public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - profile autocomplete on top suggestion";
+
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
     public static final String CLICK_RECENT_VIEW_PRODUCT = "click - recent view product";
@@ -54,7 +57,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 EVENT_CLICK_SEARCH,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_POPULAR_SEARCH,
                 label
         );
@@ -67,7 +70,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 EVENT_CLICK_SEARCH,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_RECENT_SEARCH,
                 label
         );
@@ -80,7 +83,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 String.format("click - product autocomplete - tab: %s", tabName),
                 label
         );
@@ -95,7 +98,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 String.format("click - shop autocomplete - tab: %s", tabName),
                 label
         );
@@ -110,7 +113,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 String.format("click - category autocomplete - tab: %s", tabName),
                 label
         );
@@ -127,8 +130,8 @@ public class AutoCompleteTracking {
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
-                CLICK_TOP_NAV,
-                TOP_NAV,
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 ACTION_CLICK_HOTLIST_SUGGESTION,
                 String.format(
                         LABEL_HOTLIST_CLICK,
@@ -149,7 +152,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_CATEGORY_SUGGESTION,
                 label
         );
@@ -162,7 +165,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_DIGITAL_PRODUCT_SUGGESTION,
                 label
         );
@@ -174,8 +177,8 @@ public class AutoCompleteTracking {
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
-                EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_PROFILE_SUGGESTION,
                 label
         );
@@ -187,8 +190,8 @@ public class AutoCompleteTracking {
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
-                EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_TOP_PROFILE_SUGGESTION,
                 label
         );
@@ -201,7 +204,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
                 EVENT_CLICK_SEARCH,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_SEARCH,
                 label
         );
@@ -217,7 +220,7 @@ public class AutoCompleteTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK,
-                        EVENT_CATEGORY, TOP_NAV,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV,
                         EVENT_ACTION, CLICK_RECENT_VIEW_PRODUCT,
                         EVENT_LABEL, String.
                                 format(LABEL_RECENT_VIEW_CLICK,

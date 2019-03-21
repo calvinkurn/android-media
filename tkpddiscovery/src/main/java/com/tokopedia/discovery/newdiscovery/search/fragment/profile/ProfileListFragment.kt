@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
@@ -138,7 +139,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun getScreenName(): String {
-        return "name"
+        return AppScreen.SCREEN_SEARCH_PAGE_PROFILE_TAB
     }
 
     override fun initInjector() {
@@ -218,6 +219,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
+        SearchTracking.eventSearchNoResult(activity, query, screenName, mapOf())
+
         return createProfileEmptySearchModel(
                 context!!,
                 query,
@@ -250,6 +253,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
         redirectionListener.showSearchInputView()
     }
 
